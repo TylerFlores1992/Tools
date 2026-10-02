@@ -167,7 +167,7 @@
 }
 
 /*
- * CampHawk lab tokens (/lab/camphawk only). Copied from campsite-finder src/app/globals.css
+ * CampHawk lab tokens (/private/camphawk only). Copied from campsite-finder src/app/globals.css
  * on 2026-10-02 so lab components use CampHawk's own class names (bg-ch-green…) and port back
  * unchanged. Light only, like CampHawk. Never use these on tylerflores.dev pages.
  */
@@ -278,6 +278,14 @@ p { text-wrap: pretty; }
   outline: 2px solid var(--fw-ember);
   outline-offset: 2px;
   border-radius: 4px;
+}
+/* A text field draws that ring once, on its frame (.field), not on the bare input inside. */
+.field:has(input:focus-visible) {
+  outline: 2px solid var(--fw-ember);
+  outline-offset: 2px;
+}
+.field input:focus-visible {
+  outline: none;
 }
 
 /* iOS zooms into focused fields under 16px and never zooms back. */

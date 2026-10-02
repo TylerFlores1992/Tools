@@ -21,7 +21,8 @@ const SRC = join(import.meta.dirname, "..");
 const css = readFileSync(GLOBALS_CSS, "utf8");
 const ds = await __unstable__loadDesignSystem(css, { base: join(SRC, "app") });
 // Plain CSS classes defined in globals.css itself (e.g. `.theme-night`) are legitimate too.
-const PLAIN = new Set([...css.matchAll(/^\s*\.([a-z][a-z0-9-]*)\s*[,{]/gm)].map((m) => m[1]));
+// A rule may continue after the class (`.field:has(…)`, `.field input`).
+const PLAIN = new Set([...css.matchAll(/^\s*\.([a-z][a-z0-9-]*)(?=[\s,{:])/gm)].map((m) => m[1]));
 // Marker classes that generate nothing themselves but enable group-*/peer-* variants.
 const MARKER = /^(group|peer)(\/[a-z0-9-]+)?$/;
 const generates = (classes: string[]) =>
@@ -32,6 +33,7 @@ test("self-test: the compiler accepts real tokens and rejects deleted or invente
   // Stock palette is deleted; invented tokens and typos generate nothing.
   assert.deepEqual(generates(["bg-gray-500", "text-white", "bg-surfce", "rounded-cardd"]), [false, false, false, false]);
   assert.ok(PLAIN.has("theme-night"), "expected .theme-night to be read from globals.css");
+  assert.ok(PLAIN.has("field"), "expected .field (a rule that continues after the class) to be read");
   assert.deepEqual(generates(["group", "peer", "group/row", "groupx"]), [true, true, true, false]);
 });
 
