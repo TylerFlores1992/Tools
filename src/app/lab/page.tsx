@@ -47,7 +47,7 @@ export default function Lab() {
       </div>
 
       <h2 className="mt-16 text-h2 font-normal">States</h2>
-      <p className="mt-2 text-small text-muted">Always icon + word + colour. Never colour alone.</p>
+      <p className="mt-2 text-small text-muted">Always icon + word + color. Never color alone.</p>
       <div className="mt-6 grid gap-3">
         <State kind="ok">Both legs carry less than the load.</State>
         <State kind="wrong">Keep the bridle point between the two beams.</State>
