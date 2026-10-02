@@ -2,7 +2,10 @@
 
 ## Current state (2026-10-02)
 - **Vercel project:** `tylerflores-dev` (Hobby, scope `tyler-flores1992`), linked to
-  `TylerFlores1992/Tools`, framework Next.js, no environment variables.
+  `TylerFlores1992/Tools`, framework Next.js. Production deploys from `main` automatically;
+  other branches get preview URLs.
+- **Environment variables:** one, `LAB_PASSWORD` (Production, Sensitive), set by the owner on
+  2026-10-02. See "CampHawk lab password" below.
 - **Domains on the project:** `tylerflores.dev` (primary) and `www.tylerflores.dev` (308 → apex).
 - **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`), added
   2026-10-02, **Proxy status: DNS only** (grey cloud): `A @ → 76.76.21.21`,
@@ -19,12 +22,23 @@
 2. **Protect `main`:** require PRs and the `verify` check.
 
 ## CampHawk lab password
-`/lab/camphawk` (CampHawk design sandbox) is locked by `src/proxy.ts` with HTTP Basic auth
-against **`LAB_PASSWORD`**. With it unset the lab is locked for everyone. The owner sets it,
-never in code or chat: Vercel → `tylerflores-dev` → Settings → Environment Variables → add
-`LAB_PASSWORD` (Production, and Preview if wanted), Sensitive → Save, then redeploy (Deployments
-→ latest → ⋯ → Redeploy). Sign in with any username plus that password. Vercel's own Password
-Protection is a paid Pro add-on, hence this.
+`/lab/camphawk` is private. `src/proxy.ts` asks for a password (HTTP Basic auth) and compares
+it with the `LAB_PASSWORD` environment variable. If the variable is missing, the lab is locked
+for everyone.
+
+- **Status:** set by the owner on 2026-10-02, Production only, marked Sensitive.
+- **To open the lab:** go to https://tylerflores.dev/lab/camphawk and sign in with any
+  username plus the password.
+- **To change the password:** Vercel → `tylerflores-dev` → Settings → Environment Variables →
+  `LAB_PASSWORD` → Edit → Save, then Deployments → latest → ⋯ → Redeploy. A change only takes
+  effect after a redeploy.
+- **Never** put the password in code, docs or chat. Claude can't read it (Sensitive values are
+  write-only) and doesn't need to.
+- **Preview deployments** don't have the variable, so the lab is locked there too. Add
+  Preview to the variable's environments if that's ever wanted.
+- **Why not Vercel's own password protection:** it's a paid Pro add-on.
+- **Checks:** `npm run smoke` asserts production answers 401 without the password;
+  `npm run e2e` checks no password, a wrong password and the right one locally.
 
 ## CI
 `.github/workflows/ci.yml` runs `npm ci && npm run verify` on every push and pull request.
