@@ -94,17 +94,177 @@ try {
     assert.equal(await q2.getByText("Not quite. The answer is C.").count(), 1);
   });
 
-  await check("lab: /lab/camphawk is locked without the password, wrong password, and for its images", async () => {
-    const basic = (pw: string) => ({ Authorization: `Basic ${Buffer.from(`anyone:${pw}`).toString("base64")}` });
-    for (const [path, headers] of [["/lab/camphawk", {}], ["/lab/camphawk", basic("wrong")], ["/lab/camphawk/hero-bg.webp", {}]] as const) {
-      const res = await fetch(BASE + path, { headers });
-      assert.equal(res.status, 401, `${path} answered ${res.status}`);
-      assert.match(res.headers.get("www-authenticate") ?? "", /^Basic /);
+  // ---- Private area: password-only sign-in, session cookie, lock on every path and file ----
+  type Opts = Parameters<typeof browser.newContext>[0];
+  async function fresh(opts: Opts = {}) {
+    const ctx = await browser.newContext(opts);
+    const p = await ctx.newPage();
+    await p.addInitScript("globalThis.__name = (f) => f");
+    return { ctx, p };
+  }
+  async function signIn(p: import("playwright-core").Page, password = LAB_PASSWORD) {
+    await p.getByLabel("Password", { exact: true }).fill(password);
+    await p.getByLabel("Password", { exact: true }).press("Enter");
+  }
+
+  await check("private: the Private tab sits next to Home and Workshop, and is marked current on private pages", async () => {
+    const { ctx, p } = await fresh();
+    for (const path of ["/", "/workshop"]) {
+      await p.goto(BASE + path);
+      const nav = p.getByRole("navigation", { name: "Main" });
+      assert.deepEqual(await nav.getByRole("link").allInnerTexts(), ["Home", "Workshop", "Private"]);
+      assert.equal(await nav.getByRole("link", { name: "Private" }).getAttribute("aria-current"), null);
     }
-    const ok = await fetch(`${BASE}/lab/camphawk`, { headers: basic(LAB_PASSWORD) });
-    assert.equal(ok.status, 200);
-    assert.match(ok.headers.get("x-robots-tag") ?? "", /noindex/);
-    assert.match(await ok.text(), /The campsite you wanted is already booked/);
+    await p.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Private" }).click();
+    await p.waitForURL(/\/private\/sign-in\?next=%2Fprivate$/);
+    assert.equal(await p.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Private" }).getAttribute("aria-current"), "page");
+    await ctx.close();
+  });
+
+  await check("private: the sign-in page asks for a password and nothing else, in the site's own design", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private`);
+    await p.waitForURL(/\/private\/sign-in/);
+    await p.getByRole("heading", { level: 1, name: "Enter the password" }).waitFor();
+    const fields = p.locator("input:not([type=hidden])");
+    assert.equal(await fields.count(), 1, "exactly one visible field");
+    assert.equal(await fields.first().getAttribute("type"), "password");
+    assert.equal(await fields.first().getAttribute("autocomplete"), "current-password");
+    assert.equal(await p.locator("[autocomplete=username], input[name=username], input[type=email]").count(), 0);
+    assert.equal(await p.evaluate(() => document.activeElement?.id), "password", "the field has focus on arrival");
+    assert.ok(await p.getByRole("navigation", { name: "Main" }).isVisible(), "site header is there");
+    await ctx.close();
+  });
+
+  await check("private: empty and wrong passwords are explained in words, and the field is ready again", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/sign-in`);
+    await p.getByRole("button", { name: /Unlock/ }).click();
+    await p.getByText("Enter the password.").waitFor();
+    await signIn(p, "not the password");
+    await p.getByText("That password didn’t work. Try again.").waitFor();
+    await p.getByText(/Problem: That password didn’t work/).waitFor(); // ✕ icon + word, state named for screen readers
+    const field = p.getByLabel("Password", { exact: true });
+    assert.equal(await field.inputValue(), "", "the wrong password is cleared");
+    assert.equal(await field.getAttribute("aria-invalid"), "true");
+    assert.equal(await p.evaluate(() => document.activeElement?.id), "password", "focus is back in the field");
+    assert.match(p.url(), /\/private\/sign-in/);
+    assert.equal((await ctx.cookies()).filter((c) => c.name === "fw_private").length, 0, "no session on failure");
+    await field.pressSequentially("n");
+    assert.equal(await p.getByText("That password didn’t work. Try again.").count(), 0, "typing again clears the message");
+    assert.equal(await field.getAttribute("aria-invalid"), null);
+    await ctx.close();
+  });
+
+  await check("private: Show / Hide reveals the password and says which state it's in", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/sign-in`);
+    const field = p.getByLabel("Password", { exact: true });
+    await field.fill("abc");
+    const toggle = p.getByRole("button", { name: /Show password/ });
+    assert.equal(await toggle.getAttribute("aria-pressed"), "false");
+    await toggle.click();
+    assert.equal(await field.getAttribute("type"), "text");
+    assert.equal(await p.getByRole("button", { name: /Hide password/ }).getAttribute("aria-pressed"), "true");
+    await p.getByRole("button", { name: /Hide password/ }).click();
+    assert.equal(await field.getAttribute("type"), "password");
+    await ctx.close();
+  });
+
+  await check("private: the right password (Enter key) opens Private; the session cookie is HttpOnly, Secure, Lax, /private only", async () => {
+    const { ctx, p } = await fresh();
+    const problems: string[] = [];
+    p.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") problems.push(`${m.type()}: ${m.text()}`); });
+    p.on("pageerror", (e) => problems.push(`pageerror: ${e.message}`));
+    await p.goto(`${BASE}/private`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private`);
+    await p.getByRole("heading", { level: 1, name: "Private" }).waitFor();
+    const c = (await ctx.cookies()).find((x) => x.name === "fw_private");
+    assert.ok(c, "session cookie set");
+    assert.equal(c.httpOnly, true);
+    assert.equal(c.secure, true);
+    assert.equal(c.sameSite, "Lax");
+    assert.equal(c.path, "/private");
+    const days = (c.expires * 1000 - Date.now()) / 86_400_000;
+    assert.ok(days > 29.9 && days <= 30, `expires in ${days.toFixed(2)} days`);
+    await p.getByRole("link", { name: /CampHawk lab/ }).click();
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    await p.getByRole("heading", { level: 1, name: "The campsite you wanted is already booked. We wait for it." }).waitFor();
+    await p.getByRole("link", { name: /Private/ }).first().click();
+    await p.waitForURL(`${BASE}/private`);
+    assert.deepEqual(problems, [], "console stayed clean through sign-in, Private and the lab");
+    await ctx.close();
+  });
+
+  await check("private: a deep link brings you back to where you were headed after signing in", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/camphawk`);
+    await p.waitForURL(/next=%2Fprivate%2Fcamphawk/);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    await p.getByRole("heading", { level: 1, name: "The campsite you wanted is already booked. We wait for it." }).waitFor();
+    await ctx.close();
+  });
+
+  await check("private: the old /lab/camphawk link still arrives (through sign-in)", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/lab/camphawk`);
+    await p.waitForURL(/\/private\/sign-in\?next=%2Fprivate%2Fcamphawk/);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    await ctx.close();
+  });
+
+  await check("private: ?next can't send you anywhere outside the private area", async () => {
+    for (const next of ["//evil.example/private", "https://evil.example", "/workshop", "/private/sign-in"]) {
+      const { ctx, p } = await fresh();
+      await p.goto(`${BASE}/private/sign-in?next=${encodeURIComponent(next)}`);
+      await signIn(p);
+      await p.waitForURL(`${BASE}/private`);
+      await ctx.close();
+    }
+  });
+
+  await check("private: files need the session too, and a forged cookie gets you nowhere", async () => {
+    const img = `${BASE}/private/camphawk/hero-bg.webp`;
+    assert.equal((await fetch(img, { redirect: "manual" })).status, 401);
+    const forged = await fetch(`${BASE}/private`, { redirect: "manual", headers: { Cookie: "fw_private=v1.99999999999999.forged" } });
+    assert.equal(forged.status, 307);
+    assert.match(forged.headers.get("location") ?? "", /\/private\/sign-in/);
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private`);
+    const withSession = await ctx.request.get(img);
+    assert.equal(withSession.status(), 200);
+    assert.match(withSession.headers()["x-robots-tag"] ?? "", /noindex/);
+    await ctx.close();
+  });
+
+  await check("private: Sign out forgets this device", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private`);
+    await p.getByRole("button", { name: "Sign out" }).click();
+    await p.waitForURL(`${BASE}/`);
+    assert.equal((await ctx.cookies()).filter((c) => c.name === "fw_private").length, 0);
+    await p.goto(`${BASE}/private`);
+    await p.waitForURL(/\/private\/sign-in/);
+    await ctx.close();
+  });
+
+  await check("private: signing in works with JavaScript turned off", async () => {
+    const { ctx, p } = await fresh({ javaScriptEnabled: false });
+    await p.goto(`${BASE}/private/camphawk`);
+    await p.getByLabel("Password", { exact: true }).fill("not the password");
+    await p.getByRole("button", { name: /Unlock/ }).click();
+    await p.getByText("That password didn’t work. Try again.").waitFor();
+    await p.getByLabel("Password", { exact: true }).fill(LAB_PASSWORD);
+    await p.getByRole("button", { name: /Unlock/ }).click();
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    await ctx.close();
   });
 
   await check("study: a flashcard flips from the keyboard and “Got it” counts it learned", async () => {

@@ -18,7 +18,7 @@ const ROOT = join(import.meta.dirname, "..");
 const OUT = join(ROOT, "screenshots");
 const BASE = process.env.BASE_URL ?? "http://localhost:3100";
 const ROUTES = process.argv.slice(2).filter((a) => a.startsWith("/"));
-const routes = ROUTES.length ? ROUTES : ["/", "/workshop", "/workshop/bridle-calculator", "/workshop/etcp-rigger-study", "/workshop/etcp-rigger-study/practice/a", "/workshop/etcp-rigger-study/flashcards", "/workshop/etcp-rigger-study/formulas", "/lab", "/does-not-exist"];
+const routes = ROUTES.length ? ROUTES : ["/", "/workshop", "/workshop/bridle-calculator", "/workshop/etcp-rigger-study", "/workshop/etcp-rigger-study/practice/a", "/workshop/etcp-rigger-study/flashcards", "/workshop/etcp-rigger-study/formulas", "/private/sign-in", "/lab", "/does-not-exist"];
 const WIDTHS = [375, 768, 1440, 2560];
 const HEIGHT: Record<number, number> = { 375: 812, 768: 1024, 1440: 900, 2560: 1440 };
 const SCHEMES = ["dark", "light"] as const;
