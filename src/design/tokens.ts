@@ -39,6 +39,8 @@ export const CONTRAST_PAIRS: { fg: ColorToken; bg: ColorToken; min: number; use:
   { fg: "ice", bg: "surface", min: 4.5, use: "correct / done in cards" },
   { fg: "wrong", bg: "bg", min: 4.5, use: "error text" },
   { fg: "wrong", bg: "surface", min: 4.5, use: "error text in cards" },
+  { fg: "ice", bg: "surface-2", min: 4.5, use: "correct / done on raised panels (worked answers)" },
+  { fg: "wrong", bg: "surface-2", min: 4.5, use: "error text on raised panels (worked answers)" },
   { fg: "series-2", bg: "surface", min: 3, use: "second diagram series (non-text)" },
   { fg: "on-primary", bg: "primary", min: 4.5, use: "main button label" },
   { fg: "on-primary", bg: "ink-2", min: 4.5, use: "main button label on hover" },

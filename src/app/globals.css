@@ -231,6 +231,15 @@ p { text-wrap: pretty; }
   animation-delay: var(--d, 0ms);
 }
 
+/* A flashcard turning over: quick, so it never slows reading. */
+@keyframes flip-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.flip-in {
+  animation: flip-in var(--dur-base) var(--ease-out) both;
+}
+
 @keyframes settle {
   from { transform: scale(1.06); }
   to { transform: none; }

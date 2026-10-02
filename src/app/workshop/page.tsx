@@ -63,7 +63,7 @@ export default function Workshop() {
             <h1 className="mt-3 text-title font-normal">Tools</h1>
           </div>
           <p className="font-mono text-label uppercase text-muted">
-            {live} live · {building} building
+            {live} live{building > 0 && ` · ${building} building`}
           </p>
         </div>
         <ol className="divide-y divide-line">

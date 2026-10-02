@@ -68,6 +68,41 @@ try {
     await page.waitForURL(/\/workshop$/);
     await page.getByRole("heading", { name: "Tools", level: 1 }).waitFor();
   });
+
+  await check("study: a wrong answer says so in words, shows the key and the working, and survives a reload", async () => {
+    await page.goto(`${BASE}/workshop/etcp-rigger-study/practice/a`);
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    const q2 = page.locator("#a02");
+    await q2.getByRole("button", { name: /60°/ }).click();
+    await q2.getByText("Not quite. The answer is C.").waitFor();
+    await q2.getByText(/Problem: Your answer/).waitFor(); // icon + word, with the state name for screen readers
+    await q2.getByText("Correct answer").waitFor();
+    await page.getByText("1 of 25 answered").waitFor();
+    await page.reload();
+    await page.locator("#a02").getByText("Not quite. The answer is C.").waitFor();
+    await page.getByText("1 of 25 answered").waitFor();
+  });
+
+  await check("study: an answer can't be changed once it's locked in", async () => {
+    const q2 = page.locator("#a02");
+    await q2.getByRole("button", { name: /120°/ }).click({ force: true }); // aria-disabled, so Playwright would refuse
+    await page.getByText("1 of 25 answered").waitFor();
+    assert.equal(await q2.getByText("Not quite. The answer is C.").count(), 1);
+  });
+
+  await check("study: a flashcard flips from the keyboard and “Got it” counts it learned", async () => {
+    await page.goto(`${BASE}/workshop/etcp-rigger-study/flashcards`);
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await page.getByRole("button", { name: "Show answer" }).focus();
+    await page.keyboard.press("Space");
+    await page.getByText("WLL = Breaking strength ÷ DF").waitFor();
+    await page.getByRole("button", { name: /Got it/ }).click();
+    await page.getByText("1 of 73 learned").waitFor();
+    await page.getByRole("button", { name: /Arena/ }).click();
+    await page.getByText("0 of 15 learned").waitFor();
+  });
 } finally {
   await browser.close();
   if (server?.pid) { try { process.kill(-server.pid, "SIGTERM"); } catch {} }
