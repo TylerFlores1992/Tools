@@ -8,8 +8,9 @@
 - **Deployed.** Vercel project `tylerflores-dev` (details and gotchas in `docs/SETUP.md`).
   Production from `main` is live at https://tylerflores-dev.vercel.app — smoke test green,
   calculator, film, posters, OG images, sitemap, robots, manifest all 200.
-  `tylerflores.dev` + `www` (308 → apex) are attached and verified on the project but
-  **don't resolve yet: no DNS records at Cloudflare.**
+  **https://tylerflores.dev is live** (DNS at Cloudflare, grey cloud; Let's Encrypt certs for
+  apex and `www`, auto-renewed by Vercel); `www` 308s to the apex. Merges to `main` deploy
+  production automatically; other branches get preview URLs.
 - **Phase 4, first batch, built and awaiting the owner's sign-off:**
   - Primitives in `src/components/` (Button/LinkButton, State, Card, Kbd, Label,
     NumberField, Segmented, SiteHeader, SiteFooter, PageTransition, HeroFilm).
@@ -27,20 +28,16 @@
   - Desktop: 100 performance on all three, LCP 0.5–0.6 s.
 - **Checks:** `npm run verify` (84 tests), `npm run e2e` (6 browser checks), `npm run shots`
   (40 shots incl. measured text-over-film contrast) — all green.
-
 - **Live Lighthouse from this container is too noisy to judge:** home LCP 3.6 / 3.0 / 1.9 s
   across three runs against the live site vs 2.7 / 2.6 s local in the same minutes (the
   container's TLS proxy sits in the path). The anonymous PageSpeed Insights API quota was
   exhausted. Use https://pagespeed.web.dev from a real browser for the real number.
 
 ## Blocked on the owner
-1. **DNS at Cloudflare** (grey cloud): `A @ → 76.76.21.21`, `CNAME www → cname.vercel-dns.com`
-   (or the exact values on Vercel's Domains page) — or add `CLOUDFLARE_API_TOKEN` to the
-   environment and Claude does it.
-2. **GitHub default branch → `main`** (`docs/SETUP.md`); Vercel already treats other
+1. **GitHub default branch → `main`** (`docs/SETUP.md`); Vercel already treats other
    branches as previews.
-3. **Sign-off on the home page and the bridle calculator** before the rest of Phase 4.
-4. CampHawk test area: public-by-link or private? Real components or static mockups? Which
+2. **Sign-off on the home page and the bridle calculator** before the rest of Phase 4.
+3. CampHawk test area: public-by-link or private? Real components or static mockups? Which
    screen first? (Plan: `/lab/camphawk/…`, CampHawk's own tokens, fake data, noindex.)
 
 ## Next (after sign-off)
@@ -67,5 +64,8 @@
 - `opacity-*` on text breaks token contrast; the opacity guard now fails on it.
 - Vercel connector: pass no `teamId` (403 "re-authenticate to this scope"); `create_project`
   works where `create_git_project` doesn't.
+- This container can't fetch `https://tylerflores.dev` with curl (it can over plain HTTP). Check
+  the certificate with `openssl s_client -connect tylerflores.dev:443 -servername
+  tylerflores.dev -proxy ${HTTPS_PROXY#http://}`.
 - Lighthouse against a live URL from here needs `--chrome-flags="--ignore-certificate-errors
   --proxy-server=$HTTPS_PROXY"` (the proxy re-signs TLS).
