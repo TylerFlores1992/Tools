@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { COLOR_TOKENS } from "@/design/tokens";
+import { Button, LinkButton, Arrow } from "@/components/Button";
+import { State } from "@/components/State";
+import { Kbd } from "@/components/Kbd";
 
 // The design system on one page, for screenshots and eyeballing. Not linked, not indexed.
 export const metadata: Metadata = { title: "Lab", robots: { index: false, follow: false } };
@@ -44,13 +47,24 @@ export default function Lab() {
       </div>
 
       <h2 className="mt-16 text-h2 font-normal">States</h2>
-      <ul className="mt-6 flex flex-wrap gap-3">
-        <li className="inline-flex items-center gap-2 rounded-tag border border-line px-3 py-2 text-small text-ice"><span aria-hidden="true">✓</span> Correct</li>
-        <li className="inline-flex items-center gap-2 rounded-tag border border-line px-3 py-2 text-small text-wrong"><span aria-hidden="true">✕</span> Wrong: check the span</li>
-        <li className="inline-flex items-center gap-2 rounded-tag border border-line px-3 py-2 text-small text-ember">Highlight</li>
-        <li><button type="button" className="rounded-btn bg-primary px-5 py-3 font-medium text-on-primary">Primary action</button></li>
-        <li><input aria-label="Example input" placeholder="Span (ft)" className="rounded-input border border-control bg-surface px-4 py-3 text-ink placeholder:text-muted" /></li>
-      </ul>
+      <p className="mt-2 text-small text-muted">Always icon + word + colour. Never colour alone.</p>
+      <div className="mt-6 grid gap-3">
+        <State kind="ok">Both legs carry less than the load.</State>
+        <State kind="wrong">Keep the bridle point between the two beams.</State>
+        <State kind="note">Legs are 104° apart. Past 120°, each leg carries more than the load.</State>
+      </div>
+
+      <h2 className="mt-16 text-h2 font-normal">Actions</h2>
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <LinkButton href="/workshop" className="group">Enter the workshop <Arrow /></LinkButton>
+        <Button variant="quiet">Quiet</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button disabled>Disabled</Button>
+        <span className="text-small text-ink-2">Press <Kbd>⌘K</Kbd></span>
+      </div>
+      <div className="mt-6">
+        <input aria-label="Example input" placeholder="Span (ft)" className="min-h-12 rounded-input border border-control bg-surface px-4 text-ink placeholder:text-muted" />
+      </div>
     </main>
   );
 }

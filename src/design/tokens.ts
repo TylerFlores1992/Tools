@@ -41,6 +41,7 @@ export const CONTRAST_PAIRS: { fg: ColorToken; bg: ColorToken; min: number; use:
   { fg: "wrong", bg: "surface", min: 4.5, use: "error text in cards" },
   { fg: "series-2", bg: "surface", min: 3, use: "second diagram series (non-text)" },
   { fg: "on-primary", bg: "primary", min: 4.5, use: "main button label" },
+  { fg: "on-primary", bg: "ink-2", min: 4.5, use: "main button label on hover" },
   { fg: "control", bg: "bg", min: 3, use: "input edge on the page" },
   { fg: "control", bg: "surface", min: 3, use: "input edge in a card" },
 ];

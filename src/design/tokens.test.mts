@@ -21,8 +21,10 @@ const css = readFileSync(GLOBALS_CSS, "utf8");
 const ds = await __unstable__loadDesignSystem(css, { base: join(SRC, "app") });
 // Plain CSS classes defined in globals.css itself (e.g. `.theme-night`) are legitimate too.
 const PLAIN = new Set([...css.matchAll(/^\s*\.([a-z][a-z0-9-]*)\s*[,{]/gm)].map((m) => m[1]));
+// Marker classes that generate nothing themselves but enable group-*/peer-* variants.
+const MARKER = /^(group|peer)(\/[a-z0-9-]+)?$/;
 const generates = (classes: string[]) =>
-  ds.candidatesToCss(classes).map((out, i) => PLAIN.has(classes[i]) || (out !== null && out.trim() !== ""));
+  ds.candidatesToCss(classes).map((out, i) => PLAIN.has(classes[i]) || MARKER.test(classes[i]) || (out !== null && out.trim() !== ""));
 
 /** Class strings inside className="…", className={'…'}, className={`…`} and cx("…") calls. */
 export function classStrings(source: string): string[] {
@@ -58,6 +60,7 @@ test("self-test: the compiler accepts real tokens and rejects deleted or invente
   // Stock palette is deleted; invented tokens and typos generate nothing.
   assert.deepEqual(generates(["bg-gray-500", "text-white", "bg-surfce", "rounded-cardd"]), [false, false, false, false]);
   assert.ok(PLAIN.has("theme-night"), "expected .theme-night to be read from globals.css");
+  assert.deepEqual(generates(["group", "peer", "group/row", "groupx"]), [true, true, true, false]);
 });
 
 test("self-test: the extractor finds classes in every supported form", () => {
