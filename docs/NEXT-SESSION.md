@@ -37,7 +37,8 @@
 1. **DNS at Cloudflare** (grey cloud): `A @ → 76.76.21.21`, `CNAME www → cname.vercel-dns.com`
    (or the exact values on Vercel's Domains page) — or add `CLOUDFLARE_API_TOKEN` to the
    environment and Claude does it.
-2. **Production branch → `main`** in GitHub (default branch) and Vercel (`docs/SETUP.md`).
+2. **GitHub default branch → `main`** (`docs/SETUP.md`); Vercel already treats other
+   branches as previews.
 3. **Sign-off on the home page and the bridle calculator** before the rest of Phase 4.
 4. CampHawk test area: public-by-link or private? Real components or static mockups? Which
    screen first? (Plan: `/lab/camphawk/…`, CampHawk's own tokens, fake data, noindex.)

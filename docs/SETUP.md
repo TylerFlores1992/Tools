@@ -12,12 +12,9 @@
 - `src/lib/site.ts` uses `https://tylerflores.dev` as the canonical URL.
 
 ## Owner-only settings (the connector can't change these)
-1. **Production branch → `main`.** The repo's GitHub default branch is still the old
-   session branch, and Vercel took its production branch from it. Fix both:
-   GitHub → Settings → General → Default branch → `main`; Vercel → project → Settings →
-   Environments → Production → Branch Tracking → `main` (older dashboards: Settings → Git →
-   Production Branch). Until then, deploy production by
-   hand from `main` (the connector's `create_deployment` with `target: production`).
+1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). It is
+   still the old session branch, so new PRs default to the wrong base. Vercel is not affected:
+   a push to the session branch built as a preview, not production (checked 2026-10-02).
 2. **Protect `main`:** require PRs and the `verify` check.
 
 ## CI
