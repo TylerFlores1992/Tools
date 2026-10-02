@@ -98,12 +98,12 @@ There's no AI video generator in this setup. The film is **rendered from code**:
 
 | Asset | Spec |
 |---|---|
-| `hero-1080.webm` | AV1 (SVT-AV1), 1920×1080, 24 fps, 6 s seamless loop |
-| `hero-1080.mp4` | H.264 fallback, same content, `+faststart` |
+| `hero-1080.webm` | AV1 (SVT-AV1), 1920×1080, 24 fps, 8 s seamless loop — 792 KB |
+| `hero-1080.mp4` | H.264 fallback, same content, `+faststart` — 2.2 MB |
 | `hero-poster.avif` / `.webp` | The frame where the eyes are brightest. It's what reduced-motion and Save-Data visitors see, and it's the first paint. |
 | `hero-portrait` set | A separate 4:5 render composed for phones |
 
-**What moves:** mist drifts through the valleys, stars twinkle, the wolf's eyes and glow breathe once per loop, and the camera stays static. Every motion is periodic over the loop, so frame 144 joins frame 0 with no seam.
+**What moves (bolder cut, 2026-10-02):** the camera flies a slow closed orbit (sway + push-in) so the ridges parallax, mist rolls through the valleys, soft moonbeams fall behind the wolf, one shooting star crosses per loop, and the eyes ignite from dark to full glow. Every motion is periodic over the loop, so frame 192 joins frame 0 with no seam.
 
 **Rendering:** about 5 s per 1080p frame in software rendering here, so roughly 12 minutes per loop. Scripts: `film.html`, `film.mjs`, `terrain.js`, `wolf2.js`.
 
