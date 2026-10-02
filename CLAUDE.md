@@ -14,6 +14,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `npm run verify` — typecheck + lint + tests + build. **Run before every push.**
 - `npm run shots [-- /route …]` — screenshots at 375/768/1440/2560 × light/dark into
   `screenshots/` (gitignored). **Look at them before saying anything looks good.**
+- `npm run e2e` — browser checks of real behaviour (deep links, keyboard, unit switch, errors).
 - `npm run smoke -- https://<deploy>` — checks real pages answer 200 after a deploy.
 
 ## Where the detail lives
@@ -46,7 +47,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 
 ## Layout
 - `src/app/` routes · `src/components/` primitives (Phase 4) · `src/design/` tokens + tests
-- `src/lib/` site facts, tool list · `src/fonts/` OFL woff2 + licences
+- `src/lib/` site facts, tool list · `src/fonts/` OFL woff2, subset (`scripts/subset-fonts.sh`)
+- `src/tools/<slug>/` each tool's maths (tested) + UI · `src/og/` share-image assets
 - `scripts/` screenshot, smoke, doc guards · `studio/film/` hero film source
 - `public/media/hero/` rendered film + posters
 
