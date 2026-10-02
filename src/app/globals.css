@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+/*
+ * DESIGN TOKENS — the only palette. Meanings live in .claude/skills/flores-design/SKILL.md.
+ *
+ * Two layers:
+ *   1. Raw values (--fw-*) per theme, below. Dark is the default; light applies when the
+ *      system asks for it (and the user has not forced dark) or when data-theme="light".
+ *   2. Tailwind theme keys (@theme inline) that point at the raw values, so `bg-surface`
+ *      follows the theme without `dark:` variants.
+ *
+ * `--color-*: initial` deletes Tailwind's stock palette. `bg-gray-500` does not exist here,
+ * so a stray stock class renders nothing — and src/design/tokens.test.mts fails on it.
+ * Contrast for every pair the UI uses is asserted in src/design/contrast.test.mts.
+ */
+
+:root {
+  color-scheme: dark;
+  --fw-bg: #05070e;
+  --fw-surface: #0b1222;
+  --fw-surface-2: #111a2e;
+  --fw-line: rgb(230 236 255 / 0.12);
+  --fw-line-2: rgb(230 236 255 / 0.22);
+  --fw-control: #646e87;
+  --fw-ink: #f3f5fa;
+  --fw-ink-2: #c2c9d8;
+  --fw-muted: #949db2;
+  --fw-ember: #ffb27a;
+  --fw-ice: #8fb4ff;
+  --fw-wrong: #ff7ab6;
+  --fw-series-2: #ffb27a;
+  --fw-on-primary: #05070e;
+  --fw-primary: #f3f5fa;
+  --fw-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 60px -30px rgb(0 0 0 / 0.85);
+  --fw-shadow-pop: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 48px -16px rgb(0 0 0 / 0.7);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --fw-bg: #f5f3ee;
+    --fw-surface: #ffffff;
+    --fw-surface-2: #eae6de;
+    --fw-line: rgb(18 20 28 / 0.1);
+    --fw-line-2: rgb(18 20 28 / 0.18);
+    --fw-control: #767b88;
+    --fw-ink: #12141c;
+    --fw-ink-2: #454a57;
+    --fw-muted: #5f6472;
+    --fw-ember: #9a4a1e;
+    --fw-ice: #2459d6;
+    --fw-wrong: #b0257a;
+    --fw-series-2: #b05a1f;
+    --fw-on-primary: #f5f3ee;
+    --fw-primary: #12141c;
+    --fw-shadow-card: 0 1px 2px rgb(18 20 28 / 0.05), 0 10px 24px -14px rgb(18 20 28 / 0.14);
+    --fw-shadow-pop: 0 2px 6px rgb(18 20 28 / 0.06), 0 24px 48px -20px rgb(18 20 28 / 0.22);
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --fw-bg: #f5f3ee;
+  --fw-surface: #ffffff;
+  --fw-surface-2: #eae6de;
+  --fw-line: rgb(18 20 28 / 0.1);
+  --fw-line-2: rgb(18 20 28 / 0.18);
+  --fw-control: #767b88;
+  --fw-ink: #12141c;
+  --fw-ink-2: #454a57;
+  --fw-muted: #5f6472;
+  --fw-ember: #9a4a1e;
+  --fw-ice: #2459d6;
+  --fw-wrong: #b0257a;
+  --fw-series-2: #b05a1f;
+  --fw-on-primary: #f5f3ee;
+  --fw-primary: #12141c;
+  --fw-shadow-card: 0 1px 2px rgb(18 20 28 / 0.05), 0 10px 24px -14px rgb(18 20 28 / 0.14);
+  --fw-shadow-pop: 0 2px 6px rgb(18 20 28 / 0.06), 0 24px 48px -20px rgb(18 20 28 / 0.22);
+}
+
+/* The home hero is always night, whatever the theme. */
+.theme-night {
+  color-scheme: dark;
+  --fw-bg: #05070e;
+  --fw-surface: #0b1222;
+  --fw-surface-2: #111a2e;
+  --fw-line: rgb(230 236 255 / 0.12);
+  --fw-line-2: rgb(230 236 255 / 0.22);
+  --fw-control: #646e87;
+  --fw-ink: #f3f5fa;
+  --fw-ink-2: #c2c9d8;
+  --fw-muted: #949db2;
+  --fw-ember: #ffb27a;
+  --fw-ice: #8fb4ff;
+  --fw-wrong: #ff7ab6;
+  --fw-series-2: #ffb27a;
+  --fw-on-primary: #05070e;
+  --fw-primary: #f3f5fa;
+  --fw-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 60px -30px rgb(0 0 0 / 0.85);
+  --fw-shadow-pop: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 48px -16px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--fw-bg);
+  --color-surface: var(--fw-surface);
+  --color-surface-2: var(--fw-surface-2);
+  --color-line: var(--fw-line);
+  --color-line-2: var(--fw-line-2);
+  --color-control: var(--fw-control);
+  --color-ink: var(--fw-ink);
+  --color-ink-2: var(--fw-ink-2);
+  --color-muted: var(--fw-muted);
+  --color-ember: var(--fw-ember);
+  --color-ice: var(--fw-ice);
+  --color-wrong: var(--fw-wrong);
+  --color-series-2: var(--fw-series-2);
+  --color-primary: var(--fw-primary);
+  --color-on-primary: var(--fw-on-primary);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --shadow-card: var(--fw-shadow-card);
+  --shadow-pop: var(--fw-shadow-pop);
+
+  --font-*: initial;
+  --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+@theme {
+  /* Type scale. Display sizes are fluid and keep growing past 2000px (ultrawide). */
+  --text-display: clamp(48px, 6.2vw, 156px);
+  --text-display--line-height: 0.96;
+  --text-display--letter-spacing: -0.05em;
+  --text-title: clamp(36px, 4vw, 72px);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.04em;
+  --text-h2: clamp(26px, 2.4vw, 40px);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h3: 20px;
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.015em;
+  --text-lede: clamp(17px, 1.05vw, 24px);
+  --text-lede--line-height: 1.55;
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-small: 14px;
+  --text-small--line-height: 1.5;
+  --text-label: 12px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.16em;
+
+  --radius-tag: 8px;
+  --radius-btn: 14px;
+  --radius-input: 16px;
+  --radius-card: 20px;
+
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-std: cubic-bezier(0.2, 0, 0, 1);
+
+  --breakpoint-xs: 480px;
+  --breakpoint-3xl: 2000px;
+}
+
+/* Motion durations, for CSS that animates outside a utility. */
+:root {
+  --dur-instant: 80ms;
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+  --dur-cinematic: 1200ms;
+}
+
+html {
+  background: var(--fw-bg);
+  color: var(--fw-ink);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+::selection {
+  background: var(--fw-ember);
+  color: var(--fw-bg);
+}
+
+/* One focus ring, everywhere, in the brand colour. Never removed, only restyled. */
+:focus-visible {
+  outline: 2px solid var(--fw-ember);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* iOS zooms into focused fields under 16px and never zooms back. */
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Entrance choreography. `--d` staggers the delay per element. Reduced motion collapses
+   every duration (rule above), so elements simply appear in their final state. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.rise {
+  /* Everything readable within ~1.2s: motion must never delay reading. */
+  animation: rise 800ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes settle {
+  from { transform: scale(1.06); }
+  to { transform: none; }
+}
+.hero-poster {
+  animation: settle 2400ms var(--ease-out) both;
+}
+
+/* Route transitions (React <ViewTransition>, see src/components/PageTransition.tsx). */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+@keyframes page-out {
+  to { opacity: 0; }
+}
+::view-transition-old(.page-out) {
+  animation: var(--dur-fast) var(--ease-std) both page-out;
+}
+::view-transition-new(.page-in) {
+  animation: var(--dur-slow) var(--ease-out) 60ms both page-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
