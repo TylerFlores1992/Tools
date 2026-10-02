@@ -4,11 +4,12 @@
 - **Vercel project:** `tylerflores-dev` (Hobby, scope `tyler-flores1992`), linked to
   `TylerFlores1992/Tools`, framework Next.js, no environment variables.
 - **Domains on the project:** `tylerflores.dev` (primary) and `www.tylerflores.dev` (308 → apex).
-- **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`).
-  Records, **Proxy status: DNS only** (grey cloud), using the exact values Vercel's
-  Domains page shows; the long-standing defaults are `A @ → 76.76.21.21` and
-  `CNAME www → cname.vercel-dns.com`. `.dev` is HTTPS-only (HSTS preloaded); Vercel
-  issues the certificate once DNS resolves.
+- **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`), added
+  2026-10-02, **Proxy status: DNS only** (grey cloud): `A @ → 76.76.21.21`,
+  `CNAME www → cname.vercel-dns.com`. Vercel issued Let's Encrypt certs for both and renews
+  them. Vercel's Domains page shows "DNS Change Recommended" (a project-specific
+  `….vercel-dns-0NN.com` CNAME for `@` and `www`); its own note says the legacy records keep
+  working, so switching is optional. `.dev` is HTTPS-only (HSTS preloaded).
 - `src/lib/site.ts` uses `https://tylerflores.dev` as the canonical URL.
 
 ## Owner-only settings (the connector can't change these)
