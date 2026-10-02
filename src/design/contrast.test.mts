@@ -7,7 +7,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readThemes } from "./css.ts";
+import { duplicates, readThemes } from "./css.ts";
 import { COLOR_TOKENS, CONTRAST_PAIRS, DISTINCT_PAIRS } from "./tokens.ts";
 import { contrast, distance, over, parseColor, simulate, type RGB } from "./color.ts";
 
@@ -25,6 +25,10 @@ test("every documented colour token is defined in every theme block", () => {
   for (const [label, block] of Object.entries(themes)) {
     for (const { name } of COLOR_TOKENS) assert.ok(block[name], `--fw-${name} missing from the ${label} block`);
   }
+});
+
+test("no token is declared twice in one block (the later one would silently win)", () => {
+  assert.deepEqual(duplicates, [], duplicates.join("\n"));
 });
 
 test("theme copies cannot drift: light media block = [data-theme=light], night = dark", () => {

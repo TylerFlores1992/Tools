@@ -31,6 +31,8 @@
   --fw-series-2: #ffb27a;
   --fw-on-primary: #05070e;
   --fw-primary: #f3f5fa;
+  --fw-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 60px -30px rgb(0 0 0 / 0.85);
+  --fw-shadow-pop: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 48px -16px rgb(0 0 0 / 0.7);
 }
 
 @media (prefers-color-scheme: light) {
@@ -51,6 +53,8 @@
     --fw-series-2: #b05a1f;
     --fw-on-primary: #f5f3ee;
     --fw-primary: #12141c;
+    --fw-shadow-card: 0 1px 2px rgb(18 20 28 / 0.05), 0 10px 24px -14px rgb(18 20 28 / 0.14);
+    --fw-shadow-pop: 0 2px 6px rgb(18 20 28 / 0.06), 0 24px 48px -20px rgb(18 20 28 / 0.22);
   }
 }
 
@@ -71,6 +75,8 @@
   --fw-series-2: #b05a1f;
   --fw-on-primary: #f5f3ee;
   --fw-primary: #12141c;
+  --fw-shadow-card: 0 1px 2px rgb(18 20 28 / 0.05), 0 10px 24px -14px rgb(18 20 28 / 0.14);
+  --fw-shadow-pop: 0 2px 6px rgb(18 20 28 / 0.06), 0 24px 48px -20px rgb(18 20 28 / 0.22);
 }
 
 /* The home hero is always night, whatever the theme. */
@@ -91,6 +97,8 @@
   --fw-series-2: #ffb27a;
   --fw-on-primary: #05070e;
   --fw-primary: #f3f5fa;
+  --fw-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 60px -30px rgb(0 0 0 / 0.85);
+  --fw-shadow-pop: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 48px -16px rgb(0 0 0 / 0.7);
 }
 
 @theme inline {
@@ -112,6 +120,9 @@
   --color-on-primary: var(--fw-on-primary);
   --color-transparent: transparent;
   --color-current: currentColor;
+
+  --shadow-card: var(--fw-shadow-card);
+  --shadow-pop: var(--fw-shadow-pop);
 
   --font-*: initial;
   --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
@@ -147,8 +158,6 @@
   --radius-input: 16px;
   --radius-card: 20px;
 
-  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 60px -30px rgb(0 0 0 / 0.85);
-  --shadow-pop: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 48px -16px rgb(0 0 0 / 0.7);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-std: cubic-bezier(0.2, 0, 0, 1);

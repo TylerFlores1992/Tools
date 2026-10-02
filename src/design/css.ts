@@ -11,9 +11,15 @@ export type ThemeBlocks = {
   night: Record<string, string>;
 };
 
-function vars(body: string): Record<string, string> {
+/** Token names declared more than once in one block. The later one silently wins. */
+export const duplicates: string[] = [];
+
+function vars(body: string, label: string): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const m of body.matchAll(/--fw-([a-z0-9-]+)\s*:\s*([^;]+);/g)) out[m[1]] = m[2].trim();
+  for (const m of body.matchAll(/--fw-([a-z0-9-]+)\s*:\s*([^;]+);/g)) {
+    if (m[1] in out) duplicates.push(`${label}: --fw-${m[1]}`);
+    out[m[1]] = m[2].trim();
+  }
   return out;
 }
 
@@ -32,9 +38,9 @@ function block(css: string, selector: string, from = 0): string {
 
 export function readThemes(css = readFileSync(GLOBALS_CSS, "utf8")): ThemeBlocks {
   return {
-    dark: vars(block(css, ":root {")),
-    lightMedia: vars(block(css, ':root:not([data-theme="dark"])')),
-    light: vars(block(css, ':root[data-theme="light"]')),
-    night: vars(block(css, ".theme-night")),
+    dark: vars(block(css, ":root {"), "dark"),
+    lightMedia: vars(block(css, ':root:not([data-theme="dark"])'), "lightMedia"),
+    light: vars(block(css, ':root[data-theme="light"]'), "light"),
+    night: vars(block(css, ".theme-night"), "night"),
   };
 }
