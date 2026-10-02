@@ -28,15 +28,15 @@ export default function Home() {
         <PageTransition>
         <div className="mt-auto px-5 pb-12 sm:px-12 sm:pb-16 3xl:px-16 3xl:pb-24">
           <div className="max-w-[min(92vw,900px)]">
-            <Label rule className="rise [--d:300ms]" >{SITE.domain}</Label>
+            <Label rule className="rise [--d:80ms]" >{SITE.domain}</Label>
             <h1 className="mt-5 text-display font-normal font-stretch-[104%] text-balance">
-              <span className="rise block [--d:450ms]" data-contrast-check>{SITE.headline[0]}</span>
-              <span className="rise block text-ember [--d:600ms]" data-contrast-check>{SITE.headline[1]}</span>
+              <span className="rise block [--d:160ms]" data-contrast-check>{SITE.headline[0]}</span>
+              <span className="rise block text-ember [--d:240ms]" data-contrast-check>{SITE.headline[1]}</span>
             </h1>
-            <p className="rise mt-6 max-w-[42ch] text-lede text-ink-2 [--d:800ms]" data-contrast-check>
+            <p className="rise mt-6 max-w-[42ch] text-lede text-ink-2 [--d:340ms]" data-contrast-check>
               {SITE.description} Made after dark, built to last.
             </p>
-            <div className="rise mt-9 [--d:950ms]">
+            <div className="rise mt-9 [--d:440ms]">
               <LinkButton href="/workshop" className="group min-h-13 px-7 3xl:min-h-16 3xl:px-9 3xl:text-lede">
                 Enter the workshop <Arrow className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
               </LinkButton>

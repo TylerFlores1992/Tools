@@ -222,11 +222,12 @@ p { text-wrap: pretty; }
 /* Entrance choreography. `--d` staggers the delay per element. Reduced motion collapses
    every duration (rule above), so elements simply appear in their final state. */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
   to { opacity: 1; transform: none; filter: none; }
 }
 .rise {
-  animation: rise var(--dur-cinematic) var(--ease-out) both;
+  /* Everything readable within ~1.2s: motion must never delay reading. */
+  animation: rise 800ms var(--ease-out) both;
   animation-delay: var(--d, 0ms);
 }
 

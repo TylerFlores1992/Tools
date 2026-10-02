@@ -18,7 +18,7 @@ const ROOT = join(import.meta.dirname, "..");
 const OUT = join(ROOT, "screenshots");
 const BASE = process.env.BASE_URL ?? "http://localhost:3100";
 const ROUTES = process.argv.slice(2).filter((a) => a.startsWith("/"));
-const routes = ROUTES.length ? ROUTES : ["/", "/workshop", "/lab", "/does-not-exist"];
+const routes = ROUTES.length ? ROUTES : ["/", "/workshop", "/workshop/bridle-calculator", "/lab", "/does-not-exist"];
 const WIDTHS = [375, 768, 1440, 2560];
 const HEIGHT: Record<number, number> = { 375: 812, 768: 1024, 1440: 900, 2560: 1440 };
 const SCHEMES = ["dark", "light"] as const;
@@ -46,10 +46,13 @@ if (!(await up(BASE))) {
 mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
 const problems: string[] = [];
+try {
 for (const route of routes) {
   for (const w of WIDTHS) {
     for (const scheme of SCHEMES) {
       const page = await browser.newPage({ viewport: { width: w, height: HEIGHT[w] }, colorScheme: scheme, deviceScaleFactor: w <= 400 ? 2 : 1 });
+      // tsx/esbuild wraps named functions in __name(); code sent to page.evaluate needs it too.
+      await page.addInitScript("globalThis.__name = (f) => f");
       const tag = `${route} @${w} ${scheme}`;
       page.on("pageerror", (e) => problems.push(`${tag}: page error: ${e.message}`));
       const expect404 = route === "/does-not-exist";
@@ -62,6 +65,8 @@ for (const route of routes) {
       const res = await page.goto(BASE + route, { waitUntil: "networkidle" });
       if (!res || res.status() !== (expect404 ? 404 : 200)) problems.push(`${tag}: HTTP ${res?.status()}`);
       await page.evaluate(() => document.fonts.ready);
+      // Let entrance animations finish: a mid-animation screenshot (or contrast reading) lies.
+      await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running" || a.effect?.getTiming().iterations === Infinity), null, { timeout: 8000 }).catch(() => problems.push(`${tag}: animations still running after 8s`));
       const name = (route === "/" ? "home" : route.slice(1).replace(/\//g, "_")) + `-${w}-${scheme}.png`;
       await page.screenshot({ path: join(OUT, name), fullPage: true });
       for (const line of await checkContrastOverMedia(page)) problems.push(`${tag}: ${line}`);
@@ -69,8 +74,10 @@ for (const route of routes) {
     }
   }
 }
-await browser.close();
-stop();
+} finally {
+  await browser.close();
+  stop();
+}
 
 /**
  * Text over imagery (the hero film) can't be checked from tokens, so measure it: for each
