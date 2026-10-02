@@ -3,20 +3,21 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 
-// Self-hosted variable fonts (OFL). Licences sit beside the files in src/fonts/.
+// Self-hosted variable fonts (OFL), subset to the characters and axis ranges the site uses
+// (scripts/subset-fonts.sh): 40 KB for both. Licences sit beside the files in src/fonts/.
 const mona = localFont({
   src: "../fonts/MonaSans-Variable.woff2",
   variable: "--font-mona",
-  weight: "200 900",
+  weight: "400 600",
   display: "swap",
-  declarations: [{ prop: "font-stretch", value: "75% 125%" }],
+  declarations: [{ prop: "font-stretch", value: "100% 104%" }],
   adjustFontFallback: "Arial",
 });
 
 const jetbrains = localFont({
   src: "../fonts/JetBrainsMono-Variable.woff2",
   variable: "--font-jetbrains",
-  weight: "100 800",
+  weight: "400 600",
   display: "swap",
   adjustFontFallback: false,
 });
