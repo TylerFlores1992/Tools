@@ -9,12 +9,13 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 // Unstable but exact: it is the compiler's own answer. Pinned via the exact tailwindcss
 // version in package.json, and the self-test below fails loudly if its shape changes.
 import { __unstable__loadDesignSystem } from "@tailwindcss/node";
 import { GLOBALS_CSS } from "./css.ts";
+import { classesIn, sourceFiles } from "./classes.ts";
 
 const SRC = join(import.meta.dirname, "..");
 const css = readFileSync(GLOBALS_CSS, "utf8");
@@ -25,35 +26,6 @@ const PLAIN = new Set([...css.matchAll(/^\s*\.([a-z][a-z0-9-]*)\s*[,{]/gm)].map(
 const MARKER = /^(group|peer)(\/[a-z0-9-]+)?$/;
 const generates = (classes: string[]) =>
   ds.candidatesToCss(classes).map((out, i) => PLAIN.has(classes[i]) || MARKER.test(classes[i]) || (out !== null && out.trim() !== ""));
-
-/** Class strings inside className="…", className={'…'}, className={`…`} and cx("…") calls. */
-export function classStrings(source: string): string[] {
-  const out: string[] = [];
-  const patterns = [
-    /className\s*=\s*"([^"]*)"/g,
-    /className\s*=\s*\{\s*"([^"]*)"\s*\}/g,
-    /className\s*=\s*\{\s*'([^']*)'\s*\}/g,
-    /className\s*=\s*\{\s*`([^`]*)`\s*\}/g,
-    /\bcx\(\s*"([^"]*)"/g,
-  ];
-  for (const re of patterns) for (const m of source.matchAll(re)) out.push(m[1]);
-  return out;
-}
-
-export function classesIn(source: string): string[] {
-  return classStrings(source)
-    .map((s) => s.replace(/\$\{[^}]*\}/g, " "))
-    .flatMap((s) => s.split(/\s+/))
-    .filter(Boolean);
-}
-
-function sourceFiles(dir: string): string[] {
-  return readdirSync(dir).flatMap((entry) => {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) return sourceFiles(p);
-    return /\.(tsx|ts)$/.test(p) && !/\.test\./.test(p) ? [p] : [];
-  });
-}
 
 test("self-test: the compiler accepts real tokens and rejects deleted or invented ones", () => {
   assert.deepEqual(generates(["bg-surface", "text-ember", "rounded-card", "text-display", "font-mono", "hover:bg-surface-2"]), [true, true, true, true, true, true]);

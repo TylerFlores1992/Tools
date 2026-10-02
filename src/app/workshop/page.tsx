@@ -38,7 +38,7 @@ function Row({ t, n }: { t: Tool; n: number }) {
     </>
   );
   const cls = "group grid gap-x-8 gap-y-3 py-7 md:grid-cols-[56px_minmax(0,1fr)_200px_140px_24px] md:items-baseline";
-  if (t.status === "building") return <li className={`${cls} opacity-80`}>{inner}</li>;
+  if (t.status === "building") return <li className={cls}>{inner}</li>;
   const href = toolHref(t);
   return (
     <li>
