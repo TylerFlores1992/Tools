@@ -12,7 +12,7 @@ export type Tool = {
 
 export const TOOLS: readonly Tool[] = [
   { slug: "bridle-calculator", name: "Two-leg bridle", kind: "Rigging · calculator", tier: 1, status: "live", summary: "Drag the bridle point; read leg lengths, tensions and the math worked by hand." },
-  { slug: "etcp-rigger-study", name: "ETCP rigger study", kind: "Rigging · study", tier: 1, status: "building", summary: "Practice tests, flashcards and the formula sheet, all original." },
+  { slug: "etcp-rigger-study", name: "ETCP rigger study", kind: "Rigging · study", tier: 1, status: "live", summary: "Two practice tests with worked answers, flashcards and a formula reference." },
   { slug: "camphawk", name: "CampHawk", kind: "Camping · service", tier: 3, status: "live", href: "https://camphawk.app", summary: "Texts you within seconds when a booked campground opens up." },
 ];
 

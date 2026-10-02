@@ -13,6 +13,11 @@ if (!/^https?:\/\//.test(base)) {
 const CHECKS: { path: string; status: number; contains: string }[] = [
   { path: "/", status: 200, contains: "Sharp teeth." },
   { path: "/workshop", status: 200, contains: "Tools" },
+  { path: "/workshop/bridle-calculator", status: 200, contains: "Two-leg bridle" },
+  { path: "/workshop/etcp-rigger-study", status: 200, contains: "ETCP rigger study" },
+  { path: "/workshop/etcp-rigger-study/practice/a", status: 200, contains: "Practice test A" },
+  { path: "/workshop/etcp-rigger-study/flashcards", status: 200, contains: "Flashcards" },
+  { path: "/workshop/etcp-rigger-study/formulas", status: 200, contains: "Formula reference" },
   { path: "/does-not-exist", status: 404, contains: "Lost the trail." },
 ];
 

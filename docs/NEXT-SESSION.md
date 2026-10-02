@@ -11,7 +11,7 @@
   **https://tylerflores.dev is live** (DNS at Cloudflare, grey cloud; Let's Encrypt certs for
   apex and `www`, auto-renewed by Vercel); `www` 308s to the apex. Merges to `main` deploy
   production automatically; other branches get preview URLs.
-- **Phase 4, first batch, built and awaiting the owner's sign-off:**
+- **Phase 4, first batch: signed off by the owner (2026-10-02).**
   - Primitives in `src/components/` (Button/LinkButton, State, Card, Kbd, Label,
     NumberField, Segmented, SiteHeader, SiteFooter, PageTransition, HeroFilm).
   - Home hero: code-rendered film (16:9 + portrait cuts, AV1/H.264, AVIF posters), scrims,
@@ -21,31 +21,43 @@
     conversion, deep links, worked math). Workshop index with honest status.
   - Per-page OG images, sitemap, robots, manifest, JSON-LD on the tool page, view transitions.
   - Fonts subset to 40 KB total (`scripts/subset-fonts.sh`).
+- **ETCP rigger study is live** (`/workshop/etcp-rigger-study`, code in `src/tools/etcp/`):
+  overview, practice tests A/B (25 Qs each, locked answers, ✓/✕ in words, working shown),
+  73 flashcards (decks by name + glyph, never colour; keyboard flip; Again/Got it), and our own
+  formula reference linking each formula to its questions + the official ETCP PDF. Progress
+  is localStorage only (`stored.ts`, survives blocked storage via a memory copy).
+  - Every numeric answer key is recomputed in `questions.test.mts` (bridles through the
+    calculator's solver); the tilting flashcard was backward in the original and is fixed with
+    a geometry test. Exam outline counts verified against ETCP's pages.
+  - e2e: wrong-answer copy + reload persistence, answer lock-in, keyboard flip + Got it.
 - **Measured** (local production build, Lighthouse 12, before deploy):
   - Mobile: home 98/100/100/100, calculator 98/100/100/100, workshop 99/100/100/100;
     CLS 0. **LCP 2.2–2.4 s simulated** (target 1.8 s): the remaining cost is the Next/React
     runtime (~145 KB JS) sharing simulated slow 4G with the text paint.
   - Desktop: 100 performance on all three, LCP 0.5–0.6 s.
-- **Checks:** `npm run verify` (84 tests), `npm run e2e` (6 browser checks), `npm run shots`
-  (40 shots incl. measured text-over-film contrast) — all green.
+- **Checks:** `npm run verify` (103 tests), `npm run e2e` (9 browser checks), `npm run shots`
+  (72 shots incl. measured text-over-film contrast) — all green.
 - **Live Lighthouse from this container is too noisy to judge:** home LCP 3.6 / 3.0 / 1.9 s
   across three runs against the live site vs 2.7 / 2.6 s local in the same minutes (the
   container's TLS proxy sits in the path). The anonymous PageSpeed Insights API quota was
   exhausted. Use https://pagespeed.web.dev from a real browser for the real number.
 
 ## Blocked on the owner
-1. **GitHub default branch → `main`** (`docs/SETUP.md`); Vercel already treats other
-   branches as previews.
-2. **Sign-off on the home page and the bridle calculator** before the rest of Phase 4.
-3. CampHawk test area: public-by-link or private? Real components or static mockups? Which
-   screen first? (Plan: `/lab/camphawk/…`, CampHawk's own tokens, fake data, noindex.)
+1. **GitHub default branch → `main`** (`docs/SETUP.md`).
 
-## Next (after sign-off)
+## Owner decisions (2026-10-02)
+- **CampHawk test area:** private behind a password; real-ish interactive components with
+  CampHawk's own tokens and fake data; first screen: **Home / landing**. Plan: `/lab/camphawk/*`
+  gated by `proxy.ts` (Next 16's middleware) with HTTP Basic auth checking a password env var
+  the owner sets in Vercel themselves (never via chat); noindex. Vercel's own password
+  protection is a paid Pro feature, so not that. Read CampHawk's tokens from
+  `/home/user/campsite-finder` (read-only; never modify that repo).
+
+## Next
 1. Measure LCP with PageSpeed Insights on tylerflores.dev; if > 1.8 s, trim client JS (e.g. make the
    home page ship no client components besides HeroFilm, check bundle with
    `next experimental-analyze`).
-2. ETCP rigger study (port the owner's artifacts: 50 questions, 73 flashcards, formula sheet;
-   fix ✓/✕ colour-only, verify the tilting flashcard, own formula sheet with credit).
+2. CampHawk test area (see owner decisions above).
 3. ⌘K palette, `/bench`, offline support for `/workshop/*` (service worker).
 4. CampHawk tier-3 page with real screenshots (ask before publishing any number).
 5. Add `npm run e2e` to CI (needs a Chromium install step on the runner).
