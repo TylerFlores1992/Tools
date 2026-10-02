@@ -35,7 +35,7 @@
     CLS 0. **LCP 2.2–2.4 s simulated** (target 1.8 s): the remaining cost is the Next/React
     runtime (~145 KB JS) sharing simulated slow 4G with the text paint.
   - Desktop: 100 performance on all three, LCP 0.5–0.6 s.
-- **Checks:** `npm run verify` (103 tests), `npm run e2e` (9 browser checks), `npm run shots`
+- **Checks:** `npm run verify` (104 tests), `npm run e2e` (10 browser checks), `npm run shots`
   (72 shots incl. measured text-over-film contrast) — all green.
 - **Live Lighthouse from this container is too noisy to judge:** home LCP 3.6 / 3.0 / 1.9 s
   across three runs against the live site vs 2.7 / 2.6 s local in the same minutes (the
@@ -44,20 +44,26 @@
 
 ## Blocked on the owner
 1. **GitHub default branch → `main`** (`docs/SETUP.md`).
+2. **Set `LAB_PASSWORD` in Vercel** so the CampHawk lab can be opened (`docs/SETUP.md`).
 
-## Owner decisions (2026-10-02)
-- **CampHawk test area:** private behind a password; real-ish interactive components with
-  CampHawk's own tokens and fake data; first screen: **Home / landing**. Plan: `/lab/camphawk/*`
-  gated by `proxy.ts` (Next 16's middleware) with HTTP Basic auth checking a password env var
-  the owner sets in Vercel themselves (never via chat); noindex. Vercel's own password
-  protection is a paid Pro feature, so not that. Read CampHawk's tokens from
-  `/home/user/campsite-finder` (read-only; never modify that repo).
+## CampHawk lab (built 2026-10-02)
+- `/lab/camphawk`: CampHawk's marketing home ported as a design sandbox (`src/lab/camphawk/`),
+  with a "View as" switch for its signed-out / subscriber / in-app pricing branches. CampHawk's
+  tokens live in `globals.css` under `ch-*` (lab only), fonts Bitter + Nunito Sans load in the
+  lab layout only, brand images in `public/lab/camphawk/`. Links are `#`: nothing reaches the
+  real app.
+- Private: `src/proxy.ts` (Next 16 Proxy, Node runtime) does Basic auth against `LAB_PASSWORD`;
+  fails closed. **The owner must set `LAB_PASSWORD` in Vercel** (`docs/SETUP.md`). `npm run
+  smoke` asserts production answers 401; e2e asserts 401 for no / wrong password and images,
+  200 + noindex with it (mutation-tested by making the check fail open).
+- Not yet ported: the `--ch-sticky` scroll-padding publish (anchor jumps can land under the
+  phone band) and the account menu. Next screens are the owner's call.
 
 ## Next
 1. Measure LCP with PageSpeed Insights on tylerflores.dev; if > 1.8 s, trim client JS (e.g. make the
    home page ship no client components besides HeroFilm, check bundle with
    `next experimental-analyze`).
-2. CampHawk test area (see owner decisions above).
+2. CampHawk lab: next screen of the owner's choosing (search results, campground detail, watch setup).
 3. ⌘K palette, `/bench`, offline support for `/workshop/*` (service worker).
 4. CampHawk tier-3 page with real screenshots (ask before publishing any number).
 5. Add `npm run e2e` to CI (needs a Chromium install step on the runner).

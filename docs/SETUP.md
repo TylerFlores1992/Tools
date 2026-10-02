@@ -18,6 +18,14 @@
    a push to the session branch built as a preview, not production (checked 2026-10-02).
 2. **Protect `main`:** require PRs and the `verify` check.
 
+## CampHawk lab password
+`/lab/camphawk` (CampHawk design sandbox) is locked by `src/proxy.ts` with HTTP Basic auth
+against **`LAB_PASSWORD`**. With it unset the lab is locked for everyone. The owner sets it,
+never in code or chat: Vercel → `tylerflores-dev` → Settings → Environment Variables → add
+`LAB_PASSWORD` (Production, and Preview if wanted), Sensitive → Save, then redeploy (Deployments
+→ latest → ⋯ → Redeploy). Sign in with any username plus that password. Vercel's own Password
+Protection is a paid Pro add-on, hence this.
+
 ## CI
 `.github/workflows/ci.yml` runs `npm ci && npm run verify` on every push and pull request.
 
