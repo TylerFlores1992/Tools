@@ -3,7 +3,7 @@ import { SITE } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
 import { PRACTICE_SETS } from "@/tools/etcp/questions";
 
-// Only pages that exist and should be found. /lab is deliberately absent.
+// Only pages that exist and should be found. /lab and /private are deliberately absent.
 export default function sitemap(): MetadataRoute.Sitemap {
   const tools = TOOLS.filter((t) => t.status === "live" && t.tier !== 3).map((t) => ({ url: `${SITE.url}/workshop/${t.slug}`, changeFrequency: "monthly" as const, priority: 0.8 }));
   const study = `${SITE.url}/workshop/etcp-rigger-study`;

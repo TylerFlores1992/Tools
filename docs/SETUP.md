@@ -5,7 +5,7 @@
   `TylerFlores1992/Tools`, framework Next.js. Production deploys from `main` automatically;
   other branches get preview URLs.
 - **Environment variables:** one, `LAB_PASSWORD` (Production, Sensitive), set by the owner on
-  2026-10-02. See "CampHawk lab password" below.
+  2026-10-02. It is the Private tab's password; see "Private area password" below.
 - **Domains on the project:** `tylerflores.dev` (primary) and `www.tylerflores.dev` (308 → apex).
 - **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`), added
   2026-10-02, **Proxy status: DNS only** (grey cloud): `A @ → 76.76.21.21`,
@@ -21,24 +21,27 @@
    a push to the session branch built as a preview, not production (checked 2026-10-02).
 2. **Protect `main`:** require PRs and the `verify` check.
 
-## CampHawk lab password
-`/lab/camphawk` is private. `src/proxy.ts` asks for a password (HTTP Basic auth) and compares
-it with the `LAB_PASSWORD` environment variable. If the variable is missing, the lab is locked
-for everyone.
+## Private area password
+The **Private** tab (`/private`: the CampHawk lab and future projects) is signed-in only.
+`src/proxy.ts` sends anyone without a valid session to `/private/sign-in`, the site's own
+password page: one field, no username. The password is the `LAB_PASSWORD` environment
+variable. If it's missing, nobody can sign in.
 
 - **Status:** set by the owner on 2026-10-02, Production only, marked Sensitive.
-- **To open the lab:** go to https://tylerflores.dev/lab/camphawk and sign in with any
-  username plus the password.
+- **To sign in:** open https://tylerflores.dev/private (or tap Private), enter the password.
+  You stay signed in on that device for 30 days (a signed, HttpOnly cookie scoped to
+  `/private`). **Sign out** is on the Private page.
 - **To change the password:** Vercel → `tylerflores-dev` → Settings → Environment Variables →
   `LAB_PASSWORD` → Edit → Save, then Deployments → latest → ⋯ → Redeploy. A change only takes
-  effect after a redeploy.
+  effect after a redeploy, and it signs out every device.
 - **Never** put the password in code, docs or chat. Claude can't read it (Sensitive values are
   write-only) and doesn't need to.
-- **Preview deployments** don't have the variable, so the lab is locked there too. Add
-  Preview to the variable's environments if that's ever wanted.
+- **Preview deployments** don't have the variable, so nobody can sign in there. Add Preview to
+  the variable's environments if that's ever wanted.
 - **Why not Vercel's own password protection:** it's a paid Pro add-on.
-- **Checks:** `npm run smoke` asserts production answers 401 without the password;
-  `npm run e2e` checks no password, a wrong password and the right one locally.
+- **Checks:** `npm run smoke` asserts production keeps `/private` behind the sign-in page and
+  refuses its files; `npm run e2e` covers the whole flow in Chrome (wrong/empty password, deep
+  links, `?next` that can't leave the area, cookie flags, sign-out, no JavaScript).
 
 ## CI
 `.github/workflows/ci.yml` runs `npm ci && npm run verify` on every push and pull request.

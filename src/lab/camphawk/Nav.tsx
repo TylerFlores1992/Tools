@@ -68,7 +68,7 @@ export function Nav({ visitor }: { visitor: Visitor }) {
           style={{ height: `calc(${collapsed ? "var(--ch-header-min)" : "var(--ch-header)"} + env(safe-area-inset-top))`, paddingTop: "env(safe-area-inset-top)" }}
         >
           <Image
-            src="/lab/camphawk/app-header.jpg"
+            src="/private/camphawk/app-header.jpg"
             alt="CampHawk — find your next adventure"
             width={900}
             height={295}
@@ -98,7 +98,7 @@ export function Nav({ visitor }: { visitor: Visitor }) {
       <header className="sticky top-0 z-20 hidden border-b border-ch-line bg-ch-card/95 backdrop-blur sm:block">
         <div className="mx-auto flex max-w-[var(--ch-max)] items-center gap-6 px-5">
           <a href="#" className="flex shrink-0 items-center gap-2.5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">
-            <Image src="/lab/camphawk/logo-badge.png" alt="" width={38} height={38} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
+            <Image src="/private/camphawk/logo-badge.png" alt="" width={38} height={38} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
             <span className="whitespace-nowrap font-ch-display text-[24px] font-extrabold tracking-[-.025em]">CampHawk</span>
           </a>
           <nav aria-label="Main" className="flex flex-1 gap-1">

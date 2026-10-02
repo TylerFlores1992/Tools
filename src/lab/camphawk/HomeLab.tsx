@@ -38,9 +38,15 @@ function LabBar({ visitor, onVisitor }: { visitor: Visitor; onVisitor: (v: Visit
   return (
     <div className="bg-ch-forest text-ch-white">
       <div className="mx-auto flex max-w-[var(--ch-max)] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2.5 text-ch-meta">
-        <Link href="/lab/camphawk" className="font-bold underline-offset-2 hover:underline">CampHawk lab</Link>
-        <span aria-hidden="true">·</span>
-        <span>Home</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-x-2">
+          <Link href="/private" className="flex min-h-11 items-center gap-1.5 underline-offset-2 hover:underline">
+            <span aria-hidden="true">←</span> Private
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className="font-bold">CampHawk lab</span>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Home</span>
+        </nav>
         <div role="radiogroup" aria-label="Pretend to be" className="flex w-full items-center justify-between gap-1 rounded-ch-chip bg-ch-white/10 p-0.5 sm:ml-auto sm:w-auto">
           <span className="hidden px-2 sm:inline">View as</span>
           {VISITORS.map((v) => {

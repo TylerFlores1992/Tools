@@ -10,7 +10,7 @@ if (!/^https?:\/\//.test(base)) {
   process.exit(2);
 }
 
-const CHECKS: { path: string; status: number; contains: string }[] = [
+const CHECKS: { path: string; status: number; contains: string; absent?: string }[] = [
   { path: "/", status: 200, contains: "Sharp teeth." },
   { path: "/workshop", status: 200, contains: "Tools" },
   { path: "/workshop/bridle-calculator", status: 200, contains: "Two-leg bridle" },
@@ -19,16 +19,20 @@ const CHECKS: { path: string; status: number; contains: string }[] = [
   { path: "/workshop/etcp-rigger-study/flashcards", status: 200, contains: "Flashcards" },
   { path: "/workshop/etcp-rigger-study/formulas", status: 200, contains: "Formula reference" },
   { path: "/does-not-exist", status: 404, contains: "Lost the trail." },
-  // The CampHawk lab must stay private: no password sent, so it must refuse.
-  { path: "/lab/camphawk", status: 401, contains: "This area is private." },
+  // The private area must stay private. Pages land on the sign-in page (fetch follows the
+  // redirect); files are refused outright.
+  { path: "/private", status: 200, contains: "Enter the password", absent: "Sign out" },
+  { path: "/private/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
+  { path: "/lab/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
+  { path: "/private/camphawk/hero-bg.webp", status: 401, contains: "This area is private." },
 ];
 
 let failed = 0;
 for (const c of CHECKS) {
   const res = await fetch(base + c.path, { headers: { "sec-fetch-dest": "document", accept: "text/html" } });
   const body = await res.text();
-  const ok = res.status === c.status && body.includes(c.contains);
+  const ok = res.status === c.status && body.includes(c.contains) && !(c.absent && body.includes(c.absent));
   if (!ok) failed++;
-  console.log(`${ok ? "ok  " : "FAIL"} ${c.path} → ${res.status}${ok ? "" : ` (expected ${c.status} containing "${c.contains}")`}`);
+  console.log(`${ok ? "ok  " : "FAIL"} ${c.path} → ${res.status}${ok ? "" : ` (expected ${c.status} containing "${c.contains}"${c.absent ? ` and not "${c.absent}"` : ""})`}`);
 }
 process.exit(failed ? 1 : 0);

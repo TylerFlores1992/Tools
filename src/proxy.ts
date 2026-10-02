@@ -1,40 +1,43 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
+import { SESSION_COOKIE, SIGN_IN_PATH, verifySession } from "@/lib/private-auth";
 
 /**
- * Locks the CampHawk design lab (/lab/camphawk) behind a password: HTTP Basic auth against
- * the LAB_PASSWORD environment variable, which the owner sets in Vercel (never in code or
- * chat). Any username works. With no LAB_PASSWORD set the lab stays locked for everyone:
- * fail closed. `npm run smoke` checks production answers 401 without the password.
+ * Guards the private area (/private/*: the CampHawk lab and future projects). A visitor without
+ * a valid session cookie is sent to the site's own sign-in page (password only, no username),
+ * which brings them back here afterwards. Files (images and the like) get a plain 401 instead.
  *
- * Only this path runs through Proxy (see `matcher`); every other page is untouched.
+ * The password is LAB_PASSWORD, set by the owner in Vercel. Unset or empty means locked for
+ * everyone: fail closed. `npm run smoke` checks production keeps the area locked.
+ *
+ * Only /private runs through Proxy (see `matcher`); every other page is untouched.
  */
+const PRIVATE_HEADERS = { "X-Robots-Tag": "noindex, nofollow", "Cache-Control": "private, no-store" };
+
 export function proxy(request: NextRequest) {
-  const password = process.env.LAB_PASSWORD;
-  if (password && passwordMatches(request.headers.get("authorization"), password)) {
-    const res = NextResponse.next();
-    res.headers.set("X-Robots-Tag", "noindex, nofollow");
-    return res;
+  const { pathname, search } = request.nextUrl;
+
+  // The sign-in page (and its Server Action, which posts to the same path) is the way in.
+  if (pathname === SIGN_IN_PATH) return withHeaders(NextResponse.next());
+
+  if (verifySession(request.cookies.get(SESSION_COOKIE)?.value, process.env.LAB_PASSWORD)) {
+    return withHeaders(NextResponse.next());
   }
-  return new NextResponse("This area is private.", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="CampHawk lab", charset="UTF-8"',
-      "X-Robots-Tag": "noindex, nofollow",
-      "Cache-Control": "no-store",
-    },
-  });
+
+  if (/\.[a-z0-9]+$/i.test(pathname)) {
+    return withHeaders(new NextResponse("This area is private.", { status: 401 }));
+  }
+
+  const url = request.nextUrl.clone();
+  url.pathname = SIGN_IN_PATH;
+  url.search = `?next=${encodeURIComponent(pathname + search)}`;
+  return withHeaders(NextResponse.redirect(url, 307));
 }
 
-/** Compares in constant time (hashing first makes the lengths equal). */
-function passwordMatches(header: string | null, password: string): boolean {
-  if (!header?.startsWith("Basic ")) return false;
-  const decoded = Buffer.from(header.slice(6).trim(), "base64").toString("utf8");
-  const given = decoded.slice(decoded.indexOf(":") + 1);
-  const hash = (s: string) => createHash("sha256").update(s).digest();
-  return decoded.includes(":") && timingSafeEqual(hash(given), hash(password));
+function withHeaders(res: NextResponse) {
+  for (const [k, v] of Object.entries(PRIVATE_HEADERS)) res.headers.set(k, v);
+  return res;
 }
 
 export const config = {
-  matcher: ["/lab/camphawk", "/lab/camphawk/:path*"],
+  matcher: ["/private", "/private/:path*"],
 };

@@ -47,7 +47,7 @@ export function NumberField({
   return (
     <div className="grid min-w-0 gap-1.5">
       <label htmlFor={id} className="text-small text-ink-2">{label}</label>
-      <div className={cx("flex min-h-12 items-center rounded-input border bg-surface pr-4 transition-colors duration-150 focus-within:border-ember", error ? "border-wrong" : "border-control")}>
+      <div className={cx("field flex min-h-12 items-center rounded-input border bg-surface pr-4 transition-colors duration-150", error ? "border-wrong" : "border-control")}>
         <input
           id={id}
           inputMode="decimal"

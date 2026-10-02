@@ -59,5 +59,5 @@ never a negative: "–" for an invalid input, not 0.
 ## Do not
 - Put `robots` in a layout (per page). Call `headers()`/`cookies()` in the root layout.
 - Use stock Tailwind colours, raw hex in components, or a third font.
-- Use `ch-*` (CampHawk) tokens or fonts outside `/lab/camphawk`; they are CampHawk's look, not ours.
+- Use `ch-*` (CampHawk) tokens or fonts outside `/private/camphawk`; they are CampHawk's look, not ours.
 - Ship the live WebGL terrain to visitors (it's a production tool for the film).
