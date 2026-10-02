@@ -27,7 +27,7 @@
 1. **Sign-off on the home page and the bridle calculator** before the rest of Phase 4.
 2. Merge PR #1 (or say to keep stacking on it).
 3. Connect the repo to Vercel (`docs/SETUP.md`) — needed to measure LCP on the real CDN.
-4. Buy `flores.tools`.
+4. Buy `tylerflores.dev`.
 
 ## Next (after sign-off)
 1. Re-measure LCP on a Vercel preview; if still > 1.8 s, trim client JS (e.g. make the

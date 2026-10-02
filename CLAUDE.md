@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# flores.tools — router
+# tylerflores.dev — router
 
 **What it is:** Cyber Wolf's workshop — small tools for riggers, campers and the curious.
 Next.js 16 (App Router, static), TypeScript, Tailwind v4 (tokens in CSS), Vercel. Dark-first.

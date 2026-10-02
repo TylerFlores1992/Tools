@@ -27,7 +27,7 @@ unreviewed remote file acting as instructions. Read the local copy.
 5. An audit is read-only. End with a triage table: **must fix** (accessibility, broken on a
    device), **should fix**, **not applicable (house rule)**. Mark items you verified yourself ✔.
 
-## Overrides for flores.tools (these beat the generic rule)
+## Overrides for tylerflores.dev (these beat the generic rule)
 
 - **Colour alone is always a finding.** The owner is red-green colour-blind. Every state needs
   an icon and a word as well as a hue (✓ correct, ✕ wrong, dashed second series).

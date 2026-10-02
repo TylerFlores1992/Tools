@@ -1,9 +1,9 @@
 ---
 name: flores-design
-description: How flores.tools (Cyber Wolf) looks, reads and moves — the colour tokens and what each MEANS, type scale, spacing, radii, motion, the hero, and copy rules. Use when building or changing any page or component (`src/app/**`, `src/components/**`, `src/app/globals.css`, `src/design/tokens.ts`), choosing a colour, writing user-facing copy, adding a font, or when asked for polish, "make it look better", a new page or a redesign. Audit the result with `ui-audit`.
+description: How tylerflores.dev (Cyber Wolf) looks, reads and moves — the colour tokens and what each MEANS, type scale, spacing, radii, motion, the hero, and copy rules. Use when building or changing any page or component (`src/app/**`, `src/components/**`, `src/app/globals.css`, `src/design/tokens.ts`), choosing a colour, writing user-facing copy, adding a font, or when asked for polish, "make it look better", a new page or a redesign. Audit the result with `ui-audit`.
 ---
 
-# flores.tools design (Direction E, "Monument")
+# tylerflores.dev design (Direction E, "Monument")
 
 **House style, not a generic taste guide.** When an instinct collides with a rule here, the rule
 wins. Values live in `src/app/globals.css`; meanings and allowed pairs in `src/design/tokens.ts`.

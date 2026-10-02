@@ -1,5 +1,7 @@
 # Brief — Direction E "Monument" (approved 2026-10-02)
 
+> **Domain update (2026-10-02):** the owner bought **`tylerflores.dev`** (Cloudflare, $12.20/yr) instead of `flores.tools`. Read every `flores.tools` below as `tylerflores.dev`.
+
 *2 Oct 2026. Approved: E, headline "Quiet tools. Sharp teeth.", domain likely `flores.tools`, nothing about the person on the site for now.*
 
 ## Decisions

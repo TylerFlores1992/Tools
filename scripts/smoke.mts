@@ -1,6 +1,6 @@
 /**
  * Post-deploy smoke test: real pages must answer with real content.
- *   npm run smoke -- https://flores.tools
+ *   npm run smoke -- https://tylerflores.dev
  * `next build` passing doesn't prove a page renders (CampHawk's root layout 500'd every page
  * in production while the build was green).
  */
