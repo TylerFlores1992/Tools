@@ -1,17 +1,21 @@
 # Setup: Vercel, domain, CI
 
-## Things only the owner can do
-1. **Connect the repo to Vercel** (vercel.com → Add New → Project → import
-   `TylerFlores1992/Tools`). Framework preset: Next.js. No environment variables are needed.
-   After that, every branch push gets a preview URL and merges to `main` deploy production.
-2. **Domain: `tylerflores.dev`** (bought at Cloudflare Registrar on 2026-10-02, DNS at Cloudflare).
-   In Vercel → Project → Settings → Domains add `tylerflores.dev` (redirect `www` to it), then in
-   Cloudflare → `tylerflores.dev` → DNS add the records Vercel shows, **Proxy status: DNS only**:
-   `A @ → 76.76.21.21` and `CNAME www → cname.vercel-dns.com` (use Vercel's exact values).
-   `.dev` is HTTPS-only (HSTS preloaded); Vercel issues the certificate automatically.
-   `src/lib/site.ts` uses `https://tylerflores.dev` as the canonical URL.
-3. **`main` exists** (created 2026-10-02 from an empty root). Protect it: require PRs and
-   the `verify` check.
+## Current state (2026-10-02)
+- **Vercel project:** `tylerflores-dev` (Hobby, scope `tyler-flores1992`), linked to
+  `TylerFlores1992/Tools`, framework Next.js, no environment variables.
+- **Domains on the project:** `tylerflores.dev` (primary) and `www.tylerflores.dev` (308 → apex).
+- **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`).
+  Records, **Proxy status: DNS only** (grey cloud), using the exact values Vercel's
+  Domains page shows; the long-standing defaults are `A @ → 76.76.21.21` and
+  `CNAME www → cname.vercel-dns.com`. `.dev` is HTTPS-only (HSTS preloaded); Vercel
+  issues the certificate once DNS resolves.
+- `src/lib/site.ts` uses `https://tylerflores.dev` as the canonical URL.
+
+## Owner-only settings (the connector can't change these)
+1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). It is
+   still the old session branch, so new PRs default to the wrong base. Vercel is not affected:
+   a push to the session branch built as a preview, not production (checked 2026-10-02).
+2. **Protect `main`:** require PRs and the `verify` check.
 
 ## CI
 `.github/workflows/ci.yml` runs `npm ci && npm run verify` on every push and pull request.
@@ -24,6 +28,10 @@ Vercel Hobby ($0). Hobby is for non-commercial use; if a tool ever takes payment
 ads, move to Pro. Vercel Web Analytics (cookieless) is the only analytics — no cookie banner.
 
 ## Letting Claude do the Vercel and DNS work
-- Vercel connector (read deploys and build logs): https://claude.ai/customize/connectors, then a new session.
-- `VERCEL_TOKEN` and `CLOUDFLARE_API_TOKEN` (Edit zone DNS, `tylerflores.dev` only) as environment
-  variables in the cloud environment settings. Never paste tokens into chat.
+- **Vercel:** the claude.ai Vercel connector is connected and can create projects, add domains
+  and deploy. It is scoped to the personal account: pass **no `teamId`** (passing
+  `team_OejYsMJrOdtB1HaNnnDU5KLj` or the slug returns 403 "re-authenticate to this scope"),
+  so use `create_project`, not `create_git_project` (which requires a teamId). No
+  `VERCEL_TOKEN` needed.
+- **Cloudflare DNS:** `CLOUDFLARE_API_TOKEN` (Edit zone DNS, `tylerflores.dev` only) as an
+  environment variable in the cloud environment settings. Never paste tokens into chat.
