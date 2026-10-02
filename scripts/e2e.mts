@@ -10,11 +10,14 @@ import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
 const BASE = process.env.BASE_URL ?? "http://localhost:3110";
+// The CampHawk lab's password for a server this script starts. Against a running server, set it
+// to whatever that server uses.
+const LAB_PASSWORD = process.env.LAB_PASSWORD ?? "e2e-lab-password";
 const up = async () => { try { return (await fetch(BASE)).status < 500; } catch { return false; } };
 
 let server: ChildProcess | undefined;
 if (!(await up())) {
-  server = spawn("npx", ["next", "start", "-p", new URL(BASE).port], { cwd: ROOT, stdio: "ignore", detached: true });
+  server = spawn("npx", ["next", "start", "-p", new URL(BASE).port], { cwd: ROOT, stdio: "ignore", detached: true, env: { ...process.env, LAB_PASSWORD } });
   for (let i = 0; i < 60 && !(await up()); i++) await new Promise((r) => setTimeout(r, 500));
 }
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
@@ -89,6 +92,19 @@ try {
     await q2.getByRole("button", { name: /120°/ }).click({ force: true }); // aria-disabled, so Playwright would refuse
     await page.getByText("1 of 25 answered").waitFor();
     assert.equal(await q2.getByText("Not quite. The answer is C.").count(), 1);
+  });
+
+  await check("lab: /lab/camphawk is locked without the password, wrong password, and for its images", async () => {
+    const basic = (pw: string) => ({ Authorization: `Basic ${Buffer.from(`anyone:${pw}`).toString("base64")}` });
+    for (const [path, headers] of [["/lab/camphawk", {}], ["/lab/camphawk", basic("wrong")], ["/lab/camphawk/hero-bg.webp", {}]] as const) {
+      const res = await fetch(BASE + path, { headers });
+      assert.equal(res.status, 401, `${path} answered ${res.status}`);
+      assert.match(res.headers.get("www-authenticate") ?? "", /^Basic /);
+    }
+    const ok = await fetch(`${BASE}/lab/camphawk`, { headers: basic(LAB_PASSWORD) });
+    assert.equal(ok.status, 200);
+    assert.match(ok.headers.get("x-robots-tag") ?? "", /noindex/);
+    assert.match(await ok.text(), /The campsite you wanted is already booked/);
   });
 
   await check("study: a flashcard flips from the keyboard and “Got it” counts it learned", async () => {

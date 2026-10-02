@@ -19,6 +19,8 @@ const CHECKS: { path: string; status: number; contains: string }[] = [
   { path: "/workshop/etcp-rigger-study/flashcards", status: 200, contains: "Flashcards" },
   { path: "/workshop/etcp-rigger-study/formulas", status: 200, contains: "Formula reference" },
   { path: "/does-not-exist", status: 404, contains: "Lost the trail." },
+  // The CampHawk lab must stay private: no password sent, so it must refuse.
+  { path: "/lab/camphawk", status: 401, contains: "This area is private." },
 ];
 
 let failed = 0;
