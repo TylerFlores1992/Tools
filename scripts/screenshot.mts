@@ -28,6 +28,7 @@ async function up(url: string) {
 }
 
 let server: ChildProcess | undefined;
+const stop = () => { if (server?.pid) { try { process.kill(-server.pid, "SIGTERM"); } catch {} } };
 if (!(await up(BASE))) {
   if (!existsSync(join(ROOT, ".next", "BUILD_ID"))) {
     console.log("building…");
@@ -36,9 +37,10 @@ if (!(await up(BASE))) {
     if (code !== 0) process.exit(code);
   }
   const port = new URL(BASE).port || "3100";
-  server = spawn("npx", ["next", "start", "-p", port], { cwd: ROOT, stdio: "ignore" });
+  // Own process group, so stopping it also stops the next-server child that npx spawns.
+  server = spawn("npx", ["next", "start", "-p", port], { cwd: ROOT, stdio: "ignore", detached: true });
   for (let i = 0; i < 60 && !(await up(BASE)); i++) await new Promise((r) => setTimeout(r, 500));
-  if (!(await up(BASE))) { console.error(`server did not start at ${BASE}`); server.kill(); process.exit(1); }
+  if (!(await up(BASE))) { console.error(`server did not start at ${BASE}`); stop(); process.exit(1); }
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -50,9 +52,14 @@ for (const route of routes) {
       const page = await browser.newPage({ viewport: { width: w, height: HEIGHT[w] }, colorScheme: scheme, deviceScaleFactor: w <= 400 ? 2 : 1 });
       const tag = `${route} @${w} ${scheme}`;
       page.on("pageerror", (e) => problems.push(`${tag}: page error: ${e.message}`));
-      page.on("console", (m: ConsoleMessage) => { if (m.type() === "error") problems.push(`${tag}: console: ${m.text()}`); });
-      const res = await page.goto(BASE + route, { waitUntil: "networkidle" });
       const expect404 = route === "/does-not-exist";
+      page.on("console", (m: ConsoleMessage) => {
+        if (m.type() !== "error") return;
+        // The 404 route's own document answering 404 is the point of that route.
+        if (expect404 && m.location().url === BASE + route) return;
+        problems.push(`${tag}: console: ${m.text()} (${m.location().url})`);
+      });
+      const res = await page.goto(BASE + route, { waitUntil: "networkidle" });
       if (!res || res.status() !== (expect404 ? 404 : 200)) problems.push(`${tag}: HTTP ${res?.status()}`);
       await page.evaluate(() => document.fonts.ready);
       const name = (route === "/" ? "home" : route.slice(1).replace(/\//g, "_")) + `-${w}-${scheme}.png`;
@@ -62,6 +69,6 @@ for (const route of routes) {
   }
 }
 await browser.close();
-server?.kill();
+stop();
 console.log(`${routes.length * WIDTHS.length * SCHEMES.length} screenshots → screenshots/`);
 if (problems.length) { console.error(problems.join("\n")); process.exit(1); }
