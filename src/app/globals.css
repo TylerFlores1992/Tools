@@ -166,6 +166,81 @@
   --breakpoint-3xl: 2000px;
 }
 
+/*
+ * CampHawk lab tokens (/lab/camphawk only). Copied from campsite-finder src/app/globals.css
+ * on 2026-10-02 so lab components use CampHawk's own class names (bg-ch-green…) and port back
+ * unchanged. Light only, like CampHawk. Never use these on tylerflores.dev pages.
+ */
+@theme {
+  --color-ch-paper: #F5F7F2;
+  --color-ch-card: #FFFFFF;
+  --color-ch-line: #DDE3D8;
+  --color-ch-shell: #E7EBE3;
+  --color-ch-ink: #16291F;
+  --color-ch-ink-2: #3A5344;
+  --color-ch-muted: #657569;
+  --color-ch-faint: #A9B5AA;
+  --color-ch-green: #1E7A4C;
+  --color-ch-green-deep: #16603B;
+  --color-ch-green-soft: #E4F1E8;
+  --color-ch-green-hover: #228554;
+  --color-ch-green-soft-hover: #D2E8DA;
+  --color-ch-green-line: #BFDDC9;
+  --color-ch-ochre: #D9932B;
+  --color-ch-ochre-soft: #FBF0DC;
+  --color-ch-ochre-ink: #90621A;
+  --color-ch-ochre-line: #E7C98C;
+  --color-ch-blue: #2C4A8A;
+  --color-ch-blue-deep: #1E3566;
+  --color-ch-blue-hover: #35569C;
+  --color-ch-blue-soft: #EEF2FA;
+  --color-ch-blue-line: #C6D3EC;
+  --color-ch-alert: #B4462F;
+  --color-ch-alert-soft: #FBEAE5;
+  --color-ch-alert-deep: #8C3524;
+  --color-ch-alert-hover: #C7503A;
+  --color-ch-forest: #24382A;
+  --color-ch-white: #FFFFFF;
+
+  --text-ch-hero: 34px;
+  --text-ch-title: 26px;
+  --text-ch-h: 17px;
+  --text-ch-park: 17px;
+  --text-ch-body: 13.5px;
+  --text-ch-meta: 12px;
+  --text-ch-label: 11px;
+  --text-ch-fine: 11px;
+
+  --radius-ch-card: 15px;
+  --radius-ch-input: 12px;
+  --radius-ch-btn: 13px;
+  --radius-ch-chip: 999px;
+  --radius-ch-tag: 5px;
+
+  --shadow-ch-card: 0 1px 2px rgba(22, 41, 31, 0.04);
+  --shadow-ch-pop: 0 3px 14px -8px rgba(22, 41, 31, 0.2);
+}
+
+@theme inline {
+  --font-ch-display: var(--font-bitter), Georgia, "Times New Roman", serif;
+  --font-ch-body: var(--font-nunito-sans), -apple-system, system-ui, sans-serif;
+}
+
+.camphawk {
+  --ch-max: 1120px;
+  --ch-header: 131px;
+  --ch-header-min: 46px;
+  color-scheme: light;
+}
+.camphawk h1, .camphawk h2, .camphawk h3 {
+  font-family: var(--font-ch-display);
+  letter-spacing: -0.01em;
+}
+.camphawk :focus-visible {
+  outline: 2px solid var(--color-ch-green);
+  outline-offset: 2px;
+}
+
 /* Motion durations, for CSS that animates outside a utility. */
 :root {
   --dur-instant: 80ms;

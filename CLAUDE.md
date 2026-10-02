@@ -50,6 +50,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `src/lib/` site facts, tool list · `src/fonts/` OFL woff2, subset (`scripts/subset-fonts.sh`)
 - `src/tools/<slug>/` each tool's maths (tested) + UI · `src/og/` share-image assets
 - `scripts/` screenshot, smoke, doc guards · `studio/film/` hero film source
+- `src/lab/camphawk/` + `src/app/lab/camphawk/` CampHawk design lab (`ch-*` tokens, lab only),
+  locked by `src/proxy.ts` (`LAB_PASSWORD`, see docs/SETUP.md)
 - `public/media/hero/` rendered film + posters
 
 ## End of every session
