@@ -11,13 +11,14 @@
 | Home hero | `/` | Live. Signed off by the owner. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
-| CampHawk lab | `/lab/camphawk` | Live and private. Owner's password is set in Vercel. Home page only so far. |
+| Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
+| CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
 
-**Checks, all green:** `npm run verify` (104 tests) · `npm run e2e` (10 browser checks) ·
-`npm run shots` (72 screenshots) · `npm run smoke -- https://tylerflores.dev` (9 pages, including
-`/lab/camphawk` answering 401 without the password).
+**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (20 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
+that `/private`, the lab and its old URL all land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
@@ -26,7 +27,8 @@
 
 ## Next up (in order)
 1. **CampHawk lab:** the screen the owner picks. Port it from `/home/user/campsite-finder`
-   (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links.
+   (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
+   under `src/app/private/camphawk/`.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
@@ -61,13 +63,25 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   official ETCP PDF. Exam outline counts checked against ETCP's pages.
 - Progress is saved in the browser only (`stored.ts`).
 
-### CampHawk lab (`src/lab/camphawk/`, `src/app/lab/camphawk/`)
+### Private tab (`src/app/private/`, `src/proxy.ts`, `src/lib/private-auth.ts`)
+- The header's third tab, with a lock icon. On phones the Home tab steps aside (the "Cyber Wolf"
+  name links home) so the brand never wraps; Home returns from 640 px.
+- `/private/sign-in`: the site's own password page. One field, Show/Hide, errors in words with
+  ✕, refocus after a miss, works without JavaScript (Server Action). A wrong password waits
+  600 ms before answering.
+- Session: `v1.<expiry>.<HMAC>` cookie keyed from `LAB_PASSWORD`, HttpOnly, Secure, SameSite=Lax,
+  path `/private`, 30 days. Stateless; changing the password signs every device out.
+- `src/proxy.ts`: pages without a session → sign-in with `?next=` (only paths inside `/private`
+  are honored); files → 401; everything private gets noindex + `Cache-Control: private,
+  no-store`. Fails closed when the variable is unset or empty.
+- `/private`: lists projects from `src/lib/private.ts`, plus Sign out.
+
+### CampHawk lab (`src/lab/camphawk/`, `src/app/private/camphawk/`)
 - CampHawk's marketing home ported as a design sandbox, with a "View as" switch for its
-  signed-out / subscriber / in-app pricing. Fake data; every link is `#`.
+  signed-out / subscriber / in-app pricing. Fake data; every link is `#`. A breadcrumb leads
+  back to Private.
 - CampHawk's look is scoped to the lab: `ch-*` tokens in `globals.css`, Bitter + Nunito Sans
-  loaded in the lab layout only, brand images in `public/lab/camphawk/`.
-- Private: `src/proxy.ts` checks HTTP Basic auth against `LAB_PASSWORD` (any username).
-  Fails closed if the variable is missing. Set in Vercel on 2026-10-02 (Production, Sensitive).
+  loaded in the lab layout only, brand images in `public/private/camphawk/`.
 - Not ported yet: CampHawk's `--ch-sticky` scroll padding (anchor jumps can land under the
   phone header) and the account menu.
 
@@ -92,8 +106,11 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
 - In a `&&` chain, don't put `;` before `git push`: the push runs even when an earlier commit
   failed.
 - Vercel connector: pass no `teamId` (403 "re-authenticate to this scope"); `create_project`
-  works where `create_git_project` doesn't. It can't read the CampHawk lab: test that with
+  works where `create_git_project` doesn't. It can't sign in to Private: test that with
   `npm run e2e` locally, which starts its own server with a known password.
+- Next's route announcer repeats the new page's `<h1>` in a hidden live region after a client
+  navigation, so `getByText(<h1 text>)` matches twice. Use `getByRole("heading", …)`.
+- Text fields draw the focus ring on their frame: wrap the input in `.field` (globals.css).
 - From this container, `curl https://tylerflores.dev` fails but Node's `fetch` works, so
   `npm run smoke -- https://tylerflores.dev` is fine. To inspect the certificate:
   `openssl s_client -connect tylerflores.dev:443 -servername tylerflores.dev -proxy ${HTTPS_PROXY#http://}`.
