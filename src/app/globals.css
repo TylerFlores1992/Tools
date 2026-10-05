@@ -435,7 +435,7 @@
     position: absolute;
     top: 31px;
     left: 32px;
-    right: 15%;
+    right: calc(33.333% - 21px);
     border-top: 2px dashed var(--color-ch-ochre-ink);
   }
 }

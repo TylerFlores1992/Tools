@@ -64,8 +64,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
       <div>
-        <p className="text-[15px] font-bold text-ch-ochre-ink">Launch pricing</p>
-        <h2 className={cx(head, "mt-2")}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
+        <h2 className={head}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
         <p className={body}>Cancel any time — and live search keeps working either way.</p>
         <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-ch-ink-2">
           This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.

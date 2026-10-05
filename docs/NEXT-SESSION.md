@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-05 (later).*
+*Last updated: 2026-10-05 (round 2 built).*
 
 ## At a glance
 
@@ -13,33 +13,36 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
-| CampHawk new looks | `/private/camphawk/looks` | Six mockups of the home page (same UI and palette, new backdrop and finish), plus the current design. Switch with **Look** in the lab bar. Waiting on the owner's pick. |
+| CampHawk new looks | `/private/camphawk/looks` | Round 1: six backdrop mockups (critic 4/10). Superseded by round 2. |
+| CampHawk round 2 | `/private/camphawk/golden-hour`, `/private/camphawk/trail-poster` | Two full home pages, real generated art. Critic: A 7/10, B 5.5/10. Waiting on the owner's pick. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (23 browser checks) ·
+**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (24 browser checks) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
 that `/private`, the lab and its old URL all land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **CampHawk new look, round 2 (in progress):** brief, references and two written directions
-   are in `docs/design/camphawk-home.md` (A "Golden hour", B "Trail poster"); prompts in
-   `docs/design/camphawk-image-prompts.md`. **Next:** generate the images. The owner added an
-   AI Gateway key to the environment as `AI_GATEWAY_API_KEY` (2026-10-05; it loads in new
-   sessions). Never print it. Check `GET https://ai-gateway.vercel.sh/v1/credits` first, then use
-   free credits only (never buy credits or enable auto top-up), and generate with
-   `POST /v1/images/generations` (try a free-tier image model; a 402/403 means it isn't free).
-   If the key is missing, the Vercel connector with access to team `tyler-flores1992` can create
-   one (`create_api_keys`, purpose `ai-gateway`, quota cap $5, short expiry). Fallback: the owner uploads the files to
-   `public/private/camphawk/round2/`. Then build both first viewports, run the critic agent
-   (`critique.md`, must reach 7/10), and only then show the owner. Owner said layout may change;
-   only functionality must stay.
+2. **CampHawk round 2: pick a direction.** Both are built (contract and "As built" notes in
+   `docs/design/camphawk-home.md`):
+   - **A "Golden hour"** (`/private/camphawk/golden-hour`): dusk photo hero, example alert on the
+     photo, search docked on its edge. Critic 7/10, "fix then ship". Left: the closing morning
+     photo is a different light from the hero (regrade or replace), the site-post photo is very
+     dark, the pricing left column is sparse, fine print is 13–14px grey.
+   - **B "Trail poster"** (`/private/camphawk/trail-poster`): Bitter Black headline beside the
+     poster hung as a print, an alert pinned to it, painted vignettes. Critic 5.5/10. Left: no art
+     in the phone's first screen; the print reads small at 2560; two hawk styles (logo vs poster);
+     the large pocket-watch vignette is the weakest art; pricing lost the "park pass" idea.
+   Art: `studio/camphawk-round2/` (`generate.mjs` via AI Gateway, `export.mjs` for the picks).
+   $1.26 of the $5 free credit used; GPT Image and Recraft pro tiers refuse free credit (403).
+   The owner's reference screenshots were never saved to the repo: save them to
+   `docs/design/refs/` next time so the critic can see them.
 
 ## Next up (in order)
-1. **CampHawk lab:** round 2 of the new look via skill `design-direction` (round 1's lessons are
-   in its `tells.md`), then the next screen. Port it from `/home/user/campsite-finder`
+1. **CampHawk lab:** finish the owner's pick from round 2 (its critic list above), then the next
+   screen. Port it from `/home/user/campsite-finder`
    (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
    under `src/app/private/camphawk/`.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
@@ -115,6 +118,12 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   3.6 s across runs). Use PageSpeed Insights from a real browser.
 
 ## Gotchas
+- Lab headings: `.camphawk h1` uses `var(--font-ch-display)`, which `@theme inline` never emits, so
+  headings on the lab's Current page render in Nunito. Round 2 names Bitter directly. Check whether
+  camphawk.app has the same bug before "fixing" Current.
+- AI Gateway's OpenAI-style `/v1/images/generations` ignores `aspect_ratio`; use the AI SDK's
+  `generateImage({ aspectRatio })` (studio/camphawk-round2/ has its own package.json).
+- Recraft (free tier) tops out at 1280px; flat poster art survives a 2x Lanczos upscale, photos wouldn't.
 - `create-next-app` refuses the folder name "Tools" (capitals): scaffold elsewhere, copy in.
 - `LayoutProps` needs `next typegen` before `tsc` on a clean checkout (`typecheck` does it).
 - `pkill -f 'next start'` kills your own shell. Use `pkill -f '[n]ext-server'`.

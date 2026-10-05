@@ -60,7 +60,7 @@ export function TrailPoster() {
       </LabBar>
       <Nav visitor={visitor} plainPhone />
       <main id="main">
-        <section className="mx-auto grid max-w-[var(--ch-max)] items-center gap-x-14 gap-y-12 px-5 pb-8 pt-[clamp(28px,5vw,64px)] md:grid-cols-[minmax(0,1fr)_auto]">
+        <section className="mx-auto grid max-w-[var(--ch-max)] items-center gap-x-14 gap-y-12 px-5 pb-8 pt-[clamp(28px,5vw,64px)] lg:grid-cols-[minmax(0,1fr)_auto]">
           <div>
             <h1 className="max-w-[14ch] text-balance font-ch-display text-[clamp(42px,5.4vw,76px)] font-black leading-[.97] tracking-[-.035em] text-ch-forest">
               {HEADLINE}
@@ -72,11 +72,11 @@ export function TrailPoster() {
             </a>
           </div>
           {/* The signature: the poster hung like a print, an alert pinned to it. */}
-          <div className="relative mx-auto w-full max-w-[400px] pb-20 md:w-[min(34vw,420px)] md:max-w-none">
+          <div className="relative mx-auto w-full max-w-[400px] pb-12 lg:w-[min(34vw,420px)] lg:max-w-none">
             <figure className="tp-print">
-              <Art art={ART.b2} eager sizes="(min-width: 768px) 420px, 92vw" className="block h-auto w-full" />
+              <Art art={ART.b2} eager sizes="(min-width: 1024px) 420px, 400px" className="block h-auto w-full" />
             </figure>
-            <div className="absolute -left-2 bottom-0 sm:-left-10">
+            <div className="absolute -left-2 bottom-0 sm:-left-10 lg:bottom-6">
               <TicketAlert />
             </div>
           </div>

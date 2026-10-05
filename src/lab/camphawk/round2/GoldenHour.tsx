@@ -150,7 +150,7 @@ export function GoldenHour() {
                 See what a watch does <span aria-hidden="true">↓</span>
               </a>
             </div>
-            <div className="hidden lg:block lg:pb-6">
+            <div className="hidden lg:block lg:self-start">
               <AlertCard />
             </div>
           </div>
