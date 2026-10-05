@@ -1,0 +1,105 @@
+# CampHawk home: round 2 directions
+
+Surface: CampHawk marketing home (`/private/camphawk`, lab). Mode: **Persuade**.
+Process: skill `design-direction`. Round 1 lessons and the critic's 4/10 are in its `tells.md`.
+
+## Brief (confirmed with the owner, 2026-10-05)
+- **Audience:** US campers trying to get a site at a full campground, usually on a phone, often
+  planning in the evening.
+- **Job:** get them to search (free), or to start a watch when it's full.
+- **Fixed:** functionality: search, watch, the three pricing views, the limits, the footer links.
+  Same words where possible. CampHawk's palette.
+- **Free:** layout, type scale, composition, imagery, rhythm.
+
+## References (owner's Pinterest picks)
+| # | What | Specifics that set the bar |
+|---|---|---|
+| 1 | Zenze agri landing (dark) | Full-bleed golden-hour photo; two-line headline ~2.6× body; a live-data glass panel on the hero (product as proof); stats strip; a real dashboard section; photo CTA band |
+| 2 | Eco real estate (light) | Sunlit forest photo in a large rounded frame; **search bar docked across the hero's bottom edge**; photo cards below on soft paper |
+| 3 | Corporate portfolio sheet (dark green + tan) | Deep green grounds, tan pill buttons, botanical photography, big confident sans |
+| 4 | Artisan (illustrated) | Vintage travel-poster painting full-bleed; limited muted palette; illustrated vignettes instead of icons |
+| 5 | Rennale (tactile) | Leaf and material photography, green and brown, soft tactile depth |
+
+Common thread: real or painted imagery in warm low light, deep greens with warm accents,
+headlines that own the screen, and UI that sits *on* the picture. All five are themselves
+AI comps (the text is garbled), so they set the art direction and craft level, not literal UX.
+
+## Direction A: "Golden hour"
+- **Thesis:** the moment a site opens, at the time of day people dream about camping. The product
+  proof (a live alert) sits on the photo itself. It refuses the category default of a headline
+  over a generic mountain stock photo with feature cards below.
+- **World:** committed color. `ch-forest` owns 40–50% of the page (hero and proof sections);
+  `ch-ochre` is the light (one accent per screen); `ch-paper` grounds the reading sections;
+  `ch-green` is reserved for actions. Bitter display at 72–88px desktop and 40–44px phone (−0.03em);
+  Nunito Sans body at 17px.
+- **First viewport (1440):**
+  ```
+  ┌──────────────────────────────────────────────────────────────┐
+  │ CampHawk            Watches  New watch  Explore     Sign in  │  ← transparent nav on photo
+  │                                                              │
+  │  The campsite you wanted          [photo: lantern-lit tent, │
+  │  is already booked.                pines, valley at golden  │
+  │  We wait for it.                   hour, right 60%]         │
+  │  (88px Bitter, paper)                                        │
+  │  CampHawk watches booked…  (17px, 56ch)    ┌─────────────┐   │
+  │                                            │ ● Site 042  │   │ ← live alert card
+  │                                            │ Upper Pines │   │   (illustrative, labeled)
+  │                                            │ opened 14s  │   │
+  │                                            └─────────────┘   │
+  │ ┌──────────────────────────────────────────────────────────┐ │
+  │ │ Where?  [Yosemite]  When? [any 3 nights in Jul] [Search] │ │ ← search docked on the edge
+  │ └──────────────────────────────────────────────────────────┘ │
+  └──────────────────────────────────────────────────────────────┘
+  ```
+- **Below:** a forest-colored "watch it work" section, with a phone showing the alert, then
+  the cart, built in code as real UI, beside the three steps. Then pricing on paper, with one
+  elevation system and no card inside a card. Then the limits as a quiet list. The closing
+  CTA is a photo band.
+- **Signature moment:** the alert card slides in once on load (reduced motion: already there).
+- **Assets:** A1 hero (landscape), A2 hero (portrait), A3 site-post detail, A4 morning CTA band.
+
+## Direction B: "Trail poster"
+- **Thesis:** CampHawk as a beloved park poster. Warm, crafted, collectible. It extends the
+  painted hawk CampHawk already owns (the phone header art) into a whole world. It refuses flat
+  vector stock and code-drawn scenes.
+- **World:** full palette in a printed register: `ch-paper` ground, `ch-forest` ink, `ch-ochre`
+  sun, `ch-blue` water, `ch-green` actions. Bitter Black display at 80–96px and 44px phone, set
+  into the painting's sky. Nunito Sans body.
+- **First viewport (1440):**
+  ```
+  ┌──────────────────────────────────────────────────────────────┐
+  │ [painted poster, full-bleed: hawk over a granite valley,     │
+  │  river, framing pines, small glowing tent, big calm sky]     │
+  │                                                              │
+  │   The campsite you wanted                                    │
+  │   is already booked. We wait for it.  (96px, forest ink)     │
+  │                                                              │
+  │   [Search campgrounds free]  See what a watch does           │
+  │ ─────────────────────── torn-paper edge ──────────────────── │
+  │  CampHawk watches booked campgrounds…  (on paper, 17px)      │
+  └──────────────────────────────────────────────────────────────┘
+  ```
+- **Below:** the four features as painted spot vignettes (pocket watch, cart and pack, trail
+  map, calendar) in place of icon cards; a two-column "how it works" with numbered steps (it
+  is a real sequence); pricing like a park pass (ticket-stub plans); and a quiet footer.
+- **Signature moment:** the poster's hawk drifts a few pixels with scroll (reduced motion: still).
+- **Assets:** B1 poster (landscape), B2 poster (portrait), B3–B6 spot vignettes (square).
+
+## Self-check (tells.md § Defaults)
+- **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
+  accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
+  photo's specific moment and the live UI on the photo.
+- **B** avoids code-drawn scenes; the art is painted by a model or a person. Risk: retro-poster
+  pastiche. It is mitigated by CampHawk's own hawk and palette and by real UI below the fold.
+- Both drop the eyebrow labels, the all-caps chips, the mid-dot meta and the identical icon-card grid.
+
+## Assets log
+| File | Direction | Source | License | Status |
+|---|---|---|---|---|
+| a1-hero-wide | A | owner, image model | owner | waiting |
+| a2-hero-tall | A | owner, image model | owner | waiting |
+| a3-site-post | A | owner, image model | owner | waiting |
+| a4-cta-morning | A | owner, image model | owner | waiting |
+| b1-poster-wide | B | owner, image model | owner | waiting |
+| b2-poster-tall | B | owner, image model | owner | waiting |
+| b3–b6 vignettes | B | owner, image model | owner | waiting |
