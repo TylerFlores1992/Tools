@@ -15,6 +15,12 @@ can ask for any of them), but reaching for one when the choice was free means no
 | Mist fade from dark forest to paper | Dark plus transparency makes muddy grey | A hard edge, or a fade into a color that exists in both |
 | Scene below the fold on a laptop | The first viewport was a headline in empty sky | Design the first viewport first (Gate 3 wireframe) |
 
+**Calibration:** a fresh critic agent using `critique.md` scored round 1's Ridgeline at **4/10, "rethink"**.
+It also flagged the SaaS card kit, a card inside a card on pricing, all-caps labels, two hawks in
+two art styles (the painted phone header against the vector hills), a secondary CTA as loud as the
+primary, 11–12px grey footnotes, and no proof of the product (no real alert shown). Treat 4/10
+as the floor we've already hit; a direction worth showing the owner should reach 7.
+
 ## Defaults models converge on (from Anthropic's and Impeccable's calibration lists)
 - **Looks:** a warm cream ground with a high-contrast serif and a terracotta accent; near-black with
   one neon accent and glowing edges; broadsheet hairlines with italic serif and tiny tracked mono
