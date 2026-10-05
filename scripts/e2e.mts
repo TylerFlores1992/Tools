@@ -5,6 +5,7 @@
  */
 import { chromium } from "playwright-core";
 import { spawn, type ChildProcess } from "node:child_process";
+import { LOOKS } from "../src/lab/camphawk/looks.ts";
 import assert from "node:assert/strict";
 import { join } from "node:path";
 
@@ -264,6 +265,63 @@ try {
     await p.getByLabel("Password", { exact: true }).fill(LAB_PASSWORD);
     await p.getByRole("button", { name: /Unlock/ }).click();
     await p.waitForURL(`${BASE}/private/camphawk`);
+    await ctx.close();
+  });
+
+  await check("lab looks: every look renders its art, with a clean console", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.goto(`${BASE}/private/camphawk`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    for (const look of LOOKS) {
+      await p.goto(`${BASE}/private/camphawk?look=${look.id}`, { waitUntil: "networkidle" });
+      assert.equal(await p.locator(".look").getAttribute("data-look"), look.id);
+      await p.getByRole("heading", { level: 1, name: /already booked/ }).waitFor();
+      if (look.art) {
+        const art = p.locator(look.id === "topo" ? ".look-map img" : ".look-scene img");
+        await art.waitFor({ state: "attached" });
+        assert.ok(await art.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), `${look.id}: art loaded`);
+        assert.match(await art.evaluate((img: HTMLImageElement) => img.currentSrc), /-desktop\.webp$|painted-valley\.webp$/, `${look.id}: desktop crop on desktop`);
+      }
+    }
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab looks: the Look menu switches the page and keeps the choice in the URL", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/camphawk`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk`);
+    await p.getByLabel("Look", { exact: true }).selectOption("dusk");
+    assert.equal(await p.locator(".look").getAttribute("data-look"), "dusk");
+    assert.match(p.url(), /\?look=dusk$/);
+    await p.reload();
+    assert.equal(await p.getByLabel("Look", { exact: true }).inputValue(), "dusk");
+    await p.getByLabel("Look", { exact: true }).selectOption("current");
+    assert.equal(p.url(), `${BASE}/private/camphawk`);
+    await p.goto(`${BASE}/private/camphawk?look=nonsense`);
+    assert.equal(await p.locator(".look").getAttribute("data-look"), "current", "an unknown look falls back to the current design");
+    await ctx.close();
+  });
+
+  await check("lab looks: the overview lists every look and each opens it", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/camphawk/looks`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk/looks`);
+    const cards = p.locator("main li");
+    assert.equal(await cards.count(), LOOKS.length);
+    for (const img of await p.locator("main li img").all()) {
+      await img.scrollIntoViewIfNeeded();
+      await p.waitForFunction((el) => (el as HTMLImageElement).complete && (el as HTMLImageElement).naturalWidth > 0, await img.elementHandle());
+    }
+    await cards.filter({ hasText: "Field guide" }).getByRole("link").click();
+    await p.waitForURL(`${BASE}/private/camphawk?look=engraving`);
+    assert.equal(await p.locator(".look").getAttribute("data-look"), "engraving");
     await ctx.close();
   });
 

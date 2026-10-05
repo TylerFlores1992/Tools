@@ -240,6 +240,138 @@
   outline: 2px solid var(--color-ch-green);
   outline-offset: 2px;
 }
+/* On the dark forest bands (lab bar, phone header) a green ring disappears; use white. */
+.camphawk .bg-ch-forest :focus-visible {
+  outline-color: var(--color-ch-white);
+}
+
+/*
+ * CampHawk lab looks (/private/camphawk?look=…, src/lab/camphawk/looks.ts): the same page in a
+ * new finish. Unlayered on purpose, so it wins over the utilities it adjusts. Hues come only
+ * from the ch-* tokens.
+ *   .look-scene  the art under the hero: pulled up behind the headline (--scene-pull) and
+ *                tucked under the first cards (--scene-tuck), edges faded into paper.
+ *   .look-card   every card; each look sets its edge and shadow.
+ */
+.look { position: relative; }
+.look-card { position: relative; }
+.look-grain {
+  background-image: url("/private/camphawk/looks/grain-tile.webp");
+  background-size: 256px;
+}
+.look-map { position: absolute; inset: 0; display: block; }
+.look-map img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* On phones the text spans the map, so calm it under a paper wash. */
+@media (max-width: 639px) {
+  .look-map::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--color-ch-paper) 50%, transparent);
+  }
+}
+.look-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+}
+.look-top { position: relative; }
+.look-hero { position: relative; z-index: 1; }
+.look-features { position: relative; z-index: 1; }
+.look-scene {
+  display: block;
+  position: relative;
+  z-index: 0;
+  margin-top: calc(-1 * var(--scene-pull, 0px));
+  margin-bottom: calc(-1 * var(--scene-tuck, 0px));
+  pointer-events: none;
+  user-select: none;
+  mask-image: linear-gradient(to bottom, transparent 0, black var(--fade-top, 16%), black var(--fade-end, 84%), transparent 100%);
+}
+.look-scene img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--scene-ratio-phone, 1080 / 1500);
+  object-fit: cover;
+  object-position: center bottom;
+}
+@media (min-width: 640px) {
+  .look-scene img { aspect-ratio: var(--scene-ratio, 2400 / 1100); }
+}
+/* Wide screens: the scene stops growing with the width; it crops instead. */
+@media (min-width: 1600px) {
+  .look-scene img { max-height: 860px; object-position: var(--scene-focus-wide, center bottom); }
+}
+
+/* Generated scenes: on phones the sky is pulled behind the headline's lower lines. */
+.look[data-look="ridgeline"], .look[data-look="engraving"], .look[data-look="poster"], .look[data-look="dusk"] {
+  --scene-pull: 30vw;
+  --scene-tuck: 34vw;
+}
+@media (min-width: 640px) {
+  .look[data-look="ridgeline"], .look[data-look="engraving"], .look[data-look="poster"], .look[data-look="dusk"] {
+    --scene-pull: 10vw;
+    --scene-tuck: 11vw;
+  }
+}
+.look[data-look="painted"] {
+  --scene-ratio: 1536 / 1024;
+  --scene-ratio-phone: 4 / 5;
+  --scene-pull: 22vw;
+  --scene-tuck: 30vw;
+}
+@media (min-width: 640px) {
+  .look[data-look="painted"] { --scene-pull: 8vw; --scene-tuck: 12vw; --scene-focus-wide: center 50%; }
+}
+
+/* Ridgeline and Painted: a deeper, softer lift. */
+.look[data-look="ridgeline"] .look-card,
+.look[data-look="painted"] .look-card,
+.look[data-look="dusk"] .look-card {
+  box-shadow: 0 1px 2px rgb(22 41 31 / 0.05), 0 18px 40px -26px rgb(22 41 31 / 0.5);
+}
+
+/* Topo: cards sit on the map like labels, with a fine double edge. */
+.look[data-look="topo"] .look-card {
+  box-shadow: 0 0 0 4px var(--color-ch-card), 0 0 0 5px var(--color-ch-line), 0 14px 30px -22px rgb(22 41 31 / 0.45);
+}
+
+/* Field guide: warm paper, framed plates. */
+.look[data-look="engraving"] .look-grain { background-color: color-mix(in srgb, var(--color-ch-paper) 65%, var(--color-ch-ochre-soft)); }
+.look[data-look="engraving"] .look-card {
+  border-color: var(--color-ch-faint);
+  box-shadow: inset 0 0 0 4px var(--color-ch-card), inset 0 0 0 5px var(--color-ch-line);
+}
+
+/* Park poster: flat and bold, a printed edge instead of a soft shadow. */
+.look[data-look="poster"] .look-card {
+  border-color: var(--color-ch-forest);
+  box-shadow: 3px 3px 0 var(--color-ch-forest);
+}
+
+/* Dusk: the hero goes dark, with light type; the page below returns to paper. */
+.look[data-look="dusk"] .look-top { background: var(--color-ch-ink); }
+/* Fade in from the dark ground at the top; keep a hard edge at the bottom, under the cards. */
+.look[data-look="dusk"] .look-scene { mask-image: linear-gradient(to bottom, transparent 0, black 16%); }
+.look[data-look="dusk"] .look-hero h1 { color: var(--color-ch-white); }
+.look[data-look="dusk"] .look-hero p { color: var(--color-ch-line); }
+.look[data-look="dusk"] .look-hero p:last-child { color: var(--color-ch-faint); }
+
+/* Wide screens: fixed pull and tuck to match the capped scene (last, so it wins). */
+@media (min-width: 1600px) {
+  .look[data-look] { --scene-pull: 160px; --scene-tuck: 176px; }
+}
 
 /* Motion durations, for CSS that animates outside a utility. */
 :root {
