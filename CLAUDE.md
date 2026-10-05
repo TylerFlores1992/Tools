@@ -21,6 +21,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 | Topic | Go to |
 |---|---|
 | How it should look, tokens, type, motion, copy | skill `flores-design` |
+| New look, redesign, mockups, "make it high-end" (process + taste) | skill `design-direction` |
 | Accessibility / UI review before merge | skill `ui-audit` |
 | The hero film (terrain, wolf, encode) | skill `hero-film` · `studio/film/` |
 | The approved brief, sitemap, design spec | `docs/BRIEF.md` |
