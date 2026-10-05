@@ -24,11 +24,16 @@ that `/private`, the lab and its old URL all land on the sign-in page and privat
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **CampHawk new look, round 2:** the owner judged round 1 (`/private/camphawk/looks`) "pretty
-   terrible". Before building again, follow skill `design-direction`: the owner sends 3–6
-   reference sites they love and answers the brief questions; then 2–3 written directions,
-   real imagery (NPS public domain, Unsplash, or the owner's own/image-model pictures), and a
-   fresh-eyes critic agent before showing anything.
+2. **CampHawk new look, round 2 (in progress):** brief, references and two written directions
+   are in `docs/design/camphawk-home.md` (A "Golden hour", B "Trail poster"); prompts in
+   `docs/design/camphawk-image-prompts.md`. **Next:** generate the images. The owner is
+   reconnecting the Vercel connector with access to team `tyler-flores1992`, so a new session can
+   create an AI Gateway key (`create_api_keys`, purpose `ai-gateway`, quota cap $5, short expiry,
+   free credits only: never buy credits) and generate via `https://ai-gateway.vercel.sh/v1`
+   (pick a free-tier image model; check `/v1/credits` first). Fallback: the owner uploads the files to
+   `public/private/camphawk/round2/`. Then build both first viewports, run the critic agent
+   (`critique.md`, must reach 7/10), and only then show the owner. Owner said layout may change;
+   only functionality must stay.
 
 ## Next up (in order)
 1. **CampHawk lab:** round 2 of the new look via skill `design-direction` (round 1's lessons are
