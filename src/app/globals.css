@@ -373,6 +373,77 @@
   .look[data-look] { --scene-pull: 160px; --scene-tuck: 176px; }
 }
 
+/*
+ * CampHawk round 2 (/private/camphawk/golden-hour, /trail-poster; src/lab/camphawk/round2/).
+ * Scrims and crops for the art, and one motion moment each. Hues only from ch-* tokens.
+ */
+.gh { --gh-max: 1320px; }
+/* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
+   fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
+.gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }
+.gh-photo { position: absolute; inset: 0; z-index: -1; display: block; }
+.gh-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; }
+/* Phone: the photo's calm sky carries the headline; darken top and bottom for the type and the dock. */
+.gh-scrim {
+  background:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-ch-forest) 82%, transparent) 0%,
+      color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 45%,
+      color-mix(in srgb, var(--color-ch-forest) 20%, transparent) 70%,
+      color-mix(in srgb, var(--color-ch-forest) 75%, transparent) 100%);
+}
+@media (min-width: 640px) {
+  .gh-photo img { object-position: 70% 50%; }
+  /* Wide: the dark ridges on the left hold the type; the tent stays clear on the right. */
+  .gh-scrim {
+    background:
+      linear-gradient(to right,
+        color-mix(in srgb, var(--color-ch-forest) 90%, transparent) 0%,
+        color-mix(in srgb, var(--color-ch-forest) 68%, transparent) 38%,
+        transparent 66%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 20%),
+      linear-gradient(to top, color-mix(in srgb, var(--color-ch-forest) 70%, transparent) 0%, transparent 28%);
+  }
+}
+.gh-band-scrim {
+  background: linear-gradient(to top, color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%, color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 60%, transparent 100%);
+}
+@media (min-width: 768px) {
+  .gh-band-scrim {
+    background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%, color-mix(in srgb, var(--color-ch-forest) 45%, transparent) 45%, transparent 70%);
+  }
+}
+/* The alert card arrives once, a beat after the photo. */
+.gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
+@keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
+
+.tp { --tp-max: 1320px; }
+/* The hero poster hangs like a print: a paper mount, a hairline frame, a soft wall shadow. */
+.tp-print {
+  padding: 14px;
+  background: var(--color-ch-card);
+  border: 1px solid var(--color-ch-line);
+  box-shadow: 0 1px 2px rgb(22 41 31 / 0.08), 0 30px 60px -30px rgb(22 41 31 / 0.45);
+  animation: tp-settle 1100ms var(--ease-out) 150ms both;
+}
+/* Closing band: the wide poster, its sky faded into the paper above, the headline set in it. */
+.tp-band-art {
+  display: block;
+  width: 100%;
+  height: 640px;
+  object-fit: cover;
+  object-position: 22% 100%;
+  mask-image: linear-gradient(to bottom, transparent 0, black 14%);
+}
+@media (min-width: 640px) { .tp-band-art { height: auto; } }
+/* Vignettes are printed on cream as light as the paper or lighter: darken (a per-channel min) lets the paper show through. */
+.tp-vignette { mix-blend-mode: darken; }
+@keyframes tp-settle { from { opacity: 0; transform: translateY(14px) rotate(-0.6deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-rise, .tp-print { animation: none; }
+}
+
 /* Motion durations, for CSS that animates outside a utility. */
 :root {
   --dur-instant: 80ms;

@@ -74,10 +74,12 @@ function Plans() {
   );
 }
 
-export function PricingSection({ visitor }: { visitor: Visitor }) {
+/** `bare` drops the outer green panel, for layouts that give pricing its own section (round 2). */
+export function PricingSection({ visitor, bare }: { visitor: Visitor; bare?: boolean }) {
+  const panel = bare ? "" : "rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6";
   if (visitor === "subscriber") {
     return (
-      <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
+      <div className={panel}>
         <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">You&apos;re all set — here&apos;s what you can do</h2>
         <ul className="mt-2.5 max-w-[58ch] space-y-1.5 text-ch-body leading-relaxed text-ch-green-deep">
           <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
@@ -95,7 +97,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
   }
   if (visitor === "app") {
     return (
-      <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
+      <div className={panel}>
         <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">Searching is free. Watching needs a subscription.</h2>
         <p className="mt-2 max-w-[58ch] text-ch-body leading-relaxed text-ch-green-deep">
           A subscription covers up to {WATCH_LIMIT} watches at once with push, text and email alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
@@ -104,7 +106,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
     );
   }
   return (
-    <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
+    <div className={panel}>
       <span className="inline-block rounded-ch-chip bg-ch-card px-3 py-1 text-ch-label font-bold uppercase tracking-[.1em] text-ch-green-deep">Launch pricing</span>
       <h2 className="mt-2.5 font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
       <p className="mt-2 max-w-[58ch] text-ch-body leading-relaxed text-ch-green-deep">Cancel any time — and live search keeps working either way.</p>

@@ -9,10 +9,10 @@ import type { Visitor } from "./data";
 // Ported from campsite-finder src/components/v2/V2Nav.tsx (2026-10-02), minus Clerk and the
 // admin menu: the account controls follow the lab's visitor switch instead. Links stay inside
 // the lab (#), so nothing here can reach the real app.
-const LINKS = ["Watches", "New watch", "Explore"] as const;
+export const LINKS = ["Watches", "New watch", "Explore"] as const;
 const COLLAPSE_AT = 96, EXPAND_AT = 8, HEADER_ANIM_MS = 260;
 
-function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: boolean }) {
+export function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: boolean }) {
   if (visitor === "subscriber") {
     return (
       <span className="grid size-8 place-items-center rounded-full bg-ch-green-soft text-ch-meta font-extrabold text-ch-green-deep ring-2 ring-ch-card" aria-label="Account (signed in)">
