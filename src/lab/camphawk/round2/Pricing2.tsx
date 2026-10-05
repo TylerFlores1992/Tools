@@ -80,7 +80,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
         <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
           Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.
         </p>
-        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-muted">
+        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
           Prices in US dollars. Free for 7 days; cancel any time before you&apos;re charged. Launch pricing — your rate is locked in while you stay subscribed.
         </p>
       </div>

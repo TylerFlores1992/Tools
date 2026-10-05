@@ -34,7 +34,10 @@ async function keyed(file) {
 for (const [name, file, widths] of PICKS) {
   const vignette = /^b[3-6]-/.test(name);
   for (const w of widths) {
-    const info = await (vignette ? await keyed(SRC + file) : sharp(SRC + file))
+    let img = vignette ? await keyed(SRC + file) : sharp(SRC + file);
+    // A3's sky came out daytime-bright: grade it down to the hero's dusk.
+    if (name === "a3-site-dusk") img = img.modulate({ brightness: 0.88, saturation: 0.82 });
+    const info = await img
       .resize({ width: w, kernel: "lanczos3" })
       .sharpen(w > 1280 && file.endsWith(".webp") ? { sigma: 0.6 } : undefined)
       .webp({ quality: name.startsWith("b") ? 82 : 78, alphaQuality: 90 })

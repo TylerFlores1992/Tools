@@ -40,11 +40,11 @@ export function Art({ art, alt = "", className, sizes = "100vw", eager }: Common
   );
 }
 
-/** A wide crop above 640px and a tall one below, as one picture. */
-export function ArtPair({ wide, tall, className, eager }: Common & { wide: Piece; tall: Piece }) {
+/** A wide crop from `at` px up (default 640) and a tall one below, as one picture. */
+export function ArtPair({ wide, tall, className, eager, at = 640 }: Common & { wide: Piece; tall: Piece; at?: number }) {
   return (
     <picture className={className}>
-      <source media="(min-width: 640px)" srcSet={srcSet(wide.name, wide.widths)} sizes="100vw" />
+      <source media={`(min-width: ${at}px)`} srcSet={srcSet(wide.name, wide.widths)} sizes="100vw" />
       <Art art={tall} eager={eager} />
     </picture>
   );

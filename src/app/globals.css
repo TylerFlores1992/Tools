@@ -381,18 +381,18 @@
 /* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
    fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
 .gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }
-.gh-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 74% 100%; }
-/* Phone: the photo's calm sky carries the headline; darken top and bottom for the type and the dock. */
+.gh-photo { position: absolute; inset: 0; z-index: -1; display: block; }
+.gh-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 78%; }
+/* Phone and tablet (portrait photo): darken the sky behind the type; leave the tent's window clear. */
 .gh-scrim {
   background:
     linear-gradient(to bottom,
-      color-mix(in srgb, var(--color-ch-forest) 82%, transparent) 0%,
-      color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 45%,
-      color-mix(in srgb, var(--color-ch-forest) 20%, transparent) 70%,
-      color-mix(in srgb, var(--color-ch-forest) 75%, transparent) 100%);
+      color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
+      color-mix(in srgb, var(--color-ch-forest) 72%, transparent) 55%,
+      transparent 78%);
 }
-@media (min-width: 640px) {
-  .gh-photo { object-position: 70% 50%; }
+@media (min-width: 1024px) {
+  .gh-photo img { object-position: 70% 50%; }
   /* Wide: the dark ridges on the left hold the type; the tent stays clear on the right. */
   .gh-scrim {
     background:
@@ -400,17 +400,16 @@
         color-mix(in srgb, var(--color-ch-forest) 90%, transparent) 0%,
         color-mix(in srgb, var(--color-ch-forest) 68%, transparent) 38%,
         transparent 66%),
-      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 20%),
-      linear-gradient(to top, color-mix(in srgb, var(--color-ch-forest) 70%, transparent) 0%, transparent 28%);
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 20%);
   }
 }
-/* The dusk band is already dark: a light, long scrim behind the text, no visible edge. */
+/* The dusk band is already dark: a light scrim behind the text, no visible edge. */
 .gh-band-scrim {
-  background: linear-gradient(to top, color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 0%, color-mix(in srgb, var(--color-ch-forest) 35%, transparent) 60%, transparent 100%);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 60%);
 }
 @media (min-width: 768px) {
   .gh-band-scrim {
-    background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 75%);
+    background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 0%, transparent 70%);
   }
 }
 /* The alert card arrives once, a beat after the photo. */

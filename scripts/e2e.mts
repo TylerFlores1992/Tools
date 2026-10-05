@@ -299,7 +299,7 @@ try {
     await p.goto(`${BASE}/private/camphawk/golden-hour`);
     await signIn(p);
     await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
-    for (const [path, hero] of [["golden-hour", ".gh-photo"], ["trail-poster", ".tp-print img"]] as const) {
+    for (const [path, hero] of [["golden-hour", ".gh-photo img"], ["trail-poster", ".tp-print img"]] as const) {
       await p.goto(`${BASE}/private/camphawk/${path}`, { waitUntil: "networkidle" });
       await p.getByRole("heading", { level: 1, name: /already booked/ }).waitFor();
       const art = p.locator(hero).first();
