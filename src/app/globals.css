@@ -240,6 +240,10 @@
   outline: 2px solid var(--color-ch-green);
   outline-offset: 2px;
 }
+/* On the dark forest bands (lab bar, phone header) a green ring disappears; use white. */
+.camphawk .bg-ch-forest :focus-visible {
+  outline-color: var(--color-ch-white);
+}
 
 /*
  * CampHawk lab looks (/private/camphawk?look=…, src/lab/camphawk/looks.ts): the same page in a

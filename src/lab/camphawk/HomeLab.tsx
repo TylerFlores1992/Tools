@@ -55,7 +55,7 @@ function LabBar({ visitor, onVisitor, look, onLook }: { visitor: Visitor; onVisi
             id="lab-look"
             value={look}
             onChange={(e) => onLook(e.target.value as LookId)}
-            className="min-h-10 min-w-0 flex-1 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white sm:flex-none"
+            className="min-h-11 min-w-0 flex-1 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white sm:flex-none"
           >
             {LOOKS.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
           </select>
