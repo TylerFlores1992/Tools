@@ -17,7 +17,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
-      <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
+      <ul className="mt-5 grid gap-x-6 gap-y-2.5 border-t border-ch-line pt-5 xl:grid-cols-2">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
             <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-green" />
@@ -62,23 +62,25 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
     );
   }
   return (
-    <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
-      <div>
+    <div>
+      <div className="grid gap-x-14 gap-y-4 lg:grid-cols-2 lg:items-end">
         <h2 className={head}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
-        <p className={body}>Cancel any time — and live search keeps working either way.</p>
-        <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-ch-ink-2">
-          This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
-        </p>
-      </div>
-      <div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Plan name="Alerts" tier="base" features={BASE_FEATURES} />
-          <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
+        <div>
+          <p className="max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">Cancel any time — and live search keeps working either way.</p>
+          <p className="mt-3 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
+            This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
+          </p>
         </div>
-        <p className="mt-5 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
+      </div>
+      <div className="mt-10 grid gap-4 md:grid-cols-2">
+        <Plan name="Alerts" tier="base" features={BASE_FEATURES} />
+        <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
+      </div>
+      <div className="mt-6 grid gap-x-14 gap-y-2 lg:grid-cols-2">
+        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
           Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.
         </p>
-        <p className="mt-2 max-w-[60ch] text-[14px] leading-relaxed text-ch-muted">
+        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-muted">
           Prices in US dollars. Free for 7 days; cancel any time before you&apos;re charged. Launch pricing — your rate is locked in while you stay subscribed.
         </p>
       </div>

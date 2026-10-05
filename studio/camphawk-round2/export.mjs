@@ -8,8 +8,8 @@ const SRC = "studio/camphawk-round2/out/";
 const PICKS = [
   ["a1-hero-wide", "a1-hero-wide-bfl_flux_pro_1_1_ultra-1.png", [2560, 1440, 828]],
   ["a2-hero-tall", "a2-hero-tall-bfl_flux_pro_1_1_ultra-1.jpeg", [1170, 828]],
-  ["a3-site-post", "a3-site-post-bfl_flux_pro_1_1_ultra-3.jpeg", [1200, 600]],
-  ["a4-cta-morning", "a4-cta-morning-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  ["a3-site-dusk", "a3-site-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1200, 600]],
+  ["a4-cta-dusk", "a4-cta-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [2560, 1440, 828]],
   ["b1-poster-wide", "b1-poster-wide-recraft_recraft_v4_1-5.webp", [2560, 1440, 828]],
   ["b2-poster-tall", "b2-poster-tall-recraft_recraft_v4_1-1.webp", [1170, 828]],
   ["b3-watch", "b3-watch-recraft_recraft_v4_1-1.webp", [640]],

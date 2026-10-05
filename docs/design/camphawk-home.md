@@ -123,8 +123,8 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 |---|---|---|---|
 | a1-hero-wide | A | Flux 1.1 Ultra | Blue-hour more than golden hour; tent right, misty ridges left. Needs a left scrim for text. |
 | a2-hero-tall | A | Flux 1.1 Ultra | Calm dusk sky top half, tent lower third. |
-| a3-site-post | A | Flux 1.1 Ultra | Bare post at blue hour, lantern glow. First try painted a "1" on it. |
-| a4-cta-morning | A | Flux 1.1 Ultra | Mist on a lake, enamel mug lower left. |
+| a3-site-dusk | A | Flux 1.1 Ultra | Picnic table, lit lantern, glowing tent at dusk. Replaced the near-black site post (2026-10-05). |
+| a4-cta-dusk | A | Flux 1.1 Ultra | Lake at dusk, mug on warm-lit granite lower left. Replaced the daylight morning shot so the page has one light. |
 | b1-poster-wide | B | Recraft v4.1 | Hawk upper right, glowing tent by the river, sky upper left. |
 | b2-poster-tall | B | Recraft v4.1 | Hawk in a calm sky, canyon and river, tent at the foot. |
 | b3–b6 vignettes | B | Recraft v4.1 | Watch, pack, map, calendar on cream. Pack is the strongest; watch is scratchier. |

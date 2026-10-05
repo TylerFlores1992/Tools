@@ -59,7 +59,7 @@ function PhotoHeader({ visitor }: { visitor: Visitor }) {
 function AlertCard({ compact }: { compact?: boolean }) {
   return (
     <figure className={compact ? "rounded-[16px] bg-ch-card p-3.5 text-ch-ink" : "gh-rise w-[300px] rounded-[18px] bg-ch-card p-4 text-ch-ink shadow-[0_24px_60px_-24px_rgb(10_20_14/0.7)]"}>
-      <div className="flex items-center gap-2 text-ch-meta">
+      <div className="flex items-center gap-2 text-[13px]">
         <span className="grid size-7 place-items-center rounded-full bg-ch-ochre-soft text-ch-ochre-ink">
           <BellRing aria-hidden="true" className="size-4" />
         </span>
@@ -73,7 +73,7 @@ function AlertCard({ compact }: { compact?: boolean }) {
         In your Recreation.gov cart
       </p>
       {!compact && <a href="#" className="mt-2 inline-flex min-h-11 items-center text-[14px] font-bold text-ch-blue-deep underline underline-offset-4">Check out on Recreation.gov <span aria-hidden="true" className="ml-1">→</span></a>}
-      <figcaption className="mt-1 text-[12px] text-ch-muted">Example alert</figcaption>
+      <figcaption className="mt-1 text-[13px] text-ch-muted">Example alert</figcaption>
     </figure>
   );
 }
@@ -121,7 +121,7 @@ function PhoneProof() {
             <p className="text-[12px] text-ch-ink-2">Jul 18 to 21, 3 nights</p>
             <p className="mt-2 flex items-center gap-1 text-[12px] font-bold text-ch-blue-deep"><Check aria-hidden="true" className="size-3.5" /> Held in your cart</p>
           </div>
-          <span className={buttonClasses({ variant: "cart", size: "sm", fullWidth: true })}>Check out</span>
+          <span className="flex min-h-10 items-center justify-center rounded-ch-btn border-2 border-ch-blue text-[13px] font-bold text-ch-blue-deep">Check out</span>
         </div>
       </div>
     </div>
@@ -170,7 +170,7 @@ export function GoldenHour() {
 
         <section id="watch" className="scroll-mt-4 bg-ch-paper">
           <div className="mx-auto grid max-w-[var(--gh-max)] gap-10 px-5 py-[clamp(56px,9vw,120px)] sm:px-8 lg:grid-cols-[5fr_7fr] lg:gap-16">
-            <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[5/4] w-full self-start rounded-[22px] object-cover object-[50%_100%] lg:mt-20" />
+            <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/5] w-full self-start rounded-[22px] object-cover object-[50%_70%] lg:sticky lg:top-8" />
             <div>
               <h2 className="max-w-[16ch] font-ch-display text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ch-forest">What a watch does</h2>
               <dl className="mt-8 border-t border-ch-line">
@@ -226,7 +226,7 @@ export function GoldenHour() {
         </section>
 
         <section className="relative isolate overflow-hidden bg-ch-forest">
-          <Art art={ART.a4} sizes="100vw" className="absolute inset-0 -z-10 size-full object-cover object-[30%_50%]" />
+          <Art art={ART.a4} sizes="100vw" className="absolute inset-0 -z-10 size-full object-cover object-[20%_60%]" />
           <div aria-hidden="true" className="gh-band-scrim absolute inset-0 -z-10" />
           <div className="mx-auto flex min-h-[min(64vh,600px)] max-w-[var(--gh-max)] flex-col items-start justify-end px-5 py-14 sm:px-8 md:items-end md:justify-center md:text-right">
             <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.035em] text-ch-paper">Start with a search. It&apos;s free.</h2>
@@ -241,7 +241,7 @@ export function GoldenHour() {
         </section>
       </main>
       <footer className="bg-ch-forest">
-        <div className="mx-auto flex max-w-[var(--gh-max)] flex-wrap items-center justify-between gap-3 px-5 py-7 text-ch-meta text-ch-line sm:px-8">
+        <div className="mx-auto flex max-w-[var(--gh-max)] flex-wrap items-center justify-between gap-3 px-5 py-7 text-[14px] text-ch-line sm:px-8">
           <span>© 2026 CampHawk</span>
           <nav aria-label="Footer" className="flex gap-1">
             {FOOTER_LINKS.map((l) => <a key={l} href="#" className="flex min-h-11 items-center px-2 hover:text-ch-white hover:underline">{l}</a>)}
