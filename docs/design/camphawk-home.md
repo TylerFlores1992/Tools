@@ -94,12 +94,17 @@ AI comps (the text is garbled), so they set the art direction and craft level, n
 - Both drop the eyebrow labels, the all-caps chips, the mid-dot meta and the identical icon-card grid.
 
 ## Assets log
-| File | Direction | Source | License | Status |
-|---|---|---|---|---|
-| a1-hero-wide | A | owner, image model | owner | waiting |
-| a2-hero-tall | A | owner, image model | owner | waiting |
-| a3-site-post | A | owner, image model | owner | waiting |
-| a4-cta-morning | A | owner, image model | owner | waiting |
-| b1-poster-wide | B | owner, image model | owner | waiting |
-| b2-poster-tall | B | owner, image model | owner | waiting |
-| b3–b6 vignettes | B | owner, image model | owner | waiting |
+Generated 2026-10-05 through Vercel AI Gateway on free credit ($1.26 of $5; nothing bought).
+Script, prompts and picks: `studio/camphawk-round2/` (`generate.mjs`, `prompts.mjs`, `export.mjs`).
+Photos: `bfl/flux-pro-1.1-ultra` (raw mode). Paintings: `recraft/recraft-v4.1` (1280px max on free
+credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers are closed to free credit).
+
+| File | Direction | Source | Pick and notes |
+|---|---|---|---|
+| a1-hero-wide | A | Flux 1.1 Ultra | Blue-hour more than golden hour; tent right, misty ridges left. Needs a left scrim for text. |
+| a2-hero-tall | A | Flux 1.1 Ultra | Calm dusk sky top half, tent lower third. |
+| a3-site-post | A | Flux 1.1 Ultra | Bare post at blue hour, lantern glow. First try painted a "1" on it. |
+| a4-cta-morning | A | Flux 1.1 Ultra | Mist on a lake, enamel mug lower left. |
+| b1-poster-wide | B | Recraft v4.1 | Hawk upper right, glowing tent by the river, sky upper left. |
+| b2-poster-tall | B | Recraft v4.1 | Hawk in a calm sky, canyon and river, tent at the foot. |
+| b3–b6 vignettes | B | Recraft v4.1 | Watch, pack, map, calendar on cream. Pack is the strongest; watch is scratchier. |

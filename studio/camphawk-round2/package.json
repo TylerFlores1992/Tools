@@ -1,0 +1,10 @@
+{
+  "name": "camphawk-round2-art",
+  "private": true,
+  "type": "module",
+  "description": "Generates CampHawk round-2 art through Vercel AI Gateway. Not part of the site build.",
+  "dependencies": {
+    "@ai-sdk/gateway": "4.0.103",
+    "ai": "7.0.127"
+  }
+}
