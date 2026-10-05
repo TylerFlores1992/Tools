@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-02.*
+*Last updated: 2026-10-05.*
 
 ## At a glance
 
@@ -13,20 +13,24 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
+| CampHawk new looks | `/private/camphawk/looks` | Six mockups of the home page (same UI and palette, new backdrop and finish), plus the current design. Switch with **Look** in the lab bar. Waiting on the owner's pick. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (20 browser checks) ·
+**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (23 browser checks) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
 that `/private`, the lab and its old URL all land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **Pick the next CampHawk lab screen:** search results, campground detail, or watch setup.
+2. **Pick a CampHawk look** (or two to combine) at `/private/camphawk/looks`. Then refine it on
+   the home page and carry it to the next lab screen (search results, campground detail, or
+   watch setup).
 
 ## Next up (in order)
-1. **CampHawk lab:** the screen the owner picks. Port it from `/home/user/campsite-finder`
+1. **CampHawk lab:** refine the look the owner picks (art in `studio/camphawk-looks/art.js`,
+   finish in the "CampHawk lab looks" block of `globals.css`), then the screen they pick. Port it from `/home/user/campsite-finder`
    (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
    under `src/app/private/camphawk/`.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
@@ -82,6 +86,15 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   back to Private.
 - CampHawk's look is scoped to the lab: `ch-*` tokens in `globals.css`, Bitter + Nunito Sans
   loaded in the lab layout only, brand images in `public/private/camphawk/`.
+- **New looks** (`src/lab/camphawk/looks.ts`, `LookScene.tsx`, `/private/camphawk/looks`):
+  Ridgeline, Topo, Field guide, Park poster, Dusk, Painted, plus Current. `?look=<id>` picks one;
+  the switch keeps it in the URL. Each look changes only the backdrop and the card finish
+  (`.look[data-look=…]` rules in `globals.css`). Ridgeline and Dusk bend CampHawk's "no gradients
+  or glows" rule; the overview says so.
+- Look art is drawn in code from CampHawk's palette: `node studio/camphawk-looks/render.mjs
+  [name …]` writes `public/private/camphawk/looks/*.webp` (seeded, so renders repeat exactly).
+  Painted is CampHawk's own unused `hero-bg-alt.webp`. Dusk's hero type is light on `ch-ink`
+  (7.2:1 or better; those pairs aren't in the contrast test, which covers our tokens only).
 - Not ported yet: CampHawk's `--ch-sticky` scroll padding (anchor jumps can land under the
   phone header) and the account menu.
 
@@ -110,6 +123,10 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   `npm run e2e` locally, which starts its own server with a known password.
 - Next's route announcer repeats the new page's `<h1>` in a hidden live region after a client
   navigation, so `getByText(<h1 text>)` matches twice. Use `getByRole("heading", …)`.
+- A plain CSS class used only inside a compound selector (`.look[data-look=x]`) fails the tokens
+  test: give it a base rule of its own at the start of a line.
+- Playwright `fullPage` shots draw `position: fixed` backgrounds one viewport tall (the Topo map
+  stops partway). That's the screenshot, not the page; check by scrolling.
 - Text fields draw the focus ring on their frame: wrap the input in `.field` (globals.css).
 - From this container, `curl https://tylerflores.dev` fails but Node's `fetch` works, so
   `npm run smoke -- https://tylerflores.dev` is fine. To inspect the certificate:
