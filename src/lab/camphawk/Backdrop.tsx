@@ -1,9 +1,20 @@
 import type { Visitor } from "./data";
+import type { Look } from "./looks";
+import { LookPicture } from "./LookScene";
 
-// Ported from campsite-finder src/components/v2/BrandBackdrop.tsx ("camp" art). A fixed paper
-// ground; from sm up, the painted scene under a 45% paper scrim, a top wash and a bottom fade.
-// Off on phones and in the app.
-export function Backdrop({ visitor }: { visitor: Visitor }) {
+// "current": ported from campsite-finder src/components/v2/BrandBackdrop.tsx ("camp" art). A
+// fixed paper ground; from sm up, the painted scene under a 45% paper scrim, a top wash and a
+// bottom fade. Off on phones and in the app.
+// New looks: paper with a fine grain; "topo" lays its map behind the whole page. The other
+// looks draw their scene in the page itself (LookScene).
+export function Backdrop({ visitor, look }: { visitor: Visitor; look: Look }) {
+  if (look.id !== "current") {
+    return (
+      <div aria-hidden="true" className="look-grain pointer-events-none fixed inset-0 -z-10 bg-ch-paper">
+        {look.id === "topo" && <LookPicture look={look} eager className="look-map" />}
+      </div>
+    );
+  }
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 bg-ch-paper">
       {visitor !== "app" && (

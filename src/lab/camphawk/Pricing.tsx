@@ -22,7 +22,7 @@ const AUTOCART_FEATURES = [
 
 function PlanCard({ name, price, sub, features, highlight, cta }: { name: string; price: string; sub: string; features: string[]; highlight?: boolean; cta: ReactNode }) {
   return (
-    <div className={highlight ? "relative rounded-ch-card border-2 border-ch-green bg-ch-card p-4 shadow-ch-card" : "rounded-ch-card border border-ch-line bg-ch-card/70 p-4"}>
+    <div className={highlight ? "look-card relative rounded-ch-card border-2 border-ch-green bg-ch-card p-4 shadow-ch-card" : "look-card rounded-ch-card border border-ch-line bg-ch-card/70 p-4"}>
       {highlight && (
         <span className="absolute -top-2.5 left-4 rounded-ch-chip bg-ch-green px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[.08em] text-ch-white">Best chance to book</span>
       )}
