@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-05.*
+*Last updated: 2026-10-05 (later).*
 
 ## At a glance
 
@@ -24,13 +24,15 @@ that `/private`, the lab and its old URL all land on the sign-in page and privat
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **Pick a CampHawk look** (or two to combine) at `/private/camphawk/looks`. Then refine it on
-   the home page and carry it to the next lab screen (search results, campground detail, or
-   watch setup).
+2. **CampHawk new look, round 2:** the owner judged round 1 (`/private/camphawk/looks`) "pretty
+   terrible". Before building again, follow skill `design-direction`: the owner sends 3–6
+   reference sites they love and answers the brief questions; then 2–3 written directions,
+   real imagery (NPS public domain, Unsplash, or the owner's own/image-model pictures), and a
+   fresh-eyes critic agent before showing anything.
 
 ## Next up (in order)
-1. **CampHawk lab:** refine the look the owner picks (art in `studio/camphawk-looks/art.js`,
-   finish in the "CampHawk lab looks" block of `globals.css`), then the screen they pick. Port it from `/home/user/campsite-finder`
+1. **CampHawk lab:** round 2 of the new look via skill `design-direction` (round 1's lessons are
+   in its `tells.md`), then the next screen. Port it from `/home/user/campsite-finder`
    (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
    under `src/app/private/camphawk/`.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on

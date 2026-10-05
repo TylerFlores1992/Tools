@@ -7,6 +7,8 @@ description: How tylerflores.dev (Cyber Wolf) looks, reads and moves — the col
 
 **House style, not a generic taste guide.** When an instinct collides with a rule here, the rule
 wins. Values live in `src/app/globals.css`; meanings and allowed pairs in `src/design/tokens.ts`.
+For a NEW direction, redesign or mockup round, follow skill `design-direction` first (brief →
+references → written direction → real assets → fresh-eyes critique); this file is the house style.
 If this file and those disagree, **the code is right — fix this file.** Full brief:
 `docs/BRIEF.md`. Reference renders: `docs/design/`.
 
