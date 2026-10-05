@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-05 (round 2 built).*
+*Last updated: 2026-10-05 (CampHawk round 2 merged, PR #10).*
 
 ## At a glance
 
@@ -12,11 +12,17 @@
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
-| CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
-| CampHawk new looks | `/private/camphawk/looks` | Round 1: six backdrop mockups (critic 4/10). Superseded by round 2. |
-| CampHawk round 2 | `/private/camphawk/golden-hour` (picked), `/private/camphawk/trail-poster` | Lab mockups with generated art. A chosen; critic 7/10. Next: the open list below. |
+| CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
+| ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10. Being finished (see Next up). |
+| ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
+| ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
+
+**How to see the lab:** open https://tylerflores.dev/private and sign in with the Private
+password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB_PASSWORD` is set
+for Production only, and the sign-in fails closed without it. To review a branch before merging,
+add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
 **Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (24 browser checks) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
@@ -25,25 +31,20 @@ that `/private`, the lab and its old URL all land on the sign-in page and privat
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **CampHawk round 2: owner picked A "Golden hour"** (2026-10-05). Mockup only, in the lab;
-   camphawk.app is never changed from here. Page: `/private/camphawk/golden-hour`, code in
-   `src/lab/camphawk/round2/` (B "Trail poster" stays for reference). Critic: 7/10 "fix then
-   ship" before the last batch (portrait hero below 1024px with the tent above the docked search,
-   alert card clear of the tent, dusk art throughout, pricing and limits restructured); that batch
-   hasn't been re-scored. Open from the last critique, not done:
-   - The four "What a watch does" rows are the same icon + heading + text pattern.
-   - Section rhythm is even (all paper sections pad alike).
-   - The hero alert is an opaque card; the references put live UI "in" the picture (glass).
-   - Theming of selection, scrollbars and focus not yet checked (`ui-audit`).
-   - Checkout stays blue on purpose: CampHawk's buttons reserve blue for the Recreation.gov hand-off.
-   Art: `studio/camphawk-round2/` (`generate.mjs` via AI Gateway, `export.mjs` for picks and
-   grades). $1.50 of the $5 free credit used; GPT Image and Recraft pro tiers refuse free credit.
-   Save the owner's reference screenshots to `docs/design/refs/` next time.
+2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
+   branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab:** finish A (open list above), then mock the next screen in the same look. Port it from `/home/user/campsite-finder`
-   (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
-   under `src/app/private/camphawk/`.
+1. **CampHawk lab, finish Golden hour** (`src/lab/camphawk/round2/GoldenHour.tsx`). Open
+   from the last critique (7/10, "fix then ship"; its final batch is in but not re-scored):
+   - The four "What a watch does" rows repeat one icon + heading + text pattern.
+   - Every paper section has the same padding; vary the rhythm.
+   - The hero alert is an opaque card; the references put live UI in the picture (glass).
+   - Not yet audited: focus, selection and scrollbar theming (skill `ui-audit`).
+   - Keep checkout blue: CampHawk's buttons reserve blue for the Recreation.gov hand-off.
+   Then mock the next CampHawk screen in the same look. CampHawk's own code isn't in this
+   container: add its repo to the session read-only, never modify it, and port into
+   `src/lab/camphawk/` with fake data and `#` links.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
@@ -108,6 +109,23 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   (7.2:1 or better; those pairs aren't in the contrast test, which covers our tokens only).
 - Not ported yet: CampHawk's `--ch-sticky` scroll padding (anchor jumps can land under the
   phone header) and the account menu.
+
+### CampHawk round 2 (`src/lab/camphawk/round2/`, merged in PR #10)
+- Two full home pages, each a different composition, built by skill `design-direction`. Brief,
+  references, contracts and "As built" notes: `docs/design/camphawk-home.md`.
+- **Golden hour** (chosen): dusk photo hero with an example alert on it and search docked on
+  its edge; a forest "How it works" with a phone mock; pricing; limits; a dusk closing band.
+  Portrait hero below 1024px. **Trail poster**: kept for reference.
+- Same words, controls and three "View as" pricing states as the current home (`copy.ts`,
+  `round2/Pricing2.tsx`). Current home and its pricing are unchanged.
+- Art is generated, not drawn: `studio/camphawk-round2/` (`generate.mjs` through Vercel AI
+  Gateway with `AI_GATEWAY_API_KEY`, `prompts.mjs`, `export.mjs` for picks and grades; its own
+  `package.json`, `npm i` there once). Files in `public/private/camphawk/round2/`. Free credit
+  only: $1.50 of $5 used; GPT Image and Recraft pro tiers refuse free credit (403).
+- Guarded by an e2e check: both pages load their art, show search and switch all three pricing
+  views with a clean console.
+- Save the owner's reference screenshots to `docs/design/refs/` next round, so the critic can
+  see them.
 
 ## Measurements (2026-10-02)
 - Local production build, Lighthouse 12, mobile: home 98, calculator 98, workshop 99

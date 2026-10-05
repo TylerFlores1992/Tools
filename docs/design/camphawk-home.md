@@ -1,5 +1,9 @@
 # CampHawk home: round 2 directions
 
+> **Status (2026-10-05):** the owner picked **Direction A "Golden hour"**
+> (`/private/camphawk/golden-hour`). Direction B is kept for reference only. These are lab
+> mockups; camphawk.app is never changed from here. What's left: `docs/NEXT-SESSION.md`.
+
 Surface: CampHawk marketing home (`/private/camphawk`, lab). Mode: **Persuade**.
 Process: skill `design-direction`. Round 1 lessons and the critic's 4/10 are in its `tells.md`.
 
