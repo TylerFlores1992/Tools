@@ -26,11 +26,13 @@ that `/private`, the lab and its old URL all land on the sign-in page and privat
    still default to the old session branch.
 2. **CampHawk new look, round 2 (in progress):** brief, references and two written directions
    are in `docs/design/camphawk-home.md` (A "Golden hour", B "Trail poster"); prompts in
-   `docs/design/camphawk-image-prompts.md`. **Next:** generate the images. The owner is
-   reconnecting the Vercel connector with access to team `tyler-flores1992`, so a new session can
-   create an AI Gateway key (`create_api_keys`, purpose `ai-gateway`, quota cap $5, short expiry,
-   free credits only: never buy credits) and generate via `https://ai-gateway.vercel.sh/v1`
-   (pick a free-tier image model; check `/v1/credits` first). Fallback: the owner uploads the files to
+   `docs/design/camphawk-image-prompts.md`. **Next:** generate the images. The owner added an
+   AI Gateway key to the environment as `AI_GATEWAY_API_KEY` (2026-10-05; it loads in new
+   sessions). Never print it. Check `GET https://ai-gateway.vercel.sh/v1/credits` first, then use
+   free credits only (never buy credits or enable auto top-up), and generate with
+   `POST /v1/images/generations` (try a free-tier image model; a 402/403 means it isn't free).
+   If the key is missing, the Vercel connector with access to team `tyler-flores1992` can create
+   one (`create_api_keys`, purpose `ai-gateway`, quota cap $5, short expiry). Fallback: the owner uploads the files to
    `public/private/camphawk/round2/`. Then build both first viewports, run the critic agent
    (`critique.md`, must reach 7/10), and only then show the owner. Owner said layout may change;
    only functionality must stay.
