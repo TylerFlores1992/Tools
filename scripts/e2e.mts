@@ -291,6 +291,32 @@ try {
     await ctx.close();
   });
 
+  await check("lab round 2: both directions render their hero art, search and every pricing view, with a clean console", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.goto(`${BASE}/private/camphawk/golden-hour`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
+    for (const [path, hero] of [["golden-hour", ".gh-photo img"], ["trail-poster", ".tp-print img"]] as const) {
+      await p.goto(`${BASE}/private/camphawk/${path}`, { waitUntil: "networkidle" });
+      await p.getByRole("heading", { level: 1, name: /already booked/ }).waitFor();
+      const art = p.locator(hero).first();
+      assert.ok(await art.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), `${path}: hero art loaded`);
+      assert.match(await art.evaluate((img: HTMLImageElement) => img.currentSrc), /\/round2\/[ab][12]-/, `${path}: round-2 art`);
+      await p.getByRole("search").getByRole("button", { name: "Search campgrounds free" }).waitFor();
+      // The three pricing branches still switch, in the new layout.
+      await p.getByRole("heading", { level: 2, name: /Watching starts at/ }).waitFor();
+      await p.getByRole("radio", { name: "Subscriber" }).click();
+      await p.getByRole("heading", { level: 2, name: /all set/ }).waitFor();
+      await p.getByRole("radio", { name: "In the app" }).click();
+      await p.getByRole("heading", { level: 2, name: /needs a subscription/ }).waitFor();
+    }
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab looks: the Look menu switches the page and keeps the choice in the URL", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private/camphawk`);

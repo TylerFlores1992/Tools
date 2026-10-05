@@ -7,13 +7,13 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 // Same three branches, driven by the lab's visitor switch instead of Clerk and the native
 // bridge: signed out (the pitch), subscriber (navigation, never prices), app (no prices).
 
-const BASE_FEATURES = [
+export const BASE_FEATURES = [
   `Watch up to ${WATCH_LIMIT} campgrounds at once`,
   "Checked every 15 seconds, around the clock",
   "Text, push and email the moment a site opens",
   "Flexible dates — any N nights in a window",
 ];
-const AUTOCART_FEATURES = [
+export const AUTOCART_FEATURES = [
   "Everything in Alerts",
   "An opening goes straight into your Recreation.gov cart",
   "The site is held while you get to your phone",

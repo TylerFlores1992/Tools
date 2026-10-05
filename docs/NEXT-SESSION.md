@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-05 (later).*
+*Last updated: 2026-10-05 (round 2 built).*
 
 ## At a glance
 
@@ -13,26 +13,35 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
-| CampHawk new looks | `/private/camphawk/looks` | Six mockups of the home page (same UI and palette, new backdrop and finish), plus the current design. Switch with **Look** in the lab bar. Waiting on the owner's pick. |
+| CampHawk new looks | `/private/camphawk/looks` | Round 1: six backdrop mockups (critic 4/10). Superseded by round 2. |
+| CampHawk round 2 | `/private/camphawk/golden-hour` (picked), `/private/camphawk/trail-poster` | Lab mockups with generated art. A chosen; critic 7/10. Next: the open list below. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (23 browser checks) ·
+**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (24 browser checks) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
 that `/private`, the lab and its old URL all land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
-2. **CampHawk new look, round 2:** the owner judged round 1 (`/private/camphawk/looks`) "pretty
-   terrible". Before building again, follow skill `design-direction`: the owner sends 3–6
-   reference sites they love and answers the brief questions; then 2–3 written directions,
-   real imagery (NPS public domain, Unsplash, or the owner's own/image-model pictures), and a
-   fresh-eyes critic agent before showing anything.
+2. **CampHawk round 2: owner picked A "Golden hour"** (2026-10-05). Mockup only, in the lab;
+   camphawk.app is never changed from here. Page: `/private/camphawk/golden-hour`, code in
+   `src/lab/camphawk/round2/` (B "Trail poster" stays for reference). Critic: 7/10 "fix then
+   ship" before the last batch (portrait hero below 1024px with the tent above the docked search,
+   alert card clear of the tent, dusk art throughout, pricing and limits restructured); that batch
+   hasn't been re-scored. Open from the last critique, not done:
+   - The four "What a watch does" rows are the same icon + heading + text pattern.
+   - Section rhythm is even (all paper sections pad alike).
+   - The hero alert is an opaque card; the references put live UI "in" the picture (glass).
+   - Theming of selection, scrollbars and focus not yet checked (`ui-audit`).
+   - Checkout stays blue on purpose: CampHawk's buttons reserve blue for the Recreation.gov hand-off.
+   Art: `studio/camphawk-round2/` (`generate.mjs` via AI Gateway, `export.mjs` for picks and
+   grades). $1.50 of the $5 free credit used; GPT Image and Recraft pro tiers refuse free credit.
+   Save the owner's reference screenshots to `docs/design/refs/` next time.
 
 ## Next up (in order)
-1. **CampHawk lab:** round 2 of the new look via skill `design-direction` (round 1's lessons are
-   in its `tells.md`), then the next screen. Port it from `/home/user/campsite-finder`
+1. **CampHawk lab:** finish A (open list above), then mock the next screen in the same look. Port it from `/home/user/campsite-finder`
    (read-only; never modify that repo) into `src/lab/camphawk/`, with fake data and `#` links,
    under `src/app/private/camphawk/`.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
@@ -108,6 +117,12 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   3.6 s across runs). Use PageSpeed Insights from a real browser.
 
 ## Gotchas
+- Lab headings: `.camphawk h1` uses `var(--font-ch-display)`, which `@theme inline` never emits, so
+  headings on the lab's Current page render in Nunito. Round 2 names Bitter directly. Check whether
+  camphawk.app has the same bug before "fixing" Current.
+- AI Gateway's OpenAI-style `/v1/images/generations` ignores `aspect_ratio`; use the AI SDK's
+  `generateImage({ aspectRatio })` (studio/camphawk-round2/ has its own package.json).
+- Recraft (free tier) tops out at 1280px; flat poster art survives a 2x Lanczos upscale, photos wouldn't.
 - `create-next-app` refuses the folder name "Tools" (capitals): scaffold elsewhere, copy in.
 - `LayoutProps` needs `next typegen` before `tsc` on a clean checkout (`typecheck` does it).
 - `pkill -f 'next start'` kills your own shell. Use `pkill -f '[n]ext-server'`.

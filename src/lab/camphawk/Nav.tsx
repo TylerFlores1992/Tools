@@ -9,10 +9,10 @@ import type { Visitor } from "./data";
 // Ported from campsite-finder src/components/v2/V2Nav.tsx (2026-10-02), minus Clerk and the
 // admin menu: the account controls follow the lab's visitor switch instead. Links stay inside
 // the lab (#), so nothing here can reach the real app.
-const LINKS = ["Watches", "New watch", "Explore"] as const;
+export const LINKS = ["Watches", "New watch", "Explore"] as const;
 const COLLAPSE_AT = 96, EXPAND_AT = 8, HEADER_ANIM_MS = 260;
 
-function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: boolean }) {
+export function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: boolean }) {
   if (visitor === "subscriber") {
     return (
       <span className="grid size-8 place-items-center rounded-full bg-ch-green-soft text-ch-meta font-extrabold text-ch-green-deep ring-2 ring-ch-card" aria-label="Account (signed in)">
@@ -41,7 +41,8 @@ function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: bool
   );
 }
 
-export function Nav({ visitor }: { visitor: Visitor }) {
+/** `plainPhone`: a paper phone header with the logo, in place of the painted band (round 2, B). */
+export function Nav({ visitor, plainPhone }: { visitor: Visitor; plainPhone?: boolean }) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -61,8 +62,22 @@ export function Nav({ visitor }: { visitor: Visitor }) {
 
   return (
     <>
+      {plainPhone && (
+        <div className="sticky top-0 z-30 border-b border-ch-line bg-ch-card sm:hidden" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+          <div className="flex items-center gap-2.5 px-4 py-2.5">
+            <Image src="/private/camphawk/logo-badge.png" alt="" width={30} height={30} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
+            <span className="font-ch-display text-[20px] font-extrabold tracking-[-.025em]">CampHawk</span>
+            <div className="ml-auto flex items-center gap-2"><AccountControl visitor={visitor} /></div>
+          </div>
+          <nav aria-label="Main" className="flex">
+            {LINKS.map((label) => (
+              <a key={label} href="#" className="flex min-h-11 flex-1 items-center justify-center whitespace-nowrap text-[13px] font-bold text-ch-muted hover:text-ch-ink">{label}</a>
+            ))}
+          </nav>
+        </div>
+      )}
       {/* Phone: the painted band and the tabs pin together; scrolling shrinks the band. */}
-      <div className="sticky top-0 z-30 sm:hidden">
+      <div className={cx("sticky top-0 z-30 sm:hidden", plainPhone && "hidden")}>
         <div
           className="relative overflow-hidden bg-ch-forest transition-[height] duration-[260ms] ease-out motion-reduce:transition-none"
           style={{ height: `calc(${collapsed ? "var(--ch-header-min)" : "var(--ch-header)"} + env(safe-area-inset-top))`, paddingTop: "env(safe-area-inset-top)" }}
