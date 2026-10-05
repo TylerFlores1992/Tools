@@ -18,12 +18,26 @@ const PICKS = [
   ["b6-calendar", "b6-calendar-recraft_recraft_v4_1-1.webp", [640]],
 ];
 
+// Vignettes are painted on cream: key that cream out to transparency (soft edge), so they sit on
+// any paper without a visible square.
+async function keyed(file) {
+  const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const at = (x, y) => (y * info.width + x) * 4;
+  const bg = [0, 1, 2].map((c) => [at(4, 4), at(info.width - 5, 4), at(4, info.height - 5), at(info.width - 5, info.height - 5)].reduce((t, i) => t + data[i + c], 0) / 4);
+  for (let i = 0; i < data.length; i += 4) {
+    const d = Math.max(...[0, 1, 2].map((c) => Math.abs(data[i + c] - bg[c])));
+    data[i + 3] = d <= 10 ? 0 : d >= 26 ? 255 : Math.round(((d - 10) / 16) * 255);
+  }
+  return sharp(data, { raw: info });
+}
+
 for (const [name, file, widths] of PICKS) {
+  const vignette = /^b[3-6]-/.test(name);
   for (const w of widths) {
-    const info = await sharp(SRC + file)
+    const info = await (vignette ? await keyed(SRC + file) : sharp(SRC + file))
       .resize({ width: w, kernel: "lanczos3" })
       .sharpen(w > 1280 && file.endsWith(".webp") ? { sigma: 0.6 } : undefined)
-      .webp({ quality: name.startsWith("b") ? 82 : 78 })
+      .webp({ quality: name.startsWith("b") ? 82 : 78, alphaQuality: 90 })
       .toFile(`${OUT}${name}-${w}.webp`);
     console.log(`${name}-${w}.webp ${info.width}x${info.height} ${(info.size / 1024).toFixed(0)} KB`);
   }

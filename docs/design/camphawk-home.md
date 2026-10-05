@@ -85,6 +85,26 @@ AI comps (the text is garbled), so they set the art direction and craft level, n
 - **Signature moment:** the poster's hawk drifts a few pixels with scroll (reduced motion: still).
 - **Assets:** B1 poster (landscape), B2 poster (portrait), B3–B6 spot vignettes (square).
 
+## As built (2026-10-05)
+Pages: `/private/camphawk/golden-hour` (A) and `/private/camphawk/trail-poster` (B), code in
+`src/lab/camphawk/round2/`. Both keep every function: search, watch, the three pricing views
+(View as), the limits and the footer links.
+
+Changes from the contracts above, and why:
+- **A's light is dusk, not golden hour.** The model gave blue hour with a lantern-lit tent; the tent
+  is the one warm accent, which fits the color strategy. One photo (A1) serves every breakpoint,
+  cropped toward the tent on phones, so there is one tent. On phones, search and a compact alert
+  sit inside the hero; on desktop the alert sits on the photo and search docks across its edge.
+- **B's first viewport is a hung print, not a full-bleed poster.** The poster's sky could not hold
+  the headline and the actions. The headline and a real search field sit on paper; the tall poster
+  hangs beside them with an example alert pinned to it like a ticket stub (the product proof).
+  The wide poster closes the page as a second print. The phone header is plain paper, so the page
+  doesn't show two hawks in two styles.
+- **Pricing** in both is `round2/Pricing2.tsx`: same branches, prices and words, without caps
+  chips or the mid-dot, and at reading sizes.
+- **Signature motion:** A's alert card rises once; B's print settles and the ticket pins on.
+  Reduced motion shows both at rest.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the

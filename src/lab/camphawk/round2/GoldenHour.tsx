@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { BellRing, Check, Search, ShoppingCart } from "lucide-react";
+import { BellRing, Check, Search } from "lucide-react";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
 import { FEATURES, FOOTER_LINKS, HEADLINE, INTRO, LIMITS, STEPS } from "../copy";
 import { DirectionLinks, LabBar } from "../LabBar";
 import { LINKS } from "../Nav";
-import { PricingSection } from "../Pricing";
-import { Art, ArtPair, ART } from "./Art";
+import { Art, ART } from "./Art";
+import { Pricing2 } from "./Pricing2";
 
 // Round 2, direction A "Golden hour" (docs/design/camphawk-home.md): the moment a site opens, at
 // the hour people dream about camping. The product proof (a live alert) sits on the photo, and
@@ -56,9 +56,9 @@ function PhotoHeader({ visitor }: { visitor: Visitor }) {
 }
 
 /** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
-function AlertCard() {
+function AlertCard({ compact }: { compact?: boolean }) {
   return (
-    <figure className="gh-rise w-[300px] rounded-[18px] bg-ch-card p-4 text-ch-ink shadow-[0_24px_60px_-24px_rgb(10_20_14/0.7)]">
+    <figure className={compact ? "rounded-[16px] bg-ch-card p-3.5 text-ch-ink" : "gh-rise w-[300px] rounded-[18px] bg-ch-card p-4 text-ch-ink shadow-[0_24px_60px_-24px_rgb(10_20_14/0.7)]"}>
       <div className="flex items-center gap-2 text-ch-meta">
         <span className="grid size-7 place-items-center rounded-full bg-ch-ochre-soft text-ch-ochre-ink">
           <BellRing aria-hidden="true" className="size-4" />
@@ -66,17 +66,14 @@ function AlertCard() {
         <span className="font-extrabold">A site just opened</span>
         <span className="ml-auto text-ch-muted">14 sec ago</span>
       </div>
-      <p className="mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]">Upper Pines, site 042</p>
+      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, site 042</p>
       <p className="mt-0.5 text-[13.5px] text-ch-ink-2">Yosemite National Park. Jul 18 to 21, 3 nights.</p>
-      <p className="mt-3 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13px] font-bold text-ch-blue-deep">
+      <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
         <Check aria-hidden="true" className="size-4 shrink-0" />
         In your Recreation.gov cart
       </p>
-      <a href="#" className={buttonClasses({ variant: "cart", size: "sm", fullWidth: true, className: "mt-2.5" })}>
-        <ShoppingCart aria-hidden="true" className="size-4" />
-        Check out
-      </a>
-      <figcaption className="mt-2.5 text-center text-ch-fine text-ch-muted">Example alert</figcaption>
+      {!compact && <a href="#" className="mt-2 inline-flex min-h-11 items-center text-[14px] font-bold text-ch-blue-deep underline underline-offset-4">Check out on Recreation.gov <span aria-hidden="true" className="ml-1">→</span></a>}
+      <figcaption className="mt-1 text-[12px] text-ch-muted">Example alert</figcaption>
     </figure>
   );
 }
@@ -84,7 +81,7 @@ function AlertCard() {
 /** Search, docked across the hero's bottom edge. The lab never searches; it submits nowhere. */
 function SearchDock() {
   return (
-    <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-[20px] bg-ch-card p-3 shadow-[0_30px_60px_-30px_rgb(10_20_14/0.55)] sm:p-4 md:grid-cols-[1.2fr_1fr_auto] md:items-end">
+    <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-[20px] bg-ch-card p-3 shadow-[0_30px_60px_-30px_rgb(10_20_14/0.55)] sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">Where</span>
         <input type="text" name="where" placeholder="Campground, park or town" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
@@ -93,7 +90,7 @@ function SearchDock() {
         <span className="text-ch-meta font-extrabold text-ch-ink-2">When</span>
         <input type="text" name="when" placeholder="Any 3 nights in July" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
-      <button type="submit" className={buttonClasses({ size: "lg", className: "min-h-12 px-6 py-0" })}>
+      <button type="submit" className={buttonClasses({ size: "lg", className: "min-h-12 whitespace-nowrap px-6 py-0" })}>
         <Search aria-hidden="true" className="size-4.5" />
         Search campgrounds free
       </button>
@@ -107,7 +104,7 @@ function PhoneProof() {
     <div aria-label="Example: the alert on a phone, then the site in your cart" role="img" className="mx-auto w-[290px] rounded-[44px] bg-ch-ink p-2.5 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.8)]">
       <div className="overflow-hidden rounded-[36px] bg-ch-paper text-ch-ink">
         <div className="relative h-[230px] overflow-hidden">
-          <Art art={ART.a2} sizes="290px" className="absolute inset-0 size-full object-cover object-[50%_30%]" />
+          <Art art={ART.a1} sizes="290px" className="absolute inset-0 size-full origin-[74%_92%] scale-[2.2] object-cover object-[74%_92%]" />
           <div className="absolute inset-0 bg-linear-to-b from-ch-forest/30 to-ch-forest/70" />
           <p className="relative pt-7 text-center font-ch-display text-[52px] font-bold leading-none text-ch-paper">6:02</p>
           <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-ch-card p-3 text-left">
@@ -140,16 +137,16 @@ export function GoldenHour() {
       </LabBar>
       <main id="main">
         <section className="relative isolate bg-ch-forest">
-          <ArtPair wide={ART.a1} tall={ART.a2} eager className="gh-photo" />
+          <Art art={ART.a1} eager sizes="100vw" className="gh-photo" />
           <div aria-hidden="true" className="gh-scrim absolute inset-0" />
           <PhotoHeader visitor={visitor} />
-          <div className="relative mx-auto grid max-w-[var(--gh-max)] px-5 pb-10 pt-[clamp(40px,9vh,112px)] sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-10">
+          <div className="relative mx-auto grid max-w-[var(--gh-max)] px-5 pb-6 pt-[clamp(28px,9vh,112px)] sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-10 lg:pb-10">
             <div>
               <h1 className="max-w-[15ch] text-balance font-ch-display text-[clamp(40px,5.2vw,76px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">
                 {HEADLINE}
               </h1>
-              <p className="mt-6 max-w-[44ch] text-[17px] leading-relaxed text-ch-line sm:text-[18px]">{INTRO}</p>
-              <a href="#watch" className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-paper underline decoration-ch-ochre decoration-2 underline-offset-[6px] hover:decoration-ch-paper">
+              <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-ch-line sm:text-[18px]">{INTRO}</p>
+              <a href="#watch" className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-paper underline decoration-ch-ochre decoration-2 underline-offset-[6px] hover:decoration-ch-paper">
                 See what a watch does <span aria-hidden="true">↓</span>
               </a>
             </div>
@@ -157,20 +154,23 @@ export function GoldenHour() {
               <AlertCard />
             </div>
           </div>
-          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 sm:px-8">
-            <div className="translate-y-1/2">
+          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-5 sm:px-8 lg:pb-0">
+            <div className="lg:translate-y-1/2">
               <SearchDock />
+            </div>
+            <div className="mt-3 lg:hidden">
+              <AlertCard compact />
             </div>
           </div>
         </section>
 
-        <div className="bg-ch-paper pt-[clamp(150px,22vw,96px)] md:pt-24">
-          <p className="mx-auto max-w-[var(--gh-max)] px-5 text-[13.5px] leading-relaxed text-ch-muted sm:px-8">{COVERAGE_SENTENCE}</p>
+        <div className="bg-ch-paper pt-10 lg:pt-28">
+          <p className="mx-auto max-w-[var(--gh-max)] px-5 text-[14px] leading-relaxed text-ch-muted sm:px-8"><span className="block max-w-[72ch]">{COVERAGE_SENTENCE}</span></p>
         </div>
 
         <section id="watch" className="scroll-mt-4 bg-ch-paper">
           <div className="mx-auto grid max-w-[var(--gh-max)] gap-10 px-5 py-[clamp(56px,9vw,120px)] sm:px-8 lg:grid-cols-[5fr_7fr] lg:gap-16">
-            <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/5] w-full rounded-[22px] object-cover object-[50%_60%] lg:aspect-auto lg:h-full" />
+            <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[5/4] w-full self-start rounded-[22px] object-cover object-[50%_100%] lg:mt-20" />
             <div>
               <h2 className="max-w-[16ch] font-ch-display text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ch-forest">What a watch does</h2>
               <dl className="mt-8 border-t border-ch-line">
@@ -210,7 +210,7 @@ export function GoldenHour() {
 
         <section id="pricing" className="scroll-mt-4 bg-ch-paper">
           <div className="mx-auto max-w-[var(--gh-max)] px-5 py-[clamp(56px,9vw,112px)] sm:px-8">
-            <PricingSection visitor={visitor} bare />
+            <Pricing2 visitor={visitor} />
           </div>
         </section>
 
