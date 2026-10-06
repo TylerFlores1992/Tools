@@ -58,8 +58,14 @@ function SearchDock({ visitor }: { visitor: Visitor }) {
       action={ROUTES.explore}
       onSubmit={(e) => {
         e.preventDefault();
-        const place = String(new FormData(e.currentTarget).get("where") ?? "").trim();
-        router.push(withVisitor(`${ROUTES.explore}${place ? `?place=${encodeURIComponent(place)}` : ""}`, visitor));
+        const form = new FormData(e.currentTarget);
+        const q = new URLSearchParams();
+        const place = String(form.get("where") ?? "").trim();
+        const when = String(form.get("when") ?? "");
+        if (place) q.set("place", place);
+        if (when) q.set("when", when);
+        // Both fields carry over to Explore (the free-text "When" used to be dropped on the floor).
+        router.push(withVisitor(`${ROUTES.explore}${q.size ? `?${q}` : ""}`, visitor));
       }}
       className="grid gap-3 rounded-ch-card bg-ch-card p-3 shadow-ch-pop sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
       <label className="grid gap-1.5 px-1">
@@ -68,7 +74,12 @@ function SearchDock({ visitor }: { visitor: Visitor }) {
       </label>
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">When</span>
-        <input type="text" name="when" placeholder="3 nights in July…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
+        <select name="when" defaultValue="" className="min-h-12 cursor-pointer rounded-ch-input border border-ch-line bg-ch-paper px-3 text-[16px] text-ch-ink">
+          <option value="">Any dates</option>
+          <option value="tonight">Tonight</option>
+          <option value="weekend">This weekend</option>
+          <option value="flexible">Flexible: a few nights in a window</option>
+        </select>
       </label>
       <button type="submit" className={buttonClasses({ className: "h-12 whitespace-nowrap px-6 text-[17px]" })}>
         <Search aria-hidden="true" className="size-4.5" />

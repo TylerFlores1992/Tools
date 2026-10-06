@@ -20,7 +20,7 @@ import { HOLD, releaseLong } from "./alert-data";
 // - Revisiting a confirmed hold says so ("no need to tap again").
 // Lab changes, from CampHawk's own rules: the undo is a neutral button (CampHawk's is green, which
 // means "gets you a site"); the result carries a shape and a word (a tick or a warning triangle,
-// not ✅/⚠️ emoji); "Yes — hold it for me" is the blue provider hand-off, not green; a muted
+// not ✅/⚠️ emoji); "Yes — hold it for me" is green, because it's the tap that gets you the site; a muted
 // site is named by its site name, never the provider's id; one
 // release-time format.
 
@@ -39,8 +39,8 @@ const RESULTS: Partial<Record<Action, Result>> = {
   reopen: { ok: true, title: "Done", message: `Watching ${CG} again.`, inverse: ["Stop watching", "stop"] },
   keep: { ok: true, title: "Done", message: `Kept ${CG} active.`, inverse: ["Stop watching", "stop"] },
   mute: { ok: true, title: "Done", message: `Muted Site 101 at ${CG}. You'll still hear about other sites.` },
-  "bad-link": { ok: false, title: "Hmm", message: "This link is invalid or has expired." },
-  unknown: { ok: false, title: "Hmm", message: "Unknown action." },
+  "bad-link": { ok: false, title: "That link didn't work", message: "It has expired or was already used. Open CampHawk to manage your watches." },
+  unknown: { ok: false, title: "That link didn't work", message: "We couldn't tell what this link was for. Open CampHawk to manage your watches." },
   "hold-not-entitled": { ok: false, title: "We didn’t hold this one", message: "Holding a site at release time is part of the Auto-Cart plan. Your alerts carry on as normal — you can still book it yourself the moment it opens." },
   "hold-unchecked": { ok: false, title: "We couldn’t check just now", message: "We couldn’t read this hold’s status. Try the link again in a minute — nothing has been changed." },
   "hold-in-cart": { ok: true, title: "It’s in our cart", message: `We got ${HOLD.unit} at ${HOLD.campground} into our cart. Open the alert we sent when we carted it to claim it — we hold it for up to 60 minutes, so do it soon.` },

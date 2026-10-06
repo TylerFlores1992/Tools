@@ -68,21 +68,21 @@ export function Welcome() {
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
             <section aria-labelledby="w-email" className="mt-7 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h3 id="w-email" className="text-[17px] font-extrabold text-ch-ink">Email alerts</h3>
+              <h2 id="w-email" className="text-[17px] font-extrabold text-ch-ink">Email alerts</h2>
               {/* Email is always on, as Settings says (CampHawk's Welcome has an email checkbox that
                   Settings then ignores; the lab keeps one model). */}
               <p className="mt-2 flex items-start gap-3 text-[15px] leading-relaxed text-ch-ink-2"><Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0" /><span>Always on. Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</span></p>
             </section>
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h3 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts</h3>
+              <h2 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts</h2>
               <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text is what actually wakes you at 6am.</p>
               <SmsAlerts visitor={visitor} />
             </section>
 
             {subscribed && plan === "autocart" && (
               <section aria-labelledby="w-cart" className="mt-4 rounded-ch-input border-2 border-ch-blue bg-ch-blue-soft p-4 sm:p-5">
-                <h3 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up auto-cart</h3>
+                <h2 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up auto-cart</h2>
                 <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
                 <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", size: "sm", className: "mt-3 min-h-11 px-4" })}>Sign in to Recreation.gov</Link>
               </section>

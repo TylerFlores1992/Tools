@@ -59,7 +59,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
         <label htmlFor="rg-pass" className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov password</label>
         <span className="relative">
           <input id="rg-pass" type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={busy} className={cx(field, "pr-20")} />
-          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label={show ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
+          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label="Show password" className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
         </span>
       </div>
       {/* CampHawk shows a pre-ticked "(required)" checkbox here; one you can't usefully untick is a

@@ -35,7 +35,7 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
         <div className="max-w-[24rem]">
           <h1 className="text-[24px] font-extrabold text-ch-ink">CampHawk hit an error</h1>
           <p className="mt-3 text-[16px] leading-relaxed text-ch-ink-2">Something went wrong loading the app. Please try again.</p>
-          <button type="button" className={buttonClasses({ variant: "quiet", className: "mt-6 px-6" })}>Try again</button>
+          <button type="button" onClick={() => window.location.reload()} className={buttonClasses({ variant: "quiet", className: "mt-6 px-6" })}>Try again</button>
         </div>
       </div>
     );
@@ -54,7 +54,7 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
             : <>We hit an unexpected error. Try again — if it keeps happening, email <a href="mailto:alerts@camphawk.app" className="font-bold text-ch-paper underline underline-offset-[3px]">alerts@camphawk.app</a>.</>}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {!notFound && <button type="button" className={buttonClasses({ variant: "quiet", className: "px-6" })}>Try again</button>}
+          {!notFound && <button type="button" onClick={() => window.location.reload()} className={buttonClasses({ variant: "quiet", className: "px-6" })}>Try again</button>}
           {/* A hard navigation on purpose: when the client has failed, the router may be what broke. */}
           <a href={withVisitor(ROUTES.home, visitor)} className={buttonClasses({ variant: "quiet", className: "px-6" })}>{notFound ? "Back to home" : "Home"}</a>
         </div>

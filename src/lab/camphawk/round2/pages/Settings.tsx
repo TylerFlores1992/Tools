@@ -6,7 +6,7 @@ import { AlertTriangle, Bell, Loader2, Mail } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
-import { pricePhrase, type Visitor } from "../../data";
+import { pricePhrase, priceShort, type Visitor } from "../../data";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
 import { A, LabNote, LabPage } from "../LabPage";
@@ -116,8 +116,8 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            <a href="#" className={sm()}>Auto-Cart — $10 / month</a>
-            <a href="#" className={sm("ink")}>Auto-Cart — $50 / year</a>
+            <a href="#" className={sm()}>Auto-Cart — {priceShort("autocart", "monthly").replace("/mo", " / month")}</a>
+            <a href="#" className={sm("ink")}>Auto-Cart — {priceShort("autocart", "yearly").replace("/yr", " / year")}</a>
           </div>
         )}
       </>
@@ -300,7 +300,7 @@ export function Settings() {
           return (
             <div role="status" className="grid max-w-[760px] gap-5">
               <span className="sr-only">Loading your settings…</span>
-              {[0, 1, 2].map((i) => <div key={i} className="h-40 animate-pulse rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card motion-reduce:animate-none" />)}
+              {[0, 1, 2].map((i) => <div key={i} aria-hidden="true" className="h-40 animate-pulse rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card motion-reduce:animate-none" />)}
             </div>
           );
         }

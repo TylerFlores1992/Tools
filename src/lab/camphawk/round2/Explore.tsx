@@ -19,6 +19,7 @@ import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, Subsc
 import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { LabNote } from "./LabPage";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
@@ -105,7 +106,7 @@ function AccountLine({ visitor }: { visitor: Visitor }) {
   return (
     <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">
       {visitor === "signed-out" ? "Searching is free and needs no account. Watches, text alerts and auto-cart need one. " : "Watches, text alerts and auto-cart come with a subscription. "}
-      <a href="#" className={link}>{visitor === "signed-out" ? "Start a 7-day free trial" : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
+      <a href="#" className={link}>{visitor === "signed-out" ? `Start a ${TRIAL_DAYS}-day free trial` : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
     </p>
   );
 }
@@ -491,7 +492,9 @@ export function Explore() {
             {error && <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">{error}</p>}
           </form>
 
-          <section aria-label="Results" aria-live="polite" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
+          <section aria-label="Results" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
+            {/* One short line is announced, not every card in the list. */}
+            <p role="status" className="sr-only">{loading ? "Searching…" : results === null || !searched ? "" : openCount > 0 ? `${results.length} campgrounds, ${openCount} with openings` : `${results.length} campgrounds, none with openings for those dates`}</p>
             <StatusBox visitor={visitor} />
             {results === null && !loading && <FirstRun visitor={visitor} />}
             {loading && <ResultsSkeleton />}
@@ -528,7 +531,7 @@ export function Explore() {
                     <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
                     <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we&apos;ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
-                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start 7-day free trial</a>
+                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
                       : <Link href={withVisitor(`${ROUTES.newWatch}${searched.range.start && searched.range.end ? `?start=${searched.range.start}&end=${searched.range.end}` : ""}`, visitor)} className={buttonClasses({ className: "px-5" })}>Create a watch</Link>}
                   </div>
                 )}

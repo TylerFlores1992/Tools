@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../Pricing";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor } from "../data";
 
 // Round-2 pricing: the same three branches, prices and words as Pricing.tsx, set as a section of
@@ -28,7 +29,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
           </li>
         ))}
       </ul>
-      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start 7-day free trial</a>
+      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
     </div>
   );
 }

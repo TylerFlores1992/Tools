@@ -27,8 +27,9 @@ import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
 // - A rejected date edit stays open with the reason, so the typed dates aren't lost.
 // - Remove is last, with an in-page confirm.
 // Lab changes, from CampHawk's own rules: a muted site is neutral (CampHawk's "Muted" is a red
-// button); the queued-hold panel is ochre ("you asked for this"), not green; "Hold it" and
-// "Book" are the blue provider hand-off; "Back to watches" is a paper link on the band, not green; server messages are
+// button); the queued-hold panel is ochre ("you asked for this"), not green; "Hold it" is
+// green (it's how you get the site) and "Book" the blue provider hand-off; "Back to watches" is a
+// paper link on the band; server messages are
 // sentences, not "startDate must be a date like 2026-09-04"; one release-time format.
 
 type Link_ = "works" | "expired" | "fails";

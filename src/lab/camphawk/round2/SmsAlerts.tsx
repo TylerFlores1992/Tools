@@ -24,6 +24,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
   const [tried, setTried] = useState(false);
+  const [announce, setAnnounce] = useState("");
 
   if (start === "loading") {
     return (
@@ -47,13 +48,13 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
     }
     setBusy("save");
     setError(null);
-    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setDone(true); window.setTimeout(() => setDone(false), 2000); }, 600);
+    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setDone(true); setAnnounce(`Text alerts on for ${phone.trim()}.`); window.setTimeout(() => setDone(false), 2000); }, 600);
   };
   const turnOff = () => {
     setBusy("off");
     setError(null);
     // Off only once the server says so (a 500 used to show "off" while texts kept going).
-    window.setTimeout(() => { setBusy(null); setSaved(null); setPhone(""); setAgreed(false); }, 600);
+    window.setTimeout(() => { setBusy(null); setSaved(null); setPhone(""); setAgreed(false); setAnnounce("Text alerts are off."); }, 600);
   };
 
   return (
@@ -106,6 +107,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
           )}
         </div>
       )}
+      <p role="status" className="sr-only">{announce}</p>
       {error && <p role="alert" className="text-[14px] text-ch-alert-deep">{error}</p>}
     </div>
   );

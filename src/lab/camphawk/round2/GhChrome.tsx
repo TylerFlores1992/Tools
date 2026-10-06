@@ -37,7 +37,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
           {hasAccount(visitor) ? (
-            <span className="grid size-9 place-items-center rounded-full bg-ch-paper text-ch-meta font-extrabold text-ch-forest" aria-label="Account (signed in)">TF</span>
+            <span className="grid size-9 place-items-center rounded-full bg-ch-paper text-ch-meta font-extrabold text-ch-forest"><span aria-hidden="true">TF</span><span className="sr-only">Account (signed in)</span></span>
           ) : (
             <>
               <a href="#" className="whitespace-nowrap rounded-[10px] px-3 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10">Sign in</a>

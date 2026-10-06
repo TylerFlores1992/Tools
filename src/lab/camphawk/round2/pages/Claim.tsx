@@ -107,7 +107,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         <label htmlFor="rc-pass" className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia password</label>
         <span className="relative">
           <input id="rc-pass" type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={cx(field, "pr-20")} />
-          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label={show ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
+          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label="Show password" className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
         </span>
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">

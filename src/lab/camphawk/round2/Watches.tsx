@@ -14,6 +14,7 @@ import { Art, ART } from "./Art";
 import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { LabNote } from "./LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
@@ -200,7 +201,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
         ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
       ]} />
       <div className="mt-5 grid gap-2 sm:max-w-[420px]">
-        <a href="#" className={buttonClasses({ variant: "ink", fullWidth: true })}>Start 7-day free trial</a>
+        <a href="#" className={buttonClasses({ variant: "ink", fullWidth: true })}>Start {TRIAL_DAYS}-day free trial</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Plan options</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in</a>
         <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Keep exploring without an account</Link>
@@ -328,7 +329,8 @@ export function Watches() {
           <WatchCtaLink visitor={visitor} label="New watch" fullWidth={false} className="min-h-11 px-5" />
         </div>
         <h2 className="sr-only">Watches, running and paused</h2>
-        {/* Two columns that don't share a row height; cards alternate so reading goes across, then down. */}
+        {/* Two columns that don't share a row height. Cards alternate between them, so the eye reads
+            across then down; keyboard and screen readers take the first column, then the second. */}
         {twoColumns ? (
           <div className="grid grid-cols-2 items-start gap-4">
             {[0, 1].map((col) => <div key={col} className="grid gap-4">{watches.filter((_, i) => i % 2 === col).map(card)}</div>)}
