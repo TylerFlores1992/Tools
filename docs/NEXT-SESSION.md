@@ -46,10 +46,14 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    lookout), and **keep the "Check out on Recreation.gov" button** on an in-cart watch (a lab
    proposal; CampHawk's card has none). Every lab switch is in the URL (`?as=subscriber`,
    `plan=alerts`, `state=…`). Not built yet, in priority order (campsite-finder `src/app/`):
-   - **Tier 1, the alert loop** (where paying campers land from a text): Manage watch
-     (`(app)/manage/[token]`), the one-tap action page (`w/[token]`), Claim a held site
-     (`claim/[id]`), Settings (`(app)/settings`: phone, auto-cart, plan, delete account),
-     Connect Recreation.gov (`connect`), Welcome after sign-up (`(app)/welcome`).
+   - **Tier 1, the alert loop: BUILT (2026-10-06, this branch).** Manage watch (`/manage`,
+     `?watch=leo` for the 8am-hold park, `?link=expired|fails`), the one-tap page (`/w`, 20
+     `?action=` results incl. the hold offer and confirmations), Claim (`/claim`, `?status=` ×9,
+     `?device=app|browser|old-app`), Settings (`/settings`, by visitor and `plan`, `billing=`,
+     `autocart=`, `sms=`), Connect (`/connect`, `?status=` ×7), Welcome (`/welcome`,
+     `?from=sign-up|checkout`). Lab fixes to CampHawk's own rule breaks are listed in each file's
+     header (e.g. muted is neutral, not red; provider hand-offs are blue; Alerts-plan subscribers
+     aren't told auto-cart is on; Connect's Done goes to Settings). Two e2e checks, mutation-tested.
    - **Tier 2, getting and keeping customers:** Pricing (`(app)/pricing`), Sign in and Sign up
      (Clerk; restyle only), the Auto-cart explainer (`(app)/auto-cart`), the cancellation-alerts
      landing (`(app)/campsite-cancellation-alerts`), the sold-out guide (`(app)/sold-out-campsite`).
