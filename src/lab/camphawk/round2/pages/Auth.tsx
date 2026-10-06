@@ -29,7 +29,7 @@ import { TRIAL_DAYS } from "./tier2-data";
 // heading and line are CampHawk's voice, set through Clerk's `localization` prop (Clerk's defaults
 // read "Welcome! Please fill in the details to get started.").
 
-const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-card px-4 text-[16px] text-ch-ink focus-visible:border-ch-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
+const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
 const main = buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-wait" });
 
 function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; next: string | null }) {

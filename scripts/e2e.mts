@@ -344,7 +344,7 @@ try {
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
     // The answer comes first, in words, under the name.
-    await p.getByText("5 days with openings in July.").waitFor();
+    await p.getByText(/^Next opening /).waitFor();
     // A month we couldn't read: no day is called booked, and the page says why.
     const next = p.getByRole("button", { name: "Next month" });
     await next.click();
@@ -747,7 +747,7 @@ try {
     await p.waitForURL(/\/camping\/yurts\/california/);
     await p.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts$/);
-    await p.getByText("across 4 states, on Recreation.gov and 13 state park systems", { exact: false }).waitFor();
+    await p.getByText("across 4 states, on Recreation.gov and the state park reservation systems we read", { exact: false }).waitFor();
     // Hardest to book: CampHawk's pick, not a ranking — no "#1", no percentages.
     await p.goto(`${GH}/camping/hardest-to-book`);
     await p.getByText("This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking.").waitFor();

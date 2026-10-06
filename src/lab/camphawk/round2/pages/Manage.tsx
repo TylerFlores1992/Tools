@@ -121,7 +121,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
   }
 
   const nights = w.flexNights ?? nightsBetween(saved.start!, saved.end!);
-  const meta = [`${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(" · ");
+  const meta = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(" · ");
   const saveDates = () => {
     if (!range.start || !range.end) return;
     setSaving(true);
@@ -164,7 +164,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           {!editing && (
             <>
               <p className="mt-4 text-[17px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${w.flexNights} nights, ${formatRange(saved.start, saved.end)}` : formatRange(saved.start, saved.end)}</p>
-              <p className="mt-0.5 text-[15px] text-ch-ink-2">{meta}</p>
+              {meta && <p className="mt-0.5 text-[15px] text-ch-ink-2">{meta}</p>}
             </>
           )}
         </div>
@@ -213,7 +213,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             {requested.map((r) => (
               <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
                 <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="queued">Asked</Tag></span>
+                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">Asked</Tag></span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay} · releases {releaseLong()}</span>
                 </span>
                 <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call off the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>

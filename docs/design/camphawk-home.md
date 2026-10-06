@@ -293,9 +293,9 @@ dashed circle = not set up). `StatusMark` draws one outside a tag. An e2e check 
 tag loses its mark. Selected chips carry a tick; the date picker's selected days are ink.
 
 **Button colours.** Green only for getting a site (search, Hold it, Start watching, "Yes — hold it
-for me", "It's mine — hand it over"); blue for a provider hand-off (Book, checkout, auto-cart,
+for me", "It's mine — hand it over"); blue for a booking-provider hand-off (Book, Recreation.gov checkout, auto-cart,
 ReserveCalifornia sign-in); **ink** (forest) for account steps (trial, sign up, sign in, save,
-finish, upgrade); **paper** for the same on a forest band. e2e fails if a trial button turns green.
+finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e fails if a trial button turns green.
 
 **One vocabulary.**
 - Search: "Search campgrounds" (the home hero adds "free"). It replaced six other names.

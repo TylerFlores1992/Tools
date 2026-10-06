@@ -69,7 +69,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
         <span>We save your login, encrypted, on a private machine we run, so auto-cart can sign back in on its own when the session drops. <strong className="font-bold text-ch-ink">It never reaches CampHawk&apos;s web servers or database.</strong></span>
       </p>
       <button type="submit" disabled={busy} aria-describedby="rg-why" className={blue()}>
-        {busy ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing you in…</> : "Sign in"}
+        {busy ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing you in…</> : "Sign in to Recreation.gov"}
       </button>
       {busy ? (
         <p role="status" className="text-center text-[14px] text-ch-ink-2">{slow ? "Still working — signing in to Recreation.gov can take up to a minute." : "Signing you in on the helper — this can take up to a minute."}</p>

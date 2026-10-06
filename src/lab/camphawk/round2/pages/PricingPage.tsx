@@ -15,7 +15,7 @@ import { ROUTES } from "../gates";
 import { A, Callout, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
-import { HOLD_MINUTES, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
+import { HOLD_MINUTES, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
 // StorePaywall.tsx, RcHoldExplainer.tsx). The one place that sells. What it keeps on purpose:
@@ -29,7 +29,8 @@ import { HOLD_MINUTES, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, TRIAL_DAYS } from "./tie
 // - The caveat on 8am holds sits before the decision, not under the promise.
 // Lab changes, from CampHawk's own rules:
 // - The page isn't tinted green (decoration); ticks are ink; step numbers are neutral.
-// - Stripe checkout is the blue provider hand-off (CampHawk's are green).
+// - Stripe checkout is an ink account step, like the trial (CampHawk's are green; blue is kept for
+//   booking providers).
 // - "Start 7-day free trial" carries the plan into sign-up, so you come back to it.
 // - The 8am hold explainer says the beta is closed (it has been since Sep 22, 2026; CampHawk's
 //   page still offers it).
@@ -76,7 +77,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
   const priceBtn = (tier: PlanTier, i: "monthly" | "yearly") => {
     const id = `${tier}-${i}`;
     return (
-      <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} className={buttonClasses({ variant: tier === "autocart" ? "cart" : "quiet", className: "min-h-12 px-5 disabled:cursor-wait" })}>
+      <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5 disabled:cursor-wait" })}>
         {busy === id && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}{priceLabel(tier, i)}
       </button>
     );
@@ -199,7 +200,7 @@ function HoldExplainer() {
         <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
         {!RC_HOLD_OPEN && (
           <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
-            Since {RC_HOLD_CLOSED_ON}, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
+            For now, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
           </Callout>
         )}
         <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">

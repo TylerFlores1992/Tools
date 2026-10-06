@@ -465,7 +465,7 @@ export function NewWatch() {
             ) : (
               <>
                 <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch is a robot that refreshes a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
+                  A watch is our bot refreshing a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
                 </p>
                 <ol className="mt-3">
                   {[

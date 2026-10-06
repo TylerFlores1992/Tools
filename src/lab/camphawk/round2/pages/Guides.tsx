@@ -5,7 +5,7 @@ import { ART } from "../Art";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
 import { A, ActionLink, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
-import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
+import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
 // campsite-cancellation-alerts, sold-out-campsite). Server pages in CampHawk, no account states,
@@ -43,7 +43,7 @@ function HoldClosed() {
   if (RC_HOLD_OPEN) return null;
   return (
     <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
-      Since {RC_HOLD_CLOSED_ON}, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual. A hold has worked on real releases and can still miss, so set an alarm for 8 AM and be ready to book it yourself. Recreation.gov auto-cart isn&apos;t affected.
+      For now, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual. A hold has worked on real releases and can still miss, so set an alarm for 8 AM and be ready to book it yourself. Recreation.gov auto-cart isn&apos;t affected.
     </Callout>
   );
 }
@@ -67,7 +67,7 @@ export function AutoCartGuide() {
           <P>Cancellations on Recreation.gov happen at any hour, so this lane is a standing setting: once it’s on, a watched site that frees up is added to your cart within seconds, whatever time it is.</P>
           <Steps steps={[
             ["Set your watches", <>Search for a campground, pick your dates, and tap the watch button on any booked campground. Auto-cart only acts on sites you&apos;re watching.</>],
-            ["Turn on auto-cart", <>Go to <A href={ROUTES.settings} visitor={visitor}>Settings</A> and, under <strong className="text-ch-ink">Auto-cart</strong>, tap <strong className="text-ch-ink">Set up auto-cart</strong>. Once it&apos;s connected the same block gives you a <strong className="text-ch-ink">Turn on</strong> / <strong className="text-ch-ink">Turn off</strong> switch.</>],
+            ["Turn on auto-cart", <>Go to <A href={ROUTES.settings} visitor={visitor}>Settings</A> and, under <strong className="text-ch-ink">Auto-cart</strong>, tap <strong className="text-ch-ink">Set up auto-cart</strong>. Once it&apos;s connected, the same block has a <strong className="text-ch-ink">Turn off</strong> button (and <strong className="text-ch-ink">Turn on</strong> when it&apos;s off).</>],
             ["Sign in to Recreation.gov once", <>You enter your Recreation.gov email and password once. They&apos;re saved, <strong className="text-ch-ink">encrypted, on a private machine we run</strong> — the always-on computer that holds your logged-in browser — so auto-cart signs back in by itself if the session drops. <strong className="text-ch-ink">They never reach CampHawk&apos;s web servers or database.</strong></>],
             ["You're done", <>From now on, when a watched site opens, it&apos;s added to your cart within seconds. You get your normal CampHawk alert — open Recreation.gov on your phone, and it&apos;s already in your cart. Just <strong className="text-ch-ink">check out</strong>.</>],
           ]} />

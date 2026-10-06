@@ -17,8 +17,8 @@ import type { Visitor } from "../data";
 export type SmsState = "new" | "saved" | "loading" | "error";
 
 export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean }) {
-  const [saved, setSaved] = useState<string | null>(start === "saved" ? "(209) 555-0142" : null);
-  const [phone, setPhone] = useState(start === "saved" ? "(209) 555-0142" : "");
+  const [saved, setSaved] = useState<string | null>(start === "saved" ? "(415) 555-0187" : null);
+  const [phone, setPhone] = useState(start === "saved" ? "(415) 555-0187" : "");
   const [agreed, setAgreed] = useState(start === "saved");
   const [busy, setBusy] = useState<"save" | "off" | null>(null);
   const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);

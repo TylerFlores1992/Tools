@@ -62,8 +62,9 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
     <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[17px] text-ch-paper">
       <Tag kind="open">Sites open</Tag>
       <span>
-        <strong className="font-bold">{open.length} days with openings in {firstMonthName}.</strong>{" "}
-        <span className="text-ch-line">The next is {dayLabel(open[0])}.</span>
+        {/* The count lives in the calendar's key; up here, just the next date. */}
+        <strong className="font-bold">Next opening {dayLabel(open[0])}.</strong>{" "}
+        <span className="text-ch-line">Pick a day below to see the sites.</span>
       </span>
     </p>
   );

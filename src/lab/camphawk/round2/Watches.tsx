@@ -59,7 +59,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="queued">Asked</Tag>}
+        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">Asked</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -81,7 +81,7 @@ const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bol
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
-  const spec = [`${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
+  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
   const asked = (w.holds ?? []).filter((h) => h.status === "requested");
   const offered = (w.holds ?? []).filter((h) => h.status === "offered");
   const cardState: CardState = state === "hit" ? "hit" : state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
@@ -94,7 +94,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
-          {asked.length > 0 && <Tag kind="watch" mark="queued">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
+          {asked.length > 0 && <Tag kind="watch" mark="hold">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
           {carted && <Tag kind="cart">{carted.length === 1 ? "In your cart" : `${carted.length} in your cart`}</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
@@ -113,7 +113,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>
-        <p className="mt-0.5 text-[14px] text-ch-ink-2">{spec}</p>
+        {spec && <p className="mt-0.5 text-[14px] text-ch-ink-2">{spec}</p>}
       </div>
 
       {state === "authexpired" && (
@@ -135,14 +135,15 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       )}
       {(offered.length > 0 || asked.length > 0) && (
         <div className="mt-3 grid gap-2 border-t border-ch-line pt-3">
-          {offered.length > 0 && (
-            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
-              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
-            </Collapsible>
-          )}
+          {/* Same order as Manage: what you committed to first, then what you could add. */}
           {asked.length > 0 && (
             <Collapsible label="Holds you asked for" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
               <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
+            </Collapsible>
+          )}
+          {offered.length > 0 && (
+            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
+              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
         </div>
@@ -255,15 +256,15 @@ function useCreated(): { watch: ExampleWatch; leadDays: number; quiet: boolean }
   };
 }
 
-/** WatchesList's column switch: one list in the DOM, split in two from 640px. */
+/** WatchesList's column switch: one list in the DOM, split in two from 960px (below that, cards squeeze their tags). */
 function useTwoColumns(): boolean {
   return useSyncExternalStore(
     (onChange) => {
-      const mq = window.matchMedia("(min-width: 640px)");
+      const mq = window.matchMedia("(min-width: 960px)");
       mq.addEventListener("change", onChange);
       return () => mq.removeEventListener("change", onChange);
     },
-    () => window.matchMedia("(min-width: 640px)").matches,
+    () => window.matchMedia("(min-width: 960px)").matches,
     () => false,
   );
 }

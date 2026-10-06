@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { CircleDashed, CirclePlus, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
+import { AlarmClock, CircleDashed, CirclePlus, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
 import { cx } from "@/components/cx";
 
 // Ported from campsite-finder src/components/ui/Tag.tsx (2026-10-06), so lab screens say status
@@ -14,12 +14,13 @@ import { cx } from "@/components/cx";
 // status carries a MARK, a small shape of its own (2026-10-06 fix round, for the owner's red-green
 // colour blindness: CampHawk's tags differed by hue alone). The marks match Explore's map pins:
 // a tick for open, a solid dot for booked, a ring for "couldn't check", a small dot for first
-// come; the rest are line icons at one size and weight.
+// come; the rest are line icons at one size and weight. A clock is time running out; an alarm
+// clock is an 8 AM hold you asked for.
 export type TagKind = "open" | "watch" | "cart" | "paused" | "alert" | "src";
 
 export type Mark =
   | "open" | "booked" | "unknown" | "first-come"
-  | "watching" | "queued" | "offered" | "in-cart" | "auto-cart"
+  | "watching" | "queued" | "hold" | "offered" | "in-cart" | "auto-cart"
   | "paused" | "reconnecting" | "needs-you" | "provider-down"
   | "on" | "off" | "not-set-up";
 
@@ -42,7 +43,7 @@ const DEFAULT_MARK: Record<TagKind, Mark | null> = {
 };
 
 const ICONS: Partial<Record<Mark, LucideIcon>> = {
-  watching: Eye, queued: Clock, offered: CirclePlus, "in-cart": ShoppingCart, "auto-cart": Zap, paused: Pause,
+  watching: Eye, queued: Clock, hold: AlarmClock, offered: CirclePlus, "in-cart": ShoppingCart, "auto-cart": Zap, paused: Pause,
   reconnecting: RefreshCw, "needs-you": TriangleAlert, "provider-down": CloudOff,
   on: Power, off: PowerOff, "not-set-up": CircleDashed,
 };

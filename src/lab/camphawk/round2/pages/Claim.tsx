@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { AlertTriangle, Check, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, ExternalLink, Loader2, Lock } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
@@ -181,31 +181,42 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
 
   // carted
   const late = status === "carted-late";
-  const handOver = <>{ready ? "When you tap it" : <>Once you&apos;re signed in, a button appears: tap <strong className="text-ch-ink">It&apos;s mine — hand it over</strong>. Then</>} we let go so you can take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</>;
+  // Step 2 is always on screen, so "1" has a partner: locked until you're signed in, then the button.
+  const step2 = (
+    <div className={cx("mt-3 rounded-ch-card border p-5", ready ? "border-ch-line bg-ch-card shadow-ch-card" : "border-dashed border-ch-muted")}>
+      <div className="flex gap-3">
+        <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-ch-ink">{ready ? <span className="text-[14px] font-extrabold">2</span> : <Lock className="size-4" />}</span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over</p>
+          <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you&apos;re signed in, tap <strong className="text-ch-ink">It&apos;s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
+        </div>
+      </div>
+      {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It's mine — hand it over"}</button>}
+    </div>
+  );
   return (
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
         footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:" className="text-[12px]">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
       {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
       {ready ? (
-        <Step tone="done" title={c.readyTitle} note={handOver} />
+        <Step tone="done" title={c.readyTitle} />
       ) : opened && !canInject ? (
-        <Step tone="busy" title={c.waitingTitle} body={c.waitingBody} note={handOver}>
+        <Step tone="busy" title={c.waitingTitle} body={c.waitingBody}>
           <label className="flex cursor-pointer items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4 text-[15px] leading-relaxed text-ch-ink">
             <input type="checkbox" onChange={(e) => setReady(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
             <span>I&apos;m signed in to ReserveCalifornia and looking at {CLAIM.unit}</span>
           </label>
         </Step>
       ) : (
-        <Step tone="todo" title={c.prepareTitle} body={c.prepareBody} note={handOver}>
+        <Step tone="todo" title={c.prepareTitle} body={c.prepareBody}>
           {canInject
             ? <RcSignInForm onSignedIn={() => setReady(true)} />
             : <a href="#" onClick={(e) => { e.preventDefault(); setOpened(true); }} className={buttonClasses({ variant: "cart", size: "lg", fullWidth: true })}>{c.prepareCta}<ExternalLink aria-hidden="true" className="size-4" /></a>}
         </Step>
       )}
-      {ready ? (
-        <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It's mine — hand it over"}</button>
-      ) : !canInject && (
+      {step2}
+      {!ready && !canInject && (
         <p className="mt-3 text-center text-[14px] text-ch-ink-2">Tick the box once you’re signed in and on the page — we won’t let go until then.</p>
       )}
     </>

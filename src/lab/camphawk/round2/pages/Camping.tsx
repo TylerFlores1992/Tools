@@ -6,7 +6,6 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import type { Visitor } from "../../data";
 import { CAMPGROUNDS_ROUNDED } from "../../data";
-import { ART } from "../Art";
 import { ROUTES } from "../gates";
 import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
@@ -185,9 +184,9 @@ export function StatePage({ slug }: { slug: string }) {
 
 /* ---------- /camping/[type] ---------- */
 
-// State systems = every data source but Recreation.gov (13 of 14); CampHawk types the 13.
-const stateSystems = SOURCE_COUNT - 1;
-const systems = (canada: boolean) => (canada ? `Recreation.gov, ${stateSystems} state park systems, Parks Canada and the Canadian provincial systems` : `Recreation.gov and ${stateSystems} state park systems`);
+// Worded as the sold-out guide words it, from the source list: one of the 14 sources carries
+// Parks Canada and the provincial systems as well as four states, so "13 state systems" overcounts.
+const systems = (canada: boolean) => (canada ? `Recreation.gov and ${inWords(SOURCE_COUNT - 1)} other reservation systems in the US and Canada` : "Recreation.gov and the state park reservation systems we read");
 const places = (us: number, ca: number) => `${us} ${us === 1 ? "state" : "states"}${ca ? ` and ${ca} Canadian ${ca === 1 ? "province or territory" : "provinces and territories"}` : ""}`;
 
 export function TypeHub({ type }: { type: string }) {
@@ -272,7 +271,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
 export function HardestToBook() {
   const count = HARD_TO_BOOK.reduce((n, p) => n + p.campgrounds.length, 0);
   return (
-    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.w1, pos: "85% 55%", posLg: "50% 55%" }}>
+    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />
@@ -285,11 +284,11 @@ export function HardestToBook() {
             <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </div>
-          {/* One card per park, in CampHawk's order (Yosemite first), in columns so each card is as
-              tall as its list: denser than CampHawk's single column of one-link sections. */}
-          <ul className="mt-10 gap-4 sm:columns-2 lg:columns-3">
+          {/* One card per park, in CampHawk's order (Yosemite first), read across the rows so the
+              order survives: denser than CampHawk's single column of one-link sections. */}
+          <ul className="mt-10 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {HARD_TO_BOOK.map((p) => (
-              <li key={p.park} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+              <li key={p.park} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
                 <h2 className="font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
                 <ul className="mt-1">
                   {p.campgrounds.map((n) => (

@@ -37,7 +37,7 @@ function AlertCard({ compact }: { compact?: boolean }) {
         <span className="font-extrabold">A site just opened</span>
         <span className="ml-auto text-ch-muted tabular-nums">14 sec ago</span>
       </div>
-      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, site 042</p>
+      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, Site 042</p>
       <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18-21, 3 nights.</p>
       <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
         <Check aria-hidden="true" className="size-4 shrink-0" />
@@ -107,11 +107,11 @@ function PhoneProof() {
         <div className="space-y-2.5 p-4">
           <p className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov cart</p>
           <div className="rounded-[14px] border border-ch-line bg-ch-card p-3">
-            <p className="font-ch-display text-[16px] font-extrabold">Upper Pines, site 042</p>
+            <p className="font-ch-display text-[16px] font-extrabold">Upper Pines, Site 042</p>
             <p className="text-[13px] text-ch-ink-2 tabular-nums">Jul 18-21, 3 nights</p>
-            <p className="mt-2 flex items-center gap-1 text-[13px] font-bold text-ch-blue-deep"><Check aria-hidden="true" className="size-3.5" /> Held in your cart</p>
+            <p className="mt-2"><Tag kind="cart">In your cart</Tag></p>
           </div>
-          <span className="flex min-h-10 items-center justify-center rounded-ch-btn border-2 border-ch-blue text-[13px] font-bold text-ch-blue-deep">Check out</span>
+          <span className="flex min-h-10 items-center justify-center rounded-ch-btn bg-ch-blue text-[13px] font-bold text-ch-white">Check out</span>
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ import { A, LabPage, WithRail } from "../LabPage";
 import { withVisitor } from "../labState";
 import Link from "next/link";
 import { COMPETITORS, COVERAGE, type Competitor } from "./camping-data";
-import { CHECK_SECONDS, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
+import { CHECK_SECONDS, RC_HOLD_OPEN, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 3: CampHawk vs Campflare / Campnab (campsite-finder src/components/v2/ComparisonPage.tsx,
 // lib/competitors.ts). THERE IS NO COMPARISON TABLE, BY DESIGN: CampHawk makes no claim about a
@@ -64,7 +64,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
               California cancellations mostly don&apos;t go back on sale straight away — they are locked until the next morning&apos;s release, when everybody refreshes at once. CampHawk spots the site the night before, offers to be there, and carts it within a couple of seconds of it freeing, then hands it to you.{" "}
               {RC_HOLD_OPEN
                 ? <span className="text-[15px]">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</span>
-                : <strong className="text-ch-ink">Invite-only since {RC_HOLD_CLOSED_ON}, while we make it more reliable; ReserveCalifornia watches still alert everyone.</strong>}
+                : <strong className="text-ch-ink">Invite-only for now, while we make it more reliable; ReserveCalifornia watches still alert everyone.</strong>}
             </Q>
             <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a sweep every few minutes: every watched campground is rechecked every {CHECK_SECONDS} seconds, around the clock, which is what makes carting within seconds possible at all.</Q>
             <Q q="Flexible dates, and per-site muting">Watch for &ldquo;any two nights in this window&rdquo; rather than one fixed range — which, on a popular weekend, is usually the difference between getting something and getting nothing. And if one loop keeps opening and you don&apos;t want it, mute that site instead of the whole campground.</Q>
