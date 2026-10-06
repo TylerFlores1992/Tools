@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-05 (later).*
+*Last updated: 2026-10-06.*
 
 ## At a glance
 
@@ -17,8 +17,8 @@
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
 | Domain + DNS | Cloudflare | Done. HTTPS certificates issued and auto-renewed by Vercel. |
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (23 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (12 checks, including
+**Checks, all green:** `npm run verify` (117 tests) · `npm run e2e` (23 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (13 checks, including
 that `/private`, the lab and its old URL all land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
@@ -48,7 +48,10 @@ that `/private`, the lab and its old URL all land on the sign-in page and privat
 3. **Hero media caching:** files in `public/media/hero/` are served `max-age=0`. Version the
    filenames and send `immutable` caching from `next.config` headers.
 4. **CI:** add `npm run e2e` (needs a Chromium install step on the runner).
-5. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+5. **ETCP study:** if the owner wants more, a Theatre-weighted set (its outline is in the same
+   handbook) or a 150-question timed "full exam" mode drawing from A/B/C. Write new sets the same
+   way as `set-c.ts`: facts verified against primary sources, numbers recomputed in tests.
+6. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail
