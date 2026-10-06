@@ -21,6 +21,14 @@ two art styles (the painted phone header against the vector hills), a secondary 
 primary, 11–12px grey footnotes, and no proof of the product (no real alert shown). Treat 4/10
 as the floor we've already hit; a direction worth showing the owner should reach 7.
 
+**Round 2 (2026-10-06):** Golden hour reached 7/10 on the home page and the campground page. What
+moved the score most: real UI as proof (a check log, the held cart, the calendar's states)
+instead of icon cards; one photo and one light across the page; the answer to the page's question
+in words above the fold. **And one process lesson:** the first critiques judged against the
+Pinterest references alone and pushed toward glass panels, which CampHawk's own design skill
+bans ("reads as a different product"). When the surface belongs to a product with its own house
+style, that style is a **binding input to Gate 1 and to every critique**, ahead of the references.
+
 ## Defaults models converge on (from Anthropic's and Impeccable's calibration lists)
 - **Looks:** a warm cream ground with a high-contrast serif and a terracotta accent; near-black with
   one neon accent and glowing edges; broadsheet hairlines with italic serif and tiny tracked mono

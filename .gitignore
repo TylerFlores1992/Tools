@@ -43,3 +43,5 @@ next-env.d.ts
 # local screenshots and film frames (regenerable)
 /screenshots/
 /studio/film/frames/
+/studio/camphawk-round2/out/
+/studio/*/node_modules/

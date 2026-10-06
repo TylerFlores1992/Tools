@@ -53,9 +53,13 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `scripts/` screenshot, smoke, doc guards · `studio/film/` hero film source
 - `src/app/private/` the Private tab: password-only sign-in, `src/proxy.ts` guards `/private/*`
   (`LAB_PASSWORD`, `src/lib/private-auth.ts`; docs/SETUP.md) · projects listed in `src/lib/private.ts`
-- `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab (`ch-*` tokens, lab only);
-  new-look mockups: `looks.ts`, `?look=<id>`, art drawn by `studio/camphawk-looks/`
-- `public/media/hero/` rendered film + posters
+- `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
+  camphawk.app (`ch-*` tokens, lab only). Chosen look "Golden hour": every CampHawk screen under
+  `/private/camphawk/golden-hour` (map at `/screens`; `round2/` core five, `round2/pages/` the
+  rest, framed by `LabPage`/`BareFrame`; switches in the URL via `labState.ts`, gates and routes
+  in `gates.ts`; CampHawk's controls in `lab/camphawk/ui/`). CampHawk's own design skill binds them; art from
+  `studio/camphawk-round2/` (AI Gateway, free credit only)
+- `public/media/hero/<hash>/` rendered film + posters, cached immutable (`src/lib/hero-media.ts`)
 
 ## End of every session
 Update `docs/NEXT-SESSION.md` (what's done, what's next, what's blocked) and this router if a

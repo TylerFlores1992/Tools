@@ -28,7 +28,8 @@ Write five lines and confirm them with the owner (AskUserQuestion, two or three 
 2. **Mode:** *Persuade* (landing/marketing: design is the product) · *Operate* (app/tool: clarity first,
    brand in the details) · *Read* (docs/guides).
 3. **The page's one job** and the action that proves it worked.
-4. **Fixed:** what must not change (for CampHawk: words, controls, flows, palette).
+4. **Fixed:** what must not change (for CampHawk: words, controls, flows, palette, and its own
+   design skill, `campsite-finder/.claude/skills/camphawk-design`, which outranks any reference).
 5. **Free:** what may change. "Keep the layout similar" still leaves type, scale, composition,
    imagery, rhythm and density free. Those are where "high end" lives; the backdrop is the least of it.
 

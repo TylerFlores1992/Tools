@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const MEDIA = "/media/hero";
+import { HERO_MEDIA as MEDIA } from "@/lib/hero-media";
 
 /**
  * The home hero film.

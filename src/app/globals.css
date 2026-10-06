@@ -240,6 +240,16 @@
   outline: 2px solid var(--color-ch-green);
   outline-offset: 2px;
 }
+/* The lab's browser surfaces: light scrollbars and form controls, the paper ground under
+   overscroll (the site's own html is dark), and a neutral text selection (CampHawk keeps green
+   for "available" and ochre for "yours", so neither is decoration). */
+html:has(.camphawk) {
+  color-scheme: light;
+  background: var(--color-ch-paper);
+  scrollbar-color: var(--color-ch-faint) var(--color-ch-paper);
+}
+html:has(.gh) { background: var(--color-ch-forest); }
+.camphawk ::selection { background: var(--color-ch-faint); color: var(--color-ch-ink); }
 /* On the dark forest bands (lab bar, phone header) a green ring disappears; use white. */
 .camphawk .bg-ch-forest :focus-visible {
   outline-color: var(--color-ch-white);
@@ -371,6 +381,132 @@
 /* Wide screens: fixed pull and tuck to match the capped scene (last, so it wins). */
 @media (min-width: 1600px) {
   .look[data-look] { --scene-pull: 160px; --scene-tuck: 176px; }
+}
+
+/*
+ * CampHawk round 2 (/private/camphawk/golden-hour, /trail-poster; src/lab/camphawk/round2/).
+ * Scrims and crops for the art, and one motion moment each. Hues only from ch-* tokens.
+ */
+.gh { --gh-max: 1320px; /* How far a screen's first card rises into the forest band above it. */ --gh-dock: clamp(40px, 6vw, 88px); }
+/* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
+   fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
+.gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }
+/* One photo at every size (one tent). Narrow screens crop toward the tent, which sits in the
+   window below the search. */
+.gh-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 74% 100%; }
+/* Phones and tablets: darken the ridges behind the type and the search; leave the tent's window clear. */
+.gh-scrim {
+  background:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
+      color-mix(in srgb, var(--color-ch-forest) 72%, transparent) 55%,
+      transparent 78%);
+}
+@media (min-width: 1024px) {
+  .gh-photo { object-position: 70% 50%; }
+  /* Wide: the dark ridges on the left hold the type; the tent stays clear on the right. */
+  .gh-scrim {
+    background:
+      linear-gradient(to right,
+        color-mix(in srgb, var(--color-ch-forest) 92%, transparent) 0%,
+        color-mix(in srgb, var(--color-ch-forest) 84%, transparent) 32%,
+        color-mix(in srgb, var(--color-ch-forest) 62%, transparent) 50%,
+        transparent 68%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 20%);
+  }
+}
+/* Very wide screens crop the photo top and bottom: lower the tent so the alert card clears its peak. */
+@media (min-width: 1800px) {
+  .gh-photo { object-position: 70% 40%; }
+}
+/* The dusk band is already dark: a light scrim behind the text, no visible edge. */
+.gh-band-scrim {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 0%, transparent 60%);
+}
+@media (min-width: 768px) {
+  .gh-band-scrim {
+    background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 0%, transparent 70%);
+  }
+}
+/* The app screens' band photos (Explore's valley, New watch's campsite, Your watches' lookout):
+   text sits at the left, the one warm light stays clear at the right. Each photo sets its crop
+   with --gh-pos (phones) and --gh-pos-lg (from 1024px). */
+.gh-app-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--gh-pos, 60% 70%); }
+@media (min-width: 1024px) { .gh-app-photo { object-position: var(--gh-pos-lg, 50% 62%); } }
+/* Their scrim: peaks and lights can sit behind the header and the headline, so the top and the
+   left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+.gh-app-scrim {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--color-ch-forest) 86%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 74%, transparent) 55%,
+    color-mix(in srgb, var(--color-ch-forest) 35%, transparent) 100%);
+}
+@media (min-width: 1024px) {
+  .gh-app-scrim {
+    background:
+      linear-gradient(to right,
+        color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
+        color-mix(in srgb, var(--color-ch-forest) 65%, transparent) 36%,
+        transparent 62%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 60%, transparent) 0%, transparent 28%);
+  }
+}
+/* Explore's map pins (ResultsMap's shapes): a teardrop pointing at the place. State is the shape
+   as well as the hue: open carries a tick, booked is plain solid, couldn't check is hollow, first
+   come is small and faint. The picked pin keeps its state and grows, with an ink ring (CampHawk
+   paints it red, which hides the state and means "act now"). */
+.gh-pin {
+  position: relative; width: 22px; height: 22px; border: 2px solid var(--color-ch-white);
+  border-radius: 50% 50% 50% 2px; transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgb(22 41 31 / 0.35);
+}
+/* Pins are placed in the picture's coordinates. From 640px the map is 11:5 and the 16:9 picture
+   (1280x731) is cropped top and bottom: 79.6% of its height shows, 10.2% off each edge. */
+.gh-map-pin { top: calc(var(--y) * 1%); }
+@media (min-width: 640px) { .gh-map-pin { top: calc((var(--y) - 10.2) / 0.796 * 1%); } }
+.gh-pin[data-state="open"] { width: 26px; height: 26px; background: var(--color-ch-green); }
+.gh-pin[data-state="open"]::after {
+  content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; transform: rotate(45deg);
+  color: var(--color-ch-white); font: 800 13px/1 var(--font-ch-body), sans-serif;
+}
+.gh-pin[data-state="booked"], .gh-pin[data-state="plain"] { background: var(--color-ch-muted); }
+.gh-pin[data-state="unknown"] { background: var(--color-ch-white); border: 4px solid var(--color-ch-muted); }
+.gh-pin[data-state="first-come"] { width: 15px; height: 15px; background: var(--color-ch-faint); }
+.gh-pin[data-selected="true"] {
+  scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
+}
+
+/* The alert card arrives once, a beat after the photo. */
+.gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
+@keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
+
+.tp { position: relative; }
+/* A print: a paper mount and a soft wall shadow (shadow only; no frame line). */
+.tp-print {
+  padding: 14px;
+  background: var(--color-ch-card);
+  box-shadow: 0 1px 2px rgb(22 41 31 / 0.1), 0 30px 60px -30px rgb(22 41 31 / 0.5);
+}
+.tp-print:first-child { animation: tp-settle 1100ms var(--ease-out) 150ms both; }
+/* The alert pinned to the hero print, a little askew, arriving after the print. */
+.tp-ticket { transform: rotate(-2deg); animation: tp-pin 700ms var(--ease-out) 700ms both; }
+@keyframes tp-pin { from { opacity: 0; transform: translateY(16px) rotate(-5deg); } }
+/* How it works: a dashed trail through the step markers (wide screens, where they sit in a row). */
+.tp-trail { position: relative; }
+@media (min-width: 640px) {
+  .tp-trail::before {
+    content: "";
+    position: absolute;
+    top: 31px;
+    left: 32px;
+    right: calc(33.333% - 21px);
+    border-top: 2px dashed var(--color-ch-ochre-ink);
+  }
+}
+@keyframes tp-settle { from { opacity: 0; transform: translateY(14px) rotate(-0.6deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-rise, .tp-print, .tp-ticket { animation: none; }
 }
 
 /* Motion durations, for CSS that animates outside a utility. */
