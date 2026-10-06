@@ -526,7 +526,7 @@ export function Explore() {
           </section>
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

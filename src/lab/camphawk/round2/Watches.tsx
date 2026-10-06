@@ -377,7 +377,7 @@ export function Watches() {
           <PricingLink visitor={visitor} plan={plan} className="mt-5" />
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

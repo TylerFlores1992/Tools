@@ -481,7 +481,7 @@ export function NewWatch() {
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }
