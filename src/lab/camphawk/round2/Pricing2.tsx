@@ -68,25 +68,15 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
     <div>
       <div className="grid gap-x-14 gap-y-4 lg:grid-cols-2 lg:items-end">
         <h2 className={head}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
-        <div>
-          <p className="max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">Cancel any time — and live search keeps working either way.</p>
-          <p className="mt-3 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
-            This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
-          </p>
-        </div>
+        <p className="max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">
+          This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
+        </p>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         <Plan name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)} />
         <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
       </div>
-      <div className="mt-6 grid gap-x-14 gap-y-2 lg:grid-cols-2">
-        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
-          Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.
-        </p>
-        <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
-          Prices in US dollars. The first 7 days are free.
-        </p>
-      </div>
+      <p className="mt-5 text-[15px] text-ch-ink-2">Prices in US dollars.</p>
     </div>
   );
 }

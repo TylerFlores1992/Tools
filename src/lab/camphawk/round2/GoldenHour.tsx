@@ -80,8 +80,7 @@ function AlertCard({ compact }: { compact?: boolean }) {
         <Check aria-hidden="true" className="size-4 shrink-0" />
         In your Recreation.gov cart
       </p>
-      {!compact && <a href="#" className="mt-2 inline-flex min-h-11 items-center text-[14px] font-bold text-ch-blue-deep underline underline-offset-4">Check out on Recreation.gov</a>}
-      <figcaption className="mt-1 text-[13px] text-ch-muted">Example alert</figcaption>
+      <figcaption className="mt-2 text-[13px] text-ch-muted">Example alert</figcaption>
     </figure>
   );
 }
@@ -89,16 +88,16 @@ function AlertCard({ compact }: { compact?: boolean }) {
 /** Search, docked across the hero's bottom edge. The lab never searches; it submits nowhere. */
 function SearchDock() {
   return (
-    <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-[20px] bg-ch-card p-3 shadow-ch-pop sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
+    <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-ch-card bg-ch-card p-3 shadow-ch-pop sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">Where</span>
         <input type="text" name="where" placeholder="City, park, or ZIP…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">When</span>
-        <input type="text" name="when" placeholder="Any 3 nights in July…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
+        <input type="text" name="when" placeholder="3 nights in July…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
-      <button type="submit" className={buttonClasses({ size: "lg", className: "min-h-12 whitespace-nowrap px-6 py-0" })}>
+      <button type="submit" className={buttonClasses({ className: "h-12 whitespace-nowrap px-6 text-[17px]" })}>
         <Search aria-hidden="true" className="size-4.5" />
         Search campgrounds free
       </button>
@@ -112,7 +111,7 @@ function PhoneProof() {
     <div aria-label="Example: the alert on a phone, then the site in your cart" role="img" className="mx-auto w-[290px] rounded-[44px] bg-ch-ink p-2.5 shadow-ch-pop">
       <div className="overflow-hidden rounded-[36px] bg-ch-paper text-ch-ink">
         <div className="relative h-[230px] overflow-hidden">
-          <Art art={ART.a4} sizes="290px" className="absolute inset-0 size-full bg-ch-forest object-cover object-[22%_78%]" />
+          <Art art={ART.a1} sizes="900px" className="absolute inset-0 size-full origin-[74%_88%] scale-[2.4] bg-ch-forest object-cover object-[74%_88%]" />
           <p className="relative pt-7 text-center font-ch-display text-[52px] font-bold leading-none text-ch-paper">6:02</p>
           <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-ch-card p-3 text-left">
             <p className="flex items-center gap-1.5 text-[13px] font-extrabold text-ch-muted">
@@ -157,13 +156,13 @@ export function GoldenHour() {
                 See what a watch does
               </a>
             </div>
-            <div className="hidden lg:block lg:mt-10 lg:self-start">
+            <div className="hidden lg:block lg:mt-4 lg:self-start">
               <AlertCard />
             </div>
           </div>
           {/* Phones and tablets: search right under the intro, the tent in a window below it.
               Desktop: search docks across the photo's bottom edge. */}
-          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-[240px] sm:px-8 sm:pb-[340px] lg:pb-0">
+          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
             <div className="lg:translate-y-1/2">
               <SearchDock />
             </div>

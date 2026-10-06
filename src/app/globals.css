@@ -417,7 +417,7 @@ html:has(.gh) { background: var(--color-ch-forest); }
 }
 /* Very wide screens crop the photo top and bottom: lower the tent so the alert card clears its peak. */
 @media (min-width: 1800px) {
-  .gh-photo { object-position: 70% 22%; }
+  .gh-photo { object-position: 70% 40%; }
 }
 /* The dusk band is already dark: a light scrim behind the text, no visible edge. */
 .gh-band-scrim {

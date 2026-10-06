@@ -98,7 +98,7 @@ function DateWindow() {
   const open = new Set([18, 19, 20]);
   return (
     <figure className="rounded-[16px] bg-ch-paper p-4 sm:p-5">
-      <p className="text-[14px] font-bold text-ch-ink-2">Any 3 nights, Jul 12-25</p>
+      <p className="text-[14px] font-bold text-ch-ink-2">3 nights, any time Jul 12-25</p>
       <div aria-hidden="true" className="mt-3 grid grid-cols-7 gap-1.5 text-center text-[12px] font-bold text-ch-muted">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => <span key={i}>{d}</span>)}
       </div>

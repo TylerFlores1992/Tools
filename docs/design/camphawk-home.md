@@ -117,6 +117,35 @@ Changes from the contracts above, and why:
 - **Signature motion:** A's alert card rises once; B's print settles and the ticket pins on.
   Reduced motion shows both at rest.
 
+## Screen 2: Campground, in the Golden hour look (2026-10-06)
+Route: `/private/camphawk/golden-hour/campground` (lab). Port of campsite-finder
+`src/app/(app)/campground/[id]` (`CampgroundDetail`, `AvailabilityGrid`, `WatchCta`,
+`CampgroundOpenings`), read-only. Mode: **Operate** (clarity first; the brand lives in the frame).
+- **Thesis:** the page answers one question before anything else: *is anything open, and if not,
+  can CampHawk watch it?* It refuses the travel-site default of a big gallery first and the
+  calendar below the fold.
+- **Same world as the home page:** the forest band carries the header and the campground's name;
+  the photo strip docks across the band's bottom edge, the way search does on the home page.
+  Paper below. Green only for open days and the watch action; booked days neutral and struck
+  through; days we couldn't read carry no mark (never "booked"). Every state has a word.
+- **First viewport (1440):**
+  ```
+  ┌──────────────────────────────────────────────────────────────┐
+  │ CampHawk   Watches  New watch  Explore             Sign in   │  forest band
+  │ ‹ Back to search                                             │
+  │ [AUTO-CART] [Recreation.gov]                                 │
+  │ Upper Pines            (Bitter 56, paper)  [Sign up to watch]│
+  │ Yosemite Valley, CA                                          │
+  │ ┌───────────────────┬────────┬────────┬────────┐             │
+  │ │ photo (wide)      │ photo  │ photo  │ photo  │  ← docked   │
+  └─┴───────────────────┴────────┴────────┴────────┴─────────────┘
+    July 2026 calendar (open: dot + word) │ Sat, Jul 18: 1 site open
+  ```
+- **Fidelity:** CampHawk's words, states and gates: the watch button's three visitor states
+  (from the lab's "View as"), open / booked / not open for booking / couldn't check / past days,
+  "Pick a day", first-come campgrounds get a policy panel instead of an empty calendar.
+- **Assets:** four dusk photos of a valley campground (generated; labeled as example data).
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
