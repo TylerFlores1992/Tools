@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
 import { GH, ROUTES } from "../gates";
-import { LabPage } from "../LabPage";
-import { useUrlParam, useUrlState, withVisitor } from "../labState";
+import { LabNote, LabPage } from "../LabPage";
+import { useUrlParam, useUrlState, useVisitor, withVisitor } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
 import { EMAIL } from "./alert-data";
 
@@ -29,15 +29,17 @@ type From = "sign-up" | "checkout";
 
 export function Welcome() {
   const [from, setFrom] = useUrlState<From>("from", "sign-up", ["sign-up", "checkout"]);
-  const [email, setEmail] = useState(true);
   const [saving, setSaving] = useState<"finish" | "skip" | null>(null);
   // ?next= is where sign-up was headed; only a lab path is followed (never off-site).
   const nextParam = useUrlParam("next");
   const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
+  // One title per screen: the band says it, the card doesn't repeat it.
+  const [viewer] = useVisitor();
+  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed — one last thing" : "You're in. How should we reach you?";
   return (
     <LabPage
       page="Welcome"
-      title="Welcome"
+      title={title}
       showPlan
       photo={{ art: ART.a1, pos: "62% 70%", posLg: "50% 72%" }}
       controls={({ visitor }) => visitor !== "signed-out" && (
@@ -48,10 +50,9 @@ export function Welcome() {
         if (visitor === "signed-out") {
           return (
             <div className="mx-auto max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
-              <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold leading-tight text-ch-ink">Sign in to finish setting up</h2>
-              <p className="mx-auto mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, you&apos;ll choose how we reach you when a campsite opens up. New here? Creating an account takes a minute.</p>
+              <p className="mx-auto max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, you&apos;ll choose how we reach you when a campsite opens up. New here? Creating an account takes a minute.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ className: "min-h-12 px-6" })}>Create an account</Link>
+                <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Create an account</Link>
                 <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Sign in</Link>
               </div>
             </div>
@@ -62,26 +63,19 @@ export function Welcome() {
         const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
-          <div className="mx-auto max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
-            <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">
-              {subscribed ? "You're subscribed — one last thing" : "You're in. How should we reach you?"}
-            </h2>
-            <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
-            {from === "checkout" && visitor !== "subscriber" && (
-              <p className="mt-3 rounded-ch-input bg-ch-shell px-3 py-2 text-[13px] text-ch-ink-2">Lab note: the checkout version is for a subscriber — switch View as to Subscriber.</p>
-            )}
+          <div className="mx-auto grid max-w-[720px] gap-4">
+          <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
+            <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
             <section aria-labelledby="w-email" className="mt-7 rounded-ch-input border border-ch-line p-4 sm:p-5">
               <h3 id="w-email" className="text-[17px] font-extrabold text-ch-ink">Email alerts</h3>
-              <label className="mt-3 flex cursor-pointer items-start gap-3 text-[15px] text-ch-ink">
-                <input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} className="mt-0.5 size-[18px] shrink-0 accent-ch-green" />
-                <span>Email me when a campsite I&apos;m watching opens up<span className="block text-[13px] text-ch-ink-2">to {EMAIL}</span></span>
-              </label>
-              {!email && <p role="status" className="mt-3 rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-3 py-2 text-[14px] text-ch-ink">With email off, add a phone number below or you won&apos;t hear about openings at all.</p>}
+              {/* Email is always on, as Settings says (CampHawk's Welcome has an email checkbox that
+                  Settings then ignores; the lab keeps one model). */}
+              <p className="mt-2 flex items-start gap-3 text-[15px] leading-relaxed text-ch-ink-2"><Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0" /><span>Always on. Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</span></p>
             </section>
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h3 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts (optional)</h3>
+              <h3 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts</h3>
               <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text is what actually wakes you at 6am.</p>
               <SmsAlerts visitor={visitor} />
             </section>
@@ -95,13 +89,15 @@ export function Welcome() {
             )}
 
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-ch-line pt-6">
-              <button type="button" disabled={saving !== null} onClick={() => go("finish")} className={buttonClasses({ className: cx("min-h-12 px-8 text-[16px]", saving && "cursor-wait") })}>
+              <button type="button" disabled={saving !== null} onClick={() => go("finish")} className={buttonClasses({ variant: "ink", className: cx("min-h-12 px-8 text-[16px]", saving && "cursor-wait") })}>
                 {saving === "finish" && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Finish
               </button>
               <button type="button" disabled={saving !== null} onClick={() => go("skip")} className="min-h-11 cursor-pointer px-1 text-[15px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">
                 Skip for now
               </button>
             </div>
+          </div>
+          {from === "checkout" && visitor !== "subscriber" && <LabNote>The after-checkout version is for a subscriber: switch View as to Subscriber.</LabNote>}
           </div>
         );
       }}

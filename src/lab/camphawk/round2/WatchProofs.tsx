@@ -82,7 +82,7 @@ function MiniResults() {
             {r.open ? (
               <span className="flex flex-col items-end gap-1 text-right"><Tag kind="open">Open</Tag><span className="text-[13px] font-bold text-ch-ink tabular-nums">{r.open}</span></span>
             ) : (
-              <span className="flex flex-col items-end gap-1 text-right"><Tag kind="paused" srPrefix="Status:">Fully booked</Tag><span className={buttonClasses({ variant: "quiet", size: "sm", className: "pointer-events-none px-3 py-1.5" })}>Watch it</span></span>
+              <span className="flex flex-col items-end gap-1 text-right"><Tag kind="paused" mark="booked" srPrefix="Status:">Fully booked</Tag><span className={buttonClasses({ variant: "quiet", size: "sm", className: "pointer-events-none px-3 py-1.5" })}>Watch it</span></span>
             )}
           </li>
         ))}

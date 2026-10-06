@@ -88,7 +88,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
     : data.closed ? "Not open for booking this month"
     : openDays.length ? `${openDays.length} day${openDays.length === 1 ? "" : "s"} with openings`
     : "Nothing open this month";
-  const navButton = "grid size-11 cursor-pointer place-items-center rounded-ch-input border border-ch-line bg-ch-paper text-ch-ink-2 hover:border-ch-green hover:text-ch-green disabled:cursor-default disabled:border-ch-line disabled:text-ch-faint";
+  const navButton = "grid size-11 cursor-pointer place-items-center rounded-ch-input border border-ch-line bg-ch-paper text-ch-ink-2 hover:border-ch-ink-2 hover:text-ch-ink disabled:cursor-default disabled:border-ch-line disabled:text-ch-faint";
 
   return (
     <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-5">
@@ -289,7 +289,7 @@ export function Campground() {
                     Something went wrong on our side or with the connection — this doesn&apos;t mean the campground is gone. Try again in a moment.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
-                    <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ className: "px-5" })}>Try again</button>
+                    <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ variant: "ink", className: "px-5" })}>Try again</button>
                     <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "px-5" })}>Back to search</Link>
                   </div>
                 </div>
@@ -306,15 +306,15 @@ export function Campground() {
             <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,8vw,112px)]">
               <div className="min-w-0">
                 <div className="mb-3 flex flex-wrap gap-1.5">
-                  {!watchable && <Tag kind="paused" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart">Auto-cart</Tag>}
+                  {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
                   <Tag kind="src">{provider}</Tag>
                 </div>
                 <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
                 <p className="mt-2 text-[17px] text-ch-line">{place}</p>
                 {watchable && <OpenSummary months={months} />}
               </div>
-              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
+              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
             </div>
           </div>
         </section>
@@ -351,7 +351,7 @@ export function Campground() {
             </ul>
             <p className="mt-4 flex items-center text-[16px] text-ch-ink-2">
               <span className="text-ch-muted">Phone:&nbsp;</span>
-              <a href="#" className="inline-flex min-h-11 items-center font-bold text-ch-green tabular-nums underline-offset-2 hover:underline">{phone}</a>
+              <a href="#" className="inline-flex min-h-11 items-center whitespace-nowrap font-bold text-ch-forest tabular-nums underline underline-offset-2 hover:decoration-2">{phone}</a>
             </p>
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
@@ -363,10 +363,10 @@ export function Campground() {
               ))}
             </div>
             <p className="mt-5 text-[16px] text-ch-ink-2">
-              Fully booked? <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">What actually works when a campground is sold out</a>.
+              Fully booked? <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">What actually works when a campground is sold out</a>.
             </p>
             <p className="mt-2 text-[16px] text-ch-ink-2">
-              Also booked out? See <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">browse by state</a>.
+              Also booked out? See <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
             </p>
           </section>
         </div>

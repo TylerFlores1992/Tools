@@ -23,12 +23,12 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
-            <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-green" />
+            <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" />
             <span>{f}</span>
           </li>
         ))}
       </ul>
-      <a href="#" className={buttonClasses({ variant: recommended ? "primary" : "quiet", className: "mt-6 self-start px-5" })}>Start 7-day free trial</a>
+      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start 7-day free trial</a>
     </div>
   );
 }
@@ -47,7 +47,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
           <li>Any alert lets you pause the watch, reopen it, or mute a site you don&apos;t want.</li>
         </ul>
         <div className="mt-7 flex flex-wrap gap-2.5">
-          <a href="#" className={buttonClasses({ className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
+          <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
           <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>New watch</a>
           <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>Alert settings</a>
         </div>

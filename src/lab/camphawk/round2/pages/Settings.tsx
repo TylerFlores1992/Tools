@@ -9,7 +9,7 @@ import { Tag } from "../../ui/Tag";
 import { pricePhrase, type Visitor } from "../../data";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, LabPage } from "../LabPage";
+import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
 import { useUrlState } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
@@ -48,7 +48,7 @@ const MANAGE: Record<Billing, { label: string; detail: string }> = {
   unknown: { label: "Get help with your subscription", detail: "We couldn't check your subscription just now, so we can't say where it's billed. If you subscribed inside the app, manage it from your Google Play or App Store account; if you subscribed on camphawk.app, manage it in the billing portal." },
 };
 
-const sm = (variant: "primary" | "quiet" | "cart" | "warn" = "quiet", className?: string) => buttonClasses({ variant, size: "sm", className: cx("min-h-11 px-4", className) });
+const sm = (variant: "ink" | "quiet" | "cart" | "warn" = "quiet", className?: string) => buttonClasses({ variant, size: "sm", className: cx("min-h-11 px-4", className) });
 const off = "disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none";
 
 function Section({ title, blurb, children, id }: { title: string; blurb?: ReactNode; children: ReactNode; id: string }) {
@@ -100,29 +100,29 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
             <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{pricePhrase("autocart", "monthly")}, or {pricePhrase("autocart", "yearly")} — you keep your current billing cycle and Stripe prorates the difference from today.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {step === "idle" ? (
-                <button type="button" onClick={() => setStep("confirm")} className={sm("primary")}>Upgrade to Auto-Cart</button>
+                <button type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
               ) : (
                 <>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("primary", off)}>
+                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
                     {step === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Upgrading…</> : "Confirm upgrade"}
                   </button>
                   <button type="button" disabled={step === "busy"} onClick={() => setStep("idle")} className={sm()}>Cancel</button>
                 </>
               )}
             </div>
-            {step === "busy" && <p className="mt-2 text-[13px] text-ch-ink-2">In the lab nothing is charged; switch Plan to Auto-Cart to see what comes next.</p>}
+            {step === "busy" && <LabNote className="mt-3">Nothing is charged here. Switch Plan to Auto-Cart to see what comes next.</LabNote>}
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
             <a href="#" className={sm()}>Auto-Cart — $10 / month</a>
-            <a href="#" className={sm("primary")}>Auto-Cart — $50 / year</a>
+            <a href="#" className={sm("ink")}>Auto-Cart — $50 / year</a>
           </div>
         )}
       </>
     );
   }
 
-  const tag = state === "on" ? <Tag kind="cart">On</Tag> : <Tag kind="paused">{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
+  const tag = state === "on" ? <Tag kind="cart" mark="on">On</Tag> : <Tag kind="paused" mark={({ off: "off", "not-set-up": "not-set-up", reconnecting: "reconnecting", disconnected: "needs-you" } as const)[state]}>{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
   const connected = state === "on" || state === "off";
   return (
     <>
@@ -189,7 +189,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     return (
       <>
         <p className="text-[15px] leading-relaxed text-ch-ink-2">Watching needs a subscription.</p>
-        <a href="#" className={sm("primary", "justify-self-start")}>See plans</a>
+        <a href="#" className={sm("ink", "justify-self-start")}>See plans</a>
         <RestorePurchases />
       </>
     );
@@ -199,7 +199,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     <div>
       <p className="text-[16px] font-bold text-ch-ink">{ended ? "Your subscription has ended" : "No subscription yet"}</p>
       <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Searching stays free. Watching a booked campground, text alerts and auto-cart need a subscription.</p>
-      <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("primary", "mt-3")}>{ended ? "Resubscribe" : "Start free trial"}</Link>
+      <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("ink", "mt-3")}>{ended ? "Resubscribe" : "Start free trial"}</Link>
     </div>
   );
 }
@@ -218,7 +218,7 @@ function SignOutConfirm({ textOn }: { textOn: boolean }) {
           <p id="signout-q" className="text-[15px] font-bold text-ch-ink">Sign out of CampHawk?</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">You&apos;ll need your email and password to get back in. Nothing is deleted.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("primary", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
+            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
             <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>Stay signed in</button>
           </div>
         </div>
@@ -251,7 +251,7 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
             <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
             <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
           </div>
-          {s === "busy" && <p className="mt-2 text-[13px] text-ch-ink-2">In the lab nothing is deleted.</p>}
+          {s === "busy" && <LabNote className="mt-3">Nothing is deleted here.</LabNote>}
         </div>
       )}
     </>
@@ -286,7 +286,7 @@ export function Settings() {
               <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">Settings need an account</h2>
               <p className="mx-auto mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ className: "min-h-12 px-6" })}>Sign in</Link>
+                <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
                 <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Back to Explore</Link>
               </div>
             </div>
@@ -311,7 +311,7 @@ export function Settings() {
               </Section>
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you've turned on, at once. Whichever gets to you first wins.">
-                <Box icon={<Mail className="size-5" />} title="Email — always on">Going to {EMAIL}. Change it from your account below.</Box>
+                <Box icon={<Mail className="size-5" />} title="Email — always on">Every opening we find goes to {EMAIL}.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>
             )}
@@ -327,7 +327,7 @@ export function Settings() {
                   <p className="text-[16px] font-bold text-ch-ink">No account — and you don&apos;t need one.</p>
                   <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">A free account is optional. It adds email and text alerts, and lets you use your subscription on camphawk.app and your other devices. Your watches and subscription move to it when you sign in.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href={withVisitor(ROUTES.signUp, visitor)} className={sm("primary")}>Create a free account</Link>
+                    <Link href={withVisitor(ROUTES.signUp, visitor)} className={sm("ink")}>Create a free account</Link>
                     <Link href={withVisitor(ROUTES.signIn, visitor)} className={sm()}>Sign in</Link>
                   </div>
                 </div>

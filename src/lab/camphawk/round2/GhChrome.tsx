@@ -42,7 +42,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
             <>
               <a href="#" className="whitespace-nowrap rounded-[10px] px-3 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10">Sign in</a>
               {/* A wrapper hides it on phones: `hidden` on the link itself loses to the button's inline-flex. */}
-              {visitor === "signed-out" && <span className="hidden sm:contents"><a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 whitespace-nowrap px-4" })}>Sign up</a></span>}
+              {visitor === "signed-out" && <span className="hidden sm:contents"><a href="#" className={buttonClasses({ variant: "paper", size: "sm", className: "min-h-11 whitespace-nowrap px-4" })}>Sign up</a></span>}
             </>
           )}
         </div>

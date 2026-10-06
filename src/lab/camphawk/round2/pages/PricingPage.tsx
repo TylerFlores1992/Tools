@@ -12,7 +12,7 @@ import { LIMITS } from "../../copy";
 import { ART } from "../Art";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, Callout, Steps } from "../LabPage";
+import { A, Callout, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
 import { HOLD_MINUTES, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
@@ -82,7 +82,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
     );
   };
   const trial = (tier: PlanTier) => (
-    <Link href={withVisitor(`${ROUTES.signUp}?plan=${tier}`, visitor)} className={buttonClasses({ variant: tier === "autocart" ? "primary" : "quiet", className: "min-h-12 px-5" })}>Start {TRIAL_DAYS}-day free trial</Link>
+    <Link href={withVisitor(`${ROUTES.signUp}?plan=${tier}`, visitor)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5" })}>Start {TRIAL_DAYS}-day free trial</Link>
   );
   const foot = lookup === "failed" && !signedOut
     ? "We couldn't check your current plan just now."
@@ -127,7 +127,7 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
         {items.map((it) => <li key={it} className="flex gap-3"><Check aria-hidden="true" className="mt-1 size-4.5 shrink-0 text-ch-ink" /><span>{it}</span></li>)}
       </ul>
       <div className="mt-7 flex flex-wrap gap-2.5">
-        {!autocart && <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ className: "min-h-12 px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</Link>}
+        {!autocart && <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</Link>}
         <Link href={withVisitor(ROUTES.newWatch, visitor)} className={buttonClasses({ variant: autocart ? "primary" : "quiet", className: "min-h-12 px-5" })}>New watch</Link>
         <Link href={withVisitor(ROUTES.settings, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-5" })}>Alert settings</Link>
       </div>
@@ -160,13 +160,12 @@ function AppPaywall({ store }: { store: Store }) {
                 <p className="text-[16px] font-bold text-ch-ink">{t.title}</p>
                 <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? "Up to 6 campgrounds watched around the clock, with an alert the moment a site opens." : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
                 <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">1 week free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
-                <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "primary" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
+                <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
                   {buying === t.id ? "Opening…" : `Start free trial — ${t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "/month") : priceShort(t.tier, "yearly").replace("/yr", "/year")}`}
                 </button>
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[12px] text-ch-ink-2">Lab: store prices stand in as CampHawk&apos;s; the real tiles show the App Store&apos;s own strings.</p>
           <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-4 min-h-12" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
           <p role="status" className="mt-2 text-[14px] text-ch-ink-2">{restore === "none" ? "We didn't find an active subscription for this Apple ID." : ""}</p>
           <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
@@ -220,7 +219,7 @@ export function PricingPage() {
       page="Plans & pricing"
       title="Plans & pricing"
       sub="Live search is free and needs no account. A subscription is what keeps a watch running around the clock — and Auto-Cart is what wins the sites that vanish in minutes."
-      photo={{ art: ART.a4, pos: "50% 62%", posLg: "50% 60%" }}
+      photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan
       controls={({ visitor }) => (
         <>
@@ -234,7 +233,7 @@ export function PricingPage() {
       {({ visitor, plan }) => (
         <div className="grid gap-6">
           {visitor === "subscriber" ? <AllSet visitor={visitor} plan={plan} phone={phone === "saved"} />
-            : visitor === "app" ? <AppPaywall store={store} />
+            : visitor === "app" ? <><AppPaywall store={store} />{store === "sells" && <LabNote>The store tiles show CampHawk&apos;s prices as stand-ins; the real tiles show the App Store&apos;s own price strings.</LabNote>}</>
             : <WebPlans key={`${visitor}-${checkout}`} visitor={visitor} lookup={lookup} checkout={checkout} />}
           <HoldExplainer />
           <section aria-labelledby="dont" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">

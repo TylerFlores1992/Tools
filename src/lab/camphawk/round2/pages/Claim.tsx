@@ -110,7 +110,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         </span>
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-green" />
+        <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
       <button type="submit" disabled={missing.length > 0 || busy} className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>{busy ? "Signing you in…" : "Sign in and hand it over"}</button>
@@ -189,7 +189,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
       ) : opened && !canInject ? (
         <Step tone="busy" title={c.waitingTitle} body={c.waitingBody}>
           <label className="flex cursor-pointer items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4 text-[15px] leading-relaxed text-ch-ink">
-            <input type="checkbox" onChange={(e) => setReady(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-green" />
+            <input type="checkbox" onChange={(e) => setReady(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
             <span>I&apos;m signed in to ReserveCalifornia and looking at {CLAIM.unit}</span>
           </label>
         </Step>

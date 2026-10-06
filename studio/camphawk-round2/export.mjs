@@ -22,6 +22,11 @@ const PICKS = [
   ["e2-map", "e2-map-recraft_recraft_v4_1-1.webp", [1280, 828]],
   ["n1-newwatch-wide", "n1-newwatch-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
   ["w1-watches-wide", "w1-watches-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  // Fix round (2026-10-06): one band photo per page type, replacing the overused a4.
+  ["m1-coast-wide", "m1-coast-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  ["p1-pricing-wide", "p1-pricing-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  ["v1-fork-wide", "v1-fork-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  ["s1-ranger-wide", "s1-ranger-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
 ];
 
 // Per-pick fixes, applied before resizing:

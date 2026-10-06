@@ -85,7 +85,7 @@ function supportSections(visitor: Visitor) {
 
 export function Support() {
   return (
-    <LabPage page="Support" title="CampHawk Support" dock={false} wide photo={{ art: ART.a4, pos: "30% 60%", posLg: "50% 62%" }}
+    <LabPage page="Support" title="CampHawk Support" dock={false} wide photo={{ art: ART.s1, pos: "78% 60%", posLg: "50% 62%" }}
       sub={<>Email <a href={`mailto:${EMAIL}`} className="font-bold text-ch-paper underline underline-offset-[3px]">{EMAIL}</a> and a human will answer. Most questions are below.</>}
       controls={({ visitor }) => visitor === "app" ? <span className="text-[13px]">In the app: the Android line is hidden (Apple 2.3.10)</span> : null}
     >

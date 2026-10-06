@@ -8,7 +8,7 @@ import type { Visitor } from "../../data";
 import { CAMPGROUNDS_ROUNDED } from "../../data";
 import { ART } from "../Art";
 import { ROUTES } from "../gates";
-import { A, LabPage } from "../LabPage";
+import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
 import { CHECK_SECONDS, SOURCE_COUNT, inWords } from "./tier2-data";
 import {
@@ -38,7 +38,7 @@ import {
 // - The CTA says "Search campgrounds by date": CampHawk's "Search California by date" opens an
 //   empty search.
 
-const LAB_NOTE = "Lab example: California's counts and lists stand in for CampHawk's catalog; other states' counts and every campground list are illustrative.";
+const LAB_NOTE = "California's counts and lists stand in for CampHawk's catalog; other states' counts and every campground list are illustrative.";
 
 function Crumbs({ items, visitor }: { items: Array<[string, string | null]>; visitor: Visitor }) {
   return (
@@ -108,7 +108,7 @@ function Search({ visitor, className }: { visitor: Visitor; className?: string }
 }
 
 function Note() {
-  return <p className="mt-12 border-t border-ch-line pt-4 text-[13px] text-ch-ink-2">{LAB_NOTE}</p>;
+  return <LabNote className="mt-12">{LAB_NOTE}</LabNote>;
 }
 
 const statePath = (r: Region) => `${ROUTES.camping}/${r.slug}`;
@@ -160,7 +160,7 @@ export function StatePage({ slug }: { slug: string }) {
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />
           <div className="mt-5">
             <Lead>
-              <p>We track live availability at {r.count.toLocaleString("en-US")} bookable campgrounds across {r.name}{ca ? `, in ${CALIFORNIA.towns} towns` : ""}. Every one is rechecked every {CHECK_SECONDS} seconds, around the clock. Booked out is rarely final — people cancel constantly, and the site drops back into the booking system with no warning, often overnight — so when one frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
+              <p>We track live availability at {r.count.toLocaleString("en-US")} bookable campgrounds across {r.name}{ca ? `, in ${CALIFORNIA.towns} towns` : ""}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Booked out is rarely final — people cancel constantly, and the site drops back into the booking system with no warning, often overnight — so when one frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
             </Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">{ca ? `Booking goes through ${joinAnd(CALIFORNIA.providers)}. ` : ""}Searching is free.</p>
             {types.length > 0 && (
@@ -202,7 +202,7 @@ export function TypeHub({ type }: { type: string }) {
           <div className="mt-5">
             <Lead>
               <p>{hub.blurb}</p>
-              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca.length)}, on {systems(ca.length > 0)}. Every one is rechecked every {CHECK_SECONDS} seconds, around the clock, so when a booked site frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
+              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca.length)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock, so when a booked site frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
             </Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">Searching live availability is free and needs no account.</p>
             <Search visitor={visitor} className="mt-6" />
@@ -274,12 +274,12 @@ export function HardestToBook() {
     <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.c1, pos: "50% 60%", posLg: "50% 55%" }}>
       {({ visitor }) => (
         <div>
-          <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", ROUTES.camping], ["Always booked", null]]} />
+          <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />
           <div className="mt-5">
             <Lead>
               <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you have finished typing. It is not a queue you can win by being organized — for these {count} campgrounds, being early is not early enough.</p>
               <p>What does work is being there when somebody gives one back. Cancellations happen constantly — plans change, weather turns, someone holds three weekends and keeps one — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
-              <p>CampHawk is the part that happens to be looking. We recheck each of these campgrounds every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
+              <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
             </Lead>
             <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Check availability now</Link>
@@ -293,7 +293,7 @@ export function HardestToBook() {
             ))}
           </div>
           <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} is not the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
-          <p className="mt-12 border-t border-ch-line pt-4 text-[13px] text-ch-ink-2">Lab example: the parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</p>
+          <LabNote className="mt-12">The parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>
       )}
     </LabPage>

@@ -13,7 +13,7 @@ import { formatRange, nightsBetween, type ISODate } from "../../ui/date";
 import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
 import { ROUTES } from "../gates";
-import { LabPage } from "../LabPage";
+import { LabNote, LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
 import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
 
@@ -76,7 +76,7 @@ export function Manage() {
       page="Manage watch"
       tab="watches"
       title={link === "works" ? w.name : "Can't open this watch"}
-      photo={which === "upper-pines" ? { art: ART.c1, pos: "60% 60%", posLg: "50% 55%" } : { art: ART.a4, pos: "30% 60%", posLg: "50% 62%" }}
+      photo={which === "upper-pines" ? { art: ART.c1, pos: "60% 60%", posLg: "50% 55%" } : { art: ART.m1, pos: "28% 65%", posLg: "50% 62%" }}
       controls={() => (
         <>
           <LabSelect label="Example watch" short="Watch" value={which} onChange={setWhich} options={[["upper-pines", "Upper Pines (open now)"], ["leo", "Leo Carrillo (8am holds)"]]} />
@@ -143,7 +143,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
         <div data-card-dim>
           <div className="mb-3 flex flex-wrap items-center gap-1.5">
             {active ? <Tag kind="watch">Watching</Tag> : <Tag kind="paused">Paused</Tag>}
-            {w.autoCart && w.provider === "Recreation.gov" && <Tag kind="cart">Auto-cart</Tag>}
+            {w.autoCart && w.provider === "Recreation.gov" && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
             <Tag kind="src">{w.provider}</Tag>
           </div>
           <h2 className="font-ch-display text-[26px] font-extrabold leading-tight text-ch-ink">{w.name}</h2>
@@ -164,7 +164,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           <div className="mt-4 grid gap-3">
             <DatePicker value={range} onChange={setRange} label={w.flexNights ? "Search window" : "Trip dates"} meta={w.flexNights && range.start ? `any ${w.flexNights} nights in this window` : undefined} defaultOpen defaultMonth={range.start as ISODate} />
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={saveDates} disabled={!range.start || !range.end || saving} className={buttonClasses({ size: "sm", className: "min-h-11 px-4 disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>{saving ? "Saving…" : "Save dates"}</button>
+              <button type="button" onClick={saveDates} disabled={!range.start || !range.end || saving} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4 disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>{saving ? "Saving…" : "Save dates"}</button>
               <button type="button" onClick={() => { setEditing(false); setRange(saved); setError(null); }} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Cancel</button>
             </div>
           </div>
@@ -175,7 +175,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           {!editing && <button type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
           {active
             ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
-            : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
+            : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
         </div>
       </Card>
       {error && <p role="alert" className="rounded-ch-input border border-ch-alert bg-ch-alert-soft px-4 py-3 text-[15px] text-ch-alert-deep">{error}</p>}
@@ -218,7 +218,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="block text-[17px] font-bold text-ch-ink">{o.unit}</span>
                   <span className="block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
                 </span>
-                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
+                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
               </li>
             ))}
           </ul>
@@ -254,7 +254,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           </div>
         )}
       </div>
-      <p className="px-1 text-[13px] text-ch-muted">Example watch, as if today were Monday, July 6.</p>
+      <LabNote>Example watch, as if today were Monday, July 6.</LabNote>
     </div>
   );
 }

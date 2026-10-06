@@ -52,7 +52,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
       {saved && !changed && (
         <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
           <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
-          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · {saved}</p>
+          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · <span className="whitespace-nowrap">{saved}</span></p>
           <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
             {busy === "off" ? "Turning off…" : "Turn off"}
           </button>
@@ -75,7 +75,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         />
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-green" />
+        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>Yes, I&apos;d like to receive automated text messages from CampHawk when campgrounds I&apos;m watching have availability. Consent is not a condition of purchase.</span>
       </label>
       <p className="text-[13px] leading-relaxed text-ch-ink-2">
@@ -83,7 +83,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         <A href={ROUTES.terms} visitor={visitor}>Terms of Service</A> · <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>
       </p>
       <div>
-        <button type="button" onClick={save} disabled={!ready} aria-describedby="sms-why" className={buttonClasses({ fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
+        <button type="button" onClick={save} disabled={!ready} aria-describedby="sms-why" className={buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
           {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : done ? <><Check aria-hidden="true" className="size-4" />Saved</> : saved ? "Update number" : "Turn on text alerts"}
         </button>
         {/* The disabled button says why, in words (CampHawk leaves it to the disabled style). */}

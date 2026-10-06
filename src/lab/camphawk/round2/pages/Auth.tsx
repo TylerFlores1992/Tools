@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { cx } from "@/components/cx";
+import { buttonClasses } from "../../ui";
 import type { Visitor } from "../../data";
 import { BareCard, BareFrame } from "../BareFrame";
+import { LabNote } from "../LabPage";
 import { ROUTES } from "../gates";
 import { useUrlParam, withVisitor } from "../labState";
 import { TRIAL_DAYS } from "./tier2-data";
@@ -23,10 +25,12 @@ import { TRIAL_DAYS } from "./tier2-data";
 // Lab changes: each page has its own title and is noindex (CampHawk's inherit the home page's);
 // one line of context above the widget when you came to start a trial or a watch (CampHawk's
 // has none); the plan you picked is carried through, so Welcome can bring you back to it; the
-// widget's main button is forest ink, not action green (signing in doesn't get you a site).
+// widget's main button is the ink button, not action green (signing in doesn't get you a site); the
+// heading and line are CampHawk's voice, set through Clerk's `localization` prop (Clerk's defaults
+// read "Welcome! Please fill in the details to get started.").
 
 const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-card px-4 text-[16px] text-ch-ink focus-visible:border-ch-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
-const main = "inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-ch-input bg-ch-forest px-4 text-[16px] font-bold text-ch-white hover:bg-ch-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait";
+const main = buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-wait" });
 
 function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; next: string | null }) {
   const router = useRouter();
@@ -47,8 +51,8 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
   };
   return (
     <BareCard>
-      <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your account" : "Sign in to CampHawk"}</h1>
-      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "Welcome! Please fill in the details to get started." : "Welcome back! Please sign in to continue"}</p>
+      <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your CampHawk account" : "Sign in to CampHawk"}</h1>
+      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "Free to make. Searching never needs one." : "Welcome back."}</p>
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
@@ -95,7 +99,7 @@ function AuthPage({ mode }: { mode: "in" | "up" }) {
         <>
           <div className="-mt-6"><Context plan={plan} next={next} mode={mode} /></div>
           <Widget key={visitor} mode={mode} visitor={visitor} next={next} />
-          <p className="mt-4 px-2 text-center text-[13px] text-ch-ink-2">Lab stand-in for Clerk&apos;s sign-{mode} widget. Its words are Clerk&apos;s defaults; Continue moves on as if it worked.</p>
+          <LabNote className="mt-4">A stand-in for Clerk&apos;s sign-{mode} widget, themed and worded through Clerk&apos;s appearance and localization settings. Continue moves on as if it worked.</LabNote>
         </>
       )}
     </BareFrame>

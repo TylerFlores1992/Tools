@@ -40,7 +40,7 @@ const Out = ({ href, children }: { href: string; children: ReactNode }) => (
 export function Comparison({ slug }: { slug: Competitor["slug"] }) {
   const c = COMPETITORS[slug];
   return (
-    <LabPage page={`vs ${c.name}`} title={`CampHawk vs ${c.name}`} dock={false} photo={{ art: ART.a4, pos: "50% 62%", posLg: "50% 60%" }}>
+    <LabPage page={`vs ${c.name}`} title={`CampHawk vs ${c.name}`} dock={false} photo={{ art: ART.v1, pos: "75% 55%", posLg: "50% 58%" }}>
       {({ visitor }) => (
         <div className="mx-auto max-w-[46rem]">
           <p className="text-[18px] leading-relaxed text-ch-ink-2">{c.known} So does CampHawk. Rather than tell you what {c.name} does — their site is the honest source for that, and it&apos;s <Out href={c.homepage}>right here</Out> — this page says exactly what CampHawk does, so you can check it against whatever else you&apos;re looking at.</p>
@@ -65,7 +65,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
                 ? <span className="text-[15px]">Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span>
                 : <strong className="text-ch-ink">Closed to new holds since {RC_HOLD_CLOSED_ON} while we make it more reliable; ReserveCalifornia watches still alert you.</strong>}
             </Q>
-            <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a periodic sweep. Watched campgrounds are re-checked continuously, which is what makes carting within seconds possible at all.</Q>
+            <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a sweep every few minutes: every watched campground is rechecked every {CHECK_SECONDS} seconds, around the clock, which is what makes carting within seconds possible at all.</Q>
             <Q q="Flexible dates, and per-site muting">Watch for &ldquo;any two nights in this window&rdquo; rather than one fixed range — which, on a popular weekend, is usually the difference between getting something and getting nothing. And if one loop keeps opening and you don&apos;t want it, mute that site instead of the whole campground.</Q>
             {visitor === "app" ? (
               <Q q="Plans, and a free trial">There is a free trial, and you can cancel any time from your store&apos;s subscription settings. See the plans in <A href={ROUTES.settings} visitor={visitor}>Settings</A>.</Q>

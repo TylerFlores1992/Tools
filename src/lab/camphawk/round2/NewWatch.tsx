@@ -47,7 +47,7 @@ function TrustPanel() {
   const [open, setOpen] = useState(false);
   const tick = (t: React.ReactNode, i: number) => (
     <li key={i} className="flex items-start gap-2 py-1 text-[14px] leading-normal text-ch-ink-2">
-      <Check aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ch-green" />
+      <Check aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ch-ink" />
       <span>{t}</span>
     </li>
   );
@@ -330,14 +330,14 @@ export function NewWatch() {
                   <div className="flex items-center justify-between gap-2 border-b border-ch-line px-3.5 py-1.5">
                     <span className="text-[14px] text-ch-ink-2">{parts.size} of {divisions.length} selected</span>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-green hover:bg-ch-green-soft">All</button>
-                      <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-green-soft">None</button>
+                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-forest underline underline-offset-2 hover:bg-ch-green-soft">All</button>
+                      <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-paper">None</button>
                     </div>
                   </div>
                   <ul className="max-h-64 divide-y divide-ch-line overflow-y-auto overscroll-contain">
                     {divisions.map((d) => (
                       <li key={d.id}>
-                        <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2 hover:bg-ch-green-soft">
+                        <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2 hover:bg-ch-paper">
                           <input type="checkbox" checked={parts.has(d.id)} onChange={() => setParts((prev) => { const n = new Set(prev); if (n.has(d.id)) n.delete(d.id); else n.add(d.id); return n; })} className="size-[18px] shrink-0 accent-ch-green" />
                           <span className="text-[15px] text-ch-ink">{d.name}</span>
                         </label>
@@ -389,7 +389,7 @@ export function NewWatch() {
                   </span>
                   {/* The switch carries its state as position and a word as well as hue. */}
                   <span className="flex shrink-0 flex-col items-center gap-1">
-                    <span aria-hidden="true" className={cx("relative h-6 w-10 rounded-full transition-colors motion-reduce:transition-none", autoCart ? "bg-ch-green" : "bg-ch-faint")}>
+                    <span aria-hidden="true" className={cx("relative h-6 w-10 rounded-full transition-colors motion-reduce:transition-none", autoCart ? "bg-ch-blue" : "bg-ch-faint")}>
                       <span className={cx("absolute top-[3px] size-[18px] rounded-full bg-ch-card shadow-ch-card transition-transform motion-reduce:transition-none", autoCart ? "translate-x-[19px]" : "translate-x-[3px]")} />
                     </span>
                     <span aria-hidden="true" className="text-[12px] font-bold text-ch-ink-2">{autoCart ? "On" : "Off"}</span>

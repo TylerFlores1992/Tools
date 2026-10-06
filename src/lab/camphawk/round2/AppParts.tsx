@@ -30,7 +30,10 @@ export function WatchCtaLink({
 }: { visitor: Visitor; label?: string; campgroundId?: string; start?: string | null; end?: string | null; variant?: ButtonVariant; fullWidth?: boolean; className?: string }) {
   const q = new URLSearchParams({ ...(campgroundId ? { campground: campgroundId } : {}), ...(start && end ? { start, end } : {}) }).toString();
   const href = canWatch(visitor) ? withVisitor(`${ROUTES.newWatch}${q ? `?${q}` : ""}`, visitor) : "#";
-  return <Link href={href} className={buttonClasses({ variant, fullWidth, className })}>{watchCtaLabel(visitor, label)}</Link>;
+  // Only a subscriber's button starts a watch (green: it's how you get a site). Everyone else's
+  // is a sign-up or a trial, so it's the ink button (lab change; CampHawk greens both).
+  const v = canWatch(visitor) || variant !== "primary" ? variant : "ink";
+  return <Link href={href} className={buttonClasses({ variant: v, fullWidth, className })}>{watchCtaLabel(visitor, label)}</Link>;
 }
 
 /** SubscribeCta: what someone who can't watch yet can do next. Nothing for a subscriber. */
@@ -38,7 +41,7 @@ export function SubscribeCta({ visitor, fullWidth = false, className }: { visito
   const gate = accountGate(visitor);
   if (gate === "ready") return null;
   const row = cx(fullWidth ? "grid gap-2" : "flex flex-wrap items-center gap-2", className);
-  const btn = (variant: ButtonVariant = "primary") => buttonClasses({ variant, fullWidth, className: fullWidth ? undefined : "px-5" });
+  const btn = (variant: ButtonVariant = "ink") => buttonClasses({ variant, fullWidth, className: fullWidth ? undefined : "px-5" });
   // The app sells through the store's own paywall: no price, no account needed.
   if (gate === "appGuest") return <div className={row}><a href="#" className={btn()}>See plans</a></div>;
   return (
@@ -59,7 +62,7 @@ export function PricingLink({ visitor, plan, className }: { visitor: Visitor; pl
       <p className="mt-1 max-w-[58ch] text-[15px] leading-relaxed text-ch-ink-2">
         Add Auto-Cart and an opening goes straight into your Recreation.gov cart — held while you get to your phone. {priceShort("autocart", "monthly")} or {priceShort("autocart", "yearly")}, prorated on your current billing.
       </p>
-      <a href="#" className={buttonClasses({ size: "sm", className: "mt-3 min-h-11 px-4" })}>Upgrade to Auto-Cart</a>
+      <a href="#" className={buttonClasses({ variant: "ink", size: "sm", className: "mt-3 min-h-11 px-4" })}>Upgrade to Auto-Cart</a>
     </div>
   );
 }
@@ -71,7 +74,7 @@ export function PhoneNudge({ className }: { className?: string }) {
     <div className={cx("rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5", className)}>
       <p className="text-[16px] font-bold text-ch-ink">You&apos;re only getting email alerts</p>
       <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we&apos;ll send both.</p>
-      <a href="#" className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-green underline-offset-2 hover:text-ch-green-deep hover:underline">Turn on text alerts</a>
+      <a href="#" className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">Turn on text alerts</a>
     </div>
   );
 }

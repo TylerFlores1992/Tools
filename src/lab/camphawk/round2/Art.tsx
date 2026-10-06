@@ -24,6 +24,10 @@ export const ART = {
   e2: { name: "e2-map", widths: [828, 1280], w: 1280, h: 731 },
   n1: { name: "n1-newwatch-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   w1: { name: "w1-watches-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  m1: { name: "m1-coast-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  p1: { name: "p1-pricing-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  v1: { name: "v1-fork-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  s1: { name: "s1-ranger-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
 } as const;
 export type Piece = (typeof ART)[keyof typeof ART];
 

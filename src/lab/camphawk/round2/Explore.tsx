@@ -89,7 +89,7 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
             : "Live availability is free and always will be. Watching a booked campground — and the text the moment someone cancels — needs a subscription."}
       </p>
       <SubscribeCta visitor={visitor} className="mt-3" />
-      <Link href={withVisitor(ROUTES.watches, visitor)} className="mt-2 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-green underline-offset-2 hover:text-ch-green-deep hover:underline">
+      <Link href={withVisitor(ROUTES.watches, visitor)} className="mt-2 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">
         See what a watch does
       </Link>
     </div>
@@ -99,7 +99,7 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
 /** The first-run box's closing line, matched to the reader (ExploreAccountCta). */
 function AccountLine({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") return null;
-  const link = "font-bold text-ch-green underline underline-offset-2 hover:text-ch-green-deep";
+  const link = "font-bold text-ch-forest underline underline-offset-2 hover:decoration-2";
   if (visitor === "app") return <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">Watching booked campgrounds needs a subscription — no account needed. <a href="#" className={link}>See plans</a></p>;
   return (
     <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">
@@ -113,7 +113,7 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
   const steps = [
     ["Say where", "A city, park or ZIP in the search box — or tap the crosshair to use your location. Leave it empty and we'll search near you."],
     ["Say when", "Exact dates, or one tap for tonight or this weekend. Flexible is the useful one: say how many nights you need and give us a date range to hunt inside, and we'll take any stretch that long."],
-    ["Search", "Green means sites are open right now. Tap any result for its full calendar, or the map to see where they are."],
+    ["Search", "Results marked Sites open have a site free right now. Tap any result for its full calendar, or the map to see where they are."],
   ];
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
@@ -214,15 +214,15 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
       <div className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {open && <Tag kind="open">Sites open</Tag>}
-          {booked && <Tag kind="paused">Booked — watch it</Tag>}
-          {unknown && <Tag kind="paused" srPrefix="Availability:">Couldn&apos;t check</Tag>}
-          {firstCome && <Tag kind="paused" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-          {c.provider === "Recreation.gov" && !firstCome && <Tag kind="cart">Auto-cart</Tag>}
+          {booked && <Tag kind="paused" mark="booked">Booked — watch it</Tag>}
+          {unknown && <Tag kind="paused" mark="unknown" srPrefix="Availability:">Couldn&apos;t check</Tag>}
+          {firstCome && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+          {c.provider === "Recreation.gov" && !firstCome && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           <Tag kind="src">{c.provider}</Tag>
         </div>
         <div className="flex items-start gap-2">
           <h3 className="min-w-0 flex-1 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">
-            <Link href={href} className="hover:text-ch-green-deep hover:underline">{c.name}</Link>
+            <Link href={href} className="underline-offset-[3px] hover:underline">{c.name}</Link>
           </h3>
           {onToggleFavorite && <FavoriteHeart favorite={favorite} onToggle={onToggleFavorite} name={c.name} className="-mr-1.5 -mt-1" />}
         </div>
@@ -416,7 +416,7 @@ export function Explore() {
                 aria-controls={suggestions.length ? "gh-where-list" : undefined}
                 className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper py-3 pl-4 pr-12 font-ch-display text-[16px] font-semibold text-ch-ink placeholder:font-ch-body placeholder:font-normal placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
               />
-              <button type="button" onClick={locateMe} disabled={locating} aria-label="Use my location" title="Use my location" className="absolute inset-y-0 right-0 grid w-12 cursor-pointer place-items-center rounded-r-ch-input text-ch-muted hover:text-ch-green focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait">
+              <button type="button" onClick={locateMe} disabled={locating} aria-label="Use my location" title="Use my location" className="absolute inset-y-0 right-0 grid w-12 cursor-pointer place-items-center rounded-r-ch-input text-ch-muted hover:text-ch-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait">
                 <LocateFixed aria-hidden="true" className={cx("size-5", locating && "animate-pulse motion-reduce:animate-none")} />
               </button>
             </div>
@@ -428,9 +428,9 @@ export function Explore() {
                       type="button"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => { setPlace(s.name); setPicked(true); setFocusPlace(false); }}
-                      className="flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line bg-ch-card px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
+                      className="flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line bg-ch-card px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
                     >
-                      {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-green" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
+                      {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-semibold text-ch-ink">{s.name}</span>
                         {s.sub && <span className="block truncate text-[13px] text-ch-muted">{s.sub}</span>}
@@ -515,7 +515,7 @@ export function Explore() {
                     <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
                     <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we&apos;ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
-                      ? <a href="#" className={buttonClasses({ className: "px-5" })}>Start 7-day free trial</a>
+                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start 7-day free trial</a>
                       : <Link href={withVisitor(`${ROUTES.newWatch}${searched.range.start && searched.range.end ? `?start=${searched.range.start}&end=${searched.range.end}` : ""}`, visitor)} className={buttonClasses({ className: "px-5" })}>Create a watch</Link>}
                   </div>
                 )}

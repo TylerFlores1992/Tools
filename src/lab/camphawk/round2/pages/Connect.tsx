@@ -63,7 +63,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
         </span>
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={save} onChange={(e) => setSave(e.target.checked)} disabled={busy} required className="mt-1 size-[18px] shrink-0 accent-ch-green" />
+        <input type="checkbox" checked={save} onChange={(e) => setSave(e.target.checked)} disabled={busy} required className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span><strong className="font-bold text-ch-ink">Save my login to keep auto-cart connected (required).</strong> It&apos;s stored, encrypted, on a private machine we run, so it can sign back in on its own when the session drops. It never reaches CampHawk&apos;s web servers or database.</span>
       </label>
       {!save && (

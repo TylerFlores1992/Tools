@@ -165,6 +165,17 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
   );
 }
 
+/** A note for reviewers, never part of the product: dashed, labeled "Lab", always outside the
+    product's own cards so nobody mistakes it for CampHawk copy. */
+export function LabNote({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <p role="note" className={cx("flex items-start gap-2.5 rounded-ch-input border border-dashed border-ch-muted px-3 py-2 text-[13px] leading-relaxed text-ch-ink-2", className)}>
+      <span className="mt-px shrink-0 text-[11px] font-extrabold uppercase tracking-[.1em] text-ch-ink">Lab</span>
+      <span>{children}</span>
+    </p>
+  );
+}
+
 /** A card on paper: the docked first block of an app page, or a section box. */
 export function Panel({ children, className, as: As = "div", label }: { children: ReactNode; className?: string; as?: "div" | "section"; label?: string }) {
   return <As aria-label={label} className={cx("rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-8", className)}>{children}</As>;

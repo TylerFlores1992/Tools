@@ -15,6 +15,7 @@ import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCta
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
 import { GhFooter, ScreenLinks } from "./GhChrome";
+import { LabNote } from "./LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { PICKABLE } from "./newwatch-data";
 import { ALERTS, OUTLOOK_HEADING, outlookBody, WATCHES, type ExampleWatch, type Hold } from "./watches-data";
@@ -57,7 +58,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        <Tag kind="watch">{offered ? "Offered" : "Queued"}</Tag>
+        {offered ? <Tag kind="paused" mark="queued">Offered</Tag> : <Tag kind="watch" mark="queued">Queued</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -90,17 +91,16 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
-          {asked.length > 0 && <Tag kind="cart">We&apos;ll grab {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`} · 8 AM</Tag>}
-          {offered.length > 0 && <Tag kind="watch">{offered.length} more open{offered.length === 1 ? "s" : ""} 8 AM</Tag>}
+          {asked.length > 0 && <Tag kind="watch" mark="queued">We&apos;ll grab {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`} · 8 AM</Tag>}
           {carted && <Tag kind="cart">{carted.length === 1 ? "In your cart" : `${carted.length} in your cart`}</Tag>}
-          {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused">Not carted — reconnect auto-cart</Tag>}
-          {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused">Not carted — reconnecting</Tag>}
+          {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
+          {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
           {state === "watching" && <Tag kind="watch">Watching</Tag>}
-          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !carted && !(state === "hit" && cart !== "connected") && <Tag kind="cart">Auto-cart</Tag>}
+          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !carted && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           {state === "paused" && <Tag kind="paused">Paused</Tag>}
-          {state === "authexpired" && <Tag kind="paused">Auto-cart reconnecting</Tag>}
-          {state === "disconnected" && <Tag kind="paused">Auto-cart disconnected</Tag>}
-          {state === "stalled" && <Tag kind="paused">Checks paused</Tag>}
+          {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
+          {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
+          {state === "stalled" && <Tag kind="paused" mark="provider-down">Checks paused</Tag>}
           <Tag kind="src">{w.provider}</Tag>
         </div>
         <h3 className="font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">{w.name}</h3>
@@ -168,7 +168,7 @@ function Steps({ steps }: { steps: ReadonlyArray<readonly [string, string]> }) {
     <ol className="mt-5 rounded-ch-card border border-ch-line bg-ch-card px-5 py-2">
       {steps.map(([title, sub], i) => (
         <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
-          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-green-soft text-[14px] font-extrabold text-ch-green-deep">{i + 1}</span>
+          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
           <span>
             <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
             <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
@@ -200,7 +200,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
         ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
       ]} />
       <div className="mt-5 grid gap-2 sm:max-w-[420px]">
-        <a href="#" className={buttonClasses({ fullWidth: true })}>Start 7-day free trial</a>
+        <a href="#" className={buttonClasses({ variant: "ink", fullWidth: true })}>Start 7-day free trial</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Plan options</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in</a>
         <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Keep exploring without an account</Link>
@@ -295,7 +295,7 @@ export function Watches() {
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-6 shadow-ch-pop sm:p-8">
         <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">We couldn&apos;t load your watches</h2>
         <p role="alert" className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Your watches are still running — this is only the page. Try again in a moment.</p>
-        <button type="button" onClick={() => setList("list")} className={buttonClasses({ className: "mt-5 px-5" })}>Try again</button>
+        <button type="button" onClick={() => setList("list")} className={buttonClasses({ variant: "ink", className: "mt-5 px-5" })}>Try again</button>
       </div>
     );
   } else {
@@ -351,7 +351,7 @@ export function Watches() {
             </ul>
           </Collapsible>
         </div>
-        <p className="mt-4 px-1 text-[13px] text-ch-muted">Example watches, as if today were Monday, July 6.</p>
+        <LabNote className="mt-4">Example watches, as if today were Monday, July 6.</LabNote>
       </>
     );
   }
