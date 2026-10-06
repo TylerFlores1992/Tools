@@ -181,7 +181,7 @@ function HoldExplainer() {
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8am releases — we can hold the site while you wake up</h2>
+        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
         <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
       </div>
       {!RC_HOLD_OPEN && (
@@ -193,10 +193,10 @@ function HoldExplainer() {
         <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
         <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
         <Steps steps={[
-          ["The night before", "you get an alert naming the site, the nights and the exact release time — with a “hold it for me” button."],
+          ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “hold it for me” button."],
           ["You tap it, or you don’t.", "Nothing happens unless you do. There is no standing setting for this, on purpose — holding a site takes it off the market for everyone else, and that is not a decision to make weeks in advance."],
-          ["At 8 AM we put it in a cart", "— in seconds, before most people have found the page."],
-          ["We text you and let go", `so your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
+          ["At 8 AM we put it in a cart", "In seconds, before most people have found the page."],
+          ["We text you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
         ]} />
         <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
       </div>

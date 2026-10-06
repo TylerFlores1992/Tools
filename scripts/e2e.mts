@@ -658,6 +658,44 @@ try {
     await ctx.close();
   });
 
+  await check("lab pricing and sign-up: subscribers aren't sold to, the app shows no web price, and a picked plan survives sign-up", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/pricing?as=subscriber&plan=autocart`);
+    await signIn(p);
+    await p.waitForURL(/\/pricing\?as=subscriber/);
+    await p.getByRole("heading", { name: "You're all set — here's what you can do" }).waitFor();
+    assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price for an Auto-Cart subscriber");
+    // A past subscriber gets no second trial; a failed lookup says so; checkout failing says nothing was charged.
+    await p.goto(`${GH}/pricing?as=lapsed`);
+    assert.equal(await p.getByText("Free for 7 days", { exact: false }).count(), 0);
+    await p.goto(`${GH}/pricing?as=member&lookup=failed&checkout=fails`);
+    await p.getByText("We couldn't check your current plan just now.").waitFor();
+    await p.getByRole("button", { name: "$10 / month" }).click();
+    await p.getByRole("alert").filter({ hasText: "Nothing was charged" }).waitFor();
+    // The app: the store's paywall, with Restore purchases and the renewal terms.
+    await p.goto(`${GH}/pricing?as=app`);
+    await p.getByRole("button", { name: "Restore purchases" }).waitFor();
+    await p.getByText("renews automatically unless it is canceled", { exact: false }).waitFor();
+    // Signed out: the trial carries the plan through sign-up and Welcome, back to Pricing.
+    await p.goto(`${GH}/pricing`);
+    await p.getByRole("link", { name: "Start 7-day free trial" }).last().click();
+    await p.waitForURL(/\/sign-up\?plan=autocart/);
+    await p.getByText("Your 7-day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
+    await p.getByLabel("Email address").fill("camper@example.com");
+    await p.getByLabel("Password").fill("long-enough-password");
+    await p.getByRole("button", { name: "Continue" }).click();
+    await p.waitForURL(/\/welcome\?next=/);
+    await p.getByRole("button", { name: "Skip for now" }).click();
+    await p.waitForURL(/\/pricing\?plan=autocart&as=member/);
+    // In the app, sign-up offers no Google button.
+    await p.goto(`${GH}/sign-up?as=app`);
+    await p.getByRole("heading", { name: "Create your account" }).waitFor();
+    assert.equal(await p.getByText("Continue with Google").count(), 0);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab looks: the Look menu switches the page and keeps the choice in the URL", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private/camphawk`);
