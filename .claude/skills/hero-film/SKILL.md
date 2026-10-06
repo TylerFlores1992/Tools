@@ -27,4 +27,7 @@ No AI video service is used. The film is **rendered from code** and captured fra
   - Poster: the brightest-eyes frame → AVIF (`libaom-av1 -still-picture 1`) and WebP.
 - Budget: AV1 < 1 MB, MP4 < 2.5 MB, poster < 120 KB. The headline stays the LCP element.
 - Phones get their own 4:5 render, not a crop of the 16:9.
+- Files ship from `public/media/hero/<hash>/`, cached `immutable` for a year. After a new
+  encode, `npm test` fails in `src/lib/hero-media.test.mts` and names the new hash: rename the
+  folder and set `HERO_VERSION` in `src/lib/hero-media.ts`. Never overwrite files in place.
 - Look at frames (tile 4 phases with ffmpeg `hstack/vstack`) before committing a render.
