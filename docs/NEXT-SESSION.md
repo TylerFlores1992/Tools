@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. Branch pushed; PR open, not merged).*
+*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word).*
 
 ## At a glance
 
@@ -39,12 +39,18 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
    branch's preview link before it merges.
+3. **Apple's review of CampHawk's current app build.** The owner is waiting for Apple to accept
+   it before starting a new build. Don't start bringing the lab look to camphawk.app until then.
+   The iOS app's webview loads camphawk.app directly (`server.url`), so web changes show in the
+   app too.
 
 ## Next up (in order)
-1. **CampHawk lab: merge the fix-round PR** (branch `ccr-c1332bd1-j9qtgp`, owner's word only), then
-   smoke production. Five critic/audit rounds took the lab from 6.5 to 8.0. What changed and what's still
-   open: `docs/design/camphawk-home.md`, "Fix rounds: toward a 10". The open list is the next lab
-   work, if any.
+1. **CampHawk lab: fix rounds are merged** (PR #16, 2026-10-06). Five critic/audit rounds took the
+   lab from 6.5 to 8.0. What changed and what's still open: `docs/design/camphawk-home.md`, "Fix
+   rounds: toward a 10". The open list is the next lab work, if the owner wants it.
+   **Bringing it to camphawk.app** waits for Apple to accept the current app build (above). When it's
+   time, the owner gives: write access to campsite-finder, the scope (which screens first), a preview
+   review on Vercel, and a ship time.
 2. **CampHawk lab: owner review.** Every CampHawk screen is live in the lab (PR #15 merged
    2026-10-06, smoke 26/26). Start at `/private/camphawk/golden-hour/screens`. These are
    mockups on example data; bringing the look to camphawk.app is a separate project in
