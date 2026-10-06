@@ -730,7 +730,7 @@ try {
     await p.waitForURL(`${GH}/camping`);
     await p.getByText("These are the 47 states with enough campgrounds for a page of their own", { exact: false }).waitFor();
     // Canada's coverage reads the same here as on the home page (it said 9 provinces here, 12 there).
-    await p.getByText("390 bookable campgrounds in 12 of Canada’s 13 provinces and territories", { exact: false }).waitFor();
+    await p.getByText("390 bookable campgrounds in 12 of Canada's 13 provinces and territories", { exact: false }).waitFor();
     // Under five campgrounds there's no page: a real 404, not a thin one.
     for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
       const res = await p.goto(`${GH}${missing}`);
