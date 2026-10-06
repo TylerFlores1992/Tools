@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: every CampHawk screen built, Tiers 1-4; PR #15 merged and live).*
+*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. Branch pushed; PR open, not merged).*
 
 ## At a glance
 
@@ -41,7 +41,11 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab: owner review.** Every CampHawk screen is live in the lab (PR #15 merged
+1. **CampHawk lab: merge the fix-round PR** (branch `ccr-c1332bd1-j9qtgp`, owner's word only), then
+   smoke production. Five critic/audit rounds took the lab from 6.5 to 8.0. What changed and what's still
+   open: `docs/design/camphawk-home.md`, "Fix rounds: toward a 10". The open list is the next lab
+   work, if any.
+2. **CampHawk lab: owner review.** Every CampHawk screen is live in the lab (PR #15 merged
    2026-10-06, smoke 26/26). Start at `/private/camphawk/golden-hour/screens`. These are
    mockups on example data; bringing the look to camphawk.app is a separate project in
    campsite-finder and needs the owner's go-ahead (proposed order: shared tokens, header and
@@ -52,23 +56,22 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    photos on New watch and Your watches; the "Check out on Recreation.gov" button on an in-cart
    watch. Left as CampHawk has them: caps tags, mid-dot meta lines, "Auto-Cart" as the plan name,
    title-case site-type headings (they're the search query).
-   **Possible next steps** (owner's call): new band photos for the Tier 2-3 pages (they reuse
-   `a1`, `a4`, `c1`, `e1`, `n1`; about four Flux photos of free credit left); hand the "found in
+   **Possible next steps** (owner's call): hand the "found in
    CampHawk" list to CampHawk's own repo as issues.
    **CampHawk's code:** attach `TylerFlores1992/campsite-finder` to the session **read-only**
    (`add_repo`, access "read"), clone to `/home/user/campsite-finder`, then disable pushing:
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
    modify it. Its design rules (`.claude/skills/camphawk-design/SKILL.md`) bind every lab
    screen and win over references (that's why there's no glass).
-   **Art** (`studio/camphawk-round2/`, free credit only, $2.29 left; `generate.mjs` stops under
-   $2, so about four more Flux photos): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
+   **Art** (`studio/camphawk-round2/`, free credit only, $2.045 left; `generate.mjs` stops under
+   $2, so no more images without new credit; `m1`, `p1`, `v1`, `s1` were the last four): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
    watches) share `BandPhoto` and the `.gh-app-photo`/`.gh-app-scrim` rules (crop per photo via
    `--gh-pos`/`--gh-pos-lg`; band text over them measures 4.8:1 or better, all of it large type). Also `e2` (map), `c2`
    (brightened), the badge (`badge-golden-*`). Round-1 screens keep the original badge on purpose.
-2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
+3. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
-3. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+4. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail

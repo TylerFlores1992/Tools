@@ -280,7 +280,7 @@ query), the pre-ticked "save my login" box (CampHawk requires it), and CampHawk'
 
 ## Fix rounds: toward a 10 (2026-10-06)
 The owner asked for "as close to a 10 as possible", with our own status marks. Five rounds of fresh
-critic, accessibility audit, fix and re-test. Critic scores: 6.5 → 7.2 → 7.5 → 8.0 → SCORE5.
+critic, accessibility audit, fix and re-test. Critic scores: 6.5 → 7.2 → 7.5 → 8.0 → 8.0 (each round a new reviewer who hadn't seen the last; round 5's findings are fixed and not yet re-scored).
 This section overrides older notes above where they disagree (for example, trial and sign-up are
 no longer green).
 
@@ -318,6 +318,14 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 - Radio groups take the arrow keys plus Home and End.
 - Buttons stay live and say what's missing, then focus that field; a dead button reads as broken.
 - The date picker can't go before today's month.
+
+**Open from round 5 (not done):**
+- New watch and Explore look thin at 1440. Ideas: a slot count, an Add-to-cart toggle and results preview.
+- The California page lists about 40 of its 875 campgrounds with no "show all".
+- One "Site 042" is used for two different holds in the sample data.
+- The lab's "today" (Jul 6) sits before the dated stats it quotes.
+- Settings shows email, texts and the plan as plain text where auto-cart has a pill.
+- The Google "G" is a placeholder.
 
 **Kept on purpose.**
 - `/w`, claim, connect and sign-in/up are bare (CampHawk's decision).

@@ -288,11 +288,13 @@ export function HardestToBook() {
               order survives: denser than CampHawk's single column of one-link sections. */}
           <ul className="mt-10 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {HARD_TO_BOOK.map((p) => (
-              <li key={p.park} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+              // A park with a long list (Yosemite's six) takes the full row, its list in columns, so
+              // it doesn't leave a hole beside it.
+              <li key={p.park} className={cx("rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card", p.campgrounds.length > 3 && "sm:col-span-2 lg:col-span-3")}>
                 <h2 className="font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
-                <ul className="mt-1">
+                <ul className={cx("mt-1", p.campgrounds.length > 3 && "sm:grid sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3")}>
                   {p.campgrounds.map((n) => (
-                    <li key={n} className="border-b border-ch-line last:border-b-0"><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
+                    <li key={n} className={cx("border-b border-ch-line", p.campgrounds.length > 3 ? "last:border-b-0 sm:border-b-0 sm:border-t sm:[&:nth-child(-n+2)]:border-t-0 lg:[&:nth-child(3)]:border-t-0" : "last:border-b-0")}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
                   ))}
                 </ul>
               </li>
