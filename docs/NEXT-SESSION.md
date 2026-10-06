@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: every CampHawk screen built, Tiers 1-4, on PR #15).*
+*Last updated: 2026-10-06 (CampHawk lab: every CampHawk screen built, Tiers 1-4; PR #15 merged and live).*
 
 ## At a glance
 
@@ -18,7 +18,7 @@
 | ↳ **Explore** | `/private/camphawk/golden-hour/explore` | Built 2026-10-06. Search rail, four result states in words, illustrated map with pins as buttons, search kept in the URL. |
 | ↳ **New watch** | `/private/camphawk/golden-hour/new` | Built 2026-10-06. Picker (favorites, parks as one watch, first come refused), nights, muting, Auto-Cart by plan, the 8am hold. |
 | ↳ **Your watches** | `/private/camphawk/golden-hour/watches` | Built 2026-10-06. Wall, first run, every card state, holds, provider and auto-cart trouble, alert history. |
-| ↳ **Every other screen** | `/private/camphawk/golden-hour/screens` | Built 2026-10-06 on PR #15 (not merged yet): Tiers 1-4, about 30 pages, listed by tier with their lab switches. |
+| ↳ **Every other screen** | `/private/camphawk/golden-hour/screens` | Live 2026-10-06 (PR #15 merged, smoke 26/26): Tiers 1-4, about 30 pages, listed by tier with their lab switches. |
 | ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
 | ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
@@ -41,9 +41,11 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab: review and merge PR #15** (every remaining CampHawk screen, Tiers 1-4, in the
-   Golden hour look; CI green; waiting on the owner's "merge"). After merging, run
-   `npm run smoke -- https://tylerflores.dev`. Start at `/private/camphawk/golden-hour/screens`.
+1. **CampHawk lab: owner review.** Every CampHawk screen is live in the lab (PR #15 merged
+   2026-10-06, smoke 26/26). Start at `/private/camphawk/golden-hour/screens`. These are
+   mockups on example data; bringing the look to camphawk.app is a separate project in
+   campsite-finder and needs the owner's go-ahead (proposed order: shared tokens, header and
+   badge first, then screens a few at a time, plus the CampHawk bug list below).
    Every lab switch is in the URL (`?as=subscriber`, `plan=alerts`, plus each screen's own).
    What was built, what's real vs illustrative, the lab changes and the CampHawk issues found
    are in `docs/design/camphawk-home.md`, "Every other screen". Owner's earlier calls kept: band
