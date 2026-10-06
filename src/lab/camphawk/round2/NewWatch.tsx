@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BellOff, Check } from "lucide-react";
+import { BellOff, Check, ChevronDown } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { priceShort, WATCH_LIMIT } from "../data";
@@ -30,7 +30,8 @@ import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sites
 //   exactly what will be created.
 // - Auto-cart is promised only to someone on the Auto-Cart plan; anyone else is told what still
 //   happens. No filter panel: the poller doesn't read one, so this screen doesn't offer it.
-// Lab change: a muted site is neutral (a word and a crossed bell), not CampHawk's red button,
+// Lab changes: the "What we'll do" panel is a plain card (CampHawk tints it green, which its own
+// rules keep for an open site or an action). A muted site is neutral (a word and a crossed bell), not CampHawk's red button,
 // because red means "you must act" in its own rules.
 
 const MAX_DIVISIONS = 10;
@@ -71,7 +72,7 @@ function TrustPanel() {
             <span className="block text-[15px] font-bold text-ch-ochre-ink">Auto-cart saves your Recreation.gov login</span>
             <span className="mt-0.5 block text-[13px] text-ch-ochre-ink">It has to, so it can sign back in for you — tap to see exactly what that means.</span>
           </span>
-          <span aria-hidden="true" className="text-[12px] text-ch-ochre-ink">{open ? "▲" : "▼"}</span>
+          <ChevronDown aria-hidden="true" className={cx("size-4 shrink-0 text-ch-ochre-ink transition-transform motion-reduce:transition-none", open && "rotate-180")} />
         </button>
         {open && (
           <ul className="mt-2 border-t border-ch-ochre-line pt-2">
@@ -301,7 +302,7 @@ export function NewWatch() {
                 <div id="nw-cg-list" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
                   {canFavorite && favoriteRows.length > 0 && (
                     <>
-                      <p className="border-b border-ch-line bg-ch-green-soft px-3.5 py-2 text-[13px] font-extrabold text-ch-green-deep">Your favorites</p>
+                      <p className="border-b border-ch-line bg-ch-ochre-soft px-3.5 py-2 text-[13px] font-extrabold text-ch-ochre-ink">Your favorites</p>
                       <ul>
                         {favoriteRows.map((p) => (
                           <li key={p.id} className="flex items-center border-b border-ch-line last:border-b-0">
@@ -423,10 +424,10 @@ export function NewWatch() {
             )}
           </form>
 
-          <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 shadow-ch-card sm:p-6 lg:sticky lg:top-6">
-            <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-green-deep">What we&apos;ll do</h2>
+          <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6 lg:sticky lg:top-6">
+            <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-forest">What we&apos;ll do</h2>
             {chosen ? (
-              <p className="mt-2 text-[16px] leading-relaxed text-ch-green-deep">
+              <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
                 Watch <strong className="font-extrabold">{chosen.name}</strong> for{" "}
                 {mode === "flexible"
                   ? <>any <strong className="font-extrabold">{flexNights}-night</strong>{weekendsOnly ? " weekend" : ""} opening</>
@@ -436,7 +437,7 @@ export function NewWatch() {
               </p>
             ) : (
               <>
-                <p className="mt-2 text-[16px] leading-relaxed text-ch-green-deep">
+                <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
                   A watch is a robot that refreshes a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
                 </p>
                 <ol className="mt-3">
@@ -445,16 +446,16 @@ export function NewWatch() {
                     ["Choose your nights", "Exact dates, or Flexible: set how many nights you want and the date range to look in. Three nights anywhere next month gives us far more chances to catch a cancellation than one fixed weekend."],
                     ["Start watching", "Then close the app. We'll find you when something opens."],
                   ].map(([title, sub], i) => (
-                    <li key={title} className="flex gap-3 border-b border-ch-green-line py-3 last:border-b-0">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-card text-[13px] font-extrabold text-ch-green-deep">{i + 1}</span>
+                    <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
+                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
                       <span>
-                        <span className="block text-[15px] font-bold text-ch-green-deep">{title}</span>
-                        <span className="mt-0.5 block text-[14px] leading-normal text-ch-green-deep">{sub}</span>
+                        <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
+                        <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
                       </span>
                     </li>
                   ))}
                 </ol>
-                <p className="mt-3 text-[14px] leading-normal text-ch-green-deep">On Recreation.gov we can go one better and drop the site straight into your cart, so it&apos;s held while you get to your phone.</p>
+                <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">On Recreation.gov we can go one better and drop the site straight into your cart, so it&apos;s held while you get to your phone.</p>
               </>
             )}
 

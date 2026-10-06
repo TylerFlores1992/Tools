@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { Info, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "../ui";
 import { WATCH_LIMIT, type Visitor } from "../data";
@@ -30,6 +31,9 @@ import { ALERTS, OUTLOOK_HEADING, outlookBody, WATCHES, type ExampleWatch, type 
 // - A provider not answering is a banner and a card state, never a failure of the watch.
 // - Two columns that don't share a row height, so one tall card doesn't leave holes.
 // - A brand-new watch on a stay that's fully booked weeks out gets told to expect quiet.
+// Lab changes, from CampHawk's own colour rules: "Auto-cart reconnecting" fixes itself, so its
+// card isn't red (only "signed out", which needs you, is); a provider outage is neutral, not
+// ochre; and a site already in your cart gets the blue checkout button.
 
 type ListState = "list" | "empty" | "loading" | "failed";
 type CartLink = "connected" | "reconnecting" | "disconnected";
@@ -76,7 +80,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
   const spec = [`${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
   const asked = (w.holds ?? []).filter((h) => h.status === "requested");
   const offered = (w.holds ?? []).filter((h) => h.status === "offered");
-  const cardState: CardState = state === "hit" ? "hit" : state === "authexpired" || state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
+  const cardState: CardState = state === "hit" ? "hit" : state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
   const recgov = w.provider === "Recreation.gov";
   const carted = w.carted?.length && cart === "connected" ? w.carted : null;
   const calendarHref = withVisitor(`${ROUTES.campground}?id=${CAMPGROUNDS.find((c) => c.name === w.name)?.id ?? ""}`, visitor);
@@ -138,6 +142,16 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
               <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
+        </div>
+      )}
+      {/* Lab proposal: the site is already in the cart, so the card's main action is the hand-off
+          (blue). CampHawk's card offers only Calendar and Manage here; its alert has the link. */}
+      {carted && (
+        <div className="mt-3 border-t border-ch-line pt-3">
+          <a href="#" className={buttonClasses({ variant: "cart", fullWidth: true })}>
+            <ShoppingCart aria-hidden="true" className="size-4" />
+            Check out on Recreation.gov
+          </a>
         </div>
       )}
       <div className="mt-3 flex gap-2 border-t border-ch-line pt-3">
@@ -288,9 +302,12 @@ export function Watches() {
     body = (
       <>
         {stalled > 0 && (
-          <div className="mb-4 rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5">
-            <p className="text-[16px] font-bold text-ch-ink">ReserveCalifornia isn&apos;t responding</p>
-            <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{stalled === 1 ? "1 watch is" : `${stalled} watches are`} affected. We&apos;re retrying automatically. Your other watches are unaffected.</p>
+          <div className="mb-4 flex gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
+            <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+            <div>
+              <p className="text-[16px] font-bold text-ch-ink">ReserveCalifornia isn&apos;t responding</p>
+              <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{stalled === 1 ? "1 watch is" : `${stalled} watches are`} affected. We&apos;re retrying automatically. Your other watches are unaffected.</p>
+            </div>
           </div>
         )}
         {setup === "no-phone" && <PhoneNudge className="mb-4" />}
@@ -303,7 +320,7 @@ export function Watches() {
             <button type="button" onClick={() => setOutlookDismissed(true)} aria-label="Dismiss" className="-mr-1 -mt-1 grid size-11 shrink-0 cursor-pointer place-items-center rounded-full text-[16px] text-ch-ink-2 hover:bg-ch-paper hover:text-ch-ink">✕</button>
           </div>
         )}
-        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
           <div className="min-w-[12rem] flex-1">
             <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} of {WATCH_LIMIT} watches running</p>
             <p className="mt-0.5 text-[14px] text-ch-ink-2">We check every 15 seconds, around the clock.</p>

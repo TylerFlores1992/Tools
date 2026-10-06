@@ -34,7 +34,11 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 //   the front instead of scrolling the map away.
 // - Once there are results, the radius, date and nights controls re-run the search.
 // - The search lives in the URL, so "Back to search" from a campground restores it.
-// Lab changes: the map is an illustration with example pins (no Mapbox); "Use my location"
+// Lab changes, from CampHawk's own colour rules: the status box and first-run panel are plain
+// cards (its blue means the provider hand-off, its green an open site); the picked pin and card
+// get an ink ring and keep their state (CampHawk paints them red, which hides the state and
+// means "act now"); the open pin carries a tick so it doesn't differ from booked by hue alone.
+// Also: the map is an illustration with example pins (no Mapbox); "Use my location"
 // pretends you're in Yosemite Valley; a typed place that matches nothing says so instead of
 // quietly searching near you under the typed name (CampHawk does the latter; reported).
 
@@ -75,7 +79,7 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") return null;
   const guest = visitor === "signed-out" || visitor === "app";
   return (
-    <div className="mb-5 rounded-[13px] border border-ch-blue-line bg-ch-blue-soft px-4 py-4">
+    <div className="mb-5 rounded-ch-card border border-ch-line bg-ch-card px-5 py-4 shadow-ch-card">
       <p className="text-[16px] font-bold text-ch-ink">{guest ? "You're searching as a guest" : "You're searching with a free account"}</p>
       <p className="mt-1 max-w-[62ch] text-[15px] leading-relaxed text-ch-ink-2">
         {visitor === "signed-out"
@@ -95,10 +99,10 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
 /** The first-run box's closing line, matched to the reader (ExploreAccountCta). */
 function AccountLine({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") return null;
-  const link = "font-bold text-ch-green-deep underline underline-offset-2";
-  if (visitor === "app") return <p className="mt-3 text-[14px] leading-normal text-ch-green-deep">Watching booked campgrounds needs a subscription — no account needed. <a href="#" className={link}>See plans</a></p>;
+  const link = "font-bold text-ch-green underline underline-offset-2 hover:text-ch-green-deep";
+  if (visitor === "app") return <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">Watching booked campgrounds needs a subscription — no account needed. <a href="#" className={link}>See plans</a></p>;
   return (
-    <p className="mt-3 text-[14px] leading-normal text-ch-green-deep">
+    <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">
       {visitor === "signed-out" ? "Searching is free and needs no account. Watches, text alerts and auto-cart need one. " : "Watches, text alerts and auto-cart come with a subscription. "}
       <a href="#" className={link}>{visitor === "signed-out" ? "Start a 7-day free trial" : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
     </p>
@@ -112,25 +116,25 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
     ["Search", "Green means sites are open right now. Tap any result for its full calendar, or the map to see where they are."],
   ];
   return (
-    <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-7">
-      <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-green-deep">Find a campsite that&apos;s actually open</h2>
-      <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-green-deep">
+    <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
+      <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">Find a campsite that&apos;s actually open</h2>
+      <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">
         Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds — national forests, state and provincial parks, and everything in between — and shows you what&apos;s bookable right now.
       </p>
       <ol className="mt-4 max-w-[56ch]">
         {steps.map(([title, sub], i) => (
-          <li key={title} className="flex gap-3 border-b border-ch-green-line py-3 last:border-b-0">
-            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-card text-[13px] font-extrabold text-ch-green-deep">{i + 1}</span>
+          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
+            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
             <span>
-              <span className="block text-[15px] font-bold text-ch-green-deep">{title}</span>
-              <span className="mt-0.5 block text-[14px] leading-normal text-ch-green-deep">{sub}</span>
+              <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
+              <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
             </span>
           </li>
         ))}
       </ol>
-      <div className="mt-4 border-t border-ch-green-line pt-4">
-        <p className="text-[15px] font-bold text-ch-green-deep">Everything booked?</p>
-        <p className="mt-1 max-w-[56ch] text-[14px] leading-normal text-ch-green-deep">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text you the moment someone cancels.</p>
+      <div className="mt-4 border-t border-ch-line pt-4">
+        <p className="text-[15px] font-bold text-ch-ink">Everything booked?</p>
+        <p className="mt-1 max-w-[56ch] text-[14px] leading-normal text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text you the moment someone cancels.</p>
         <AccountLine visitor={visitor} />
       </div>
     </div>
@@ -154,13 +158,13 @@ function ResultsMap({ results, datesChosen, selectedId, onSelect }: { results: R
     <>
             {datesChosen && (
               <>
-                <span><i aria-hidden="true" className={cx(swatch, "size-2.5 bg-ch-green")} />Sites open</span>
+                <span><i aria-hidden="true" className={cx(swatch, "inline-grid size-3.5 place-items-center bg-ch-green align-[-2px] text-[9px] font-extrabold not-italic leading-none text-ch-white")}>✓</i>Sites open</span>
                 <span><i aria-hidden="true" className={cx(swatch, "size-2.5 bg-ch-muted")} />Booked</span>
                 <span><i aria-hidden="true" className={cx(swatch, "size-2.5 border-[2.5px] border-ch-muted bg-ch-card")} />Couldn&apos;t check</span>
                 {anyFirstCome && <span><i aria-hidden="true" className={cx(swatch, "size-2 bg-ch-faint")} />First come</span>}
               </>
             )}
-            {selectedId && <span><i aria-hidden="true" className={cx(swatch, "size-2.5 bg-ch-alert ring-[1.5px] ring-ch-ink ring-offset-[1.5px]")} />Showing first</span>}
+            {selectedId && <span><i aria-hidden="true" className={cx(swatch, "size-2.5 bg-ch-card ring-2 ring-ch-ink")} />Showing first</span>}
     </>
   );
   return (
@@ -396,7 +400,7 @@ export function Explore() {
             role="search"
             aria-label="Search campgrounds"
             onSubmit={(e) => { e.preventDefault(); run(); }}
-            className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-5"
+            className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-5 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto lg:overscroll-contain"
           >
             <label htmlFor="gh-where" className={label}>Where</label>
             <div className="relative">
@@ -490,7 +494,7 @@ export function Explore() {
                 {results.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {ordered!.map((c) => (
-                      <div key={c.id} className={selectedId === c.id ? "rounded-ch-card ring-2 ring-ch-alert ring-offset-2 ring-offset-ch-paper" : undefined}>
+                      <div key={c.id} className={selectedId === c.id ? "rounded-ch-card ring-2 ring-ch-ink ring-offset-2 ring-offset-ch-paper" : undefined}>
                         <ResultCard
                           c={c}
                           visitor={visitor}
@@ -507,7 +511,8 @@ export function Explore() {
                 )}
                 {results.length > 0 && openCount < results.length && (
                   <div className="mt-5 rounded-ch-card border border-dashed border-ch-line bg-ch-card p-6 text-center sm:p-8">
-                    <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">Nothing open for your dates?</h3>
+                    {/* CampHawk's title, unless something IS open: then it would contradict the heading. */}
+                    <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
                     <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we&apos;ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
                       ? <a href="#" className={buttonClasses({ className: "px-5" })}>Start 7-day free trial</a>

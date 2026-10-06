@@ -392,7 +392,9 @@ try {
   });
 
   // The Golden hour app screens run in a US timezone on purpose: that is where CampHawk's date
-  // traps show (a date string parsed as UTC lands on the day before).
+  // traps show (a date string parsed as UTC lands on the day before). Reduced motion, so a click
+  // never lands in a panel that is still opening (one unexplained miss on the mute list,
+  // 2026-10-06, under build load; not reproduced at 6x CPU throttling).
   const GH = `${BASE}/private/camphawk/golden-hour`;
   const watchErrors = (p: import("playwright-core").Page) => {
     const errors: string[] = [];
@@ -402,7 +404,7 @@ try {
   };
 
   await check("lab explore: a search shows all four result states, the map hoists a pick, and Back to search restores it", async () => {
-    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles" });
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/explore`);
     await signIn(p);
@@ -459,7 +461,7 @@ try {
   });
 
   await check("lab new watch: only a subscriber can start one; a park is one watch; this weekend is Friday to Sunday", async () => {
-    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles" });
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/new`);
     await signIn(p);
@@ -495,14 +497,16 @@ try {
     await p.goto(`${GH}/new?as=subscriber&campground=upper-pines&start=2026-07-18&end=2026-07-21`);
     await p.getByRole("button", { name: /Add it to my cart automatically/ }).waitFor();
     await p.getByRole("button", { name: "Mute individual campsites" }).click();
-    await p.getByRole("button", { name: "Mute site Site 042" }).click();
+    const mute042 = p.getByRole("button", { name: "Mute site Site 042" });
+    await mute042.click();
+    assert.equal(await mute042.getAttribute("aria-pressed"), "true", "the site's own toggle is pressed");
     await p.getByText("1 of 7 muted").waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });
 
   await check("lab watches: the wall, the card states, holds, provider and auto-cart trouble, and the quiet-outlook note", async () => {
-    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles" });
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/watches`);
     await signIn(p);
@@ -513,6 +517,12 @@ try {
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByText("3 of 6 watches running").waitFor();
     for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "2 more open 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    await p.getByRole("link", { name: "Check out on Recreation.gov" }).waitFor();
+    // Reconnecting fixes itself: the card says so, but isn't the red "you must act" card.
+    await p.getByLabel("Auto-cart connection").selectOption("reconnecting");
+    const northPines = p.locator("div[data-state]", { has: p.getByRole("heading", { name: "North Pines", exact: true }) });
+    await northPines.getByText("Auto-cart reconnecting").waitFor();
+    assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
     await p.getByRole("button", { name: "Queued for us to grab" }).click();
     await p.getByRole("button", { name: "Call off the hold on 042" }).click();
@@ -525,6 +535,8 @@ try {
     await p.getByLabel("Auto-cart connection").selectOption("disconnected");
     await p.getByText("Not carted — reconnect auto-cart").waitFor();
     assert.equal(await p.getByText(/In your cart$/).count(), 0, "no cart claim without the connection");
+    assert.equal(await p.getByRole("link", { name: "Check out on Recreation.gov" }).count(), 0, "no checkout without a cart");
+    assert.equal(await northPines.getAttribute("data-state"), "warn", "signed out needs you, so it's the warning card");
     await p.getByRole("link", { name: "Reconnect Recreation.gov" }).waitFor();
     // A new watch on a stay that's booked weeks out is told to expect quiet.
     await p.goto(`${GH}/watches?as=subscriber&new=north-pines&start=2026-07-25&end=2026-07-27`);

@@ -15,6 +15,8 @@ import { withVisitor } from "./labState";
 // campsite-finder src/components/v2 (WatchCta, SubscribeCta, PricingLink, FavoriteHeart,
 // SetupNudges) and driven by the lab's switches. Lab links that would leave the lab (sign-up,
 // checkout, settings) go nowhere ("#").
+// Lab changes, from CampHawk's own colour rules: a favorite is ochre ("you asked for this"), not
+// red; the upgrade note is a plain card, not decorative green.
 
 /** Subscribers pick a plan in the lab: Auto-Cart, or Alerts (the base plan). */
 export type Plan = "autocart" | "alerts";
@@ -51,9 +53,9 @@ export function SubscribeCta({ visitor, fullWidth = false, className }: { visito
 export function PricingLink({ visitor, plan, className }: { visitor: Visitor; plan: Plan; className?: string }) {
   if (visitor !== "subscriber" || plan !== "alerts") return null;
   return (
-    <div className={cx("rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5", className)}>
-      <p className="text-[16px] font-bold text-ch-green-deep">Alerts race you to the site. Auto-Cart wins the race for you.</p>
-      <p className="mt-1 max-w-[58ch] text-[15px] leading-relaxed text-ch-green-deep">
+    <div className={cx("rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card", className)}>
+      <p className="text-[16px] font-bold text-ch-ink">Alerts race you to the site. Auto-Cart wins the race for you.</p>
+      <p className="mt-1 max-w-[58ch] text-[15px] leading-relaxed text-ch-ink-2">
         Add Auto-Cart and an opening goes straight into your Recreation.gov cart — held while you get to your phone. {priceShort("autocart", "monthly")} or {priceShort("autocart", "yearly")}, prorated on your current billing.
       </p>
       <a href="#" className={buttonClasses({ size: "sm", className: "mt-3 min-h-11 px-4" })}>Upgrade to Auto-Cart</a>
@@ -84,7 +86,7 @@ export function FavoriteHeart({ favorite, onToggle, name, className }: { favorit
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
       className={cx(/\b(absolute|fixed|sticky)\b/.test(className ?? "") ? HIT_BOX : HIT_AREA, "grid size-9 shrink-0 cursor-pointer place-items-center rounded-full transition-colors hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green motion-reduce:transition-none", className)}
     >
-      <Heart aria-hidden="true" className={favorite ? "size-[18px] text-ch-alert" : "size-[18px] text-ch-muted"} fill={favorite ? "currentColor" : "none"} />
+      <Heart aria-hidden="true" className={favorite ? "size-[18px] text-ch-ochre-ink" : "size-[18px] text-ch-muted"} fill={favorite ? "currentColor" : "none"} />
     </button>
   );
 }
