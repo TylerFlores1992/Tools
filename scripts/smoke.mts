@@ -24,7 +24,10 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string 
   { path: "/private", status: 200, contains: "Enter the password", absent: "Sign out" },
   { path: "/private/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
   { path: "/lab/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
+  { path: "/private/camphawk/golden-hour", status: 200, contains: "Enter the password", absent: "already booked" },
+  { path: "/private/camphawk/golden-hour/campground", status: 200, contains: "Enter the password", absent: "Upper Pines" },
   { path: "/private/camphawk/hero-bg.webp", status: 401, contains: "This area is private." },
+  { path: "/private/camphawk/round2/c1-loop-dusk-900.webp", status: 401, contains: "This area is private." },
 ];
 
 let failed = 0;

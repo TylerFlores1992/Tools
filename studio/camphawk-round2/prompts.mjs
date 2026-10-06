@@ -6,6 +6,18 @@ const PALETTE = "deep pine green #24382A, forest green #1E7A4C, warm ochre #D993
 const VIGNETTE = `A small vintage WPA-style screen-print vignette on a plain cream (#F5F7F2) background, square, centered, flat layered shapes, gouache texture, palette only ${PALETTE}, no text, no border:`;
 
 export const PROMPTS = {
+  // Screen 2 (campground page): four example photos, all in the Golden hour dusk light.
+  "c1-loop-dusk": { model: PHOTO, params: { aspectRatio: "16:9", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A wide photograph of a quiet campground loop in a granite valley at dusk: a few canvas tents and a small camper spaced among tall ponderosa pines, picnic tables, a paved loop road, a sheer granite cliff face rising behind the trees catching the last faint light. Deep blue dusk sky, two or three lanterns glowing warm at the campsites. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no cars in motion, no text, no signs, no logos." },
+  "c2-site-dusk": { model: PHOTO, params: { aspectRatio: "1:1", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A photograph of one empty campsite at dusk in a pine forest: a weathered wooden picnic table, a round steel fire ring with a small low fire, a flat tent pad of packed earth, tall pine trunks behind. Deep blue dusk light with the fire as the one warm light. 35mm film look, Kodak Portra 400, gentle grain, natural color. No tents, no people, no text, no signs." },
+  "c3-river-dusk": { model: PHOTO, params: { aspectRatio: "1:1", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A photograph of a calm, clear mountain river at dusk flowing over smooth granite stones, a pine-forested bank on the far side, a faint pink glow on the water reflecting the last light. Deep blue dusk. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no buildings, no text." },
+  "c4-cliff-dusk": { model: PHOTO, params: { aspectRatio: "1:1", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A photograph of a tall granite dome and cliff above a dark pine forest at dusk, the very top of the rock catching a faint warm alpenglow, deep blue sky above. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no text, no buildings." },
+  "a3-phone-dusk": { model: PHOTO, params: { aspectRatio: "4:5", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A quiet close-up photograph at dusk, looking down at a weathered wooden picnic table. A smartphone lies face up in the lower half of the frame, its blank screen glowing softly white. A pinecone and scattered pine needles lie beside it. Behind the table the background is only tall dark ponderosa pine trunks against a deep blue dusk sky, softly out of focus. A faint warm lantern glow falls on the wood from the left edge. Nothing else in the scene. 35mm film look, Kodak Portra 400, gentle grain, natural color, shallow depth of field." },
+
   // Round 2.1 (A only): everything in the hero's dusk light, so the page has one light.
   "a3-site-dusk": { model: PHOTO, params: { aspectRatio: "4:5", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
     "A quiet photograph of an empty campsite at dusk in a Sierra Nevada pine forest: a weathered wooden picnic table in the foreground with a glowing brass lantern and an enamel mug on it, a canvas tent softly out of focus behind, tall ponderosa pine trunks, a fading blue sky between the trees. Well exposed blue-hour light, details visible in the shadows, the lantern the one warm light. 35mm film look, Kodak Portra 400, gentle grain, natural color, shallow depth of field. No people, no text, no signs, no logos." },

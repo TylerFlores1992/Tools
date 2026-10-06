@@ -190,7 +190,7 @@ try {
     const days = (c.expires * 1000 - Date.now()) / 86_400_000;
     assert.ok(days > 29.9 && days <= 30, `expires in ${days.toFixed(2)} days`);
     await p.getByRole("link", { name: /CampHawk lab/ }).click();
-    await p.waitForURL(`${BASE}/private/camphawk`);
+    await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
     await p.getByRole("heading", { level: 1, name: "The campsite you wanted is already booked. We wait for it." }).waitFor();
     await p.getByRole("link", { name: /Private/ }).first().click();
     await p.waitForURL(`${BASE}/private`);
@@ -299,7 +299,7 @@ try {
     await p.goto(`${BASE}/private/camphawk/golden-hour`);
     await signIn(p);
     await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
-    for (const [path, hero] of [["golden-hour", ".gh-photo img"], ["trail-poster", ".tp-print img"]] as const) {
+    for (const [path, hero] of [["golden-hour", "img.gh-photo"], ["trail-poster", ".tp-print img"]] as const) {
       await p.goto(`${BASE}/private/camphawk/${path}`, { waitUntil: "networkidle" });
       await p.getByRole("heading", { level: 1, name: /already booked/ }).waitFor();
       const art = p.locator(hero).first();
@@ -313,6 +313,76 @@ try {
       await p.getByRole("radio", { name: "In the app" }).click();
       await p.getByRole("heading", { level: 2, name: /needs a subscription/ }).waitFor();
     }
+    // Golden hour rewrites CampHawk's "any N nights" for campers; a silent no-op replace would
+    // leave the system wording on the page.
+    await p.goto(`${BASE}/private/camphawk/golden-hour`, { waitUntil: "networkidle" });
+    await p.getByRole("radio", { name: "Signed out" }).click();
+    const text = await p.locator("main").innerText();
+    assert.doesNotMatch(text, /any N nights/, "golden hour: no system wording");
+    assert.match(text, /how many nights you need inside a window/, "golden hour: step 2 reworded");
+    assert.match(text, /how many nights you need, anywhere in a window/, "golden hour: pricing reworded");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk's", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.goto(`${BASE}/private/camphawk/golden-hour/campground`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk/golden-hour/campground`);
+    await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
+    const panel = p.getByRole("complementary", { name: "Selected day" });
+    // An open day lists its sites; a booked day can't be picked.
+    await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
+    await panel.getByText("2 sites open").waitFor();
+    assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
+    // The answer comes first, in words, under the name.
+    await p.getByText("5 days with openings in July.").waitFor();
+    // A month we couldn't read: no day is called booked, and the page says why.
+    const next = p.getByRole("button", { name: "Next month" });
+    await next.click();
+    await next.click();
+    await p.getByRole("heading", { level: 2, name: "September 2026" }).waitFor();
+    await p.getByText("Couldn't check this month").waitFor();
+    assert.equal(await p.getByRole("button", { name: /September \d+, fully booked/ }).count(), 0, "unknown month is never booked");
+    // Not open for booking is its own state, not "booked".
+    await next.click();
+    await p.getByText("Not open for booking this month").waitFor();
+    assert.equal(await p.getByRole("button", { name: /October \d+, fully booked/ }).count(), 0, "closed month is never booked");
+    assert.ok((await p.getByRole("button", { name: /October \d+, not open for booking/ }).count()) > 20, "closed days say so");
+    // A failed read is said in words, as an alert, and is never booked either.
+    await next.click();
+    await p.getByRole("alert").filter({ hasText: "usually the reservation provider" }).waitFor();
+    assert.equal(await p.getByRole("button", { name: /November \d+, fully booked/ }).count(), 0, "failed month is never booked");
+    assert.ok(await next.isDisabled(), "no months past the example data");
+    // The watch buttons (band and day panel) follow CampHawk's WatchCta labels.
+    const watch = (name: string) => p.getByRole("link", { name, exact: true });
+    assert.equal(await watch("Sign up to watch").count(), 2);
+    await p.getByRole("radio", { name: "Signed in", exact: true }).click();
+    assert.equal(await watch("Start free trial to watch").count(), 2);
+    await p.getByRole("radio", { name: "Subscriber" }).click();
+    assert.equal(await watch("Watch this campground").count(), 2);
+    await p.getByRole("radio", { name: "In the app" }).click();
+    assert.equal(await watch("Subscribe to watch").count(), 2);
+    // CampgroundDetail's page states, and its arrival rule.
+    await p.getByLabel("Page state").selectOption("missing");
+    await p.getByRole("heading", { level: 1, name: "Campground not found" }).waitFor();
+    await p.getByLabel("Page state").selectOption("failed");
+    await p.getByRole("heading", { level: 1, name: "We couldn't load this campground" }).waitFor();
+    await p.getByRole("button", { name: "Try again" }).click();
+    await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
+    assert.equal(await p.getByRole("navigation", { name: "Breadcrumb" }).filter({ hasText: "Camping by state" }).count(), 0, "search arrivals get a back link");
+    await p.getByLabel("Arrived from").selectOption("google");
+    await p.getByRole("navigation", { name: "Breadcrumb" }).filter({ hasText: "Camping by state" }).waitFor();
+    assert.equal(await p.getByRole("link", { name: "Back to search" }).count(), 0, "a cold arrival has no back link");
+    // First come: the policy, not an empty calendar, and nothing to watch.
+    await p.getByRole("radio", { name: "First come" }).click();
+    await p.getByRole("heading", { level: 2, name: "First come, first served" }).waitFor();
+    assert.equal(await p.getByRole("link", { name: /to watch|Watch this campground/ }).count(), 0, "first come offers no watch");
+    assert.equal(await p.getByRole("button", { name: "Next month" }).count(), 0, "first come has no calendar");
     assert.deepEqual(errors, []);
     await ctx.close();
   });

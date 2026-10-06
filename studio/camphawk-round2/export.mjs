@@ -7,9 +7,11 @@ const OUT = "public/private/camphawk/round2/";
 const SRC = "studio/camphawk-round2/out/";
 const PICKS = [
   ["a1-hero-wide", "a1-hero-wide-bfl_flux_pro_1_1_ultra-1.png", [2560, 1440, 828]],
-  ["a2-hero-tall", "a2-hero-tall-bfl_flux_pro_1_1_ultra-1.jpeg", [1170, 828]],
-  ["a3-site-dusk", "a3-site-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1200, 600]],
+  ["a3-phone-dusk", "a3-phone-dusk-bfl_flux_pro_1_1_ultra-5.jpeg", [1200, 600]],
   ["a4-cta-dusk", "a4-cta-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [2560, 1440, 828]],
+  ["c1-loop-dusk", "c1-loop-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1600, 900]],
+  ["c2-site-dusk", "c2-site-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [800, 500]],
+  ["c3-river-dusk", "c3-river-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [800, 500]],
   ["b1-poster-wide", "b1-poster-wide-recraft_recraft_v4_1-5.webp", [2560, 1440, 828]],
   ["b2-poster-tall", "b2-poster-tall-recraft_recraft_v4_1-1.webp", [1170, 828]],
   ["b3-watch", "b3-watch-recraft_recraft_v4_1-1.webp", [640]],
@@ -35,8 +37,6 @@ for (const [name, file, widths] of PICKS) {
   const vignette = /^b[3-6]-/.test(name);
   for (const w of widths) {
     let img = vignette ? await keyed(SRC + file) : sharp(SRC + file);
-    // A3's sky came out daytime-bright: grade it down to the hero's dusk.
-    if (name === "a3-site-dusk") img = img.modulate({ brightness: 0.88, saturation: 0.82 });
     const info = await img
       .resize({ width: w, kernel: "lanczos3" })
       .sharpen(w > 1280 && file.endsWith(".webp") ? { sigma: 0.6 } : undefined)

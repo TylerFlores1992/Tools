@@ -13,7 +13,7 @@ export const LINKS = ["Watches", "New watch", "Explore"] as const;
 const COLLAPSE_AT = 96, EXPAND_AT = 8, HEADER_ANIM_MS = 260;
 
 export function AccountControl({ visitor, compact }: { visitor: Visitor; compact?: boolean }) {
-  if (visitor === "subscriber") {
+  if (visitor === "subscriber" || visitor === "member") {
     return (
       <span className="grid size-8 place-items-center rounded-full bg-ch-green-soft text-ch-meta font-extrabold text-ch-green-deep ring-2 ring-ch-card" aria-label="Account (signed in)">
         TF

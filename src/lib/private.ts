@@ -14,7 +14,7 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     slug: "camphawk",
     name: "CampHawk lab",
     summary: "CampHawk's pages in a new look, with fake data. Try ideas here before they ship.",
-    stage: "Home page",
-    href: "/private/camphawk",
+    stage: "Golden hour look: home and campground pages",
+    href: "/private/camphawk/golden-hour",
   },
 ];

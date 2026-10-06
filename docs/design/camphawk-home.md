@@ -96,9 +96,17 @@ Pages: `/private/camphawk/golden-hour` (A) and `/private/camphawk/trail-poster` 
 
 Changes from the contracts above, and why:
 - **A's light is dusk, not golden hour.** The model gave blue hour with a lantern-lit tent; the tent
-  is the one warm accent, which fits the color strategy. One photo (A1) serves every breakpoint,
-  cropped toward the tent on phones, so there is one tent. On phones, search and a compact alert
-  sit inside the hero; on desktop the alert sits on the photo and search docks across its edge.
+  is the one warm accent. One photo (A1) serves every breakpoint, so there is one tent. Below
+  1024px the search sits right under the intro and the tent shows in a window below it; on
+  desktop the alert sits on the photo and search docks across its edge.
+- **CampHawk's own design rules bind** (`campsite-finder/.claude/skills/camphawk-design`): green
+  only for an open site or an action, blue for the Recreation.gov hand-off, ochre only for "you
+  asked for this", every status in words (its `Tag` and `Card`, ported to `src/lab/camphawk/ui/`),
+  "Open for Jul 18-21" dates, one shadow system (`shadow-ch-pop`), and **no glass**: the
+  references' glass panel is out because the skill says it "reads as a different product". The
+  caps status tags are CampHawk's primitive, so they stay.
+- **"What a watch does"** shows each promise as a small piece of CampHawk's UI (a check log, the
+  held cart, a results list, a date window), labeled "Examples, not live data."
 - **B's first viewport is a hung print, not a full-bleed poster.** The poster's sky could not hold
   the headline and the actions. The headline and a real search field sit on paper; the tall poster
   hangs beside them with an example alert pinned to it like a ticket stub (the product proof).
@@ -108,6 +116,42 @@ Changes from the contracts above, and why:
   chips or the mid-dot, and at reading sizes.
 - **Signature motion:** A's alert card rises once; B's print settles and the ticket pins on.
   Reduced motion shows both at rest.
+
+## Screen 2: Campground, in the Golden hour look (2026-10-06)
+Route: `/private/camphawk/golden-hour/campground` (lab). Port of campsite-finder
+`src/app/(app)/campground/[id]` (`CampgroundDetail`, `AvailabilityGrid`, `WatchCta`,
+`CampgroundOpenings`), read-only. Mode: **Operate** (clarity first; the brand lives in the frame).
+- **Thesis:** the page answers one question before anything else: *is anything open, and if not,
+  can CampHawk watch it?* It refuses the travel-site default of a big gallery first and the
+  calendar below the fold.
+- **Same world as the home page:** the forest band carries the header and the campground's name;
+  the photo strip docks across the band's bottom edge, the way search does on the home page.
+  Paper below. Green only for open days and the watch action; booked days neutral and struck
+  through; days we couldn't read carry no mark (never "booked"). Every state has a word.
+- **First viewport (1440):**
+  ```
+  ┌──────────────────────────────────────────────────────────────┐
+  │ CampHawk   Watches  New watch  Explore             Sign in   │  forest band
+  │ ‹ Back to search                                             │
+  │ [AUTO-CART] [Recreation.gov]                                 │
+  │ Upper Pines            (Bitter 56, paper)  [Sign up to watch]│
+  │ Yosemite Valley, CA                                          │
+  │ ┌───────────────────┬────────┬────────┬────────┐             │
+  │ │ photo (wide)      │ photo  │ photo  │ photo  │  ← docked   │
+  └─┴───────────────────┴────────┴────────┴────────┴─────────────┘
+    July 2026 calendar (open: dot + word) │ Sat, Jul 18: 1 site open
+  ```
+- **Fidelity:** CampHawk's words, states and gates: the watch button's three visitor states
+  (from the lab's "View as"), open / booked / not open for booking / couldn't check / past days,
+  "Pick a day", first-come campgrounds get a policy panel instead of an empty calendar.
+- **Assets:** four dusk photos of a valley campground (generated; labeled as example data).
+- **As built:** the answer sits under the name in words ("5 days with openings in July. The next
+  is Thursday, July 9."); phones show one photo so the calendar comes sooner; the day panel ends
+  with the same gated watch button. Example months demonstrate every CampHawk calendar state: July
+  and August (open, booked, past), September (couldn't check), October (not open for booking) and
+  November (a failed read, said as an alert). A lab switch shows a first-come campground. The
+  photos stay dusk on purpose: the whole Golden hour look is blue hour with warm lamplight (hero,
+  feature, closing band), not literal golden hour.
 
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
@@ -126,8 +170,8 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | File | Direction | Source | Pick and notes |
 |---|---|---|---|
 | a1-hero-wide | A | Flux 1.1 Ultra | Blue-hour more than golden hour; tent right, misty ridges left. Needs a left scrim for text. |
-| a2-hero-tall | A | Flux 1.1 Ultra | Calm dusk sky top half, tent lower third. |
-| a3-site-dusk | A | Flux 1.1 Ultra | Picnic table, lit lantern, glowing tent at dusk. Replaced the near-black site post (2026-10-05). |
+| a2-hero-tall | A | Flux 1.1 Ultra | Retired 2026-10-06: a different tent from A1. A1 now serves every size. |
+| a3-phone-dusk | A | Flux 1.1 Ultra | A phone glowing on a picnic table at dusk, lantern, no tent (2026-10-06; replaced a tent shot so the page has one tent). |
 | a4-cta-dusk | A | Flux 1.1 Ultra | Lake at dusk, mug on warm-lit granite lower left. Replaced the daylight morning shot so the page has one light. |
 | b1-poster-wide | B | Recraft v4.1 | Hawk upper right, glowing tent by the river, sky upper left. |
 | b2-poster-tall | B | Recraft v4.1 | Hawk in a calm sky, canyon and river, tent at the foot. |
