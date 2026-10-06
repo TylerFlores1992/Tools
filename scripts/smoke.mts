@@ -28,6 +28,10 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/lab/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
   { path: "/private/camphawk/golden-hour", status: 200, contains: "Enter the password", absent: "already booked" },
   { path: "/private/camphawk/golden-hour/campground", status: 200, contains: "Enter the password", absent: "Upper Pines" },
+  { path: "/private/camphawk/golden-hour/explore", status: 200, contains: "Enter the password", absent: "open tonight" },
+  { path: "/private/camphawk/golden-hour/new", status: 200, contains: "Enter the password", absent: "Which campground" },
+  { path: "/private/camphawk/golden-hour/watches", status: 200, contains: "Enter the password", absent: "Your watches" },
+  { path: "/private/camphawk/round2/e2-map-828.webp", status: 401, contains: "This area is private." },
   { path: "/private/camphawk/hero-bg.webp", status: 401, contains: "This area is private." },
   { path: "/private/camphawk/round2/c1-loop-dusk-900.webp", status: 401, contains: "This area is private." },
   // The hero film's folder is versioned by content, so it may be cached for good.

@@ -42,6 +42,12 @@ export const PROMPTS = {
   "b5-map": { model: PAINT, params: { aspectRatio: "1:1" }, prompt: `${VIGNETTE} a folded trail map with a small ochre pin marking a campsite by a lake; no words or numbers on the map.` },
   "b6-calendar": { model: PAINT, params: { aspectRatio: "1:1" }, prompt: `${VIGNETTE} a paper wall calendar whose day squares are blank (no numbers), three of them circled in ochre, beside a lantern.` },
 
+  // Screen 3 (Explore, 2026-10-06): the band photo and the illustrated results map.
+  "e1-explore-wide": { model: PHOTO, params: { aspectRatio: "21:9", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A wide landscape photograph at blue hour from a high granite overlook, looking down into a long forested Sierra Nevada valley with a winding river. The valley floor is unbroken dark pine forest. Along the river bank, far apart from one another, sit only about ten small warm glows of single campfires and lanterns at remote campsites, each a lone point in the dark trees. The valley is wilderness, with no town, no streetlights and no clusters of lights. Layered blue ridges and a deep blue sky with the last faint warm glow on the horizon at the right. The left half of the frame is calm, dark pine forest and shadowed slope with no bright spots, for headline text. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no text, no buildings, no roads, no sun visible." },
+  "e2-map": { model: PAINT, params: { aspectRatio: "16:9" }, prompt:
+    "A calm top-down illustrated terrain map of a mountain valley, in the flat modern style of a national park map: soft pine-green forest areas, pale cream meadows, gentle grey-green contour lines on the slopes, one winding slate-blue river feeding a small lake, a thin pale grey road along the valley. Muted, low-contrast palette of deep pine green #24382A at 20% strength, sage greens, cream #F5F7F2 and slate blue #2C4A8A. Clean flat shapes, subtle paper texture. The map carries no words, numbers, letters, icons, markers, compass or legend; it is landscape shapes only." },
+
   // Logo (2026-10-06): the owner prefers the original badge to any code-drawn mark. These keep its
   // idea and composition and raise the craft, by editing the original (ref/logo-badge-original.png).
   "l1-badge-clean": { model: EDIT, input: "./ref/logo-badge-original.png", params: { aspectRatio: "1:1" }, prompt:

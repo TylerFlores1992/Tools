@@ -18,7 +18,20 @@ const PICKS = [
   ["b4-pack", "b4-pack-recraft_recraft_v4_1-1.webp", [640]],
   ["b5-map", "b5-map-recraft_recraft_v4_1-1.webp", [640]],
   ["b6-calendar", "b6-calendar-recraft_recraft_v4_1-1.webp", [640]],
+  ["e1-explore-wide", "e1-explore-wide-bfl_flux_pro_1_1_ultra-2.jpeg", [2560, 1440, 828]],
+  ["e2-map", "e2-map-recraft_recraft_v4_1-1.webp", [1280, 828]],
 ];
+
+// Per-pick fixes, applied before resizing:
+//   lift      a tone curve (out = in^p) that opens the shadows without clipping the fire or sky.
+//             c2 read as a black square at card size (2026-10-06).
+//   letterbox Flux sometimes paints cinema bars; crop the near-black rows off top and bottom.
+//   soften    mix toward ch-paper so a map reads as a quiet ground for the pins on it.
+const TUNE = {
+  "c2-site-dusk": { lift: 0.78 },
+  "e1-explore-wide": { letterbox: true },
+  "e2-map": { soften: 0.45 },
+};
 
 // Vignettes are painted on cream: key that cream out to transparency (soft edge), so they sit on
 // any paper without a visible square.
@@ -88,10 +101,36 @@ async function cutout(file) {
     .png();
 }
 
+async function tuned(name, file) {
+  const t = TUNE[name];
+  if (!t) return null;
+  const { data, info } = await sharp(SRC + file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width: W, height: H } = info;
+  if (t.lift) {
+    const lut = Array.from({ length: 256 }, (_, v) => Math.round(255 * Math.pow(v / 255, t.lift)));
+    for (let i = 0; i < data.length; i++) data[i] = lut[data[i]];
+  }
+  if (t.soften) {
+    const paper = [0xf5, 0xf7, 0xf2];
+    for (let i = 0; i < data.length; i++) data[i] = Math.round(data[i] * (1 - t.soften) + paper[i % 3] * t.soften);
+  }
+  let img = sharp(data, { raw: info });
+  if (t.letterbox) {
+    const rowMean = (y) => { let sum = 0; for (let x = 0; x < W; x++) for (let c = 0; c < 3; c++) sum += data[(y * W + x) * 3 + c]; return sum / (W * 3); };
+    let top = 0, bottom = H - 1;
+    while (top < H / 4 && rowMean(top) < 8) top++;
+    while (bottom > (H * 3) / 4 && rowMean(bottom) < 8) bottom--;
+    // A few rows more on each side: the bar's edge is soft.
+    const inset = 4;
+    img = sharp(await img.png().toBuffer()).extract({ left: 0, top: top + inset, width: W, height: bottom - top + 1 - 2 * inset });
+  }
+  return sharp(await img.png().toBuffer());
+}
+
 for (const [name, file, widths] of PICKS) {
   const vignette = /^b[3-6]-/.test(name);
   for (const w of widths) {
-    let img = vignette ? await keyed(SRC + file) : sharp(SRC + file);
+    let img = vignette ? await keyed(SRC + file) : (await tuned(name, file)) ?? sharp(SRC + file);
     const info = await img
       .resize({ width: w, kernel: "lanczos3" })
       .sharpen(w > 1280 && file.endsWith(".webp") ? { sigma: 0.6 } : undefined)

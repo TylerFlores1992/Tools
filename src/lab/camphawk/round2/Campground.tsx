@@ -9,9 +9,12 @@ import type { Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import { Tag } from "../ui/Tag";
 import { Art, ART } from "./Art";
-import { GhFooter, PhotoHeader } from "./GhChrome";
+import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
+import { canWatch, ROUTES, watchCtaLabel } from "./gates";
+import { campgroundFor } from "./campground-lookup";
+import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import {
-  CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY, FIRST_MONTH, LAST_MONTH, MONTHS, SITES, TODAY,
+  FIRST_COME_BADGE, FIRST_COME_WHY, FIRST_MONTH, LAST_MONTH, SITES, TODAY, type Month,
   dayLabel, daysIn, firstWeekday, monthLabel, openingsBody, openingsHeading, pad2, shiftMonth,
 } from "./campground-data";
 
@@ -36,19 +39,23 @@ type Arrival = "search" | "google";
 
 const labSelect = "min-h-11 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
 
-/** WatchCta's labels, driven by the lab's "View as" instead of Clerk and the native bridge. */
-function watchLabel(visitor: Visitor): string {
-  if (visitor === "subscriber") return "Watch this campground";
-  if (visitor === "member") return "Start free trial to watch";
-  if (visitor === "app") return "Subscribe to watch";
-  return "Sign up to watch";
+/** WatchCta for this page: a subscriber goes to New watch with the campground and the picked
+    nights filled in; everyone else gets the step open to them (gates.ts). The lab doesn't
+    build sign-up or checkout, so those stay put. */
+function watchHref(visitor: Visitor, id: string, start?: string, end?: string): string {
+  if (!canWatch(visitor)) return "#";
+  const q = new URLSearchParams({ campground: id, ...(start && end ? { start, end } : {}) });
+  return withVisitor(`${ROUTES.newWatch}?${q}`, visitor);
 }
 
 const firstMonthName = monthLabel(FIRST_MONTH).split(" ")[0];
 
 /** The answer, for the band: the openings in the first month from today, in words. */
-function OpenSummary() {
-  const open = Object.keys(MONTHS[FIRST_MONTH].open).filter((d) => d >= TODAY).sort();
+function OpenSummary({ months }: { months: Record<string, Month> }) {
+  const first = months[FIRST_MONTH];
+  // An unread month is not a booked one: say we couldn't check.
+  if (first.unknown || first.error) return <p className="mt-4 text-[17px] text-ch-line">We couldn&apos;t check {firstMonthName} just now. A watch keeps checking around the clock.</p>;
+  const open = Object.keys(first.open).filter((d) => d >= TODAY).sort();
   if (!open.length) return <p className="mt-4 text-[17px] text-ch-line">Nothing open in {firstMonthName} right now.</p>;
   return (
     <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[17px] text-ch-paper">
@@ -61,10 +68,10 @@ function OpenSummary() {
   );
 }
 
-function Calendar({ visitor }: { visitor: Visitor }) {
+function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; months: Record<string, Month> }) {
   const [month, setMonth] = useState(FIRST_MONTH);
-  const [selected, setSelected] = useState<string | null>("2026-07-18");
-  const data = MONTHS[month];
+  const [selected, setSelected] = useState<string | null>(() => (months[FIRST_MONTH].open["2026-07-18"] ? "2026-07-18" : null));
+  const data = months[month];
   const unread = Boolean(data.unknown || data.error);
   const known = !unread;
   const total = daysIn(month);
@@ -191,7 +198,7 @@ function Calendar({ visitor }: { visitor: Visitor }) {
         {/* The next step after the calendar: the same gated watch control as the band. */}
         <div className="mt-2 border-t border-ch-line pt-4">
           <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the second a site opens.</p>
-          <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-3" })}>{watchLabel(visitor)}</a>
+          <Link href={watchHref(visitor, id)} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-3" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>
         </div>
       </aside>
     </div>
@@ -199,16 +206,22 @@ function Calendar({ visitor }: { visitor: Visitor }) {
 }
 
 export function Campground() {
-  const [visitor, setVisitor] = useState<Visitor>("signed-out");
-  const [booking, setBooking] = useState<Booking>("reservable");
-  const [page, setPage] = useState<PageState>("loaded");
-  const [arrival, setArrival] = useState<Arrival>("search");
+  const [visitor, setVisitor] = useVisitor();
+  const [bookingSwitch, setBooking] = useUrlState<Booking>("booking", "reservable", ["reservable", "first-come"]);
+  const [page, setPage] = useUrlState<PageState>("state", "loaded", ["loaded", "loading", "missing", "failed"]);
+  const [arrival, setArrival] = useUrlState<Arrival>("from", "search", ["search", "google"]);
+  // Arriving from Explore carries the search, so "Back to search" restores it.
+  const backQuery = useUrlParam("back");
+  const searchHref = withVisitor(`${ROUTES.explore}${backQuery?.startsWith("?") ? backQuery : ""}`, visitor);
+  const { info: CAMPGROUND, months } = campgroundFor(useUrlParam("id"));
+  // A campground that takes no reservations is first come whatever the switch says.
+  const booking: Booking = CAMPGROUND.reservable ? bookingSwitch : "first-come";
   const watchable = booking === "reservable";
   const { name, place, provider, description, amenities, phone, stateName } = CAMPGROUND;
   const back = (
-    <a href="#" className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
+    <Link href={searchHref} className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
       <ChevronLeft aria-hidden="true" className="size-4" /> Back to search
-    </a>
+    </Link>
   );
   const crumbs = (
     <nav aria-label="Breadcrumb" className="flex min-h-11 flex-wrap items-center gap-x-1.5 text-[15px] text-ch-line">
@@ -224,7 +237,7 @@ export function Campground() {
   return (
     <div className="gh">
       <LabBar page="Campground" visitor={visitor} onVisitor={setVisitor}>
-        <Link href="/private/camphawk/golden-hour" className="flex min-h-11 items-center whitespace-nowrap underline-offset-2 hover:underline">Golden hour home</Link>
+        <ScreenLinks visitor={visitor} current="campground" />
         <div role="radiogroup" aria-label="Booking" className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
           {(["reservable", "first-come"] as const).map((b) => (
             <button key={b} type="button" role="radio" aria-checked={booking === b} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
@@ -266,7 +279,7 @@ export function Campground() {
                 <div className="pt-10">
                   <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">Campground not found</h1>
                   <p className="mt-3 text-[17px] text-ch-line">We don&apos;t have this campground.</p>
-                  <a href="#" className={buttonClasses({ variant: "quiet", className: "mt-6 px-5" })}>Back to search</a>
+                  <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "mt-6 px-5" })}>Back to search</Link>
                 </div>
               )}
               {page === "failed" && (
@@ -277,7 +290,7 @@ export function Campground() {
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
                     <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ className: "px-5" })}>Try again</button>
-                    <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>Back to search</a>
+                    <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "px-5" })}>Back to search</Link>
                   </div>
                 </div>
               )}
@@ -299,9 +312,9 @@ export function Campground() {
                 </div>
                 <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
                 <p className="mt-2 text-[17px] text-ch-line">{place}</p>
-                {watchable && <OpenSummary />}
+                {watchable && <OpenSummary months={months} />}
               </div>
-              {watchable && <a href="#" className={buttonClasses({ size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchLabel(visitor)}</a>}
+              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
             </div>
           </div>
         </section>
@@ -318,7 +331,7 @@ export function Campground() {
 
         <section aria-label="Availability" className="mx-auto max-w-[1120px] px-3 pt-6 sm:px-8 sm:pt-8">
           {watchable ? (
-            <Calendar visitor={visitor} />
+            <Calendar key={CAMPGROUND.id} visitor={visitor} id={CAMPGROUND.id} months={months} />
           ) : (
             <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
               <h2 className="font-ch-display text-[22px] font-extrabold text-ch-ink">{FIRST_COME_BADGE}</h2>
