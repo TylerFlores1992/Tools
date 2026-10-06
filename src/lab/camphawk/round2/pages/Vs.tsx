@@ -63,7 +63,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
             <Q q="ReserveCalifornia sites are held at the 8 AM release">
               California cancellations mostly don&apos;t go back on sale straight away — they are locked until the next morning&apos;s release, when everybody refreshes at once. CampHawk spots the site the night before, offers to be there, and carts it within a couple of seconds of it freeing, then hands it to you.{" "}
               {RC_HOLD_OPEN
-                ? <span className="text-[15px]">Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span>
+                ? <span className="text-[15px]">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</span>
                 : <strong className="text-ch-ink">Invite-only since {RC_HOLD_CLOSED_ON}, while we make it more reliable; ReserveCalifornia watches still alert everyone.</strong>}
             </Q>
             <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a sweep every few minutes: every watched campground is rechecked every {CHECK_SECONDS} seconds, around the clock, which is what makes carting within seconds possible at all.</Q>
@@ -90,7 +90,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
           <section className="mt-10 rounded-ch-card bg-ch-forest px-6 py-10 text-center">
             <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold text-ch-paper">Search is free, and needs no account</h2>
             <p className="mx-auto mt-2 max-w-[46ch] text-[17px] leading-relaxed text-ch-line">Look up the campground you want and see what CampHawk knows about it before you decide anything.</p>
-            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search a campground</Link>
+            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </section>
           <p className="mt-8 text-[14px] leading-relaxed text-ch-ink-2">{c.name} is not affiliated with CampHawk, and we don&apos;t speak for them. Everything above describes CampHawk; for {c.name}&apos;s features and prices, <Out href={c.homepage}>see their site</Out>.</p>
         </div>

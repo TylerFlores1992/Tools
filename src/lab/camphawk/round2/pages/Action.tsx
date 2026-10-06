@@ -80,15 +80,16 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
     <BareCard>
       <h1 className="font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">Hold this site for you?</h1>
       <Facts rows={[["Campground", HOLD.campground], ["Site", <span key="s" className="font-ch-display text-[22px] font-extrabold">{HOLD.unit}</span>], ["Nights", `${HOLD.stay} · ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
-      {second && <LineNote rank={2} />}
-      <a href="#" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center gap-1.5 font-bold text-ch-forest underline underline-offset-[3px]">Look at {HOLD.unit} on ReserveCalifornia<ExternalLink aria-hidden="true" className="size-4" /></a>
-      <BetaNote className="mt-3" />
       <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, our bot tries to cart this exact site the second it opens and hold it for you for up to 60 minutes, so claim it within that time when we tell you. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
+      {/* The beta note stays above the promise, on purpose. */}
+      <BetaNote className="mt-4" />
       {/* Never disabled: a second tap while it works is harmless, and a dead button reads as broken. */}
       <button type="button" onClick={() => { setBusy(true); window.setTimeout(onYes, 700); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-5" })}>
         {busy ? <><Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />Holding…</> : "Yes — hold it for me"}
       </button>
       <p className="mt-3 text-center text-[14px] text-ch-ink-2">Do nothing and we won’t hold it. You’ll still get the normal alert when it opens.</p>
+      {second && <LineNote rank={2} />}
+      <a href="#" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-bold text-ch-forest underline underline-offset-[3px]">Look at {HOLD.unit} on ReserveCalifornia<ExternalLink aria-hidden="true" className="size-4" /></a>
     </BareCard>
   );
 }

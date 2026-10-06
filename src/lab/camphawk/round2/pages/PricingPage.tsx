@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, Info, Loader2 } from "lucide-react";
+import { Check, Info, Loader2, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Collapsible } from "../../ui/Collapsible";
@@ -46,7 +46,7 @@ function PlanCard({ name, tier, features, recommended, children }: { name: strin
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest shadow-ch-card" : "border border-ch-line")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="text-[14px] font-bold text-ch-ink-2">Best chance to book</p>}
+        {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")} — save {yearlySavingPercent(tier)}%</p>
@@ -87,14 +87,21 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
   const foot = lookup === "failed" && !signedOut
     ? "We couldn't check your current plan just now."
     : visitor === "lapsed"
-      ? "Prices in US dollars. Cancel any time. Launch pricing — your rate is locked in while you stay subscribed."
-      : `Prices in US dollars. Free for ${TRIAL_DAYS} days · cancel any time before you're charged. Launch pricing — your rate is locked in while you stay subscribed.`;
+      ? "Prices in US dollars, billed monthly or yearly."
+      : `Prices in US dollars. Free for ${TRIAL_DAYS} days, then billed monthly or yearly; cancel before then and you're never charged.`;
   return (
     <section aria-labelledby="pitch" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
-      <p className="text-[13px] font-extrabold uppercase tracking-[.1em] text-ch-ink-2">Launch pricing</p>
-      <h2 id="pitch" className="mt-2 max-w-[24ch] font-ch-display text-[clamp(26px,3.2vw,38px)] font-extrabold leading-[1.08] tracking-[-.02em] text-ch-forest">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
-      <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">Cancel any time — and live search keeps working either way.</p>
-      <p className="mt-2 max-w-[64ch] text-[15px] leading-relaxed text-ch-ink-2">This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.</p>
+      {/* Headline left, the terms beside it on wide screens (as the home page's pricing block). */}
+      <div className="grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+        <div>
+          <p className="text-[13px] font-extrabold uppercase tracking-[.1em] text-ch-ink-2">Launch pricing</p>
+          <h2 id="pitch" className="mt-2 max-w-[24ch] font-ch-display text-[clamp(26px,3.2vw,38px)] font-extrabold leading-[1.08] tracking-[-.02em] text-ch-forest">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
+        </div>
+        <div className="grid gap-2 text-ch-ink-2">
+          <p className="text-[17px] font-bold leading-relaxed text-ch-ink">Cancel any time. Live search keeps working either way.</p>
+          <p className="text-[15px] leading-relaxed">This rate goes up as we add campgrounds and states. Subscribe now and you keep it for as long as your subscription runs.</p>
+        </div>
+      </div>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <PlanCard name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)}>
           {signedOut ? trial("base") : [priceBtn("base", "monthly"), priceBtn("base", "yearly")]}
@@ -197,7 +204,7 @@ function HoldExplainer() {
         )}
         <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
           <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
-          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
+          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
           {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
           <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
         </div>

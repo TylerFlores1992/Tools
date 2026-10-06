@@ -72,7 +72,7 @@ export function GhFooter({ visitor = "signed-out" }: { visitor?: Visitor }) {
     <footer className="bg-ch-forest">
         <div className="mx-auto flex max-w-[var(--gh-max)] flex-wrap items-center justify-between gap-3 px-5 py-7 text-[14px] text-ch-line sm:px-8">
           <span>© 2026 CampHawk</span>
-          <nav aria-label="Footer" className="flex flex-wrap gap-1">
+          <nav aria-label="Footer" className="-mx-2 flex flex-wrap gap-1">
             {FOOTER_LINKS.map((l) => <Link key={l} href={withVisitor(FOOTER_HREF[l], visitor)} className="flex min-h-11 items-center px-2 hover:text-ch-white hover:underline">{l}</Link>)}
           </nav>
         </div>

@@ -64,7 +64,7 @@ export function Welcome() {
         const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,720px)_minmax(0,320px)] lg:items-start">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
           <div className="grid min-w-0 gap-4">
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
@@ -83,7 +83,7 @@ export function Welcome() {
             </section>
 
             {subscribed && plan === "autocart" && (
-              <section aria-labelledby="w-cart" className="mt-4 rounded-ch-input border-2 border-ch-blue bg-ch-blue-soft p-4 sm:p-5">
+              <section aria-labelledby="w-cart" className="mt-4 rounded-ch-input border border-l-4 border-ch-line border-l-ch-blue bg-ch-card p-4 sm:p-5">
                 <h2 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up auto-cart</h2>
                 <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
                 <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", size: "sm", className: "mt-3 min-h-11 px-4" })}>Sign in to Recreation.gov</Link>
@@ -101,7 +101,8 @@ export function Welcome() {
           </div>
           {from === "checkout" && visitor !== "subscriber" && <LabNote>The after-checkout version is for a subscriber: switch View as to Subscriber.</LabNote>}
           </div>
-          <aside aria-labelledby="w-next" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6">
+          {/* Wide screens only: on a phone it would sit under Finish, after the job is done. */}
+          <aside aria-labelledby="w-next" className="hidden rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6 lg:block">
             <h2 id="w-next" className="font-ch-display text-[19px] font-extrabold text-ch-ink">What happens next</h2>
             <ol className="mt-3 grid gap-3 text-[15px] leading-relaxed text-ch-ink-2">
               {[

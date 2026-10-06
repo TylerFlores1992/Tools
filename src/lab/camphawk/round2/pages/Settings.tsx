@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { AlertTriangle, Bell, Loader2, Mail } from "lucide-react";
+import { AlertTriangle, Bell, Loader2, Mail, Trash2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
@@ -33,7 +33,8 @@ import { EMAIL } from "./alert-data";
 // - Auto-cart on is the blue provider tag; set-up and reconnect are blue hand-offs to Recreation.gov.
 // - A disconnected session always offers "Reconnect" (CampHawk could show the box with no button).
 // - "Start free trial" goes to Pricing, not the marketing home.
-// - "Delete account" is quiet until you confirm; red is for the step that does it.
+// - "Delete account" is a quiet button (red words and a bin icon, so it never looks like Sign
+//   out) until you confirm; the red fill is for the step that does it.
 // - The ReserveCalifornia hold beta box is gone: the beta closed on Sep 22, 2026.
 
 type AutoCart = "on" | "off" | "not-set-up" | "reconnecting" | "disconnected";
@@ -252,7 +253,7 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
       <p className="text-[15px] leading-relaxed text-ch-ink-2">Deleting {noun} removes your watches, alert history and saved campgrounds permanently. This can&apos;t be undone.</p>
       <p className="text-[15px] leading-relaxed text-ch-ink-2">{bill}</p>
       {s === "idle" ? (
-        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start")}>{guest ? "Delete my data" : "Delete account"}</button>
+        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start text-ch-alert-deep!")}><Trash2 aria-hidden="true" className="size-4" />{guest ? "Delete my data" : "Delete account"}</button>
       ) : (
         <div role="group" aria-labelledby="delete-q" className="rounded-ch-input border-2 border-ch-alert bg-ch-card p-4">
           <p id="delete-q" className="flex items-center gap-2 text-[15px] font-bold text-ch-ink"><AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-ch-alert" />{guest ? "Delete your data?" : "Delete your account?"}</p>

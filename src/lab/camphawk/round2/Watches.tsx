@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { Info, ShoppingCart } from "lucide-react";
+import { CalendarDays, Info, ShoppingCart, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "../ui";
 import { WATCH_LIMIT, type Visitor } from "../data";
@@ -75,6 +75,8 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
     </div>
   );
 }
+
+const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
 
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
@@ -158,9 +160,10 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
         </div>
       )}
-      <div className="mt-3 flex gap-2 border-t border-ch-line pt-3">
-        <Link href={calendarHref} aria-label={`Calendar for ${w.name}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 flex-1" })}>Calendar</Link>
-        <a href="#" aria-label={`Manage the ${w.name} watch`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 flex-1" })}>Manage</a>
+      {/* Quiet links, not boxed buttons: four pairs of full-width buttons outweighed the watches. */}
+      <div className="mt-3 flex gap-6 border-t border-ch-line pt-1">
+        <Link href={calendarHref} aria-label={`Calendar for ${w.name}`} className={cardLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
+        <a href="#" aria-label={`Manage the ${w.name} watch`} className={cardLink}><SlidersHorizontal aria-hidden="true" className="size-4" />Manage</a>
       </div>
     </Card>
   );

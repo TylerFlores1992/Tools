@@ -207,9 +207,9 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       )}
 
       {requested.length > 0 && (
-        <section aria-labelledby="grab" className="rounded-ch-card border border-ch-ochre-line bg-ch-ochre-soft p-5">
+        <section aria-labelledby="grab" className="rounded-ch-card border border-l-4 border-ch-line border-l-ch-ochre bg-ch-card p-5 shadow-ch-card">
           <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
-          <ul className="mt-2 divide-y divide-ch-ochre-line">
+          <ul className="mt-2 divide-y divide-ch-line">
             {requested.map((r) => (
               <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
                 <span className="min-w-0 flex-1">
@@ -226,13 +226,13 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       {w.offered.length > 0 && (
         <section aria-labelledby="offered" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
-          <h2 id="offered" className="text-[14px] font-extrabold text-ch-ink-2">Sites you can hold at {releaseShort()}</h2>
+          <h2 id="offered" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Sites you can hold at {releaseShort()}</h2>
           <ul className="mt-2 divide-y divide-ch-line">
             {w.offered.map((o) => (
               <li key={o.unit} className="flex flex-wrap items-center gap-3 py-3">
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[17px] font-bold text-ch-ink">{o.unit}</span>
-                  <span className="block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
+                  <span className="block text-[16px] font-bold text-ch-ink">{o.unit}</span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
                 </span>
                 <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
               </li>

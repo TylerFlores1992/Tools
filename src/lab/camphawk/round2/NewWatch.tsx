@@ -419,7 +419,7 @@ export function NewWatch() {
                   <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">Beta</span>
                 </p>
                 <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
-                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</p>
+                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</p>
               </div>
             )}
             {canRcHold && offer === "upsell" && (

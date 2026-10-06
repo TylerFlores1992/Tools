@@ -86,7 +86,7 @@ function Context({ plan, next, mode }: { plan: string | null; next: string | nul
       ? mode === "up" ? "Create a free account, and we'll take you straight back to your watch." : "Sign in, and we'll take you straight back to your watch."
       : null;
   if (!line) return null;
-  return <p className="mb-4 rounded-ch-input bg-ch-forest px-1 text-center text-[16px] font-bold leading-relaxed text-ch-paper">{line}</p>;
+  return <p className="mx-auto mt-4 max-w-[34ch] text-center text-[16px] font-bold leading-relaxed text-ch-paper">{line}</p>;
 }
 
 function AuthPage({ mode }: { mode: "in" | "up" }) {
@@ -95,10 +95,9 @@ function AuthPage({ mode }: { mode: "in" | "up" }) {
   // A plan picked on Pricing comes back to Pricing after Welcome.
   const next = back ?? (plan ? `${ROUTES.pricing}?plan=${plan}` : null);
   return (
-    <BareFrame page={mode === "up" ? "Sign up" : "Sign in"}>
+    <BareFrame page={mode === "up" ? "Sign up" : "Sign in"} centered lead={<Context plan={plan} next={next} mode={mode} />}>
       {({ visitor }) => (
         <>
-          <div className="-mt-6"><Context plan={plan} next={next} mode={mode} /></div>
           <Widget key={visitor} mode={mode} visitor={visitor} next={next} />
           <LabNote className="mt-4">A stand-in for Clerk&apos;s sign-{mode} widget, themed and worded through Clerk&apos;s appearance and localization settings. Continue moves on as if it worked.</LabNote>
         </>

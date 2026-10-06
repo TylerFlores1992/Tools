@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { AlertTriangle, Check, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, ExternalLink, Loader2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
@@ -42,7 +42,7 @@ const COPY = {
     afterCta: "Book it on ReserveCalifornia",
   },
   app: {
-    prepareTitle: "Sign in and we will hand it over",
+    prepareTitle: "Sign in to ReserveCalifornia here",
     prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia — we never see it or save it.",
     prepareCta: "Sign in to ReserveCalifornia",
     waitingTitle: "Waiting for you to sign in",
@@ -66,12 +66,12 @@ function SiteCard({ heading, tone, footer }: { heading: string; tone: "hold" | "
   );
 }
 
-function Step({ tone, title, body, children }: { tone: "todo" | "busy" | "done"; title: string; body?: string; children?: ReactNode }) {
+function Step({ tone, title, body, children, note }: { tone: "todo" | "busy" | "done"; title: string; body?: string; children?: ReactNode; note?: ReactNode }) {
   return (
     <div className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
       <div className="flex gap-3">
         <span aria-hidden="true" className={cx("grid size-8 shrink-0 place-items-center rounded-full", tone === "done" ? "bg-ch-ink text-ch-white" : "bg-ch-shell text-ch-ink")}>
-          {tone === "done" ? <Check className="size-4" /> : tone === "busy" ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" /> : <ChevronRight className="size-4" />}
+          {tone === "done" ? <Check className="size-4" /> : tone === "busy" ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" /> : <span className="text-[14px] font-extrabold">1</span>}
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{tone === "done" ? "Done: " : tone === "busy" ? "Waiting: " : "Next: "}</span>{title}</p>
@@ -79,6 +79,7 @@ function Step({ tone, title, body, children }: { tone: "todo" | "busy" | "done";
         </div>
       </div>
       {children && <div className="mt-4">{children}</div>}
+      {note && <p className="mt-4 border-t border-ch-line pt-4 text-[15px] leading-relaxed text-ch-ink-2">{note}</p>}
     </div>
   );
 }
@@ -115,7 +116,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         <input id="rc-check" type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
-      <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in and hand it over"}</button>
+      <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in to ReserveCalifornia"}</button>
       {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{missing.length === 1 && !checked ? "Tick the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
     </form>
   );
@@ -180,23 +181,23 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
 
   // carted
   const late = status === "carted-late";
+  const handOver = <>{ready ? "When you tap it" : <>Once you&apos;re signed in, a button appears: tap <strong className="text-ch-ink">It&apos;s mine — hand it over</strong>. Then</>} we let go so you can take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</>;
   return (
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
         footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:" className="text-[12px]">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
       {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
-      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, a button appears: tap “It&apos;s mine — hand it over” and we let go so you can take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready ? (
-        <Step tone="done" title={c.readyTitle} />
+        <Step tone="done" title={c.readyTitle} note={handOver} />
       ) : opened && !canInject ? (
-        <Step tone="busy" title={c.waitingTitle} body={c.waitingBody}>
+        <Step tone="busy" title={c.waitingTitle} body={c.waitingBody} note={handOver}>
           <label className="flex cursor-pointer items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4 text-[15px] leading-relaxed text-ch-ink">
             <input type="checkbox" onChange={(e) => setReady(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
             <span>I&apos;m signed in to ReserveCalifornia and looking at {CLAIM.unit}</span>
           </label>
         </Step>
       ) : (
-        <Step tone="todo" title={c.prepareTitle} body={c.prepareBody}>
+        <Step tone="todo" title={c.prepareTitle} body={c.prepareBody} note={handOver}>
           {canInject
             ? <RcSignInForm onSignedIn={() => setReady(true)} />
             : <a href="#" onClick={(e) => { e.preventDefault(); setOpened(true); }} className={buttonClasses({ variant: "cart", size: "lg", fullWidth: true })}>{c.prepareCta}<ExternalLink aria-hidden="true" className="size-4" /></a>}

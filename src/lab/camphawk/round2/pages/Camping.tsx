@@ -12,7 +12,7 @@ import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
 import { CHECK_SECONDS, SOURCE_COUNT, inWords } from "./tier2-data";
 import {
-  CALIFORNIA, HARD_TO_BOOK, HUBS, PROVINCES, STATES, hubBySlug, hubsIn, joinAnd, regionBySlug, regionsFor, total,
+  CALIFORNIA, COVERAGE, HARD_TO_BOOK, HUBS, PROVINCES, STATES, UNPAGED, hubBySlug, hubsIn, joinAnd, regionBySlug, regionsFor, total,
   type Hub, type Region, type Town,
 } from "./camping-data";
 
@@ -35,8 +35,8 @@ import {
 // - The counts carry a caption saying what they count, not a bare number.
 // - "A, B and C" (CampHawk drops the "and" at three); the hub title counts states and provinces
 //   apart; numbers come from the lists ("15 more parks" is the list minus three).
-// - The CTA says "Search campgrounds by date": CampHawk's "Search California by date" opens an
-//   empty search.
+// - The CTA says "Search campgrounds", the lab's one name for opening search (CampHawk's
+//   "Search California by date" opens an empty search, and it has six other names).
 
 const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 const LAB_NOTE = "California's counts and lists stand in for CampHawk's catalog; other states' counts and every campground list are illustrative.";
@@ -58,7 +58,7 @@ function Crumbs({ items, visitor }: { items: Array<[string, string | null]>; vis
 
 const rowLink = "flex min-h-11 items-center justify-between gap-3 py-2 text-[16px] text-ch-ink underline decoration-ch-line decoration-1 underline-offset-4 hover:decoration-ch-ink hover:decoration-2";
 
-function RegionGrid({ rows, href, visitor, caption, bold }: { rows: Region[]; href: (r: Region) => string; visitor: Visitor; caption: string; bold?: boolean }) {
+function RegionGrid({ rows, href, visitor, caption }: { rows: Region[]; href: (r: Region) => string; visitor: Visitor; caption: string }) {
   const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name));
   return (
     <div>
@@ -66,7 +66,7 @@ function RegionGrid({ rows, href, visitor, caption, bold }: { rows: Region[]; hr
       <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
         {sorted.map((r) => (
           <li key={r.code} className="border-b border-ch-line">
-            <Link href={withVisitor(href(r), visitor)} className={cx(rowLink, bold && "font-bold")}>
+            <Link href={withVisitor(href(r), visitor)} className={cx(rowLink, "font-bold")}>
               <span>{r.name}</span>
               <span className="inline-block text-[14px] font-normal tabular-nums text-ch-ink-2">{r.count.toLocaleString("en-US")}<span className="sr-only"> campgrounds</span></span>
             </Link>
@@ -105,7 +105,7 @@ function Lead({ children }: { children: ReactNode }) {
 }
 
 function Search({ visitor, className }: { visitor: Visitor; className?: string }) {
-  return <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: cx("px-6", className) })}>Search campgrounds by date</Link>;
+  return <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: cx("px-6", className) })}>Search campgrounds</Link>;
 }
 
 function Note() {
@@ -135,11 +135,11 @@ export function CampingHub() {
             <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Chasing somewhere that is never available? <A href={ROUTES.hardest} visitor={visitor}>The campgrounds that are always booked</A> covers Yosemite, Zion, Acadia and {extraParks} more parks whose sites go in minutes — and how a cancellation is the realistic way in.</p>
             <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Already found it booked out? <A href={ROUTES.soldOut} visitor={visitor}>What actually works when a campground is sold out</A>, and <A href={ROUTES.alerts} visitor={visitor}>how campsite cancellation alerts work</A> — including the free options worth checking first.</p>
           </div>
-          <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." bold /></div>
+          <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
             <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold text-ch-forest">Camping in Canada</h2>
-            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{total(PROVINCES).toLocaleString("en-US")} bookable campgrounds across {PROVINCES.length} provinces and territories — Parks Canada&apos;s national parks, plus the provincial and territorial systems. Pick a province to see what we cover there.</p>
-            <div className="mt-5"><RegionGrid rows={PROVINCES} href={statePath} visitor={visitor} caption="The number beside each is how many campgrounds we track there." bold /></div>
+            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada&apos;s 13 provinces and territories — Parks Canada&apos;s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
+            <div className="mt-5"><RegionGrid rows={PROVINCES} href={statePath} visitor={visitor} caption="The number beside each is how many campgrounds we track there." /></div>
           </section>
           <Note />
         </div>
@@ -203,7 +203,7 @@ export function TypeHub({ type }: { type: string }) {
           <div className="mt-5">
             <Lead>
               <p>{hub.blurb}</p>
-              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca.length)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock, so when a booked site frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
+              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca.length)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Most of these book out months ahead, so a cancellation is the realistic way in, and you’ll know within seconds of one.</p>
             </Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">Searching live availability is free and needs no account.</p>
             <Search visitor={visitor} className="mt-6" />
@@ -272,18 +272,18 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
 export function HardestToBook() {
   const count = HARD_TO_BOOK.reduce((n, p) => n + p.campgrounds.length, 0);
   return (
-    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.c1, pos: "50% 60%", posLg: "50% 55%" }}>
+    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.w1, pos: "85% 55%", posLg: "50% 55%" }}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />
           <div className="mt-5">
             <Lead>
-              <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you have finished typing. It is not a queue you can win by being organized — for these {count} campgrounds, being early is not early enough.</p>
-              <p>What does work is being there when somebody gives one back. Cancellations happen constantly — plans change, weather turns, someone holds three weekends and keeps one — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
+              <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you’ve finished typing. It isn’t a queue you can win by being organized — for these {count} campgrounds, being early isn’t early enough.</p>
+              <p>What does work is being there when somebody gives one back. Cancellations happen constantly — a trip falls through, a group shrinks, a forecast sours — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
               <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
             </Lead>
             <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking. Live availability for every one of them is free to check.</p>
-            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Check availability now</Link>
+            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </div>
           {/* One card per park, in CampHawk's order (Yosemite first), in columns so each card is as
               tall as its list: denser than CampHawk's single column of one-link sections. */}
@@ -299,7 +299,7 @@ export function HardestToBook() {
               </li>
             ))}
           </ul>
-          <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} is not the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
+          <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
           <LabNote className="mt-12">The parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>
       )}

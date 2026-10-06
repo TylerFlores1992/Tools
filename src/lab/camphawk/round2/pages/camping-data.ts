@@ -1,3 +1,5 @@
+import { CANADA_REGIONS } from "../../data";
+
 // Example data for the lab's search pages (Tier 3: campsite-finder src/app/camping, lib/
 // stateCampgrounds.ts, lib/siteTypeHubs.ts, lib/hardToBook.ts, lib/competitors.ts). CampHawk
 // reads these from its catalog; the lab can't, so:
@@ -122,7 +124,7 @@ export const COMPETITORS: Record<Competitor["slug"], Competitor> = {
 };
 
 /** Coverage CampHawk derives from its catalog (COVERAGE in lib/coverage.ts). */
-export const COVERAGE = { states: 50, stateParkStates: 34, canadianProvincialSystems: 7 };
+export const COVERAGE = { states: 50, stateParkStates: 34, canadianProvincialSystems: 7, canadaRegions: CANADA_REGIONS };
 
 /** "A", "A and B", "A, B and C". CampHawk drops the "and" at three or more. */
 export const joinAnd = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);

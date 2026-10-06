@@ -163,6 +163,12 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
               Not open for booking
             </span>
           )}
+          {cells.some((d) => d && d < TODAY) && (
+            <span className="inline-flex items-center gap-1.5">
+              <i aria-hidden="true" className="not-italic font-semibold text-ch-faint">3</i>
+              Past
+            </span>
+          )}
           <span className="font-bold text-ch-ink sm:ml-auto">{summary}</span>
         </div>
         {data.unknown && (

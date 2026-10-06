@@ -115,17 +115,18 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
   const steps = [
     ["Say where", "A city, park or ZIP in the search box — or tap the crosshair to use your location. Leave it empty and we'll search near you."],
     ["Say when", "Exact dates, or one tap for tonight or this weekend. Flexible is the useful one: say how many nights you need and give us a date range to hunt inside, and we'll take any stretch that long."],
-    ["Search", "Results marked Sites open have a site free right now. Tap any result for its full calendar, or the map to see where they are."],
-  ];
+    ["Search", <>Results marked <Tag kind="open" className="mx-0.5 align-[1px]">Sites open</Tag> have a site free right now. Tap any result for its full calendar, or the map to see where they are.</>],
+  ] as const;
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
       <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">How search works</h2>
       <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">
         Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds — national forests, state and provincial parks, and everything in between — and shows you what&apos;s bookable right now.
       </p>
-      <ol className="mt-4 max-w-[56ch]">
+      {/* Wide screens: the three steps side by side, so the card has no dead half. */}
+      <ol className="mt-4 max-w-[56ch] xl:mt-6 xl:grid xl:max-w-none xl:grid-cols-3 xl:gap-6">
         {steps.map(([title, sub], i) => (
-          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
+          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0 xl:border-b-0 xl:border-t xl:pt-4">
             <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
             <span>
               <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
@@ -405,7 +406,7 @@ export function Explore() {
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 
-        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[440px_minmax(0,1fr)] lg:gap-8">
           {/* The search rail docks across the band's edge, the way search does on the home page. */}
           <form
             role="search"

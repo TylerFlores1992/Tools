@@ -606,13 +606,13 @@ try {
     await p.getByText("Watching Upper Pines again.").waitFor();
     // Claim: nothing is released until you say so, and the release names its button in words.
     await p.goto(`${GH}/claim?as=app`);
-    await p.getByText("tap “It's mine — hand it over” and we let go", { exact: false }).waitFor();
+    await p.getByText("we let go so you can take it", { exact: false }).waitFor();
     assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
     await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
     await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");
     await p.getByLabel("ReserveCalifornia password", { exact: true }).fill("not-a-real-password");
     await p.getByRole("checkbox").check();
-    await p.getByRole("button", { name: "Sign in and hand it over" }).click();
+    await p.getByRole("button", { name: "Sign in to ReserveCalifornia" }).click();
     await p.getByRole("button", { name: "It's mine — hand it over" }).click();
     await p.getByText("Site 042 is yours to book").waitFor({ timeout: 8000 });
     await p.getByRole("link", { name: "Check out on ReserveCalifornia" }).waitFor();
@@ -729,6 +729,8 @@ try {
     await signIn(p);
     await p.waitForURL(`${GH}/camping`);
     await p.getByText("These are the 47 states with enough campgrounds for a page of their own", { exact: false }).waitFor();
+    // Canada's coverage reads the same here as on the home page (it said 9 provinces here, 12 there).
+    await p.getByText("390 bookable campgrounds in 12 of Canada’s 13 provinces and territories", { exact: false }).waitFor();
     // Under five campgrounds there's no page: a real 404, not a thin one.
     for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
       const res = await p.goto(`${GH}${missing}`);

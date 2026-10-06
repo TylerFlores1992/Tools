@@ -216,7 +216,7 @@ export function GoldenHour() {
             <div className="mt-6 flex flex-wrap items-center gap-4 md:justify-end">
               <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />
-                Find a campsite
+                Search campgrounds
               </Link>
               <a href="#" className="min-h-11 content-center text-[16px] font-bold text-ch-paper underline underline-offset-4">Or browse campgrounds by state</a>
             </div>
