@@ -145,6 +145,13 @@ Route: `/private/camphawk/golden-hour/campground` (lab). Port of campsite-finder
   (from the lab's "View as"), open / booked / not open for booking / couldn't check / past days,
   "Pick a day", first-come campgrounds get a policy panel instead of an empty calendar.
 - **Assets:** four dusk photos of a valley campground (generated; labeled as example data).
+- **As built:** the answer sits under the name in words ("5 days with openings in July. The next
+  is Thursday, July 9."); phones show one photo so the calendar comes sooner; the day panel ends
+  with the same gated watch button. Example months demonstrate every CampHawk calendar state: July
+  and August (open, booked, past), September (couldn't check), October (not open for booking) and
+  November (a failed read, said as an alert). A lab switch shows a first-come campground. The
+  photos stay dusk on purpose: the whole Golden hour look is blue hour with warm lamplight (hero,
+  feature, closing band), not literal golden hour.
 
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no

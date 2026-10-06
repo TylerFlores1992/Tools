@@ -190,7 +190,7 @@ try {
     const days = (c.expires * 1000 - Date.now()) / 86_400_000;
     assert.ok(days > 29.9 && days <= 30, `expires in ${days.toFixed(2)} days`);
     await p.getByRole("link", { name: /CampHawk lab/ }).click();
-    await p.waitForURL(`${BASE}/private/camphawk`);
+    await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
     await p.getByRole("heading", { level: 1, name: "The campsite you wanted is already booked. We wait for it." }).waitFor();
     await p.getByRole("link", { name: /Private/ }).first().click();
     await p.waitForURL(`${BASE}/private`);
