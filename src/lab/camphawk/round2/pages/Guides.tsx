@@ -50,9 +50,9 @@ function HoldClosed() {
 
 export function AutoCartGuide() {
   return (
-    <LabPage page="Auto-cart" title="Auto-cart — how it works" dock={false} photo={{ art: ART.n1, pos: "62% 55%", posLg: "50% 60%" }}>
+    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false} photo={{ art: ART.n1, pos: "62% 55%", posLg: "50% 60%" }}>
       {({ visitor }) => (
-        <Prose className="mx-auto">
+        <Prose>
           <P>Finding the cancellation is only half of it. The other half is getting the site before somebody else does — and CampHawk can do that part for you on <strong className="text-ch-ink">Recreation.gov</strong> and on <strong className="text-ch-ink">ReserveCalifornia</strong>. They work differently, because the two booking systems do, so they are explained separately below.</P>
 
           <H2 id="first" className="mt-12">What you need first</H2>
@@ -105,7 +105,7 @@ export function CancellationAlerts() {
   return (
     <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false} photo={{ art: ART.e1, pos: "50% 55%", posLg: "50% 55%" }}>
       {({ visitor }) => (
-        <Prose className="mx-auto">
+        <Prose>
           <P>A cancellation alert service watches a campground you could not book and tells you when a site frees up. Every one of them does that. What separates them is how fast they notice, which reservation systems they can see, and whether they can do anything about it other than tell you.</P>
 
           <H2 id="how" className="mt-12">How they work</H2>
@@ -149,10 +149,10 @@ export function SoldOutGuide() {
   return (
     <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." dock={false} photo={{ art: ART.a1, pos: "62% 70%", posLg: "50% 72%" }}>
       {({ visitor }) => (
-        <Prose className="mx-auto">
+        <Prose>
           <P>Sold out is rarely final. Reservations get canceled, held carts expire, and parks put inventory back. The problem is that the site is usually gone again within minutes, so the question is not whether one will appear — it is whether you will be looking at the moment it does.</P>
 
-          <H2 id="how-often" className="mt-12">How often does a sold-out site actually come back?</H2>
+          <H2 id="how-often" className="mt-12">How often does a sold‑out site actually come back?</H2>
           <P>We can answer this with our own data rather than a guess. Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour and counted only the moments when a stay that had been fully booked became bookable again — a real opening, not a stay that had simply never sold out.</P>
           <Callout title={`${OPENINGS_STAT.openings.toLocaleString("en-US")} openings across ${OPENINGS_STAT.checks.toLocaleString("en-US")} checks — about ${openingsPercent()} of the time.`}>
             That is the honest shape of it: on any given hour, almost certainly nothing. Over a few weeks of watching, quite often something. It is also why refreshing the booking page yourself is such poor odds — you would have to be looking during the one hour in a hundred that matters, and then be faster than everyone else looking too.

@@ -284,14 +284,20 @@ export function HardestToBook() {
             <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Check availability now</Link>
           </div>
-          <div className="mt-10 grid gap-9">
+          {/* One card per park, in CampHawk's order (Yosemite first), in columns so each card is as
+              tall as its list: denser than CampHawk's single column of one-link sections. */}
+          <ul className="mt-10 gap-4 sm:columns-2 lg:columns-3">
             {HARD_TO_BOOK.map((p) => (
-              <section key={p.park} aria-labelledby={`p-${p.park}`}>
-                <h2 id={`p-${p.park}`} className="font-ch-display text-[20px] font-extrabold text-ch-ink">{p.park}</h2>
-                <CampgroundList names={p.campgrounds} visitor={visitor} cols={2} />
-              </section>
+              <li key={p.park} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+                <h2 className="font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
+                <ul className="mt-1">
+                  {p.campgrounds.map((n) => (
+                    <li key={n} className="border-b border-ch-line last:border-b-0"><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
+                  ))}
+                </ul>
+              </li>
             ))}
-          </div>
+          </ul>
           <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} is not the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
           <LabNote className="mt-12">The parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>

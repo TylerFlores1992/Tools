@@ -282,7 +282,7 @@ export function Settings() {
       {({ visitor, plan }) => {
         if (visitor === "signed-out") {
           return (
-            <div className="mx-auto max-w-[760px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
+            <div className="max-w-[760px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
               <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">Settings need an account</h2>
               <p className="mx-auto mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -294,7 +294,7 @@ export function Settings() {
         }
         if (page === "loading") {
           return (
-            <div role="status" className="mx-auto grid max-w-[760px] gap-5">
+            <div role="status" className="grid max-w-[760px] gap-5">
               <span className="sr-only">Loading your settings…</span>
               {[0, 1, 2].map((i) => <div key={i} className="h-40 animate-pulse rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card motion-reduce:animate-none" />)}
             </div>
@@ -303,7 +303,7 @@ export function Settings() {
         const guest = visitor === "app";
         const textOn = sms === "saved";
         return (
-          <div className="mx-auto grid max-w-[760px] gap-5">
+          <div className="grid max-w-[760px] gap-5">
             {guest ? (
               <Section id="s-reach" title="How we reach you" blurb="You're using CampHawk without an account. When a site opens up, the alert comes to this device as a notification.">
                 <Box icon={<Bell className="size-5" />} title="Push notifications">Controlled by your phone&apos;s notification settings for CampHawk. Keep them on — they are how your alerts reach you.</Box>

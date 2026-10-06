@@ -97,11 +97,12 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
   const [show, setShow] = useState(false);
   const [checked, setChecked] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [tried, setTried] = useState(false);
   const missing = [!email && "enter your email", !password && "enter your password", !checked && "tick the box"].filter(Boolean) as string[];
   const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
   return (
-    <form onSubmit={(e) => { e.preventDefault(); if (missing.length) return; setBusy(true); window.setTimeout(onSignedIn, 900); }} className="grid gap-3">
-      <label className="grid gap-1.5"><span className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia email</span><input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={field} /></label>
+    <form noValidate onSubmit={(e) => { e.preventDefault(); if (busy) return; if (missing.length) { setTried(true); document.getElementById(!email ? "rc-email" : !password ? "rc-pass" : "rc-check")?.focus(); return; } setBusy(true); window.setTimeout(onSignedIn, 900); }} className="grid gap-3">
+      <label className="grid gap-1.5"><span className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia email</span><input id="rc-email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={field} /></label>
       <div className="grid gap-1.5">
         <label htmlFor="rc-pass" className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia password</label>
         <span className="relative">
@@ -110,11 +111,11 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         </span>
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
+        <input id="rc-check" type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
-      <button type="submit" disabled={missing.length > 0 || busy} className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>{busy ? "Signing you in…" : "Sign in and hand it over"}</button>
-      {missing.length > 0 && <p className="text-center text-[13px] text-ch-ink-2">{missing.length === 1 && !checked ? "Tick the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
+      <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in and hand it over"}</button>
+      {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{missing.length === 1 && !checked ? "Tick the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
     </form>
   );
 }

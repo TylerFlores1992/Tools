@@ -27,7 +27,7 @@ import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
 // - Remove is last, with an in-page confirm.
 // Lab changes, from CampHawk's own rules: a muted site is neutral (CampHawk's "Muted" is a red
 // button); the queued-hold panel is ochre ("you asked for this"), not green; "Hold it" and
-// "Book" are the blue provider hand-off; "Back to watches" is ink; server messages are
+// "Book" are the blue provider hand-off; "Back to watches" is a paper link on the band, not green; server messages are
 // sentences, not "startDate must be a date like 2026-09-04"; one release-time format.
 
 type Link_ = "works" | "expired" | "fails";
@@ -135,8 +135,9 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
   };
 
   return (
-    <div className="grid gap-5">
-      <Link href={back} className="inline-flex min-h-11 items-center gap-1 justify-self-start text-[15px] font-bold text-ch-ink underline-offset-2 hover:underline">
+    <div className="grid max-w-[880px] gap-5">
+      {/* It sits on the band's photo, above the card that docks into it: paper type, underlined. */}
+      <Link href={back} className="inline-flex min-h-11 items-center gap-1 justify-self-start text-[15px] font-bold text-ch-paper underline underline-offset-[3px] hover:decoration-2">
         <ChevronLeft aria-hidden="true" className="size-4" /> Back to watches
       </Link>
       <Card state={active ? "default" : "paused"} className="p-5 shadow-ch-pop sm:p-7">
@@ -146,7 +147,8 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             {w.autoCart && w.provider === "Recreation.gov" && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
             <Tag kind="src">{w.provider}</Tag>
           </div>
-          <h2 className="font-ch-display text-[26px] font-extrabold leading-tight text-ch-ink">{w.name}</h2>
+          {/* The band already names the watch; the card doesn't say it twice. */}
+          <h2 className="sr-only">Watch details</h2>
           {w.parts && (
             <div className="mt-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
               <p className="text-[13px] font-extrabold text-ch-ink-2">{w.parts.length} parts of this park</p>

@@ -35,7 +35,7 @@ export function Welcome() {
   const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
   // One title per screen: the band says it, the card doesn't repeat it.
   const [viewer] = useVisitor();
-  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed — one last thing" : "You're in. How should we reach you?";
+  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed — one last thing" : "You're in. How should we reach you?";
   return (
     <LabPage
       page="Welcome"
@@ -49,7 +49,7 @@ export function Welcome() {
       {({ visitor, plan }) => {
         if (visitor === "signed-out") {
           return (
-            <div className="mx-auto max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
+            <div className="max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
               <p className="mx-auto max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, you&apos;ll choose how we reach you when a campsite opens up. New here? Creating an account takes a minute.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Create an account</Link>
@@ -63,7 +63,7 @@ export function Welcome() {
         const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
-          <div className="mx-auto grid max-w-[720px] gap-4">
+          <div className="grid max-w-[720px] gap-4">
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 

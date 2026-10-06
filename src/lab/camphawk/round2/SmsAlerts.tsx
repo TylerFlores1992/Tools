@@ -23,6 +23,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   const [busy, setBusy] = useState<"save" | "off" | null>(null);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
+  const [tried, setTried] = useState(false);
 
   if (start === "loading") {
     return (
@@ -33,9 +34,17 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   }
 
   const changed = phone.trim() !== (saved ?? "");
-  const ready = phone.trim().length >= 10 && agreed && changed && !busy;
+  const missingNumber = phone.trim().length < 10;
+  const blocked = missingNumber || !agreed;
+  // The button stays in its real colour; pressing it early says what's missing and goes there
+  // (a greyed-out full-width button reads as an empty bar, and says nothing).
   const save = () => {
-    if (demo || !ready) return;
+    if (demo || busy || !changed) return;
+    if (blocked) {
+      setTried(true);
+      document.getElementById(missingNumber ? "sms-phone" : "sms-consent")?.focus();
+      return;
+    }
     setBusy("save");
     setError(null);
     window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setDone(true); window.setTimeout(() => setDone(false), 2000); }, 600);
@@ -75,24 +84,26 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         />
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
+        <input id="sms-consent" type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>Yes, I&apos;d like to receive automated text messages from CampHawk when campgrounds I&apos;m watching have availability. Consent is not a condition of purchase.</span>
       </label>
       <p className="text-[13px] leading-relaxed text-ch-ink-2">
         <strong className="font-bold">Message frequency</strong> varies with campsite availability (typically at most one per watch). <strong className="font-bold">Message and data rates may apply.</strong> Reply <strong className="font-bold">HELP</strong> for help or <strong className="font-bold">STOP</strong> to cancel any time.{" "}
         <A href={ROUTES.terms} visitor={visitor}>Terms of Service</A> · <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>
       </p>
-      <div>
-        <button type="button" onClick={save} disabled={!ready} aria-describedby="sms-why" className={buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
-          {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : done ? <><Check aria-hidden="true" className="size-4" />Saved</> : saved ? "Update number" : "Turn on text alerts"}
-        </button>
-        {/* The disabled button says why, in words (CampHawk leaves it to the disabled style). */}
-        {!ready && !busy && !done && (
-          <p id="sms-why" className="mt-2 text-[13px] text-ch-ink-2">
-            {demo ? "This is a preview of the form; nothing here is sent or saved." : saved && !changed ? "Edit the number to update it." : "Enter your number and tick the box to turn texts on."}
-          </p>
-        )}
-      </div>
+      {/* With a number saved and nothing changed there is nothing to update: no button. */}
+      {!(saved && !changed) && (
+        <div>
+          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
+            {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : done ? <><Check aria-hidden="true" className="size-4" />Saved</> : saved ? "Update number" : "Turn on text alerts"}
+          </button>
+          {!busy && !done && (demo || blocked) && (
+            <p id="sms-why" role={tried ? "alert" : undefined} className={tried ? "mt-2 text-[14px] font-bold text-ch-ink" : "mt-2 text-[13px] text-ch-ink-2"}>
+              {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and tick the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Tick the box above to turn texts on."}
+            </p>
+          )}
+        </div>
+      )}
       {error && <p role="alert" className="text-[14px] text-ch-alert-deep">{error}</p>}
     </div>
   );

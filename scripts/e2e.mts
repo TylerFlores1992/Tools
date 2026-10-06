@@ -411,7 +411,7 @@ try {
     await p.waitForURL(`${GH}/explore`);
     // Guests get context, not a paywall, and the first-run box until they search.
     await p.getByText("You're searching as a guest").waitFor();
-    await p.getByRole("heading", { level: 2, name: "Find a campsite that's actually open" }).waitFor();
+    await p.getByRole("heading", { level: 2, name: "How search works" }).waitFor();
     await p.getByLabel("Where").fill("yos");
     await p.getByRole("button", { name: "Yosemite Valley, CA place" }).click();
     await p.getByRole("button", { name: /Trip dates/ }).click();

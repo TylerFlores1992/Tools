@@ -258,7 +258,7 @@ export function NewWatch() {
 
       <main id="main">
         <AppBand visitor={visitor} current="new" title="New watch" photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
-        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
             <h2 className="sr-only">The watch</h2>

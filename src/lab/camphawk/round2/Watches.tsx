@@ -372,7 +372,7 @@ export function Watches() {
       </LabBar>
       <main id="main">
         <AppBand visitor={visitor} current="watches" title="Your watches" photo={<BandPhoto art={ART.w1} pos="85% 55%" posLg="50% 55%" />} />
-        <div className="relative mx-auto -mt-[var(--gh-dock)] max-w-[var(--gh-max)] px-3 pb-[clamp(40px,6vw,80px)] sm:px-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] max-w-[var(--gh-max)] px-5 pb-[clamp(40px,6vw,80px)] sm:px-8">
           {body}
           <PricingLink visitor={visitor} plan={plan} className="mt-5" />
         </div>

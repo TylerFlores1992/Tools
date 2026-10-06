@@ -9,6 +9,7 @@ import type { Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import { Tag } from "../ui/Tag";
 import { Art, ART } from "./Art";
+import { LabNote } from "./LabPage";
 import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
 import { canWatch, ROUTES, watchCtaLabel } from "./gates";
 import { campgroundFor } from "./campground-lookup";
@@ -321,7 +322,7 @@ export function Campground() {
 
         {/* The photos dock across the band's bottom edge, the way search does on the home page.
             Phones show one, so the calendar starts sooner. */}
-        <div className="relative mx-auto -mt-[clamp(40px,6vw,88px)] max-w-[var(--gh-max)] px-3 sm:px-8">
+        <div className="relative mx-auto -mt-[clamp(40px,6vw,88px)] max-w-[var(--gh-max)] px-5 sm:px-8">
           <div className="grid gap-2 sm:auto-rows-[clamp(150px,13vw,200px)] sm:grid-cols-4 sm:gap-3">
             <Art art={ART.c1} eager sizes="(min-width: 640px) 50vw, 100vw" alt={`${name}, the campground loop at dusk`} className="aspect-[16/9] w-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:col-span-2 sm:aspect-auto sm:h-full" />
             <Art art={ART.c2} sizes="25vw" alt={`${name}, a campsite with a fire ring`} className="hidden size-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:block" />
@@ -329,7 +330,7 @@ export function Campground() {
           </div>
         </div>
 
-        <section aria-label="Availability" className="mx-auto max-w-[1120px] px-3 pt-6 sm:px-8 sm:pt-8">
+        <section aria-label="Availability" className="mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-8">
           {watchable ? (
             <Calendar key={CAMPGROUND.id} visitor={visitor} id={CAMPGROUND.id} months={months} />
           ) : (
@@ -338,10 +339,10 @@ export function Campground() {
               <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{FIRST_COME_WHY}</p>
             </div>
           )}
-          <p className="mt-3 px-1 text-[14px] text-ch-ink-2">Example data. Photos are illustrations, not the campground.</p>
+          <LabNote className="mt-3">Example data. Photos are illustrations, not the campground.</LabNote>
         </section>
 
-        <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-8 px-3 py-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-8 px-5 py-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <section className="self-start rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
             <h2 className="font-ch-display text-[22px] font-extrabold text-ch-ink">About</h2>
             <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{description}</p>
