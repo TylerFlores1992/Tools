@@ -414,7 +414,7 @@ try {
     await p.getByRole("heading", { level: 2, name: "How search works" }).waitFor();
     await p.getByLabel("Where").fill("yos");
     // The suggestions are a combobox: arrows reach them from the field, Enter picks.
-    await p.getByRole("option", { name: /Yosemite Valley, CA/ }).waitFor();
+    await p.getByRole("option", { name: "Yosemite Valley, CA place" }).waitFor();
     await p.getByLabel("Where").press("ArrowDown");
     assert.match((await p.getByLabel("Where").getAttribute("aria-activedescendant")) ?? "", /gh-where-opt-0/);
     await p.getByLabel("Where").press("Enter");
