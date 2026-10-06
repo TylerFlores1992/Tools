@@ -57,7 +57,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   camphawk.app (`ch-*` tokens, lab only). Chosen look "Golden hour": `round2/GoldenHour.tsx`
   and `round2/Campground.tsx` under `/private/camphawk/golden-hour`; CampHawk's own design skill
   binds them; art from `studio/camphawk-round2/` (AI Gateway, free credit only)
-- `public/media/hero/` rendered film + posters
+- `public/media/hero/<hash>/` rendered film + posters, cached immutable (`src/lib/hero-media.ts`)
 
 ## End of every session
 Update `docs/NEXT-SESSION.md` (what's done, what's next, what's blocked) and this router if a

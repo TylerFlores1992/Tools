@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (Golden hour finished; campground page added).*
+*Last updated: 2026-10-06 (hero media cached immutable; e2e runs in CI).*
 
 ## At a glance
 
@@ -25,9 +25,10 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (25 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (15 checks, including
-that `/private`, every lab page and its old URL land on the sign-in page and private files answer 401).
+**Checks, all green:** `npm run verify` (113 tests) · `npm run e2e` (25 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (16 checks, including
+that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
+and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
@@ -50,10 +51,7 @@ that `/private`, every lab page and its old URL land on the sign-in page and pri
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
-3. **Hero media caching:** files in `public/media/hero/` are served `max-age=0`. Version the
-   filenames and send `immutable` caching from `next.config` headers.
-4. **CI:** add `npm run e2e` (needs a Chromium install step on the runner).
-5. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+3. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail
@@ -66,6 +64,12 @@ tests, screenshot harness, CI, skills. Primitives in `src/components/`. Fonts su
 ### Home hero
 Code-rendered film (`studio/film/`, skill `hero-film`): 16:9 and portrait cuts, AV1/H.264,
 AVIF posters. Intro readable in about 1.2 s. Reduced motion or Save-Data shows the poster only.
+
+### Hero media caching (2026-10-06)
+The film and posters live in `public/media/hero/<hash>/`, where the hash covers every file's
+name and bytes (`src/lib/hero-media.ts`). `next.config.ts` sends `public, max-age=31536000,
+immutable` for that path. A re-encode fails `src/lib/hero-media.test.mts`, which prints the new
+folder name; the smoke test checks the header on the live site.
 
 ### Bridle calculator
 Math in `src/tools/bridle/math.ts`, tested against worked examples and 500 random rigs.
