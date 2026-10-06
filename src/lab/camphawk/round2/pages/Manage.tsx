@@ -14,6 +14,7 @@ import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
 import { ROUTES } from "../gates";
 import { LabNote, LabPage } from "../LabPage";
+import { useSwapFocus } from "../useSwapFocus";
 import { useUrlState, withVisitor } from "../labState";
 import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
 
@@ -99,6 +100,7 @@ export function Manage() {
 function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calendar: string }) {
   const [active, setActive] = useState(true);
   const [editing, setEditing] = useState(false);
+  const { confirmRef: editPanelRef, triggerRef: editTriggerRef } = useSwapFocus<HTMLDivElement>(editing);
   const [range, setRange] = useState<DateRange>({ start: w.start, end: w.end });
   const [saved, setSaved] = useState<DateRange>({ start: w.start, end: w.end });
   const [error, setError] = useState<string | null>(null);
@@ -163,7 +165,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           )}
         </div>
         {editing && (
-          <div className="mt-4 grid gap-3">
+          <div ref={editPanelRef} tabIndex={-1} role="group" aria-label="Edit dates" className="mt-4 grid gap-3 outline-none">
             <DatePicker value={range} onChange={setRange} label={w.flexNights ? "Search window" : "Trip dates"} meta={w.flexNights && range.start ? `any ${w.flexNights} nights in this window` : undefined} defaultOpen defaultMonth={range.start as ISODate} />
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={saveDates} disabled={!range.start || !range.end || saving} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4 disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>{saving ? "Saving…" : "Save dates"}</button>
@@ -174,7 +176,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
         <div className="mt-5 flex flex-wrap gap-2 border-t border-ch-line pt-4">
           <Link href={calendar} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Calendar</Link>
           <a href="#" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
-          {!editing && <button type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
+          {!editing && <button ref={editTriggerRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
           {active
             ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
             : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
@@ -235,7 +237,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">
                 <p className="text-[15px] font-bold text-ch-ink">{a.site ?? "A site opened up"}</p>
-                <p className="text-[13px] text-ch-ink-2">{a.when} · {a.channel}{a.failed ? " · didn't go out" : ""}</p>
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ch-ink-2">{a.when} · {a.channel}{a.failed && <Tag kind="alert">Didn&apos;t go out</Tag>}</p>
               </li>
             ))}
           </ul>

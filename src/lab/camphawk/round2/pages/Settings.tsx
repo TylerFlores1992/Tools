@@ -13,6 +13,7 @@ import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
 import { useUrlState } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
+import { useSwapFocus } from "../useSwapFocus";
 import { EMAIL } from "./alert-data";
 
 // Tier 1: Settings (campsite-finder src/app/(app)/settings, AutoCartSettings.tsx,
@@ -81,6 +82,7 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
   const entitled = visitor === "subscriber" && plan === "autocart";
   const connect = withVisitor(ROUTES.connect, visitor);
   const [step, setStep] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef: upgradeConfirmRef, triggerRef: upgradeTriggerRef } = useSwapFocus(step !== "idle");
   const [saving, setSaving] = useState(false);
 
   if (!entitled) {
@@ -100,10 +102,10 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
             <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{pricePhrase("autocart", "monthly")}, or {pricePhrase("autocart", "yearly")} — you keep your current billing cycle and Stripe prorates the difference from today.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {step === "idle" ? (
-                <button type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
+                <button ref={upgradeTriggerRef} type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
               ) : (
                 <>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
+                  <button ref={upgradeConfirmRef} type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
                     {step === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Upgrading…</> : "Confirm upgrade"}
                   </button>
                   <button type="button" disabled={step === "busy"} onClick={() => setStep("idle")} className={sm()}>Cancel</button>
@@ -208,17 +210,18 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
 
 function SignOutConfirm({ textOn }: { textOn: boolean }) {
   const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
   return (
     <div className="border-t border-ch-line pt-4">
       <p className="text-[14px] leading-relaxed text-ch-ink-2">Your watches keep running while you&apos;re signed out — alerts still reach you by {textOn ? "email and text" : "email"}.</p>
       {s === "idle" ? (
-        <button type="button" onClick={() => setS("confirm")} className={sm("quiet", "mt-3")}>Sign out</button>
+        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "mt-3")}>Sign out</button>
       ) : (
         <div role="group" aria-labelledby="signout-q" className="mt-3 rounded-ch-input bg-ch-shell p-4">
           <p id="signout-q" className="text-[15px] font-bold text-ch-ink">Sign out of CampHawk?</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">You&apos;ll need your email and password to get back in. Nothing is deleted.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
+            <button ref={confirmRef} type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
             <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>Stay signed in</button>
           </div>
         </div>
@@ -231,6 +234,7 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
   const guest = visitor === "app";
   const noun = guest ? "your data" : "your account";
   const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
   const store = billing === "app-store" ? "App Store" : billing === "play" ? "Google Play" : null;
   let bill: ReactNode;
   if (guest) bill = <>If you bought a subscription in the app, it is billed by the App Store, and deleting your data <strong className="font-bold text-ch-ink">does not cancel it</strong> — cancel it in your store subscription settings.</>;
@@ -242,13 +246,13 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
       <p className="text-[15px] leading-relaxed text-ch-ink-2">Deleting {noun} removes your watches, alert history and saved campgrounds permanently. This can&apos;t be undone.</p>
       <p className="text-[15px] leading-relaxed text-ch-ink-2">{bill}</p>
       {s === "idle" ? (
-        <button type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start")}>{guest ? "Delete my data" : "Delete account"}</button>
+        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start")}>{guest ? "Delete my data" : "Delete account"}</button>
       ) : (
         <div role="group" aria-labelledby="delete-q" className="rounded-ch-input border-2 border-ch-alert bg-ch-card p-4">
           <p id="delete-q" className="flex items-center gap-2 text-[15px] font-bold text-ch-ink"><AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-ch-alert" />{guest ? "Delete your data?" : "Delete your account?"}</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">Everything above happens as soon as you press the button, and we can&apos;t bring any of it back.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
+            <button ref={confirmRef} type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
             <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
           </div>
           {s === "busy" && <LabNote className="mt-3">Nothing is deleted here.</LabNote>}

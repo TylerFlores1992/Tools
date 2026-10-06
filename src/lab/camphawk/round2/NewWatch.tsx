@@ -16,6 +16,7 @@ import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sitesFor, type Division, type Pickable } from "./newwatch-data";
@@ -158,7 +159,7 @@ function PickerRow({ p, onPick }: { p: Pickable; onPick: (p: Pickable) => void }
     </>
   );
   return ok ? (
-    <button type="button" data-picker-option="" onMouseDown={(e) => e.preventDefault()} onClick={() => onPick(p)} className="block min-h-12 w-full cursor-pointer bg-ch-card px-3.5 py-2.5 text-left text-[15px] hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green">{body}</button>
+    <button type="button" data-picker-option="" onMouseDown={(e) => e.preventDefault()} onClick={() => onPick(p)} className="block min-h-12 w-full cursor-pointer bg-ch-card px-3.5 py-2.5 text-left text-[15px] hover:bg-ch-paper focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green">{body}</button>
   ) : (
     <div className="bg-ch-card px-3.5 py-2.5 text-[15px]">{body}</div>
   );
@@ -330,7 +331,7 @@ export function NewWatch() {
                   <div className="flex items-center justify-between gap-2 border-b border-ch-line px-3.5 py-1.5">
                     <span className="text-[14px] text-ch-ink-2">{parts.size} of {divisions.length} selected</span>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-forest underline underline-offset-2 hover:bg-ch-green-soft">All</button>
+                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-forest underline underline-offset-2 hover:bg-ch-paper">All</button>
                       <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-paper">None</button>
                     </div>
                   </div>
@@ -423,6 +424,27 @@ export function NewWatch() {
                 <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8am. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
               </div>
             )}
+            {/* The action sits under the fields it submits (CampHawk puts it in the side panel, which
+                lands below the explainer on phones). */}
+            <div className="mt-7 border-t border-ch-line pt-6">
+              <div>
+                {firstCome && <p className="mb-2.5 rounded-ch-input border border-ch-line bg-ch-paper px-3 py-2.5 text-[14px] leading-normal text-ch-ink-2"><strong className="font-bold">{FIRST_COME_BADGE}.</strong> {FIRST_COME_WHY}</p>}
+                {gate === "ready" ? (
+                  <button type="button" onClick={submit} disabled={saving || flexTooLong || tooMany || firstCome} className={buttonClasses({ fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
+                    {saving ? "Setting up…" : "Start watching"}
+                  </button>
+                ) : (
+                  <SubscribeCta visitor={visitor} fullWidth />
+                )}
+              </div>
+              {answer === "needs-sub" && (
+                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}-day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
+              )}
+              {answer === "expired" && (
+                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you&apos;ve entered is lost.</p>
+              )}
+              {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
+            </div>
           </form>
 
           <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6 lg:sticky lg:top-6">
@@ -460,23 +482,6 @@ export function NewWatch() {
               </>
             )}
 
-            <div className="mt-5">
-              {firstCome && <p className="mb-2.5 rounded-ch-input border border-ch-line bg-ch-paper px-3 py-2.5 text-[14px] leading-normal text-ch-ink-2"><strong className="font-bold">{FIRST_COME_BADGE}.</strong> {FIRST_COME_WHY}</p>}
-              {gate === "ready" ? (
-                <button type="button" onClick={submit} disabled={saving || flexTooLong || tooMany || firstCome} className={buttonClasses({ fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
-                  {saving ? "Setting up…" : "Start watching"}
-                </button>
-              ) : (
-                <SubscribeCta visitor={visitor} fullWidth />
-              )}
-            </div>
-            {answer === "needs-sub" && (
-              <p className="mt-3 text-[14px] leading-normal text-ch-ochre-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a 7-day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
-            )}
-            {answer === "expired" && (
-              <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you&apos;ve entered is lost.</p>
-            )}
-            {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
           </aside>
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>

@@ -280,6 +280,9 @@ export function Explore() {
   const [restoring, setRestoring] = useState(false);
 
   const suggestions = picked || !focusPlace ? [] : suggest(place);
+  // The where field is an ARIA combobox: focus stays in the input; arrows move the active option.
+  const [active, setActive] = useState(-1);
+  const pickSuggestion = (name: string) => { setPlace(name); setPicked(true); setFocusPlace(false); setActive(-1); };
 
   const locateMe = useCallback(() => {
     setLocating(true);
@@ -407,41 +410,50 @@ export function Explore() {
             <div className="relative">
               <input
                 id="gh-where"
+                role="combobox"
                 value={place}
-                onChange={(e) => { setPlace(e.target.value); setPicked(false); }}
+                onChange={(e) => { setPlace(e.target.value); setPicked(false); setActive(-1); }}
                 onFocus={() => setFocusPlace(true)}
                 onBlur={() => window.setTimeout(() => setFocusPlace(false), 150)}
+                onKeyDown={(e) => {
+                  if (!suggestions.length) return;
+                  if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => (a + 1) % suggestions.length); }
+                  else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => (a <= 0 ? suggestions.length - 1 : a - 1)); }
+                  else if (e.key === "Enter" && active >= 0) { e.preventDefault(); pickSuggestion(suggestions[active].name); }
+                  else if (e.key === "Escape") { e.preventDefault(); setFocusPlace(false); setActive(-1); }
+                }}
                 placeholder="City, park, or ZIP…"
                 autoComplete="off"
                 aria-autocomplete="list"
-                aria-controls={suggestions.length ? "gh-where-list" : undefined}
+                aria-expanded={suggestions.length > 0}
+                aria-controls="gh-where-list"
+                aria-activedescendant={active >= 0 && suggestions[active] ? `gh-where-opt-${active}` : undefined}
                 className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper py-3 pl-4 pr-12 font-ch-display text-[16px] font-semibold text-ch-ink placeholder:font-ch-body placeholder:font-normal placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
               />
               <button type="button" onClick={locateMe} disabled={locating} aria-label="Use my location" title="Use my location" className="absolute inset-y-0 right-0 grid w-12 cursor-pointer place-items-center rounded-r-ch-input text-ch-muted hover:text-ch-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait">
                 <LocateFixed aria-hidden="true" className={cx("size-5", locating && "animate-pulse motion-reduce:animate-none")} />
               </button>
             </div>
-            {suggestions.length > 0 && (
-              <ul id="gh-where-list" aria-label="Suggestions" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
-                {suggestions.map((s) => (
-                  <li key={s.name}>
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => { setPlace(s.name); setPicked(true); setFocusPlace(false); }}
-                      className="flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line bg-ch-card px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
-                    >
-                      {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold text-ch-ink">{s.name}</span>
-                        {s.sub && <span className="block truncate text-[13px] text-ch-muted">{s.sub}</span>}
-                      </span>
-                      <span className="shrink-0 text-[13px] text-ch-muted">{s.kind}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul id="gh-where-list" role="listbox" aria-label="Suggestions" hidden={suggestions.length === 0} className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
+              {suggestions.map((s, i) => (
+                <li
+                  key={s.name}
+                  id={`gh-where-opt-${i}`}
+                  role="option"
+                  aria-selected={i === active}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => pickSuggestion(s.name)}
+                  className={cx("flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper", i === active ? "bg-ch-shell" : "bg-ch-card")}
+                >
+                  {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-ch-ink">{s.name}</span>
+                    {s.sub && <span className="block truncate text-[13px] text-ch-muted">{s.sub}</span>}
+                  </span>
+                  <span className="shrink-0 text-[13px] text-ch-muted">{s.kind}</span>
+                </li>
+              ))}
+            </ul>
 
             <fieldset className="mt-5">
               <legend className={label}>Within</legend>

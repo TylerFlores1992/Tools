@@ -37,12 +37,13 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ field: "email" | "password"; text: string } | null>(null);
   const app = visitor === "app";
   const up = mode === "up";
   const submit = () => {
-    if (!email.includes("@")) { setError("Enter an email address, like name@example.com."); return; }
-    if (up && password.length < 8) { setError("Your password needs at least 8 characters."); return; }
+    // Each error names its field, is tied to it, and takes focus there.
+    if (!email.includes("@")) { setError({ field: "email", text: "Enter an email address, like name@example.com." }); document.getElementById("auth-email")?.focus(); return; }
+    if (up && password.length < 8) { setError({ field: "password", text: "Your password needs at least 8 characters." }); document.getElementById("auth-pass")?.focus(); return; }
     setError(null);
     setBusy(true);
     // After sign-up: Welcome, carrying the destination. After sign-in: back where you were.
@@ -62,11 +63,11 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
         </>
       )}
       <form noValidate onSubmit={(e) => { e.preventDefault(); submit(); }} className={cx("grid gap-4", app && "mt-6")}>
-        <label className="grid gap-1.5"><span className="text-[14px] font-bold text-ch-ink">Email address</span><input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={Boolean(error && !email.includes("@"))} className={field} /></label>
+        <label className="grid gap-1.5"><span className="text-[14px] font-bold text-ch-ink">Email address</span><input id="auth-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={error?.field === "email" || undefined} aria-describedby={error?.field === "email" ? "auth-error" : undefined} className={field} /></label>
         {(up || app) && (
-          <label className="grid gap-1.5"><span className="text-[14px] font-bold text-ch-ink">Password</span><input type="password" autoComplete={up ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} className={field} /></label>
+          <label className="grid gap-1.5"><span className="text-[14px] font-bold text-ch-ink">Password</span><input id="auth-pass" type="password" autoComplete={up ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} aria-invalid={error?.field === "password" || undefined} aria-describedby={error?.field === "password" ? "auth-error" : undefined} className={field} /></label>
         )}
-        {error && <p role="alert" className="text-[14px] font-bold text-ch-alert-deep">{error}</p>}
+        {error && <p id="auth-error" role="alert" className="text-[14px] font-bold text-ch-alert-deep">{error.text}</p>}
         <button type="submit" disabled={busy} className={main}>{busy && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Continue</button>
       </form>
       <p className="mt-6 border-t border-ch-line pt-5 text-center text-[15px] text-ch-ink-2">

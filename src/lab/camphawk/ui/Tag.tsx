@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { CircleDashed, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
+import { CircleDashed, CirclePlus, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
 import { cx } from "@/components/cx";
 
 // Ported from campsite-finder src/components/ui/Tag.tsx (2026-10-06), so lab screens say status
@@ -19,7 +19,7 @@ export type TagKind = "open" | "watch" | "cart" | "paused" | "alert" | "src";
 
 export type Mark =
   | "open" | "booked" | "unknown" | "first-come"
-  | "watching" | "queued" | "in-cart" | "auto-cart"
+  | "watching" | "queued" | "offered" | "in-cart" | "auto-cart"
   | "paused" | "reconnecting" | "needs-you" | "provider-down"
   | "on" | "off" | "not-set-up";
 
@@ -42,7 +42,7 @@ const DEFAULT_MARK: Record<TagKind, Mark | null> = {
 };
 
 const ICONS: Partial<Record<Mark, LucideIcon>> = {
-  watching: Eye, queued: Clock, "in-cart": ShoppingCart, "auto-cart": Zap, paused: Pause,
+  watching: Eye, queued: Clock, offered: CirclePlus, "in-cart": ShoppingCart, "auto-cart": Zap, paused: Pause,
   reconnecting: RefreshCw, "needs-you": TriangleAlert, "provider-down": CloudOff,
   on: Power, off: PowerOff, "not-set-up": CircleDashed,
 };

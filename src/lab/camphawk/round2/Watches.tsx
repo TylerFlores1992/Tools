@@ -58,7 +58,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        {offered ? <Tag kind="paused" mark="queued">Offered</Tag> : <Tag kind="watch" mark="queued">Queued</Tag>}
+        {offered ? <Tag kind="paused" mark="offered">Offered</Tag> : <Tag kind="watch" mark="queued">Queued</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -345,7 +345,7 @@ export function Watches() {
                     <p className="truncate text-[15px] font-bold text-ch-ink">{a.campground} · {a.site}</p>
                     <p className="mt-0.5 text-[13px] text-ch-ink-2">{a.when} · {a.channels.join(", ")}{a.failed.map((c) => ` · ${c} failed`).join("")}</p>
                   </div>
-                  {a.failed.length > 0 && <span className="shrink-0 rounded-ch-chip bg-ch-alert-soft px-2.5 py-1 text-[13px] font-bold text-ch-alert-deep">{a.failed.length === a.channels.length ? "not delivered" : `${a.failed[0]} not delivered`}</span>}
+                  {a.failed.length > 0 && <Tag kind="alert" className="shrink-0">{a.failed.length === a.channels.length ? "Not delivered" : `${a.failed[0]} not delivered`}</Tag>}
                 </li>
               ))}
             </ul>

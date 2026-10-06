@@ -81,8 +81,8 @@ export function Screens() {
       {({ visitor }) => (
         <div className="grid gap-12">
           {SCREEN_GROUPS.map((g) => (
-            <section key={g.title} aria-labelledby={`g-${g.title}`}>
-              <h2 id={`g-${g.title}`} className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-forest">{g.title}</h2>
+            <section key={g.title} aria-labelledby={`g-${g.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+              <h2 id={`g-${g.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-forest">{g.title}</h2>
               <p className="mt-1 text-[16px] text-ch-ink-2">{g.note}</p>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {g.items.map((it) => (

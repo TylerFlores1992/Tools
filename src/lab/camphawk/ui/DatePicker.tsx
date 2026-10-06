@@ -14,7 +14,9 @@ import {
 // another month a strip says which. The grid is a real role="grid" with a roving tab stop: arrows
 // move a day, Up/Down a week, Home/End the week's edges, PageUp/PageDown a month, Escape closes
 // and hands focus back to the bar.
-// Lab changes: reading sizes; stock `text-white` is `text-ch-white`; no partial opacity.
+// Lab changes: reading sizes; stock `text-white` is `text-ch-white`; no partial opacity; the chosen
+// range is forest and shell, not green (a chosen date isn't an open site); the month buttons move
+// the tab stop into the new month; day cells are at least 44px tall.
 export interface DateRange {
   start: ISODate | null;
   end: ISODate | null;
@@ -85,6 +87,14 @@ export function DatePicker({
     else onChange({ start, end: day });
   }
 
+  // Changing month moves the grid's tab stop too, so Tab still lands on a day in view.
+  function goMonth(delta: number) {
+    const next = addMonths(monthStart, delta);
+    setView(next);
+    const day = addMonths(focusedDay, delta);
+    setFocusedDay(day < floor ? floor : day);
+  }
+
   function moveFocus(next: ISODate) {
     if (next < floor) return;
     keyboardRef.current = true;
@@ -122,7 +132,7 @@ export function DatePicker({
         className={cx(
           "flex min-h-14 w-full cursor-pointer items-center gap-2.5 border bg-ch-card px-3.5 py-2.5 text-left transition-colors motion-reduce:transition-none",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green",
-          open ? "rounded-t-ch-input border-ch-green" : "rounded-ch-input border-ch-line hover:border-ch-muted",
+          open ? "rounded-t-ch-input border-ch-forest" : "rounded-ch-input border-ch-line hover:border-ch-muted",
         )}
       >
         <span className="min-w-0 flex-1">
@@ -134,9 +144,9 @@ export function DatePicker({
       </button>
 
       {open && (
-        <div id={panelId} className="rounded-b-ch-input border border-t-0 border-ch-green bg-ch-card p-3">
+        <div id={panelId} className="rounded-b-ch-input border border-t-0 border-ch-forest bg-ch-card p-2 sm:p-3">
           {(carriesIn || carriesOut) && (
-            <p aria-live="polite" className="mb-2.5 flex items-start gap-2 rounded-[9px] border border-ch-green-line bg-ch-green-soft px-2.5 py-2 text-[13px] leading-snug text-ch-green-deep">
+            <p aria-live="polite" className="mb-2.5 flex items-start gap-2 rounded-[9px] border border-ch-line bg-ch-paper px-2.5 py-2 text-[13px] leading-snug text-ch-ink-2">
               <span aria-hidden="true" className="mt-px shrink-0 text-[10px]">{carriesIn ? "◀" : "▶"}</span>
               <span>
                 {carriesIn && start && (
@@ -149,11 +159,11 @@ export function DatePicker({
             </p>
           )}
           <div className="mb-2 flex items-center justify-between">
-            <button type="button" onClick={() => setView(addMonths(monthStart, -1))} aria-label="Previous month" className={navButton}>
+            <button type="button" onClick={() => goMonth(-1)} aria-label="Previous month" className={navButton}>
               <ChevronLeft aria-hidden="true" className="size-4" />
             </button>
             <div id={gridLabelId} aria-live="polite" className="font-ch-display text-[16px] font-bold text-ch-ink">{monthLabel(monthStart)}</div>
-            <button type="button" onClick={() => setView(addMonths(monthStart, 1))} aria-label="Next month" className={navButton}>
+            <button type="button" onClick={() => goMonth(1)} aria-label="Next month" className={navButton}>
               <ChevronRight aria-hidden="true" className="size-4" />
             </button>
           </div>
@@ -164,11 +174,11 @@ export function DatePicker({
               ))}
             </div>
             {weeks.map((week, wi) => (
-              <div role="row" key={wi} className="grid grid-cols-7 gap-[3px]">
+              <div role="row" key={wi} className="grid grid-cols-7 gap-0.5">
                 {week.map((day, di) => {
                   if (!day) {
                     const tint = (wi === 0 && carriesIn && (!end || !isBefore(end, monthStart))) || (wi === weeks.length - 1 && carriesOut);
-                    return <div key={`b-${di}`} role="gridcell" aria-hidden="true" className={cx("aspect-square rounded", tint && "bg-ch-green-soft")} />;
+                    return <div key={`b-${di}`} role="gridcell" aria-hidden="true" className={cx("aspect-square rounded", tint && "bg-ch-shell")} />;
                   }
                   const disabled = day < floor;
                   const isStart = day === start;
@@ -187,13 +197,13 @@ export function DatePicker({
                       tabIndex={day === focusedDay ? 0 : -1}
                       onClick={() => { setFocusedDay(day); select(day); }}
                       className={cx(
-                        "flex aspect-square max-h-11 w-full items-center justify-center justify-self-center font-ch-body text-[14px] font-semibold tabular-nums transition-colors motion-reduce:transition-none",
+                        "flex aspect-square min-h-11 w-full items-center justify-center justify-self-center font-ch-body text-[14px] font-semibold tabular-nums transition-colors motion-reduce:transition-none",
                         "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green",
                         isMid ? "rounded-[4px]" : "rounded-lg",
                         disabled && "cursor-not-allowed text-ch-faint",
-                        !disabled && !selected && !isMid && "cursor-pointer text-ch-ink-2 hover:bg-ch-green-soft",
-                        selected && "cursor-pointer bg-ch-green font-bold text-ch-white",
-                        isMid && "cursor-pointer bg-ch-green-soft font-bold text-ch-green-deep",
+                        !disabled && !selected && !isMid && "cursor-pointer text-ch-ink-2 hover:bg-ch-paper",
+                        selected && "cursor-pointer bg-ch-forest font-bold text-ch-white",
+                        isMid && "cursor-pointer bg-ch-shell font-bold text-ch-ink",
                       )}
                     >
                       {parseISO(day).getDate()}

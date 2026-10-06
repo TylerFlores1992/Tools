@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
-import { LabBar } from "../LabBar";
+import { LabBar, radioKeys } from "../LabBar";
 import { Tag } from "../ui/Tag";
 import { Art, ART } from "./Art";
 import { LabNote } from "./LabPage";
@@ -239,9 +239,9 @@ export function Campground() {
     <div className="gh">
       <LabBar page="Campground" visitor={visitor} onVisitor={setVisitor}>
         <ScreenLinks visitor={visitor} current="campground" />
-        <div role="radiogroup" aria-label="Booking" className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
+        <div role="radiogroup" aria-label="Booking" onKeyDown={radioKeys(["reservable", "first-come"] as const, booking, setBooking)} className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
           {(["reservable", "first-come"] as const).map((b) => (
-            <button key={b} type="button" role="radio" aria-checked={booking === b} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
+            <button key={b} type="button" role="radio" aria-checked={booking === b} tabIndex={booking === b ? 0 : -1} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
               {booking === b && <span aria-hidden="true">✓</span>}
               {b === "reservable" ? "Reservations" : "First come"}
             </button>

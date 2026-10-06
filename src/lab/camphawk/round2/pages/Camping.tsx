@@ -38,6 +38,7 @@ import {
 // - The CTA says "Search campgrounds by date": CampHawk's "Search California by date" opens an
 //   empty search.
 
+const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 const LAB_NOTE = "California's counts and lists stand in for CampHawk's catalog; other states' counts and every campground list are illustrative.";
 
 function Crumbs({ items, visitor }: { items: Array<[string, string | null]>; visitor: Visitor }) {
@@ -90,8 +91,8 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
   return (
     <div className="mt-10 grid gap-9">
       {groups.map((g) => (
-        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${g.city ?? "x"}`}>
-          <h2 id={`t-${g.city ?? "x"}`} className="font-ch-display text-[20px] font-extrabold text-ch-ink">{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</h2>
+        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`}>
+          <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="font-ch-display text-[20px] font-extrabold text-ch-ink">{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</h2>
           <CampgroundList names={g.campgrounds} visitor={visitor} />
         </section>
       ))}

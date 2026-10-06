@@ -413,7 +413,12 @@ try {
     await p.getByText("You're searching as a guest").waitFor();
     await p.getByRole("heading", { level: 2, name: "How search works" }).waitFor();
     await p.getByLabel("Where").fill("yos");
-    await p.getByRole("button", { name: "Yosemite Valley, CA place" }).click();
+    // The suggestions are a combobox: arrows reach them from the field, Enter picks.
+    await p.getByRole("option", { name: /Yosemite Valley, CA/ }).waitFor();
+    await p.getByLabel("Where").press("ArrowDown");
+    assert.match((await p.getByLabel("Where").getAttribute("aria-activedescendant")) ?? "", /gh-where-opt-0/);
+    await p.getByLabel("Where").press("Enter");
+    assert.equal(await p.getByLabel("Where").inputValue(), "Yosemite Valley, CA");
     await p.getByRole("button", { name: /Trip dates/ }).click();
     await p.getByRole("gridcell", { name: "Saturday, July 18, 2026" }).click();
     await p.getByRole("gridcell", { name: "Tuesday, July 21, 2026" }).click();

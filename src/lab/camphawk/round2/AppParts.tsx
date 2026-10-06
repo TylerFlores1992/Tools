@@ -88,7 +88,7 @@ export function FavoriteHeart({ favorite, onToggle, name, className }: { favorit
       aria-label={favorite ? `Remove ${name} from favorites` : `Add ${name} to favorites`}
       title={favorite ? "Favorited" : "Add to favorites"}
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
-      className={cx(/\b(absolute|fixed|sticky)\b/.test(className ?? "") ? HIT_BOX : HIT_AREA, "grid size-9 shrink-0 cursor-pointer place-items-center rounded-full transition-colors hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green motion-reduce:transition-none", className)}
+      className={cx(/\b(absolute|fixed|sticky)\b/.test(className ?? "") ? HIT_BOX : HIT_AREA, "grid size-9 shrink-0 cursor-pointer place-items-center rounded-full transition-colors hover:bg-ch-paper focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green motion-reduce:transition-none", className)}
     >
       <Heart aria-hidden="true" className={favorite ? "size-[18px] text-ch-ochre-ink" : "size-[18px] text-ch-muted"} fill={favorite ? "currentColor" : "none"} />
     </button>

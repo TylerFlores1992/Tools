@@ -74,6 +74,8 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         <label htmlFor="sms-phone" className="mb-2 block text-[13px] font-extrabold text-ch-ink-2">{saved ? "Change your number" : "Mobile number"}</label>
         <input
           id="sms-phone"
+          aria-describedby="sms-why"
+          aria-invalid={(tried && missingNumber) || undefined}
           type="tel"
           inputMode="tel"
           autoComplete="tel"
@@ -84,7 +86,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         />
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input id="sms-consent" type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
+        <input id="sms-consent" aria-describedby="sms-why" aria-invalid={(tried && !agreed) || undefined} type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>Yes, I&apos;d like to receive automated text messages from CampHawk when campgrounds I&apos;m watching have availability. Consent is not a condition of purchase.</span>
       </label>
       <p className="text-[13px] leading-relaxed text-ch-ink-2">
