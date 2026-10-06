@@ -21,7 +21,8 @@ import { CLAIM } from "./alert-data";
 // Lab changes: step markers are a shape and a word, in ink (CampHawk's "1" is ochre and "done" is
 // green); "Open ReserveCalifornia" is the blue provider hand-off; the CAPTCHA prompt carries an
 // icon as well as red; "Network error" is said as what happened; and the app's after-release
-// line no longer tells you to "tap the cart icon" the button below replaced.
+// line no longer tells you to "tap the cart icon" the button below replaced; the copy names the
+// release button by its words, not as "the green button" (colour alone carries nothing).
 
 type Status = "carted" | "carted-late" | "claiming" | "claiming-stuck" | "released" | "expired" | "failed" | "nothing" | "invalid";
 type Device = "app" | "browser" | "old-app";
@@ -100,15 +101,14 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
   const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
   return (
     <form onSubmit={(e) => { e.preventDefault(); if (missing.length) return; setBusy(true); window.setTimeout(onSignedIn, 900); }} className="grid gap-3">
-      <p className="text-[14px] leading-relaxed text-ch-ink-2">We sign you in to ReserveCalifornia inside this app, then hand the site over. Your password goes straight to ReserveCalifornia — it is never sent to CampHawk.</p>
       <label className="grid gap-1.5"><span className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia email</span><input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={field} /></label>
-      <label className="grid gap-1.5">
-        <span className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia password</span>
+      <div className="grid gap-1.5">
+        <label htmlFor="rc-pass" className="text-[13px] font-extrabold text-ch-ink-2">ReserveCalifornia password</label>
         <span className="relative">
-          <input type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={cx(field, "pr-20")} />
-          <button type="button" onClick={() => setShow(!show)} aria-label={show ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
+          <input id="rc-pass" type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={cx(field, "pr-20")} />
+          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label={show ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
         </span>
-      </label>
+      </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
         <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-green" />
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
@@ -182,8 +182,8 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
         footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : `We hold it for up to 60 minutes. About ${CLAIM.minutesLeft} min left.`} />
-      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap the green button, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
-      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">When you tap the green button we let go and you take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
+      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It's mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
+      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">When you tap “It's mine — hand it over” we let go and you take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready ? (
         <Step tone="done" title={c.readyTitle} />
       ) : opened && !canInject ? (

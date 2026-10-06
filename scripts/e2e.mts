@@ -552,6 +552,112 @@ try {
     await ctx.close();
   });
 
+  await check("lab after an alert: Manage, the one-tap page and Claim keep CampHawk's promises", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/manage?as=subscriber`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/manage?as=subscriber`);
+    // An open site says when we saw it, and Book is the blue hand-off, not green.
+    await p.getByText("Seen open just now").waitFor();
+    assert.match((await p.getByRole("link", { name: /^Book/ }).getAttribute("class")) ?? "", /bg-ch-blue/);
+    // A muted site is a word and a neutral button, never red.
+    await p.getByRole("button", { name: "Mute individual campsites" }).click();
+    const muted = p.getByRole("button", { name: "Mute site Site 009" });
+    assert.equal(await muted.getAttribute("aria-pressed"), "true");
+    assert.equal((await muted.innerText()).trim(), "Muted");
+    assert.doesNotMatch((await muted.getAttribute("class")) ?? "", /ch-alert/);
+    // Remove asks first.
+    await p.getByRole("button", { name: "Remove watch" }).click();
+    await p.getByText("Remove this watch permanently?").waitFor();
+    await p.getByRole("button", { name: "Remove", exact: true }).click();
+    await p.getByRole("heading", { name: "Watch removed" }).waitFor();
+    // An 8am offer shows the site before anything happens, then confirms on a yes.
+    await p.goto(`${GH}/manage?as=subscriber&watch=leo`);
+    await p.getByText(/^We.ll grab this for you$/).waitFor();
+    await p.getByRole("link", { name: "Hold it: Site 017" }).click();
+    await p.waitForURL(/\/w\?action=hold-offer/);
+    await p.getByRole("heading", { name: "Hold this site for you?" }).waitFor();
+    await p.getByText("Tue, Jul 7 at 8 AM PT").first().waitFor();
+    await p.getByRole("button", { name: "Yes — hold it for me" }).click();
+    await p.getByRole("heading", { name: "Got it — we’ll try for this site" }).waitFor();
+    // A one-tap stop offers its undo as a neutral button.
+    await p.goto(`${GH}/w?action=stop`);
+    await p.getByText("Stopped watching Upper Pines.").waitFor();
+    const undo = p.getByRole("button", { name: "Reopen this watch" });
+    assert.doesNotMatch((await undo.getAttribute("class")) ?? "", /bg-ch-green/);
+    await undo.click();
+    await p.getByText("Watching Upper Pines again.").waitFor();
+    // Claim: nothing is released until you say so, and the release names its button in words.
+    await p.goto(`${GH}/claim?as=app`);
+    await p.getByText("When you tap “It's mine — hand it over”", { exact: false }).waitFor();
+    assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
+    await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
+    await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");
+    await p.getByLabel("ReserveCalifornia password", { exact: true }).fill("not-a-real-password");
+    await p.getByRole("checkbox").check();
+    await p.getByRole("button", { name: "Sign in and hand it over" }).click();
+    await p.getByRole("button", { name: "It's mine — hand it over" }).click();
+    await p.getByText("Site 042 is yours to book").waitFor({ timeout: 8000 });
+    await p.getByRole("link", { name: "Check out on ReserveCalifornia" }).waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab settings, connect and welcome: each visitor gets their own truth, and nobody in the app sees a price", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/settings`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/settings`);
+    await p.getByRole("heading", { name: "Settings need an account" }).waitFor();
+    // An Alerts-plan subscriber is never told auto-cart is on; the upgrade names its price.
+    await p.goto(`${GH}/settings?as=subscriber&plan=alerts`);
+    await p.getByText("Your subscription is active").waitFor();
+    assert.equal(await p.getByText("auto-cart are all switched on", { exact: false }).count(), 0);
+    await p.getByText("$10 a month, or $50 a year", { exact: false }).waitFor();
+    await p.getByRole("button", { name: "Upgrade to Auto-Cart" }).click();
+    await p.getByRole("button", { name: "Confirm upgrade" }).waitFor();
+    // A lookup that failed never says "No subscription yet".
+    await p.goto(`${GH}/settings?as=subscriber&billing=unknown`);
+    await p.getByRole("link", { name: "Get help with your subscription" }).waitFor();
+    assert.equal(await p.getByText("No subscription yet").count(), 0);
+    // Disconnected always offers the way back, as the blue hand-off.
+    await p.goto(`${GH}/settings?as=subscriber&autocart=disconnected`);
+    await p.getByText("Auto-cart is disconnected").waitFor();
+    assert.match((await p.getByRole("link", { name: "Reconnect Recreation.gov" }).getAttribute("class")) ?? "", /bg-ch-blue/);
+    // Sign out only promises texts when a number is saved; delete says "canceled" and confirms.
+    await p.goto(`${GH}/settings?as=member&sms=new`);
+    await p.getByText("alerts still reach you by email.").waitFor();
+    await p.getByText("canceled immediately", { exact: false }).waitFor();
+    await p.getByRole("button", { name: "Delete account" }).click();
+    await p.getByRole("button", { name: "Yes, delete my account" }).waitFor();
+    // In the app: no account, no prices.
+    await p.goto(`${GH}/settings?as=app`);
+    await p.getByText("No account — and you don't need one.").waitFor();
+    assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price in the app");
+    // Connect: the waiting notes show under the form, and Done goes to Settings.
+    await p.goto(`${GH}/connect?as=subscriber`);
+    await p.getByRole("heading", { level: 1, name: "Connect Recreation.gov" }).waitFor();
+    await p.getByLabel("Recreation.gov email").fill("camper@example.com");
+    await p.getByLabel("Recreation.gov password", { exact: true }).fill("not-a-real-password");
+    await p.getByRole("button", { name: "Sign in" }).click();
+    await p.getByText("Signing you in on the helper — this can take up to a minute.").waitFor();
+    await p.getByText("Still working — signing in to Recreation.gov can take up to a minute.").waitFor();
+    await p.getByRole("link", { name: "Done" }).click();
+    await p.waitForURL(/\/settings\?as=subscriber/);
+    // Welcome: the Auto-Cart step only for a plan that includes it.
+    await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
+    await p.getByRole("heading", { name: "You're subscribed — one last thing" }).waitFor();
+    assert.equal(await p.getByRole("heading", { name: "Set up Auto-Cart" }).count(), 0);
+    await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
+    await p.getByRole("heading", { name: "Set up Auto-Cart" }).waitFor();
+    await p.getByRole("checkbox", { name: /Email me when/ }).uncheck();
+    await p.getByText("With email off, add a phone number below", { exact: false }).waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab looks: the Look menu switches the page and keeps the choice in the URL", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private/camphawk`);

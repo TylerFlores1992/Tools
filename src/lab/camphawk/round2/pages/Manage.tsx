@@ -188,7 +188,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               <li key={o.id} className="flex flex-wrap items-center gap-3 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block text-[17px] font-bold text-ch-ink">{o.name}</span>
-                  <span className="block text-[14px] text-ch-ink-2">{o.seenSecondsAgo < 90 ? "just now" : `${Math.round(o.seenSecondsAgo / 60)} min ago`}</span>
+                  <span className="block text-[14px] text-ch-ink-2">{o.seenSecondsAgo < 90 ? "Seen open just now" : `Seen open ${Math.round(o.seenSecondsAgo / 60)} min ago`}</span>
                 </span>
                 <a href="#" className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
               </li>
@@ -218,7 +218,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="block text-[17px] font-bold text-ch-ink">{o.unit}</span>
                   <span className="block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
                 </span>
-                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
+                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
               </li>
             ))}
           </ul>

@@ -122,7 +122,7 @@ export function AppBand({ visitor, current, title, sub, children, photo, dock = 
 }
 
 /** Lab switch styling shared by the screens' lab bars. */
-export const labSelect = "min-h-11 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
+export const labSelect = "min-h-11 min-w-0 max-w-[calc(100vw-5.5rem)] cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
 
 export function LabSelect<T extends string>({ label, short, value, options, onChange }: { label: string; short: string; value: T; options: ReadonlyArray<readonly [T, string]>; onChange: (v: T) => void }) {
   return (
