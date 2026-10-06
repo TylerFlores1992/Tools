@@ -57,7 +57,7 @@ function SiteCard({ heading, tone, footer }: { heading: string; tone: "hold" | "
   return (
     <div className={cx("rounded-ch-card border-2 p-5 shadow-ch-pop sm:p-6", tone === "done" ? "border-ch-green bg-ch-card" : tone === "warn" ? "border-ch-ochre-line bg-ch-ochre-soft" : "border-ch-line bg-ch-card")}>
       <p role="status" className="text-[14px] font-extrabold text-ch-ink-2">{heading}</p>
-      <p className="mt-1 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.02em] text-ch-ink">{CLAIM.unit}</p>
+      <h1 className="mt-1 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.02em] text-ch-ink"><span className="sr-only">Claim </span>{CLAIM.unit}</h1>
       <p className="mt-2 text-[15px] text-ch-ink-2">{CLAIM.place}</p>
       <p className="mt-0.5 text-[15px] font-bold text-ch-ink-2">{CLAIM.stay} · {CLAIM.nights} nights</p>
       {footer && <p className="mt-3 border-t border-ch-line pt-3 text-[14px] text-ch-ink-2">{footer}</p>}
@@ -146,10 +146,10 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
     return () => window.clearTimeout(t);
   }, [status, setStatus]);
 
-  if (status === "invalid") return <Notice>This link is no longer valid.</Notice>;
-  if (status === "expired") return <Notice>That hold expired — nobody claimed it, so the site is back on the open market.</Notice>;
-  if (status === "failed") return <Notice>We couldn&apos;t hold that site. Your alerts carry on as normal.</Notice>;
-  if (status === "nothing") return <Notice>Nothing is being held for you right now.</Notice>;
+  if (status === "invalid") return <><h1 className="sr-only">Claim a held site</h1><Notice>This link is no longer valid.</Notice></>;
+  if (status === "expired") return <><h1 className="sr-only">Claim a held site</h1><Notice>That hold expired — nobody claimed it, so the site is back on the open market.</Notice></>;
+  if (status === "failed") return <><h1 className="sr-only">Claim a held site</h1><Notice>We couldn&apos;t hold that site. Your alerts carry on as normal.</Notice></>;
+  if (status === "nothing") return <><h1 className="sr-only">Claim a held site</h1><Notice>Nothing is being held for you right now.</Notice></>;
 
   if (status === "claiming" || status === "claiming-stuck") {
     return (

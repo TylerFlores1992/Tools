@@ -210,6 +210,64 @@ more than two weeks out gets CampHawk's "expect it to be quiet" note.
 - Explore shows `Search failed (502)` on a failed search (an HTTP code, against its own copy rule).
 - New watch's ReserveCalifornia note spells "cancelled" (US: "canceled").
 
+## Every other screen: Tiers 1-4, in the Golden hour look (2026-10-06)
+All of CampHawk's user-facing pages now have a lab version (`/private/camphawk/golden-hour/screens`
+lists them by tier, with their switches). Out of scope: `admin/` (internal) and `b/[token]` (a
+redirect). Specs were written from campsite-finder (read-only); the words are CampHawk's except
+where a lab change is noted in the page file's header comment.
+
+**Two frames.** App and content pages use `LabPage` (`round2/LabPage.tsx`): the forest band with
+the header, title and a photo, paper below, the forest footer, plus a reading kit (prose, steps,
+callouts, questions, a closing band). Screens that must not invite you away (the one-tap page,
+Claim, Connect, Sign in/up) use `BareFrame`: forest top with the badge, one card, no tabs or footer.
+
+- **Tier 1, the alert loop:** Manage watch, the one-tap page (`/w`, 20 results, including the 8am
+  hold offer and its confirmations), Claim a held site (9 statuses × 3 devices), Settings (every
+  visitor, plan, biller and auto-cart state), Connect Recreation.gov, Welcome.
+- **Tier 2, getting and keeping customers:** Pricing (every visitor, a failed lookup, a failed
+  checkout, the app's store paywall), Sign in and Sign up (a stand-in for Clerk's widget, with
+  Clerk's words), the Auto-cart explainer, the cancellation-alerts landing, the sold-out guide.
+- **Tier 3, search pages:** Camping by state, the state pages (47 states and 9 provinces; under 5
+  campgrounds is a real 404), the cabin, group and yurt hubs and their state pages, Hardest to
+  book, CampHawk vs Campflare and vs Campnab (no comparison table, by CampHawk's own rule).
+- **Tier 4, utility and legal:** Support, Data sources, SMS opt-in, Privacy, Terms, and the
+  not-found and error screens.
+
+**Real vs illustrative.** Prices, limits, the openings figure, the data-source list, which states
+and provinces have pages, California's 875, the province counts, the yurt states, the cabin total
+and the hardest-to-book parks come from CampHawk's code. Other states' counts, the cabin and group
+splits by state, and every campground list are illustrative, and the pages say so.
+
+**Lab changes, applied across the tiers (CampHawk's own rules, applied to its own pages):**
+- Colour: muted is neutral, never red; every provider hand-off (Book, Hold it, Connect, Set up
+  auto-cart, Stripe checkout) is blue; a queued hold is ochre; headings, links, step numbers and
+  ticks are ink or forest, never decorative green; copy never names a button by its colour.
+- Truth: Alerts-plan subscribers aren't told auto-cart is on; sign-out only promises texts with a
+  number saved; the ReserveCalifornia hold says it's closed to new holds (since Sep 22, 2026)
+  wherever CampHawk still offers it; Connect's "Done" says the sign-in worked, not "auto-cart is
+  active", and goes to Settings, not the marketing page; no price inside the app anywhere.
+- Words: one release-time format ("8 AM", "Tue, Jul 7 at 8 AM PT"); site names, never provider
+  ids; sentences, never HTTP codes; "canceled"; counts derived from data so the pages agree.
+- Flow: a plan picked on Pricing survives sign-up and Welcome and comes back; Welcome follows
+  `?next=` (lab paths only); "Skip for now" skips instead of saving email-off.
+- Access: the Claim password field has its own label (its "Show" button had joined the name);
+  every screen has one H1; the search-page counts say what they count.
+
+**Found in CampHawk while porting (not changed there; read-only):**
+- The ReserveCalifornia hold beta closed on 2026-09-22 (`RC_HOLD_BETA_OPEN = false`), but
+  Pricing, Auto-cart, both guides and both comparison pages still offer it.
+- Settings tells Alerts-plan subscribers "Watching, alerts and auto-cart are all switched on".
+- Connect's "Done" goes to `/` (prices, inside the app); its "still working" note only renders in
+  the live-window mode, so form users never see it; errors show `mint failed (500)` and "Is your
+  CampHawk server online?".
+- `/w` mute shows the provider's site id; three formats for one release time.
+- Claim's app copy still says "tap the cart icon", which its own button replaced.
+- Sign in and Sign up have no title of their own and aren't noindex; Pricing's signed-out trial
+  links drop the chosen plan.
+- `/vs/*` shows prices inside the app; the site-type hub titles count provinces as states; the
+  pages give the number of state systems as ten, twelve and fourteen in different places.
+- "cancelled" in Settings (delete), the guides, the state-page descriptions and the competitor lines.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the

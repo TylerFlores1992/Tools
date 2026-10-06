@@ -126,5 +126,5 @@ export const joinAnd = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.sl
 export const joinOr = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} or ${xs.at(-1)}`);
 
 /** For route files: which addresses get a page (the rest are 404s). */
-export const regionSlugs = () => ALL_REGIONS.map((x) => x.slug);
+export const regionSlugs = () => ALL_REGIONS.filter((x) => x.count >= MIN_FOR_PAGE).map((x) => x.slug);
 export const typeRegionSlugs = (type: string) => regionsFor(hubBySlug(type)!).map((x) => x.slug);

@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five core screens live; band photos added; the rest of CampHawk mapped).*
+*Last updated: 2026-10-06 (CampHawk lab: every CampHawk screen built, Tiers 1-4, on PR #15).*
 
 ## At a glance
 
@@ -18,6 +18,7 @@
 | ↳ **Explore** | `/private/camphawk/golden-hour/explore` | Built 2026-10-06. Search rail, four result states in words, illustrated map with pins as buttons, search kept in the URL. |
 | ↳ **New watch** | `/private/camphawk/golden-hour/new` | Built 2026-10-06. Picker (favorites, parks as one watch, first come refused), nights, muting, Auto-Cart by plan, the 8am hold. |
 | ↳ **Your watches** | `/private/camphawk/golden-hour/watches` | Built 2026-10-06. Wall, first run, every card state, holds, provider and auto-cart trouble, alert history. |
+| ↳ **Every other screen** | `/private/camphawk/golden-hour/screens` | Built 2026-10-06 on PR #15 (not merged yet): Tiers 1-4, about 30 pages, listed by tier with their lab switches. |
 | ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
 | ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
@@ -28,8 +29,8 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (120 tests) · `npm run e2e` (28 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (20 checks, including
+**Checks, all green:** `npm run verify` (120 tests) · `npm run e2e` (32 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (26 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
@@ -40,34 +41,18 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab: the rest of CampHawk in the Golden hour look.** The five core screens are
-   live (home, Explore, campground, New watch, Your watches; PR #14). Owner's calls, 2026-10-06:
-   **band photos on New watch and Your watches** (done: `n1` campsite under Half Dome, `w1` fire
-   lookout), and **keep the "Check out on Recreation.gov" button** on an in-cart watch (a lab
-   proposal; CampHawk's card has none). Every lab switch is in the URL (`?as=subscriber`,
-   `plan=alerts`, `state=…`). Not built yet, in priority order (campsite-finder `src/app/`):
-   - **Tier 1, the alert loop: BUILT (2026-10-06, this branch).** Manage watch (`/manage`,
-     `?watch=leo` for the 8am-hold park, `?link=expired|fails`), the one-tap page (`/w`, 20
-     `?action=` results incl. the hold offer and confirmations), Claim (`/claim`, `?status=` ×9,
-     `?device=app|browser|old-app`), Settings (`/settings`, by visitor and `plan`, `billing=`,
-     `autocart=`, `sms=`), Connect (`/connect`, `?status=` ×7), Welcome (`/welcome`,
-     `?from=sign-up|checkout`). Lab fixes to CampHawk's own rule breaks are listed in each file's
-     header (e.g. muted is neutral, not red; provider hand-offs are blue; Alerts-plan subscribers
-     aren't told auto-cart is on; Connect's Done goes to Settings). Two e2e checks, mutation-tested.
-   - **Tier 2, getting and keeping customers:** Pricing (`(app)/pricing`), Sign in and Sign up
-     (Clerk; restyle only), the Auto-cart explainer (`(app)/auto-cart`), the cancellation-alerts
-     landing (`(app)/campsite-cancellation-alerts`), the sold-out guide (`(app)/sold-out-campsite`).
-   - **Tier 3, search pages:** Camping by state (`camping`, `camping/[state]`), cabins, yurts and
-     group camping hubs and their state pages, Hardest to book, the two comparison pages
-     (`(app)/vs/campflare`, `(app)/vs/campnab`).
-   - **Tier 4, utility and legal:** Support, Data sources, SMS opt-in, Privacy, Terms.
-   - Out of scope: `admin/` (internal), `b/[token]` (a redirect, no page).
-   Critic (2026-10-06) had Explore 5.5, New watch 6, Watches 6; every colour-rule finding fixed.
-   Left as CampHawk has them: caps tags, mid-dot meta lines, "Auto-Cart" as the plan name.
-   **CampHawk issues found while porting** (not changed there; listed in
-   `docs/design/camphawk-home.md`, "Screens 3-5"): "This weekend" lands Saturday to Monday in US
-   timezones (`thisWeekendRange` parses a date as UTC); a typed-but-unpicked place searches near
-   you under the typed name; a failed search shows `Search failed (502)`; "cancelled" spelling.
+1. **CampHawk lab: review and merge PR #15** (every remaining CampHawk screen, Tiers 1-4, in the
+   Golden hour look; CI green; waiting on the owner's "merge"). After merging, run
+   `npm run smoke -- https://tylerflores.dev`. Start at `/private/camphawk/golden-hour/screens`.
+   Every lab switch is in the URL (`?as=subscriber`, `plan=alerts`, plus each screen's own).
+   What was built, what's real vs illustrative, the lab changes and the CampHawk issues found
+   are in `docs/design/camphawk-home.md`, "Every other screen". Owner's earlier calls kept: band
+   photos on New watch and Your watches; the "Check out on Recreation.gov" button on an in-cart
+   watch. Left as CampHawk has them: caps tags, mid-dot meta lines, "Auto-Cart" as the plan name,
+   title-case site-type headings (they're the search query).
+   **Possible next steps** (owner's call): new band photos for the Tier 2-3 pages (they reuse
+   `a1`, `a4`, `c1`, `e1`, `n1`; about four Flux photos of free credit left); hand the "found in
+   CampHawk" list to CampHawk's own repo as issues.
    **CampHawk's code:** attach `TylerFlores1992/campsite-finder` to the session **read-only**
    (`add_repo`, access "read"), clone to `/home/user/campsite-finder`, then disable pushing:
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
@@ -76,7 +61,7 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    **Art** (`studio/camphawk-round2/`, free credit only, $2.29 left; `generate.mjs` stops under
    $2, so about four more Flux photos): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
    watches) share `BandPhoto` and the `.gh-app-photo`/`.gh-app-scrim` rules (crop per photo via
-   `--gh-pos`/`--gh-pos-lg`; text over them measures 5.25:1 or better). Also `e2` (map), `c2`
+   `--gh-pos`/`--gh-pos-lg`; band text over them measures 4.8:1 or better, all of it large type). Also `e2` (map), `c2`
    (brightened), the badge (`badge-golden-*`). Round-1 screens keep the original badge on purpose.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
