@@ -691,6 +691,7 @@ try {
     assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price for an Auto-Cart subscriber");
     // A past subscriber gets no second trial; a failed lookup says so; checkout failing says nothing was charged.
     await p.goto(`${GH}/pricing?as=lapsed`);
+    await p.getByRole("button", { name: "$10 / month" }).waitFor(); // the lapsed view has landed
     assert.equal(await p.getByText("Free for 7 days", { exact: false }).count(), 0);
     await p.goto(`${GH}/pricing?as=member&lookup=failed&checkout=fails`);
     await p.getByText("We couldn't check your current plan just now.").waitFor();
