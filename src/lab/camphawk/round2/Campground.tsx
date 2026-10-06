@@ -28,6 +28,13 @@ import {
 //   "booked solid", the opposite of the truth), and offers no watch.
 
 type Booking = "reservable" | "first-come";
+/** CampgroundDetail's page states: the content, its loading skeleton, a 404, and a failed load. */
+type PageState = "loaded" | "loading" | "missing" | "failed";
+/** Where the visitor came from: an in-app search gets "Back to search"; a cold arrival from
+    Google has no "back", so it gets the breadcrumb (CampgroundDetail's rule). */
+type Arrival = "search" | "google";
+
+const labSelect = "min-h-11 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
 
 /** WatchCta's labels, driven by the lab's "View as" instead of Clerk and the native bridge. */
 function watchLabel(visitor: Visitor): string {
@@ -45,7 +52,7 @@ function OpenSummary() {
   if (!open.length) return <p className="mt-4 text-[17px] text-ch-line">Nothing open in {firstMonthName} right now.</p>;
   return (
     <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[17px] text-ch-paper">
-      <Tag kind="open">Open</Tag>
+      <Tag kind="open">Sites open</Tag>
       <span>
         <strong className="font-bold">{open.length} days with openings in {firstMonthName}.</strong>{" "}
         <span className="text-ch-line">The next is {dayLabel(open[0])}.</span>
@@ -77,7 +84,7 @@ function Calendar({ visitor }: { visitor: Visitor }) {
   const navButton = "grid size-11 cursor-pointer place-items-center rounded-ch-input border border-ch-line bg-ch-paper text-ch-ink-2 hover:border-ch-green hover:text-ch-green disabled:cursor-default disabled:border-ch-line disabled:text-ch-faint";
 
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,680px)_minmax(0,1fr)] lg:gap-5">
+    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-5">
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-3 shadow-ch-card sm:p-6">
         <div className="mb-3 flex items-center justify-between gap-3">
           <button type="button" onClick={() => shift(-1)} disabled={month <= FIRST_MONTH} aria-label="Previous month" className={navButton}>
@@ -156,7 +163,7 @@ function Calendar({ visitor }: { visitor: Visitor }) {
           </p>
         )}
         {data.error && (
-          <p role="alert" className="mt-3 rounded-ch-input bg-ch-paper px-3 py-2.5 text-[14px] leading-relaxed text-ch-ink-2">
+          <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">
             We couldn&apos;t load this month&apos;s availability. This is usually the reservation provider, not your connection.
           </p>
         )}
@@ -182,9 +189,9 @@ function Calendar({ visitor }: { visitor: Visitor }) {
           </ul>
         )}
         {/* The next step after the calendar: the same gated watch control as the band. */}
-        <div className="mt-5 border-t border-ch-line pt-5">
+        <div className="mt-2 border-t border-ch-line pt-4">
           <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the second a site opens.</p>
-          <a href="#" className={buttonClasses({ fullWidth: true, className: "mt-3" })}>{watchLabel(visitor)}</a>
+          <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-3" })}>{watchLabel(visitor)}</a>
         </div>
       </aside>
     </div>
@@ -194,8 +201,26 @@ function Calendar({ visitor }: { visitor: Visitor }) {
 export function Campground() {
   const [visitor, setVisitor] = useState<Visitor>("signed-out");
   const [booking, setBooking] = useState<Booking>("reservable");
+  const [page, setPage] = useState<PageState>("loaded");
+  const [arrival, setArrival] = useState<Arrival>("search");
   const watchable = booking === "reservable";
   const { name, place, provider, description, amenities, phone, stateName } = CAMPGROUND;
+  const back = (
+    <a href="#" className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
+      <ChevronLeft aria-hidden="true" className="size-4" /> Back to search
+    </a>
+  );
+  const crumbs = (
+    <nav aria-label="Breadcrumb" className="flex min-h-11 flex-wrap items-center gap-x-1.5 text-[15px] text-ch-line">
+      {["CampHawk", "Camping by state", stateName].map((c) => (
+        <span key={c} className="inline-flex items-center gap-1.5">
+          <a href="#" className="inline-flex min-h-11 items-center font-bold hover:text-ch-white hover:underline">{c}</a>
+          <span aria-hidden="true">›</span>
+        </span>
+      ))}
+      <span aria-current="page">{name}</span>
+    </nav>
+  );
   return (
     <div className="gh">
       <LabBar page="Campground" visitor={visitor} onVisitor={setVisitor}>
@@ -208,16 +233,64 @@ export function Campground() {
             </button>
           ))}
         </div>
+        <label className="flex items-center gap-2"><span aria-hidden="true" className="font-bold">Page</span>
+          <select aria-label="Page state" value={page} onChange={(e) => setPage(e.target.value as PageState)} className={labSelect}>
+            <option value="loaded">Loaded</option>
+            <option value="loading">Loading</option>
+            <option value="missing">Not found</option>
+            <option value="failed">Couldn&apos;t load</option>
+          </select>
+        </label>
+        <label className="flex items-center gap-2"><span aria-hidden="true" className="font-bold">From</span>
+          <select aria-label="Arrived from" value={arrival} onChange={(e) => setArrival(e.target.value as Arrival)} className={labSelect}>
+            <option value="search">Search</option>
+            <option value="google">Google</option>
+          </select>
+        </label>
       </LabBar>
 
+      {page !== "loaded" ? (
+        <main id="main">
+          <section className="bg-ch-forest pb-[clamp(56px,8vw,112px)]">
+            <PhotoHeader visitor={visitor} />
+            <div className="mx-auto max-w-[var(--gh-max)] px-5 pt-4 sm:px-8 sm:pt-8">
+              {page === "loading" && (
+                <div role="status">
+                  <span className="sr-only">Loading this campground…</span>
+                  <div aria-hidden="true" className="mt-14 h-12 w-72 max-w-full animate-pulse rounded-ch-input bg-ch-white/10 motion-reduce:animate-none" />
+                  <div aria-hidden="true" className="mt-3 h-5 w-44 animate-pulse rounded-ch-input bg-ch-white/10 motion-reduce:animate-none" />
+                  <div aria-hidden="true" className="mt-8 h-[260px] animate-pulse rounded-ch-card bg-ch-white/10 motion-reduce:animate-none" />
+                </div>
+              )}
+              {page === "missing" && (
+                <div className="pt-10">
+                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">Campground not found</h1>
+                  <p className="mt-3 text-[17px] text-ch-line">We don&apos;t have this campground.</p>
+                  <a href="#" className={buttonClasses({ variant: "quiet", className: "mt-6 px-5" })}>Back to search</a>
+                </div>
+              )}
+              {page === "failed" && (
+                <div className="pt-10">
+                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">We couldn&apos;t load this campground</h1>
+                  <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">
+                    Something went wrong on our side or with the connection — this doesn&apos;t mean the campground is gone. Try again in a moment.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-2.5">
+                    <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ className: "px-5" })}>Try again</button>
+                    <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>Back to search</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        </main>
+      ) : (
       <main id="main">
         <section className="relative bg-ch-forest">
           <PhotoHeader visitor={visitor} />
           <div className="mx-auto max-w-[var(--gh-max)] px-5 pt-4 sm:px-8 sm:pt-8">
-            <a href="#" className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
-              <ChevronLeft aria-hidden="true" className="size-4" /> Back to search
-            </a>
-            <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,9vw,148px)]">
+            {arrival === "google" ? crumbs : back}
+            <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,8vw,112px)]">
               <div className="min-w-0">
                 <div className="mb-3 flex flex-wrap gap-1.5">
                   {!watchable && <Tag kind="paused" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
@@ -226,7 +299,7 @@ export function Campground() {
                 </div>
                 <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
                 <p className="mt-2 text-[17px] text-ch-line">{place}</p>
-                {watchable ? <OpenSummary /> : <p className="mt-4 text-[17px] text-ch-line">No reservations here, so there is nothing to watch.</p>}
+                {watchable && <OpenSummary />}
               </div>
               {watchable && <a href="#" className={buttonClasses({ size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchLabel(visitor)}</a>}
             </div>
@@ -235,16 +308,15 @@ export function Campground() {
 
         {/* The photos dock across the band's bottom edge, the way search does on the home page.
             Phones show one, so the calendar starts sooner. */}
-        <div className="relative mx-auto -mt-[clamp(40px,7vw,120px)] max-w-[var(--gh-max)] px-3 sm:px-8">
-          <div className="grid gap-2 sm:auto-rows-[clamp(110px,10vw,150px)] sm:grid-cols-4 sm:gap-3">
-            <Art art={ART.c1} eager sizes="(min-width: 640px) 50vw, 100vw" alt={`${name}, the campground loop at dusk`} className="aspect-[16/9] w-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:col-span-2 sm:row-span-2 sm:aspect-auto sm:h-full" />
+        <div className="relative mx-auto -mt-[clamp(40px,6vw,88px)] max-w-[var(--gh-max)] px-3 sm:px-8">
+          <div className="grid gap-2 sm:auto-rows-[clamp(150px,13vw,200px)] sm:grid-cols-4 sm:gap-3">
+            <Art art={ART.c1} eager sizes="(min-width: 640px) 50vw, 100vw" alt={`${name}, the campground loop at dusk`} className="aspect-[16/9] w-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:col-span-2 sm:aspect-auto sm:h-full" />
             <Art art={ART.c2} sizes="25vw" alt={`${name}, a campsite with a fire ring`} className="hidden size-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:block" />
             <Art art={ART.c3} sizes="25vw" alt="The river near the campground at dusk" className="hidden size-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:block" />
-            <Art art={ART.c4} sizes="50vw" alt="A granite dome above the valley at dusk" className="hidden size-full rounded-ch-card bg-ch-forest object-cover object-[50%_80%] shadow-ch-pop sm:col-span-2 sm:block" />
           </div>
         </div>
 
-        <section aria-label="Availability" className="mx-auto max-w-[var(--gh-max)] px-3 pt-6 sm:px-8 sm:pt-10">
+        <section aria-label="Availability" className="mx-auto max-w-[1120px] px-3 pt-6 sm:px-8 sm:pt-8">
           {watchable ? (
             <Calendar visitor={visitor} />
           ) : (
@@ -261,8 +333,8 @@ export function Campground() {
             <h2 className="font-ch-display text-[22px] font-extrabold text-ch-ink">About</h2>
             <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{description}</p>
             <h3 className="mt-5 text-[14px] font-bold text-ch-ink">Amenities</h3>
-            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-[15px] text-ch-ink-2">
-              {amenities.map((a) => <li key={a}>{a}</li>)}
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {amenities.map((a) => <li key={a} className="rounded-ch-tag border border-ch-line bg-ch-paper px-2.5 py-1.5 text-[14px] text-ch-ink-2">{a}</li>)}
             </ul>
             <p className="mt-4 flex items-center text-[16px] text-ch-ink-2">
               <span className="text-ch-muted">Phone:&nbsp;</span>
@@ -286,6 +358,7 @@ export function Campground() {
           </section>
         </div>
       </main>
+      )}
       <GhFooter />
     </div>
   );

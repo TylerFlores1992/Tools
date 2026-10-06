@@ -367,6 +367,17 @@ try {
     assert.equal(await watch("Watch this campground").count(), 2);
     await p.getByRole("radio", { name: "In the app" }).click();
     assert.equal(await watch("Subscribe to watch").count(), 2);
+    // CampgroundDetail's page states, and its arrival rule.
+    await p.getByLabel("Page state").selectOption("missing");
+    await p.getByRole("heading", { level: 1, name: "Campground not found" }).waitFor();
+    await p.getByLabel("Page state").selectOption("failed");
+    await p.getByRole("heading", { level: 1, name: "We couldn't load this campground" }).waitFor();
+    await p.getByRole("button", { name: "Try again" }).click();
+    await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
+    assert.equal(await p.getByRole("navigation", { name: "Breadcrumb" }).filter({ hasText: "Camping by state" }).count(), 0, "search arrivals get a back link");
+    await p.getByLabel("Arrived from").selectOption("google");
+    await p.getByRole("navigation", { name: "Breadcrumb" }).filter({ hasText: "Camping by state" }).waitFor();
+    assert.equal(await p.getByRole("link", { name: "Back to search" }).count(), 0, "a cold arrival has no back link");
     // First come: the policy, not an empty calendar, and nothing to watch.
     await p.getByRole("radio", { name: "First come" }).click();
     await p.getByRole("heading", { level: 2, name: "First come, first served" }).waitFor();

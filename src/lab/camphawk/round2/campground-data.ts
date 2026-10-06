@@ -14,7 +14,7 @@ export const SITES: Record<string, Site> = {
   "042": { id: "042", name: "Site 042", loop: "Loop A", type: "tent only" },
   "063": { id: "063", name: "Site 063", loop: "Loop B", type: "standard nonelectric" },
   "088": { id: "088", name: "Site 088", loop: "Loop B", type: "standard nonelectric" },
-  "101": { id: "101", name: "Site 101", loop: "Loop C", type: "RV up to 35 ft" },
+  "101": { id: "101", name: "Site 101", loop: "Loop C", type: "RV nonelectric" },
   "117": { id: "117", name: "Site 117", loop: "Loop C", type: "standard nonelectric" },
   "130": { id: "130", name: "Site 130", loop: "Loop D", type: "tent only" },
 };

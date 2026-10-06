@@ -12,7 +12,6 @@ export const ART = {
   c1: { name: "c1-loop-dusk", widths: [900, 1600], w: 1600, h: 893 },
   c2: { name: "c2-site-dusk", widths: [500, 800], w: 800, h: 800 },
   c3: { name: "c3-river-dusk", widths: [500, 800], w: 800, h: 800 },
-  c4: { name: "c4-cliff-dusk", widths: [500, 800], w: 800, h: 800 },
   b1: { name: "b1-poster-wide", widths: [828, 1440, 2560], w: 2560, h: 1664 },
   b2: { name: "b2-poster-tall", widths: [828, 1170], w: 1170, h: 1800 },
   b3: { name: "b3-watch", widths: [640], w: 640, h: 640 },

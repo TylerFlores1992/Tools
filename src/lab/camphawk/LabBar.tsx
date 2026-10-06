@@ -22,7 +22,7 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
           <span aria-hidden="true">/</span>
           <span aria-current="page">{page}</span>
         </nav>
-        {children && <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">{children}</div>}
+        {children && <div className="flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto">{children}</div>}
         <div role="radiogroup" aria-label="Pretend to be" className="flex w-full items-center justify-between gap-1 rounded-ch-chip bg-ch-white/10 p-0.5 sm:w-auto">
           <span className="hidden px-2 sm:inline">View as</span>
           {VISITORS.map((v) => {
