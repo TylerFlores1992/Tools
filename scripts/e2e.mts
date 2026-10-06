@@ -24,7 +24,7 @@ if (!(await up())) {
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
 const results: string[] = [];
 async function check(name: string, fn: () => Promise<void>) {
-  try { await fn(); results.push(`ok   ${name}`); } catch (e) { results.push(`FAIL ${name}\n     ${(e as Error).message.split("\n")[0]}`); }
+  try { await fn(); results.push(`ok   ${name}`); } catch (e) { results.push(`FAIL ${name}\n     ${(e as Error).message.split("\n").slice(0, 4).join(" / ")}`); }
 }
 try {
   const page = await browser.newPage();
@@ -321,6 +321,10 @@ try {
     assert.doesNotMatch(text, /any N nights/, "golden hour: no system wording");
     assert.match(text, /how many nights you need inside a window/, "golden hour: step 2 reworded");
     assert.match(text, /how many nights you need, anywhere in a window/, "golden hour: pricing reworded");
+    // The header carries the golden-sky badge, and it loads through the private sign-in.
+    const badge = p.locator("header img").first();
+    assert.ok(await badge.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), "golden hour: badge loaded");
+    assert.match(await badge.evaluate((img: HTMLImageElement) => img.currentSrc), /\/round2\/badge-golden-\d+\.webp$/, "golden hour: golden badge");
     assert.deepEqual(errors, []);
     await ctx.close();
   });
@@ -383,6 +387,167 @@ try {
     await p.getByRole("heading", { level: 2, name: "First come, first served" }).waitFor();
     assert.equal(await p.getByRole("link", { name: /to watch|Watch this campground/ }).count(), 0, "first come offers no watch");
     assert.equal(await p.getByRole("button", { name: "Next month" }).count(), 0, "first come has no calendar");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  // The Golden hour app screens run in a US timezone on purpose: that is where CampHawk's date
+  // traps show (a date string parsed as UTC lands on the day before). Reduced motion, so a click
+  // never lands in a panel that is still opening (one unexplained miss on the mute list,
+  // 2026-10-06, under build load; not reproduced at 6x CPU throttling).
+  const GH = `${BASE}/private/camphawk/golden-hour`;
+  const watchErrors = (p: import("playwright-core").Page) => {
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    return errors;
+  };
+
+  await check("lab explore: a search shows all four result states, the map hoists a pick, and Back to search restores it", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/explore`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/explore`);
+    // Guests get context, not a paywall, and the first-run box until they search.
+    await p.getByText("You're searching as a guest").waitFor();
+    await p.getByRole("heading", { level: 2, name: "Find a campsite that's actually open" }).waitFor();
+    await p.getByLabel("Where").fill("yos");
+    await p.getByRole("button", { name: "Yosemite Valley, CA place" }).click();
+    await p.getByRole("button", { name: /Trip dates/ }).click();
+    await p.getByRole("gridcell", { name: "Saturday, July 18, 2026" }).click();
+    await p.getByRole("gridcell", { name: "Tuesday, July 21, 2026" }).click();
+    await p.getByRole("button", { name: "Done" }).click();
+    await p.getByRole("search").getByRole("button", { name: "Search" }).click();
+    await p.getByRole("heading", { level: 2, name: "1 campground with openings" }).waitFor();
+    // Open, booked, couldn't check and first come are four different words, never one.
+    const results = p.getByRole("region", { name: "Results" });
+    // (Tags carry a hidden "Status:" prefix for screen readers, so match within the text.)
+    for (const word of ["Sites open", "Booked — watch it", "Couldn't check", "First come, first served"]) await results.getByText(word).first().waitFor();
+    // Each card carries its own answer, and each pin says the same in its name (the map key
+    // also says "Couldn't check", so read the cards and pins, not the page).
+    const cardSays = async (name: string, word: string) => assert.match(await results.locator("div[data-state]", { has: p.getByRole("heading", { name, exact: true }) }).innerText(), new RegExp(word, "i"), name);
+    await cardSays("Upper Pines", "Sites open");
+    await cardSays("North Pines", "Booked — watch it");
+    await cardSays("Lower Pines", "Couldn't check");
+    await cardSays("Camp 4", "First come, first served");
+    for (const pin of ["Upper Pines, sites open", "North Pines, booked", "Lower Pines, couldn't check", "Camp 4, first come, first served"]) await p.getByRole("button", { name: pin, exact: true }).waitFor();
+    assert.equal(await results.getByRole("link", { name: "Sign up to watch" }).count(), 2, "booked and couldn't-check offer a watch; open and first come don't");
+    // Picking a pin moves its card to the front.
+    await p.getByRole("button", { name: "North Pines, booked" }).click();
+    assert.equal(await results.getByRole("heading", { level: 3 }).first().innerText(), "North Pines");
+    assert.match(p.url(), /place=Yosemite.*start=2026-07-18&end=2026-07-21/);
+    // A result opens its own page, and "Back to search" brings the search back.
+    await results.getByRole("link", { name: "Lower Pines", exact: true }).click();
+    await p.getByRole("heading", { level: 1, name: "Lower Pines" }).waitFor();
+    await p.getByText("We couldn't check July just now.").waitFor();
+    await p.getByRole("link", { name: "Back to search" }).click();
+    await p.getByRole("heading", { level: 2, name: "1 campground with openings" }).waitFor();
+    // Who's looking changes the watch control, never the results.
+    for (const [who, label] of [["Signed in", "Start free trial to watch"], ["Lapsed", "Resubscribe to watch"], ["Subscriber", "Start a watch"], ["In the app", "Subscribe to watch"]] as const) {
+      await p.getByRole("radio", { name: who, exact: true }).click();
+      assert.equal(await results.getByRole("link", { name: label, exact: true }).count(), 2, who);
+    }
+    await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
+    assert.equal(await p.getByText("You're searching", { exact: false }).count(), 0, "a subscriber is never sold to");
+    // A failed search says so in words, with no internals.
+    await p.getByLabel("Search answers").selectOption("fails");
+    await p.getByRole("search").getByRole("button", { name: "Search" }).click();
+    const alert = p.getByRole("alert").filter({ hasText: "Search didn't go through" });
+    await alert.waitFor();
+    assert.doesNotMatch(await alert.innerText(), /\d{3}/, "no status codes");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab new watch: only a subscriber can start one; a park is one watch; this weekend is Friday to Sunday", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/new`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/new`);
+    assert.equal(await p.getByRole("button", { name: "Start watching" }).count(), 0, "a guest isn't offered a button that can't work");
+    await p.getByRole("link", { name: "Start free trial" }).waitFor();
+    await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
+    await p.getByRole("button", { name: "Start watching" }).click();
+    await p.getByRole("alert").filter({ hasText: "Pick a campground to watch." }).waitFor();
+    // A first-come campground can't be picked, and says why.
+    await p.getByLabel("Which campground").fill("camp 4");
+    await p.getByText("no reservations, so there is nothing to watch").waitFor();
+    assert.equal(await p.locator("#nw-cg-list button").count(), 0);
+    // A park starts with all its bookable parts ticked; its walk-up part never appears.
+    await p.getByLabel("Which campground").fill("carp");
+    await p.getByRole("button", { name: /Carpinteria State Beach/ }).click();
+    await p.getByText("3 of 3 selected").waitFor();
+    assert.equal(await p.getByText("San Miguel (walk-up)").count(), 0);
+    await p.getByRole("radio", { name: "This weekend" }).click();
+    await p.getByRole("complementary").getByText("Fri Jul 10 – Sun Jul 12").waitFor();
+    // ReserveCalifornia gets the 8am hold, not the Recreation.gov auto-cart toggle.
+    await p.getByText("We can grab a site at 8am").waitFor();
+    assert.equal(await p.getByRole("button", { name: /Add it to my cart automatically/ }).count(), 0);
+    await p.getByRole("button", { name: "Start watching" }).click();
+    await p.waitForURL(/\/watches\?/);
+    assert.match(p.url(), /as=subscriber/);
+    await p.getByRole("heading", { level: 3, name: "Carpinteria State Beach" }).waitFor();
+    await p.getByText("4 of 6 watches running").waitFor();
+    // The Auto-Cart promise is only for its plan; the base plan is told what still happens.
+    await p.goto(`${GH}/new?as=subscriber&plan=alerts&campground=upper-pines&start=2026-07-18&end=2026-07-21`);
+    await p.getByText("Auto-cart is on the Auto-Cart plan").waitFor();
+    await p.getByText("Alerts race you to the site.", { exact: false }).waitFor();
+    await p.goto(`${GH}/new?as=subscriber&campground=upper-pines&start=2026-07-18&end=2026-07-21`);
+    await p.getByRole("button", { name: /Add it to my cart automatically/ }).waitFor();
+    await p.getByRole("button", { name: "Mute individual campsites" }).click();
+    const mute042 = p.getByRole("button", { name: "Mute site Site 042" });
+    await mute042.click();
+    assert.equal(await mute042.getAttribute("aria-pressed"), "true", "the site's own toggle is pressed");
+    await p.getByText("1 of 7 muted").waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab watches: the wall, the card states, holds, provider and auto-cart trouble, and the quiet-outlook note", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/watches`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/watches`);
+    await p.getByRole("heading", { level: 2, name: "Watches need an account" }).waitFor();
+    await p.getByRole("radio", { name: "Lapsed", exact: true }).click();
+    await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
+    await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
+    await p.getByText("3 of 6 watches running").waitFor();
+    for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "2 more open 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    await p.getByRole("link", { name: "Check out on Recreation.gov" }).waitFor();
+    // Reconnecting fixes itself: the card says so, but isn't the red "you must act" card.
+    await p.getByLabel("Auto-cart connection").selectOption("reconnecting");
+    const northPines = p.locator("div[data-state]", { has: p.getByRole("heading", { name: "North Pines", exact: true }) });
+    await northPines.getByText("Auto-cart reconnecting").waitFor();
+    assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
+    // Calling off the queued hold takes its tag with it.
+    await p.getByRole("button", { name: "Queued for us to grab" }).click();
+    await p.getByRole("button", { name: "Call off the hold on 042" }).click();
+    assert.equal(await p.getByText("We'll grab Site 042 · 8 AM").count(), 0);
+    // A provider not answering is a banner and a card state, not a broken watch.
+    await p.getByLabel("ReserveCalifornia").selectOption("down");
+    await p.getByText("ReserveCalifornia isn't responding", { exact: true }).waitFor();
+    await p.getByText("Checks paused").first().waitFor();
+    // Auto-cart signed out: the hit card stops claiming a cart, and the running one says why.
+    await p.getByLabel("Auto-cart connection").selectOption("disconnected");
+    await p.getByText("Not carted — reconnect auto-cart").waitFor();
+    assert.equal(await p.getByText(/In your cart$/).count(), 0, "no cart claim without the connection");
+    assert.equal(await p.getByRole("link", { name: "Check out on Recreation.gov" }).count(), 0, "no checkout without a cart");
+    assert.equal(await northPines.getAttribute("data-state"), "warn", "signed out needs you, so it's the warning card");
+    await p.getByRole("link", { name: "Reconnect Recreation.gov" }).waitFor();
+    // A new watch on a stay that's booked weeks out is told to expect quiet.
+    await p.goto(`${GH}/watches?as=subscriber&new=north-pines&start=2026-07-25&end=2026-07-27`);
+    await p.getByText("You're watching a stay that's fully booked").waitFor();
+    await p.getByText("about 3 weeks away", { exact: false }).waitFor();
+    await p.getByRole("button", { name: "Dismiss" }).click();
+    assert.equal(await p.getByText("You're watching a stay that's fully booked").count(), 0);
+    // The header tabs keep who we're pretending to be.
+    await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).click();
+    await p.waitForURL(/\/explore\?as=subscriber/);
+    assert.equal(await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).getAttribute("aria-current"), "page");
     assert.deepEqual(errors, []);
     await ctx.close();
   });

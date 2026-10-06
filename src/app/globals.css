@@ -387,7 +387,7 @@ html:has(.gh) { background: var(--color-ch-forest); }
  * CampHawk round 2 (/private/camphawk/golden-hour, /trail-poster; src/lab/camphawk/round2/).
  * Scrims and crops for the art, and one motion moment each. Hues only from ch-* tokens.
  */
-.gh { --gh-max: 1320px; }
+.gh { --gh-max: 1320px; /* How far a screen's first card rises into the forest band above it. */ --gh-dock: clamp(40px, 6vw, 88px); }
 /* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
    fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
 .gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }
@@ -428,6 +428,53 @@ html:has(.gh) { background: var(--color-ch-forest); }
     background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 0%, transparent 70%);
   }
 }
+/* Explore's band: the valley at blue hour. Text sits on the dark slope and sky at the left; the
+   river and the campsite lights stay clear on the right. */
+.gh-explore-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 60% 70%; }
+@media (min-width: 1024px) { .gh-explore-photo { object-position: 50% 62%; } }
+/* Its scrim: the snow peaks and the river lights sit behind the header and the headline, so the
+   top and the left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+.gh-explore-scrim {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 66%, transparent) 55%,
+    color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 100%);
+}
+@media (min-width: 1024px) {
+  .gh-explore-scrim {
+    background:
+      linear-gradient(to right,
+        color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
+        color-mix(in srgb, var(--color-ch-forest) 65%, transparent) 36%,
+        transparent 62%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 60%, transparent) 0%, transparent 28%);
+  }
+}
+/* Explore's map pins (ResultsMap's shapes): a teardrop pointing at the place. State is the shape
+   as well as the hue: open carries a tick, booked is plain solid, couldn't check is hollow, first
+   come is small and faint. The picked pin keeps its state and grows, with an ink ring (CampHawk
+   paints it red, which hides the state and means "act now"). */
+.gh-pin {
+  position: relative; width: 22px; height: 22px; border: 2px solid var(--color-ch-white);
+  border-radius: 50% 50% 50% 2px; transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgb(22 41 31 / 0.35);
+}
+/* Pins are placed in the picture's coordinates. From 640px the map is 11:5 and the 16:9 picture
+   (1280x731) is cropped top and bottom: 79.6% of its height shows, 10.2% off each edge. */
+.gh-map-pin { top: calc(var(--y) * 1%); }
+@media (min-width: 640px) { .gh-map-pin { top: calc((var(--y) - 10.2) / 0.796 * 1%); } }
+.gh-pin[data-state="open"] { width: 26px; height: 26px; background: var(--color-ch-green); }
+.gh-pin[data-state="open"]::after {
+  content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; transform: rotate(45deg);
+  color: var(--color-ch-white); font: 800 13px/1 var(--font-ch-body), sans-serif;
+}
+.gh-pin[data-state="booked"], .gh-pin[data-state="plain"] { background: var(--color-ch-muted); }
+.gh-pin[data-state="unknown"] { background: var(--color-ch-white); border: 4px solid var(--color-ch-muted); }
+.gh-pin[data-state="first-come"] { width: 15px; height: 15px; background: var(--color-ch-faint); }
+.gh-pin[data-selected="true"] {
+  scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
+}
+
 /* The alert card arrives once, a beat after the photo. */
 .gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
 @keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }

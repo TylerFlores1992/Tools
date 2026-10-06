@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BellRing, Check, Search } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
+import { ROUTES } from "./gates";
+import { useVisitor, withVisitor } from "./labState";
 import { HEADLINE, INTRO, LIMITS, STEPS as CH_STEPS } from "../copy";
 import { Tag } from "../ui/Tag";
 import { DirectionLinks, LabBar } from "../LabBar";
-import { GhFooter, PhotoHeader } from "./GhChrome";
+import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
 import { Art, ART } from "./Art";
 import { Pricing2 } from "./Pricing2";
 import { WatchProofs } from "./WatchProofs";
@@ -46,10 +48,20 @@ function AlertCard({ compact }: { compact?: boolean }) {
   );
 }
 
-/** Search, docked across the hero's bottom edge. The lab never searches; it submits nowhere. */
-function SearchDock() {
+/** Search, docked across the hero's bottom edge. It hands the place to the lab's Explore screen,
+    which searches example data (never CampHawk's API). */
+function SearchDock({ visitor }: { visitor: Visitor }) {
+  const router = useRouter();
   return (
-    <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-ch-card bg-ch-card p-3 shadow-ch-pop sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
+    <form
+      role="search"
+      action={ROUTES.explore}
+      onSubmit={(e) => {
+        e.preventDefault();
+        const place = String(new FormData(e.currentTarget).get("where") ?? "").trim();
+        router.push(withVisitor(`${ROUTES.explore}${place ? `?place=${encodeURIComponent(place)}` : ""}`, visitor));
+      }}
+      className="grid gap-3 rounded-ch-card bg-ch-card p-3 shadow-ch-pop sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">Where</span>
         <input type="text" name="where" placeholder="City, park, or ZIP…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
@@ -96,12 +108,12 @@ function PhoneProof() {
 }
 
 export function GoldenHour() {
-  const [visitor, setVisitor] = useState<Visitor>("signed-out");
+  const [visitor, setVisitor] = useVisitor();
   return (
     <div className="gh">
       <LabBar page="Round 2" visitor={visitor} onVisitor={setVisitor}>
         <DirectionLinks current="golden-hour" />
-        <Link href="/private/camphawk/golden-hour/campground" className="flex min-h-11 items-center whitespace-nowrap underline underline-offset-2">Campground</Link>
+        <ScreenLinks visitor={visitor} />
       </LabBar>
       <main id="main">
         <section className="relative isolate bg-ch-forest">
@@ -126,7 +138,7 @@ export function GoldenHour() {
               Desktop: search docks across the photo's bottom edge. */}
           <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
             <div className="lg:translate-y-1/2">
-              <SearchDock />
+              <SearchDock visitor={visitor} />
             </div>
           </div>
         </section>
@@ -191,10 +203,10 @@ export function GoldenHour() {
           <div className="mx-auto flex min-h-[min(64vh,600px)] max-w-[var(--gh-max)] flex-col items-start justify-start px-5 py-14 sm:px-8 md:items-end md:justify-center md:text-right">
             <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">Start with a search. It&apos;s free.</h2>
             <div className="mt-6 flex flex-wrap items-center gap-4 md:justify-end">
-              <a href="#" className={buttonClasses({ size: "lg", className: "px-6" })}>
+              <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />
                 Find a campsite
-              </a>
+              </Link>
               <a href="#" className="min-h-11 content-center text-[16px] font-bold text-ch-paper underline underline-offset-4">Or browse campgrounds by state</a>
             </div>
           </div>

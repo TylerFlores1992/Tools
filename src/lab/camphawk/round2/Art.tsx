@@ -18,6 +18,8 @@ export const ART = {
   b4: { name: "b4-pack", widths: [640], w: 640, h: 640 },
   b5: { name: "b5-map", widths: [640], w: 640, h: 640 },
   b6: { name: "b6-calendar", widths: [640], w: 640, h: 640 },
+  e1: { name: "e1-explore-wide", widths: [828, 1440, 2560], w: 2560, h: 962 },
+  e2: { name: "e2-map", widths: [828, 1280], w: 1280, h: 731 },
 } as const;
 type Piece = (typeof ART)[keyof typeof ART];
 

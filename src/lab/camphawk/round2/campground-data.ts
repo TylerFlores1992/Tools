@@ -19,7 +19,7 @@ export const SITES: Record<string, Site> = {
   "130": { id: "130", name: "Site 130", loop: "Loop D", type: "tent only" },
 };
 
-type Month = { open: Record<string, string[]>; unknown?: boolean; closed?: boolean; error?: boolean };
+export type Month = { open: Record<string, string[]>; unknown?: boolean; closed?: boolean; error?: boolean };
 
 /** Open sites per night, by month ("YYYY-MM"). Nights not listed are fully booked. */
 export const MONTHS: Record<string, Month> = {
@@ -33,6 +33,7 @@ export const FIRST_MONTH = "2026-07";
 export const LAST_MONTH = "2026-11";
 
 export const CAMPGROUND = {
+  id: "upper-pines",
   name: "Upper Pines",
   place: "Yosemite Valley, CA",
   stateName: "California",

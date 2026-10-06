@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (Golden hour finished; campground page added).*
+*Last updated: 2026-10-06 (CampHawk lab: all five screens built in the Golden hour look).*
 
 ## At a glance
 
@@ -13,8 +13,11 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
-| ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. |
-| ↳ **Campground page** | `/private/camphawk/golden-hour/campground` | Live. CampHawk's campground page in the same look, with every real state. Critic 7/10, findings fixed. |
+| ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
+| ↳ **Campground page** | `/private/camphawk/golden-hour/campground` | Live. CampHawk's campground page in the same look, with every real state. Now shows whichever campground Explore opened (`?id=`). Critic 7/10, findings fixed. |
+| ↳ **Explore** | `/private/camphawk/golden-hour/explore` | Built 2026-10-06. Search rail, four result states in words, illustrated map with pins as buttons, search kept in the URL. |
+| ↳ **New watch** | `/private/camphawk/golden-hour/new` | Built 2026-10-06. Picker (favorites, parks as one watch, first come refused), nights, muting, Auto-Cart by plan, the 8am hold. |
+| ↳ **Your watches** | `/private/camphawk/golden-hour/watches` | Built 2026-10-06. Wall, first run, every card state, holds, provider and auto-cart trouble, alert history. |
 | ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
 | ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
@@ -25,9 +28,10 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (25 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (15 checks, including
-that `/private`, every lab page and its old URL land on the sign-in page and private files answer 401).
+**Checks, all green:** `npm run verify` (120 tests) · `npm run e2e` (28 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (20 checks, including
+that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
+and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
@@ -36,24 +40,38 @@ that `/private`, every lab page and its old URL land on the sign-in page and pri
    branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab: the owner reviews Golden hour** (home and campground), then the next screen
-   in the same look. Candidates, by how often campers see them: Explore (`/search`, map and
-   filters), New watch (`/new`), Watches (`/watches`). Port from CampHawk read-only (below).
-   Known gaps, small: the returning subscriber's "Resubscribe to watch" label isn't in the
-   lab's "View as"; the campsite photo (c2) is very dark; Trail poster (B) wasn't reworked to
-   CampHawk's colour rules, since it's reference only.
+1. **CampHawk lab: the owner reviews all five Golden hour screens.** Start at
+   `/private/camphawk/golden-hour`; the header tabs and the lab bar's "Screens" link them all, and
+   every lab switch is in the URL (`?as=subscriber`, `plan=alerts`, `state=…`), so any state can be
+   linked. "View as" now has **Lapsed** (CampHawk's "Resubscribe" wording).
+   Critic (independent subagent, 2026-10-06): Explore 5.5, New watch 6, Watches 6, consistency 5.
+   Fixed after: open vs booked pins now differ by a tick, not hue alone; red only where you must
+   act (picked pin and card get an ink ring; favorites are ochre; "auto-cart reconnecting" isn't
+   a red card); decorative green and blue panels became plain cards; the provider outage is
+   neutral; the in-cart card has a blue "Check out on Recreation.gov" (a lab proposal); Explore's
+   "Nothing open" box no longer contradicts "1 with openings"; the search rail is sticky on desktop.
+   Left as CampHawk has them (its own primitives and words): caps tags, mid-dot meta lines,
+   "Auto-Cart" as the plan name, calendar above watch on result cards, the long "What we'll do"
+   explainer before the button on phones. Open design questions for the owner: New watch and Your
+   watches have plain forest bands (no photo) so the form and list lead; the critic would add art.
+   **CampHawk issues found while porting** (not changed there; listed in
+   `docs/design/camphawk-home.md`, "Screens 3-5"): "This weekend" lands Saturday to Monday in US
+   timezones (`thisWeekendRange` parses a date as UTC); a typed-but-unpicked place searches near
+   you under the typed name; a failed search shows `Search failed (502)`; "cancelled" spelling.
    **CampHawk's code:** attach `TylerFlores1992/campsite-finder` to the session **read-only**
    (`add_repo`, access "read"), clone to `/home/user/campsite-finder`, then disable pushing:
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
    modify it. Its design rules (`.claude/skills/camphawk-design/SKILL.md`) bind every lab
    screen and win over references (that's why there's no glass).
+   **Art** (`studio/camphawk-round2/`, free credit only, $2.40 left; `generate.mjs` stops under $2):
+   `e1-explore-wide` (Explore's band), `e2-map` (the illustrated map, softened toward paper),
+   `c2` re-exported brighter, and the badge: `badge-golden-{80,120}.webp`, CampHawk's badge edited
+   with Flux Kontext (`l2-badge-golden` #1), cut out by `export.mjs`. Round-1 screens (`Nav.tsx`)
+   keep the original badge on purpose. Trail poster (B) is reference only.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
-3. **Hero media caching:** files in `public/media/hero/` are served `max-age=0`. Version the
-   filenames and send `immutable` caching from `next.config` headers.
-4. **CI:** add `npm run e2e` (needs a Chromium install step on the runner).
-5. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+3. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail
@@ -66,6 +84,12 @@ tests, screenshot harness, CI, skills. Primitives in `src/components/`. Fonts su
 ### Home hero
 Code-rendered film (`studio/film/`, skill `hero-film`): 16:9 and portrait cuts, AV1/H.264,
 AVIF posters. Intro readable in about 1.2 s. Reduced motion or Save-Data shows the poster only.
+
+### Hero media caching (2026-10-06)
+The film and posters live in `public/media/hero/<hash>/`, where the hash covers every file's
+name and bytes (`src/lib/hero-media.ts`). `next.config.ts` sends `public, max-age=31536000,
+immutable` for that path. A re-encode fails `src/lib/hero-media.test.mts`, which prints the new
+folder name; the smoke test checks the header on the live site.
 
 ### Bridle calculator
 Math in `src/tools/bridle/math.ts`, tested against worked examples and 500 random rigs.

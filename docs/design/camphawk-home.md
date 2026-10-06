@@ -1,6 +1,6 @@
 # CampHawk home: round 2 directions
 
-> **Status (2026-10-05):** the owner picked **Direction A "Golden hour"**
+> **Status (2026-10-06):** five screens are built in it (home, campground, Explore, New watch, Your watches). The owner picked **Direction A "Golden hour"**
 > (`/private/camphawk/golden-hour`). Direction B is kept for reference only. These are lab
 > mockups; camphawk.app is never changed from here. What's left: `docs/NEXT-SESSION.md`.
 
@@ -153,6 +153,62 @@ Route: `/private/camphawk/golden-hour/campground` (lab). Port of campsite-finder
   photos stay dusk on purpose: the whole Golden hour look is blue hour with warm lamplight (hero,
   feature, closing band), not literal golden hour.
 
+## Screens 3-5: Explore, New watch, Your watches, in the Golden hour look (2026-10-06)
+Routes (lab): `/private/camphawk/golden-hour/explore`, `/new`, `/watches`. Ports of campsite-finder
+`src/app/(app)/search|new|watches` (`Explore`, `ResultCard`, `ResultsMap`, `NewWatch`,
+`TrustPanel`, `SiteMuteList`, `WatchesList`, `WatchCard`, `HoldRow`, `SetupNudges`,
+`NewWatchOutlook`, `WatchCta`, `SubscribeCta`, `PricingLink`), read-only, with example data.
+Mode: **Operate**. The brand lives in the frame; the work area is CampHawk's own UI at reading sizes.
+- **One frame for every app screen:** the forest band holds the header (its tabs now link the
+  screens, marked current) and the screen's title; the first card docks up across the band's
+  edge by `--gh-dock`, the way search does on the home page; paper below; the forest footer.
+  Explore's band carries a photo (the valley at blue hour, its campsite lights along the river);
+  New watch and Your watches stay plain, so the form and the list lead.
+- **Shared controls** are CampHawk's, ported to `src/lab/camphawk/ui/`: `DatePicker` (two ISO
+  dates, a roving-tab grid, cross-month strip), `NightsPicker`, `FilterPanel`, `RadioChips`,
+  `Chip`, `Collapsible`, `date.ts`. Labels are sentence case at 13px, not CampHawk's 11px caps.
+- **Lab switches live in the URL** (`round2/labState.ts`): `?as=` (View as, now with **Lapsed**
+  for "Resubscribe"), `plan`, and each screen's states, so any state can be linked and the
+  visitor survives moving between screens. The account gates are one module (`round2/gates.ts`).
+
+**Explore.** The rail (where, within, when, filters, search) docks into the band; results start
+on paper beside it. Guests see the status box (context, not a paywall); a subscriber never does.
+Results answer in four words: *Sites open*, *Booked — watch it*, *Couldn't check*, *First come,
+first served*; with no dates nothing is claimed. The map is an illustration (`e2`, softened toward
+paper) with real buttons for pins; each pin's state is a shape as well as a hue (solid, hollow,
+small, ringed when picked) and picking one hoists its card. The search is written to the URL, the
+cards carry it, and "Back to search" on the campground page restores it. The campground page now
+reads `?id=`, so every result opens its own campground (Lower Pines reads "couldn't check" all
+the way through; Camp 4 opens as first come).
+
+**New watch.** The form and the "What we'll do" panel sit side by side (the panel stacks below on
+phones and sticks on desktop). It explains a watch until a campground is chosen, then reads back
+exactly what will be created. Parks are one watch with their bookable parts ticked; walk-up parts
+never show; a first-come campground can't be picked and says why. Recreation.gov gets the Auto-cart
+switch (with its word, On/Off) and the trust panel on the Auto-Cart plan, or the plain upsell on
+Alerts; ReserveCalifornia gets the 8am hold note. Only a subscriber sees "Start watching"; it lands
+on Your watches with the new watch at the top. Lab change: a muted site is neutral (a word and a
+crossed bell), not CampHawk's red button, because red means "you must act".
+
+**Your watches.** Signed out: the account wall beside the dusk phone photo (`a3`). Signed in
+without a plan: the first run, whose button says the step that's open to them. Subscriber: the
+running count with New watch, then cards in two columns that don't share a row height (one list in
+the DOM). The example watches show a site open and in your cart, tomorrow's 8am holds (queued and
+offered, collapsed in their card), a running watch with muted sites, and a paused one; the lab
+switches add ReserveCalifornia not responding, auto-cart reconnecting or signed out (dashed red
+card, and no cart claim), and the missing-phone nudge. A brand-new watch on a stay that's booked
+more than two weeks out gets CampHawk's "expect it to be quiet" note.
+
+**Found in CampHawk while porting (not changed there; read-only):**
+- `src/components/ui/date.ts` `thisWeekendRange()` reads the weekday from `new Date(today)`, which
+  parses as UTC midnight: in every US timezone "This weekend" becomes Saturday to Monday. The lab's
+  `date.ts` has the fix and a test that runs in Los Angeles time.
+- Explore types a place and presses Search without picking a suggestion: it searches near the
+  device but titles the results "within 10 mi of <typed text>". The lab says it couldn't find the
+  place instead.
+- Explore shows `Search failed (502)` on a failed search (an HTTP code, against its own copy rule).
+- New watch's ReserveCalifornia note spells "cancelled" (US: "canceled").
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
@@ -162,7 +218,7 @@ Route: `/private/camphawk/golden-hour/campground` (lab). Port of campsite-finder
 - Both drop the eyebrow labels, the all-caps chips, the mid-dot meta and the identical icon-card grid.
 
 ## Assets log
-Generated 2026-10-05 through Vercel AI Gateway on free credit ($1.26 of $5; nothing bought).
+Generated 2026-10-05 and 2026-10-06 through Vercel AI Gateway on free credit ($2.60 of $5 used by 2026-10-06, $2.40 left; nothing bought; `generate.mjs` stops under $2).
 Script, prompts and picks: `studio/camphawk-round2/` (`generate.mjs`, `prompts.mjs`, `export.mjs`).
 Photos: `bfl/flux-pro-1.1-ultra` (raw mode). Paintings: `recraft/recraft-v4.1` (1280px max on free
 credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers are closed to free credit).
@@ -176,3 +232,7 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | b1-poster-wide | B | Recraft v4.1 | Hawk upper right, glowing tent by the river, sky upper left. |
 | b2-poster-tall | B | Recraft v4.1 | Hawk in a calm sky, canyon and river, tent at the foot. |
 | b3–b6 vignettes | B | Recraft v4.1 | Watch, pack, map, calendar on cream. Pack is the strongest; watch is scratchier. |
+| e1-explore-wide | A | Flux 1.1 Ultra | Explore's band (2026-10-06): a valley at blue hour, campsite lights along the river. The first try read as a city; the second asked for about ten lone lights. Cinema bars cropped by `export.mjs`. |
+| e2-map | A | Recraft v4.1 | Explore's illustrated map: forest, a pale valley, a river and a lake, no labels. Softened 45% toward paper so pins read. |
+| c2-site-dusk | A | Flux 1.1 Ultra | Re-exported with a shadow lift (curve 0.78): it read as a black square at card size. |
+| badge-golden | A | Flux Kontext | The owner's pick: CampHawk's own badge with a warm sky, cut from its white field. Lab only. |
