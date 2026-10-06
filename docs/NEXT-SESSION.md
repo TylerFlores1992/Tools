@@ -26,7 +26,7 @@ for Production only, and the sign-in fails closed without it. To review a branch
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
 **Checks, all green:** `npm run verify` (111 tests) · `npm run e2e` (25 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (16 checks, including
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (15 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page and private files answer 401).
 
 ## Waiting on the owner
