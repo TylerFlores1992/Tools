@@ -57,7 +57,8 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
-            <span aria-hidden="true" className="grid size-5 place-items-center rounded-full border border-ch-line text-[12px] font-extrabold">G</span>Continue with Google
+            {/* eslint-disable-next-line @next/next/no-img-element -- a 20px brand mark, nothing for next/image to do */}
+            <img src="/private/camphawk/google-g.svg" alt="" width={20} height={20} className="size-5" />Continue with Google
           </a>
           <div className="my-5 flex items-center gap-3 text-[14px] text-ch-ink-2"><span className="h-px flex-1 bg-ch-line" />or<span className="h-px flex-1 bg-ch-line" /></div>
         </>

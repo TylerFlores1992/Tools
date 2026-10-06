@@ -388,6 +388,9 @@ html:has(.gh) { background: var(--color-ch-forest); }
  * Scrims and crops for the art, and one motion moment each. Hues only from ch-* tokens.
  */
 .gh { --gh-max: 1320px; /* How far a screen's first card rises into the forest band above it. */ --gh-dock: clamp(40px, 6vw, 88px); }
+/* Short pages (a signed-out gate) keep the footer on the floor instead of mid-screen over paper. */
+.gh { display: flex; flex-direction: column; min-height: 100dvh; }
+.gh > main { flex: 1 0 auto; }
 /* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
    fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
 .gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }

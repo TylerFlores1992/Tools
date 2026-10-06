@@ -35,7 +35,7 @@ export const WATCHES: ExampleWatch[] = [
     parts: ["Canyon Campground (sites 1⁠–⁠24)", "Canyon Campground (sites 25⁠–⁠77)", "Beach Campground"],
     start: "2026-08-01", end: "2026-08-31", flexNights: 2, weekendsOnly: true, autoCart: false, active: true,
     holds: [
-      { id: "h1", site: "042", part: "Canyon Campground (sites 25⁠–⁠77)", status: "requested" },
+      { id: "h1", site: "046", part: "Canyon Campground (sites 25⁠–⁠77)", status: "requested" },
       { id: "h2", site: "017", part: "Canyon Campground (sites 1⁠–⁠24)", status: "offered" },
       { id: "h3", site: "B12", part: "Beach Campground", status: "offered" },
     ],

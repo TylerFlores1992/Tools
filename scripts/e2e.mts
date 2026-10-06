@@ -521,7 +521,7 @@ try {
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByText("3 watches running · 1 paused").waitFor();
-    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 042", "Paused"]) await p.getByText(tag).first().waitFor();
+    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 046", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.
     const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
@@ -541,8 +541,8 @@ try {
     assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
     await p.getByRole("button", { name: "Holds you asked for" }).click();
-    await p.getByRole("button", { name: "Call off the hold on 042" }).click();
-    assert.equal(await p.getByText("8 AM hold: Site 042").count(), 0);
+    await p.getByRole("button", { name: "Call off the hold on 046" }).click();
+    assert.equal(await p.getByText("8 AM hold: Site 046").count(), 0);
     // A provider not answering is a banner and a card state, not a broken watch.
     await p.getByLabel("ReserveCalifornia").selectOption("down");
     await p.getByText("ReserveCalifornia isn't responding", { exact: true }).waitFor();
@@ -614,7 +614,7 @@ try {
     await p.getByRole("checkbox").check();
     await p.getByRole("button", { name: "Sign in to ReserveCalifornia" }).click();
     await p.getByRole("button", { name: "It's mine — hand it over" }).click();
-    await p.getByText("Site 042 is yours to book").waitFor({ timeout: 8000 });
+    await p.getByText("Site 046 is yours to book").waitFor({ timeout: 8000 });
     await p.getByRole("link", { name: "Check out on ReserveCalifornia" }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();

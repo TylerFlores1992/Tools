@@ -99,6 +99,8 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
   );
 }
 
+const shownIn = (groups: Town[]) => groups.reduce((n, g) => n + g.campgrounds.length, 0);
+
 function Lead({ children }: { children: ReactNode }) {
   return <div className="max-w-[70ch] space-y-3 text-[17px] leading-relaxed text-ch-ink-2">{children}</div>;
 }
@@ -172,7 +174,15 @@ export function StatePage({ slug }: { slug: string }) {
             )}
             <Search visitor={visitor} className="mt-6" />
           </div>
-          {ca ? <Towns groups={CALIFORNIA.groups} code={r.code} name={r.name} visitor={visitor} /> : (
+          {ca ? (
+            <>
+              <Towns groups={CALIFORNIA.groups} code={r.code} name={r.name} visitor={visitor} />
+              <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
+                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}&apos;s {r.count.toLocaleString("en-US")} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
+                <Search visitor={visitor} />
+              </div>
+            </>
+          ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws California&apos;s campground list; <A href={`${ROUTES.camping}/california`} visitor={visitor}>see it there</A>. CampHawk lists every campground in {r.name} here, by town.</p>
           )}
           <Note />

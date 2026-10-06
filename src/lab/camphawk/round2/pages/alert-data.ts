@@ -71,7 +71,7 @@ export const MANAGE: Record<"upper-pines" | "leo", ManageWatch> = {
     autoCart: false,
     muted: 0,
     open: [],
-    requested: [{ unit: "Site 042", release: "8 AM", stay: "Aug 8–10 · 2 nights" }],
+    requested: [{ unit: "Site 046", release: "8 AM", stay: "Aug 8–10 · 2 nights" }],
     offered: [
       { unit: "Site 017", nights: 2, from: "Aug 1" },
       { unit: "Site B12", nights: 2, from: "Aug 8" },
@@ -81,7 +81,7 @@ export const MANAGE: Record<"upper-pines" | "leo", ManageWatch> = {
       { id: "017", name: "Site 017", note: "Canyon Campground (sites 1⁠–⁠24)" },
       { id: "021", name: "Site 021", note: "Canyon Campground (sites 1⁠–⁠24)" },
       { id: "031", name: "Site 031", note: "Canyon Campground (sites 25⁠–⁠77) · alerted before", alerted: true },
-      { id: "042", name: "Site 042", note: "Canyon Campground (sites 25⁠–⁠77)" },
+      { id: "046", name: "Site 046", note: "Canyon Campground (sites 25⁠–⁠77)" },
       { id: "B12", name: "Site B12", note: "Beach Campground" },
       { id: "B20", name: "Site B20", note: "Beach Campground" },
     ],
@@ -99,7 +99,7 @@ export const HOLD = {
 
 /** The site the bot has in its ReserveCalifornia cart (ClaimFlow). */
 export const CLAIM = {
-  unit: "Site 042",
+  unit: "Site 046",
   place: "Leo Carrillo State Park — Canyon Campground (sites 25⁠–⁠77)",
   stay: "Aug 8–10",
   nights: 2,
