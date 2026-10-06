@@ -20,6 +20,8 @@ const PICKS = [
   ["b6-calendar", "b6-calendar-recraft_recraft_v4_1-1.webp", [640]],
   ["e1-explore-wide", "e1-explore-wide-bfl_flux_pro_1_1_ultra-2.jpeg", [2560, 1440, 828]],
   ["e2-map", "e2-map-recraft_recraft_v4_1-1.webp", [1280, 828]],
+  ["n1-newwatch-wide", "n1-newwatch-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  ["w1-watches-wide", "w1-watches-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
 ];
 
 // Per-pick fixes, applied before resizing:

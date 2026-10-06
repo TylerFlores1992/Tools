@@ -162,8 +162,9 @@ Mode: **Operate**. The brand lives in the frame; the work area is CampHawk's own
 - **One frame for every app screen:** the forest band holds the header (its tabs now link the
   screens, marked current) and the screen's title; the first card docks up across the band's
   edge by `--gh-dock`, the way search does on the home page; paper below; the forest footer.
-  Explore's band carries a photo (the valley at blue hour, its campsite lights along the river);
-  New watch and Your watches stay plain, so the form and the list lead.
+  Each band carries a photo with one warm light: Explore the valley and its campsite lights,
+  New watch an empty campsite under Half Dome, Your watches a fire lookout keeping watch (the
+  last two added at the owner's request after the first review; they started plain).
 - **Shared controls** are CampHawk's, ported to `src/lab/camphawk/ui/`: `DatePicker` (two ISO
   dates, a roving-tab grid, cross-month strip), `NightsPicker`, `FilterPanel`, `RadioChips`,
   `Chip`, `Collapsible`, `date.ts`. Labels are sentence case at 13px, not CampHawk's 11px caps.
@@ -235,4 +236,6 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | e1-explore-wide | A | Flux 1.1 Ultra | Explore's band (2026-10-06): a valley at blue hour, campsite lights along the river. The first try read as a city; the second asked for about ten lone lights. Cinema bars cropped by `export.mjs`. |
 | e2-map | A | Recraft v4.1 | Explore's illustrated map: forest, a pale valley, a river and a lake, no labels. Softened 45% toward paper so pins read. |
 | c2-site-dusk | A | Flux 1.1 Ultra | Re-exported with a shadow lift (curve 0.78): it read as a black square at card size. |
+| n1-newwatch-wide | A | Flux 1.1 Ultra | New watch's band (owner's call, 2026-10-06): an empty campsite under Half Dome at blue hour, a lantern on the table. First try. |
+| w1-watches-wide | A | Flux 1.1 Ultra | Your watches' band: a fire lookout on a ridge, its window lit, over a misty valley. First try. |
 | badge-golden | A | Flux Kontext | The owner's pick: CampHawk's own badge with a warm sky, cut from its white field. Lab only. |

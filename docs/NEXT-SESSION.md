@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: all five screens built in the Golden hour look).*
+*Last updated: 2026-10-06 (CampHawk lab: five core screens live; band photos added; the rest of CampHawk mapped).*
 
 ## At a glance
 
@@ -40,20 +40,26 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    branch's preview link before it merges.
 
 ## Next up (in order)
-1. **CampHawk lab: the owner reviews all five Golden hour screens.** Start at
-   `/private/camphawk/golden-hour`; the header tabs and the lab bar's "Screens" link them all, and
-   every lab switch is in the URL (`?as=subscriber`, `plan=alerts`, `state=…`), so any state can be
-   linked. "View as" now has **Lapsed** (CampHawk's "Resubscribe" wording).
-   Critic (independent subagent, 2026-10-06): Explore 5.5, New watch 6, Watches 6, consistency 5.
-   Fixed after: open vs booked pins now differ by a tick, not hue alone; red only where you must
-   act (picked pin and card get an ink ring; favorites are ochre; "auto-cart reconnecting" isn't
-   a red card); decorative green and blue panels became plain cards; the provider outage is
-   neutral; the in-cart card has a blue "Check out on Recreation.gov" (a lab proposal); Explore's
-   "Nothing open" box no longer contradicts "1 with openings"; the search rail is sticky on desktop.
-   Left as CampHawk has them (its own primitives and words): caps tags, mid-dot meta lines,
-   "Auto-Cart" as the plan name, calendar above watch on result cards, the long "What we'll do"
-   explainer before the button on phones. Open design questions for the owner: New watch and Your
-   watches have plain forest bands (no photo) so the form and list lead; the critic would add art.
+1. **CampHawk lab: the rest of CampHawk in the Golden hour look.** The five core screens are
+   live (home, Explore, campground, New watch, Your watches; PR #14). Owner's calls, 2026-10-06:
+   **band photos on New watch and Your watches** (done: `n1` campsite under Half Dome, `w1` fire
+   lookout), and **keep the "Check out on Recreation.gov" button** on an in-cart watch (a lab
+   proposal; CampHawk's card has none). Every lab switch is in the URL (`?as=subscriber`,
+   `plan=alerts`, `state=…`). Not built yet, in priority order (campsite-finder `src/app/`):
+   - **Tier 1, the alert loop** (where paying campers land from a text): Manage watch
+     (`(app)/manage/[token]`), the one-tap action page (`w/[token]`), Claim a held site
+     (`claim/[id]`), Settings (`(app)/settings`: phone, auto-cart, plan, delete account),
+     Connect Recreation.gov (`connect`), Welcome after sign-up (`(app)/welcome`).
+   - **Tier 2, getting and keeping customers:** Pricing (`(app)/pricing`), Sign in and Sign up
+     (Clerk; restyle only), the Auto-cart explainer (`(app)/auto-cart`), the cancellation-alerts
+     landing (`(app)/campsite-cancellation-alerts`), the sold-out guide (`(app)/sold-out-campsite`).
+   - **Tier 3, search pages:** Camping by state (`camping`, `camping/[state]`), cabins, yurts and
+     group camping hubs and their state pages, Hardest to book, the two comparison pages
+     (`(app)/vs/campflare`, `(app)/vs/campnab`).
+   - **Tier 4, utility and legal:** Support, Data sources, SMS opt-in, Privacy, Terms.
+   - Out of scope: `admin/` (internal), `b/[token]` (a redirect, no page).
+   Critic (2026-10-06) had Explore 5.5, New watch 6, Watches 6; every colour-rule finding fixed.
+   Left as CampHawk has them: caps tags, mid-dot meta lines, "Auto-Cart" as the plan name.
    **CampHawk issues found while porting** (not changed there; listed in
    `docs/design/camphawk-home.md`, "Screens 3-5"): "This weekend" lands Saturday to Monday in US
    timezones (`thisWeekendRange` parses a date as UTC); a typed-but-unpicked place searches near
@@ -63,11 +69,11 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
    modify it. Its design rules (`.claude/skills/camphawk-design/SKILL.md`) bind every lab
    screen and win over references (that's why there's no glass).
-   **Art** (`studio/camphawk-round2/`, free credit only, $2.40 left; `generate.mjs` stops under $2):
-   `e1-explore-wide` (Explore's band), `e2-map` (the illustrated map, softened toward paper),
-   `c2` re-exported brighter, and the badge: `badge-golden-{80,120}.webp`, CampHawk's badge edited
-   with Flux Kontext (`l2-badge-golden` #1), cut out by `export.mjs`. Round-1 screens (`Nav.tsx`)
-   keep the original badge on purpose. Trail poster (B) is reference only.
+   **Art** (`studio/camphawk-round2/`, free credit only, $2.29 left; `generate.mjs` stops under
+   $2, so about four more Flux photos): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
+   watches) share `BandPhoto` and the `.gh-app-photo`/`.gh-app-scrim` rules (crop per photo via
+   `--gh-pos`/`--gh-pos-lg`; text over them measures 5.25:1 or better). Also `e2` (map), `c2`
+   (brightened), the badge (`badge-golden-*`). Round-1 screens keep the original badge on purpose.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
