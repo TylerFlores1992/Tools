@@ -24,12 +24,13 @@ export function PhotoHeader({ visitor }: { visitor: Visitor }) {
           ))}
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
-          {visitor === "subscriber" ? (
+          {visitor === "subscriber" || visitor === "member" ? (
             <span className="grid size-9 place-items-center rounded-full bg-ch-paper text-ch-meta font-extrabold text-ch-forest" aria-label="Account (signed in)">TF</span>
           ) : (
             <>
               <a href="#" className="whitespace-nowrap rounded-[10px] px-3 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10">Sign in</a>
-              {visitor === "signed-out" && <a href="#" className={buttonClasses({ size: "sm", className: "hidden min-h-11 whitespace-nowrap px-4 sm:inline-flex" })}>Sign up</a>}
+              {/* A wrapper hides it on phones: `hidden` on the link itself loses to the button's inline-flex. */}
+              {visitor === "signed-out" && <span className="hidden sm:contents"><a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 whitespace-nowrap px-4" })}>Sign up</a></span>}
             </>
           )}
         </div>

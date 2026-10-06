@@ -1,36 +1,41 @@
 // Example data for the campground mockup (lab only; nothing here is live or read from CampHawk).
 // "Today" is pinned to Jul 6, 2026 so the page tells the same story as the home page: site 042
-// at Upper Pines opens for Jul 18-21. September is a month we "couldn't check", to show that an
-// unread month is never drawn as fully booked (CampHawk's AvailabilityGrid rule).
+// at Upper Pines opens for Jul 18-21. The later months show CampHawk's other calendar states:
+// September couldn't be read (never drawn as booked), October is not open for booking (closed
+// for the season, its own mark), and November's request failed (an error, said in words).
 
 export const TODAY = "2026-07-06";
 
+/** `type` reads after the loop in a sentence ("Loop C, RV up to 35 ft"), so it is lower-case except for proper initialisms. */
 export type Site = { id: string; name: string; loop: string; type: string };
 
 export const SITES: Record<string, Site> = {
-  "009": { id: "009", name: "Site 009", loop: "Loop A", type: "Tent only" },
-  "042": { id: "042", name: "Site 042", loop: "Loop A", type: "Tent only" },
-  "063": { id: "063", name: "Site 063", loop: "Loop B", type: "Standard nonelectric" },
-  "088": { id: "088", name: "Site 088", loop: "Loop B", type: "Standard nonelectric" },
-  "101": { id: "101", name: "Site 101", loop: "Loop C", type: "RV, up to 35 ft" },
-  "117": { id: "117", name: "Site 117", loop: "Loop C", type: "Standard nonelectric" },
-  "130": { id: "130", name: "Site 130", loop: "Loop D", type: "Tent only" },
+  "009": { id: "009", name: "Site 009", loop: "Loop A", type: "tent only" },
+  "042": { id: "042", name: "Site 042", loop: "Loop A", type: "tent only" },
+  "063": { id: "063", name: "Site 063", loop: "Loop B", type: "standard nonelectric" },
+  "088": { id: "088", name: "Site 088", loop: "Loop B", type: "standard nonelectric" },
+  "101": { id: "101", name: "Site 101", loop: "Loop C", type: "RV up to 35 ft" },
+  "117": { id: "117", name: "Site 117", loop: "Loop C", type: "standard nonelectric" },
+  "130": { id: "130", name: "Site 130", loop: "Loop D", type: "tent only" },
 };
 
-type Month = { open: Record<string, string[]>; unknown?: boolean };
+type Month = { open: Record<string, string[]>; unknown?: boolean; closed?: boolean; error?: boolean };
 
 /** Open sites per night, by month ("YYYY-MM"). Nights not listed are fully booked. */
 export const MONTHS: Record<string, Month> = {
   "2026-07": { open: { "2026-07-09": ["117"], "2026-07-18": ["042"], "2026-07-19": ["042"], "2026-07-20": ["042"], "2026-07-27": ["088", "101"] } },
   "2026-08": { open: { "2026-08-02": ["063"], "2026-08-14": ["042", "130"], "2026-08-15": ["042", "130"], "2026-08-22": ["009"] } },
   "2026-09": { open: {}, unknown: true },
+  "2026-10": { open: {}, closed: true },
+  "2026-11": { open: {}, error: true },
 };
 export const FIRST_MONTH = "2026-07";
-export const LAST_MONTH = "2026-09";
+export const LAST_MONTH = "2026-11";
 
 export const CAMPGROUND = {
   name: "Upper Pines",
   place: "Yosemite Valley, CA",
+  stateName: "California",
   provider: "Recreation.gov",
   autoCart: true,
   description:

@@ -30,10 +30,13 @@ export const CAMPGROUNDS_ROUNDED = "8,000+";
 export const COVERAGE_SENTENCE =
   "Every Recreation.gov campground in all 50 states, plus state parks in 34 — and national, provincial and territorial parks in 12 of Canada's 13 provinces and territories.";
 
-/** Who the lab is pretending to be. CampHawk's pricing block has a branch for each. */
-export type Visitor = "signed-out" | "subscriber" | "app";
+/** Who the lab is pretending to be. CampHawk's pricing block has a branch for each; "member"
+    (signed in, no plan) sees the same pitch as signed out but a different watch button
+    (WatchCta's "Start free trial to watch"). */
+export type Visitor = "signed-out" | "member" | "subscriber" | "app";
 export const VISITORS: readonly { value: Visitor; label: string }[] = [
   { value: "signed-out", label: "Signed out" },
+  { value: "member", label: "Signed in" },
   { value: "subscriber", label: "Subscriber" },
   { value: "app", label: "In the app" },
 ];

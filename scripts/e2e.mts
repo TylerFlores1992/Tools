@@ -339,17 +339,34 @@ try {
     await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
+    // The answer comes first, in words, under the name.
+    await p.getByText("5 days with openings in July.").waitFor();
     // A month we couldn't read: no day is called booked, and the page says why.
-    await p.getByRole("button", { name: "Next month" }).click();
-    await p.getByRole("button", { name: "Next month" }).click();
+    const next = p.getByRole("button", { name: "Next month" });
+    await next.click();
+    await next.click();
     await p.getByRole("heading", { level: 2, name: "September 2026" }).waitFor();
     await p.getByText("Couldn't check this month").waitFor();
     assert.equal(await p.getByRole("button", { name: /September \d+, fully booked/ }).count(), 0, "unknown month is never booked");
-    assert.ok(await p.getByRole("button", { name: "Next month" }).isDisabled(), "no months past the example data");
-    // The watch button follows CampHawk's WatchCta labels.
-    await p.getByRole("link", { name: "Sign up to watch" }).waitFor();
+    // Not open for booking is its own state, not "booked".
+    await next.click();
+    await p.getByText("Not open for booking this month").waitFor();
+    assert.equal(await p.getByRole("button", { name: /October \d+, fully booked/ }).count(), 0, "closed month is never booked");
+    assert.ok((await p.getByRole("button", { name: /October \d+, not open for booking/ }).count()) > 20, "closed days say so");
+    // A failed read is said in words, as an alert, and is never booked either.
+    await next.click();
+    await p.getByRole("alert").filter({ hasText: "usually the reservation provider" }).waitFor();
+    assert.equal(await p.getByRole("button", { name: /November \d+, fully booked/ }).count(), 0, "failed month is never booked");
+    assert.ok(await next.isDisabled(), "no months past the example data");
+    // The watch buttons (band and day panel) follow CampHawk's WatchCta labels.
+    const watch = (name: string) => p.getByRole("link", { name, exact: true });
+    assert.equal(await watch("Sign up to watch").count(), 2);
+    await p.getByRole("radio", { name: "Signed in", exact: true }).click();
+    assert.equal(await watch("Start free trial to watch").count(), 2);
     await p.getByRole("radio", { name: "Subscriber" }).click();
-    await p.getByRole("link", { name: "Watch this campground" }).waitFor();
+    assert.equal(await watch("Watch this campground").count(), 2);
+    await p.getByRole("radio", { name: "In the app" }).click();
+    assert.equal(await watch("Subscribe to watch").count(), 2);
     // First come: the policy, not an empty calendar, and nothing to watch.
     await p.getByRole("radio", { name: "First come" }).click();
     await p.getByRole("heading", { level: 2, name: "First come, first served" }).waitFor();

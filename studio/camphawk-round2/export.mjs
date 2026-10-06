@@ -12,6 +12,7 @@ const PICKS = [
   ["c1-loop-dusk", "c1-loop-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1600, 900]],
   ["c2-site-dusk", "c2-site-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [800, 500]],
   ["c3-river-dusk", "c3-river-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [800, 500]],
+  ["c4-cliff-dusk", "c4-cliff-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [800, 500]],
   ["b1-poster-wide", "b1-poster-wide-recraft_recraft_v4_1-5.webp", [2560, 1440, 828]],
   ["b2-poster-tall", "b2-poster-tall-recraft_recraft_v4_1-1.webp", [1170, 828]],
   ["b3-watch", "b3-watch-recraft_recraft_v4_1-1.webp", [640]],
