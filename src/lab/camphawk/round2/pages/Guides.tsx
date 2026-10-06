@@ -50,7 +50,7 @@ function HoldClosed() {
 
 export function AutoCartGuide() {
   return (
-    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false} photo={{ art: ART.a4, pos: "50% 55%", posLg: "50% 55%" }}>
+    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["first", "What you need first"], ["recgov", "Recreation.gov"], ["rc", "ReserveCalifornia"], ["good-to-know", "Good to know"]]}>
         <Prose>
