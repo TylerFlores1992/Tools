@@ -25,6 +25,8 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
   const [tried, setTried] = useState(false);
   const [announce, setAnnounce] = useState("");
+  // A saved number is one line; the carrier-worded form opens only to change it.
+  const [editing, setEditing] = useState(false);
 
   if (start === "loading") {
     return (
@@ -48,7 +50,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
     }
     setBusy("save");
     setError(null);
-    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setDone(true); setAnnounce(`Text alerts on for ${phone.trim()}.`); window.setTimeout(() => setDone(false), 2000); }, 600);
+    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setEditing(false); setDone(true); setAnnounce(`Text alerts on for ${phone.trim()}.`); window.setTimeout(() => setDone(false), 2000); }, 600);
   };
   const turnOff = () => {
     setBusy("off");
@@ -59,15 +61,22 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
 
   return (
     <div className="grid gap-4">
-      {saved && !changed && (
+      {saved && (
         <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
           <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
           <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · <span className="whitespace-nowrap">{saved}</span></p>
-          <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
-            {busy === "off" ? "Turning off…" : "Turn off"}
-          </button>
+          {!editing && (
+            <span className="flex gap-2">
+              <button type="button" onClick={() => setEditing(true)} aria-expanded={editing} aria-controls="sms-form" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
+              <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+                {busy === "off" ? "Turning off…" : "Turn off"}
+              </button>
+            </span>
+          )}
         </div>
       )}
+      {(!saved || editing) && (
+      <div id="sms-form" className="grid gap-4">
       <p className="rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3 text-[14px] leading-relaxed text-ch-ink-2">
         <strong className="font-bold text-ch-ink">Text alerts are optional.</strong> CampHawk works fully with email alerts alone — you never need to give a phone number to create an account, subscribe, or use any feature. Adding your number and checking the box below is entirely voluntary, and you can skip it.
       </p>
@@ -106,6 +115,11 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
             </p>
           )}
         </div>
+      )}
+      {saved && editing && (
+        <button type="button" onClick={() => { setEditing(false); setPhone(saved); setTried(false); }} className="justify-self-start text-[14px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">Keep {saved}</button>
+      )}
+      </div>
       )}
       <p role="status" className="sr-only">{announce}</p>
       {error && <p role="alert" className="text-[14px] text-ch-alert-deep">{error}</p>}

@@ -488,7 +488,7 @@ try {
     await p.getByRole("radio", { name: "This weekend" }).click();
     await p.getByRole("complementary").getByText("Fri Jul 10 – Sun Jul 12").waitFor();
     // ReserveCalifornia gets the 8am hold, not the Recreation.gov auto-cart toggle.
-    await p.getByText("We can grab a site at 8am").waitFor();
+    await p.getByText("We can hold a site at the 8 AM release").waitFor();
     assert.equal(await p.getByRole("button", { name: /Add it to my cart automatically/ }).count(), 0);
     await p.getByRole("button", { name: "Start watching" }).click();
     await p.waitForURL(/\/watches\?/);
@@ -521,7 +521,7 @@ try {
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByText("3 of 6 watches running").waitFor();
-    for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 042", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.
     const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
@@ -540,9 +540,9 @@ try {
     await northPines.getByText("Auto-cart reconnecting").waitFor();
     assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
-    await p.getByRole("button", { name: "Queued for us to grab" }).click();
+    await p.getByRole("button", { name: "Holds you asked for" }).click();
     await p.getByRole("button", { name: "Call off the hold on 042" }).click();
-    assert.equal(await p.getByText("We'll grab Site 042 · 8 AM").count(), 0);
+    assert.equal(await p.getByText("8 AM hold: Site 042").count(), 0);
     // A provider not answering is a banner and a card state, not a broken watch.
     await p.getByLabel("ReserveCalifornia").selectOption("down");
     await p.getByText("ReserveCalifornia isn't responding", { exact: true }).waitFor();
@@ -590,7 +590,7 @@ try {
     await p.getByRole("heading", { name: "Watch removed" }).waitFor();
     // An 8am offer shows the site before anything happens, then confirms on a yes.
     await p.goto(`${GH}/manage?as=subscriber&watch=leo`);
-    await p.getByText(/^We.ll grab this for you$/).waitFor();
+    await p.getByRole("heading", { name: "Holds you asked for" }).waitFor();
     await p.getByRole("link", { name: "Hold it: Site 017" }).click();
     await p.waitForURL(/\/w\?action=hold-offer/);
     await p.getByRole("heading", { name: "Hold this site for you?" }).waitFor();
@@ -664,7 +664,7 @@ try {
     await p.waitForURL(/\/settings\?as=subscriber/);
     // Welcome: the Auto-Cart step only for a plan that includes it.
     await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
-    await p.getByRole("heading", { name: "You're subscribed — one last thing" }).waitFor();
+    await p.getByRole("heading", { name: "You're subscribed. Let's set up your alerts." }).waitFor();
     assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
@@ -725,7 +725,7 @@ try {
     await p.goto(`${GH}/camping`);
     await signIn(p);
     await p.waitForURL(`${GH}/camping`);
-    await p.getByText("across 47 states", { exact: false }).waitFor();
+    await p.getByText("These are the 47 states with enough campgrounds for a page of their own", { exact: false }).waitFor();
     // Under five campgrounds there's no page: a real 404, not a thin one.
     for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
       const res = await p.goto(`${GH}${missing}`);

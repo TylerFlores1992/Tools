@@ -4,7 +4,7 @@ import { Info } from "lucide-react";
 import { ART } from "../Art";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul } from "../LabPage";
+import { A, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
 import { CHECK_SECONDS, OPENINGS_STAT, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
@@ -42,8 +42,8 @@ function Disclaimer({ visitor }: { visitor: Parameters<typeof A>[0]["visitor"] }
 function HoldClosed() {
   if (RC_HOLD_OPEN) return null;
   return (
-    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Closed to new holds for now</span>}>
-      We paused ReserveCalifornia holds on {RC_HOLD_CLOSED_ON} while we make them more reliable. Your ReserveCalifornia watches still alert you as usual; below is how holds work when they reopen.
+    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
+      Since {RC_HOLD_CLOSED_ON}, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual. Below is how a hold works.
     </Callout>
   );
 }
@@ -52,6 +52,7 @@ export function AutoCartGuide() {
   return (
     <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false} photo={{ art: ART.n1, pos: "62% 55%", posLg: "50% 60%" }}>
       {({ visitor }) => (
+        <WithRail toc={[["first", "What you need first"], ["recgov", "Recreation.gov"], ["rc", "ReserveCalifornia"], ["good-to-know", "Good to know"]]}>
         <Prose>
           <P>Finding the cancellation is only half of it. The other half is getting the site before somebody else does — and CampHawk can do that part for you on <strong className="text-ch-ink">Recreation.gov</strong> and on <strong className="text-ch-ink">ReserveCalifornia</strong>. They work differently, because the two booking systems do, so they are explained separately below.</P>
 
@@ -88,14 +89,15 @@ export function AutoCartGuide() {
           <H2 id="good-to-know">Good to know</H2>
           <Ul items={[
             <><strong className="text-ch-ink">Why California needs the hand-off.</strong> A ReserveCalifornia cart belongs to the browser session that made it — a second session on the same account reads that cart as empty. So we cannot simply cart a site and leave it for you the way Recreation.gov allows; we hold it, you take it over, and the gap between those two is about two seconds.</>,
-            <><strong className="text-ch-ink">Holds are California only.</strong> CampHawk watches {inWords(SAME_SOFTWARE.length + 1)} state park systems that run on the same booking software — {SAME_SOFTWARE.slice(0, -1).join(", ")} and {SAME_SOFTWARE.at(-1)} alongside California — and <strong className="text-ch-ink">only ReserveCalifornia gets holds</strong>. For the others your alert carries a direct booking link: tap it on your phone and finish there. We would rather say so than offer a button we cannot honor.</>,
+            <><strong className="text-ch-ink">Holds are California only.</strong> Of the state park systems CampHawk watches, {inWords(SAME_SOFTWARE.length + 1)} run on the same booking software — {SAME_SOFTWARE.slice(0, -1).join(", ")} and {SAME_SOFTWARE.at(-1)} alongside California — and <strong className="text-ch-ink">only ReserveCalifornia gets holds</strong>. For the others your alert carries a direct booking link: tap it on your phone and finish there. We would rather say so than offer a button we cannot honor.</>,
             <><strong className="text-ch-ink">No standing setting on California, on purpose.</strong> A hold takes a real campsite off the market for everybody else watching it. That is not something to authorize weeks ahead in a settings screen, so it is authorized one release at a time, by you, the night before.</>,
             <><strong className="text-ch-ink">One grab per site.</strong> Once a specific site is carted for you, it won&apos;t be re-added — but a different site opening in the same campground still will.</>,
             <><strong className="text-ch-ink">Cancellations move fast.</strong> Getting it into your Recreation.gov cart buys you time, but Recreation.gov only holds a cart for a matter of minutes — check out promptly.</>,
             <>This automates <em>your own</em> account for personal use. Keep your watches current so it knows what to grab.</>,
           ]} />
-          <CtaBand title="Set up a watch, and let auto-cart do the fast part." action={<WatchCtaLink visitor={visitor} fullWidth={false} className="min-h-12 px-6" />} />
+          <CtaBand title="Set up a watch, and let auto-cart do the fast part." action={<WatchCtaLink visitor={visitor} fullWidth={false} onDark className="min-h-12 px-6" />} />
         </Prose>
+        </WithRail>
       )}
     </LabPage>
   );
@@ -105,6 +107,7 @@ export function CancellationAlerts() {
   return (
     <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false} photo={{ art: ART.e1, pos: "50% 55%", posLg: "50% 55%" }}>
       {({ visitor }) => (
+        <WithRail toc={[["how", "How they work"], ["speed", "How much speed matters"], ["free", "Check the free option first"], ["difference", "The two things that survive"], ["checklist", "What to ask of any service"], ["start", "If you want to try ours"]]}>
         <Prose>
           <P>A cancellation alert service watches a campground you could not book and tells you when a site frees up. Every one of them does that. What separates them is how fast they notice, which reservation systems they can see, and whether they can do anything about it other than tell you.</P>
 
@@ -140,6 +143,7 @@ export function CancellationAlerts() {
           <P>Searching is free — you can check availability across all {sources} systems without an account. <A href={ROUTES.explore} visitor={visitor}>Find your campground</A>, and if it is booked out, <A href={ROUTES.soldOut} visitor={visitor}>here is what actually works</A>. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>the plans are here</A>.</P>
           <Disclaimer visitor={visitor} />
         </Prose>
+        </WithRail>
       )}
     </LabPage>
   );
@@ -149,6 +153,7 @@ export function SoldOutGuide() {
   return (
     <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." dock={false} photo={{ art: ART.a1, pos: "62% 70%", posLg: "50% 72%" }}>
       {({ visitor }) => (
+        <WithRail toc={[["how-often", "How often sites come back"], ["windows", "Sold out, or not open yet?"], ["cancellations", "Why sites come back"], ["what-works", "What to actually do"], ["camphawk", "Where CampHawk fits"]]}>
         <Prose>
           <P>Sold out is rarely final. Reservations get canceled, held carts expire, and parks put inventory back. The problem is that the site is usually gone again within minutes, so the question is not whether one will appear — it is whether you will be looking at the moment it does.</P>
 
@@ -186,6 +191,7 @@ export function SoldOutGuide() {
           <P><A href={ROUTES.explore} visitor={visitor}>Find your campground</A> — searching is free. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
           <Disclaimer visitor={visitor} />
         </Prose>
+        </WithRail>
       )}
     </LabPage>
   );

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
@@ -189,9 +189,14 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         {pickedSites.length > 0 && (
           <ul className="mt-3 border-t border-ch-line">
             {pickedSites.map((s) => (
-              <li key={s.id} className="border-b border-ch-line py-3 last:border-b-0">
-                <p className="font-ch-display text-[16px] font-bold text-ch-ink">{s.name}</p>
-                <p className="text-[14px] text-ch-ink-2">{s.loop}, {s.type}</p>
+              <li key={s.id} className="flex items-center gap-3 border-b border-ch-line py-3 last:border-b-0">
+                <span className="min-w-0 flex-1">
+                  <span className="block font-ch-display text-[16px] font-bold text-ch-ink">{s.name}</span>
+                  <span className="block text-[14px] text-ch-ink-2">{s.loop}, {s.type}</span>
+                </span>
+                {/* An open site gets you there: the blue hand-off to the booking site (lab change;
+                    CampHawk's day panel only offers a watch). */}
+                <a href="#" aria-label={`Book ${s.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 shrink-0 px-4" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
               </li>
             ))}
           </ul>

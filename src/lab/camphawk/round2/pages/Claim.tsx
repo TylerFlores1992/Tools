@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { AlertTriangle, Check, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { LabSelect } from "../AppParts";
@@ -42,7 +42,7 @@ const COPY = {
   },
   app: {
     prepareTitle: "Sign in and we will hand it over",
-    prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes to ReserveCalifornia, never to us.",
+    prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia — we never see it or save it.",
     prepareCta: "Sign in to ReserveCalifornia",
     waitingTitle: "Waiting for you to sign in",
     waitingBody: "Sign in in that window, then close it. Nothing has been released yet — your site is still ours.",
@@ -70,7 +70,7 @@ function Step({ tone, title, body, children }: { tone: "todo" | "busy" | "done";
     <div className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
       <div className="flex gap-3">
         <span aria-hidden="true" className={cx("grid size-8 shrink-0 place-items-center rounded-full", tone === "done" ? "bg-ch-ink text-ch-white" : "bg-ch-shell text-ch-ink")}>
-          {tone === "done" ? <Check className="size-4" /> : tone === "busy" ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" /> : <span className="text-[14px] font-extrabold">1</span>}
+          {tone === "done" ? <Check className="size-4" /> : tone === "busy" ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" /> : <ChevronRight className="size-4" />}
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{tone === "done" ? "Done: " : tone === "busy" ? "Waiting: " : "Next: "}</span>{title}</p>

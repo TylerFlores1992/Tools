@@ -194,14 +194,14 @@ function HoldExplainer() {
           <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
         </div>
         {!RC_HOLD_OPEN && (
-          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Closed to new holds for now</span>}>
-            We paused the hold beta on {RC_HOLD_CLOSED_ON} while we make it more reliable. ReserveCalifornia watches still alert you as usual.
+          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
+            Since {RC_HOLD_CLOSED_ON}, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
           </Callout>
         )}
         <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
           <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
           <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
-          {RC_HOLD_OPEN ? steps : <Collapsible label="How it works when it reopens" className="mt-5">{steps}</Collapsible>}
+          {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
           <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
         </div>
       </div>

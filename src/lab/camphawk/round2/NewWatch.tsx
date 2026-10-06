@@ -283,14 +283,16 @@ export function NewWatch() {
                 }
               }}
             >
+              {/* Rows carry a favorite button as well as the pick, so they're a group of buttons
+                  reached with the down arrow, not a listbox (a listbox can't hold buttons). */}
+              <p id="nw-cg-hint" className="sr-only">Matching campgrounds appear below as you type. Press the down arrow to reach them.</p>
               <div className="relative">
                 <input
                   ref={inputRef}
                   id="nw-cg"
-                  role="combobox"
-                  aria-autocomplete="list"
-                  aria-expanded={shown}
-                  aria-controls={shown ? "nw-cg-list" : undefined}
+                  type="search"
+                  aria-controls="nw-cg-list"
+                  aria-describedby="nw-cg-hint"
                   value={q}
                   onFocus={() => setPickerOpen(true)}
                   onChange={(e) => { setQ(e.target.value); setPickerOpen(true); setChosenCg(null); }}
@@ -301,7 +303,7 @@ export function NewWatch() {
                 {chosen && canFavorite && <FavoriteHeart favorite={favorites.has(chosen.id)} onToggle={() => toggleFavorite(chosen.id)} name={chosen.name} className="absolute right-1.5 top-1/2 -translate-y-1/2" />}
               </div>
               {shown && (
-                <div id="nw-cg-list" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
+                <div id="nw-cg-list" role="group" aria-label="Matching campgrounds" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
                   {canFavorite && favoriteRows.length > 0 && (
                     <>
                       <p className="border-b border-ch-line bg-ch-ochre-soft px-3.5 py-2 text-[13px] font-extrabold text-ch-ochre-ink">Your favorites</p>
@@ -411,17 +413,17 @@ export function NewWatch() {
             {canRcHold && offer === "promise" && (
               <div className={cx(panel, "mt-6")}>
                 <p className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-[15px] font-bold text-ch-ink">We can grab a site at 8am</span>
+                  <span className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</span>
                   <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">Beta</span>
                 </p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8am. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
                 <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</p>
               </div>
             )}
             {canRcHold && offer === "upsell" && (
               <div className={cx(panel, "mt-6")}>
-                <p className="text-[15px] font-bold text-ch-ink">Grabbing a site at 8am is on the Auto-Cart plan</p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8am. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                <p className="text-[15px] font-bold text-ch-ink">8 AM holds are on the Auto-Cart plan</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
               </div>
             )}
             {/* The action sits under the fields it submits (CampHawk puts it in the side panel, which

@@ -9,7 +9,7 @@ import { Tag } from "../../ui/Tag";
 import { pricePhrase, priceShort, type Visitor } from "../../data";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, LabNote, LabPage } from "../LabPage";
+import { A, LabNote, LabPage, WithRail } from "../LabPage";
 import { withVisitor } from "../labState";
 import { useUrlState } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
@@ -55,7 +55,7 @@ const off = "disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-i
 function Section({ title, blurb, children, id }: { title: string; blurb?: ReactNode; children: ReactNode; id: string }) {
   return (
     <section aria-labelledby={id} className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
-      <h2 id={id} className="font-ch-display text-[22px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">{title}</h2>
+      <h2 id={id} className="scroll-mt-6 font-ch-display text-[22px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">{title}</h2>
       {blurb && <p className="mt-1.5 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">{blurb}</p>}
       <div className="mt-5 grid gap-4">{children}</div>
     </section>
@@ -307,6 +307,7 @@ export function Settings() {
         const guest = visitor === "app";
         const textOn = sms === "saved";
         return (
+          <WithRail toc={[["s-reach", "How we reach you"], ["s-cart", "Auto-cart"], ["s-sub", "Subscription"], ["s-account", "Account"], ["s-delete", guest ? "Delete your data" : "Delete account"]]}>
           <div className="grid max-w-[760px] gap-5">
             {guest ? (
               <Section id="s-reach" title="How we reach you" blurb="You're using CampHawk without an account. When a site opens up, the alert comes to this device as a notification.">
@@ -350,6 +351,7 @@ export function Settings() {
             </Section>
             {guest && <p className="text-center text-[13px] text-ch-ink-2">CampHawk app build 1.4 (22)</p>}
           </div>
+          </WithRail>
         );
       }}
     </LabPage>

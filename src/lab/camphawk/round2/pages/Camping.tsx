@@ -125,7 +125,7 @@ export function CampingHub() {
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", null]]} />
-          <div className="mt-5"><Lead><p>We track live availability at {usTotal.toLocaleString("en-US")} bookable campgrounds across {STATES.length} states — national forests, state parks and everything in between. Pick a state to see what we cover there.</p></Lead></div>
+          <div className="mt-5"><Lead><p>These are the {STATES.length} states with enough campgrounds for a page of their own: {usTotal.toLocaleString("en-US")} bookable campgrounds, national forests, state parks and everything in between. Pick a state to see what we cover there. (Our full catalog is {CAMPGROUNDS_ROUNDED} campgrounds across the US and Canada.)</p></Lead></div>
           <ul aria-label="Kinds of site" className="mt-5 flex flex-wrap gap-2">
             {HUBS.map((h) => (
               <li key={h.slug}><Link href={withVisitor(`${ROUTES.camping}/${h.slug}`, visitor)} className="inline-flex min-h-11 items-center rounded-ch-chip border border-ch-line bg-ch-card px-4 text-[15px] font-bold text-ch-ink hover:border-ch-ink-2">{h.heading}</Link></li>

@@ -59,7 +59,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        {offered ? <Tag kind="paused" mark="offered">Offered</Tag> : <Tag kind="watch" mark="queued">Queued</Tag>}
+        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="queued">Asked</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -92,7 +92,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
-          {asked.length > 0 && <Tag kind="watch" mark="queued">We&apos;ll grab {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`} · 8 AM</Tag>}
+          {asked.length > 0 && <Tag kind="watch" mark="queued">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
           {carted && <Tag kind="cart">{carted.length === 1 ? "In your cart" : `${carted.length} in your cart`}</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
@@ -134,12 +134,12 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       {(offered.length > 0 || asked.length > 0) && (
         <div className="mt-3 grid gap-2 border-t border-ch-line pt-3">
           {offered.length > 0 && (
-            <Collapsible label="Available to hold" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
+            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
               <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
           {asked.length > 0 && (
-            <Collapsible label="Queued for us to grab" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
+            <Collapsible label="Holds you asked for" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
               <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}

@@ -26,13 +26,13 @@ export const PLANS: readonly Plan[] = ["autocart", "alerts"];
 /** WatchCta: one control, a label per visitor, never a price. A subscriber goes to New watch
     with whatever is known filled in. */
 export function WatchCtaLink({
-  visitor, label = "Start a watch", campgroundId, start, end, variant = "primary", fullWidth = true, className,
-}: { visitor: Visitor; label?: string; campgroundId?: string; start?: string | null; end?: string | null; variant?: ButtonVariant; fullWidth?: boolean; className?: string }) {
+  visitor, label = "Start a watch", campgroundId, start, end, variant = "primary", fullWidth = true, onDark = false, className,
+}: { visitor: Visitor; label?: string; campgroundId?: string; start?: string | null; end?: string | null; variant?: ButtonVariant; fullWidth?: boolean; onDark?: boolean; className?: string }) {
   const q = new URLSearchParams({ ...(campgroundId ? { campground: campgroundId } : {}), ...(start && end ? { start, end } : {}) }).toString();
   const href = canWatch(visitor) ? withVisitor(`${ROUTES.newWatch}${q ? `?${q}` : ""}`, visitor) : "#";
   // Only a subscriber's button starts a watch (green: it's how you get a site). Everyone else's
   // is a sign-up or a trial, so it's the ink button (lab change; CampHawk greens both).
-  const v = canWatch(visitor) || variant !== "primary" ? variant : "ink";
+  const v = canWatch(visitor) || variant !== "primary" ? variant : onDark ? "paper" : "ink";
   return <Link href={href} className={buttonClasses({ variant: v, fullWidth, className })}>{watchCtaLabel(visitor, label)}</Link>;
 }
 

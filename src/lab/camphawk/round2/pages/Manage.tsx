@@ -22,7 +22,7 @@ import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
 // SiteMuteList.tsx). The token in the link is the credential, so a tapped alert opens it signed
 // out. What it keeps on purpose:
 // - "Open now" first, with when we last saw it: a last-seen record, not a live look.
-// - "We'll grab these" above the offers: a commitment the bot acts on at 8 AM.
+// - "Holds you asked for" above the offers: a commitment the bot acts on at 8 AM.
 // - Offers read as offers, not availability ("open" would send someone to a site they can't take).
 // - A rejected date edit stays open with the reason, so the typed dates aren't lost.
 // - Remove is last, with an in-page confirm.
@@ -138,11 +138,13 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
   };
 
   return (
-    <div className="grid max-w-[880px] gap-5">
+    <div className="grid gap-5">
       {/* It sits on the band's photo, above the card that docks into it: paper type, underlined. */}
       <Link href={back} className="inline-flex min-h-11 items-center gap-1 justify-self-start text-[15px] font-bold text-ch-paper underline underline-offset-[3px] hover:decoration-2">
         <ChevronLeft aria-hidden="true" className="size-4" /> Back to watches
       </Link>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+      <div className="grid min-w-0 content-start gap-5">
       <Card state={active ? "default" : "paused"} className="p-5 shadow-ch-pop sm:p-7">
         <div data-card-dim>
           <div className="mb-3 flex flex-wrap items-center gap-1.5">
@@ -205,7 +207,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       {w.requested.length > 0 && (
         <section aria-labelledby="grab" className="rounded-ch-card border border-ch-ochre-line bg-ch-ochre-soft p-5">
-          <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">{w.requested.length === 1 ? "We’ll grab this for you" : "We’ll grab these for you"}</h2>
+          <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
           <ul className="mt-2 divide-y divide-ch-ochre-line">
             {w.requested.map((r) => <li key={r.unit} className="flex justify-between py-2.5 text-[16px]"><span className="font-bold text-ch-ink">{r.unit}</span><span className="text-ch-ink-2">{r.release}</span></li>)}
           </ul>
@@ -215,7 +217,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       {w.offered.length > 0 && (
         <section aria-labelledby="offered" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
-          <h2 id="offered" className="text-[14px] font-extrabold text-ch-ink-2">Opening {releaseShort()}</h2>
+          <h2 id="offered" className="text-[14px] font-extrabold text-ch-ink-2">Sites you can hold at {releaseShort()}</h2>
           <ul className="mt-2 divide-y divide-ch-line">
             {w.offered.map((o) => (
               <li key={o.unit} className="flex flex-wrap items-center gap-3 py-3">
@@ -227,10 +229,13 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               </li>
             ))}
           </ul>
-          <p className="mt-1 text-[14px] text-ch-ink-2">Only ask for one you actually want — while we hold it, nobody else can book it.</p>
+          <p className="mt-1 text-[14px] text-ch-ink-2">{w.requested.length > 0 ? `You’ve already asked us to hold ${w.requested.map((x) => x.unit).join(" and ")}. Ask for another only if you’d take either — while we hold a site, nobody else can book it.` : "Only ask for one you actually want — while we hold it, nobody else can book it."}</p>
         </section>
       )}
 
+      </div>
+      {/* Wide screens: the watch and its sites on the left, the settings and history beside it. */}
+      <div className="grid content-start gap-5">
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
         <Collapsible label="Alerts sent" summary={`${w.alerts.length} sent`}>
@@ -260,6 +265,8 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
         )}
       </div>
       <LabNote>Example watch, as if today were Monday, July 6.</LabNote>
+      </div>
+      </div>
     </div>
   );
 }

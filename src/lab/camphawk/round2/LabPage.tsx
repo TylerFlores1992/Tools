@@ -168,6 +168,28 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
   );
 }
 
+/** A page column with an "On this page" rail beside it on wide screens (the right half of a
+    1440px screen was empty paper). Phones get the column only: a list there would push the
+    content below the fold. */
+export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly [id: string, label: string]>; children: ReactNode; extra?: ReactNode }) {
+  return (
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-16">
+      <div className="min-w-0">{children}</div>
+      <aside className="hidden lg:block">
+        <nav aria-label="On this page" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6">
+          <p className="text-[13px] font-extrabold text-ch-ink-2">On this page</p>
+          <ul className="mt-2 grid">
+            {toc.map(([id, label]) => (
+              <li key={id}><a href={`#${id}`} className="flex min-h-11 items-center text-[15px] text-ch-ink underline-offset-2 hover:underline">{label}</a></li>
+            ))}
+          </ul>
+          {extra}
+        </nav>
+      </aside>
+    </div>
+  );
+}
+
 /** A note for reviewers, never part of the product: dashed, labeled "Lab", always outside the
     product's own cards so nobody mistakes it for CampHawk copy. */
 export function LabNote({ children, className }: { children: ReactNode; className?: string }) {

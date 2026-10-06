@@ -12,6 +12,7 @@ import { LabNote, LabPage } from "../LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
 import { EMAIL } from "./alert-data";
+import { CHECK_SECONDS } from "./tier2-data";
 
 // Tier 1: Welcome after sign-up (campsite-finder src/app/(app)/welcome). One setup step right
 // after an account is made, or on the way back from checkout: email on or off, an optional text
@@ -35,7 +36,7 @@ export function Welcome() {
   const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
   // One title per screen: the band says it, the card doesn't repeat it.
   const [viewer] = useVisitor();
-  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed — one last thing" : "You're in. How should we reach you?";
+  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed. Let's set up your alerts." : "You're in. How should we reach you?";
   return (
     <LabPage
       page="Welcome"
@@ -63,7 +64,8 @@ export function Welcome() {
         const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
-          <div className="grid max-w-[720px] gap-4">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,720px)_minmax(0,320px)] lg:items-start">
+          <div className="grid min-w-0 gap-4">
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
@@ -98,6 +100,19 @@ export function Welcome() {
             </div>
           </div>
           {from === "checkout" && visitor !== "subscriber" && <LabNote>The after-checkout version is for a subscriber: switch View as to Subscriber.</LabNote>}
+          </div>
+          <aside aria-labelledby="w-next" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6">
+            <h2 id="w-next" className="font-ch-display text-[19px] font-extrabold text-ch-ink">What happens next</h2>
+            <ol className="mt-3 grid gap-3 text-[15px] leading-relaxed text-ch-ink-2">
+              {[
+                `Start a watch on a booked campground. We check it every ${CHECK_SECONDS} seconds, around the clock.`,
+                "The moment a site frees up, we tell you by every channel you've turned on, at once.",
+                subscribed && plan === "autocart" ? "On Recreation.gov, auto-cart puts it straight in your cart. You check out." : "You book it on the booking site, while it's still open.",
+              ].map((line, i) => (
+                <li key={i} className="flex gap-3"><span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span><span>{line}</span></li>
+              ))}
+            </ol>
+          </aside>
           </div>
         );
       }}
