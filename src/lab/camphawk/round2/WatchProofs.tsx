@@ -17,7 +17,7 @@ function Tile({ title, body, className, children }: { title: string; body: strin
     <div className={cx("flex flex-col rounded-[22px] border border-ch-line bg-ch-card p-6 sm:p-8", className)}>
       <h3 className="font-ch-display text-[24px] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{title}</h3>
       <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">{body}</p>
-      <div className="mt-6 flex-1 content-end">{children}</div>
+      <div className="mt-6">{children}</div>
     </div>
   );
 }
@@ -124,7 +124,7 @@ export function WatchProofs() {
   return (
     <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
       <Tile title={ALERTS.title} body={ALERTS.body} className="lg:col-span-7"><CheckLog /></Tile>
-      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] object-cover object-[50%_75%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
+      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] bg-ch-forest object-cover object-[50%_80%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
       <Tile title={AUTOCART.title} body={AUTOCART.body} className="lg:col-span-7"><HeldCart /></Tile>
       <Tile title={SEARCH.title} body={SEARCH.body} className="lg:col-span-6"><MiniResults /></Tile>
       <Tile title={FLEXIBLE.title} body={FLEXIBLE.body} className="lg:col-span-6"><DateWindow /></Tile>

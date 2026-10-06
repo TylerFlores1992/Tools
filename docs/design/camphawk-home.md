@@ -96,9 +96,17 @@ Pages: `/private/camphawk/golden-hour` (A) and `/private/camphawk/trail-poster` 
 
 Changes from the contracts above, and why:
 - **A's light is dusk, not golden hour.** The model gave blue hour with a lantern-lit tent; the tent
-  is the one warm accent, which fits the color strategy. One photo (A1) serves every breakpoint,
-  cropped toward the tent on phones, so there is one tent. On phones, search and a compact alert
-  sit inside the hero; on desktop the alert sits on the photo and search docks across its edge.
+  is the one warm accent. One photo (A1) serves every breakpoint, so there is one tent. Below
+  1024px the search sits right under the intro and the tent shows in a window below it; on
+  desktop the alert sits on the photo and search docks across its edge.
+- **CampHawk's own design rules bind** (`campsite-finder/.claude/skills/camphawk-design`): green
+  only for an open site or an action, blue for the Recreation.gov hand-off, ochre only for "you
+  asked for this", every status in words (its `Tag` and `Card`, ported to `src/lab/camphawk/ui/`),
+  "Open for Jul 18-21" dates, one shadow system (`shadow-ch-pop`), and **no glass**: the
+  references' glass panel is out because the skill says it "reads as a different product". The
+  caps status tags are CampHawk's primitive, so they stay.
+- **"What a watch does"** shows each promise as a small piece of CampHawk's UI (a check log, the
+  held cart, a results list, a date window), labeled "Examples, not live data."
 - **B's first viewport is a hung print, not a full-bleed poster.** The poster's sky could not hold
   the headline and the actions. The headline and a real search field sit on paper; the tall poster
   hangs beside them with an example alert pinned to it like a ticket stub (the product proof).
@@ -126,8 +134,8 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | File | Direction | Source | Pick and notes |
 |---|---|---|---|
 | a1-hero-wide | A | Flux 1.1 Ultra | Blue-hour more than golden hour; tent right, misty ridges left. Needs a left scrim for text. |
-| a2-hero-tall | A | Flux 1.1 Ultra | Calm dusk sky top half, tent lower third. |
-| a3-site-dusk | A | Flux 1.1 Ultra | Picnic table, lit lantern, glowing tent at dusk. Replaced the near-black site post (2026-10-05). |
+| a2-hero-tall | A | Flux 1.1 Ultra | Retired 2026-10-06: a different tent from A1. A1 now serves every size. |
+| a3-phone-dusk | A | Flux 1.1 Ultra | A phone glowing on a picnic table at dusk, lantern, no tent (2026-10-06; replaced a tent shot so the page has one tent). |
 | a4-cta-dusk | A | Flux 1.1 Ultra | Lake at dusk, mug on warm-lit granite lower left. Replaced the daylight morning shot so the page has one light. |
 | b1-poster-wide | B | Recraft v4.1 | Hawk upper right, glowing tent by the river, sky upper left. |
 | b2-poster-tall | B | Recraft v4.1 | Hawk in a calm sky, canyon and river, tent at the foot. |

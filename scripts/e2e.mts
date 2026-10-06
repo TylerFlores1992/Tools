@@ -299,7 +299,7 @@ try {
     await p.goto(`${BASE}/private/camphawk/golden-hour`);
     await signIn(p);
     await p.waitForURL(`${BASE}/private/camphawk/golden-hour`);
-    for (const [path, hero] of [["golden-hour", ".gh-photo img"], ["trail-poster", ".tp-print img"]] as const) {
+    for (const [path, hero] of [["golden-hour", "img.gh-photo"], ["trail-poster", ".tp-print img"]] as const) {
       await p.goto(`${BASE}/private/camphawk/${path}`, { waitUntil: "networkidle" });
       await p.getByRole("heading", { level: 1, name: /already booked/ }).waitFor();
       const art = p.locator(hero).first();
@@ -313,6 +313,14 @@ try {
       await p.getByRole("radio", { name: "In the app" }).click();
       await p.getByRole("heading", { level: 2, name: /needs a subscription/ }).waitFor();
     }
+    // Golden hour rewrites CampHawk's "any N nights" for campers; a silent no-op replace would
+    // leave the system wording on the page.
+    await p.goto(`${BASE}/private/camphawk/golden-hour`, { waitUntil: "networkidle" });
+    await p.getByRole("radio", { name: "Signed out" }).click();
+    const text = await p.locator("main").innerText();
+    assert.doesNotMatch(text, /any N nights/, "golden hour: no system wording");
+    assert.match(text, /how many nights you need inside a window/, "golden hour: step 2 reworded");
+    assert.match(text, /how many nights you need, anywhere in a window/, "golden hour: pricing reworded");
     assert.deepEqual(errors, []);
     await ctx.close();
   });

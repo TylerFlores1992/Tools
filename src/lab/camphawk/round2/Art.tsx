@@ -7,8 +7,7 @@ const srcSet = (name: string, widths: readonly number[]) => widths.map((w) => `$
 
 export const ART = {
   a1: { name: "a1-hero-wide", widths: [828, 1440, 2560], w: 2560, h: 1429 },
-  a2: { name: "a2-hero-tall", widths: [828, 1170], w: 1170, h: 1755 },
-  a3: { name: "a3-site-dusk", widths: [600, 1200], w: 1200, h: 1490 },
+  a3: { name: "a3-phone-dusk", widths: [600, 1200], w: 1200, h: 1490 },
   a4: { name: "a4-cta-dusk", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   b1: { name: "b1-poster-wide", widths: [828, 1440, 2560], w: 2560, h: 1664 },
   b2: { name: "b2-poster-tall", widths: [828, 1170], w: 1170, h: 1800 },

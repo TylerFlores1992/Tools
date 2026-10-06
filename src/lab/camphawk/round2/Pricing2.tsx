@@ -8,6 +8,9 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 // its own. One elevation system (borders), no caps chips, reading sizes for the fine print.
 // `tone` follows the section ground: ink on paper, paper on forest.
 
+// Round-2 copy edit, as in GoldenHour's steps: no "any N nights". Pricing.tsx keeps CampHawk's words.
+const plainNights = (f: string) => f.replace("any N nights in a window", "how many nights you need, anywhere in a window");
+
 function Plan({ name, tier, features, recommended }: { name: string; tier: "base" | "autocart"; features: string[]; recommended?: boolean }) {
   return (
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
@@ -17,7 +20,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
-      <ul className="mt-5 grid gap-x-6 gap-y-2.5 border-t border-ch-line pt-5 xl:grid-cols-2">
+      <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
             <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-green" />
@@ -73,7 +76,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
         </div>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2">
-        <Plan name="Alerts" tier="base" features={BASE_FEATURES} />
+        <Plan name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)} />
         <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
       </div>
       <div className="mt-6 grid gap-x-14 gap-y-2 lg:grid-cols-2">
@@ -81,7 +84,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
           Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.
         </p>
         <p className="max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">
-          Prices in US dollars. Free for 7 days; cancel any time before you&apos;re charged. Launch pricing — your rate is locked in while you stay subscribed.
+          Prices in US dollars. The first 7 days are free.
         </p>
       </div>
     </div>
