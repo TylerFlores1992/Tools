@@ -696,6 +696,46 @@ try {
     await ctx.close();
   });
 
+  await check("lab search pages: thin pages don't exist, states and provinces stay apart, and no page claims a ranking or a competitor fact", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
+    const errors = watchErrors(p);
+    await p.goto(`${GH}/camping`);
+    await signIn(p);
+    await p.waitForURL(`${GH}/camping`);
+    await p.getByText("across 47 states", { exact: false }).waitFor();
+    // Under five campgrounds there's no page: a real 404, not a thin one.
+    for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
+      const res = await p.goto(`${GH}${missing}`);
+      assert.equal(res?.status(), 404, missing);
+    }
+    // The browser logs each deliberate 404 as a failed resource; only those may be in the log.
+    assert.ok(errors.every((e) => /404/.test(e)), errors.join(" | "));
+    errors.length = 0;
+    // A state page links down to its site types, and the breadcrumb leads back up.
+    await p.goto(`${GH}/camping/california`);
+    await p.getByRole("heading", { level: 1, name: "Campgrounds in California" }).waitFor();
+    await p.getByText("Booking goes through Recreation.gov and ReserveCalifornia.", { exact: false }).waitFor();
+    await p.getByRole("link", { name: "California yurt camping" }).click();
+    await p.waitForURL(/\/camping\/yurts\/california/);
+    await p.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Yurt Camping" }).click();
+    await p.waitForURL(/\/camping\/yurts$/);
+    await p.getByText("across 4 states, on Recreation.gov and 13 state park systems", { exact: false }).waitFor();
+    // Hardest to book: CampHawk's pick, not a ranking — no "#1", no percentages.
+    await p.goto(`${GH}/camping/hardest-to-book`);
+    await p.getByText("This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking.").waitFor();
+    assert.doesNotMatch(await p.locator("main").innerText(), /#\d|\d%/);
+    assert.equal(await p.getByRole("heading", { level: 2 }).first().innerText(), "Yosemite National Park");
+    // Comparison: no table, no competitor price; in the app, no price at all.
+    await p.goto(`${GH}/vs/campnab`);
+    await p.getByRole("heading", { name: "Start here: you might not need to pay anyone" }).waitFor();
+    assert.equal(await p.locator("table").count(), 0);
+    await p.goto(`${GH}/vs/campnab?as=app`);
+    await p.getByRole("heading", { name: "What CampHawk does" }).waitFor();
+    assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price in the app");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab looks: the Look menu switches the page and keeps the choice in the URL", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private/camphawk`);

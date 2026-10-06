@@ -35,6 +35,8 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/camphawk/golden-hour/claim", status: 200, contains: "Enter the password", absent: "hand it over" },
   { path: "/private/camphawk/golden-hour/settings", status: 200, contains: "Enter the password", absent: "How we reach you" },
   { path: "/private/camphawk/golden-hour/privacy", status: 200, contains: "Enter the password", absent: "Last updated" },
+  { path: "/private/camphawk/golden-hour/pricing", status: 200, contains: "Enter the password", absent: "Launch pricing" },
+  { path: "/private/camphawk/golden-hour/camping/california", status: 200, contains: "Enter the password", absent: "Big Sur" },
   { path: "/private/camphawk/round2/e2-map-828.webp", status: 401, contains: "This area is private." },
   { path: "/private/camphawk/hero-bg.webp", status: 401, contains: "This area is private." },
   { path: "/private/camphawk/round2/c1-loop-dusk-900.webp", status: 401, contains: "This area is private." },
