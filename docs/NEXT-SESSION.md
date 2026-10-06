@@ -10,7 +10,7 @@
 | Site | https://tylerflores.dev | Live. Merges to `main` deploy production automatically. |
 | Home hero | `/` | Live. Signed off by the owner. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
-| ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
+| ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Home page only so far. (`/lab/camphawk` redirects here.) |
 | CampHawk new looks | `/private/camphawk/looks` | Six mockups of the home page (same UI and palette, new backdrop and finish), plus the current design. Switch with **Look** in the lab bar. Waiting on the owner's pick. |
@@ -74,6 +74,15 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   tilting card was backward (the higher pick gains load); fixed, with a geometry test.
 - Formula reference in our own notation, each formula linked to its questions, plus the
   official ETCP PDF. Exam outline counts checked against ETCP's pages.
+- Practice test C (`set-c.ts`, 50 questions): weighted like the real exam by ETCP's Arena
+  outline (handbook rev. 5.0, Feb 2016: 1A 25, 1B 15, 1C 10, 2A 10, 2B 25, 2C 25, 3A 10, 3B 30
+  of 150; each area within one question of its share, tested). It uses ETCP's sample formats:
+  "1 and 2 only" lists and put-in-order items. The score card breaks results down by area.
+  Facts were checked against eCFR (OSHA 1910/1926), Crosby Applications & Warnings, CM Lodestar
+  manual, Prolyte manual, a Tomcat load table and ETCP's formula sheet, with sources named in
+  the explanations. Answer keys are spread across A–D (tested).
+  Left out on purpose: "taildown" and "cable puller" (in the outline, but no public definition
+  found), and an exact WRTB splice-efficiency figure (couldn't reach a primary source).
 - Progress is saved in the browser only (`stored.ts`).
 
 ### Private tab (`src/app/private/`, `src/proxy.ts`, `src/lib/private-auth.ts`)

@@ -65,6 +65,7 @@ const EXPECTED: Record<string, number> = {
   c15: 5.5 * 4,
   c21: 9500 * 0.5, // Crosby side-load table: 90° → 50%
   c27: 30, // Crosby shouldered eye bolt at 45°
+  c37: 75, // CM Lodestar manual: chain bag fill limit
   c39: 36, // 3 ft, 1910.23(c)(11)
   c43: 400 / 4,
   c48: (4200 * 1.0) / 8,
@@ -164,6 +165,12 @@ test("test C is weighted like the real Arena exam: each area within one question
     const n = c.filter((q) => q.area === a).length;
     assert.ok(Math.abs(n - share) <= 1, `${a}: ${n} questions, share ${share.toFixed(1)}`);
   }
+});
+
+test("test C's answer key is spread across A–D, so the letter gives nothing away", () => {
+  const c = PRACTICE_SETS.find((s) => s.slug === "c")!.questions;
+  const per = [0, 1, 2, 3].map((i) => c.filter((q) => q.answer === i).length);
+  assert.ok(per.every((n) => n >= 10 && n <= 15), `keys per letter: ${per.join(", ")}`);
 });
 
 test("sets of 25, 25 and 50, unique ids, four distinct options, a valid key and an explanation", () => {
