@@ -428,20 +428,21 @@ html:has(.gh) { background: var(--color-ch-forest); }
     background: linear-gradient(to left, color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 0%, transparent 70%);
   }
 }
-/* Explore's band: the valley at blue hour. Text sits on the dark slope and sky at the left; the
-   river and the campsite lights stay clear on the right. */
-.gh-explore-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 60% 70%; }
-@media (min-width: 1024px) { .gh-explore-photo { object-position: 50% 62%; } }
-/* Its scrim: the snow peaks and the river lights sit behind the header and the headline, so the
-   top and the left stay dark at every width (measured on rendered pixels, 2026-10-06). */
-.gh-explore-scrim {
+/* The app screens' band photos (Explore's valley, New watch's campsite, Your watches' lookout):
+   text sits at the left, the one warm light stays clear at the right. Each photo sets its crop
+   with --gh-pos (phones) and --gh-pos-lg (from 1024px). */
+.gh-app-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--gh-pos, 60% 70%); }
+@media (min-width: 1024px) { .gh-app-photo { object-position: var(--gh-pos-lg, 50% 62%); } }
+/* Their scrim: peaks and lights can sit behind the header and the headline, so the top and the
+   left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+.gh-app-scrim {
   background: linear-gradient(to bottom,
-    color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 0%,
-    color-mix(in srgb, var(--color-ch-forest) 66%, transparent) 55%,
-    color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 100%);
+    color-mix(in srgb, var(--color-ch-forest) 86%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 74%, transparent) 55%,
+    color-mix(in srgb, var(--color-ch-forest) 35%, transparent) 100%);
 }
 @media (min-width: 1024px) {
-  .gh-explore-scrim {
+  .gh-app-scrim {
     background:
       linear-gradient(to right,
         color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 // Round-2 art (public/private/camphawk/round2/, made by studio/camphawk-round2/). Plain <img>
 // with a width srcset: the files sit behind the private-area sign-in, which Next's image
 // optimizer can't pass. Decorative unless given alt text.
@@ -20,12 +22,14 @@ export const ART = {
   b6: { name: "b6-calendar", widths: [640], w: 640, h: 640 },
   e1: { name: "e1-explore-wide", widths: [828, 1440, 2560], w: 2560, h: 962 },
   e2: { name: "e2-map", widths: [828, 1280], w: 1280, h: 731 },
+  n1: { name: "n1-newwatch-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  w1: { name: "w1-watches-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
 } as const;
-type Piece = (typeof ART)[keyof typeof ART];
+export type Piece = (typeof ART)[keyof typeof ART];
 
-type Common = { alt?: string; className?: string; sizes?: string; eager?: boolean };
+type Common = { alt?: string; className?: string; sizes?: string; eager?: boolean; style?: CSSProperties };
 
-export function Art({ art, alt = "", className, sizes = "100vw", eager }: Common & { art: Piece }) {
+export function Art({ art, alt = "", className, sizes = "100vw", eager, style }: Common & { art: Piece }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -40,6 +44,7 @@ export function Art({ art, alt = "", className, sizes = "100vw", eager }: Common
       decoding="async"
       draggable={false}
       className={className}
+      style={style}
     />
   );
 }

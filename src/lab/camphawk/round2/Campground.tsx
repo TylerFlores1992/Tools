@@ -372,7 +372,7 @@ export function Campground() {
         </div>
       </main>
       )}
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

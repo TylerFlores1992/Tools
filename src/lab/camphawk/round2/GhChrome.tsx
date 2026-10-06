@@ -60,13 +60,20 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
 }
 
 /** The forest footer, same links as CampHawk's. */
-export function GhFooter() {
+const FOOTER_HREF: Record<(typeof FOOTER_LINKS)[number], string> = {
+  Support: ROUTES.support,
+  "Data sources": ROUTES.sources,
+  Terms: ROUTES.terms,
+  Privacy: ROUTES.privacy,
+};
+
+export function GhFooter({ visitor = "signed-out" }: { visitor?: Visitor }) {
   return (
     <footer className="bg-ch-forest">
         <div className="mx-auto flex max-w-[var(--gh-max)] flex-wrap items-center justify-between gap-3 px-5 py-7 text-[14px] text-ch-line sm:px-8">
           <span>© 2026 CampHawk</span>
-          <nav aria-label="Footer" className="flex gap-1">
-            {FOOTER_LINKS.map((l) => <a key={l} href="#" className="flex min-h-11 items-center px-2 hover:text-ch-white hover:underline">{l}</a>)}
+          <nav aria-label="Footer" className="flex flex-wrap gap-1">
+            {FOOTER_LINKS.map((l) => <Link key={l} href={withVisitor(FOOTER_HREF[l], visitor)} className="flex min-h-11 items-center px-2 hover:text-ch-white hover:underline">{l}</Link>)}
           </nav>
         </div>
     </footer>
@@ -74,7 +81,7 @@ export function GhFooter() {
 }
 
 /** The lab bar's way between Golden hour screens (the header tabs cover three of them). */
-export type Screen = "home" | "explore" | "campground" | "new" | "watches";
+export type Screen = "home" | "explore" | "campground" | "new" | "watches" | "other";
 const SCREENS: ReadonlyArray<{ screen: Screen; label: string; href: string }> = [
   { screen: "home", label: "Home", href: ROUTES.home },
   { screen: "explore", label: "Explore", href: ROUTES.explore },
@@ -97,6 +104,9 @@ export function ScreenLinks({ visitor, current = "home" }: { visitor: Visitor; c
           {s.label}
         </Link>
       ))}
+      <Link href={withVisitor(ROUTES.screens, visitor)} className="flex min-h-11 items-center whitespace-nowrap rounded-ch-chip px-2.5 font-bold underline underline-offset-2 hover:no-underline">
+        All screens
+      </Link>
     </nav>
   );
 }

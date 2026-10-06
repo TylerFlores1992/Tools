@@ -11,6 +11,32 @@ export const ROUTES = {
   newWatch: `${GH}/new`,
   watches: `${GH}/watches`,
   campground: `${GH}/campground`,
+  screens: `${GH}/screens`,
+  // Tier 1: the alert loop
+  manage: `${GH}/manage`,
+  action: `${GH}/w`,
+  claim: `${GH}/claim`,
+  settings: `${GH}/settings`,
+  connect: `${GH}/connect`,
+  welcome: `${GH}/welcome`,
+  // Tier 2: getting and keeping customers
+  pricing: `${GH}/pricing`,
+  signIn: `${GH}/sign-in`,
+  signUp: `${GH}/sign-up`,
+  autoCart: `${GH}/auto-cart`,
+  alerts: `${GH}/campsite-cancellation-alerts`,
+  soldOut: `${GH}/sold-out-campsite`,
+  // Tier 3: search pages
+  camping: `${GH}/camping`,
+  hardest: `${GH}/camping/hardest-to-book`,
+  vsCampflare: `${GH}/vs/campflare`,
+  vsCampnab: `${GH}/vs/campnab`,
+  // Tier 4: utility and legal
+  support: `${GH}/support`,
+  sources: `${GH}/sources`,
+  smsOptIn: `${GH}/sms-opt-in`,
+  privacy: `${GH}/privacy`,
+  terms: `${GH}/terms`,
 } as const;
 
 /** WatchCta: the label a watch button carries for this visitor. `label` is what a subscriber

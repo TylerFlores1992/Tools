@@ -12,7 +12,8 @@ import { DatePicker, type DateRange } from "../ui/DatePicker";
 import { NightsPicker } from "../ui/NightsPicker";
 import { RadioChips } from "../ui/RadioChips";
 import { addDays, formatRange, nightsBetween, thisWeekendRange, todayISO, type ISODate } from "../ui/date";
-import { AppBand, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
+import { ART } from "./Art";
+import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
 import { GhFooter, ScreenLinks } from "./GhChrome";
@@ -256,7 +257,7 @@ export function NewWatch() {
       </LabBar>
 
       <main id="main">
-        <AppBand visitor={visitor} current="new" title="New watch" />
+        <AppBand visitor={visitor} current="new" title="New watch" photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
@@ -480,7 +481,7 @@ export function NewWatch() {
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

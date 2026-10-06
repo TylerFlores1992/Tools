@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Heart } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses, type ButtonVariant } from "../ui";
@@ -9,6 +9,7 @@ import { HIT_AREA, HIT_BOX } from "../ui/hit";
 import { priceShort, type Visitor } from "../data";
 import { accountGate, canWatch, ROUTES, watchCtaLabel } from "./gates";
 import { PhotoHeader, type Tab } from "./GhChrome";
+import { Art, type Piece } from "./Art";
 import { withVisitor } from "./labState";
 
 // Pieces the Golden hour app screens (Explore, New watch, Watches) share, ported from
@@ -91,14 +92,27 @@ export function FavoriteHeart({ favorite, onToggle, name, className }: { favorit
   );
 }
 
+/** A band's photo and its scrim. `pos`/`posLg` keep the photo's one warm light in view when the
+    band crops it (phones, then 1024px and up). */
+export function BandPhoto({ art, alt = "", pos, posLg }: { art: Piece; alt?: string; pos: string; posLg: string }) {
+  return (
+    <>
+      <Art art={art} eager alt={alt} sizes="(max-width: 1023px) 1440px, 100vw" className="gh-app-photo" style={{ "--gh-pos": pos, "--gh-pos-lg": posLg } as CSSProperties} />
+      <div aria-hidden="true" className="gh-app-scrim absolute inset-0" />
+    </>
+  );
+}
+
 /** The forest band an app screen opens with: the header, then the screen's title in paper
     type. `dock` is how far the first card below rises into it. */
-export function AppBand({ visitor, current, title, sub, children, photo }: { visitor: Visitor; current: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode }) {
+export function AppBand({ visitor, current, title, sub, children, photo, dock = true }: { visitor: Visitor; current?: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode; dock?: boolean }) {
   return (
     <section className="relative isolate overflow-hidden bg-ch-forest">
       {photo}
       <PhotoHeader visitor={visitor} current={current} />
-      <div className="relative mx-auto max-w-[var(--gh-max)] px-5 pb-[calc(var(--gh-dock)+28px)] pt-6 sm:px-8 sm:pt-10">
+      {/* A photo band with only a title gets more room on wide screens, so the picture reads as
+          a place, not a strip; the title sits low, near the card it introduces. */}
+      <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-10", dock ? "pb-[calc(var(--gh-dock)+28px)]" : "pb-[clamp(40px,5vw,72px)]", Boolean(photo) && !sub && "lg:pt-[clamp(72px,7vw,128px)]")}>
         <h1 className="max-w-[18ch] text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper">{title}</h1>
         {sub && <div className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">{sub}</div>}
         {children}
@@ -108,7 +122,7 @@ export function AppBand({ visitor, current, title, sub, children, photo }: { vis
 }
 
 /** Lab switch styling shared by the screens' lab bars. */
-export const labSelect = "min-h-11 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
+export const labSelect = "min-h-11 min-w-0 max-w-[calc(100vw-5.5rem)] cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
 
 export function LabSelect<T extends string>({ label, short, value, options, onChange }: { label: string; short: string; value: T; options: ReadonlyArray<readonly [T, string]>; onChange: (v: T) => void }) {
   return (

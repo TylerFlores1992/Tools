@@ -212,7 +212,7 @@ export function GoldenHour() {
           </div>
         </section>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

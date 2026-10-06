@@ -162,8 +162,9 @@ Mode: **Operate**. The brand lives in the frame; the work area is CampHawk's own
 - **One frame for every app screen:** the forest band holds the header (its tabs now link the
   screens, marked current) and the screen's title; the first card docks up across the band's
   edge by `--gh-dock`, the way search does on the home page; paper below; the forest footer.
-  Explore's band carries a photo (the valley at blue hour, its campsite lights along the river);
-  New watch and Your watches stay plain, so the form and the list lead.
+  Each band carries a photo with one warm light: Explore the valley and its campsite lights,
+  New watch an empty campsite under Half Dome, Your watches a fire lookout keeping watch (the
+  last two added at the owner's request after the first review; they started plain).
 - **Shared controls** are CampHawk's, ported to `src/lab/camphawk/ui/`: `DatePicker` (two ISO
   dates, a roving-tab grid, cross-month strip), `NightsPicker`, `FilterPanel`, `RadioChips`,
   `Chip`, `Collapsible`, `date.ts`. Labels are sentence case at 13px, not CampHawk's 11px caps.
@@ -209,6 +210,74 @@ more than two weeks out gets CampHawk's "expect it to be quiet" note.
 - Explore shows `Search failed (502)` on a failed search (an HTTP code, against its own copy rule).
 - New watch's ReserveCalifornia note spells "cancelled" (US: "canceled").
 
+## Every other screen: Tiers 1-4, in the Golden hour look (2026-10-06)
+All of CampHawk's user-facing pages now have a lab version (`/private/camphawk/golden-hour/screens`
+lists them by tier, with their switches). Out of scope: `admin/` (internal) and `b/[token]` (a
+redirect). Specs were written from campsite-finder (read-only); the words are CampHawk's except
+where a lab change is noted in the page file's header comment.
+
+**Two frames.** App and content pages use `LabPage` (`round2/LabPage.tsx`): the forest band with
+the header, title and a photo, paper below, the forest footer, plus a reading kit (prose, steps,
+callouts, questions, a closing band). Screens that must not invite you away (the one-tap page,
+Claim, Connect, Sign in/up) use `BareFrame`: forest top with the badge, one card, no tabs or footer.
+
+- **Tier 1, the alert loop:** Manage watch, the one-tap page (`/w`, 20 results, including the 8am
+  hold offer and its confirmations), Claim a held site (9 statuses × 3 devices), Settings (every
+  visitor, plan, biller and auto-cart state), Connect Recreation.gov, Welcome.
+- **Tier 2, getting and keeping customers:** Pricing (every visitor, a failed lookup, a failed
+  checkout, the app's store paywall), Sign in and Sign up (a stand-in for Clerk's widget, with
+  Clerk's words), the Auto-cart explainer, the cancellation-alerts landing, the sold-out guide.
+- **Tier 3, search pages:** Camping by state, the state pages (47 states and 9 provinces; under 5
+  campgrounds is a real 404), the cabin, group and yurt hubs and their state pages, Hardest to
+  book, CampHawk vs Campflare and vs Campnab (no comparison table, by CampHawk's own rule).
+- **Tier 4, utility and legal:** Support, Data sources, SMS opt-in, Privacy, Terms, and the
+  not-found and error screens.
+
+**Real vs illustrative.** Prices, limits, the openings figure, the data-source list, which states
+and provinces have pages, California's 875, the province counts, the yurt states, the cabin total
+and the hardest-to-book parks come from CampHawk's code. Other states' counts, the cabin and group
+splits by state, and every campground list are illustrative, and the pages say so.
+
+**Lab changes, applied across the tiers (CampHawk's own rules, applied to its own pages):**
+- Colour: muted is neutral, never red; every provider hand-off (Book, Hold it, Connect, Set up
+  auto-cart, Stripe checkout) is blue; a queued hold is ochre; headings, links, step numbers and
+  ticks are ink or forest, never decorative green; copy never names a button by its colour.
+- Truth: Alerts-plan subscribers aren't told auto-cart is on; sign-out only promises texts with a
+  number saved; the ReserveCalifornia hold says it's closed to new holds (since Sep 22, 2026)
+  wherever CampHawk still offers it; Connect's "Done" says the sign-in worked, not "auto-cart is
+  active", and goes to Settings, not the marketing page; no price inside the app anywhere.
+- Words: one release-time format ("8 AM", "Tue, Jul 7 at 8 AM PT"); site names, never provider
+  ids; sentences, never HTTP codes; "canceled"; counts derived from data so the pages agree.
+- Flow: a plan picked on Pricing survives sign-up and Welcome and comes back; Welcome follows
+  `?next=` (lab paths only); "Skip for now" skips instead of saving email-off.
+- Access: the Claim password field has its own label (its "Show" button had joined the name);
+  every screen has one H1; the search-page counts say what they count.
+
+**Critic pass (2026-10-06):** 7/10 overall (Tier 1 6.5, Tier 2 7, Tier 3 7.5). Fixed: the closed-hold
+notice is neutral, not ochre; Pricing's hold card keeps one text width and tucks its steps behind
+"How it works when it reopens"; repeated copy trimmed on Connect and Welcome; Manage says why a
+site is queued, "1 sent" not a bare number, and stacks Remove on phones; en dashes in date ranges;
+"/sources" reads "data sources page"; the hub's "13 state park systems" is derived. Two findings
+were already fixed when it looked (the colour-named button, the lab-select overflow). Kept, on
+purpose: green for trial and sign-up (the lab-wide choice since the home page), blue for "Hold
+it" and the auto-cart On tag (CampHawk's provider kind), the title-case hub names (the search
+query), the pre-ticked "save my login" box (CampHawk requires it), and CampHawk's own CTA words.
+
+**Found in CampHawk while porting (not changed there; read-only):**
+- The ReserveCalifornia hold beta closed on 2026-09-22 (`RC_HOLD_BETA_OPEN = false`), but
+  Pricing, Auto-cart, both guides and both comparison pages still offer it.
+- Settings tells Alerts-plan subscribers "Watching, alerts and auto-cart are all switched on".
+- Connect's "Done" goes to `/` (prices, inside the app); its "still working" note only renders in
+  the live-window mode, so form users never see it; errors show `mint failed (500)` and "Is your
+  CampHawk server online?".
+- `/w` mute shows the provider's site id; three formats for one release time.
+- Claim's app copy still says "tap the cart icon", which its own button replaced.
+- Sign in and Sign up have no title of their own and aren't noindex; Pricing's signed-out trial
+  links drop the chosen plan.
+- `/vs/*` shows prices inside the app; the site-type hub titles count provinces as states; the
+  pages give the number of state systems as ten, twelve and fourteen in different places.
+- "cancelled" in Settings (delete), the guides, the state-page descriptions and the competitor lines.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
@@ -235,4 +304,6 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | e1-explore-wide | A | Flux 1.1 Ultra | Explore's band (2026-10-06): a valley at blue hour, campsite lights along the river. The first try read as a city; the second asked for about ten lone lights. Cinema bars cropped by `export.mjs`. |
 | e2-map | A | Recraft v4.1 | Explore's illustrated map: forest, a pale valley, a river and a lake, no labels. Softened 45% toward paper so pins read. |
 | c2-site-dusk | A | Flux 1.1 Ultra | Re-exported with a shadow lift (curve 0.78): it read as a black square at card size. |
+| n1-newwatch-wide | A | Flux 1.1 Ultra | New watch's band (owner's call, 2026-10-06): an empty campsite under Half Dome at blue hour, a lantern on the table. First try. |
+| w1-watches-wide | A | Flux 1.1 Ultra | Your watches' band: a fire lookout on a ridge, its window lit, over a misty valley. First try. |
 | badge-golden | A | Flux Kontext | The owner's pick: CampHawk's own badge with a warm sky, cut from its white field. Lab only. |

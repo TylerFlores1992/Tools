@@ -48,6 +48,12 @@ export const PROMPTS = {
   "e2-map": { model: PAINT, params: { aspectRatio: "16:9" }, prompt:
     "A calm top-down illustrated terrain map of a mountain valley, in the flat modern style of a national park map: soft pine-green forest areas, pale cream meadows, gentle grey-green contour lines on the slopes, one winding slate-blue river feeding a small lake, a thin pale grey road along the valley. Muted, low-contrast palette of deep pine green #24382A at 20% strength, sage greens, cream #F5F7F2 and slate blue #2C4A8A. Clean flat shapes, subtle paper texture. The map carries no words, numbers, letters, icons, markers, compass or legend; it is landscape shapes only." },
 
+  // Screens 4 and 5 (New watch, Your watches; owner asked for photos in their bands, 2026-10-06).
+  "n1-newwatch-wide": { model: PHOTO, params: { aspectRatio: "21:9", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A wide landscape photograph at blue hour of an empty, inviting campsite in a Sierra Nevada pine forest: a flat tent pad of packed earth, a weathered wooden picnic table with one small glowing brass lantern on it, standing at the right third of the frame, a sheer granite dome rising behind the trees with a faint warm alpenglow on its top. The left half of the frame is calm, dark, softly out-of-focus pine trunks in deep shadow with no bright spots, for headline text. Deep blue dusk light, the lantern the one warm light. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no tents, no cars, no text, no signs." },
+  "w1-watches-wide": { model: PHOTO, params: { aspectRatio: "21:9", providerOptions: { blackForestLabs: { raw: true } } }, prompt:
+    "A wide landscape photograph at blue hour: a small historic wooden fire lookout cabin on stilts on a granite ridge top, one warm light glowing in its windows, standing at the right third of the frame, layered forested ridges and a misty valley falling away below it. The left half of the frame is calm deep blue sky over dark forested slopes with no bright spots, for headline text. Deep blue dusk light, the window the one warm light. 35mm film look, Kodak Portra 400, gentle grain, natural color. No people, no text, no signs, no antennas." },
+
   // Logo (2026-10-06): the owner prefers the original badge to any code-drawn mark. These keep its
   // idea and composition and raise the craft, by editing the original (ref/logo-badge-original.png).
   "l1-badge-clean": { model: EDIT, input: "./ref/logo-badge-original.png", params: { aspectRatio: "1:1" }, prompt:

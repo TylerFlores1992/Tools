@@ -15,7 +15,7 @@ import { NightsPicker } from "../ui/NightsPicker";
 import { RadioChips } from "../ui/RadioChips";
 import { addDays, thisWeekendRange, todayISO, type ISODate } from "../ui/date";
 import { Art, ART } from "./Art";
-import { AppBand, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, WatchCtaLink, type Plan } from "./AppParts";
+import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, WatchCtaLink, type Plan } from "./AppParts";
 import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
@@ -391,7 +391,7 @@ export function Explore() {
           current="explore"
           title="Find a campsite that's open tonight"
           sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and national and provincial parks across Canada.`}
-          photo={<><Art art={ART.e1} eager sizes="(max-width: 1023px) 1440px, 100vw" className="gh-explore-photo" /><div aria-hidden="true" className="gh-explore-scrim absolute inset-0" /></>}
+          photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-8">
@@ -526,7 +526,7 @@ export function Explore() {
           </section>
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }

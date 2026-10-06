@@ -11,7 +11,7 @@ import { Collapsible } from "../ui/Collapsible";
 import { Tag } from "../ui/Tag";
 import { daysBetween, formatRange, nightsBetween, todayISO, type ISODate } from "../ui/date";
 import { Art, ART } from "./Art";
-import { AppBand, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
+import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
 import { GhFooter, ScreenLinks } from "./GhChrome";
@@ -371,13 +371,13 @@ export function Watches() {
         )}
       </LabBar>
       <main id="main">
-        <AppBand visitor={visitor} current="watches" title="Your watches" />
+        <AppBand visitor={visitor} current="watches" title="Your watches" photo={<BandPhoto art={ART.w1} pos="85% 55%" posLg="50% 55%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] max-w-[var(--gh-max)] px-3 pb-[clamp(40px,6vw,80px)] sm:px-8">
           {body}
           <PricingLink visitor={visitor} plan={plan} className="mt-5" />
         </div>
       </main>
-      <GhFooter />
+      <GhFooter visitor={visitor} />
     </div>
   );
 }
