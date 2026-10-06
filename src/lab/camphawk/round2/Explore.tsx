@@ -387,7 +387,7 @@ export function Explore() {
           current="explore"
           title="Find a campsite that's open tonight"
           sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and national and provincial parks across Canada.`}
-          photo={<><Art art={ART.e1} eager sizes="(max-width: 1023px) 1440px, 100vw" className="gh-explore-photo" /><div aria-hidden="true" className="gh-scrim absolute inset-0 -z-10" /></>}
+          photo={<><Art art={ART.e1} eager sizes="(max-width: 1023px) 1440px, 100vw" className="gh-explore-photo" /><div aria-hidden="true" className="gh-explore-scrim absolute inset-0" /></>}
         />
 
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-8">

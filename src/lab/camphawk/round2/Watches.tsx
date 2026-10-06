@@ -310,6 +310,7 @@ export function Watches() {
           </div>
           <WatchCtaLink visitor={visitor} label="New watch" fullWidth={false} className="min-h-11 px-5" />
         </div>
+        <h2 className="sr-only">Watches, running and paused</h2>
         {/* Two columns that don't share a row height; cards alternate so reading goes across, then down. */}
         {twoColumns ? (
           <div className="grid grid-cols-2 items-start gap-4">

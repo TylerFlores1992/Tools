@@ -432,6 +432,24 @@ html:has(.gh) { background: var(--color-ch-forest); }
    river and the campsite lights stay clear on the right. */
 .gh-explore-photo { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 60% 70%; }
 @media (min-width: 1024px) { .gh-explore-photo { object-position: 50% 62%; } }
+/* Its scrim: the snow peaks and the river lights sit behind the header and the headline, so the
+   top and the left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+.gh-explore-scrim {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 66%, transparent) 55%,
+    color-mix(in srgb, var(--color-ch-forest) 30%, transparent) 100%);
+}
+@media (min-width: 1024px) {
+  .gh-explore-scrim {
+    background:
+      linear-gradient(to right,
+        color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
+        color-mix(in srgb, var(--color-ch-forest) 65%, transparent) 36%,
+        transparent 62%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 60%, transparent) 0%, transparent 28%);
+  }
+}
 /* Explore's map pins (ResultsMap's shapes): a teardrop pointing at the place. State is the shape
    as well as the hue: solid open, solid neutral booked, hollow couldn't check, small faint first
    come, and the selected pin is larger with an ink ring. */
