@@ -3,18 +3,24 @@
 import { useState } from "react";
 import Image from "next/image";
 import { BellRing, Check, Search } from "lucide-react";
+import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
-import { FEATURES, FOOTER_LINKS, HEADLINE, INTRO, LIMITS, STEPS } from "../copy";
+import { FOOTER_LINKS, HEADLINE, INTRO, LIMITS, STEPS } from "../copy";
+import { Tag } from "../ui/Tag";
 import { DirectionLinks, LabBar } from "../LabBar";
 import { LINKS } from "../Nav";
 import { Art, ArtPair, ART } from "./Art";
 import { Pricing2 } from "./Pricing2";
+import { WatchProofs } from "./WatchProofs";
 
 // Round 2, direction A "Golden hour" (docs/design/camphawk-home.md): the moment a site opens, at
 // the hour people dream about camping. The product proof (a live alert) sits on the photo, and
 // search docks across the hero's bottom edge. Forest owns the hero and the proof section; paper
-// grounds the reading; ochre is the one accent; green is only for actions.
+// grounds the reading. CampHawk's colour rules hold (its camphawk-design skill): green only for
+// an open site or an action that gets one, blue for the Recreation.gov hand-off, ochre only for
+// "you asked for this", every status in words, no glass or glows. The photo scrims are there
+// for legibility, not decoration.
 
 /** Header over the photo: paper type on the dark scrim. Same links and account states as Nav. */
 function PhotoHeader({ visitor }: { visitor: Visitor }) {
@@ -23,7 +29,7 @@ function PhotoHeader({ visitor }: { visitor: Visitor }) {
       <div className="mx-auto flex max-w-[var(--gh-max)] items-center gap-6 px-5 pt-4 sm:px-8 sm:pt-6">
         <a href="#" className="flex shrink-0 items-center gap-2.5 py-2">
           <Image src="/private/camphawk/logo-badge.png" alt="" width={34} height={34} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
-          <span className="whitespace-nowrap font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
+          <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
         </a>
         <nav aria-label="Main" className="hidden flex-1 gap-1 md:flex">
           {LINKS.map((label) => (
@@ -38,7 +44,7 @@ function PhotoHeader({ visitor }: { visitor: Visitor }) {
           ) : (
             <>
               <a href="#" className="whitespace-nowrap rounded-[10px] px-3 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10">Sign in</a>
-              {visitor === "signed-out" && <a href="#" className={buttonClasses({ size: "sm", className: "hidden whitespace-nowrap px-4 sm:inline-flex" })}>Sign up</a>}
+              {visitor === "signed-out" && <a href="#" className={buttonClasses({ size: "sm", className: "hidden min-h-11 whitespace-nowrap px-4 sm:inline-flex" })}>Sign up</a>}
             </>
           )}
         </div>
@@ -58,16 +64,14 @@ function PhotoHeader({ visitor }: { visitor: Visitor }) {
 /** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
 function AlertCard({ compact }: { compact?: boolean }) {
   return (
-    <figure className={compact ? "rounded-[16px] bg-ch-card p-3.5 text-ch-ink" : "gh-rise w-[300px] rounded-[18px] bg-ch-card p-4 text-ch-ink shadow-[0_24px_60px_-24px_rgb(10_20_14/0.7)]"}>
+    <figure className={cx("rounded-ch-card border-[1.5px] border-ch-green bg-ch-card text-ch-ink", compact ? "p-3.5" : "gh-rise w-[310px] p-4 shadow-[0_24px_60px_-24px_rgb(10_20_14/0.7)]")}>
       <div className="flex items-center gap-2 text-[13px]">
-        <span className="grid size-7 place-items-center rounded-full bg-ch-ochre-soft text-ch-ochre-ink">
-          <BellRing aria-hidden="true" className="size-4" />
-        </span>
+        <Tag kind="open">Open</Tag>
         <span className="font-extrabold">A site just opened</span>
-        <span className="ml-auto text-ch-muted">14 sec ago</span>
+        <span className="ml-auto text-ch-muted tabular-nums">14 sec ago</span>
       </div>
       <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, site 042</p>
-      <p className="mt-0.5 text-[13.5px] text-ch-ink-2">Yosemite National Park. Jul 18 to 21, 3 nights.</p>
+      <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18-21, 3 nights.</p>
       <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
         <Check aria-hidden="true" className="size-4 shrink-0" />
         In your Recreation.gov cart
@@ -84,11 +88,11 @@ function SearchDock() {
     <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="grid gap-3 rounded-[20px] bg-ch-card p-3 shadow-[0_30px_60px_-30px_rgb(10_20_14/0.55)] sm:p-4 lg:grid-cols-[1.2fr_1fr_auto] lg:items-end">
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">Where</span>
-        <input type="text" name="where" placeholder="Campground, park or town" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
+        <input type="text" name="where" placeholder="City, park, or ZIP…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
       <label className="grid gap-1.5 px-1">
         <span className="text-ch-meta font-extrabold text-ch-ink-2">When</span>
-        <input type="text" name="when" placeholder="Any 3 nights in July" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
+        <input type="text" name="when" placeholder="Any 3 nights in July…" autoComplete="off" className="min-h-12 rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
       <button type="submit" className={buttonClasses({ size: "lg", className: "min-h-12 whitespace-nowrap px-6 py-0" })}>
         <Search aria-hidden="true" className="size-4.5" />
@@ -109,16 +113,16 @@ function PhoneProof() {
           <p className="relative pt-7 text-center font-ch-display text-[52px] font-bold leading-none text-ch-paper">6:02</p>
           <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-ch-card p-3 text-left">
             <p className="flex items-center gap-1.5 text-[13px] font-extrabold text-ch-muted">
-              <BellRing aria-hidden="true" className="size-3.5 text-ch-ochre-ink" /> CampHawk <span className="ml-auto font-bold">now</span>
+              <BellRing aria-hidden="true" className="size-3.5" /> CampHawk <span className="ml-auto font-bold">now</span>
             </p>
-            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines just opened. It&apos;s in your cart.</p>
+            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines is open for Jul 18-21. It&apos;s in your cart.</p>
           </div>
         </div>
         <div className="space-y-2.5 p-4">
           <p className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov cart</p>
           <div className="rounded-[14px] border border-ch-line bg-ch-card p-3">
             <p className="font-ch-display text-[16px] font-extrabold">Upper Pines, site 042</p>
-            <p className="text-[13px] text-ch-ink-2">Jul 18 to 21, 3 nights</p>
+            <p className="text-[13px] text-ch-ink-2 tabular-nums">Jul 18-21, 3 nights</p>
             <p className="mt-2 flex items-center gap-1 text-[13px] font-bold text-ch-blue-deep"><Check aria-hidden="true" className="size-3.5" /> Held in your cart</p>
           </div>
           <span className="flex min-h-10 items-center justify-center rounded-ch-btn border-2 border-ch-blue text-[13px] font-bold text-ch-blue-deep">Check out</span>
@@ -146,7 +150,7 @@ export function GoldenHour() {
                 {HEADLINE}
               </h1>
               <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-ch-line sm:text-[18px]">{INTRO}</p>
-              <a href="#watch" className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-paper underline decoration-ch-ochre decoration-2 underline-offset-[6px] hover:decoration-ch-paper">
+              <a href="#watch" className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-paper underline decoration-ch-faint decoration-2 underline-offset-[6px] hover:decoration-ch-paper">
                 See what a watch does
               </a>
             </div>
@@ -170,35 +174,27 @@ export function GoldenHour() {
         </div>
 
         <section id="watch" className="scroll-mt-4 bg-ch-paper">
-          <div className="mx-auto grid max-w-[var(--gh-max)] gap-10 px-5 py-[clamp(56px,9vw,120px)] sm:px-8 lg:grid-cols-[5fr_7fr] lg:gap-16">
-            <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/5] w-full self-start rounded-[22px] object-cover object-[50%_70%] lg:sticky lg:top-8" />
-            <div>
-              <h2 className="max-w-[16ch] font-ch-display text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ch-forest">What a watch does</h2>
-              <dl className="mt-8 border-t border-ch-line">
-                {FEATURES.map(({ icon: Icon, title, body }) => (
-                  <div key={title} className="grid gap-x-5 gap-y-1.5 border-b border-ch-line py-6 sm:grid-cols-[28px_1fr]">
-                    <Icon aria-hidden="true" className="mt-1 size-5 text-ch-green" />
-                    <div>
-                      <dt className="font-ch-display text-[21px] font-bold tracking-[-.015em] text-ch-ink">{title}</dt>
-                      <dd className="mt-1.5 max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2">{body}</dd>
-                    </div>
-                  </div>
-                ))}
-              </dl>
+          <div className="mx-auto max-w-[var(--gh-max)] px-5 pb-[clamp(72px,10vw,136px)] pt-[clamp(64px,9vw,120px)] sm:px-8">
+            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3">
+              <h2 className="max-w-[16ch] text-balance font-ch-display text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ch-forest">What a watch does</h2>
+              <p className="text-[15px] text-ch-ink-2">Examples, not live data.</p>
+            </div>
+            <div className="mt-10">
+              <WatchProofs />
             </div>
           </div>
         </section>
 
         <section className="bg-ch-forest text-ch-paper">
-          <div className="mx-auto grid max-w-[1080px] items-center gap-14 px-5 py-[clamp(64px,10vw,128px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_290px] lg:gap-20">
+          <div className="mx-auto grid max-w-[1080px] items-center gap-14 px-5 py-[clamp(56px,8vw,104px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_290px] lg:gap-20">
             <div>
               <h2 className="font-ch-display text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.02] tracking-[-.035em]">How it works</h2>
               <ol className="mt-10 grid gap-8">
                 {STEPS.map(([title, body], i) => (
-                  <li key={title} className="grid grid-cols-[56px_1fr] gap-4">
-                    <span className="font-ch-display text-[44px] font-extrabold leading-none text-ch-ochre">{i + 1}</span>
+                  <li key={title} className="grid grid-cols-[48px_1fr] items-start gap-5">
+                    <span className="grid size-12 place-items-center rounded-full border-2 border-ch-faint font-ch-display text-[22px] font-extrabold leading-none text-ch-paper tabular-nums">{i + 1}</span>
                     <div>
-                      <p className="font-ch-display text-[22px] font-bold tracking-[-.015em]">{title}</p>
+                      <p className="pt-2.5 font-ch-display text-[22px] font-bold tracking-[-.015em]">{title}</p>
                       <p className="mt-1.5 max-w-[48ch] text-[16px] leading-relaxed text-ch-line">{body}</p>
                     </div>
                   </li>
@@ -209,14 +205,14 @@ export function GoldenHour() {
           </div>
         </section>
 
-        <section id="pricing" className="scroll-mt-4 bg-ch-paper">
-          <div className="mx-auto max-w-[var(--gh-max)] px-5 py-[clamp(56px,9vw,112px)] sm:px-8">
+        <section id="pricing" className="scroll-mt-4 border-b border-ch-line bg-ch-shell">
+          <div className="mx-auto max-w-[var(--gh-max)] px-5 py-[clamp(64px,9vw,112px)] sm:px-8">
             <Pricing2 visitor={visitor} />
           </div>
         </section>
 
         <section className="bg-ch-paper">
-          <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-3 px-5 pb-[clamp(56px,9vw,112px)] sm:px-8 lg:grid-cols-2">
+          <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-3 px-5 py-[clamp(48px,6vw,72px)] sm:px-8 lg:grid-cols-2">
             <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink lg:pt-3">What we don&apos;t do</h2>
             <ul className="max-w-[64ch] border-t border-ch-line">
               {LIMITS.map((line) => (
@@ -230,7 +226,7 @@ export function GoldenHour() {
           <Art art={ART.a4} sizes="100vw" className="absolute inset-0 -z-10 size-full object-cover object-[20%_60%]" />
           <div aria-hidden="true" className="gh-band-scrim absolute inset-0 -z-10" />
           <div className="mx-auto flex min-h-[min(64vh,600px)] max-w-[var(--gh-max)] flex-col items-start justify-start px-5 py-14 sm:px-8 md:items-end md:justify-center md:text-right">
-            <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.035em] text-ch-paper">Start with a search. It&apos;s free.</h2>
+            <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.035em] text-ch-paper">Start with a search. It&apos;s free.</h2>
             <div className="mt-6 flex flex-wrap items-center gap-4 md:justify-end">
               <a href="#" className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />

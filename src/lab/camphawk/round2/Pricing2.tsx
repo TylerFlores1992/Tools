@@ -13,7 +13,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="text-[14px] font-bold text-ch-ochre-ink">Best chance to book</p>}
+        {recommended && <p className="text-[14px] font-bold text-ch-ink-2">Best chance to book</p>}
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>

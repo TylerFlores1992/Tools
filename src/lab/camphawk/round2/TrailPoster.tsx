@@ -38,7 +38,7 @@ function HeroSearch() {
     <form role="search" action="#" onSubmit={(e) => e.preventDefault()} className="mt-8 flex max-w-[560px] flex-col gap-2.5 sm:flex-row">
       <label className="flex-1">
         <span className="sr-only">Where do you want to camp?</span>
-        <input type="text" name="where" placeholder="Campground, park or town" autoComplete="off" className="min-h-14 w-full rounded-ch-input border-2 border-ch-forest bg-ch-card px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
+        <input type="text" name="where" placeholder="City, park, or ZIP…" autoComplete="off" className="min-h-14 w-full rounded-ch-input border-2 border-ch-forest bg-ch-card px-4 text-[16px] text-ch-ink placeholder:text-ch-muted" />
       </label>
       <button type="submit" className={buttonClasses({ size: "lg", className: "min-h-14 whitespace-nowrap px-6 py-0" })}>
         <Search aria-hidden="true" className="size-4.5" />
