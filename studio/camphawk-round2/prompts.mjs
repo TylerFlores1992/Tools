@@ -2,6 +2,8 @@
 const PHOTO = "bfl/flux-pro-1.1-ultra";
 const PAINT = "recraft/recraft-v4.1"; // 1280px max on free credit
 const POSTER = "recraft/recraft-v4.1"; // pro tiers are closed to free credit
+const EDIT = "bfl/flux-kontext-pro"; // edits an input image; $0.04
+const LOGO = "deep pine green #24382A, ink green #3A5344, warm ochre #D9932B, pale ochre #FBF0DC, cream #F5F7F2, warm brown hawk feathers, muted slate-blue water";
 const PALETTE = "deep pine green #24382A, forest green #1E7A4C, warm ochre #D9932B, pale ochre #FBF0DC, cream #F5F7F2, slate blue #2C4A8A";
 const VIGNETTE = `A small vintage WPA-style screen-print vignette on a plain cream (#F5F7F2) background, square, centered, flat layered shapes, gouache texture, palette only ${PALETTE}, no text, no border:`;
 
@@ -39,4 +41,11 @@ export const PROMPTS = {
   "b4-pack": { model: PAINT, params: { aspectRatio: "1:1" }, prompt: `${VIGNETTE} a canvas backpack with a coiled rope and a tin cup, ready to go.` },
   "b5-map": { model: PAINT, params: { aspectRatio: "1:1" }, prompt: `${VIGNETTE} a folded trail map with a small ochre pin marking a campsite by a lake; no words or numbers on the map.` },
   "b6-calendar": { model: PAINT, params: { aspectRatio: "1:1" }, prompt: `${VIGNETTE} a paper wall calendar whose day squares are blank (no numbers), three of them circled in ochre, beside a lantern.` },
+
+  // Logo (2026-10-06): the owner prefers the original badge to any code-drawn mark. These keep its
+  // idea and composition and raise the craft, by editing the original (ref/logo-badge-original.png).
+  "l1-badge-clean": { model: EDIT, input: "./ref/logo-badge-original.png", params: { aspectRatio: "1:1" }, prompt:
+    `Redraw this logo badge as a crisp, professional emblem, as a top brand designer would finish it. Keep exactly the same idea and composition: a hawk flying across the top over a valley with snow-capped mountains, a winding river and pine trees, inside the same arched badge with a dark green border, and the hawk's wings breaking out above the badge's top edge. Make every shape cleaner and bolder: smooth edges, confident outlines, fewer tiny details, flat colors with subtle soft shading, so it still reads when small. Colors: ${LOGO}. Center the badge on a plain flat white background with generous margins. No text, no lettering.` },
+  "l2-badge-golden": { model: EDIT, input: "./ref/logo-badge-original.png", params: { aspectRatio: "1:1" }, prompt:
+    `Redraw this logo badge as a crisp, professional emblem in golden-hour light. Keep the same idea and composition: a hawk flying across the top over a valley with snow-capped mountains, a winding river and pine trees, inside the same arched badge with a dark green border, the hawk's wings breaking out above the top edge. The sky inside the badge glows a warm golden-hour ochre with a low sun behind the mountains; the pines and ridges are deep pine green; the river reflects the warm light. Cleaner, bolder shapes, smooth edges, fewer tiny details, flat colors with subtle shading, so it still reads when small. Colors: ${LOGO}. Center it on a plain flat white background with generous margins. No text, no lettering.` },
 };

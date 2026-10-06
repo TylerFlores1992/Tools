@@ -321,6 +321,10 @@ try {
     assert.doesNotMatch(text, /any N nights/, "golden hour: no system wording");
     assert.match(text, /how many nights you need inside a window/, "golden hour: step 2 reworded");
     assert.match(text, /how many nights you need, anywhere in a window/, "golden hour: pricing reworded");
+    // The header carries the golden-sky badge, and it loads through the private sign-in.
+    const badge = p.locator("header img").first();
+    assert.ok(await badge.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), "golden hour: badge loaded");
+    assert.match(await badge.evaluate((img: HTMLImageElement) => img.currentSrc), /\/round2\/badge-golden-\d+\.webp$/, "golden hour: golden badge");
     assert.deepEqual(errors, []);
     await ctx.close();
   });

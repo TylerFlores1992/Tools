@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
 import { FOOTER_LINKS } from "../copy";
@@ -13,7 +12,9 @@ export function PhotoHeader({ visitor }: { visitor: Visitor }) {
     <header className="relative z-10">
       <div className="mx-auto flex max-w-[var(--gh-max)] items-center gap-6 px-5 pt-4 sm:px-8 sm:pt-6">
         <a href="#" className="flex shrink-0 items-center gap-2.5 py-2">
-          <Image src="/private/camphawk/logo-badge.png" alt="" width={34} height={34} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
+          {/* The Golden hour badge (studio/camphawk-round2, logo picks): CampHawk's badge with a warm sky. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/private/camphawk/round2/badge-golden-80.webp" srcSet="/private/camphawk/round2/badge-golden-80.webp 2x, /private/camphawk/round2/badge-golden-120.webp 3x" alt="" width={40} height={40} decoding="async" className="size-10 shrink-0 select-none" draggable={false} />
           <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
         </a>
         <nav aria-label="Main" className="hidden flex-1 gap-1 md:flex">

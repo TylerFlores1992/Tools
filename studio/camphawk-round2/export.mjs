@@ -1,5 +1,5 @@
 // Exports the picked round-2 art to public/private/camphawk/round2/ as WebP.
-// Usage: node studio/camphawk-round2/export.mjs   (picks are listed below)
+// Usage: node studio/camphawk-round2/export.mjs   (picks and logo picks are listed below)
 // Recraft tops out at 1280px on free credit; posters are upscaled with Lanczos (flat print art holds up).
 import sharp from "sharp";
 
@@ -33,6 +33,61 @@ async function keyed(file) {
   return sharp(data, { raw: info });
 }
 
+// Logos sit on a plain white field, but white also appears INSIDE the badge (snow, river, the
+// inner ring). So only background connected to the image edge goes: flood-fill from the border,
+// then a soft one-pixel edge, then trim to the badge and centre it on a transparent square.
+async function cutout(file) {
+  const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width: W, height: H } = info;
+  const dist = (i) => 255 - Math.min(data[i * 4], data[i * 4 + 1], data[i * 4 + 2]); // 0 = white
+  const bg = new Uint8Array(W * H), stack = [];
+  for (let x = 0; x < W; x++) stack.push(x, (H - 1) * W + x);
+  for (let y = 0; y < H; y++) stack.push(y * W, y * W + W - 1);
+  while (stack.length) {
+    const i = stack.pop();
+    if (bg[i] || dist(i) > 24) continue;
+    bg[i] = 1;
+    const x = i % W, y = (i / W) | 0;
+    if (x > 0) stack.push(i - 1); if (x < W - 1) stack.push(i + 1);
+    if (y > 0) stack.push(i - W); if (y < H - 1) stack.push(i + W);
+  }
+  // Edge band (two pixels in from the background): these pixels are part white. Alpha comes from
+  // how far they are from white, and the white is un-mixed out of the colour, so no halo shows on
+  // a dark header.
+  const near = new Uint8Array(W * H);
+  for (let pass = 0; pass < 2; pass++) {
+    const src = pass === 0 ? bg : near.slice();
+    for (let i = 0; i < W * H; i++) {
+      if (bg[i] || near[i]) continue;
+      const x = i % W, y = (i / W) | 0;
+      if ((x > 0 && src[i - 1]) || (x < W - 1 && src[i + 1]) || (y > 0 && src[i - W]) || (y < H - 1 && src[i + W])) near[i] = 1;
+    }
+  }
+  for (let i = 0; i < W * H; i++) {
+    if (bg[i]) { data[i * 4 + 3] = 0; continue; }
+    if (!near[i]) continue;
+    // Reference: the nearest solid pixel just inside, i.e. the colour this edge pixel is a blend of.
+    const x = i % W, y = (i / W) | 0;
+    let ref = 0;
+    for (let r = 1; r <= 3 && !ref; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      const xx = x + dx, yy = y + dy;
+      if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+      const j = yy * W + xx;
+      if (!bg[j] && !near[j]) ref = Math.max(ref, dist(j));
+    }
+    // Hair-thin tips have no solid pixel nearby; they are dark feather, so assume a dark reference.
+    const a = Math.min(1, dist(i) / (ref || 230));
+    if (a <= 0.02) { data[i * 4 + 3] = 0; continue; }
+    for (let c = 0; c < 3; c++) data[i * 4 + c] = Math.max(0, Math.min(255, Math.round((data[i * 4 + c] - 255 * (1 - a)) / a)));
+    data[i * 4 + 3] = Math.round(a * 255);
+  }
+  const trimmed = await sharp(data, { raw: info }).trim({ threshold: 1 }).png().toBuffer({ resolveWithObject: true });
+  const side = Math.max(trimmed.info.width, trimmed.info.height);
+  return sharp({ create: { width: side, height: side, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: trimmed.data, left: Math.round((side - trimmed.info.width) / 2), top: Math.round((side - trimmed.info.height) / 2) }])
+    .png();
+}
+
 for (const [name, file, widths] of PICKS) {
   const vignette = /^b[3-6]-/.test(name);
   for (const w of widths) {
@@ -43,5 +98,15 @@ for (const [name, file, widths] of PICKS) {
       .webp({ quality: name.startsWith("b") ? 82 : 78, alphaQuality: 90 })
       .toFile(`${OUT}${name}-${w}.webp`);
     console.log(`${name}-${w}.webp ${info.width}x${info.height} ${(info.size / 1024).toFixed(0)} KB`);
+  }
+}
+
+// Logo picks: cut out of their white field, exported square at 2x and 3x the header's CSS size.
+const LOGOS = [["badge-golden", "l2-badge-golden-bfl_flux_kontext_pro-1.png", [120, 80]]];
+for (const [name, file, widths] of LOGOS) {
+  const cut = await (await cutout(SRC + file)).toBuffer();
+  for (const w of widths) {
+    const info = await sharp(cut).resize({ width: w, kernel: "lanczos3" }).webp({ quality: 90, alphaQuality: 100, smartSubsample: true }).toFile(`${OUT}${name}-${w}.webp`);
+    console.log(`${name}-${w}.webp ${info.width}x${info.height} ${(info.size / 1024).toFixed(1)} KB`);
   }
 }

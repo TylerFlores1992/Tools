@@ -1,9 +1,10 @@
 // Generates CampHawk round-2 art through Vercel AI Gateway (free credits only).
 // Setup once: (cd studio/camphawk-round2 && npm i)
 // Usage: node studio/camphawk-round2/generate.mjs <name> [variants]
+// A job with `input` (a path under this folder) is an edit: the model gets that image plus the prompt.
 // Prompts live in prompts.mjs; raw output goes to studio/camphawk-round2/out/ (gitignored).
 // Never overwrites: new variants get the next free number.
-import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { gateway } from "@ai-sdk/gateway";
 import { generateImage } from "ai";
 import { PROMPTS } from "./prompts.mjs";
@@ -29,7 +30,7 @@ for (let i = taken + 1; i <= taken + Number(n); i++) {
   if (before < FLOOR) { console.log(`stop: balance ${before} is under ${FLOOR}`); break; }
   const { image } = await generateImage({
     model: gateway.imageModel(job.model),
-    prompt: job.prompt,
+    prompt: job.input ? { images: [await readFile(new URL(job.input, import.meta.url))], text: job.prompt } : job.prompt,
     ...job.params,
   });
   const ext = image.mediaType?.split("/")[1] ?? "png";

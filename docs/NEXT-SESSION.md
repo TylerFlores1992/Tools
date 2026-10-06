@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (hero media cached immutable; e2e runs in CI).*
+*Last updated: 2026-10-06 (Golden hour badge: the "golden-hour sky" pick is in both headers).*
 
 ## At a glance
 
@@ -13,7 +13,7 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
-| ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. |
+| ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
 | ↳ **Campground page** | `/private/camphawk/golden-hour/campground` | Live. CampHawk's campground page in the same look, with every real state. Critic 7/10, findings fixed. |
 | ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
 | ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
@@ -41,13 +41,18 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    in the same look. Candidates, by how often campers see them: Explore (`/search`, map and
    filters), New watch (`/new`), Watches (`/watches`). Port from CampHawk read-only (below).
    Known gaps, small: the returning subscriber's "Resubscribe to watch" label isn't in the
-   lab's "View as"; the campsite photo (c2) is very dark; Trail poster (B) wasn't reworked to
+   lab's "View as"; the campsite photo (c2) is very dark; the round-1 screens (`Nav.tsx`) still use
+   the original badge, on purpose; Trail poster (B) wasn't reworked to
    CampHawk's colour rules, since it's reference only.
    **CampHawk's code:** attach `TylerFlores1992/campsite-finder` to the session **read-only**
    (`add_repo`, access "read"), clone to `/home/user/campsite-finder`, then disable pushing:
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
    modify it. Its design rules (`.claude/skills/camphawk-design/SKILL.md`) bind every lab
    screen and win over references (that's why there's no glass).
+   **Badge:** `public/private/camphawk/round2/badge-golden-{80,120}.webp`, made by editing
+   CampHawk's own badge (`studio/camphawk-round2/ref/`) with Flux Kontext (`l2-badge-golden`,
+   variant 1, $0.04 a go) and cut from its white field by `export.mjs` (logo picks). The cleaner,
+   green-sky variant `l1-badge-clean` was the runner-up. e2e checks the header loads it.
 2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
