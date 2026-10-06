@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { FEATURES } from "../copy";

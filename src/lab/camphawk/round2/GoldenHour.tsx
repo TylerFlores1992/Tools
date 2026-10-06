@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { BellRing, Check, Search } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
-import { FOOTER_LINKS, HEADLINE, INTRO, LIMITS, STEPS as CH_STEPS } from "../copy";
+import { HEADLINE, INTRO, LIMITS, STEPS as CH_STEPS } from "../copy";
 import { Tag } from "../ui/Tag";
 import { DirectionLinks, LabBar } from "../LabBar";
-import { LINKS } from "../Nav";
+import { GhFooter, PhotoHeader } from "./GhChrome";
 import { Art, ART } from "./Art";
 import { Pricing2 } from "./Pricing2";
 import { WatchProofs } from "./WatchProofs";
@@ -25,45 +25,6 @@ import { WatchProofs } from "./WatchProofs";
 // Round-2 copy edit: "any N nights" is system language; say it the camper's way. Current keeps
 // CampHawk's exact words (copy.ts).
 const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you're free", "or how many nights you need inside a window you're free")] as const);
-
-/** Header over the photo: paper type on the dark scrim. Same links and account states as Nav. */
-function PhotoHeader({ visitor }: { visitor: Visitor }) {
-  return (
-    <header className="relative z-10">
-      <div className="mx-auto flex max-w-[var(--gh-max)] items-center gap-6 px-5 pt-4 sm:px-8 sm:pt-6">
-        <a href="#" className="flex shrink-0 items-center gap-2.5 py-2">
-          <Image src="/private/camphawk/logo-badge.png" alt="" width={34} height={34} unoptimized className="shrink-0 select-none object-contain" draggable={false} />
-          <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
-        </a>
-        <nav aria-label="Main" className="hidden flex-1 gap-1 md:flex">
-          {LINKS.map((label) => (
-            <a key={label} href="#" className="whitespace-nowrap rounded-[10px] px-3.5 py-2.5 text-[15px] font-bold text-ch-line hover:bg-ch-white/10 hover:text-ch-white">
-              {label}
-            </a>
-          ))}
-        </nav>
-        <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
-          {visitor === "subscriber" ? (
-            <span className="grid size-9 place-items-center rounded-full bg-ch-paper text-ch-meta font-extrabold text-ch-forest" aria-label="Account (signed in)">TF</span>
-          ) : (
-            <>
-              <a href="#" className="whitespace-nowrap rounded-[10px] px-3 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10">Sign in</a>
-              {visitor === "signed-out" && <a href="#" className={buttonClasses({ size: "sm", className: "hidden min-h-11 whitespace-nowrap px-4 sm:inline-flex" })}>Sign up</a>}
-            </>
-          )}
-        </div>
-      </div>
-      {/* Phone: the three tabs as a quiet row under the brand. */}
-      <nav aria-label="Main" className="mx-auto flex max-w-[var(--gh-max)] gap-1 px-3 md:hidden">
-        {LINKS.map((label) => (
-          <a key={label} href="#" className="flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-[10px] text-[13.5px] font-bold text-ch-line hover:bg-ch-white/10">
-            {label}
-          </a>
-        ))}
-      </nav>
-    </header>
-  );
-}
 
 /** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
 function AlertCard({ compact }: { compact?: boolean }) {
@@ -140,6 +101,7 @@ export function GoldenHour() {
     <div className="gh">
       <LabBar page="Round 2" visitor={visitor} onVisitor={setVisitor}>
         <DirectionLinks current="golden-hour" />
+        <Link href="/private/camphawk/golden-hour/campground" className="flex min-h-11 items-center whitespace-nowrap underline underline-offset-2">Campground</Link>
       </LabBar>
       <main id="main">
         <section className="relative isolate bg-ch-forest">
@@ -238,14 +200,7 @@ export function GoldenHour() {
           </div>
         </section>
       </main>
-      <footer className="bg-ch-forest">
-        <div className="mx-auto flex max-w-[var(--gh-max)] flex-wrap items-center justify-between gap-3 px-5 py-7 text-[14px] text-ch-line sm:px-8">
-          <span>© 2026 CampHawk</span>
-          <nav aria-label="Footer" className="flex gap-1">
-            {FOOTER_LINKS.map((l) => <a key={l} href="#" className="flex min-h-11 items-center px-2 hover:text-ch-white hover:underline">{l}</a>)}
-          </nav>
-        </div>
-      </footer>
+      <GhFooter />
     </div>
   );
 }
