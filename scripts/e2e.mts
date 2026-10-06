@@ -516,7 +516,18 @@ try {
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByText("3 of 6 watches running").waitFor();
-    for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "2 more open 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
+    // only the provider label goes without one.
+    const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
+    const total = await statuses.count();
+    assert.ok(total >= 8, `expected status tags, found ${total}`);
+    for (let i = 0; i < total; i++) {
+      const tag = statuses.nth(i);
+      const label = (await tag.innerText()).trim();
+      if (/^Booking provider:/.test(label)) continue;
+      assert.equal(await tag.locator("svg").count(), 1, `"${label}" has no status mark`);
+    }
     await p.getByRole("link", { name: "Check out on Recreation.gov" }).waitFor();
     // Reconnecting fixes itself: the card says so, but isn't the red "you must act" card.
     await p.getByLabel("Auto-cart connection").selectOption("reconnecting");
@@ -652,8 +663,13 @@ try {
     assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
-    await p.getByRole("checkbox", { name: /Email me when/ }).uncheck();
-    await p.getByText("With email off, add a phone number below", { exact: false }).waitFor();
+    // Email is always on, as Settings says; Welcome doesn't offer to turn it off.
+    await p.getByText("Always on. Every opening we find goes to", { exact: false }).waitFor();
+    assert.equal(await p.getByRole("checkbox", { name: /Email me/ }).count(), 0);
+    // Pressing "Turn on text alerts" too early says what's missing and goes there.
+    await p.getByRole("button", { name: "Turn on text alerts" }).click();
+    await p.getByRole("alert").filter({ hasText: "Enter your number and tick the box" }).waitFor();
+    assert.equal(await p.evaluate(() => document.activeElement?.id), "sms-phone");
     assert.deepEqual(errors, []);
     await ctx.close();
   });
@@ -679,6 +695,8 @@ try {
     await p.getByText("renews automatically unless it is canceled", { exact: false }).waitFor();
     // Signed out: the trial carries the plan through sign-up and Welcome, back to Pricing.
     await p.goto(`${GH}/pricing`);
+    // Green means an open site or an action that gets you one; a trial is neither.
+    for (const trial of await p.getByRole("link", { name: "Start 7-day free trial" }).all()) assert.doesNotMatch((await trial.getAttribute("class")) ?? "", /bg-ch-green\b/);
     await p.getByRole("link", { name: "Start 7-day free trial" }).last().click();
     await p.waitForURL(/\/sign-up\?plan=autocart/);
     await p.getByText("Your 7-day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
@@ -690,7 +708,7 @@ try {
     await p.waitForURL(/\/pricing\?plan=autocart&as=member/);
     // In the app, sign-up offers no Google button.
     await p.goto(`${GH}/sign-up?as=app`);
-    await p.getByRole("heading", { name: "Create your account" }).waitFor();
+    await p.getByRole("heading", { name: "Create your CampHawk account" }).waitFor();
     assert.equal(await p.getByText("Continue with Google").count(), 0);
     assert.deepEqual(errors, []);
     await ctx.close();

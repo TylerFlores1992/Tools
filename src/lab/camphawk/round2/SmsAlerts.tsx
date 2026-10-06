@@ -39,7 +39,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   // The button stays in its real colour; pressing it early says what's missing and goes there
   // (a greyed-out full-width button reads as an empty bar, and says nothing).
   const save = () => {
-    if (demo || busy || !changed) return;
+    if (demo || busy || (saved && !changed)) return;
     if (blocked) {
       setTried(true);
       document.getElementById(missingNumber ? "sms-phone" : "sms-consent")?.focus();
