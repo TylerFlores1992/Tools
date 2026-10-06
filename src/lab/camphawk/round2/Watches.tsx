@@ -153,6 +153,9 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
             <ShoppingCart aria-hidden="true" className="size-4" />
             Check out on Recreation.gov
           </a>
+          {/* How long the cart lasts is the one number that matters here (Recreation.gov holds a
+              cart for 15 minutes); red, because you must act. Example time. */}
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
         </div>
       )}
       <div className="mt-3 flex gap-2 border-t border-ch-line pt-3">
@@ -323,7 +326,7 @@ export function Watches() {
         )}
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
           <div className="min-w-[12rem] flex-1">
-            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} of {WATCH_LIMIT} watches running</p>
+            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} of {WATCH_LIMIT} watches running{watches.length > running ? ` · ${watches.length - running} paused` : ""}</p>
             <p className="mt-0.5 text-[14px] text-ch-ink-2">We check every 15 seconds, around the clock.</p>
           </div>
           <WatchCtaLink visitor={visitor} label="New watch" fullWidth={false} className="min-h-11 px-5" />

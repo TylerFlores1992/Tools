@@ -16,7 +16,7 @@ import type { Visitor } from "../data";
 
 export type SmsState = "new" | "saved" | "loading" | "error";
 
-export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boolean; start?: SmsState; visitor?: Visitor }) {
+export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean }) {
   const [saved, setSaved] = useState<string | null>(start === "saved" ? "(209) 555-0142" : null);
   const [phone, setPhone] = useState(start === "saved" ? "(209) 555-0142" : "");
   const [agreed, setAgreed] = useState(start === "saved");
@@ -116,7 +116,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
       {/* With a number saved and nothing changed there is nothing to update: no button. */}
       {!(saved && !changed) && (
         <div>
-          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
+          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
             {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : saved ? "Update number" : "Turn on text alerts"}
           </button>
           {!busy && (demo || blocked) && (

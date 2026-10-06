@@ -23,8 +23,8 @@ export const PICKABLE: Pickable[] = [
   {
     id: "leo-carrillo", name: "Leo Carrillo State Park", place: "Malibu, CA", provider: "ReserveCalifornia", reservable: true,
     divisions: [
-      { id: "leo-canyon-a", name: "Canyon Campground (sites 1-24)", reservable: true },
-      { id: "leo-canyon-b", name: "Canyon Campground (sites 25-77)", reservable: true },
+      { id: "leo-canyon-a", name: "Canyon Campground (sites 1⁠–⁠24)", reservable: true },
+      { id: "leo-canyon-b", name: "Canyon Campground (sites 25⁠–⁠77)", reservable: true },
       { id: "leo-beach", name: "Beach Campground", reservable: true },
     ],
   },

@@ -606,7 +606,7 @@ try {
     await p.getByText("Watching Upper Pines again.").waitFor();
     // Claim: nothing is released until you say so, and the release names its button in words.
     await p.goto(`${GH}/claim?as=app`);
-    await p.getByText("When you tap “It's mine — hand it over”", { exact: false }).waitFor();
+    await p.getByText("tap “It's mine — hand it over” and we let go", { exact: false }).waitFor();
     assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
     await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
     await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");

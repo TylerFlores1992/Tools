@@ -121,7 +121,7 @@ export function CampingHub() {
   const usTotal = total(STATES);
   const extraParks = HARD_TO_BOOK.length - 3;
   return (
-    <LabPage page="Camping by state" title="Camping by state" dock={false} photo={{ art: ART.e1, pos: "40% 55%", posLg: "50% 55%" }}>
+    <LabPage page="Camping by state" title="Camping by state" dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", null]]} />
@@ -155,7 +155,7 @@ export function StatePage({ slug }: { slug: string }) {
   const ca = r.code === "CA";
   const types = hubsIn(r.code);
   return (
-    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false} photo={{ art: ART.c1, pos: "50% 60%", posLg: "50% 55%" }}>
+    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />
@@ -196,7 +196,7 @@ export function TypeHub({ type }: { type: string }) {
   const us = rows.filter((x) => !x.canada);
   const ca = rows.filter((x) => x.canada);
   return (
-    <LabPage page={hub.heading} title={hub.heading} dock={false} photo={{ art: ART.n1, pos: "62% 55%", posLg: "50% 60%" }}>
+    <LabPage page={hub.heading} title={hub.heading} dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", ROUTES.camping], [hub.heading, null]]} />
@@ -247,7 +247,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
     }
   }
   return (
-    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false} photo={{ art: ART.n1, pos: "62% 55%", posLg: "50% 60%" }}>
+    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />

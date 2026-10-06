@@ -43,7 +43,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
         <h2 className={head}>You&apos;re all set. Here&apos;s what you can do.</h2>
         <ul className="mt-6 grid max-w-[64ch] gap-3 text-[16px] leading-relaxed text-ch-ink-2">
           <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
-          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.</li>
+          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.</li>
           <li>With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.</li>
           <li>Any alert lets you pause the watch, reopen it, or mute a site you don&apos;t want.</li>
         </ul>

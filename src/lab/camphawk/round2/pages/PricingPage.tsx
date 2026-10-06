@@ -116,7 +116,7 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
   const autocart = plan === "autocart";
   const items = [
     `Watch up to ${WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.`,
-    phone ? "Alerts reach you by text as well as email. Change the number any time in Settings." : "Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.",
+    phone ? "Alerts reach you by text as well as email. Change the number any time in Settings." : "Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.",
     autocart ? "Auto-cart is connected, so an opening on a Recreation.gov watch goes straight into your cart while you get to your phone." : "With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.",
     "Any alert lets you pause the watch, reopen it, or mute a site you don't want.",
   ];
@@ -189,10 +189,7 @@ function HoldExplainer() {
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
       <div className="max-w-[70ch]">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
-          <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
-        </div>
+        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
         {!RC_HOLD_OPEN && (
           <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
             Since {RC_HOLD_CLOSED_ON}, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
@@ -235,13 +232,15 @@ export function PricingPage() {
           {visitor === "subscriber" ? <AllSet visitor={visitor} plan={plan} phone={phone === "saved"} />
             : visitor === "app" ? <><AppPaywall store={store} />{store === "sells" && <LabNote>The store tiles show CampHawk&apos;s prices as stand-ins; the real tiles show the App Store&apos;s own price strings.</LabNote>}</>
             : <WebPlans key={`${visitor}-${checkout}`} visitor={visitor} lookup={lookup} checkout={checkout} />}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
           <HoldExplainer />
           <section aria-labelledby="dont" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
             <h2 id="dont" className="font-ch-display text-[22px] font-extrabold text-ch-ink">What we don&apos;t do</h2>
-            <ul className="mt-3 max-w-[70ch] border-t border-ch-line">
+            <ul className="mt-3 border-t border-ch-line">
               {LIMITS.map((l) => <li key={l} className="flex gap-3 border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2"><span aria-hidden="true" className="text-ch-muted">—</span>{l}</li>)}
             </ul>
           </section>
+          </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds free</Link>
             <A href={ROUTES.home} visitor={visitor}>Back to the home page</A>

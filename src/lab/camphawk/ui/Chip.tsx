@@ -26,7 +26,7 @@ export function Chip({ selected = false, size = "md", className, type = "button"
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green",
         "disabled:cursor-not-allowed disabled:text-ch-faint",
         "motion-reduce:transition-none",
-        size === "sm" ? "px-[11px] py-[7px] text-[13px]" : "px-3 py-2 text-[14px]",
+        size === "sm" ? cx("py-[7px] text-[13px]", selected ? "pl-2 pr-[10px]" : "px-[11px]") : "px-3 py-2 text-[14px]",
         selected
           ? "gap-1.5 bg-ch-forest border-ch-forest text-ch-white font-bold"
           : "bg-ch-card border-ch-line text-ch-ink-2 font-semibold hover:border-ch-muted",

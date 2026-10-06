@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AlertTriangle, Check, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
+import { Tag } from "../../ui/Tag";
 import { LabSelect } from "../AppParts";
 import { BareFrame } from "../BareFrame";
 import { useUrlState } from "../labState";
@@ -60,7 +61,7 @@ function SiteCard({ heading, tone, footer }: { heading: string; tone: "hold" | "
       <h1 className="mt-1 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.02em] text-ch-ink"><span className="sr-only">Claim </span>{CLAIM.unit}</h1>
       <p className="mt-2 text-[15px] text-ch-ink-2">{CLAIM.place}</p>
       <p className="mt-0.5 text-[15px] font-bold text-ch-ink-2">{CLAIM.stay} · {CLAIM.nights} nights</p>
-      {footer && <p className="mt-3 border-t border-ch-line pt-3 text-[14px] text-ch-ink-2">{footer}</p>}
+      {footer && <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-ch-line pt-3 text-[14px] text-ch-ink-2">{footer}</div>}
     </div>
   );
 }
@@ -182,9 +183,9 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
   return (
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
-        footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : `We hold it for up to 60 minutes. About ${CLAIM.minutesLeft} min left.`} />
+        footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:" className="text-[12px]">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
       {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
-      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">When you tap “It&apos;s mine — hand it over” we let go and you take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
+      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, a button appears: tap “It&apos;s mine — hand it over” and we let go so you can take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready ? (
         <Step tone="done" title={c.readyTitle} />
       ) : opened && !canInject ? (

@@ -4,8 +4,8 @@ import { Info } from "lucide-react";
 import { ART } from "../Art";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
-import { CHECK_SECONDS, OPENINGS_STAT, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
+import { A, ActionLink, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
+import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
 // campsite-cancellation-alerts, sold-out-campsite). Server pages in CampHawk, no account states,
@@ -75,6 +75,15 @@ export function AutoCartGuide() {
           <H2 id="rc">ReserveCalifornia — a hold at the 8 AM release</H2>
           <HoldClosed />
           <P className="mt-6">California is different in a way that matters. When somebody cancels a ReserveCalifornia site, it usually does not go back on sale immediately — it is locked until the next morning&apos;s release, and then a lot of people are refreshing at once. So instead of watching for it all day, CampHawk spots the site the <strong className="text-ch-ink">night before</strong> and offers to be there at the moment it frees.</P>
+          {/* The hold in one line: when each thing happens, so the steps below have a shape. */}
+          <ol aria-label="An 8 AM hold, start to finish" className="mt-6 grid gap-2 sm:grid-cols-4">
+            {[["Any day", "Someone cancels; the site waits for the 8 AM release"], ["Night before", "We offer: “Hold it for me?”"], ["8:00 AM", "We cart it, within seconds"], [`Within ${HOLD_MINUTES} min`, "You take it over and book"]].map(([when, what], i) => (
+              <li key={when} className="relative rounded-ch-input border border-ch-line bg-ch-card px-3 py-3 shadow-ch-card">
+                <span className="block text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">{i + 1} · {when}</span>
+                <span className="mt-1 block text-[15px] font-bold leading-snug text-ch-ink">{what}</span>
+              </li>
+            ))}
+          </ol>
           <Steps steps={[
             ["Watch a ReserveCalifornia campground", "There is nothing to switch on, and that is deliberate — see below. Just watch the park you want."],
             ["The evening before, we offer", <>When we see a site that is about to be released, you get an alert with a <strong className="text-ch-ink">Hold it for me</strong> button. <strong className="text-ch-ink">Nothing happens unless you tap it.</strong></>],
@@ -151,7 +160,7 @@ export function CancellationAlerts() {
 
 export function SoldOutGuide() {
   return (
-    <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." dock={false} photo={{ art: ART.a1, pos: "62% 70%", posLg: "50% 72%" }}>
+    <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["how-often", "How often sites come back"], ["windows", "Sold out, or not open yet?"], ["cancellations", "Why sites come back"], ["what-works", "What to actually do"], ["camphawk", "Where CampHawk fits"]]}>
         <Prose>
@@ -189,6 +198,7 @@ export function SoldOutGuide() {
           <P>We check every watched campground every {CHECK_SECONDS} seconds, across Recreation.gov, ReserveCalifornia and {otherStateSystems} other state reservation systems, and text, email or push you the moment a stay you asked for becomes bookable.</P>
           <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — measured at about twelve seconds from the site opening to it being held for you{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That is the part a plain alert cannot do, because by the time you have read a text and opened an app, the fast people are already at checkout.</P>
           <P><A href={ROUTES.explore} visitor={visitor}>Find your campground</A> — searching is free. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
+          <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Find your campground</ActionLink>} />
           <Disclaimer visitor={visitor} />
         </Prose>
         </WithRail>

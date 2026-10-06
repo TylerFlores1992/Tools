@@ -182,6 +182,12 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     return (
       <div>
         <p className="text-[16px] font-bold text-ch-ink">{known ? "Your subscription is active" : "Your subscription"}</p>
+        {known && billing !== "not-billed" && (
+          <p className="mt-1 text-[15px] text-ch-ink tabular-nums">
+            {plan === "autocart" ? "Auto-Cart plan" : "Alerts plan"}
+            {billing === "stripe" ? ` · ${priceShort(plan === "autocart" ? "autocart" : "base", "monthly")} · renews Aug 6, 2026` : ` · billed by ${billing === "app-store" ? "the App Store" : "Google Play"}`}
+          </p>
+        )}
         <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">{known && `${on} `}{m.detail}</p>
         <a href={billing === "not-billed" ? "mailto:alerts@camphawk.app" : "#"} className={sm("quiet", "mt-3")}>{m.label}</a>
       </div>
@@ -317,6 +323,7 @@ export function Settings() {
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you've turned on, at once. Whichever gets to you first wins.">
                 <Box icon={<Mail className="size-5" />} title="Email — always on">Every opening we find goes to {EMAIL}.</Box>
+                <Box icon={<Bell className="size-5" />} title="Push notifications — in the CampHawk app">Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>
             )}

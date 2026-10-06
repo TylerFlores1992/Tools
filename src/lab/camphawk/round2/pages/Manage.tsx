@@ -16,7 +16,7 @@ import { ROUTES } from "../gates";
 import { LabNote, LabPage } from "../LabPage";
 import { useSwapFocus } from "../useSwapFocus";
 import { useUrlState, withVisitor } from "../labState";
-import { MANAGE, releaseShort, type ManageWatch } from "./alert-data";
+import { MANAGE, releaseLong, releaseShort, type ManageWatch } from "./alert-data";
 
 // Tier 1: Manage a watch (campsite-finder src/app/(app)/manage/[token], ManageWatch.tsx,
 // SiteMuteList.tsx). The token in the link is the credential, so a tapped alert opens it signed
@@ -101,6 +101,7 @@ export function Manage() {
 function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calendar: string }) {
   const [active, setActive] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [requested, setRequested] = useState(w.requested);
   const { confirmRef: editPanelRef, triggerRef: editTriggerRef } = useSwapFocus<HTMLDivElement>(editing);
   const [range, setRange] = useState<DateRange>({ start: w.start, end: w.end });
   const [saved, setSaved] = useState<DateRange>({ start: w.start, end: w.end });
@@ -205,13 +206,21 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
         </section>
       )}
 
-      {w.requested.length > 0 && (
+      {requested.length > 0 && (
         <section aria-labelledby="grab" className="rounded-ch-card border border-ch-ochre-line bg-ch-ochre-soft p-5">
           <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
           <ul className="mt-2 divide-y divide-ch-ochre-line">
-            {w.requested.map((r) => <li key={r.unit} className="flex justify-between py-2.5 text-[16px]"><span className="font-bold text-ch-ink">{r.unit}</span><span className="text-ch-ink-2">{r.release}</span></li>)}
+            {requested.map((r) => (
+              <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="queued">Asked</Tag></span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay} · releases {releaseLong()}</span>
+                </span>
+                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call off the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>
+              </li>
+            ))}
           </ul>
-          <p className="mt-1 text-[14px] text-ch-ink-2">You asked us to hold {w.requested.length === 1 ? "this one" : "these"} at the {releaseShort()} release. You’ll get an alert the moment it’s in the cart, with a link to take it.</p>
+          <p className="mt-1 text-[14px] text-ch-ink-2">You asked us to hold {requested.length === 1 ? "this one" : "these"} at the {releaseShort()} release. You’ll get an alert the moment it’s in the cart, with a link to take it.</p>
         </section>
       )}
 
@@ -229,7 +238,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               </li>
             ))}
           </ul>
-          <p className="mt-1 text-[14px] text-ch-ink-2">{w.requested.length > 0 ? `You’ve already asked us to hold ${w.requested.map((x) => x.unit).join(" and ")}. Ask for another only if you’d take either — while we hold a site, nobody else can book it.` : "Only ask for one you actually want — while we hold it, nobody else can book it."}</p>
+          <p className="mt-1 text-[14px] text-ch-ink-2">{requested.length > 0 ? `You’ve already asked us to hold ${requested.map((x) => x.unit).join(" and ")}. Ask for another only if you’d take either — while we hold a site, nobody else can book it.` : "Only ask for one you actually want — while we hold it, nobody else can book it."}</p>
         </section>
       )}
 
