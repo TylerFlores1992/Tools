@@ -252,7 +252,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
         {!confirming ? (
-          <div className="grid gap-3 sm:flex sm:items-center">
+          <div className="grid gap-3">
             <p className="flex-1 text-[15px] text-ch-ink-2">Done with this trip? Removing the watch deletes it and its alert history.</p>
             <button type="button" onClick={() => setConfirming(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Remove watch</button>
           </div>
