@@ -494,7 +494,7 @@ try {
     await p.waitForURL(/\/watches\?/);
     assert.match(p.url(), /as=subscriber/);
     await p.getByRole("heading", { level: 3, name: "Carpinteria State Beach" }).waitFor();
-    await p.getByText("4 of 6 watches running").waitFor();
+    await p.getByText("4 watches running").waitFor();
     // The Auto-Cart promise is only for its plan; the base plan is told what still happens.
     await p.goto(`${GH}/new?as=subscriber&plan=alerts&campground=upper-pines&start=2026-07-18&end=2026-07-21`);
     await p.getByText("Auto-cart is on the Auto-Cart plan").waitFor();
@@ -520,7 +520,7 @@ try {
     await p.getByRole("radio", { name: "Lapsed", exact: true }).click();
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
-    await p.getByText("3 of 6 watches running").waitFor();
+    await p.getByText("3 watches running · 1 paused").waitFor();
     for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 042", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.
