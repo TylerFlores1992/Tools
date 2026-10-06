@@ -53,8 +53,10 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `scripts/` screenshot, smoke, doc guards · `studio/film/` hero film source
 - `src/app/private/` the Private tab: password-only sign-in, `src/proxy.ts` guards `/private/*`
   (`LAB_PASSWORD`, `src/lib/private-auth.ts`; docs/SETUP.md) · projects listed in `src/lib/private.ts`
-- `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab (`ch-*` tokens, lab only);
-  new-look mockups: `looks.ts`, `?look=<id>`, art drawn by `studio/camphawk-looks/`
+- `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
+  camphawk.app (`ch-*` tokens, lab only). Chosen look: `round2/GoldenHour.tsx` at
+  `/private/camphawk/golden-hour`; art from `studio/camphawk-round2/` (AI Gateway, free credit
+  only). Round 1 looks: `looks.ts`, `?look=<id>`, `studio/camphawk-looks/`
 - `public/media/hero/` rendered film + posters
 
 ## End of every session
