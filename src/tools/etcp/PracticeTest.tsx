@@ -3,7 +3,7 @@
 import { Button, LinkButton, Arrow } from "@/components/Button";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
-import { LETTERS, PRACTICE_SETS, type Question } from "./questions";
+import { AREAS, LETTERS, PRACTICE_SETS, type Area, type Question } from "./questions";
 import { useStored } from "./stored";
 
 type Answers = Record<string, number>;
@@ -11,9 +11,10 @@ const NONE: Answers = {};
 const isAnswers = (v: unknown): v is Answers =>
   typeof v === "object" && v !== null && !Array.isArray(v) && Object.values(v).every((n) => Number.isInteger(n) && n >= 0 && n <= 3);
 
-export function PracticeTest({ slug }: { slug: "a" | "b" }) {
-  const set = PRACTICE_SETS.find((s) => s.slug === slug)!;
-  const other = PRACTICE_SETS.find((s) => s.slug !== slug)!;
+export function PracticeTest({ slug }: { slug: string }) {
+  const at = PRACTICE_SETS.findIndex((s) => s.slug === slug);
+  const set = PRACTICE_SETS[at];
+  const other = PRACTICE_SETS[(at + 1) % PRACTICE_SETS.length];
   const [answers, setAnswers] = useStored(`etcp:practice:${slug}`, NONE, isAnswers);
   const qs = set.questions;
   const done = qs.filter((q) => answers[q.id] !== undefined).length;
@@ -53,6 +54,7 @@ export function PracticeTest({ slug }: { slug: "a" | "b" }) {
             <p className="mt-2 text-body text-ink-2">
               {pct}% · {pct >= 80 ? "Solid. Try the other test, or work back through the ones you missed." : "Go back over the ✕ answers and their working, then start over."}
             </p>
+            <AreaScores qs={qs} answers={answers} />
             <div className="mt-6 flex flex-wrap gap-3">
               <LinkButton href={`/workshop/etcp-rigger-study/practice/${other.slug}`}>
                 {other.name} <Arrow />
@@ -72,6 +74,42 @@ export function PracticeTest({ slug }: { slug: "a" | "b" }) {
   );
 }
 
+/** Score per part of the content outline, so you know what to study. Only for sets tagged by area. */
+function AreaScores({ qs, answers }: { qs: readonly Question[]; answers: Answers }) {
+  const rows = (Object.keys(AREAS) as Area[])
+    .map((a) => {
+      const inArea = qs.filter((q) => q.area === a);
+      return { a, total: inArea.length, right: inArea.filter((q) => answers[q.id] === q.answer).length };
+    })
+    .filter((r) => r.total > 0);
+  if (!rows.length) return null;
+  return (
+    <table className="mt-6 w-full text-left text-small tabular-nums">
+      <caption className="pb-2 text-left font-mono text-label uppercase text-muted">By part of the exam outline</caption>
+      <thead className="sr-only">
+        <tr><th scope="col">Part</th><th scope="col">Right</th><th scope="col">Score</th></tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => {
+          const p = Math.round((r.right / r.total) * 100);
+          return (
+            <tr key={r.a} className="border-t border-line">
+              <th scope="row" className="py-2 pr-3 font-normal text-ink">
+                <span className="mr-2 font-mono text-label text-muted">{r.a}</span>
+                {AREAS[r.a]}
+              </th>
+              <td className="py-2 pr-3 text-right text-ink-2 whitespace-nowrap">{r.right} of {r.total}</td>
+              <td className="w-px py-2 text-right whitespace-nowrap">
+                {p >= 80 ? <State kind="ok">{p}%</State> : <State kind="note">{p}% · review</State>}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
 function QuestionItem({ q, n, chosen, onAnswer }: { q: Question; n: number; chosen: number | undefined; onAnswer: (i: number) => void }) {
   const answered = chosen !== undefined;
   const correct = chosen === q.answer;
@@ -84,7 +122,7 @@ function QuestionItem({ q, n, chosen, onAnswer }: { q: Question; n: number; chos
             <span className="sr-only">Question {n}, </span>
             {q.topic}
           </p>
-          <p id={`${q.id}-stem`} className="mt-2 text-lede text-ink">{q.stem}</p>
+          <p id={`${q.id}-stem`} className="mt-2 whitespace-pre-line text-lede text-ink">{q.stem}</p>
           <div role="group" aria-labelledby={`${q.id}-stem`} className="mt-5 grid gap-2.5">
             {q.options.map((o, i) => {
               const isKey = i === q.answer, isChosen = i === chosen;

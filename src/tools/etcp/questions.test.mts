@@ -5,7 +5,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { PRACTICE_SETS, type Question } from "./questions.ts";
+import { ARENA_OUTLINE, AREAS, PRACTICE_SETS, type Area, type Question } from "./questions.ts";
 import { solveBridle } from "../bridle/math.ts";
 
 const deg = (r: number) => (r * 180) / Math.PI;
@@ -51,7 +51,56 @@ const EXPECTED: Record<string, number> = {
   b16: 1.5,
   b22: 6,
   b25: 80,
+  c01: 30 * 12 + 2 * 140 + 12 * 38 + (30 + 40) * 0.6,
+  c02: 1.5 * 1000 * KG_LB,
+  c03: (15 * KG_LB) / M_FT,
+  c04: 2000 * Math.sin(rad(30)),
+  c05: Math.hypot(6, 8, 24),
+  c06: (200 * Math.sin(rad(60))) / Math.sin(rad(30)),
+  c07: threeWay([[0, 0], [20, 0], [10, 15]], [10, 5], 12, 2000)[0],
+  c10: 7000 / 875,
+  c11: (1200 * 6) / 8,
+  c13: 6 + 3.5 + 1 + 5 + 2,
+  c14: 1800, // 29 CFR 1910.140(d)(1)(i)
+  c15: 5.5 * 4,
+  c21: 9500 * 0.5, // Crosby side-load table: 90° → 50%
+  c27: 30, // Crosby shouldered eye bolt at 45°
+  c39: 36, // 3 ft, 1910.23(c)(11)
+  c43: 400 / 4,
+  c48: (4200 * 1.0) / 8,
 };
+
+/**
+ * Leg tensions of a bridle with any number of legs meeting at one apex, solved as 3-D statics
+ * (Gaussian elimination, so three legs only). Points share a height; the apex hangs `drop` below.
+ */
+function threeWay(points: [number, number][], apex: [number, number], drop: number, W: number): number[] {
+  const u = points.map(([x, y]) => {
+    const v = [x - apex[0], y - apex[1], drop];
+    const l = Math.hypot(...v);
+    return v.map((c) => c / l);
+  });
+  // Columns are unit vectors; solve Σ T·u = (0, 0, W).
+  const m = [0, 1, 2].map((r) => [u[0][r], u[1][r], u[2][r], r === 2 ? W : 0]);
+  for (let c = 0; c < 3; c++) {
+    const p = m.findIndex((row, i) => i >= c && Math.abs(row[c]) > 1e-12);
+    [m[c], m[p]] = [m[p], m[c]];
+    for (let r = 0; r < 3; r++) if (r !== c) {
+      const f = m[r][c] / m[c][c];
+      for (let k = c; k < 4; k++) m[r][k] -= f * m[c][k];
+    }
+  }
+  return m.map((row, i) => row[3] / row[i]);
+}
+
+/** "Which of the following" and put-in-order questions: the list each option must spell out. */
+const LISTS: Record<string, number[]> = {
+  c19: [1, 2, 4],
+  c29: [1, 3, 2, 4],
+  c46: [1, 2, 3],
+};
+const listOf = (s: string) => s.match(/\d+/g)!.map(Number);
+
 
 /** The leading number in an option: "1,602 lb" → 1602, "24:1" → 24, "1.43°" → 1.43. */
 const num = (s: string) => {
@@ -75,8 +124,50 @@ test("the high/low bridle setup matches the question (B is 2 ft lower, apex 10 f
   assert.ok(Math.abs(r.right.tension - 434.8) < 0.1);
 });
 
-test("two sets of 25, unique ids, four distinct options, a valid key and an explanation", () => {
-  assert.deepEqual(PRACTICE_SETS.map((s) => s.questions.length), [25, 25]);
+test("the 3-way bridle solver balances the load and matches the hand working", () => {
+  const T = threeWay([[0, 0], [20, 0], [10, 15]], [10, 5], 12, 2000);
+  // Apex on the centroid: each point takes a third of the load vertically.
+  assert.ok(Math.abs((T[0] * 12) / Math.hypot(10, 5, 12) - 2000 / 3) < 1e-9);
+  assert.ok(Math.abs((T[2] * 12) / Math.hypot(0, 10, 12) - 2000 / 3) < 1e-9);
+  assert.ok(Math.abs(T[0] - T[1]) < 1e-9);
+});
+
+test("the overhang question's key matches moments about point 1 (uplift at point 2)", () => {
+  const W = 300, d = 4, S = 12;
+  const r2 = (-d * W) / S, r1 = W - r2;
+  assert.equal(r2, -100);
+  assert.equal(r1, 400);
+  const q = all.find((x) => x.id === "c08")!;
+  assert.equal(q.options[q.answer], "Point 1: 400 lb; point 2: 100 lb of uplift");
+});
+
+test("list and sequence questions: exactly one option spells out the key", () => {
+  for (const [id, want] of Object.entries(LISTS)) {
+    const q = all.find((x) => x.id === id)!;
+    const hits = q.options.map((o, i) => (JSON.stringify(listOf(o)) === JSON.stringify(want) ? i : -1)).filter((i) => i >= 0);
+    assert.deepEqual(hits, [q.answer], id);
+  }
+});
+
+test("clip table (Crosby G-450, 1/2 in rope): 3 clips, 11-1/2 in turnback is the key", () => {
+  const q = all.find((x) => x.id === "c22")!;
+  assert.equal(q.options[q.answer], "3 clips, 11-1/2 in");
+});
+
+test("test C is weighted like the real Arena exam: each area within one question of its share", () => {
+  const c = PRACTICE_SETS.find((s) => s.slug === "c")!.questions;
+  assert.ok(c.every((q) => q.area), "every question in C has an area");
+  const total = Object.values(ARENA_OUTLINE).reduce((a, b) => a + b, 0);
+  assert.equal(total, 150);
+  for (const a of Object.keys(AREAS) as Area[]) {
+    const share = (ARENA_OUTLINE[a] / total) * c.length;
+    const n = c.filter((q) => q.area === a).length;
+    assert.ok(Math.abs(n - share) <= 1, `${a}: ${n} questions, share ${share.toFixed(1)}`);
+  }
+});
+
+test("sets of 25, 25 and 50, unique ids, four distinct options, a valid key and an explanation", () => {
+  assert.deepEqual(PRACTICE_SETS.map((s) => s.questions.length), [25, 25, 50]);
   assert.equal(new Set(all.map((q) => q.id)).size, all.length);
   for (const q of all) {
     assert.equal(new Set(q.options).size, 4, `${q.id} has duplicate options`);
@@ -105,7 +196,8 @@ test("the checker itself catches a wrong key (self-test)", () => {
 
 test("every question with a number in its key is recomputed above", () => {
   // Options that are all numbers mean a calculation; those must have an EXPECTED entry.
-  const missing = all.filter((q) => q.options.every((o) => !Number.isNaN(num(o))) && !(q.id in EXPECTED)).map((q) => q.id);
+  const handChecked = new Set([...Object.keys(LISTS), "c22"]);
+  const missing = all.filter((q) => q.options.every((o) => !Number.isNaN(num(o))) && !(q.id in EXPECTED) && !handChecked.has(q.id)).map((q) => q.id);
   // Recall facts with numeric options (anchor rating, fleet angle limit, free-fall limit, choker
   // %) are listed in EXPECTED as the published values.
   assert.deepEqual(missing, [], `numeric questions without a recomputation: ${missing.join(", ")}`);

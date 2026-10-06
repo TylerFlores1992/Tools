@@ -31,7 +31,7 @@ export default async function PracticePage({ params }: { params: Promise<{ set: 
         <Label>Rigging · Practice</Label>
         <h1 className="mt-3 text-title font-normal">{s.name}</h1>
         <p className="mt-4 text-lede text-ink-2">
-          {s.questions.length} questions in the style of the Arena exam. Pick an answer to lock it in and see the working.
+          {s.questions.length} questions in the style of the Arena exam. {s.about ? `${s.about} ` : ""}Pick an answer to lock it in and see the working.
         </p>
       </header>
       <div className="mt-8">

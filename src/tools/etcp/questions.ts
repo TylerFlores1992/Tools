@@ -1,6 +1,25 @@
-// Two original 25-question practice tests written to the ETCP Certified Rigger – Arena content
-// outline. Every numeric answer is recomputed from first principles in questions.test.mts, so a
-// typo in an option or a wrong answer key fails the build.
+// Original practice tests written to the ETCP Certified Rigger – Arena content outline: two
+// 25-question sets and a 50-question set (set-c.ts) weighted like the real exam. Every numeric
+// answer is recomputed from first principles in questions.test.mts, so a typo in an option or a
+// wrong answer key fails the build.
+
+import { C } from "./set-c.ts";
+
+/** The parts of ETCP's Arena content outline (Candidate Handbook, rev. 5.0, Feb 2016). */
+export const AREAS = {
+  "1A": "Formulas and forces",
+  "1B": "General principles of rigging",
+  "1C": "Drawings and schedules",
+  "2A": "Layout and electrical",
+  "2B": "Rigging attachments",
+  "2C": "Operations",
+  "3A": "Personnel access equipment",
+  "3B": "Rigging materials",
+} as const;
+export type Area = keyof typeof AREAS;
+
+/** Scored questions per area on the real 150-question Arena exam. */
+export const ARENA_OUTLINE: Record<Area, number> = { "1A": 25, "1B": 15, "1C": 10, "2A": 10, "2B": 25, "2C": 25, "3A": 10, "3B": 30 };
 
 export type Question = {
   id: string;
@@ -10,9 +29,11 @@ export type Question = {
   /** Index into `options`. */
   answer: 0 | 1 | 2 | 3;
   explain: string;
+  /** Where it sits in the Arena content outline. */
+  area?: Area;
 };
 
-export type PracticeSet = { slug: "a" | "b"; name: string; questions: readonly Question[] };
+export type PracticeSet = { slug: string; name: string; about?: string; questions: readonly Question[] };
 
 const A: Question[] = [
   { id: "a01", topic: "2-way bridle", stem: "A symmetric 2-leg bridle hangs from two beams 20 ft apart. The apex is centered and 10 ft below the beams. The load is 1,000 lb. What is the tension in each leg?", options: ["500 lb", "707 lb", "1,000 lb", "1,414 lb"], answer: 1,
@@ -123,6 +144,7 @@ const B: Question[] = [
 export const PRACTICE_SETS: readonly PracticeSet[] = [
   { slug: "a", name: "Practice test A", questions: A },
   { slug: "b", name: "Practice test B", questions: B },
+  { slug: "c", name: "Practice test C", about: "Weighted like the real exam: each part of ETCP's Arena content outline gets its share of the 50 questions.", questions: C },
 ];
 
 export function practiceSet(slug: string): PracticeSet | undefined {
