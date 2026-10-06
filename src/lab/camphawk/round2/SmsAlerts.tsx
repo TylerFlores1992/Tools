@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Check, Loader2, MessageSquare } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, MessageSquare } from "lucide-react";
 import { buttonClasses } from "../ui";
 import { ROUTES } from "./gates";
 import { A } from "./LabPage";
@@ -21,12 +21,22 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   const [phone, setPhone] = useState(start === "saved" ? "(209) 555-0142" : "");
   const [agreed, setAgreed] = useState(start === "saved");
   const [busy, setBusy] = useState<"save" | "off" | null>(null);
-  const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
   const [tried, setTried] = useState(false);
   const [announce, setAnnounce] = useState("");
   // A saved number is one line; the carrier-worded form opens only to change it.
   const [editing, setEditing] = useState(false);
+  // Focus follows the control that replaced the one you pressed: into the number field when the
+  // form opens (or texts turn off), back to "Change number" when it closes or saves.
+  const changeRef = useRef<HTMLButtonElement>(null);
+  const prev = useRef({ editing, saved });
+  useEffect(() => {
+    const was = prev.current;
+    prev.current = { editing, saved };
+    if (!was.editing && editing) document.getElementById("sms-phone")?.focus();
+    else if (was.editing && !editing && saved) changeRef.current?.focus();
+    else if (was.saved && !saved) document.getElementById("sms-phone")?.focus();
+  }, [editing, saved]);
 
   if (start === "loading") {
     return (
@@ -37,7 +47,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
   }
 
   const changed = phone.trim() !== (saved ?? "");
-  const missingNumber = phone.trim().length < 10;
+  const missingNumber = phone.replace(/\D/g, "").length < 10;
   const blocked = missingNumber || !agreed;
   // The button stays in its real colour; pressing it early says what's missing and goes there
   // (a greyed-out full-width button reads as an empty bar, and says nothing).
@@ -50,7 +60,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
     }
     setBusy("save");
     setError(null);
-    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setEditing(false); setDone(true); setAnnounce(`Text alerts on for ${phone.trim()}.`); window.setTimeout(() => setDone(false), 2000); }, 600);
+    window.setTimeout(() => { setBusy(null); setSaved(phone.trim()); setEditing(false); setAnnounce(`Text alerts on for ${phone.trim()}.`); }, 600);
   };
   const turnOff = () => {
     setBusy("off");
@@ -67,7 +77,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
           <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · <span className="whitespace-nowrap">{saved}</span></p>
           {!editing && (
             <span className="flex gap-2">
-              <button type="button" onClick={() => setEditing(true)} aria-expanded={editing} aria-controls="sms-form" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
+              <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
               <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
                 {busy === "off" ? "Turning off…" : "Turn off"}
               </button>
@@ -107,9 +117,9 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
       {!(saved && !changed) && (
         <div>
           <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
-            {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : done ? <><Check aria-hidden="true" className="size-4" />Saved</> : saved ? "Update number" : "Turn on text alerts"}
+            {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : saved ? "Update number" : "Turn on text alerts"}
           </button>
-          {!busy && !done && (demo || blocked) && (
+          {!busy && (demo || blocked) && (
             <p id="sms-why" role={tried ? "alert" : undefined} className={tried ? "mt-2 text-[14px] font-bold text-ch-ink" : "mt-2 text-[13px] text-ch-ink-2"}>
               {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and tick the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Tick the box above to turn texts on."}
             </p>
@@ -117,7 +127,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor }: { demo?: boo
         </div>
       )}
       {saved && editing && (
-        <button type="button" onClick={() => { setEditing(false); setPhone(saved); setTried(false); }} className="justify-self-start text-[14px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">Keep {saved}</button>
+        <button type="button" onClick={() => { setEditing(false); setPhone(saved); setTried(false); }} className="inline-flex min-h-11 items-center justify-self-start text-[14px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">Keep {saved}</button>
       )}
       </div>
       )}

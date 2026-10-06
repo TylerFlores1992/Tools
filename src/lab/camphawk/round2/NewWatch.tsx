@@ -232,9 +232,11 @@ export function NewWatch() {
   const shown = pickerOpen && ((canFavorite && favoriteRows.length > 0) || hits.length > 0);
 
   function submit() {
-    if (!chosen) return setError("Pick a campground to watch.");
-    if (!range.start || !range.end) return setError(mode === "flexible" ? "Choose the window to watch." : "Choose your nights.");
-    if (targets.length === 0) return setError("Pick at least one part of the park to watch.");
+    // Each error takes focus to the field it's about (it shows under the button, far from it).
+    const focus = (sel: string) => window.setTimeout(() => document.querySelector<HTMLElement>(sel)?.focus(), 0);
+    if (!chosen) { focus("#nw-cg"); return setError("Pick a campground to watch."); }
+    if (!range.start || !range.end) { focus("#nw-dates button[aria-expanded]"); return setError(mode === "flexible" ? "Choose the window to watch." : "Choose your nights."); }
+    if (targets.length === 0) { focus("#nw-parts input[type=checkbox]"); return setError("Pick at least one part of the park to watch."); }
     setSaving(true);
     setError(null);
     setAnswer(null);
@@ -291,7 +293,7 @@ export function NewWatch() {
                   ref={inputRef}
                   id="nw-cg"
                   type="search"
-                  aria-controls="nw-cg-list"
+                  aria-controls={shown ? "nw-cg-list" : undefined}
                   aria-describedby="nw-cg-hint"
                   value={q}
                   onFocus={() => setPickerOpen(true)}
@@ -337,7 +339,7 @@ export function NewWatch() {
                       <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-paper">None</button>
                     </div>
                   </div>
-                  <ul className="max-h-64 divide-y divide-ch-line overflow-y-auto overscroll-contain">
+                  <ul id="nw-parts" className="max-h-64 divide-y divide-ch-line overflow-y-auto overscroll-contain">
                     {divisions.map((d) => (
                       <li key={d.id}>
                         <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2 hover:bg-ch-paper">
@@ -363,14 +365,14 @@ export function NewWatch() {
                 onChange={(v) => { if (v === "weekend") { setMode("exact"); setRange(thisWeekendRange()); } else setMode(v); }}
               />
               {mode === "flexible" && <div className="mb-2.5"><NightsPicker nights={flexNights} onNightsChange={setFlexNights} weekendsOnly={weekendsOnly} onWeekendsOnlyChange={setWeekendsOnly} /></div>}
-              <DatePicker
+              <div id="nw-dates"><DatePicker
                 value={range}
                 onChange={setRange}
                 label={mode === "flexible" ? "Window to watch" : "Trip dates"}
                 meta={mode === "flexible" && range.start ? `any ${flexNights}-night${weekendsOnly ? " weekend" : ""} stay in this window` : undefined}
                 minDate={todayISO()}
                 defaultMonth={range.start ?? addDays(todayISO(), 1)}
-              />
+              /></div>
               {flexTooLong && <p role="alert" className="mt-2 text-[14px] text-ch-alert-deep">{flexNights} nights doesn&apos;t fit in a {windowNights}-night window. Widen the window or shorten the stay.</p>}
             </fieldset>
 

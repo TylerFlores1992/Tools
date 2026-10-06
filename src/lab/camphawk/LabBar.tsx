@@ -14,9 +14,10 @@ import { VISITORS, type Visitor } from "./data";
 export function radioKeys<T>(values: readonly T[], current: T, set: (v: T) => void) {
   return (e: KeyboardEvent<HTMLElement>) => {
     const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
-    if (!step) return;
+    const jump = e.key === "Home" ? 0 : e.key === "End" ? values.length - 1 : -1;
+    if (!step && jump < 0) return;
     e.preventDefault();
-    const i = (values.indexOf(current) + step + values.length) % values.length;
+    const i = jump >= 0 ? jump : (values.indexOf(current) + step + values.length) % values.length;
     set(values[i]);
     e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]')[i]?.focus();
   };

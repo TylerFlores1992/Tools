@@ -144,7 +144,7 @@ export function DatePicker({
       </button>
 
       {open && (
-        <div id={panelId} className="rounded-b-ch-input border border-t-0 border-ch-forest bg-ch-card p-2 sm:p-3">
+        <div id={panelId} className="rounded-b-ch-input border border-t-0 border-ch-forest bg-ch-card px-1 py-2 sm:p-3">
           {(carriesIn || carriesOut) && (
             <p aria-live="polite" className="mb-2.5 flex items-start gap-2 rounded-[9px] border border-ch-line bg-ch-paper px-2.5 py-2 text-[13px] leading-snug text-ch-ink-2">
               <span aria-hidden="true" className="mt-px shrink-0 text-[10px]">{carriesIn ? "◀" : "▶"}</span>
@@ -159,7 +159,7 @@ export function DatePicker({
             </p>
           )}
           <div className="mb-2 flex items-center justify-between">
-            <button type="button" onClick={() => goMonth(-1)} aria-label="Previous month" className={navButton}>
+            <button type="button" onClick={() => goMonth(-1)} disabled={monthStart <= startOfMonth(floor)} aria-label="Previous month" className={navButton}>
               <ChevronLeft aria-hidden="true" className="size-4" />
             </button>
             <div id={gridLabelId} aria-live="polite" className="font-ch-display text-[16px] font-bold text-ch-ink">{monthLabel(monthStart)}</div>
@@ -174,7 +174,7 @@ export function DatePicker({
               ))}
             </div>
             {weeks.map((week, wi) => (
-              <div role="row" key={wi} className="grid grid-cols-7 gap-0.5">
+              <div role="row" key={wi} className="grid grid-cols-7 gap-0 sm:gap-0.5">
                 {week.map((day, di) => {
                   if (!day) {
                     const tint = (wi === 0 && carriesIn && (!end || !isBefore(end, monthStart))) || (wi === weeks.length - 1 && carriesOut);

@@ -174,8 +174,9 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
 export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly [id: string, label: string]>; children: ReactNode; extra?: ReactNode }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-16">
-      <div className="min-w-0">{children}</div>
-      <aside className="hidden lg:block">
+      {/* First in the DOM, so keyboard and screen-reader users meet it before the article; drawn
+          on the right. */}
+      <aside className="hidden lg:order-last lg:block">
         <nav aria-label="On this page" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6">
           <p className="text-[13px] font-extrabold text-ch-ink-2">On this page</p>
           <ul className="mt-2 grid">
@@ -186,6 +187,7 @@ export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly
           {extra}
         </nav>
       </aside>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }

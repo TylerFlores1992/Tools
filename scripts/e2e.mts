@@ -648,6 +648,8 @@ try {
     await p.getByText("canceled immediately", { exact: false }).waitFor();
     await p.getByRole("button", { name: "Delete account" }).click();
     await p.getByRole("button", { name: "Yes, delete my account" }).waitFor();
+    // Focus lands on the safe choice, so two presses of Enter never delete.
+    assert.equal(await p.evaluate(() => document.activeElement?.textContent), "Keep my account");
     // In the app: no account, no prices.
     await p.goto(`${GH}/settings?as=app`);
     await p.getByText("No account — and you don't need one.").waitFor();

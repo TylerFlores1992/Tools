@@ -105,10 +105,10 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
                 <button ref={upgradeTriggerRef} type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
               ) : (
                 <>
-                  <button ref={upgradeConfirmRef} type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
+                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
                     {step === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Upgrading…</> : "Confirm upgrade"}
                   </button>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("idle")} className={sm()}>Cancel</button>
+                  <button ref={upgradeConfirmRef} type="button" aria-disabled={step === "busy" || undefined} onClick={() => { if (step !== "busy") setStep("idle"); }} className={sm()}>Cancel</button>
                 </>
               )}
             </div>
@@ -221,8 +221,8 @@ function SignOutConfirm({ textOn }: { textOn: boolean }) {
           <p id="signout-q" className="text-[15px] font-bold text-ch-ink">Sign out of CampHawk?</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">You&apos;ll need your email and password to get back in. Nothing is deleted.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button ref={confirmRef} type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
-            <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>Stay signed in</button>
+            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
+            <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>Stay signed in</button>
           </div>
         </div>
       )}
@@ -252,8 +252,8 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
           <p id="delete-q" className="flex items-center gap-2 text-[15px] font-bold text-ch-ink"><AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-ch-alert" />{guest ? "Delete your data?" : "Delete your account?"}</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">Everything above happens as soon as you press the button, and we can&apos;t bring any of it back.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button ref={confirmRef} type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
-            <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
+            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
+            <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
           </div>
           {s === "busy" && <LabNote className="mt-3">Nothing is deleted here.</LabNote>}
         </div>

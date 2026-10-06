@@ -244,8 +244,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
 
 function ResultsSkeleton() {
   return (
-    <div role="status" className="grid gap-4 sm:grid-cols-2">
-      <span className="sr-only">Checking campgrounds…</span>
+    <div className="grid gap-4 sm:grid-cols-2">
       <div aria-hidden="true" className="aspect-[16/9] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none sm:col-span-2" />
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} aria-hidden="true" className="h-[210px] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none" />
@@ -333,19 +332,26 @@ export function Explore() {
     hydrated.current = true;
     const q = new URLSearchParams(window.location.search);
     const p = q.get("place");
-    if (!p) return;
-    const r = Number(q.get("radius"));
     const w = q.get("when");
+    // A place, or just a "when" from the home page (an empty place searches near you).
+    if (!p && !w) return;
+    const r = Number(q.get("radius"));
     const n = Number(q.get("nights"));
     const rv = Number(q.get("rv"));
     const type = q.get("type");
     // One-time sync FROM an external system (the URL) after hydration. Reading it during render
     // would make the static HTML disagree with the client.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPlace(p);
+    setPlace(p ?? "");
     if (RADII.includes(r)) setRadius(r);
     if (w === "tonight" || w === "weekend" || w === "flexible") setWhen(w);
-    setRange({ start: q.get("start") as ISODate | null, end: q.get("end") as ISODate | null });
+    const start = q.get("start") as ISODate | null;
+    const end = q.get("end") as ISODate | null;
+    // A "when" with no dates (the home page sends only the choice) gets that choice's dates.
+    if (!start && w === "tonight") setRange({ start: todayISO(), end: addDays(todayISO(), 1) });
+    else if (!start && w === "weekend") setRange(thisWeekendRange());
+    else if (!start && w === "flexible") setRange({ start: todayISO(), end: addDays(todayISO(), 30) });
+    else setRange({ start, end });
     if (n > 0) setFlexNights(n);
     setFilters({ siteType: type === "tent" || type === "cabin" || type === "group" ? type : null, rvLength: rv > 0 ? rv : null, electric: q.get("electric") === "1" });
     setRestoring(true);
@@ -413,7 +419,7 @@ export function Explore() {
                 id="gh-where"
                 role="combobox"
                 value={place}
-                onChange={(e) => { setPlace(e.target.value); setPicked(false); setActive(-1); }}
+                onChange={(e) => { setPlace(e.target.value); setPicked(false); setActive(-1); setFocusPlace(true); }}
                 onFocus={() => setFocusPlace(true)}
                 onBlur={() => window.setTimeout(() => setFocusPlace(false), 150)}
                 onKeyDown={(e) => {
@@ -444,7 +450,7 @@ export function Explore() {
                   aria-selected={i === active}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => pickSuggestion(s.name)}
-                  className={cx("flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper", i === active ? "bg-ch-shell" : "bg-ch-card")}
+                  className={cx("flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper", i === active ? "bg-ch-shell shadow-[inset_4px_0_0_var(--color-ch-forest)]" : "bg-ch-card")}
                 >
                   {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
                   <span className="min-w-0 flex-1">
