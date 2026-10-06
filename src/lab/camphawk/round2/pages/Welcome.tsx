@@ -7,9 +7,9 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
-import { ROUTES } from "../gates";
+import { GH, ROUTES } from "../gates";
 import { LabPage } from "../LabPage";
-import { useUrlState, withVisitor } from "../labState";
+import { useUrlParam, useUrlState, withVisitor } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
 import { EMAIL } from "./alert-data";
 
@@ -31,6 +31,9 @@ export function Welcome() {
   const [from, setFrom] = useUrlState<From>("from", "sign-up", ["sign-up", "checkout"]);
   const [email, setEmail] = useState(true);
   const [saving, setSaving] = useState<"finish" | "skip" | null>(null);
+  // ?next= is where sign-up was headed; only a lab path is followed (never off-site).
+  const nextParam = useUrlParam("next");
+  const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
   return (
     <LabPage
       page="Welcome"
@@ -56,7 +59,7 @@ export function Welcome() {
         }
         // Checkout only makes sense for someone it made a subscriber.
         const subscribed = from === "checkout" && visitor === "subscriber";
-        const next = withVisitor(ROUTES.explore, visitor);
+        const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
           <div className="mx-auto max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">

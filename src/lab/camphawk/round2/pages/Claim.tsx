@@ -182,8 +182,8 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
         footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : `We hold it for up to 60 minutes. About ${CLAIM.minutesLeft} min left.`} />
-      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It's mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
-      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">When you tap “It's mine — hand it over” we let go and you take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
+      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
+      <p className="mt-4 px-1 text-[16px] leading-relaxed text-ch-ink-2">When you tap “It&apos;s mine — hand it over” we let go and you take it. That swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready ? (
         <Step tone="done" title={c.readyTitle} />
       ) : opened && !canInject ? (
