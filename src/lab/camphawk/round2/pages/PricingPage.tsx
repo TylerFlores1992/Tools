@@ -2,9 +2,10 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Info, Loader2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
+import { Collapsible } from "../../ui/Collapsible";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../../Pricing";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor, type PlanTier } from "../../data";
 import { LIMITS } from "../../copy";
@@ -178,27 +179,32 @@ function AppPaywall({ store }: { store: Store }) {
 }
 
 function HoldExplainer() {
+  const steps = (
+    <Steps steps={[
+      ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “hold it for me” button."],
+      ["You tap it, or you don’t.", "Nothing happens unless you do. There is no standing setting for this, on purpose — holding a site takes it off the market for everyone else, and that is not a decision to make weeks in advance."],
+      ["At 8 AM we put it in a cart", "In seconds, before most people have found the page."],
+      ["We text you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
+    ]} />
+  );
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
-        <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
-      </div>
-      {!RC_HOLD_OPEN && (
-        <Callout tone="yours" title="Closed to new holds for now" className="mt-4">
-          We paused the hold beta on {RC_HOLD_CLOSED_ON} while we make it more reliable. ReserveCalifornia watches still alert you as usual; this is how it works when it reopens.
-        </Callout>
-      )}
-      <div className="mt-4 max-w-[70ch] text-[16px] leading-relaxed text-ch-ink-2">
-        <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
-        <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
-        <Steps steps={[
-          ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “hold it for me” button."],
-          ["You tap it, or you don’t.", "Nothing happens unless you do. There is no standing setting for this, on purpose — holding a site takes it off the market for everyone else, and that is not a decision to make weeks in advance."],
-          ["At 8 AM we put it in a cart", "In seconds, before most people have found the page."],
-          ["We text you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
-        ]} />
-        <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
+      <div className="max-w-[70ch]">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
+          <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
+        </div>
+        {!RC_HOLD_OPEN && (
+          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Closed to new holds for now</span>}>
+            We paused the hold beta on {RC_HOLD_CLOSED_ON} while we make it more reliable. ReserveCalifornia watches still alert you as usual.
+          </Callout>
+        )}
+        <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
+          <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
+          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
+          {RC_HOLD_OPEN ? steps : <Collapsible label="How it works when it reopens" className="mt-5">{steps}</Collapsible>}
+          <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
+        </div>
       </div>
     </section>
   );

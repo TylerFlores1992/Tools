@@ -93,7 +93,7 @@ export const HOLD = {
   campground: "Leo Carrillo State Park",
   part: "Canyon Campground (sites 1-24)",
   unit: "Site 017",
-  stay: "Aug 1-3",
+  stay: "Aug 1–3",
   nights: 2,
 };
 
@@ -101,7 +101,7 @@ export const HOLD = {
 export const CLAIM = {
   unit: "Site 042",
   place: "Leo Carrillo State Park — Canyon Campground (sites 25-77)",
-  stay: "Aug 8-10",
+  stay: "Aug 8–10",
   nights: 2,
   minutesLeft: 38,
 };

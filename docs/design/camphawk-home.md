@@ -253,6 +253,16 @@ splits by state, and every campground list are illustrative, and the pages say s
 - Access: the Claim password field has its own label (its "Show" button had joined the name);
   every screen has one H1; the search-page counts say what they count.
 
+**Critic pass (2026-10-06):** 7/10 overall (Tier 1 6.5, Tier 2 7, Tier 3 7.5). Fixed: the closed-hold
+notice is neutral, not ochre; Pricing's hold card keeps one text width and tucks its steps behind
+"How it works when it reopens"; repeated copy trimmed on Connect and Welcome; Manage says why a
+site is queued, "1 sent" not a bare number, and stacks Remove on phones; en dashes in date ranges;
+"/sources" reads "data sources page"; the hub's "13 state park systems" is derived. Two findings
+were already fixed when it looked (the colour-named button, the lab-select overflow). Kept, on
+purpose: green for trial and sign-up (the lab-wide choice since the home page), blue for "Hold
+it" and the auto-cart On tag (CampHawk's provider kind), the title-case hub names (the search
+query), the pre-ticked "save my login" box (CampHawk requires it), and CampHawk's own CTA words.
+
 **Found in CampHawk while porting (not changed there; read-only):**
 - The ReserveCalifornia hold beta closed on 2026-09-22 (`RC_HOLD_BETA_OPEN = false`), but
   Pricing, Auto-cart, both guides and both comparison pages still offer it.

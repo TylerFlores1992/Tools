@@ -77,7 +77,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
       {busy ? (
         <p role="status" className="text-center text-[14px] text-ch-ink-2">{slow ? "Still working — signing in to Recreation.gov can take up to a minute." : "Signing you in on the helper — this can take up to a minute."}</p>
       ) : (
-        <p className="text-center text-[13px] text-ch-ink-2">{save && (!email.trim() || !password) ? "Enter your email and password to continue. " : ""}Saved encrypted on a private machine we run — never on CampHawk&apos;s web servers or database.</p>
+        <p className="text-center text-[13px] text-ch-ink-2">{save && (!email.trim() || !password) ? "Enter your email and password to continue." : "Recreation.gov may ask you to prove you’re a person; if it does, a window opens here."}</p>
       )}
     </form>
   );

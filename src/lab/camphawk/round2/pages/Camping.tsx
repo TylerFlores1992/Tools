@@ -10,7 +10,7 @@ import { ART } from "../Art";
 import { ROUTES } from "../gates";
 import { A, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
-import { CHECK_SECONDS, inWords } from "./tier2-data";
+import { CHECK_SECONDS, SOURCE_COUNT, inWords } from "./tier2-data";
 import {
   CALIFORNIA, HARD_TO_BOOK, HUBS, PROVINCES, STATES, hubBySlug, hubsIn, joinAnd, regionBySlug, regionsFor, total,
   type Hub, type Region, type Town,
@@ -184,7 +184,9 @@ export function StatePage({ slug }: { slug: string }) {
 
 /* ---------- /camping/[type] ---------- */
 
-const systems = (canada: boolean) => (canada ? "Recreation.gov, 13 state park systems, Parks Canada and the Canadian provincial systems" : "Recreation.gov and 13 state park systems");
+// State systems = every data source but Recreation.gov (13 of 14); CampHawk types the 13.
+const stateSystems = SOURCE_COUNT - 1;
+const systems = (canada: boolean) => (canada ? `Recreation.gov, ${stateSystems} state park systems, Parks Canada and the Canadian provincial systems` : `Recreation.gov and ${stateSystems} state park systems`);
 const places = (us: number, ca: number) => `${us} ${us === 1 ? "state" : "states"}${ca ? ` and ${ca} Canadian ${ca === 1 ? "province or territory" : "provinces and territories"}` : ""}`;
 
 export function TypeHub({ type }: { type: string }) {

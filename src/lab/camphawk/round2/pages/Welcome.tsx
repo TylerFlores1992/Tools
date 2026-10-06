@@ -82,13 +82,13 @@ export function Welcome() {
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
               <h3 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts (optional)</h3>
-              <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text is what actually wakes you at 6am. Entirely optional — skip it and everything else still works.</p>
+              <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text is what actually wakes you at 6am.</p>
               <SmsAlerts visitor={visitor} />
             </section>
 
             {subscribed && plan === "autocart" && (
               <section aria-labelledby="w-cart" className="mt-4 rounded-ch-input border-2 border-ch-blue bg-ch-blue-soft p-4 sm:p-5">
-                <h3 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up Auto-Cart</h3>
+                <h3 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up auto-cart</h3>
                 <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
                 <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", size: "sm", className: "mt-3 min-h-11 px-4" })}>Sign in to Recreation.gov</Link>
               </section>

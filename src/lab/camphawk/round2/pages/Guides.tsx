@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { ART } from "../Art";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
@@ -41,7 +42,7 @@ function Disclaimer({ visitor }: { visitor: Parameters<typeof A>[0]["visitor"] }
 function HoldClosed() {
   if (RC_HOLD_OPEN) return null;
   return (
-    <Callout tone="yours" title="Closed to new holds for now">
+    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Closed to new holds for now</span>}>
       We paused ReserveCalifornia holds on {RC_HOLD_CLOSED_ON} while we make them more reliable. Your ReserveCalifornia watches still alert you as usual; below is how holds work when they reopen.
     </Callout>
   );

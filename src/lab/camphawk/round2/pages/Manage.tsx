@@ -204,7 +204,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           <ul className="mt-2 divide-y divide-ch-ochre-line">
             {w.requested.map((r) => <li key={r.unit} className="flex justify-between py-2.5 text-[16px]"><span className="font-bold text-ch-ink">{r.unit}</span><span className="text-ch-ink-2">{r.release}</span></li>)}
           </ul>
-          <p className="mt-1 text-[14px] text-ch-ink-2">You’ll get an alert the moment it’s in the cart, with a link to take it.</p>
+          <p className="mt-1 text-[14px] text-ch-ink-2">You asked us to hold {w.requested.length === 1 ? "this one" : "these"} at the {releaseShort()} release. You’ll get an alert the moment it’s in the cart, with a link to take it.</p>
         </section>
       )}
 
@@ -228,7 +228,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
-        <Collapsible label="Alerts sent" summary={String(w.alerts.length)}>
+        <Collapsible label="Alerts sent" summary={`${w.alerts.length} sent`}>
           <ul>
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">
@@ -242,9 +242,9 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
         {!confirming ? (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid gap-3 sm:flex sm:items-center">
             <p className="flex-1 text-[15px] text-ch-ink-2">Done with this trip? Removing the watch deletes it and its alert history.</p>
-            <button type="button" onClick={() => setConfirming(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Remove watch</button>
+            <button type="button" onClick={() => setConfirming(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Remove watch</button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-3">

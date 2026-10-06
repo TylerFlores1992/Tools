@@ -649,9 +649,9 @@ try {
     // Welcome: the Auto-Cart step only for a plan that includes it.
     await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
     await p.getByRole("heading", { name: "You're subscribed — one last thing" }).waitFor();
-    assert.equal(await p.getByRole("heading", { name: "Set up Auto-Cart" }).count(), 0);
+    assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
-    await p.getByRole("heading", { name: "Set up Auto-Cart" }).waitFor();
+    await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
     await p.getByRole("checkbox", { name: /Email me when/ }).uncheck();
     await p.getByText("With email off, add a phone number below", { exact: false }).waitFor();
     assert.deepEqual(errors, []);
