@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { AlertTriangle, Bell, Loader2, Mail, Trash2 } from "lucide-react";
+import { AlertTriangle, Bell, CreditCard, Loader2, Mail, ShoppingCart, Trash2, UserRound } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
@@ -293,12 +293,22 @@ export function Settings() {
       {({ visitor, plan }) => {
         if (visitor === "signed-out") {
           return (
-            <div className="max-w-[760px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
-              <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">Settings need an account</h2>
-              <p className="mx-auto mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
-                <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Back to Explore</Link>
+            <div className="grid overflow-hidden rounded-ch-card border border-ch-line bg-ch-card shadow-ch-pop lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+              <div className="p-6 sm:p-10">
+                <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-ink">Settings need an account</h2>
+                <p className="mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
+                  <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Back to Explore</Link>
+                </div>
+              </div>
+              <div className="border-t border-ch-line bg-ch-paper p-6 sm:p-10 lg:border-l lg:border-t-0">
+                <h3 className="text-[15px] font-bold text-ch-ink">What you set here</h3>
+                <ul className="mt-3 grid gap-3 text-[15px] leading-snug text-ch-ink-2">
+                  {([[Bell, "How we reach you", "Email, text messages and push."], [ShoppingCart, "Auto-cart", "Connect Recreation.gov so an opening can land in your cart."], [CreditCard, "Subscription", "Your plan, and how to change or cancel it."], [UserRound, "Account", "Your email address, and deleting your account."]] as const).map(([Icon, t, d]) => (
+                    <li key={t} className="flex gap-3"><Icon aria-hidden="true" className="mt-0.5 size-[18px] shrink-0 text-ch-ink-2" /><span><strong className="block text-ch-ink">{t}</strong>{d}</span></li>
+                  ))}
+                </ul>
               </div>
             </div>
           );
