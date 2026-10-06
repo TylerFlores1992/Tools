@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
@@ -24,7 +24,7 @@ import {
 // CampgroundOpenings.tsx), ported with example data. Contract: docs/design/camphawk-home.md,
 // "Screen 2". What it keeps from CampHawk, on purpose:
 // - The answer comes first: whether anything is open, in words, under the name.
-// - Booked days are neutral and struck through, never red; open days carry a dot; days that are
+// - Booked days are neutral and struck through, never red; open days carry a tick (the open mark everywhere, as on Explore's pins; a solid dot means booked); days that are
 //   not open for booking carry a bar. A month we couldn't read gets NO marks and says so: an
 //   absent reading is not "booked". A failed request is said in words, without internals.
 // - The watch button follows WatchCta's gate: one control, a label per visitor, never a price.
@@ -141,7 +141,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
                 )}
               >
                 {n}
-                {isOpen && <span aria-hidden="true" className={cx("mt-0.5 size-[5px] rounded-full", on ? "bg-ch-card" : "bg-ch-green-deep")} />}
+                {isOpen && <Check aria-hidden="true" strokeWidth={3.5} className={cx("-mb-0.5 size-[11px]", on ? "text-ch-card" : "text-ch-green-deep")} />}
                 {isClosed && <span aria-hidden="true" className="mt-1 h-[2px] w-2.5 rounded-full bg-ch-faint" />}
               </button>
             );
@@ -151,7 +151,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-ch-ink-2">
           {/* Each key repeats the mark its days carry, so it reads without hue. */}
           <span className="inline-flex items-center gap-1.5">
-            <i aria-hidden="true" className="inline-flex size-4 items-end justify-center rounded-[4px] bg-ch-green-soft pb-[2px]"><span className="size-[4px] rounded-full bg-ch-green-deep" /></i>
+            <i aria-hidden="true" className="inline-grid size-4 place-items-center rounded-[4px] bg-ch-green-soft"><Check strokeWidth={3.5} className="size-[11px] text-ch-green-deep" /></i>
             Sites open
           </span>
           <span className="inline-flex items-center gap-1.5">
@@ -211,7 +211,8 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         {/* The next step after the calendar: the same gated watch control as the band. */}
         <div className="mt-2 border-t border-ch-line pt-4">
           <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the second a site opens.</p>
-          <Link href={watchHref(visitor, id)} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-3" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>
+          {/* A link, not a second button: the band's button is the page's one watch action. */}
+          <Link href={watchHref(visitor, id)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{watchCtaLabel(visitor, "Watch this campground")}<ChevronRight aria-hidden="true" className="size-4" /></Link>
         </div>
       </aside>
     </div>

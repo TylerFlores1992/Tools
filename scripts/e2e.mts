@@ -340,7 +340,11 @@ try {
     await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
     const panel = p.getByRole("complementary", { name: "Selected day" });
     // An open day lists its sites; a booked day can't be picked.
-    await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
+    const july27 = p.getByRole("button", { name: /July 27, 2 sites open/ });
+    // The open mark is a tick, as on Explore's pins (a solid dot means booked): shape, not hue.
+    assert.ok(await july27.locator("svg.lucide-check").count() === 1, "an open day carries the tick");
+    assert.equal(await p.getByRole("button", { name: /July 12, fully booked/ }).locator("svg").count(), 0, "a booked day carries no mark");
+    await july27.click();
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
     // The answer comes first, in words, under the name.
@@ -520,7 +524,7 @@ try {
     await p.getByRole("radio", { name: "Lapsed", exact: true }).click();
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
-    await p.getByText("3 watches running · 1 paused").waitFor();
+    await p.getByText("3 watches running, 1 paused").waitFor();
     for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 046", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.

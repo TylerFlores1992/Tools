@@ -27,7 +27,8 @@ export function LabPage({
   page: string;
   tab?: Tab;
   title: string;
-  sub?: ReactNode;
+  /** The line under the title; a function when it depends on who's looking. */
+  sub?: ReactNode | ((ctx: LabCtx) => ReactNode);
   photo?: { art: Piece; pos: string; posLg: string };
   /** The screen's own lab switches, rendered in the lab bar. */
   controls?: (ctx: LabCtx) => ReactNode;
@@ -50,7 +51,7 @@ export function LabPage({
         {controls?.(ctx)}
       </LabBar>
       <main id="main">
-        <AppBand visitor={visitor} current={tab} title={title} sub={sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} />
+        <AppBand visitor={visitor} current={tab} title={title} sub={typeof sub === "function" ? sub(ctx) : sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} />
         {/* The page shares the band's column and gutters, so the title above and the content below
             start on one left edge at every width. */}
         <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pb-[clamp(48px,7vw,96px)] sm:px-8", dock ? "-mt-[var(--gh-dock)]" : "pt-[clamp(32px,5vw,64px)]")}>

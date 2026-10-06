@@ -84,7 +84,7 @@ export function AutoCartGuide() {
               [`Within ${HOLD_MINUTES} min`, "You take it over", <>Open the claim link, sign in to ReserveCalifornia and tap <strong className="text-ch-ink">It’s mine — hand it over</strong>. About two seconds later it’s in your cart.</>],
             ] as const).map(([when, what, detail], i) => (
               <li key={when} className="rounded-ch-input border border-ch-line bg-ch-card p-4 shadow-ch-card">
-                <span className="block text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">{i + 1} · {when}</span>
+                <span className="flex items-center gap-2 text-[15px] font-bold text-ch-ink-2"><span aria-hidden="true" className="grid size-6 place-items-center rounded-full bg-ch-shell font-ch-display text-[13px] font-extrabold text-ch-ink">{i + 1}</span>{when}</span>
                 <span className="mt-1 block text-[17px] font-bold leading-snug text-ch-ink">{what}</span>
                 <span className="mt-2 block text-[15px] leading-relaxed text-ch-ink-2">{detail}</span>
               </li>

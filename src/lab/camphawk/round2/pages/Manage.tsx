@@ -121,7 +121,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
   }
 
   const nights = w.flexNights ?? nightsBetween(saved.start!, saved.end!);
-  const meta = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(" · ");
+  const meta = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(", ");
   const saveDates = () => {
     if (!range.start || !range.end) return;
     setSaving(true);
@@ -214,7 +214,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">Asked</Tag></span>
-                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay} · releases {releaseLong()}</span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
                 <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call off the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>
               </li>
@@ -252,7 +252,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">
                 <p className="text-[15px] font-bold text-ch-ink">{a.site ?? "A site opened up"}</p>
-                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ch-ink-2">{a.when} · {a.channel}{a.failed && <Tag kind="alert">Didn&apos;t go out</Tag>}</p>
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ch-ink-2">{a.when}, {a.channel}{a.failed && <Tag kind="alert">Didn&apos;t go out</Tag>}</p>
               </li>
             ))}
           </ul>

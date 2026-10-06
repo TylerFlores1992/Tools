@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { LQIP } from "./art-lqip";
 
 // Round-2 art (public/private/camphawk/round2/, made by studio/camphawk-round2/). Plain <img>
 // with a width srcset: the files sit behind the private-area sign-in, which Next's image
@@ -48,10 +49,14 @@ export function Art({ art, alt = "", className, sizes = "100vw", eager, style }:
       decoding="async"
       draggable={false}
       className={className}
-      style={style}
+      style={placeholder(art.name, style)}
     />
   );
 }
+
+/** The blurred copy sits behind the photo until it paints over it. */
+const placeholder = (name: string, style?: CSSProperties): CSSProperties | undefined =>
+  LQIP[name] ? { backgroundImage: `url(${LQIP[name]})`, backgroundSize: "cover", backgroundPosition: "center", ...style } : style;
 
 /** A wide crop from `at` px up (default 640) and a tall one below, as one picture. */
 export function ArtPair({ wide, tall, className, eager, at = 640 }: Common & { wide: Piece; tall: Piece; at?: number }) {

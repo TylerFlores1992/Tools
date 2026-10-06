@@ -74,7 +74,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       {saved && (
         <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
           <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
-          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · <span className="whitespace-nowrap">{saved}</span></p>
+          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts go to <span className="whitespace-nowrap">{saved}</span></p>
           {!editing && (
             <span className="flex gap-2">
               <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>

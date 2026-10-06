@@ -37,6 +37,8 @@ import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sites
 // because red means "you must act" in its own rules.
 
 const MAX_DIVISIONS = 10;
+/** The picker's starting suggestions (example data): the lab's most-watched campgrounds. */
+const OFTEN_WATCHED = ["upper-pines", "north-pines", "leo-carrillo"];
 type Mode = "exact" | "flexible";
 type OnSubmit = "saves" | "limit" | "expired" | "needs-sub";
 const ON_SUBMIT = ["saves", "limit", "expired", "needs-sub"] as const;
@@ -153,7 +155,7 @@ function PickerRow({ p, onPick }: { p: Pickable; onPick: (p: Pickable) => void }
       <span className="block font-semibold text-ch-ink">
         {p.name}
         {ok && parts > 1 && <span className="ml-1.5 rounded-full border border-ch-line bg-ch-paper px-1.5 py-0.5 text-[12px] font-semibold text-ch-muted">{parts} parts</span>}
-        <span className="font-normal text-ch-muted"> · {p.place}</span>
+        <span className="ml-2 font-normal text-ch-muted">{p.place}</span>
       </span>
       {!ok && <span className="mt-0.5 block text-[13px] text-ch-ink-2">{FIRST_COME_BADGE} — no reservations, so there is nothing to watch.</span>}
     </>
@@ -260,7 +262,7 @@ export function NewWatch() {
       </LabBar>
 
       <main id="main">
-        <AppBand visitor={visitor} current="new" title="New watch" photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
+        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We check it every 15 seconds until a site opens." photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
@@ -327,6 +329,15 @@ export function NewWatch() {
                 </div>
               )}
             </div>
+            {/* An empty box gets a start: the campgrounds people watch most, one tap to pick. */}
+            {!chosen && !shown && !q.trim() && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-[14px] text-ch-ink-2">Often watched:</span>
+                {OFTEN_WATCHED.map((id) => PICKABLE.find((p) => p.id === id)!).map((p) => (
+                  <button key={p.id} type="button" onClick={() => pick(p)} className="inline-flex min-h-11 cursor-pointer items-center rounded-ch-chip border border-ch-line bg-ch-card px-4 text-[15px] font-bold text-ch-ink hover:border-ch-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">{p.name}</button>
+                ))}
+              </div>
+            )}
 
             {divisions.length > 1 && (
               <fieldset className="mt-6">
@@ -465,24 +476,23 @@ export function NewWatch() {
             ) : (
               <>
                 <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch is our bot refreshing a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
+                  A watch keeps checking a booked campground for you, every 15 seconds and around the clock. The moment someone cancels, we {notifyWords}, so the site goes to you and not the next person hitting refresh.
                 </p>
                 <ol className="mt-3">
                   {[
                     ["Pick the campground", "Search by name in the box. Your favorites show up when you tap it."],
-                    ["Choose your nights", "Exact dates, or Flexible: set how many nights you want and the date range to look in. Three nights anywhere next month gives us far more chances to catch a cancellation than one fixed weekend."],
-                    ["Start watching", "Then close the app. We'll find you when something opens."],
+                    ["Choose your nights", "Exact dates, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
+                    ["Start watching", "Then close the app. We'll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (
-                    <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
+                    <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
+                      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
                       <span>
-                        <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
-                        <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
+                        <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
+                        <span className="mt-0.5 block text-[15px] leading-relaxed text-ch-ink-2">{sub}</span>
                       </span>
                     </li>
                   ))}
                 </ol>
-                <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">On Recreation.gov we can go one better and drop the site straight into your cart, so it&apos;s held while you get to your phone.</p>
               </>
             )}
 

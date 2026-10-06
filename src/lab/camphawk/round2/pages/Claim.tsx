@@ -60,7 +60,7 @@ function SiteCard({ heading, tone, footer }: { heading: string; tone: "hold" | "
       <p role="status" className="text-[14px] font-extrabold text-ch-ink-2">{heading}</p>
       <h1 className="mt-1 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.02em] text-ch-ink"><span className="sr-only">Claim </span>{CLAIM.unit}</h1>
       <p className="mt-2 text-[15px] text-ch-ink-2">{CLAIM.place}</p>
-      <p className="mt-0.5 text-[15px] font-bold text-ch-ink-2">{CLAIM.stay} · {CLAIM.nights} nights</p>
+      <p className="mt-0.5 text-[15px] font-bold text-ch-ink-2">{CLAIM.stay}, {CLAIM.nights} nights</p>
       {footer && <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-ch-line pt-3 text-[14px] text-ch-ink-2">{footer}</div>}
     </div>
   );
@@ -197,7 +197,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
   return (
     <>
       <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
-        footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:" className="text-[12px]">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
+        footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
       {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
       {ready ? (
         <Step tone="done" title={c.readyTitle} />

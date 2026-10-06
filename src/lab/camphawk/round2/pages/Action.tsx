@@ -79,7 +79,7 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
   return (
     <BareCard>
       <h1 className="font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">Hold this site for you?</h1>
-      <Facts rows={[["Campground", HOLD.campground], ["Site", <span key="s" className="font-ch-display text-[22px] font-extrabold">{HOLD.unit}</span>], ["Nights", `${HOLD.stay} · ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
+      <Facts rows={[["Campground", HOLD.campground], ["Site", <span key="s" className="font-ch-display text-[22px] font-extrabold">{HOLD.unit}</span>], ["Nights", `${HOLD.stay}, ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
       <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, our bot tries to cart this exact site the second it opens and hold it for you for up to 60 minutes, so claim it within that time when we tell you. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
       {/* The beta note stays above the promise, on purpose. */}
       <BetaNote className="mt-4" />
@@ -106,7 +106,7 @@ function HoldConfirmed({ kind }: { kind: "fresh" | "revisit" | "full" | "offline
           {kind === "full" ? "Every slot we have for that release is taken, so this one is waiting for a free slot rather than secured. Plan to book it yourself when it opens." : "Our booking bot is offline right now. It has until the release to come back, but plan to book it yourself when it opens."}
         </p>
       )}
-      <Facts rows={[["Site", HOLD.unit], ["Nights", `${HOLD.stay} · ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
+      <Facts rows={[["Site", HOLD.unit], ["Nights", `${HOLD.stay}, ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
       <p className="mt-5 text-[16px] font-bold text-ch-ink">What happens next</p>
       <ul className="mt-2 grid gap-2 text-[15px] leading-relaxed text-ch-ink-2">
         <li className="flex gap-2.5"><span aria-hidden="true" className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-ch-ink-2" />If we get it, we’ll alert you right away with a link to claim it. We hold it for up to 60 minutes, so claim it within that time.</li>

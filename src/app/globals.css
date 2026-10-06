@@ -479,9 +479,10 @@ html:has(.gh) { background: var(--color-ch-forest); }
   scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
 }
 
-/* The alert card arrives once, a beat after the photo. */
-.gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
-@keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
+/* The alert card settles once, a beat after the photo. It is readable from the first frame:
+   only its position and shadow move, never its opacity (a slow device never shows a blank). */
+.gh-rise { animation: gh-rise 700ms var(--ease-out) 300ms backwards; }
+@keyframes gh-rise { from { transform: translateY(14px); box-shadow: none; } }
 
 .tp { position: relative; }
 /* A print: a paper mount and a soft wall shadow (shadow only; no frame line). */

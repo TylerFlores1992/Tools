@@ -40,15 +40,19 @@ export function WatchCtaLink({
 export function SubscribeCta({ visitor, fullWidth = false, className }: { visitor: Visitor; fullWidth?: boolean; className?: string }) {
   const gate = accountGate(visitor);
   if (gate === "ready") return null;
-  const row = cx(fullWidth ? "grid gap-2" : "flex flex-wrap items-center gap-2", className);
-  const btn = (variant: ButtonVariant = "ink") => buttonClasses({ variant, fullWidth, className: fullWidth ? undefined : "px-5" });
+  const btn = buttonClasses({ variant: "ink", fullWidth, className: cx("min-h-12", !fullWidth && "px-6") });
+  const link = "inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2";
   // The app sells through the store's own paywall: no price, no account needed.
-  if (gate === "appGuest") return <div className={row}><a href="#" className={btn()}>See plans</a></div>;
+  if (gate === "appGuest") return <div className={className}><a href="#" className={btn}>See plans</a></div>;
+  // One account step carries the weight; plans and sign-in are links beside it, never a stack
+  // of equal buttons competing with the page's own action.
   return (
-    <div className={row}>
-      <a href="#" className={btn()}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</a>
-      <a href="#" className={btn("quiet")}>Plan options</a>
-      {gate === "signedOut" && <a href="#" className={btn("quiet")}>Sign in</a>}
+    <div className={className}>
+      <a href="#" className={btn}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</a>
+      <p className={cx("flex flex-wrap items-center gap-x-6 gap-y-1", fullWidth ? "mt-2 justify-center" : "mt-3")}>
+        <a href="#" className={link}>See plans</a>
+        {gate === "signedOut" && <a href="#" className={link}>Sign in</a>}
+      </p>
     </div>
   );
 }

@@ -186,7 +186,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
         {known && billing !== "not-billed" && (
           <p className="mt-1 text-[15px] text-ch-ink tabular-nums">
             {plan === "autocart" ? "Auto-Cart plan" : "Alerts plan"}
-            {billing === "stripe" ? ` · ${priceShort(plan === "autocart" ? "autocart" : "base", "monthly")} · renews Aug 6, 2026` : ` · billed by ${billing === "app-store" ? "the App Store" : "Google Play"}`}
+            {billing === "stripe" ? `, ${priceShort(plan === "autocart" ? "autocart" : "base", "monthly")}, renews Aug 6, 2026` : `, billed by ${billing === "app-store" ? "the App Store" : "Google Play"}`}
           </p>
         )}
         <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">{known && `${on} `}{m.detail}</p>

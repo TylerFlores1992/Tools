@@ -12,7 +12,7 @@ import { LIMITS } from "../../copy";
 import { ART } from "../Art";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, Callout, LabNote, Steps } from "../LabPage";
+import { A, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
 import { HOLD_MINUTES, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
@@ -44,7 +44,7 @@ const priceLabel = (t: PlanTier, i: "monthly" | "yearly") => priceShort(t, i).re
 
 function PlanCard({ name, tier, features, recommended, children }: { name: string; tier: PlanTier; features: string[]; recommended?: boolean; children: ReactNode }) {
   return (
-    <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest shadow-ch-card" : "border border-ch-line")}>
+    <div className={cx("flex flex-col rounded-ch-card bg-ch-card p-6 shadow-ch-pop sm:p-8", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
         {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
@@ -91,19 +91,11 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       ? "Prices in US dollars, billed monthly or yearly."
       : `Prices in US dollars. Free for ${TRIAL_DAYS} days, then billed monthly or yearly; cancel before then and you're never charged.`;
   return (
-    <section aria-labelledby="pitch" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
-      {/* Headline left, the terms beside it on wide screens (as the home page's pricing block). */}
-      <div className="grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
-        <div>
-          <p className="text-[13px] font-extrabold uppercase tracking-[.1em] text-ch-ink-2">Launch pricing</p>
-          <h2 id="pitch" className="mt-2 max-w-[24ch] font-ch-display text-[clamp(26px,3.2vw,38px)] font-extrabold leading-[1.08] tracking-[-.02em] text-ch-forest">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
-        </div>
-        <div className="grid gap-2 text-ch-ink-2">
-          <p className="text-[17px] font-bold leading-relaxed text-ch-ink">Cancel any time. Live search keeps working either way.</p>
-          <p className="text-[15px] leading-relaxed">This rate goes up as we add campgrounds and states. Subscribe now and you keep it for as long as your subscription runs.</p>
-        </div>
-      </div>
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
+    <section aria-labelledby="pitch">
+      {/* The plans are the page: they rise into the band on their own, one card level, with the
+          terms read beside them on paper below. */}
+      <h2 id="pitch" className="sr-only">Plans</h2>
+      <div className="grid gap-4 md:grid-cols-2 md:gap-6">
         <PlanCard name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)}>
           {signedOut ? trial("base") : [priceBtn("base", "monthly"), priceBtn("base", "yearly")]}
         </PlanCard>
@@ -112,9 +104,17 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
         </PlanCard>
       </div>
       <p role="status" className="sr-only">{busy ? "Opening checkout…" : ""}</p>
-      {error && <p role="alert" className="mt-4 text-[15px] font-bold text-ch-alert-deep">We couldn&apos;t open checkout just now. Nothing was charged — try again.</p>}
-      <p className="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-ch-ink-2">Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.</p>
-      <p className="mt-2 text-[14px] text-ch-ink-2">{foot}</p>
+      {error && <p role="alert" className="mt-4 text-[15px] font-bold text-ch-alert-deep">We couldn&apos;t open checkout just now. Nothing was charged. Try again.</p>}
+      <div className="mt-8 grid gap-x-10 gap-y-4 md:grid-cols-2 md:gap-x-6">
+        <div className="text-[16px] leading-relaxed text-ch-ink-2">
+          <p className="font-bold text-ch-ink">Cancel any time. Live search keeps working either way.</p>
+          <p className="mt-1.5 max-w-[56ch]">This is launch pricing: the rate goes up as we add campgrounds and states. Subscribe now and you keep it for as long as your subscription runs.</p>
+        </div>
+        <div className="text-[16px] leading-relaxed text-ch-ink-2">
+          <p className="max-w-[56ch]">Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.</p>
+          <p className="mt-1.5 max-w-[56ch] text-[15px]">{foot}</p>
+        </div>
+      </div>
     </section>
   );
 }
@@ -148,10 +148,10 @@ function AppPaywall({ store }: { store: Store }) {
   const [buying, setBuying] = useState<string | null>(null);
   const [restore, setRestore] = useState<"idle" | "busy" | "none">("idle");
   const tiles = [
-    { id: "base-m", title: "Alerts · Monthly", tier: "base" as const, i: "month" },
-    { id: "base-y", title: "Alerts · Yearly", tier: "base" as const, i: "year" },
-    { id: "ac-m", title: "Auto-Cart · Monthly", tier: "autocart" as const, i: "month" },
-    { id: "ac-y", title: "Auto-Cart · Yearly", tier: "autocart" as const, i: "year" },
+    { id: "base-m", title: "Alerts, monthly", tier: "base" as const, i: "month" },
+    { id: "base-y", title: "Alerts, yearly", tier: "base" as const, i: "year" },
+    { id: "ac-m", title: "Auto-Cart, monthly", tier: "autocart" as const, i: "month" },
+    { id: "ac-y", title: "Auto-Cart, yearly", tier: "autocart" as const, i: "year" },
   ];
   return (
     <section aria-labelledby="app-pay" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
@@ -197,17 +197,15 @@ function HoldExplainer() {
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
       <div className="max-w-[70ch]">
-        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
-        {!RC_HOLD_OPEN && (
-          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
-            For now, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
-          </Callout>
-        )}
+        <h2 id="rc-hold" className="text-balance font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases: we can hold the site while you wake up</h2>
         <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
-          <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
-          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
+          <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away. It is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
+          <p className="mt-4 flex items-start gap-2.5 border-t border-ch-line pt-4">
+            <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink" />
+            <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
+          </p>
           {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
-          <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
+          <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently: you connect it once and openings go straight into your cart.</p>
         </div>
       </div>
     </section>
@@ -223,7 +221,11 @@ export function PricingPage() {
     <LabPage
       page="Plans & pricing"
       title="Plans & pricing"
-      sub="Live search is free and needs no account. A subscription is what keeps a watch running around the clock — and Auto-Cart is what wins the sites that vanish in minutes."
+      sub={({ visitor }) => visitor === "subscriber"
+        ? "Your plan, what it does for you, and what we never do."
+        // No price in the app (store rule): the store's own tiles below carry it.
+        : visitor === "app" ? "Live search is free and needs no account. A subscription keeps a watch running around the clock."
+        : <><span className="block text-balance font-ch-display text-[clamp(20px,2vw,26px)] font-extrabold leading-snug text-ch-paper">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</span><span className="mt-2 block">A subscription keeps a watch running around the clock, and Auto-Cart wins the sites that vanish in minutes.</span></>}
       photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan
       controls={({ visitor }) => (
@@ -240,15 +242,15 @@ export function PricingPage() {
           {visitor === "subscriber" ? <AllSet visitor={visitor} plan={plan} phone={phone === "saved"} />
             : visitor === "app" ? <><AppPaywall store={store} />{store === "sells" && <LabNote>The store tiles show CampHawk&apos;s prices as stand-ins; the real tiles show the App Store&apos;s own price strings.</LabNote>}</>
             : <WebPlans key={`${visitor}-${checkout}`} visitor={visitor} lookup={lookup} checkout={checkout} />}
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
           <HoldExplainer />
-          <section aria-labelledby="dont" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
-            <h2 id="dont" className="font-ch-display text-[22px] font-extrabold text-ch-ink">What we don&apos;t do</h2>
-            <ul className="mt-3 border-t border-ch-line">
-              {LIMITS.map((l) => <li key={l} className="flex gap-3 border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2"><span aria-hidden="true" className="text-ch-muted">—</span>{l}</li>)}
+          {/* The limits read as three plain statements on paper, as on the home page: not a
+              third card stretched to match the hold card's height. */}
+          <section aria-labelledby="dont" className="mt-4 grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+            <h2 id="dont" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold tracking-[-.02em] text-ch-forest">What we don&apos;t do</h2>
+            <ul className="border-t border-ch-line">
+              {LIMITS.map((l) => <li key={l} className="border-b border-ch-line py-3.5 text-[17px] leading-relaxed text-ch-ink-2">{l}</li>)}
             </ul>
           </section>
-          </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds free</Link>
             <A href={ROUTES.home} visitor={visitor}>Back to the home page</A>

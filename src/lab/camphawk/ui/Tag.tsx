@@ -15,7 +15,8 @@ import { cx } from "@/components/cx";
 // colour blindness: CampHawk's tags differed by hue alone). The marks match Explore's map pins:
 // a tick for open, a solid dot for booked, a ring for "couldn't check", a small dot for first
 // come; the rest are line icons at one size and weight. A clock is time running out; an alarm
-// clock is an 8 AM hold you asked for.
+// clock is an 8 AM hold you asked for. And tags are sentence case at 12.5px (2026-10-06 round 6):
+// CampHawk's 10px tracked caps were the smallest text on every card and read as admin chrome.
 export type TagKind = "open" | "watch" | "cart" | "paused" | "alert" | "src";
 
 export type Mark =
@@ -25,12 +26,12 @@ export type Mark =
   | "on" | "off" | "not-set-up";
 
 const KIND: Record<TagKind, string> = {
-  open: "bg-ch-green text-ch-white uppercase tracking-[.09em] font-bold",
-  watch: "bg-ch-ochre-soft text-ch-ochre-ink uppercase tracking-[.09em] font-bold",
-  cart: "bg-ch-blue text-ch-white uppercase tracking-[.09em] font-bold",
-  paused: "bg-ch-shell text-ch-ink-2 uppercase tracking-[.09em] font-bold",
-  alert: "bg-ch-alert text-ch-white uppercase tracking-[.09em] font-bold",
-  src: "bg-ch-shell text-ch-ink-2 tracking-[.04em] font-semibold",
+  open: "bg-ch-green text-ch-white font-bold",
+  watch: "bg-ch-ochre-soft text-ch-ochre-ink font-bold",
+  cart: "bg-ch-blue text-ch-white font-bold",
+  paused: "bg-ch-shell text-ch-ink-2 font-bold",
+  alert: "bg-ch-alert text-ch-white font-bold",
+  src: "bg-ch-shell text-ch-ink-2 font-semibold",
 };
 
 const DEFAULT_SR_PREFIX: Record<TagKind, string | null> = {
@@ -50,7 +51,7 @@ const ICONS: Partial<Record<Mark, LucideIcon>> = {
 
 /** A status shape, 11px, in the tag's own colour. Exported for status lines outside a tag. */
 export function StatusMark({ mark, className }: { mark: Mark; className?: string }) {
-  const box = cx("inline-block size-[11px] shrink-0", className);
+  const box = cx("inline-block size-[12px] shrink-0", className);
   // The four availability marks are drawn, so they match the map pins exactly.
   if (mark === "open") {
     return (
@@ -70,7 +71,7 @@ export function Tag({ kind, srPrefix, mark, className, children, ...rest }: HTML
   const prefix = srPrefix === undefined ? DEFAULT_SR_PREFIX[kind] : srPrefix;
   const shape = mark === undefined ? DEFAULT_MARK[kind] : mark;
   return (
-    <span className={cx("inline-flex items-center gap-1 rounded-ch-tag px-2 py-1 font-ch-body text-[10px] leading-none", KIND[kind], className)} {...rest}>
+    <span className={cx("inline-flex items-center gap-1.5 rounded-ch-tag px-2 py-[5px] font-ch-body text-[12.5px] leading-none", KIND[kind], className)} {...rest}>
       {shape && <StatusMark mark={shape} />}
       {prefix ? <span className="sr-only">{prefix} </span> : null}
       {children}

@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { FEATURES } from "../copy";
@@ -106,11 +107,13 @@ function DateWindow() {
           <li
             key={d}
             className={cx(
-              "grid aspect-square place-items-center rounded-[8px] text-[14px] font-bold",
+              "flex aspect-square flex-col items-center justify-center rounded-[8px] text-[14px] font-bold leading-none",
               open.has(d) ? "bg-ch-green text-ch-white" : "border border-ch-line bg-ch-card text-ch-ink-2",
             )}
           >
             {d}
+            {/* The open mark, so the open nights read without hue. */}
+            {open.has(d) && <Check aria-hidden="true" strokeWidth={3.5} className="mt-0.5 size-[11px]" />}
           </li>
         ))}
       </ol>

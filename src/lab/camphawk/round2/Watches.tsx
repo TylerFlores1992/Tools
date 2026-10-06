@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { CalendarDays, Info, ShoppingCart, SlidersHorizontal } from "lucide-react";
+import { Bell, CalendarDays, Eye, Info, ShoppingCart, SlidersHorizontal, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "../ui";
 import { WATCH_LIMIT, type Visitor } from "../data";
@@ -10,11 +10,12 @@ import { Card, type CardState } from "../ui/Card";
 import { Collapsible } from "../ui/Collapsible";
 import { Tag } from "../ui/Tag";
 import { daysBetween, formatRange, nightsBetween, todayISO, type ISODate } from "../ui/date";
-import { Art, ART } from "./Art";
+import { ART } from "./Art";
 import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
 import { TRIAL_DAYS } from "./pages/tier2-data";
+import { joinAnd } from "./pages/camping-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { LabNote } from "./LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
@@ -81,7 +82,7 @@ const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bol
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
-  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
+  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(", ");
   const asked = (w.holds ?? []).filter((h) => h.status === "requested");
   const offered = (w.holds ?? []).filter((h) => h.status === "offered");
   const cardState: CardState = state === "hit" ? "hit" : state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
@@ -104,16 +105,17 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
           {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
           {state === "stalled" && <Tag kind="paused" mark="provider-down">Checks paused</Tag>}
-          <Tag kind="src">{w.provider}</Tag>
         </div>
         <h3 className="font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">{w.name}</h3>
+        {/* The provider is a fact about the watch, not a status: plain text, not a third tag. */}
+        <p className="mt-0.5 text-[14px] text-ch-ink-2">On {w.provider}</p>
         {w.parts && (
-          <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">
-            <span className="font-bold">{w.parts.length} parts</span> · {w.parts.slice(0, 4).join(" · ")}{w.parts.length > 4 ? ` · +${w.parts.length - 4} more` : ""}
+          <p className="mt-1 text-[15px] leading-normal text-ch-ink-2">
+            <span className="font-bold">{w.parts.length} parts:</span> {w.parts.length > 4 ? `${w.parts.slice(0, 4).join(", ")} and ${w.parts.length - 4} more` : joinAnd(w.parts)}
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>
-        {spec && <p className="mt-0.5 text-[14px] text-ch-ink-2">{spec}</p>}
+        {spec && <p className="mt-0.5 text-[15px] text-ch-ink-2">{spec}</p>}
       </div>
 
       {state === "authexpired" && (
@@ -152,13 +154,14 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           (blue). CampHawk's card offers only Calendar and Manage here; its alert has the link. */}
       {carted && (
         <div className="mt-3 border-t border-ch-line pt-3">
+          {/* How long the cart lasts is the one number that matters here (Recreation.gov holds a
+              cart for 15 minutes), so it comes before the button; red, because you must act.
+              Example time. */}
+          <p className="mb-2.5 flex flex-wrap items-center gap-2 text-[14px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
           <a href="#" className={buttonClasses({ variant: "cart", fullWidth: true })}>
             <ShoppingCart aria-hidden="true" className="size-4" />
             Check out on Recreation.gov
           </a>
-          {/* How long the cart lasts is the one number that matters here (Recreation.gov holds a
-              cart for 15 minutes); red, because you must act. Example time. */}
-          <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
         </div>
       )}
       {/* Quiet links, not boxed buttons: four pairs of full-width buttons outweighed the watches. */}
@@ -170,29 +173,44 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
   );
 }
 
-/** A numbered three-step list, the shape CampHawk uses on the wall and the first run. */
-function Steps({ steps }: { steps: ReadonlyArray<readonly [string, string]> }) {
+/** Three short points: numbered when they're steps (the first run), marked by icon when they're
+    what you get (the wall). A plain list on the panel, not a card inside it. */
+function Steps({ steps, icons }: { steps: ReadonlyArray<readonly [string, string]>; icons?: readonly LucideIcon[] }) {
   return (
-    <ol className="mt-5 rounded-ch-card border border-ch-line bg-ch-card px-5 py-2">
-      {steps.map(([title, sub], i) => (
-        <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
-          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
-          <span>
-            <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
-            <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
-          </span>
-        </li>
-      ))}
+    <ol className="mt-6 grid gap-5 border-t border-ch-line pt-6">
+      {steps.map(([title, sub], i) => {
+        const Icon = icons?.[i];
+        return (
+          <li key={title} className="flex gap-3.5">
+            {Icon
+              ? <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-ch-ink"><Icon className="size-4" /></span>
+              : <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[15px] font-extrabold text-ch-ink">{i + 1}</span>}
+            <span>
+              <span className="block text-[17px] font-bold text-ch-ink">{title}</span>
+              <span className="mt-0.5 block text-[16px] leading-relaxed text-ch-ink-2">{sub}</span>
+            </span>
+          </li>
+        );
+      })}
     </ol>
   );
 }
 
-/** The wall and the first run share a frame: words on the left, the photo of the moment beside. */
+/** The wall and the first run share a frame: words on the left, and beside them the moment a
+    watch exists for: an example card as Your watches shows it when a site opens. */
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid overflow-hidden rounded-ch-card border border-ch-line bg-ch-paper shadow-ch-pop lg:grid-cols-[minmax(0,1fr)_420px]">
-      <div className="p-5 sm:p-8">{children}</div>
-      <Art art={ART.a3} sizes="(min-width: 1024px) 420px, 0px" alt="A phone lighting up on a picnic table at dusk" className="hidden size-full bg-ch-forest object-cover lg:block" />
+    <div className="grid overflow-hidden rounded-ch-card border border-ch-line bg-ch-card shadow-ch-pop lg:grid-cols-[minmax(0,1fr)_440px]">
+      <div className="p-5 sm:p-9">{children}</div>
+      <figure className="hidden flex-col justify-center gap-4 bg-ch-forest p-9 lg:flex">
+        <div className="rounded-ch-card border-[1.5px] border-ch-green bg-ch-card p-5 shadow-ch-pop">
+          <Tag kind="open">1 site open</Tag>
+          <p className="mt-2.5 font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">Upper Pines</p>
+          <p className="mt-1 text-[16px] font-bold text-ch-ink-2">Sat Jul 18 – Tue Jul 21, 3 nights</p>
+          <p className="mt-4 flex items-center gap-2 rounded-ch-input bg-ch-blue-soft px-3 py-2.5 text-[15px] font-bold text-ch-blue-deep"><ShoppingCart aria-hidden="true" className="size-4 shrink-0" />Site 042 is in your Recreation.gov cart</p>
+        </div>
+        <figcaption className="text-[15px] leading-relaxed text-ch-line">What a watch looks like the moment someone cancels. An example, not live data.</figcaption>
+      </figure>
     </div>
   );
 }
@@ -202,17 +220,19 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
     <Panel>
       <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-ink">Watches need an account</h2>
       <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">Searching stays free. Watches run on our servers around the clock, so they&apos;re tied to your account.</p>
-      <Steps steps={[
-        [`Up to ${WATCH_LIMIT} watches at once`, "One per campground and date range."],
+      <Steps icons={[Eye, Bell, ShoppingCart]} steps={[
+        [`Up to ${WATCH_LIMIT} watches at once`, "One for each campground and set of dates."],
         ["Alerts in seconds", "Push, text and email the moment a site frees up."],
         ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
       ]} />
-      <div className="mt-5 grid gap-2 sm:max-w-[420px]">
-        <a href="#" className={buttonClasses({ variant: "ink", fullWidth: true })}>Start {TRIAL_DAYS}-day free trial</a>
-        <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Plan options</a>
-        <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in</a>
-        <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Keep exploring without an account</Link>
+      {/* One account step carries the weight; the rest are plain links, so the wall reads as an
+          explanation with a way in, not a stack of equal buttons. */}
+      <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <a href="#" className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Start {TRIAL_DAYS}-day free trial</a>
+        <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">See plans</a>
+        <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Sign in</a>
       </div>
+      <p className="mt-5 text-[15px] text-ch-ink-2">Just looking? <Link href={withVisitor(ROUTES.explore, visitor)} className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Keep exploring without an account</Link></p>
     </Panel>
   );
 }
@@ -225,11 +245,11 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
       <Steps steps={[
         ["Pick a campground and your nights", "Exact dates, or how many nights you need inside a month you're free."],
         ["We check every 15 seconds", "Around the clock, right up until your trip date."],
-        ["You get the site", `${visitor === "app" ? "A notification" : "Push, text and email"} in seconds — and on Recreation.gov we can drop it straight in your cart.`],
+        ["You get the site", `${visitor === "app" ? "A notification" : "Push, text and email"} in seconds, and on Recreation.gov we can drop it straight in your cart.`],
       ]} />
-      <div className="mt-5 sm:max-w-[420px]">
-        <WatchCtaLink visitor={visitor} label="Create your first watch" />
-        <p className="mt-2 text-center text-[14px] text-ch-ink-2">Most people start with the trip they already missed out on.</p>
+      <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <WatchCtaLink visitor={visitor} label="Create your first watch" fullWidth={false} className="min-h-12 px-6" />
+        <p className="text-[15px] text-ch-ink-2">Most people start with the trip they already missed out on.</p>
       </div>
     </Panel>
   );
@@ -330,7 +350,7 @@ export function Watches() {
         )}
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
           <div className="min-w-[12rem] flex-1">
-            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} {running === 1 ? "watch" : "watches"} running{watches.length > running ? ` · ${watches.length - running} paused` : ""}</p>
+            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} {running === 1 ? "watch" : "watches"} running{watches.length > running ? `, ${watches.length - running} paused` : ""}</p>
             <p className="mt-0.5 text-[14px] text-ch-ink-2">We check every 15 seconds, around the clock. {watches.length >= WATCH_LIMIT ? `That’s all ${WATCH_LIMIT} you can have at once.` : `Room for ${WATCH_LIMIT - watches.length} more of ${WATCH_LIMIT}.`}</p>
           </div>
           <WatchCtaLink visitor={visitor} label="New watch" fullWidth={false} className="min-h-11 px-5" />
@@ -351,8 +371,8 @@ export function Watches() {
               {ALERTS.map((a) => (
                 <li key={a.id} className="flex items-center gap-3 border-b border-ch-line py-3 last:border-b-0">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-bold text-ch-ink">{a.campground} · {a.site}</p>
-                    <p className="mt-0.5 text-[13px] text-ch-ink-2">{a.when} · {a.channels.join(", ")}{a.failed.map((c) => ` · ${c} failed`).join("")}</p>
+                    <p className="truncate text-[15px] font-bold text-ch-ink">{a.campground}, {a.site}</p>
+                    <p className="mt-0.5 text-[13px] text-ch-ink-2">{a.when}. {joinAnd(a.channels)}{a.failed.map((c) => `; ${c.toLowerCase()} failed`).join("")}</p>
                   </div>
                   {a.failed.length > 0 && <Tag kind="alert" className="shrink-0">{a.failed.length === a.channels.length ? "Not delivered" : `${a.failed[0]} not delivered`}</Tag>}
                 </li>

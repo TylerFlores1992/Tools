@@ -77,68 +77,64 @@ function writeSearch(s: { place: string; radius: number; when: When; range: Date
 }
 
 /** The status box above the results: context, not a paywall. Nothing for a subscriber. */
+const guestLine = (visitor: Visitor) => (visitor === "signed-out" || visitor === "app" ? "You're searching as a guest" : "You're searching with a free account");
+const guestBody = (visitor: Visitor) => visitor === "signed-out"
+  ? "Live availability is free and always will be. An account is only needed to watch a campground that's already booked."
+  : visitor === "app"
+    ? "Live availability is free and always will be. Watching a booked campground needs a subscription, no account needed."
+    : "Live availability is free and always will be. Watching a booked campground, and the text the moment someone cancels, needs a subscription.";
+
+/** Above the results: who's searching and what an account adds. On the first run the same
+    words close the How search works card instead, so the column holds one card, not two. */
 function StatusBox({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") return null;
-  const guest = visitor === "signed-out" || visitor === "app";
   return (
-    <div className="mb-5 rounded-ch-card border border-ch-line bg-ch-card px-5 py-4 shadow-ch-card">
-      <p className="text-[16px] font-bold text-ch-ink">{guest ? "You're searching as a guest" : "You're searching with a free account"}</p>
-      <p className="mt-1 max-w-[62ch] text-[15px] leading-relaxed text-ch-ink-2">
-        {visitor === "signed-out"
-          ? "Live availability is free and always will be. An account is only needed to watch a campground that's already booked."
-          : visitor === "app"
-            ? "Live availability is free and always will be. Watching a booked campground needs a subscription — no account needed."
-            : "Live availability is free and always will be. Watching a booked campground — and the text the moment someone cancels — needs a subscription."}
-      </p>
-      <SubscribeCta visitor={visitor} className="mt-3" />
-      <Link href={withVisitor(ROUTES.watches, visitor)} className="mt-2 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">
-        See what a watch does
-      </Link>
+    <div className="mb-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 rounded-ch-card border border-ch-line bg-ch-card px-5 py-4 shadow-ch-card">
+      <div className="min-w-0 flex-1 basis-[32ch]">
+        <p className="text-[16px] font-bold text-ch-ink">{guestLine(visitor)}</p>
+        <p className="mt-1 max-w-[62ch] text-[15px] leading-relaxed text-ch-ink-2">{guestBody(visitor)}</p>
+      </div>
+      <SubscribeCta visitor={visitor} />
     </div>
-  );
-}
-
-/** The first-run box's closing line, matched to the reader (ExploreAccountCta). */
-function AccountLine({ visitor }: { visitor: Visitor }) {
-  if (visitor === "subscriber") return null;
-  const link = "font-bold text-ch-forest underline underline-offset-2 hover:decoration-2";
-  if (visitor === "app") return <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">Watching booked campgrounds needs a subscription — no account needed. <a href="#" className={link}>See plans</a></p>;
-  return (
-    <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">
-      {visitor === "signed-out" ? "Searching is free and needs no account. Watches, text alerts and auto-cart need one. " : "Watches, text alerts and auto-cart come with a subscription. "}
-      <a href="#" className={link}>{visitor === "signed-out" ? `Start a ${TRIAL_DAYS}-day free trial` : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
-    </p>
   );
 }
 
 function FirstRun({ visitor }: { visitor: Visitor }) {
   const steps = [
-    ["Say where", "A city, park or ZIP in the search box — or tap the crosshair to use your location. Leave it empty and we'll search near you."],
-    ["Say when", "Exact dates, or one tap for tonight or this weekend. Flexible is the useful one: say how many nights you need and give us a date range to hunt inside, and we'll take any stretch that long."],
-    ["Search", <>Results marked <Tag kind="open" className="mx-0.5 align-[1px]">Sites open</Tag> have a site free right now. Tap any result for its full calendar, or the map to see where they are.</>],
+    ["Say where", "A city, park or ZIP, or tap the crosshair to use your location. Leave it empty and we'll search near you."],
+    ["Say when", "Exact dates, tonight or this weekend. Flexible finds the most: how many nights you need, anywhere in a range."],
+    ["Search", "Each result says in words whether a site is free right now. Tap one for its full calendar, or the map to see where they are."],
   ] as const;
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
       <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">How search works</h2>
       <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">
-        Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds — national forests, state and provincial parks, and everything in between — and shows you what&apos;s bookable right now.
+        Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds, from national forests to state and provincial parks, and shows you what&apos;s bookable right now.
       </p>
       {/* Wide screens: the three steps side by side, so the card has no dead half. */}
       <ol className="mt-4 max-w-[56ch] xl:mt-6 xl:grid xl:max-w-none xl:grid-cols-3 xl:gap-6">
         {steps.map(([title, sub], i) => (
           <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0 xl:border-b-0 xl:border-t xl:pt-4">
-            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
             <span>
-              <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
-              <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
+              <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
+              <span className="mt-0.5 block text-[15px] leading-relaxed text-ch-ink-2">{sub}</span>
             </span>
           </li>
         ))}
       </ol>
-      <div className="mt-4 border-t border-ch-line pt-4">
-        <p className="text-[15px] font-bold text-ch-ink">Everything booked?</p>
-        <p className="mt-1 max-w-[56ch] text-[14px] leading-normal text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text you the moment someone cancels.</p>
-        <AccountLine visitor={visitor} />
+      <div className="mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5 xl:grid-cols-2">
+        <div>
+          <p className="text-[16px] font-bold text-ch-ink">Everything booked?</p>
+          <p className="mt-1 max-w-[56ch] text-[15px] leading-relaxed text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text you the moment someone cancels.</p>
+        </div>
+        {visitor !== "subscriber" && (
+          <div>
+            <p className="text-[16px] font-bold text-ch-ink">{guestLine(visitor)}</p>
+            <p className="mt-1 max-w-[56ch] text-[15px] leading-relaxed text-ch-ink-2">{guestBody(visitor)}</p>
+            <SubscribeCta visitor={visitor} className="mt-4" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -229,7 +225,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
           </h3>
           {onToggleFavorite && <FavoriteHeart favorite={favorite} onToggle={onToggleFavorite} name={c.name} className="-mr-1.5 -mt-1" />}
         </div>
-        <p className="mt-1 text-[15px] text-ch-ink-2">{c.place} · {c.distance < 1 ? "under a mile away" : `${Math.round(c.distance)} mi away`}</p>
+        <p className="mt-1 flex flex-wrap gap-x-3 text-[15px] text-ch-ink-2"><span>{c.place}</span><span>{c.distance < 1 ? "under a mile away" : `${Math.round(c.distance)} mi away`}</span></p>
       </div>
       <div className="mt-4 grid gap-2 border-t border-ch-line pt-4">
         <Link href={href} className={buttonClasses({ variant: open ? "primary" : "quiet", fullWidth: true })}>
@@ -502,7 +498,7 @@ export function Explore() {
           <section aria-label="Results" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
             {/* One short line is announced, not every card in the list. */}
             <p role="status" className="sr-only">{loading ? "Searching…" : results === null || !searched ? "" : openCount > 0 ? `${results.length} campgrounds, ${openCount} with openings` : `${results.length} campgrounds, none with openings for those dates`}</p>
-            <StatusBox visitor={visitor} />
+            {(results !== null || loading) && <StatusBox visitor={visitor} />}
             {results === null && !loading && <FirstRun visitor={visitor} />}
             {loading && <ResultsSkeleton />}
             {results !== null && searched && !loading && (
