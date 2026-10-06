@@ -32,11 +32,11 @@ export const WATCHES: ExampleWatch[] = [
   { id: "w-upper-pines", name: "Upper Pines", provider: "Recreation.gov", start: "2026-07-18", end: "2026-07-21", autoCart: true, active: true, openSites: ["Site 042"], carted: ["Site 042"] },
   {
     id: "w-leo", name: "Leo Carrillo State Park", provider: "ReserveCalifornia",
-    parts: ["Canyon Campground (sites 1-24)", "Canyon Campground (sites 25-77)", "Beach Campground"],
+    parts: ["Canyon Campground (sites 1⁠–⁠24)", "Canyon Campground (sites 25⁠–⁠77)", "Beach Campground"],
     start: "2026-08-01", end: "2026-08-31", flexNights: 2, weekendsOnly: true, autoCart: false, active: true,
     holds: [
-      { id: "h1", site: "042", part: "Canyon Campground (sites 25-77)", status: "requested" },
-      { id: "h2", site: "017", part: "Canyon Campground (sites 1-24)", status: "offered" },
+      { id: "h1", site: "042", part: "Canyon Campground (sites 25⁠–⁠77)", status: "requested" },
+      { id: "h2", site: "017", part: "Canyon Campground (sites 1⁠–⁠24)", status: "offered" },
       { id: "h3", site: "B12", part: "Beach Campground", status: "offered" },
     ],
   },

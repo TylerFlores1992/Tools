@@ -3,7 +3,9 @@ import { cx } from "@/components/cx";
 // Ported from campsite-finder src/components/ui/Button.tsx (2026-10-02) so lab designs port
 // back unchanged. Variants carry meaning: primary = gets you a site (green), quiet = neutral,
 // cart = hand-off to Recreation.gov (blue), warn = the user must act (red).
-export type ButtonVariant = "primary" | "quiet" | "cart" | "warn";
+// Lab additions (2026-10-06 fix round): ink = a firm action that doesn't get you a site (start a
+// trial, sign up, save, finish), so green keeps its one meaning; paper = the same on the forest band.
+export type ButtonVariant = "primary" | "quiet" | "cart" | "warn" | "ink" | "paper";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const VARIANT: Record<ButtonVariant, string> = {
@@ -17,6 +19,12 @@ const VARIANT: Record<ButtonVariant, string> = {
   warn:
     "bg-ch-alert text-ch-white shadow-[0_2px_0_var(--color-ch-alert-deep)] " +
     "hover:bg-ch-alert-hover active:translate-y-px active:shadow-[0_1px_0_var(--color-ch-alert-deep)]",
+  ink:
+    "bg-ch-forest text-ch-white shadow-[0_2px_0_var(--color-ch-ink)] " +
+    "hover:bg-ch-ink active:translate-y-px active:shadow-[0_1px_0_var(--color-ch-ink)]",
+  paper:
+    "bg-ch-paper text-ch-forest shadow-[0_2px_0_var(--color-ch-faint)] " +
+    "hover:bg-ch-white active:translate-y-px active:shadow-[0_1px_0_var(--color-ch-faint)]",
 };
 
 const SIZE: Record<ButtonSize, string> = {

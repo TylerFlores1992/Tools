@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, Info, Loader2 } from "lucide-react";
+import { Check, Info, Loader2, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Collapsible } from "../../ui/Collapsible";
@@ -12,10 +12,10 @@ import { LIMITS } from "../../copy";
 import { ART } from "../Art";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, Callout, Steps } from "../LabPage";
+import { A, Callout, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
-import { HOLD_MINUTES, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
+import { HOLD_MINUTES, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
 // StorePaywall.tsx, RcHoldExplainer.tsx). The one place that sells. What it keeps on purpose:
@@ -29,7 +29,8 @@ import { HOLD_MINUTES, RC_HOLD_CLOSED_ON, RC_HOLD_OPEN, TRIAL_DAYS } from "./tie
 // - The caveat on 8am holds sits before the decision, not under the promise.
 // Lab changes, from CampHawk's own rules:
 // - The page isn't tinted green (decoration); ticks are ink; step numbers are neutral.
-// - Stripe checkout is the blue provider hand-off (CampHawk's are green).
+// - Stripe checkout is an ink account step, like the trial (CampHawk's are green; blue is kept for
+//   booking providers).
 // - "Start 7-day free trial" carries the plan into sign-up, so you come back to it.
 // - The 8am hold explainer says the beta is closed (it has been since Sep 22, 2026; CampHawk's
 //   page still offers it).
@@ -46,7 +47,7 @@ function PlanCard({ name, tier, features, recommended, children }: { name: strin
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest shadow-ch-card" : "border border-ch-line")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="text-[14px] font-bold text-ch-ink-2">Best chance to book</p>}
+        {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")} — save {yearlySavingPercent(tier)}%</p>
@@ -76,25 +77,32 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
   const priceBtn = (tier: PlanTier, i: "monthly" | "yearly") => {
     const id = `${tier}-${i}`;
     return (
-      <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} className={buttonClasses({ variant: tier === "autocart" ? "cart" : "quiet", className: "min-h-12 px-5 disabled:cursor-wait" })}>
+      <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5 disabled:cursor-wait" })}>
         {busy === id && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}{priceLabel(tier, i)}
       </button>
     );
   };
   const trial = (tier: PlanTier) => (
-    <Link href={withVisitor(`${ROUTES.signUp}?plan=${tier}`, visitor)} className={buttonClasses({ variant: tier === "autocart" ? "primary" : "quiet", className: "min-h-12 px-5" })}>Start {TRIAL_DAYS}-day free trial</Link>
+    <Link href={withVisitor(`${ROUTES.signUp}?plan=${tier}`, visitor)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5" })}>Start {TRIAL_DAYS}-day free trial</Link>
   );
   const foot = lookup === "failed" && !signedOut
     ? "We couldn't check your current plan just now."
     : visitor === "lapsed"
-      ? "Prices in US dollars. Cancel any time. Launch pricing — your rate is locked in while you stay subscribed."
-      : `Prices in US dollars. Free for ${TRIAL_DAYS} days · cancel any time before you're charged. Launch pricing — your rate is locked in while you stay subscribed.`;
+      ? "Prices in US dollars, billed monthly or yearly."
+      : `Prices in US dollars. Free for ${TRIAL_DAYS} days, then billed monthly or yearly; cancel before then and you're never charged.`;
   return (
     <section aria-labelledby="pitch" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
-      <p className="text-[13px] font-extrabold uppercase tracking-[.1em] text-ch-ink-2">Launch pricing</p>
-      <h2 id="pitch" className="mt-2 max-w-[24ch] font-ch-display text-[clamp(26px,3.2vw,38px)] font-extrabold leading-[1.08] tracking-[-.02em] text-ch-forest">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
-      <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">Cancel any time — and live search keeps working either way.</p>
-      <p className="mt-2 max-w-[64ch] text-[15px] leading-relaxed text-ch-ink-2">This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.</p>
+      {/* Headline left, the terms beside it on wide screens (as the home page's pricing block). */}
+      <div className="grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+        <div>
+          <p className="text-[13px] font-extrabold uppercase tracking-[.1em] text-ch-ink-2">Launch pricing</p>
+          <h2 id="pitch" className="mt-2 max-w-[24ch] font-ch-display text-[clamp(26px,3.2vw,38px)] font-extrabold leading-[1.08] tracking-[-.02em] text-ch-forest">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
+        </div>
+        <div className="grid gap-2 text-ch-ink-2">
+          <p className="text-[17px] font-bold leading-relaxed text-ch-ink">Cancel any time. Live search keeps working either way.</p>
+          <p className="text-[15px] leading-relaxed">This rate goes up as we add campgrounds and states. Subscribe now and you keep it for as long as your subscription runs.</p>
+        </div>
+      </div>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <PlanCard name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)}>
           {signedOut ? trial("base") : [priceBtn("base", "monthly"), priceBtn("base", "yearly")]}
@@ -116,7 +124,7 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
   const autocart = plan === "autocart";
   const items = [
     `Watch up to ${WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.`,
-    phone ? "Alerts reach you by text as well as email. Change the number any time in Settings." : "Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.",
+    phone ? "Alerts reach you by text as well as email. Change the number any time in Settings." : "Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.",
     autocart ? "Auto-cart is connected, so an opening on a Recreation.gov watch goes straight into your cart while you get to your phone." : "With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.",
     "Any alert lets you pause the watch, reopen it, or mute a site you don't want.",
   ];
@@ -127,7 +135,7 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
         {items.map((it) => <li key={it} className="flex gap-3"><Check aria-hidden="true" className="mt-1 size-4.5 shrink-0 text-ch-ink" /><span>{it}</span></li>)}
       </ul>
       <div className="mt-7 flex flex-wrap gap-2.5">
-        {!autocart && <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ className: "min-h-12 px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</Link>}
+        {!autocart && <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</Link>}
         <Link href={withVisitor(ROUTES.newWatch, visitor)} className={buttonClasses({ variant: autocart ? "primary" : "quiet", className: "min-h-12 px-5" })}>New watch</Link>
         <Link href={withVisitor(ROUTES.settings, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-5" })}>Alert settings</Link>
       </div>
@@ -158,15 +166,14 @@ function AppPaywall({ store }: { store: Store }) {
             {tiles.map((t) => (
               <li key={t.id} className="flex flex-col rounded-ch-input border border-ch-line bg-ch-paper p-4">
                 <p className="text-[16px] font-bold text-ch-ink">{t.title}</p>
-                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? "Up to 6 campgrounds watched around the clock, with an alert the moment a site opens." : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
-                <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">1 week free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
-                <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "primary" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
+                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Up to ${WATCH_LIMIT} campgrounds watched around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
+                <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
+                <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
                   {buying === t.id ? "Opening…" : `Start free trial — ${t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "/month") : priceShort(t.tier, "yearly").replace("/yr", "/year")}`}
                 </button>
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[12px] text-ch-ink-2">Lab: store prices stand in as CampHawk&apos;s; the real tiles show the App Store&apos;s own strings.</p>
           <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-4 min-h-12" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
           <p role="status" className="mt-2 text-[14px] text-ch-ink-2">{restore === "none" ? "We didn't find an active subscription for this Apple ID." : ""}</p>
           <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
@@ -190,19 +197,16 @@ function HoldExplainer() {
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
       <div className="max-w-[70ch]">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
-          <span className="rounded-full bg-ch-shell px-2.5 py-0.5 text-[12px] font-extrabold uppercase tracking-[.08em] text-ch-ink-2">Beta</span>
-        </div>
+        <h2 id="rc-hold" className="font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases — we can hold the site while you wake up</h2>
         {!RC_HOLD_OPEN && (
-          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Closed to new holds for now</span>}>
-            We paused the hold beta on {RC_HOLD_CLOSED_ON} while we make it more reliable. ReserveCalifornia watches still alert you as usual.
+          <Callout className="mt-4" title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
+            For now, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual.
           </Callout>
         )}
         <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
           <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away — it is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
-          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
-          {RC_HOLD_OPEN ? steps : <Collapsible label="How it works when it reopens" className="mt-5">{steps}</Collapsible>}
+          <p className="mt-4 flex items-start gap-2 text-[15px]"><span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span><span>8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</span></p>
+          {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
           <p className="mt-5 text-[14px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently — you connect it once and openings go straight into your cart.</p>
         </div>
       </div>
@@ -220,7 +224,7 @@ export function PricingPage() {
       page="Plans & pricing"
       title="Plans & pricing"
       sub="Live search is free and needs no account. A subscription is what keeps a watch running around the clock — and Auto-Cart is what wins the sites that vanish in minutes."
-      photo={{ art: ART.a4, pos: "50% 62%", posLg: "50% 60%" }}
+      photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan
       controls={({ visitor }) => (
         <>
@@ -234,15 +238,17 @@ export function PricingPage() {
       {({ visitor, plan }) => (
         <div className="grid gap-6">
           {visitor === "subscriber" ? <AllSet visitor={visitor} plan={plan} phone={phone === "saved"} />
-            : visitor === "app" ? <AppPaywall store={store} />
+            : visitor === "app" ? <><AppPaywall store={store} />{store === "sells" && <LabNote>The store tiles show CampHawk&apos;s prices as stand-ins; the real tiles show the App Store&apos;s own price strings.</LabNote>}</>
             : <WebPlans key={`${visitor}-${checkout}`} visitor={visitor} lookup={lookup} checkout={checkout} />}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
           <HoldExplainer />
           <section aria-labelledby="dont" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
             <h2 id="dont" className="font-ch-display text-[22px] font-extrabold text-ch-ink">What we don&apos;t do</h2>
-            <ul className="mt-3 max-w-[70ch] border-t border-ch-line">
+            <ul className="mt-3 border-t border-ch-line">
               {LIMITS.map((l) => <li key={l} className="flex gap-3 border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2"><span aria-hidden="true" className="text-ch-muted">—</span>{l}</li>)}
             </ul>
           </section>
+          </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds free</Link>
             <A href={ROUTES.home} visitor={visitor}>Back to the home page</A>

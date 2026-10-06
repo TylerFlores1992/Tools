@@ -1,7 +1,8 @@
-import { Check } from "lucide-react";
+import { Check, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../Pricing";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor } from "../data";
 
 // Round-2 pricing: the same three branches, prices and words as Pricing.tsx, set as a section of
@@ -16,19 +17,19 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="text-[14px] font-bold text-ch-ink-2">Best chance to book</p>}
+        {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
-            <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-green" />
+            <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" />
             <span>{f}</span>
           </li>
         ))}
       </ul>
-      <a href="#" className={buttonClasses({ variant: recommended ? "primary" : "quiet", className: "mt-6 self-start px-5" })}>Start 7-day free trial</a>
+      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
     </div>
   );
 }
@@ -42,12 +43,12 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
         <h2 className={head}>You&apos;re all set. Here&apos;s what you can do.</h2>
         <ul className="mt-6 grid max-w-[64ch] gap-3 text-[16px] leading-relaxed text-ch-ink-2">
           <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
-          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.</li>
+          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.</li>
           <li>With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.</li>
           <li>Any alert lets you pause the watch, reopen it, or mute a site you don&apos;t want.</li>
         </ul>
         <div className="mt-7 flex flex-wrap gap-2.5">
-          <a href="#" className={buttonClasses({ className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
+          <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
           <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>New watch</a>
           <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>Alert settings</a>
         </div>

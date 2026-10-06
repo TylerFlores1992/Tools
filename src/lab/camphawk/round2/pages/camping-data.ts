@@ -1,3 +1,5 @@
+import { CANADA_REGIONS } from "../../data";
+
 // Example data for the lab's search pages (Tier 3: campsite-finder src/app/camping, lib/
 // stateCampgrounds.ts, lib/siteTypeHubs.ts, lib/hardToBook.ts, lib/competitors.ts). CampHawk
 // reads these from its catalog; the lab can't, so:
@@ -14,18 +16,19 @@ export type Region = { code: string; name: string; slug: string; count: number; 
 const slug = (name: string) => name.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const r = (code: string, name: string, count: number, canada = false): Region => ({ code, name, slug: slug(name), count, canada });
 
-/** The 47 US states with a page (HI 2, LA 1 and NJ 1 fall under the threshold). */
+/** The 47 US states with a page (HI 2, LA 1 and NJ 1 fall under the threshold). With those 4, the
+    9 provinces' 375 and the 15 in provinces without a page, the catalog is CampHawk's 8,013. */
 export const STATES: Region[] = [
-  r("AL", "Alabama", 61), r("AK", "Alaska", 190), r("AZ", "Arizona", 214), r("AR", "Arkansas", 118), r("CA", "California", 875),
-  r("CO", "Colorado", 402), r("CT", "Connecticut", 19), r("DE", "Delaware", 12), r("FL", "Florida", 236), r("GA", "Georgia", 141),
-  r("ID", "Idaho", 312), r("IL", "Illinois", 163), r("IN", "Indiana", 47), r("IA", "Iowa", 88), r("KS", "Kansas", 74),
-  r("KY", "Kentucky", 96), r("ME", "Maine", 38), r("MD", "Maryland", 44), r("MA", "Massachusetts", 27), r("MI", "Michigan", 251),
-  r("MN", "Minnesota", 320), r("MS", "Mississippi", 82), r("MO", "Missouri", 197), r("MT", "Montana", 288), r("NE", "Nebraska", 41),
-  r("NV", "Nevada", 109), r("NH", "New Hampshire", 33), r("NM", "New Mexico", 146), r("NY", "New York", 72), r("NC", "North Carolina", 129),
-  r("ND", "North Dakota", 46), r("OH", "Ohio", 152), r("OK", "Oklahoma", 113), r("OR", "Oregon", 356), r("PA", "Pennsylvania", 81),
-  r("RI", "Rhode Island", 6), r("SC", "South Carolina", 64), r("SD", "South Dakota", 77), r("TN", "Tennessee", 132), r("TX", "Texas", 197),
-  r("UT", "Utah", 244), r("VT", "Vermont", 23), r("VA", "Virginia", 158), r("WA", "Washington", 341), r("WV", "West Virginia", 58),
-  r("WI", "Wisconsin", 168), r("WY", "Wyoming", 196),
+  r("AL", "Alabama", 65), r("AK", "Alaska", 202), r("AZ", "Arizona", 228), r("AR", "Arkansas", 125), r("CA", "California", 875),
+  r("CO", "Colorado", 427), r("CT", "Connecticut", 20), r("DE", "Delaware", 13), r("FL", "Florida", 251), r("GA", "Georgia", 150),
+  r("ID", "Idaho", 332), r("IL", "Illinois", 173), r("IN", "Indiana", 50), r("IA", "Iowa", 94), r("KS", "Kansas", 79),
+  r("KY", "Kentucky", 102), r("ME", "Maine", 40), r("MD", "Maryland", 47), r("MA", "Massachusetts", 29), r("MI", "Michigan", 267),
+  r("MN", "Minnesota", 320), r("MS", "Mississippi", 87), r("MO", "Missouri", 209), r("MT", "Montana", 306), r("NE", "Nebraska", 44),
+  r("NV", "Nevada", 116), r("NH", "New Hampshire", 35), r("NM", "New Mexico", 155), r("NY", "New York", 77), r("NC", "North Carolina", 137),
+  r("ND", "North Dakota", 49), r("OH", "Ohio", 162), r("OK", "Oklahoma", 120), r("OR", "Oregon", 379), r("PA", "Pennsylvania", 86),
+  r("RI", "Rhode Island", 6), r("SC", "South Carolina", 68), r("SD", "South Dakota", 82), r("TN", "Tennessee", 140), r("TX", "Texas", 209),
+  r("UT", "Utah", 259), r("VT", "Vermont", 24), r("VA", "Virginia", 168), r("WA", "Washington", 363), r("WV", "West Virginia", 62),
+  r("WI", "Wisconsin", 179), r("WY", "Wyoming", 208),
 ];
 
 /** The 9 provinces and territories with a page (QC withheld; SK and PE under the threshold). Real counts. */
@@ -38,6 +41,8 @@ export const PROVINCES: Region[] = [
 export const ALL_REGIONS = [...STATES, ...PROVINCES];
 export const regionBySlug = (s: string) => ALL_REGIONS.find((x) => x.slug === s);
 export const total = (rows: Region[]) => rows.reduce((n, x) => n + x.count, 0);
+/** Campgrounds in places too small for a page (US 4; Canada 15, plus Quebec's withheld page). */
+export const UNPAGED = { us: 4, canada: 15 };
 
 export type HubSlug = "cabins" | "group-camping" | "yurts";
 export type Hub = { slug: HubSlug; heading: string; label: string; noun: string; blurb: string; byRegion: Record<string, number> };
@@ -119,7 +124,7 @@ export const COMPETITORS: Record<Competitor["slug"], Competitor> = {
 };
 
 /** Coverage CampHawk derives from its catalog (COVERAGE in lib/coverage.ts). */
-export const COVERAGE = { states: 50, stateParkStates: 34, canadianProvincialSystems: 7 };
+export const COVERAGE = { states: 50, stateParkStates: 34, canadianProvincialSystems: 7, canadaRegions: CANADA_REGIONS };
 
 /** "A", "A and B", "A, B and C". CampHawk drops the "and" at three or more. */
 export const joinAnd = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);

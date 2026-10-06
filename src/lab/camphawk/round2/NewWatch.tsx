@@ -16,6 +16,7 @@ import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sitesFor, type Division, type Pickable } from "./newwatch-data";
@@ -47,7 +48,7 @@ function TrustPanel() {
   const [open, setOpen] = useState(false);
   const tick = (t: React.ReactNode, i: number) => (
     <li key={i} className="flex items-start gap-2 py-1 text-[14px] leading-normal text-ch-ink-2">
-      <Check aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ch-green" />
+      <Check aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ch-ink" />
       <span>{t}</span>
     </li>
   );
@@ -158,7 +159,7 @@ function PickerRow({ p, onPick }: { p: Pickable; onPick: (p: Pickable) => void }
     </>
   );
   return ok ? (
-    <button type="button" data-picker-option="" onMouseDown={(e) => e.preventDefault()} onClick={() => onPick(p)} className="block min-h-12 w-full cursor-pointer bg-ch-card px-3.5 py-2.5 text-left text-[15px] hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green">{body}</button>
+    <button type="button" data-picker-option="" onMouseDown={(e) => e.preventDefault()} onClick={() => onPick(p)} className="block min-h-12 w-full cursor-pointer bg-ch-card px-3.5 py-2.5 text-left text-[15px] hover:bg-ch-paper focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green">{body}</button>
   ) : (
     <div className="bg-ch-card px-3.5 py-2.5 text-[15px]">{body}</div>
   );
@@ -231,9 +232,11 @@ export function NewWatch() {
   const shown = pickerOpen && ((canFavorite && favoriteRows.length > 0) || hits.length > 0);
 
   function submit() {
-    if (!chosen) return setError("Pick a campground to watch.");
-    if (!range.start || !range.end) return setError(mode === "flexible" ? "Choose the window to watch." : "Choose your nights.");
-    if (targets.length === 0) return setError("Pick at least one part of the park to watch.");
+    // Each error takes focus to the field it's about (it shows under the button, far from it).
+    const focus = (sel: string) => window.setTimeout(() => document.querySelector<HTMLElement>(sel)?.focus(), 0);
+    if (!chosen) { focus("#nw-cg"); return setError("Pick a campground to watch."); }
+    if (!range.start || !range.end) { focus("#nw-dates button[aria-expanded]"); return setError(mode === "flexible" ? "Choose the window to watch." : "Choose your nights."); }
+    if (targets.length === 0) { focus("#nw-parts input[type=checkbox]"); return setError("Pick at least one part of the park to watch."); }
     setSaving(true);
     setError(null);
     setAnswer(null);
@@ -258,7 +261,7 @@ export function NewWatch() {
 
       <main id="main">
         <AppBand visitor={visitor} current="new" title="New watch" photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
-        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
             <h2 className="sr-only">The watch</h2>
@@ -282,14 +285,16 @@ export function NewWatch() {
                 }
               }}
             >
+              {/* Rows carry a favorite button as well as the pick, so they're a group of buttons
+                  reached with the down arrow, not a listbox (a listbox can't hold buttons). */}
+              <p id="nw-cg-hint" className="sr-only">Matching campgrounds appear below as you type. Press the down arrow to reach them.</p>
               <div className="relative">
                 <input
                   ref={inputRef}
                   id="nw-cg"
-                  role="combobox"
-                  aria-autocomplete="list"
-                  aria-expanded={shown}
+                  type="search"
                   aria-controls={shown ? "nw-cg-list" : undefined}
+                  aria-describedby="nw-cg-hint"
                   value={q}
                   onFocus={() => setPickerOpen(true)}
                   onChange={(e) => { setQ(e.target.value); setPickerOpen(true); setChosenCg(null); }}
@@ -300,7 +305,7 @@ export function NewWatch() {
                 {chosen && canFavorite && <FavoriteHeart favorite={favorites.has(chosen.id)} onToggle={() => toggleFavorite(chosen.id)} name={chosen.name} className="absolute right-1.5 top-1/2 -translate-y-1/2" />}
               </div>
               {shown && (
-                <div id="nw-cg-list" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
+                <div id="nw-cg-list" role="group" aria-label="Matching campgrounds" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
                   {canFavorite && favoriteRows.length > 0 && (
                     <>
                       <p className="border-b border-ch-line bg-ch-ochre-soft px-3.5 py-2 text-[13px] font-extrabold text-ch-ochre-ink">Your favorites</p>
@@ -330,14 +335,14 @@ export function NewWatch() {
                   <div className="flex items-center justify-between gap-2 border-b border-ch-line px-3.5 py-1.5">
                     <span className="text-[14px] text-ch-ink-2">{parts.size} of {divisions.length} selected</span>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-green hover:bg-ch-green-soft">All</button>
-                      <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-green-soft">None</button>
+                      <button type="button" onClick={() => setParts(new Set(divisions.slice(0, MAX_DIVISIONS).map((d) => d.id)))} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-forest underline underline-offset-2 hover:bg-ch-paper">All</button>
+                      <button type="button" onClick={() => setParts(new Set())} className="min-h-11 rounded-lg px-3 text-[14px] font-bold text-ch-ink-2 hover:bg-ch-paper">None</button>
                     </div>
                   </div>
-                  <ul className="max-h-64 divide-y divide-ch-line overflow-y-auto overscroll-contain">
+                  <ul id="nw-parts" className="max-h-64 divide-y divide-ch-line overflow-y-auto overscroll-contain">
                     {divisions.map((d) => (
                       <li key={d.id}>
-                        <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2 hover:bg-ch-green-soft">
+                        <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2 hover:bg-ch-paper">
                           <input type="checkbox" checked={parts.has(d.id)} onChange={() => setParts((prev) => { const n = new Set(prev); if (n.has(d.id)) n.delete(d.id); else n.add(d.id); return n; })} className="size-[18px] shrink-0 accent-ch-green" />
                           <span className="text-[15px] text-ch-ink">{d.name}</span>
                         </label>
@@ -360,14 +365,14 @@ export function NewWatch() {
                 onChange={(v) => { if (v === "weekend") { setMode("exact"); setRange(thisWeekendRange()); } else setMode(v); }}
               />
               {mode === "flexible" && <div className="mb-2.5"><NightsPicker nights={flexNights} onNightsChange={setFlexNights} weekendsOnly={weekendsOnly} onWeekendsOnlyChange={setWeekendsOnly} /></div>}
-              <DatePicker
+              <div id="nw-dates"><DatePicker
                 value={range}
                 onChange={setRange}
                 label={mode === "flexible" ? "Window to watch" : "Trip dates"}
                 meta={mode === "flexible" && range.start ? `any ${flexNights}-night${weekendsOnly ? " weekend" : ""} stay in this window` : undefined}
                 minDate={todayISO()}
                 defaultMonth={range.start ?? addDays(todayISO(), 1)}
-              />
+              /></div>
               {flexTooLong && <p role="alert" className="mt-2 text-[14px] text-ch-alert-deep">{flexNights} nights doesn&apos;t fit in a {windowNights}-night window. Widen the window or shorten the stay.</p>}
             </fieldset>
 
@@ -389,7 +394,7 @@ export function NewWatch() {
                   </span>
                   {/* The switch carries its state as position and a word as well as hue. */}
                   <span className="flex shrink-0 flex-col items-center gap-1">
-                    <span aria-hidden="true" className={cx("relative h-6 w-10 rounded-full transition-colors motion-reduce:transition-none", autoCart ? "bg-ch-green" : "bg-ch-faint")}>
+                    <span aria-hidden="true" className={cx("relative h-6 w-10 rounded-full transition-colors motion-reduce:transition-none", autoCart ? "bg-ch-blue" : "bg-ch-faint")}>
                       <span className={cx("absolute top-[3px] size-[18px] rounded-full bg-ch-card shadow-ch-card transition-transform motion-reduce:transition-none", autoCart ? "translate-x-[19px]" : "translate-x-[3px]")} />
                     </span>
                     <span aria-hidden="true" className="text-[12px] font-bold text-ch-ink-2">{autoCart ? "On" : "Off"}</span>
@@ -410,19 +415,40 @@ export function NewWatch() {
             {canRcHold && offer === "promise" && (
               <div className={cx(panel, "mt-6")}>
                 <p className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-[15px] font-bold text-ch-ink">We can grab a site at 8am</span>
+                  <span className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</span>
                   <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">Beta</span>
                 </p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8am. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
-                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">Auto-hold is in beta. It has worked on real releases, and it can still miss — set an alarm for the release time and be ready to book it yourself.</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
+                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</p>
               </div>
             )}
             {canRcHold && offer === "upsell" && (
               <div className={cx(panel, "mt-6")}>
-                <p className="text-[15px] font-bold text-ch-ink">Grabbing a site at 8am is on the Auto-Cart plan</p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8am. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                <p className="text-[15px] font-bold text-ch-ink">8 AM holds are on the Auto-Cart plan</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
               </div>
             )}
+            {/* The action sits under the fields it submits (CampHawk puts it in the side panel, which
+                lands below the explainer on phones). */}
+            <div className="mt-7 border-t border-ch-line pt-6">
+              <div>
+                {firstCome && <p className="mb-2.5 rounded-ch-input border border-ch-line bg-ch-paper px-3 py-2.5 text-[14px] leading-normal text-ch-ink-2"><strong className="font-bold">{FIRST_COME_BADGE}.</strong> {FIRST_COME_WHY}</p>}
+                {gate === "ready" ? (
+                  <button type="button" onClick={submit} disabled={saving || flexTooLong || tooMany || firstCome} className={buttonClasses({ fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
+                    {saving ? "Setting up…" : "Start watching"}
+                  </button>
+                ) : (
+                  <SubscribeCta visitor={visitor} fullWidth />
+                )}
+              </div>
+              {answer === "needs-sub" && (
+                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}-day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
+              )}
+              {answer === "expired" && (
+                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you&apos;ve entered is lost.</p>
+              )}
+              {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
+            </div>
           </form>
 
           <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6 lg:sticky lg:top-6">
@@ -439,7 +465,7 @@ export function NewWatch() {
             ) : (
               <>
                 <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch is a robot that refreshes a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
+                  A watch is our bot refreshing a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
                 </p>
                 <ol className="mt-3">
                   {[
@@ -460,23 +486,6 @@ export function NewWatch() {
               </>
             )}
 
-            <div className="mt-5">
-              {firstCome && <p className="mb-2.5 rounded-ch-input border border-ch-line bg-ch-paper px-3 py-2.5 text-[14px] leading-normal text-ch-ink-2"><strong className="font-bold">{FIRST_COME_BADGE}.</strong> {FIRST_COME_WHY}</p>}
-              {gate === "ready" ? (
-                <button type="button" onClick={submit} disabled={saving || flexTooLong || tooMany || firstCome} className={buttonClasses({ fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" })}>
-                  {saving ? "Setting up…" : "Start watching"}
-                </button>
-              ) : (
-                <SubscribeCta visitor={visitor} fullWidth />
-              )}
-            </div>
-            {answer === "needs-sub" && (
-              <p className="mt-3 text-[14px] leading-normal text-ch-ochre-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a 7-day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
-            )}
-            {answer === "expired" && (
-              <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you&apos;ve entered is lost.</p>
-            )}
-            {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
           </aside>
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>

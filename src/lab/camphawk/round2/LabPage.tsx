@@ -21,7 +21,7 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 export type LabCtx = { visitor: Visitor; plan: Plan; setVisitor: (v: Visitor) => void };
 
 export function LabPage({
-  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true, wide = false,
+  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true,
 }: {
   /** The lab bar's breadcrumb label. */
   page: string;
@@ -36,6 +36,7 @@ export function LabPage({
   showPlan?: boolean;
   /** The first card rises into the band (app screens); reading pages start on paper. */
   dock?: boolean;
+  /** Kept for callers; every page now uses the band's column. */
   wide?: boolean;
 }) {
   const [visitor, setVisitor] = useVisitor();
@@ -50,7 +51,9 @@ export function LabPage({
       </LabBar>
       <main id="main">
         <AppBand visitor={visitor} current={tab} title={title} sub={sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} />
-        <div className={cx("relative mx-auto px-3 pb-[clamp(48px,7vw,96px)] sm:px-8", dock ? "-mt-[var(--gh-dock)]" : "pt-[clamp(32px,5vw,64px)]", wide ? "max-w-[var(--gh-max)]" : "max-w-[1120px]")}>
+        {/* The page shares the band's column and gutters, so the title above and the content below
+            start on one left edge at every width. */}
+        <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pb-[clamp(48px,7vw,96px)] sm:px-8", dock ? "-mt-[var(--gh-dock)]" : "pt-[clamp(32px,5vw,64px)]")}>
           {children(ctx)}
         </div>
       </main>
@@ -162,6 +165,41 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
       {body && <p className="mx-auto mt-3 max-w-[56ch] text-[17px] leading-relaxed text-ch-line">{body}</p>}
       <div className="mt-6 flex flex-wrap justify-center gap-3">{action}</div>
     </section>
+  );
+}
+
+/** A page column with an "On this page" rail beside it on wide screens (the right half of a
+    1440px screen was empty paper). Phones get the column only: a list there would push the
+    content below the fold. */
+export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly [id: string, label: string]>; children: ReactNode; extra?: ReactNode }) {
+  return (
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-16">
+      {/* First in the DOM, so keyboard and screen-reader users meet it before the article; drawn
+          on the right. */}
+      <aside className="hidden lg:order-last lg:block">
+        <nav aria-label="On this page" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6">
+          <p className="text-[13px] font-extrabold text-ch-ink-2">On this page</p>
+          <ul className="mt-2 grid">
+            {toc.map(([id, label]) => (
+              <li key={id}><a href={`#${id}`} className="flex min-h-11 items-center text-[15px] text-ch-ink underline-offset-2 hover:underline">{label}</a></li>
+            ))}
+          </ul>
+          {extra}
+        </nav>
+      </aside>
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+/** A note for reviewers, never part of the product: dashed, labeled "Lab", always outside the
+    product's own cards so nobody mistakes it for CampHawk copy. */
+export function LabNote({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <p role="note" className={cx("flex items-start gap-2.5 rounded-ch-input border border-dashed border-ch-muted px-3 py-2 text-[13px] leading-relaxed text-ch-ink-2", className)}>
+      <span className="mt-px shrink-0 text-[11px] font-extrabold uppercase tracking-[.1em] text-ch-ink">Lab</span>
+      <span>{children}</span>
+    </p>
   );
 }
 

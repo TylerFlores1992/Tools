@@ -278,6 +278,69 @@ query), the pre-ticked "save my login" box (CampHawk requires it), and CampHawk'
   pages give the number of state systems as ten, twelve and fourteen in different places.
 - "cancelled" in Settings (delete), the guides, the state-page descriptions and the competitor lines.
 
+## Fix rounds: toward a 10 (2026-10-06)
+The owner asked for "as close to a 10 as possible", with our own status marks. Five rounds of fresh
+critic, accessibility audit, fix and re-test. Critic scores: 6.5 → 7.2 → 7.5 → 8.0 → 8.0 (each round a new reviewer who hadn't seen the last; round 5's findings are fixed and not yet re-scored).
+This section overrides older notes above where they disagree (for example, trial and sign-up are
+no longer green).
+
+**Status marks (`ui/Tag.tsx`).** Every status tag carries a shape as well as a word and a colour,
+for the owner's red-green colour blindness: drawn marks that match Explore's map pins (tick = open,
+solid dot = booked, ring = couldn't check, small dot = first come) and one line icon per other
+status (eye = watching, clock = queued or time left, plus-circle = offered, cart, bolt = auto-cart,
+pause, refresh = reconnecting, triangle = needs you, cloud-off = provider down, power on/off,
+dashed circle = not set up). `StatusMark` draws one outside a tag. An e2e check fails if a Watches
+tag loses its mark. Selected chips carry a tick; the date picker's selected days are ink.
+
+**Button colours.** Green only for getting a site (search, Hold it, Start watching, "Yes — hold it
+for me", "It's mine — hand it over"); blue for a booking-provider hand-off (Book, Recreation.gov checkout, auto-cart,
+ReserveCalifornia sign-in); **ink** (forest) for account steps (trial, sign up, sign in, save,
+finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e fails if a trial button turns green.
+
+**One vocabulary.**
+- Search: "Search campgrounds" (the home hero adds "free"). It replaced six other names.
+- The ReserveCalifornia feature: "8 AM hold", invite-only since Sep 22, 2026.
+  - Its stages are "Holds you asked for" (ochre, "Asked") and "Sites you can hold at 8 AM" ("Can hold").
+  - Its buttons are "Hold it for me" and "It's mine — hand it over".
+- "Auto-Cart" is the plan and "auto-cart" is the feature.
+- Canada: "12 of Canada's 13 provinces and territories" everywhere, from `CANADA_REGIONS` in `data.ts`. An e2e check guards it, and was mutation-tested.
+
+**Layout.**
+- Every page uses one container: the band's width and gutter.
+- Wide screens get an "On this page" rail on Settings, the guides and the vs pages.
+  - The rail comes first in the DOM, so it is read first, and is shown on the right.
+- Manage, Welcome and Pricing are two columns on wide screens.
+- Bare pages use a 20px gutter. Sign in and sign up center the badge, with their context line on the forest band.
+
+**Behaviour (audit rounds).**
+- Explore's Where field is an ARIA combobox.
+- Focus moves to the safe choice when a confirm opens, and back to the trigger when it closes.
+- Radio groups take the arrow keys plus Home and End.
+- Buttons stay live and say what's missing, then focus that field; a dead button reads as broken.
+- The date picker can't go before today's month.
+
+**Open from round 5 (not done):**
+- New watch and Explore look thin at 1440. Ideas: a slot count, an Add-to-cart toggle and results preview.
+- The California page lists about 40 of its 875 campgrounds with no "show all".
+- One "Site 042" is used for two different holds in the sample data.
+- The lab's "today" (Jul 6) sits before the dated stats it quotes.
+- Settings shows email, texts and the plan as plain text where auto-cart has a pill.
+- The Google "G" is a placeholder.
+
+**Kept on purpose.**
+- `/w`, claim, connect and sign-in/up are bare (CampHawk's decision).
+- Title-case hub names (they are the search query). SMS and legal wording (carrier copy).
+- Blue Book on the campground page (it hands off).
+- The SMS page's grey preview button.
+- "Back to watches" under the title on Manage.
+
+**Found in CampHawk on these rounds (not changed there):**
+- Welcome has an email checkbox that Settings ignores (email is always on).
+- The campground day panel lists open sites with no Book button.
+- The hold beta is still offered.
+- Coverage is given as "12 of 13" provinces, as "9 provinces" and as "7 provincial systems" on different pages.
+- Search has seven button names.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
@@ -287,7 +350,7 @@ query), the pre-ticked "save my login" box (CampHawk requires it), and CampHawk'
 - Both drop the eyebrow labels, the all-caps chips, the mid-dot meta and the identical icon-card grid.
 
 ## Assets log
-Generated 2026-10-05 and 2026-10-06 through Vercel AI Gateway on free credit ($2.60 of $5 used by 2026-10-06, $2.40 left; nothing bought; `generate.mjs` stops under $2).
+Generated 2026-10-05 and 2026-10-06 through Vercel AI Gateway on free credit (about $2.96 of $5 used by the end of 2026-10-06, $2.045 left; nothing bought; `generate.mjs` stops under $2, so no more images without new credit).
 Script, prompts and picks: `studio/camphawk-round2/` (`generate.mjs`, `prompts.mjs`, `export.mjs`).
 Photos: `bfl/flux-pro-1.1-ultra` (raw mode). Paintings: `recraft/recraft-v4.1` (1280px max on free
 credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers are closed to free credit).
@@ -307,3 +370,7 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | n1-newwatch-wide | A | Flux 1.1 Ultra | New watch's band (owner's call, 2026-10-06): an empty campsite under Half Dome at blue hour, a lantern on the table. First try. |
 | w1-watches-wide | A | Flux 1.1 Ultra | Your watches' band: a fire lookout on a ridge, its window lit, over a misty valley. First try. |
 | badge-golden | A | Flux Kontext | The owner's pick: CampHawk's own badge with a warm sky, cut from its white field. Lab only. |
+| m1-coast-wide | A | Flux 1.1 Ultra | Manage's band (fix round): coastal campground at dusk, tents under cypress. About $0.06. |
+| p1-pricing-wide | A | Flux 1.1 Ultra | Pricing's band: two lit bell tents under pines. About $0.06. |
+| v1-fork-wide | A | Flux 1.1 Ultra | The vs pages' band: a trail fork at blue hour. About $0.06. |
+| s1-ranger-wide | A | Flux 1.1 Ultra | Support's band: a ranger cabin at a meadow edge, porch light on. About $0.06. Exported inline with sharp (`export.mjs` stops on the a1 original, which is no longer in `out/`). |

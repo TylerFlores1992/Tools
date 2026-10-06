@@ -2,17 +2,18 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { AlertTriangle, Bell, Loader2, Mail } from "lucide-react";
+import { AlertTriangle, Bell, Loader2, Mail, Trash2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
-import { pricePhrase, type Visitor } from "../../data";
+import { pricePhrase, priceShort, type Visitor } from "../../data";
 import { LabSelect, type Plan } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, LabPage } from "../LabPage";
+import { A, LabNote, LabPage, WithRail } from "../LabPage";
 import { withVisitor } from "../labState";
 import { useUrlState } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
+import { useSwapFocus } from "../useSwapFocus";
 import { EMAIL } from "./alert-data";
 
 // Tier 1: Settings (campsite-finder src/app/(app)/settings, AutoCartSettings.tsx,
@@ -32,7 +33,8 @@ import { EMAIL } from "./alert-data";
 // - Auto-cart on is the blue provider tag; set-up and reconnect are blue hand-offs to Recreation.gov.
 // - A disconnected session always offers "Reconnect" (CampHawk could show the box with no button).
 // - "Start free trial" goes to Pricing, not the marketing home.
-// - "Delete account" is quiet until you confirm; red is for the step that does it.
+// - "Delete account" is a quiet button (red words and a bin icon, so it never looks like Sign
+//   out) until you confirm; the red fill is for the step that does it.
 // - The ReserveCalifornia hold beta box is gone: the beta closed on Sep 22, 2026.
 
 type AutoCart = "on" | "off" | "not-set-up" | "reconnecting" | "disconnected";
@@ -48,13 +50,13 @@ const MANAGE: Record<Billing, { label: string; detail: string }> = {
   unknown: { label: "Get help with your subscription", detail: "We couldn't check your subscription just now, so we can't say where it's billed. If you subscribed inside the app, manage it from your Google Play or App Store account; if you subscribed on camphawk.app, manage it in the billing portal." },
 };
 
-const sm = (variant: "primary" | "quiet" | "cart" | "warn" = "quiet", className?: string) => buttonClasses({ variant, size: "sm", className: cx("min-h-11 px-4", className) });
+const sm = (variant: "ink" | "quiet" | "cart" | "warn" = "quiet", className?: string) => buttonClasses({ variant, size: "sm", className: cx("min-h-11 px-4", className) });
 const off = "disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none";
 
 function Section({ title, blurb, children, id }: { title: string; blurb?: ReactNode; children: ReactNode; id: string }) {
   return (
     <section aria-labelledby={id} className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
-      <h2 id={id} className="font-ch-display text-[22px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">{title}</h2>
+      <h2 id={id} className="scroll-mt-6 font-ch-display text-[22px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">{title}</h2>
       {blurb && <p className="mt-1.5 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">{blurb}</p>}
       <div className="mt-5 grid gap-4">{children}</div>
     </section>
@@ -81,6 +83,7 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
   const entitled = visitor === "subscriber" && plan === "autocart";
   const connect = withVisitor(ROUTES.connect, visitor);
   const [step, setStep] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef: upgradeConfirmRef, triggerRef: upgradeTriggerRef } = useSwapFocus(step !== "idle");
   const [saving, setSaving] = useState(false);
 
   if (!entitled) {
@@ -100,29 +103,29 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
             <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{pricePhrase("autocart", "monthly")}, or {pricePhrase("autocart", "yearly")} — you keep your current billing cycle and Stripe prorates the difference from today.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {step === "idle" ? (
-                <button type="button" onClick={() => setStep("confirm")} className={sm("primary")}>Upgrade to Auto-Cart</button>
+                <button ref={upgradeTriggerRef} type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
               ) : (
                 <>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("primary", off)}>
+                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
                     {step === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Upgrading…</> : "Confirm upgrade"}
                   </button>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("idle")} className={sm()}>Cancel</button>
+                  <button ref={upgradeConfirmRef} type="button" aria-disabled={step === "busy" || undefined} onClick={() => { if (step !== "busy") setStep("idle"); }} className={sm()}>Cancel</button>
                 </>
               )}
             </div>
-            {step === "busy" && <p className="mt-2 text-[13px] text-ch-ink-2">In the lab nothing is charged; switch Plan to Auto-Cart to see what comes next.</p>}
+            {step === "busy" && <LabNote className="mt-3">Nothing is charged here. Switch Plan to Auto-Cart to see what comes next.</LabNote>}
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            <a href="#" className={sm()}>Auto-Cart — $10 / month</a>
-            <a href="#" className={sm("primary")}>Auto-Cart — $50 / year</a>
+            <a href="#" className={sm()}>Auto-Cart — {priceShort("autocart", "monthly").replace("/mo", " / month")}</a>
+            <a href="#" className={sm("ink")}>Auto-Cart — {priceShort("autocart", "yearly").replace("/yr", " / year")}</a>
           </div>
         )}
       </>
     );
   }
 
-  const tag = state === "on" ? <Tag kind="cart">On</Tag> : <Tag kind="paused">{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
+  const tag = state === "on" ? <Tag kind="cart" mark="on">On</Tag> : <Tag kind="paused" mark={({ off: "off", "not-set-up": "not-set-up", reconnecting: "reconnecting", disconnected: "needs-you" } as const)[state]}>{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
   const connected = state === "on" || state === "off";
   return (
     <>
@@ -180,6 +183,12 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     return (
       <div>
         <p className="text-[16px] font-bold text-ch-ink">{known ? "Your subscription is active" : "Your subscription"}</p>
+        {known && billing !== "not-billed" && (
+          <p className="mt-1 text-[15px] text-ch-ink tabular-nums">
+            {plan === "autocart" ? "Auto-Cart plan" : "Alerts plan"}
+            {billing === "stripe" ? ` · ${priceShort(plan === "autocart" ? "autocart" : "base", "monthly")} · renews Aug 6, 2026` : ` · billed by ${billing === "app-store" ? "the App Store" : "Google Play"}`}
+          </p>
+        )}
         <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">{known && `${on} `}{m.detail}</p>
         <a href={billing === "not-billed" ? "mailto:alerts@camphawk.app" : "#"} className={sm("quiet", "mt-3")}>{m.label}</a>
       </div>
@@ -189,7 +198,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     return (
       <>
         <p className="text-[15px] leading-relaxed text-ch-ink-2">Watching needs a subscription.</p>
-        <a href="#" className={sm("primary", "justify-self-start")}>See plans</a>
+        <a href="#" className={sm("ink", "justify-self-start")}>See plans</a>
         <RestorePurchases />
       </>
     );
@@ -199,7 +208,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     <div>
       <p className="text-[16px] font-bold text-ch-ink">{ended ? "Your subscription has ended" : "No subscription yet"}</p>
       <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Searching stays free. Watching a booked campground, text alerts and auto-cart need a subscription.</p>
-      <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("primary", "mt-3")}>{ended ? "Resubscribe" : "Start free trial"}</Link>
+      <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("ink", "mt-3")}>{ended ? "Resubscribe" : "Start free trial"}</Link>
     </div>
   );
 }
@@ -208,18 +217,19 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
 
 function SignOutConfirm({ textOn }: { textOn: boolean }) {
   const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
   return (
     <div className="border-t border-ch-line pt-4">
       <p className="text-[14px] leading-relaxed text-ch-ink-2">Your watches keep running while you&apos;re signed out — alerts still reach you by {textOn ? "email and text" : "email"}.</p>
       {s === "idle" ? (
-        <button type="button" onClick={() => setS("confirm")} className={sm("quiet", "mt-3")}>Sign out</button>
+        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "mt-3")}>Sign out</button>
       ) : (
         <div role="group" aria-labelledby="signout-q" className="mt-3 rounded-ch-input bg-ch-shell p-4">
           <p id="signout-q" className="text-[15px] font-bold text-ch-ink">Sign out of CampHawk?</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">You&apos;ll need your email and password to get back in. Nothing is deleted.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("primary", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
-            <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>Stay signed in</button>
+            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
+            <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>Stay signed in</button>
           </div>
         </div>
       )}
@@ -231,6 +241,7 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
   const guest = visitor === "app";
   const noun = guest ? "your data" : "your account";
   const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
+  const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
   const store = billing === "app-store" ? "App Store" : billing === "play" ? "Google Play" : null;
   let bill: ReactNode;
   if (guest) bill = <>If you bought a subscription in the app, it is billed by the App Store, and deleting your data <strong className="font-bold text-ch-ink">does not cancel it</strong> — cancel it in your store subscription settings.</>;
@@ -242,16 +253,16 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
       <p className="text-[15px] leading-relaxed text-ch-ink-2">Deleting {noun} removes your watches, alert history and saved campgrounds permanently. This can&apos;t be undone.</p>
       <p className="text-[15px] leading-relaxed text-ch-ink-2">{bill}</p>
       {s === "idle" ? (
-        <button type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start")}>{guest ? "Delete my data" : "Delete account"}</button>
+        <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start text-ch-alert-deep!")}><Trash2 aria-hidden="true" className="size-4" />{guest ? "Delete my data" : "Delete account"}</button>
       ) : (
         <div role="group" aria-labelledby="delete-q" className="rounded-ch-input border-2 border-ch-alert bg-ch-card p-4">
           <p id="delete-q" className="flex items-center gap-2 text-[15px] font-bold text-ch-ink"><AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-ch-alert" />{guest ? "Delete your data?" : "Delete your account?"}</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">Everything above happens as soon as you press the button, and we can&apos;t bring any of it back.</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
-            <button type="button" disabled={s === "busy"} onClick={() => setS("idle")} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
+            <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
           </div>
-          {s === "busy" && <p className="mt-2 text-[13px] text-ch-ink-2">In the lab nothing is deleted.</p>}
+          {s === "busy" && <LabNote className="mt-3">Nothing is deleted here.</LabNote>}
         </div>
       )}
     </>
@@ -282,11 +293,11 @@ export function Settings() {
       {({ visitor, plan }) => {
         if (visitor === "signed-out") {
           return (
-            <div className="mx-auto max-w-[760px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
+            <div className="max-w-[760px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
               <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">Settings need an account</h2>
               <p className="mx-auto mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ className: "min-h-12 px-6" })}>Sign in</Link>
+                <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
                 <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Back to Explore</Link>
               </div>
             </div>
@@ -294,16 +305,17 @@ export function Settings() {
         }
         if (page === "loading") {
           return (
-            <div role="status" className="mx-auto grid max-w-[760px] gap-5">
+            <div role="status" className="grid max-w-[760px] gap-5">
               <span className="sr-only">Loading your settings…</span>
-              {[0, 1, 2].map((i) => <div key={i} className="h-40 animate-pulse rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card motion-reduce:animate-none" />)}
+              {[0, 1, 2].map((i) => <div key={i} aria-hidden="true" className="h-40 animate-pulse rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card motion-reduce:animate-none" />)}
             </div>
           );
         }
         const guest = visitor === "app";
         const textOn = sms === "saved";
         return (
-          <div className="mx-auto grid max-w-[760px] gap-5">
+          <WithRail toc={[["s-reach", "How we reach you"], ["s-cart", "Auto-cart"], ["s-sub", "Subscription"], ["s-account", "Account"], ["s-delete", guest ? "Delete your data" : "Delete account"]]}>
+          <div className="grid max-w-[760px] gap-5">
             {guest ? (
               <Section id="s-reach" title="How we reach you" blurb="You're using CampHawk without an account. When a site opens up, the alert comes to this device as a notification.">
                 <Box icon={<Bell className="size-5" />} title="Push notifications">Controlled by your phone&apos;s notification settings for CampHawk. Keep them on — they are how your alerts reach you.</Box>
@@ -311,7 +323,8 @@ export function Settings() {
               </Section>
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you've turned on, at once. Whichever gets to you first wins.">
-                <Box icon={<Mail className="size-5" />} title="Email — always on">Going to {EMAIL}. Change it from your account below.</Box>
+                <Box icon={<Mail className="size-5" />} title="Email — always on">Every opening we find goes to {EMAIL}.</Box>
+                <Box icon={<Bell className="size-5" />} title="Push notifications — in the CampHawk app">Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>
             )}
@@ -327,7 +340,7 @@ export function Settings() {
                   <p className="text-[16px] font-bold text-ch-ink">No account — and you don&apos;t need one.</p>
                   <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">A free account is optional. It adds email and text alerts, and lets you use your subscription on camphawk.app and your other devices. Your watches and subscription move to it when you sign in.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href={withVisitor(ROUTES.signUp, visitor)} className={sm("primary")}>Create a free account</Link>
+                    <Link href={withVisitor(ROUTES.signUp, visitor)} className={sm("ink")}>Create a free account</Link>
                     <Link href={withVisitor(ROUTES.signIn, visitor)} className={sm()}>Sign in</Link>
                   </div>
                 </div>
@@ -346,6 +359,7 @@ export function Settings() {
             </Section>
             {guest && <p className="text-center text-[13px] text-ch-ink-2">CampHawk app build 1.4 (22)</p>}
           </div>
+          </WithRail>
         );
       }}
     </LabPage>

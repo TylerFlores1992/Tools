@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: every CampHawk screen built, Tiers 1-4, on PR #15).*
+*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word).*
 
 ## At a glance
 
@@ -18,7 +18,7 @@
 | ↳ **Explore** | `/private/camphawk/golden-hour/explore` | Built 2026-10-06. Search rail, four result states in words, illustrated map with pins as buttons, search kept in the URL. |
 | ↳ **New watch** | `/private/camphawk/golden-hour/new` | Built 2026-10-06. Picker (favorites, parks as one watch, first come refused), nights, muting, Auto-Cart by plan, the 8am hold. |
 | ↳ **Your watches** | `/private/camphawk/golden-hour/watches` | Built 2026-10-06. Wall, first run, every card state, holds, provider and auto-cart trouble, alert history. |
-| ↳ **Every other screen** | `/private/camphawk/golden-hour/screens` | Built 2026-10-06 on PR #15 (not merged yet): Tiers 1-4, about 30 pages, listed by tier with their lab switches. |
+| ↳ **Every other screen** | `/private/camphawk/golden-hour/screens` | Live 2026-10-06 (PR #15 merged, smoke 26/26): Tiers 1-4, about 30 pages, listed by tier with their lab switches. |
 | ↳ Trail poster | `/private/camphawk/trail-poster` | Live. The other round-2 direction, kept for reference only. |
 | ↳ Round 1 looks | `/private/camphawk/looks` | Live. Six backdrop-only mockups (critic 4/10). Superseded; kept for history. |
 | Hosting | Vercel project `tylerflores-dev` (Hobby, $0) | Details in `docs/SETUP.md`. |
@@ -39,34 +39,45 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
    branch's preview link before it merges.
+3. **Apple's review of CampHawk's current app build.** The owner is waiting for Apple to accept
+   it before starting a new build. Don't start bringing the lab look to camphawk.app until then.
+   The iOS app's webview loads camphawk.app directly (`server.url`), so web changes show in the
+   app too.
 
 ## Next up (in order)
-1. **CampHawk lab: review and merge PR #15** (every remaining CampHawk screen, Tiers 1-4, in the
-   Golden hour look; CI green; waiting on the owner's "merge"). After merging, run
-   `npm run smoke -- https://tylerflores.dev`. Start at `/private/camphawk/golden-hour/screens`.
+1. **CampHawk lab: fix rounds are merged** (PR #16, 2026-10-06). Five critic/audit rounds took the
+   lab from 6.5 to 8.0. What changed and what's still open: `docs/design/camphawk-home.md`, "Fix
+   rounds: toward a 10". The open list is the next lab work, if the owner wants it.
+   **Bringing it to camphawk.app** waits for Apple to accept the current app build (above). When it's
+   time, the owner gives: write access to campsite-finder, the scope (which screens first), a preview
+   review on Vercel, and a ship time.
+2. **CampHawk lab: owner review.** Every CampHawk screen is live in the lab (PR #15 merged
+   2026-10-06, smoke 26/26). Start at `/private/camphawk/golden-hour/screens`. These are
+   mockups on example data; bringing the look to camphawk.app is a separate project in
+   campsite-finder and needs the owner's go-ahead (proposed order: shared tokens, header and
+   badge first, then screens a few at a time, plus the CampHawk bug list below).
    Every lab switch is in the URL (`?as=subscriber`, `plan=alerts`, plus each screen's own).
    What was built, what's real vs illustrative, the lab changes and the CampHawk issues found
    are in `docs/design/camphawk-home.md`, "Every other screen". Owner's earlier calls kept: band
    photos on New watch and Your watches; the "Check out on Recreation.gov" button on an in-cart
    watch. Left as CampHawk has them: caps tags, mid-dot meta lines, "Auto-Cart" as the plan name,
    title-case site-type headings (they're the search query).
-   **Possible next steps** (owner's call): new band photos for the Tier 2-3 pages (they reuse
-   `a1`, `a4`, `c1`, `e1`, `n1`; about four Flux photos of free credit left); hand the "found in
+   **Possible next steps** (owner's call): hand the "found in
    CampHawk" list to CampHawk's own repo as issues.
    **CampHawk's code:** attach `TylerFlores1992/campsite-finder` to the session **read-only**
    (`add_repo`, access "read"), clone to `/home/user/campsite-finder`, then disable pushing:
    `git -C /home/user/campsite-finder remote set-url --push origin DISABLED-read-only`. Never
    modify it. Its design rules (`.claude/skills/camphawk-design/SKILL.md`) bind every lab
    screen and win over references (that's why there's no glass).
-   **Art** (`studio/camphawk-round2/`, free credit only, $2.29 left; `generate.mjs` stops under
-   $2, so about four more Flux photos): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
+   **Art** (`studio/camphawk-round2/`, free credit only, $2.045 left; `generate.mjs` stops under
+   $2, so no more images without new credit; `m1`, `p1`, `v1`, `s1` were the last four): band photos `e1` (Explore), `n1` (New watch), `w1` (Your
    watches) share `BandPhoto` and the `.gh-app-photo`/`.gh-app-scrim` rules (crop per photo via
    `--gh-pos`/`--gh-pos-lg`; band text over them measures 4.8:1 or better, all of it large type). Also `e2` (map), `c2`
    (brightened), the badge (`badge-golden-*`). Round-1 screens keep the original badge on purpose.
-2. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
+3. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
-3. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+4. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail

@@ -19,6 +19,8 @@ import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, Subsc
 import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
+import { LabNote } from "./LabPage";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
 
@@ -89,7 +91,7 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
             : "Live availability is free and always will be. Watching a booked campground — and the text the moment someone cancels — needs a subscription."}
       </p>
       <SubscribeCta visitor={visitor} className="mt-3" />
-      <Link href={withVisitor(ROUTES.watches, visitor)} className="mt-2 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-green underline-offset-2 hover:text-ch-green-deep hover:underline">
+      <Link href={withVisitor(ROUTES.watches, visitor)} className="mt-2 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">
         See what a watch does
       </Link>
     </div>
@@ -99,12 +101,12 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
 /** The first-run box's closing line, matched to the reader (ExploreAccountCta). */
 function AccountLine({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") return null;
-  const link = "font-bold text-ch-green underline underline-offset-2 hover:text-ch-green-deep";
+  const link = "font-bold text-ch-forest underline underline-offset-2 hover:decoration-2";
   if (visitor === "app") return <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">Watching booked campgrounds needs a subscription — no account needed. <a href="#" className={link}>See plans</a></p>;
   return (
     <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">
       {visitor === "signed-out" ? "Searching is free and needs no account. Watches, text alerts and auto-cart need one. " : "Watches, text alerts and auto-cart come with a subscription. "}
-      <a href="#" className={link}>{visitor === "signed-out" ? "Start a 7-day free trial" : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
+      <a href="#" className={link}>{visitor === "signed-out" ? `Start a ${TRIAL_DAYS}-day free trial` : visitor === "lapsed" ? "Resubscribe" : "Start your free trial"}</a>
     </p>
   );
 }
@@ -113,17 +115,18 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
   const steps = [
     ["Say where", "A city, park or ZIP in the search box — or tap the crosshair to use your location. Leave it empty and we'll search near you."],
     ["Say when", "Exact dates, or one tap for tonight or this weekend. Flexible is the useful one: say how many nights you need and give us a date range to hunt inside, and we'll take any stretch that long."],
-    ["Search", "Green means sites are open right now. Tap any result for its full calendar, or the map to see where they are."],
-  ];
+    ["Search", <>Results marked <Tag kind="open" className="mx-0.5 align-[1px]">Sites open</Tag> have a site free right now. Tap any result for its full calendar, or the map to see where they are.</>],
+  ] as const;
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
-      <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">Find a campsite that&apos;s actually open</h2>
+      <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">How search works</h2>
       <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">
         Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds — national forests, state and provincial parks, and everything in between — and shows you what&apos;s bookable right now.
       </p>
-      <ol className="mt-4 max-w-[56ch]">
+      {/* Wide screens: the three steps side by side, so the card has no dead half. */}
+      <ol className="mt-4 max-w-[56ch] xl:mt-6 xl:grid xl:max-w-none xl:grid-cols-3 xl:gap-6">
         {steps.map(([title, sub], i) => (
-          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
+          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0 xl:border-b-0 xl:border-t xl:pt-4">
             <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
             <span>
               <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
@@ -214,15 +217,15 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
       <div className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {open && <Tag kind="open">Sites open</Tag>}
-          {booked && <Tag kind="paused">Booked — watch it</Tag>}
-          {unknown && <Tag kind="paused" srPrefix="Availability:">Couldn&apos;t check</Tag>}
-          {firstCome && <Tag kind="paused" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-          {c.provider === "Recreation.gov" && !firstCome && <Tag kind="cart">Auto-cart</Tag>}
+          {booked && <Tag kind="paused" mark="booked">Booked — watch it</Tag>}
+          {unknown && <Tag kind="paused" mark="unknown" srPrefix="Availability:">Couldn&apos;t check</Tag>}
+          {firstCome && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+          {c.provider === "Recreation.gov" && !firstCome && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           <Tag kind="src">{c.provider}</Tag>
         </div>
         <div className="flex items-start gap-2">
           <h3 className="min-w-0 flex-1 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">
-            <Link href={href} className="hover:text-ch-green-deep hover:underline">{c.name}</Link>
+            <Link href={href} className="underline-offset-[3px] hover:underline">{c.name}</Link>
           </h3>
           {onToggleFavorite && <FavoriteHeart favorite={favorite} onToggle={onToggleFavorite} name={c.name} className="-mr-1.5 -mt-1" />}
         </div>
@@ -242,8 +245,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
 
 function ResultsSkeleton() {
   return (
-    <div role="status" className="grid gap-4 sm:grid-cols-2">
-      <span className="sr-only">Checking campgrounds…</span>
+    <div className="grid gap-4 sm:grid-cols-2">
       <div aria-hidden="true" className="aspect-[16/9] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none sm:col-span-2" />
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} aria-hidden="true" className="h-[210px] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none" />
@@ -279,6 +281,9 @@ export function Explore() {
   const [restoring, setRestoring] = useState(false);
 
   const suggestions = picked || !focusPlace ? [] : suggest(place);
+  // The where field is an ARIA combobox: focus stays in the input; arrows move the active option.
+  const [active, setActive] = useState(-1);
+  const pickSuggestion = (name: string) => { setPlace(name); setPicked(true); setFocusPlace(false); setActive(-1); };
 
   const locateMe = useCallback(() => {
     setLocating(true);
@@ -328,19 +333,26 @@ export function Explore() {
     hydrated.current = true;
     const q = new URLSearchParams(window.location.search);
     const p = q.get("place");
-    if (!p) return;
-    const r = Number(q.get("radius"));
     const w = q.get("when");
+    // A place, or just a "when" from the home page (an empty place searches near you).
+    if (!p && !w) return;
+    const r = Number(q.get("radius"));
     const n = Number(q.get("nights"));
     const rv = Number(q.get("rv"));
     const type = q.get("type");
     // One-time sync FROM an external system (the URL) after hydration. Reading it during render
     // would make the static HTML disagree with the client.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPlace(p);
+    setPlace(p ?? "");
     if (RADII.includes(r)) setRadius(r);
     if (w === "tonight" || w === "weekend" || w === "flexible") setWhen(w);
-    setRange({ start: q.get("start") as ISODate | null, end: q.get("end") as ISODate | null });
+    const start = q.get("start") as ISODate | null;
+    const end = q.get("end") as ISODate | null;
+    // A "when" with no dates (the home page sends only the choice) gets that choice's dates.
+    if (!start && w === "tonight") setRange({ start: todayISO(), end: addDays(todayISO(), 1) });
+    else if (!start && w === "weekend") setRange(thisWeekendRange());
+    else if (!start && w === "flexible") setRange({ start: todayISO(), end: addDays(todayISO(), 30) });
+    else setRange({ start, end });
     if (n > 0) setFlexNights(n);
     setFilters({ siteType: type === "tent" || type === "cabin" || type === "group" ? type : null, rvLength: rv > 0 ? rv : null, electric: q.get("electric") === "1" });
     setRestoring(true);
@@ -394,7 +406,7 @@ export function Explore() {
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 
-        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-3 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[440px_minmax(0,1fr)] lg:gap-8">
           {/* The search rail docks across the band's edge, the way search does on the home page. */}
           <form
             role="search"
@@ -406,41 +418,50 @@ export function Explore() {
             <div className="relative">
               <input
                 id="gh-where"
+                role="combobox"
                 value={place}
-                onChange={(e) => { setPlace(e.target.value); setPicked(false); }}
+                onChange={(e) => { setPlace(e.target.value); setPicked(false); setActive(-1); setFocusPlace(true); }}
                 onFocus={() => setFocusPlace(true)}
                 onBlur={() => window.setTimeout(() => setFocusPlace(false), 150)}
+                onKeyDown={(e) => {
+                  if (!suggestions.length) return;
+                  if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => (a + 1) % suggestions.length); }
+                  else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => (a <= 0 ? suggestions.length - 1 : a - 1)); }
+                  else if (e.key === "Enter" && active >= 0) { e.preventDefault(); pickSuggestion(suggestions[active].name); }
+                  else if (e.key === "Escape") { e.preventDefault(); setFocusPlace(false); setActive(-1); }
+                }}
                 placeholder="City, park, or ZIP…"
                 autoComplete="off"
                 aria-autocomplete="list"
-                aria-controls={suggestions.length ? "gh-where-list" : undefined}
+                aria-expanded={suggestions.length > 0}
+                aria-controls="gh-where-list"
+                aria-activedescendant={active >= 0 && suggestions[active] ? `gh-where-opt-${active}` : undefined}
                 className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper py-3 pl-4 pr-12 font-ch-display text-[16px] font-semibold text-ch-ink placeholder:font-ch-body placeholder:font-normal placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
               />
-              <button type="button" onClick={locateMe} disabled={locating} aria-label="Use my location" title="Use my location" className="absolute inset-y-0 right-0 grid w-12 cursor-pointer place-items-center rounded-r-ch-input text-ch-muted hover:text-ch-green focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait">
+              <button type="button" onClick={locateMe} disabled={locating} aria-label="Use my location" title="Use my location" className="absolute inset-y-0 right-0 grid w-12 cursor-pointer place-items-center rounded-r-ch-input text-ch-muted hover:text-ch-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green disabled:cursor-wait">
                 <LocateFixed aria-hidden="true" className={cx("size-5", locating && "animate-pulse motion-reduce:animate-none")} />
               </button>
             </div>
-            {suggestions.length > 0 && (
-              <ul id="gh-where-list" aria-label="Suggestions" className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
-                {suggestions.map((s) => (
-                  <li key={s.name}>
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => { setPlace(s.name); setPicked(true); setFocusPlace(false); }}
-                      className="flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line bg-ch-card px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-green-soft focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
-                    >
-                      {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-green" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold text-ch-ink">{s.name}</span>
-                        {s.sub && <span className="block truncate text-[13px] text-ch-muted">{s.sub}</span>}
-                      </span>
-                      <span className="shrink-0 text-[13px] text-ch-muted">{s.kind}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul id="gh-where-list" role="listbox" aria-label="Suggestions" hidden={suggestions.length === 0} className="mt-1 overflow-hidden rounded-ch-input border border-ch-line">
+              {suggestions.map((s, i) => (
+                <li
+                  key={s.name}
+                  id={`gh-where-opt-${i}`}
+                  role="option"
+                  aria-selected={i === active}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => pickSuggestion(s.name)}
+                  className={cx("flex min-h-12 w-full cursor-pointer items-center gap-2.5 border-b border-ch-line px-3 py-2 text-left text-[15px] last:border-b-0 hover:bg-ch-paper", i === active ? "bg-ch-shell shadow-[inset_4px_0_0_var(--color-ch-forest)]" : "bg-ch-card")}
+                >
+                  {s.kind === "campground" ? <Tent aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /> : <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-muted" />}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-ch-ink">{s.name}</span>
+                    {s.sub && <span className="block truncate text-[13px] text-ch-muted">{s.sub}</span>}
+                  </span>
+                  <span className="shrink-0 text-[13px] text-ch-muted">{s.kind}</span>
+                </li>
+              ))}
+            </ul>
 
             <fieldset className="mt-5">
               <legend className={label}>Within</legend>
@@ -478,7 +499,9 @@ export function Explore() {
             {error && <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">{error}</p>}
           </form>
 
-          <section aria-label="Results" aria-live="polite" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
+          <section aria-label="Results" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
+            {/* One short line is announced, not every card in the list. */}
+            <p role="status" className="sr-only">{loading ? "Searching…" : results === null || !searched ? "" : openCount > 0 ? `${results.length} campgrounds, ${openCount} with openings` : `${results.length} campgrounds, none with openings for those dates`}</p>
             <StatusBox visitor={visitor} />
             {results === null && !loading && <FirstRun visitor={visitor} />}
             {loading && <ResultsSkeleton />}
@@ -515,11 +538,11 @@ export function Explore() {
                     <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
                     <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we&apos;ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
-                      ? <a href="#" className={buttonClasses({ className: "px-5" })}>Start 7-day free trial</a>
+                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
                       : <Link href={withVisitor(`${ROUTES.newWatch}${searched.range.start && searched.range.end ? `?start=${searched.range.start}&end=${searched.range.end}` : ""}`, visitor)} className={buttonClasses({ className: "px-5" })}>Create a watch</Link>}
                   </div>
                 )}
-                <p className="mt-4 px-1 text-[13px] text-ch-muted">Example data, as if today were Monday, July 6.</p>
+                <LabNote className="mt-4">Example data, as if today were Monday, July 6.</LabNote>
               </>
             )}
             <PricingLink visitor={visitor} plan={plan} className="mt-5" />

@@ -344,7 +344,7 @@ try {
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
     // The answer comes first, in words, under the name.
-    await p.getByText("5 days with openings in July.").waitFor();
+    await p.getByText(/^Next opening /).waitFor();
     // A month we couldn't read: no day is called booked, and the page says why.
     const next = p.getByRole("button", { name: "Next month" });
     await next.click();
@@ -411,9 +411,14 @@ try {
     await p.waitForURL(`${GH}/explore`);
     // Guests get context, not a paywall, and the first-run box until they search.
     await p.getByText("You're searching as a guest").waitFor();
-    await p.getByRole("heading", { level: 2, name: "Find a campsite that's actually open" }).waitFor();
+    await p.getByRole("heading", { level: 2, name: "How search works" }).waitFor();
     await p.getByLabel("Where").fill("yos");
-    await p.getByRole("button", { name: "Yosemite Valley, CA place" }).click();
+    // The suggestions are a combobox: arrows reach them from the field, Enter picks.
+    await p.getByRole("option", { name: "Yosemite Valley, CA place" }).waitFor();
+    await p.getByLabel("Where").press("ArrowDown");
+    assert.match((await p.getByLabel("Where").getAttribute("aria-activedescendant")) ?? "", /gh-where-opt-0/);
+    await p.getByLabel("Where").press("Enter");
+    assert.equal(await p.getByLabel("Where").inputValue(), "Yosemite Valley, CA");
     await p.getByRole("button", { name: /Trip dates/ }).click();
     await p.getByRole("gridcell", { name: "Saturday, July 18, 2026" }).click();
     await p.getByRole("gridcell", { name: "Tuesday, July 21, 2026" }).click();
@@ -483,13 +488,13 @@ try {
     await p.getByRole("radio", { name: "This weekend" }).click();
     await p.getByRole("complementary").getByText("Fri Jul 10 – Sun Jul 12").waitFor();
     // ReserveCalifornia gets the 8am hold, not the Recreation.gov auto-cart toggle.
-    await p.getByText("We can grab a site at 8am").waitFor();
+    await p.getByText("We can hold a site at the 8 AM release").waitFor();
     assert.equal(await p.getByRole("button", { name: /Add it to my cart automatically/ }).count(), 0);
     await p.getByRole("button", { name: "Start watching" }).click();
     await p.waitForURL(/\/watches\?/);
     assert.match(p.url(), /as=subscriber/);
     await p.getByRole("heading", { level: 3, name: "Carpinteria State Beach" }).waitFor();
-    await p.getByText("4 of 6 watches running").waitFor();
+    await p.getByText("4 watches running").waitFor();
     // The Auto-Cart promise is only for its plan; the base plan is told what still happens.
     await p.goto(`${GH}/new?as=subscriber&plan=alerts&campground=upper-pines&start=2026-07-18&end=2026-07-21`);
     await p.getByText("Auto-cart is on the Auto-Cart plan").waitFor();
@@ -515,8 +520,19 @@ try {
     await p.getByRole("radio", { name: "Lapsed", exact: true }).click();
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
-    await p.getByText("3 of 6 watches running").waitFor();
-    for (const tag of ["1 site open", "In your cart", "We'll grab Site 042 · 8 AM", "2 more open 8 AM", "Paused"]) await p.getByText(tag).first().waitFor();
+    await p.getByText("3 watches running · 1 paused").waitFor();
+    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 042", "Paused"]) await p.getByText(tag).first().waitFor();
+    // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
+    // only the provider label goes without one.
+    const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
+    const total = await statuses.count();
+    assert.ok(total >= 8, `expected status tags, found ${total}`);
+    for (let i = 0; i < total; i++) {
+      const tag = statuses.nth(i);
+      const label = (await tag.innerText()).trim();
+      if (/^Booking provider:/.test(label)) continue;
+      assert.equal(await tag.locator("svg").count(), 1, `"${label}" has no status mark`);
+    }
     await p.getByRole("link", { name: "Check out on Recreation.gov" }).waitFor();
     // Reconnecting fixes itself: the card says so, but isn't the red "you must act" card.
     await p.getByLabel("Auto-cart connection").selectOption("reconnecting");
@@ -524,9 +540,9 @@ try {
     await northPines.getByText("Auto-cart reconnecting").waitFor();
     assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
-    await p.getByRole("button", { name: "Queued for us to grab" }).click();
+    await p.getByRole("button", { name: "Holds you asked for" }).click();
     await p.getByRole("button", { name: "Call off the hold on 042" }).click();
-    assert.equal(await p.getByText("We'll grab Site 042 · 8 AM").count(), 0);
+    assert.equal(await p.getByText("8 AM hold: Site 042").count(), 0);
     // A provider not answering is a banner and a card state, not a broken watch.
     await p.getByLabel("ReserveCalifornia").selectOption("down");
     await p.getByText("ReserveCalifornia isn't responding", { exact: true }).waitFor();
@@ -574,7 +590,7 @@ try {
     await p.getByRole("heading", { name: "Watch removed" }).waitFor();
     // An 8am offer shows the site before anything happens, then confirms on a yes.
     await p.goto(`${GH}/manage?as=subscriber&watch=leo`);
-    await p.getByText(/^We.ll grab this for you$/).waitFor();
+    await p.getByRole("heading", { name: "Holds you asked for" }).waitFor();
     await p.getByRole("link", { name: "Hold it: Site 017" }).click();
     await p.waitForURL(/\/w\?action=hold-offer/);
     await p.getByRole("heading", { name: "Hold this site for you?" }).waitFor();
@@ -590,13 +606,13 @@ try {
     await p.getByText("Watching Upper Pines again.").waitFor();
     // Claim: nothing is released until you say so, and the release names its button in words.
     await p.goto(`${GH}/claim?as=app`);
-    await p.getByText("When you tap “It's mine — hand it over”", { exact: false }).waitFor();
+    await p.getByText("we let go so you can take it", { exact: false }).waitFor();
     assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
     await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
     await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");
     await p.getByLabel("ReserveCalifornia password", { exact: true }).fill("not-a-real-password");
     await p.getByRole("checkbox").check();
-    await p.getByRole("button", { name: "Sign in and hand it over" }).click();
+    await p.getByRole("button", { name: "Sign in to ReserveCalifornia" }).click();
     await p.getByRole("button", { name: "It's mine — hand it over" }).click();
     await p.getByText("Site 042 is yours to book").waitFor({ timeout: 8000 });
     await p.getByRole("link", { name: "Check out on ReserveCalifornia" }).waitFor();
@@ -632,6 +648,8 @@ try {
     await p.getByText("canceled immediately", { exact: false }).waitFor();
     await p.getByRole("button", { name: "Delete account" }).click();
     await p.getByRole("button", { name: "Yes, delete my account" }).waitFor();
+    // Focus lands on the safe choice, so two presses of Enter never delete.
+    assert.equal(await p.evaluate(() => document.activeElement?.textContent), "Keep my account");
     // In the app: no account, no prices.
     await p.goto(`${GH}/settings?as=app`);
     await p.getByText("No account — and you don't need one.").waitFor();
@@ -648,12 +666,17 @@ try {
     await p.waitForURL(/\/settings\?as=subscriber/);
     // Welcome: the Auto-Cart step only for a plan that includes it.
     await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
-    await p.getByRole("heading", { name: "You're subscribed — one last thing" }).waitFor();
+    await p.getByRole("heading", { name: "You're subscribed. Let's set up your alerts." }).waitFor();
     assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
-    await p.getByRole("checkbox", { name: /Email me when/ }).uncheck();
-    await p.getByText("With email off, add a phone number below", { exact: false }).waitFor();
+    // Email is always on, as Settings says; Welcome doesn't offer to turn it off.
+    await p.getByText("Always on. Every opening we find goes to", { exact: false }).waitFor();
+    assert.equal(await p.getByRole("checkbox", { name: /Email me/ }).count(), 0);
+    // Pressing "Turn on text alerts" too early says what's missing and goes there.
+    await p.getByRole("button", { name: "Turn on text alerts" }).click();
+    await p.getByRole("alert").filter({ hasText: "Enter your number and tick the box" }).waitFor();
+    assert.equal(await p.evaluate(() => document.activeElement?.id), "sms-phone");
     assert.deepEqual(errors, []);
     await ctx.close();
   });
@@ -668,6 +691,7 @@ try {
     assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price for an Auto-Cart subscriber");
     // A past subscriber gets no second trial; a failed lookup says so; checkout failing says nothing was charged.
     await p.goto(`${GH}/pricing?as=lapsed`);
+    await p.getByRole("button", { name: "$10 / month" }).waitFor(); // the lapsed view has landed
     assert.equal(await p.getByText("Free for 7 days", { exact: false }).count(), 0);
     await p.goto(`${GH}/pricing?as=member&lookup=failed&checkout=fails`);
     await p.getByText("We couldn't check your current plan just now.").waitFor();
@@ -679,6 +703,8 @@ try {
     await p.getByText("renews automatically unless it is canceled", { exact: false }).waitFor();
     // Signed out: the trial carries the plan through sign-up and Welcome, back to Pricing.
     await p.goto(`${GH}/pricing`);
+    // Green means an open site or an action that gets you one; a trial is neither.
+    for (const trial of await p.getByRole("link", { name: "Start 7-day free trial" }).all()) assert.doesNotMatch((await trial.getAttribute("class")) ?? "", /bg-ch-green\b/);
     await p.getByRole("link", { name: "Start 7-day free trial" }).last().click();
     await p.waitForURL(/\/sign-up\?plan=autocart/);
     await p.getByText("Your 7-day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
@@ -690,7 +716,7 @@ try {
     await p.waitForURL(/\/pricing\?plan=autocart&as=member/);
     // In the app, sign-up offers no Google button.
     await p.goto(`${GH}/sign-up?as=app`);
-    await p.getByRole("heading", { name: "Create your account" }).waitFor();
+    await p.getByRole("heading", { name: "Create your CampHawk account" }).waitFor();
     assert.equal(await p.getByText("Continue with Google").count(), 0);
     assert.deepEqual(errors, []);
     await ctx.close();
@@ -702,7 +728,9 @@ try {
     await p.goto(`${GH}/camping`);
     await signIn(p);
     await p.waitForURL(`${GH}/camping`);
-    await p.getByText("across 47 states", { exact: false }).waitFor();
+    await p.getByText("These are the 47 states with enough campgrounds for a page of their own", { exact: false }).waitFor();
+    // Canada's coverage reads the same here as on the home page (it said 9 provinces here, 12 there).
+    await p.getByText("390 bookable campgrounds in 12 of Canada's 13 provinces and territories", { exact: false }).waitFor();
     // Under five campgrounds there's no page: a real 404, not a thin one.
     for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
       const res = await p.goto(`${GH}${missing}`);
@@ -719,7 +747,7 @@ try {
     await p.waitForURL(/\/camping\/yurts\/california/);
     await p.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts$/);
-    await p.getByText("across 4 states, on Recreation.gov and 13 state park systems", { exact: false }).waitFor();
+    await p.getByText("across 4 states, on Recreation.gov and the state park reservation systems we read", { exact: false }).waitFor();
     // Hardest to book: CampHawk's pick, not a ranking — no "#1", no percentages.
     await p.goto(`${GH}/camping/hardest-to-book`);
     await p.getByText("This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking.").waitFor();

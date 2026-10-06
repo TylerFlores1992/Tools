@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Loader2, Lock, ShieldCheck } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { LabSelect } from "../AppParts";
@@ -42,7 +42,6 @@ function SignInForm({ onDone }: { onDone: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  const [save, setSave] = useState(true);
   const [busy, setBusy] = useState(false);
   const [slow, setSlow] = useState(false);
   useEffect(() => {
@@ -51,33 +50,31 @@ function SignInForm({ onDone }: { onDone: () => void }) {
     const b = window.setTimeout(onDone, 4500);
     return () => { window.clearTimeout(a); window.clearTimeout(b); };
   }, [busy, onDone]);
-  const ready = email.trim() && password && save && !busy;
+  const [tried, setTried] = useState(false);
+  const ready = email.trim() && password && !busy;
   return (
-    <form onSubmit={(e) => { e.preventDefault(); if (ready) setBusy(true); }} className="grid gap-4">
-      <label className="grid gap-1.5"><span className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov email</span><input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} className={field} /></label>
+    <form noValidate onSubmit={(e) => { e.preventDefault(); if (busy) return; if (!ready) { setTried(true); document.getElementById(email.trim() ? "rg-pass" : "rg-email")?.focus(); return; } setBusy(true); }} className="grid gap-4">
+      <label className="grid gap-1.5"><span className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov email</span><input id="rg-email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} className={field} /></label>
       <div className="grid gap-1.5">
         <label htmlFor="rg-pass" className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov password</label>
         <span className="relative">
           <input id="rg-pass" type={show ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={busy} className={cx(field, "pr-20")} />
-          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label={show ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
+          <button type="button" onClick={() => setShow(!show)} aria-pressed={show} aria-label="Show password" className="absolute inset-y-0 right-0 min-w-16 px-3 text-[14px] font-bold text-ch-ink underline underline-offset-2">{show ? "Hide" : "Show"}</button>
         </span>
       </div>
-      <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
-        <input type="checkbox" checked={save} onChange={(e) => setSave(e.target.checked)} disabled={busy} required className="mt-1 size-[18px] shrink-0 accent-ch-green" />
-        <span><strong className="font-bold text-ch-ink">Save my login to keep auto-cart connected (required).</strong> It&apos;s stored, encrypted, on a private machine we run, so it can sign back in on its own when the session drops. It never reaches CampHawk&apos;s web servers or database.</span>
-      </label>
-      {!save && (
-        <p className="flex items-start gap-2 rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-3 py-2.5 text-[14px] text-ch-ink">
-          <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />Auto-cart needs your saved login to stay connected — check the box above to continue.
-        </p>
-      )}
-      <button type="submit" disabled={!ready} className={blue()}>
-        {busy ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing you in…</> : "Sign in"}
+      {/* CampHawk shows a pre-ticked "(required)" checkbox here; one you can't usefully untick is a
+          statement, so the lab states it. */}
+      <p className="flex items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3 text-[14px] leading-relaxed text-ch-ink-2">
+        <Lock aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-ch-ink" />
+        <span>We save your login, encrypted, on a private machine we run, so auto-cart can sign back in on its own when the session drops. <strong className="font-bold text-ch-ink">It never reaches CampHawk&apos;s web servers or database.</strong></span>
+      </p>
+      <button type="submit" disabled={busy} aria-describedby="rg-why" className={blue()}>
+        {busy ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing you in…</> : "Sign in to Recreation.gov"}
       </button>
       {busy ? (
         <p role="status" className="text-center text-[14px] text-ch-ink-2">{slow ? "Still working — signing in to Recreation.gov can take up to a minute." : "Signing you in on the helper — this can take up to a minute."}</p>
       ) : (
-        <p className="text-center text-[13px] text-ch-ink-2">{save && (!email.trim() || !password) ? "Enter your email and password to continue." : "Recreation.gov may ask you to prove you’re a person; if it does, a window opens here."}</p>
+        <p id="rg-why" role={tried && !ready ? "alert" : undefined} className={cx("text-center", tried && !ready ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{!email.trim() || !password ? "Enter your email and password to continue." : "Recreation.gov may ask you to prove you’re a person; if it does, a window opens here."}</p>
       )}
     </form>
   );
@@ -125,7 +122,7 @@ export function Connect() {
           <h1 className="mt-2 font-ch-display text-[28px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">Connect Recreation.gov</h1>
           {status !== "done" && (
             <p className="mt-2 text-[15px] leading-relaxed text-ch-ink-2">
-              Sign in so CampHawk can add openings to your cart. Your Recreation.gov email and password are sent over an encrypted connection to a private machine we run — the one that keeps your session open — and saved there, encrypted, so auto-cart can sign back in on its own. <strong className="font-bold text-ch-ink">They never reach CampHawk&apos;s web servers or database.</strong>
+              Sign in once so auto-cart can add openings to your Recreation.gov cart, even at 3 AM. Unlike a one-off hand-off, that needs your login kept on hand: it goes over an encrypted connection to a private machine we run, the one that keeps your session open.
             </p>
           )}
           <div className="mt-6">

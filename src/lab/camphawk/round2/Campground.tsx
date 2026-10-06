@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
-import { LabBar } from "../LabBar";
+import { LabBar, radioKeys } from "../LabBar";
 import { Tag } from "../ui/Tag";
 import { Art, ART } from "./Art";
+import { LabNote } from "./LabPage";
 import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
 import { canWatch, ROUTES, watchCtaLabel } from "./gates";
 import { campgroundFor } from "./campground-lookup";
@@ -61,8 +62,9 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
     <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[17px] text-ch-paper">
       <Tag kind="open">Sites open</Tag>
       <span>
-        <strong className="font-bold">{open.length} days with openings in {firstMonthName}.</strong>{" "}
-        <span className="text-ch-line">The next is {dayLabel(open[0])}.</span>
+        {/* The count lives in the calendar's key; up here, just the next date. */}
+        <strong className="font-bold">Next opening {dayLabel(open[0])}.</strong>{" "}
+        <span className="text-ch-line">Pick a day below to see the sites.</span>
       </span>
     </p>
   );
@@ -88,7 +90,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
     : data.closed ? "Not open for booking this month"
     : openDays.length ? `${openDays.length} day${openDays.length === 1 ? "" : "s"} with openings`
     : "Nothing open this month";
-  const navButton = "grid size-11 cursor-pointer place-items-center rounded-ch-input border border-ch-line bg-ch-paper text-ch-ink-2 hover:border-ch-green hover:text-ch-green disabled:cursor-default disabled:border-ch-line disabled:text-ch-faint";
+  const navButton = "grid size-11 cursor-pointer place-items-center rounded-ch-input border border-ch-line bg-ch-paper text-ch-ink-2 hover:border-ch-ink-2 hover:text-ch-ink disabled:cursor-default disabled:border-ch-line disabled:text-ch-faint";
 
   return (
     <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-5">
@@ -162,6 +164,12 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
               Not open for booking
             </span>
           )}
+          {cells.some((d) => d && d < TODAY) && (
+            <span className="inline-flex items-center gap-1.5">
+              <i aria-hidden="true" className="not-italic font-semibold text-ch-faint">3</i>
+              Past
+            </span>
+          )}
           <span className="font-bold text-ch-ink sm:ml-auto">{summary}</span>
         </div>
         {data.unknown && (
@@ -188,9 +196,14 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         {pickedSites.length > 0 && (
           <ul className="mt-3 border-t border-ch-line">
             {pickedSites.map((s) => (
-              <li key={s.id} className="border-b border-ch-line py-3 last:border-b-0">
-                <p className="font-ch-display text-[16px] font-bold text-ch-ink">{s.name}</p>
-                <p className="text-[14px] text-ch-ink-2">{s.loop}, {s.type}</p>
+              <li key={s.id} className="flex items-center gap-3 border-b border-ch-line py-3 last:border-b-0">
+                <span className="min-w-0 flex-1">
+                  <span className="block font-ch-display text-[16px] font-bold text-ch-ink">{s.name}</span>
+                  <span className="block text-[14px] text-ch-ink-2">{s.loop}, {s.type}</span>
+                </span>
+                {/* An open site gets you there: the blue hand-off to the booking site (lab change;
+                    CampHawk's day panel only offers a watch). */}
+                <a href="#" aria-label={`Book ${s.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 shrink-0 px-4" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
               </li>
             ))}
           </ul>
@@ -238,9 +251,9 @@ export function Campground() {
     <div className="gh">
       <LabBar page="Campground" visitor={visitor} onVisitor={setVisitor}>
         <ScreenLinks visitor={visitor} current="campground" />
-        <div role="radiogroup" aria-label="Booking" className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
+        <div role="radiogroup" aria-label="Booking" onKeyDown={radioKeys(["reservable", "first-come"] as const, booking, setBooking)} className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
           {(["reservable", "first-come"] as const).map((b) => (
-            <button key={b} type="button" role="radio" aria-checked={booking === b} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
+            <button key={b} type="button" role="radio" aria-checked={booking === b} tabIndex={booking === b ? 0 : -1} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
               {booking === b && <span aria-hidden="true">✓</span>}
               {b === "reservable" ? "Reservations" : "First come"}
             </button>
@@ -289,7 +302,7 @@ export function Campground() {
                     Something went wrong on our side or with the connection — this doesn&apos;t mean the campground is gone. Try again in a moment.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
-                    <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ className: "px-5" })}>Try again</button>
+                    <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ variant: "ink", className: "px-5" })}>Try again</button>
                     <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "px-5" })}>Back to search</Link>
                   </div>
                 </div>
@@ -306,22 +319,22 @@ export function Campground() {
             <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,8vw,112px)]">
               <div className="min-w-0">
                 <div className="mb-3 flex flex-wrap gap-1.5">
-                  {!watchable && <Tag kind="paused" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart">Auto-cart</Tag>}
+                  {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
                   <Tag kind="src">{provider}</Tag>
                 </div>
                 <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
                 <p className="mt-2 text-[17px] text-ch-line">{place}</p>
                 {watchable && <OpenSummary months={months} />}
               </div>
-              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
+              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
             </div>
           </div>
         </section>
 
         {/* The photos dock across the band's bottom edge, the way search does on the home page.
             Phones show one, so the calendar starts sooner. */}
-        <div className="relative mx-auto -mt-[clamp(40px,6vw,88px)] max-w-[var(--gh-max)] px-3 sm:px-8">
+        <div className="relative mx-auto -mt-[clamp(40px,6vw,88px)] max-w-[var(--gh-max)] px-5 sm:px-8">
           <div className="grid gap-2 sm:auto-rows-[clamp(150px,13vw,200px)] sm:grid-cols-4 sm:gap-3">
             <Art art={ART.c1} eager sizes="(min-width: 640px) 50vw, 100vw" alt={`${name}, the campground loop at dusk`} className="aspect-[16/9] w-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:col-span-2 sm:aspect-auto sm:h-full" />
             <Art art={ART.c2} sizes="25vw" alt={`${name}, a campsite with a fire ring`} className="hidden size-full rounded-ch-card bg-ch-forest object-cover shadow-ch-pop sm:block" />
@@ -329,7 +342,7 @@ export function Campground() {
           </div>
         </div>
 
-        <section aria-label="Availability" className="mx-auto max-w-[1120px] px-3 pt-6 sm:px-8 sm:pt-8">
+        <section aria-label="Availability" className="mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-8">
           {watchable ? (
             <Calendar key={CAMPGROUND.id} visitor={visitor} id={CAMPGROUND.id} months={months} />
           ) : (
@@ -338,10 +351,10 @@ export function Campground() {
               <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{FIRST_COME_WHY}</p>
             </div>
           )}
-          <p className="mt-3 px-1 text-[14px] text-ch-ink-2">Example data. Photos are illustrations, not the campground.</p>
+          <LabNote className="mt-3">Example data. Photos are illustrations, not the campground.</LabNote>
         </section>
 
-        <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-8 px-3 py-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-8 px-5 py-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <section className="self-start rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
             <h2 className="font-ch-display text-[22px] font-extrabold text-ch-ink">About</h2>
             <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{description}</p>
@@ -351,22 +364,22 @@ export function Campground() {
             </ul>
             <p className="mt-4 flex items-center text-[16px] text-ch-ink-2">
               <span className="text-ch-muted">Phone:&nbsp;</span>
-              <a href="#" className="inline-flex min-h-11 items-center font-bold text-ch-green tabular-nums underline-offset-2 hover:underline">{phone}</a>
+              <a href="#" className="inline-flex min-h-11 items-center whitespace-nowrap font-bold text-ch-forest tabular-nums underline underline-offset-2 hover:decoration-2">{phone}</a>
             </p>
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
           <section className="px-2 sm:px-0">
-            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{openingsHeading(name)}</h2>
+            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} books up` : openingsHeading(name)}</h2>
             <div className="mt-3 max-w-[66ch] space-y-3">
               {openingsBody(name, place, CAMPGROUND.autoCart).map((t) => (
                 <p key={t.slice(0, 40)} className="text-[17px] leading-relaxed text-ch-ink-2">{t}</p>
               ))}
             </div>
             <p className="mt-5 text-[16px] text-ch-ink-2">
-              Fully booked? <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">What actually works when a campground is sold out</a>.
+              Fully booked? <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">What actually works when a campground is sold out</a>.
             </p>
             <p className="mt-2 text-[16px] text-ch-ink-2">
-              Also booked out? See <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-green underline-offset-2 hover:underline">browse by state</a>.
+              Also booked out? See <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
             </p>
           </section>
         </div>

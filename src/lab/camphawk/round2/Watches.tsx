@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { Info, ShoppingCart } from "lucide-react";
+import { CalendarDays, Info, ShoppingCart, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "../ui";
 import { WATCH_LIMIT, type Visitor } from "../data";
@@ -14,7 +14,9 @@ import { Art, ART } from "./Art";
 import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
+import { TRIAL_DAYS } from "./pages/tier2-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
+import { LabNote } from "./LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { PICKABLE } from "./newwatch-data";
 import { ALERTS, OUTLOOK_HEADING, outlookBody, WATCHES, type ExampleWatch, type Hold } from "./watches-data";
@@ -57,7 +59,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        <Tag kind="watch">{offered ? "Offered" : "Queued"}</Tag>
+        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">Asked</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -74,10 +76,12 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
   );
 }
 
+const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
+
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
-  const spec = [`${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
+  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(" · ");
   const asked = (w.holds ?? []).filter((h) => h.status === "requested");
   const offered = (w.holds ?? []).filter((h) => h.status === "offered");
   const cardState: CardState = state === "hit" ? "hit" : state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
@@ -90,17 +94,16 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
-          {asked.length > 0 && <Tag kind="cart">We&apos;ll grab {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`} · 8 AM</Tag>}
-          {offered.length > 0 && <Tag kind="watch">{offered.length} more open{offered.length === 1 ? "s" : ""} 8 AM</Tag>}
+          {asked.length > 0 && <Tag kind="watch" mark="hold">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
           {carted && <Tag kind="cart">{carted.length === 1 ? "In your cart" : `${carted.length} in your cart`}</Tag>}
-          {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused">Not carted — reconnect auto-cart</Tag>}
-          {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused">Not carted — reconnecting</Tag>}
+          {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
+          {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
           {state === "watching" && <Tag kind="watch">Watching</Tag>}
-          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !carted && !(state === "hit" && cart !== "connected") && <Tag kind="cart">Auto-cart</Tag>}
+          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !carted && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           {state === "paused" && <Tag kind="paused">Paused</Tag>}
-          {state === "authexpired" && <Tag kind="paused">Auto-cart reconnecting</Tag>}
-          {state === "disconnected" && <Tag kind="paused">Auto-cart disconnected</Tag>}
-          {state === "stalled" && <Tag kind="paused">Checks paused</Tag>}
+          {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
+          {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
+          {state === "stalled" && <Tag kind="paused" mark="provider-down">Checks paused</Tag>}
           <Tag kind="src">{w.provider}</Tag>
         </div>
         <h3 className="font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">{w.name}</h3>
@@ -110,7 +113,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>
-        <p className="mt-0.5 text-[14px] text-ch-ink-2">{spec}</p>
+        {spec && <p className="mt-0.5 text-[14px] text-ch-ink-2">{spec}</p>}
       </div>
 
       {state === "authexpired" && (
@@ -132,14 +135,15 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       )}
       {(offered.length > 0 || asked.length > 0) && (
         <div className="mt-3 grid gap-2 border-t border-ch-line pt-3">
-          {offered.length > 0 && (
-            <Collapsible label="Available to hold" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
-              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
+          {/* Same order as Manage: what you committed to first, then what you could add. */}
+          {asked.length > 0 && (
+            <Collapsible label="Holds you asked for" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
+              <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
-          {asked.length > 0 && (
-            <Collapsible label="Queued for us to grab" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
-              <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
+          {offered.length > 0 && (
+            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
+              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
         </div>
@@ -152,11 +156,15 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
             <ShoppingCart aria-hidden="true" className="size-4" />
             Check out on Recreation.gov
           </a>
+          {/* How long the cart lasts is the one number that matters here (Recreation.gov holds a
+              cart for 15 minutes); red, because you must act. Example time. */}
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
         </div>
       )}
-      <div className="mt-3 flex gap-2 border-t border-ch-line pt-3">
-        <Link href={calendarHref} aria-label={`Calendar for ${w.name}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 flex-1" })}>Calendar</Link>
-        <a href="#" aria-label={`Manage the ${w.name} watch`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 flex-1" })}>Manage</a>
+      {/* Quiet links, not boxed buttons: four pairs of full-width buttons outweighed the watches. */}
+      <div className="mt-3 flex gap-6 border-t border-ch-line pt-1">
+        <Link href={calendarHref} aria-label={`Calendar for ${w.name}`} className={cardLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
+        <a href="#" aria-label={`Manage the ${w.name} watch`} className={cardLink}><SlidersHorizontal aria-hidden="true" className="size-4" />Manage</a>
       </div>
     </Card>
   );
@@ -168,7 +176,7 @@ function Steps({ steps }: { steps: ReadonlyArray<readonly [string, string]> }) {
     <ol className="mt-5 rounded-ch-card border border-ch-line bg-ch-card px-5 py-2">
       {steps.map(([title, sub], i) => (
         <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
-          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-green-soft text-[14px] font-extrabold text-ch-green-deep">{i + 1}</span>
+          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
           <span>
             <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
             <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
@@ -200,7 +208,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
         ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
       ]} />
       <div className="mt-5 grid gap-2 sm:max-w-[420px]">
-        <a href="#" className={buttonClasses({ fullWidth: true })}>Start 7-day free trial</a>
+        <a href="#" className={buttonClasses({ variant: "ink", fullWidth: true })}>Start {TRIAL_DAYS}-day free trial</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Plan options</a>
         <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in</a>
         <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Keep exploring without an account</Link>
@@ -248,15 +256,15 @@ function useCreated(): { watch: ExampleWatch; leadDays: number; quiet: boolean }
   };
 }
 
-/** WatchesList's column switch: one list in the DOM, split in two from 640px. */
+/** WatchesList's column switch: one list in the DOM, split in two from 960px (below that, cards squeeze their tags). */
 function useTwoColumns(): boolean {
   return useSyncExternalStore(
     (onChange) => {
-      const mq = window.matchMedia("(min-width: 640px)");
+      const mq = window.matchMedia("(min-width: 960px)");
       mq.addEventListener("change", onChange);
       return () => mq.removeEventListener("change", onChange);
     },
-    () => window.matchMedia("(min-width: 640px)").matches,
+    () => window.matchMedia("(min-width: 960px)").matches,
     () => false,
   );
 }
@@ -295,7 +303,7 @@ export function Watches() {
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-6 shadow-ch-pop sm:p-8">
         <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">We couldn&apos;t load your watches</h2>
         <p role="alert" className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Your watches are still running — this is only the page. Try again in a moment.</p>
-        <button type="button" onClick={() => setList("list")} className={buttonClasses({ className: "mt-5 px-5" })}>Try again</button>
+        <button type="button" onClick={() => setList("list")} className={buttonClasses({ variant: "ink", className: "mt-5 px-5" })}>Try again</button>
       </div>
     );
   } else {
@@ -322,13 +330,14 @@ export function Watches() {
         )}
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
           <div className="min-w-[12rem] flex-1">
-            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} of {WATCH_LIMIT} watches running</p>
-            <p className="mt-0.5 text-[14px] text-ch-ink-2">We check every 15 seconds, around the clock.</p>
+            <p className="text-[16px] font-bold text-ch-ink tabular-nums">{running} {running === 1 ? "watch" : "watches"} running{watches.length > running ? ` · ${watches.length - running} paused` : ""}</p>
+            <p className="mt-0.5 text-[14px] text-ch-ink-2">We check every 15 seconds, around the clock. {watches.length >= WATCH_LIMIT ? `That’s all ${WATCH_LIMIT} you can have at once.` : `Room for ${WATCH_LIMIT - watches.length} more of ${WATCH_LIMIT}.`}</p>
           </div>
           <WatchCtaLink visitor={visitor} label="New watch" fullWidth={false} className="min-h-11 px-5" />
         </div>
         <h2 className="sr-only">Watches, running and paused</h2>
-        {/* Two columns that don't share a row height; cards alternate so reading goes across, then down. */}
+        {/* Two columns that don't share a row height. Cards alternate between them, so the eye reads
+            across then down; keyboard and screen readers take the first column, then the second. */}
         {twoColumns ? (
           <div className="grid grid-cols-2 items-start gap-4">
             {[0, 1].map((col) => <div key={col} className="grid gap-4">{watches.filter((_, i) => i % 2 === col).map(card)}</div>)}
@@ -345,13 +354,13 @@ export function Watches() {
                     <p className="truncate text-[15px] font-bold text-ch-ink">{a.campground} · {a.site}</p>
                     <p className="mt-0.5 text-[13px] text-ch-ink-2">{a.when} · {a.channels.join(", ")}{a.failed.map((c) => ` · ${c} failed`).join("")}</p>
                   </div>
-                  {a.failed.length > 0 && <span className="shrink-0 rounded-ch-chip bg-ch-alert-soft px-2.5 py-1 text-[13px] font-bold text-ch-alert-deep">{a.failed.length === a.channels.length ? "not delivered" : `${a.failed[0]} not delivered`}</span>}
+                  {a.failed.length > 0 && <Tag kind="alert" className="shrink-0">{a.failed.length === a.channels.length ? "Not delivered" : `${a.failed[0]} not delivered`}</Tag>}
                 </li>
               ))}
             </ul>
           </Collapsible>
         </div>
-        <p className="mt-4 px-1 text-[13px] text-ch-muted">Example watches, as if today were Monday, July 6.</p>
+        <LabNote className="mt-4">Example watches, as if today were Monday, July 6.</LabNote>
       </>
     );
   }
@@ -372,7 +381,7 @@ export function Watches() {
       </LabBar>
       <main id="main">
         <AppBand visitor={visitor} current="watches" title="Your watches" photo={<BandPhoto art={ART.w1} pos="85% 55%" posLg="50% 55%" />} />
-        <div className="relative mx-auto -mt-[var(--gh-dock)] max-w-[var(--gh-max)] px-3 pb-[clamp(40px,6vw,80px)] sm:px-8">
+        <div className="relative mx-auto -mt-[var(--gh-dock)] max-w-[var(--gh-max)] px-5 pb-[clamp(40px,6vw,80px)] sm:px-8">
           {body}
           <PricingLink visitor={visitor} plan={plan} className="mt-5" />
         </div>

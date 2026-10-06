@@ -25,7 +25,7 @@ export function Collapsible({
         className={cx(
           "flex min-h-12 w-full cursor-pointer items-center gap-2.5 border bg-ch-card px-3.5 py-3 text-left font-ch-body transition-colors",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green motion-reduce:transition-none",
-          open ? "rounded-t-ch-input border-ch-green" : "rounded-ch-input border-ch-line hover:border-ch-muted",
+          open ? "rounded-t-ch-input border-ch-forest" : "rounded-ch-input border-ch-line hover:border-ch-muted",
         )}
       >
         <span className="flex-1 text-[15px] font-bold text-ch-ink">{label}</span>
@@ -39,7 +39,7 @@ export function Collapsible({
         inert={!open}
         className={cx(
           "grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none",
-          open ? "grid-rows-[1fr] rounded-b-ch-input border border-t-0 border-ch-green bg-ch-card" : "grid-rows-[0fr] border border-t-0 border-transparent",
+          open ? "grid-rows-[1fr] rounded-b-ch-input border border-t-0 border-ch-forest bg-ch-card" : "grid-rows-[0fr] border border-t-0 border-transparent",
         )}
       >
         <div className="overflow-hidden">
