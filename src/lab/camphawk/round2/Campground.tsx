@@ -380,7 +380,7 @@ export function Campground() {
               ))}
             </div>
             <p className="mt-5 text-[16px] text-ch-ink-2">
-              Fully booked? Read <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">what actually works when a campground is sold out</a>, see <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
+              Fully booked? Read <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">what actually works when a campground is sold out</a>, see <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we track</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
             </p>
           </section>
         </div>

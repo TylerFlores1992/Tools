@@ -83,7 +83,7 @@ function SearchDock({ visitor }: { visitor: Visitor }) {
       </label>
       <button type="submit" className={buttonClasses({ className: "h-12 whitespace-nowrap px-6 text-[17px]" })}>
         <Search aria-hidden="true" className="size-4.5" />
-        Search campgrounds free
+        Search campgrounds
       </button>
     </form>
   );

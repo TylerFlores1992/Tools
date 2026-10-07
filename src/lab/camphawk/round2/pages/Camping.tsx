@@ -291,7 +291,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws lists for California only; <A href={`${ROUTES.camping}/${hub.slug}/california`} visitor={visitor}>see California {hub.label.toLowerCase()}</A>. CampHawk lists each campground here, by town.</p>
           )}
-          <p className="mt-10 text-[15px] text-ch-ink-2">Not finding one? See <A href={statePath(r)} visitor={visitor}>every campground we watch in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
+          <p className="mt-10 text-[15px] text-ch-ink-2">Not finding one? See <A href={statePath(r)} visitor={visitor}>every campground we track in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
           <Note />
         </div>
       )}
@@ -306,7 +306,7 @@ export function HardestToBook() {
   return (
     <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.k1, pos: "55% 40%", posLg: "50% 40%" }}>
       {({ visitor }) => (
-        <div>
+        <div className="max-w-[900px]">
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />
           <div className="mt-5">
             <Lead>

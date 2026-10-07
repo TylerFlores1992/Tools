@@ -211,9 +211,9 @@ function HoldExplainer() {
           <h2 id="rc-hold" className="text-balance font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases: we can hold the site while you wake up</h2>
           <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
             <p>When somebody cancels a ReserveCalifornia booking, the site usually doesn’t go back on sale straight away. It’s released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what’s coming and offer to be there when it opens.</p>
+            <p className="mt-3 text-[15px]">ReserveCalifornia parks only. On Recreation.gov, auto-cart is open to every Auto‑Cart subscriber: connect once and openings go straight into your cart.</p>
             <BetaNote className="mt-4 border-t border-ch-line pt-4" extra="Everyone’s ReserveCalifornia watches still alert as usual." />
             <div className="lg:hidden">{RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}</div>
-            <p className="mt-5 text-[15px]">ReserveCalifornia parks only. On Recreation.gov, auto-cart is open to every Auto-Cart subscriber: connect once and openings go straight into your cart.</p>
           </div>
         </div>
         <div className="hidden lg:block">

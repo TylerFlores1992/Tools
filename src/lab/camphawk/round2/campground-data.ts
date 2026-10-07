@@ -57,7 +57,7 @@ export function openingsBody(name: string, place: string, hasAutoCart: boolean):
   const where = place ? ` in ${place}` : "";
   return [
     "A campground showing no availability is almost never full for good. People cancel — plans change, weather turns, someone books three weekends and keeps one — and the site goes straight back into the booking system, usually without warning and often at odd hours. The reason sold-out campgrounds feel impossible is not that sites never free up; it is that nobody is watching at the moment they do.",
-    `CampHawk watches ${name}${where} for you. We recheck it every 15 seconds, around the clock, and the moment a site opens we send a text, an email and a push notification` +
+    `CampHawk watches ${name}${where} for you. We recheck it every 15 seconds, around the clock, and the moment a site opens we send an email, a push notification and a text` +
       (hasAutoCart
         ? " — and on Recreation.gov we can put the site straight into your cart, so it is held while you get to your phone."
         : ", with a link straight to the booking page."),

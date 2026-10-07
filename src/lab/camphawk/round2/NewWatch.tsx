@@ -486,7 +486,7 @@ export function NewWatch() {
                 </p>
                 <ol className="mt-3">
                   {[
-                    ["Pick the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
+                    ["Find the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
                     ["Choose your nights", "Exact dates, This weekend, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
                     ["Start watching", "Then go about your day. We’ll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (

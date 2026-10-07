@@ -305,7 +305,7 @@ try {
       const art = p.locator(hero).first();
       assert.ok(await art.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), `${path}: hero art loaded`);
       assert.match(await art.evaluate((img: HTMLImageElement) => img.currentSrc), /\/round2\/[ab][12]-/, `${path}: round-2 art`);
-      await p.getByRole("search").getByRole("button", { name: "Search campgrounds free" }).waitFor();
+      await p.getByRole("search").getByRole("button", { name: "Search campgrounds" }).waitFor();
       // The three pricing branches still switch, in the new layout.
       await p.getByRole("heading", { level: 2, name: /Watching starts at/ }).waitFor();
       await p.getByRole("radio", { name: "Subscriber" }).click();

@@ -99,7 +99,7 @@ export function Welcome() {
               <section aria-labelledby="w-cart" className="mt-6 rounded-ch-input border border-l-4 border-ch-line border-l-ch-blue bg-ch-card p-4 sm:p-5">
                 <h2 id="w-cart" className="font-ch-body! text-[15px] font-bold text-ch-ink">Set up auto-cart</h2>
                 <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
-                <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", className: "mt-4 min-h-12 px-5 text-[15px]" })}>Sign in to Recreation.gov</Link>
+                <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", className: "mt-4 min-h-12 px-5 text-[15px]" })}>Set up auto-cart</Link>
               </section>
             )}
 

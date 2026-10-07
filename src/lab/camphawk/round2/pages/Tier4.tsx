@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { ART } from "../Art";
 import { ROUTES } from "../gates";
 import { A, Callout, H2, LabNote, LabPage, P, Prose, Ul, WithRail } from "../LabPage";
+import { COVERAGE } from "./camping-data";
+import { SOURCE_COUNT } from "./tier2-data";
 import { SmsAlerts } from "../SmsAlerts";
 import { ADDITIONAL_PORTALS, AFFILIATION_DISCLAIMER, DATA_SOURCES } from "./sources-data";
 import type { Visitor } from "../../data";
@@ -78,7 +80,7 @@ function supportSections(visitor: Visitor) {
       <P>Canceling stops future charges whichever of the three it is, and you keep access until the period you have already paid for ends. If you’re not sure which one you have, email us and we’ll look it up.</P>
     </> },
     { id: "delete", title: "Deleting your account", body: <P>Settings → <strong className="font-bold text-ch-ink">Delete account</strong>. This removes your watches, alert history and saved campgrounds permanently, and it cannot be undone. If you have a subscription it is <strong className="font-bold text-ch-ink">canceled immediately</strong> — you will not be charged again, and the remainder of the period you have already paid for is not refunded. Delete the account only when that is what you want; to simply stop paying, cancel from wherever your subscription is managed (above) and keep your watches.</P> },
-    { id: "where", title: "Where CampHawk works", body: <P>Every Recreation.gov campground in all 50 states, plus state parks in 34 states across the ReserveCalifornia/UseDirect, ReserveAmerica, GoingToCamp and Tennessee/South Carolina systems. In Canada: Parks Canada, and the provincial and territorial parks of Ontario, British Columbia, Manitoba, Nova Scotia, Newfoundland and Labrador, Yukon and the Northwest Territories. If a campground you want is missing, email us — adding a system is work we do based on what people ask for.</P> },
+    { id: "where", title: "Where CampHawk works", body: <P>Every Recreation.gov campground in all 50 states, state parks in {COVERAGE.stateParkStates} states, and in Canada, Parks Canada plus the provincial and territorial parks of Ontario, British Columbia, Manitoba, Nova Scotia, Newfoundland and Labrador, Yukon and the Northwest Territories. That’s {SOURCE_COUNT} official sources in all, each named on our <A href={ROUTES.sources} visitor={visitor}>data sources</A> page. If a campground you want is missing, email us — adding a system is work we do based on what people ask for.</P> },
     { id: "contact", title: "Contact", body: <P><Mail />. Also see our <A href={ROUTES.terms} visitor={visitor}>Terms</A> and <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>.</P> },
   ];
 }
@@ -200,7 +202,9 @@ const TERMS = (visitor: Visitor) => [
 export function Privacy() {
   return (
     <LabPage page="Privacy" title="CampHawk Privacy Policy" sub="Last updated: October 5, 2026" dock={false} wide>
-      {({ visitor }) => <Sections sections={PRIVACY(visitor)} />}
+      {/* CampHawk's published policy, word for word; the note flags what it says that the product
+          doesn't (round 14). For the owner, not for this lab to reword. */}
+      {({ visitor }) => <Sections sections={PRIVACY(visitor)} aside={<LabNote className="mt-4">CampHawk’s published text, as is. Two gaps for the owner: it says email alerts can be turned off (Settings has email always on), and it doesn’t mention the saved Recreation.gov login that auto-cart keeps.</LabNote>} />}
     </LabPage>
   );
 }

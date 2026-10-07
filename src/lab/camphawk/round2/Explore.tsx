@@ -20,6 +20,7 @@ import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data"
 import { ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
 import { TRIAL_DAYS } from "./pages/tier2-data";
+import { COVERAGE } from "./pages/camping-data";
 import { LabNote } from "./LabPage";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
@@ -397,7 +398,7 @@ export function Explore() {
           visitor={visitor}
           current="explore"
           title="Find a campsite that’s open"
-          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov campground in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
+          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov campground in all 50 states, state parks in ${COVERAGE.stateParkStates}, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 

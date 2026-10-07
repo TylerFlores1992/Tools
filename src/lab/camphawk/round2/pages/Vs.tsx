@@ -7,7 +7,7 @@ import { ART } from "../Art";
 import { ROUTES } from "../gates";
 import { A, ActionLink, CtaBand, LabPage, WithRail } from "../LabPage";
 import { COMPETITORS, COVERAGE, type Competitor } from "./camping-data";
-import { CHECK_SECONDS, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
+import { CHECK_SECONDS, inWords, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 3: CampHawk vs Campflare / Campnab (campsite-finder src/components/v2/ComparisonPage.tsx,
 // lib/competitors.ts). THERE IS NO COMPARISON TABLE, BY DESIGN: CampHawk makes no claim about a
@@ -53,7 +53,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
           <h2 id="does" className="mt-12 scroll-mt-6 font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] text-ch-forest">What CampHawk does</h2>
           <ul className="mt-5">
             <Q q={`${SOURCE_COUNT} data sources, not just Recreation.gov`}>
-              {CAMPGROUNDS_ROUNDED} campgrounds across all {COVERAGE.states} states, with state-park coverage in {COVERAGE.stateParkStates} of them, plus Parks Canada and {COVERAGE.canadianProvincialSystems} provincial and territorial park systems. That’s {SOURCE_COUNT} sources in all, from Recreation.gov and ReserveCalifornia to the systems several states and provinces share. Every source is named on our <A href={ROUTES.sources} visitor={visitor}>data sources page</A>, so you can check the coverage for the parks you actually book before you pay.
+              {CAMPGROUNDS_ROUNDED} campgrounds across all {COVERAGE.states} states, with state-park coverage in {COVERAGE.stateParkStates} of them, plus Parks Canada and {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial park systems. That’s {SOURCE_COUNT} sources in all, from Recreation.gov and ReserveCalifornia to the systems several states and provinces share. Every source is named on our <A href={ROUTES.sources} visitor={visitor}>data sources page</A>, so you can check the coverage for the parks you actually book before you pay.
             </Q>
             <Q q="It can put the site in your cart, not just tell you about it">
               On Recreation.gov, the Auto-Cart plan signs into your own account and adds a canceled site to your cart within seconds of it opening — so you check out from your phone instead of racing a notification. That’s the difference between knowing about a cancellation and getting it. <A href={ROUTES.autoCart} visitor={visitor}>How it works</A>.

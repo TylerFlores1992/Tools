@@ -123,7 +123,7 @@ export function AppBand({ visitor, current, title, sub, children, photo, dock = 
         {/* A plain band has no photo to keep clear, so its title runs wider: a short title on two lines,
             not three (round 13). */}
         <h1 className={cx(photo ? "max-w-[18ch]" : "max-w-[18ch] lg:max-w-[26ch]", "text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper")}>{title}</h1>
-        {sub && <div className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">{sub}</div>}
+        {sub && <div className="mt-3 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-ch-line">{sub}</div>}
         {children}
       </div>
     </section>
