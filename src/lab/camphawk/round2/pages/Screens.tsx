@@ -18,7 +18,8 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
     items: [
       { href: ROUTES.home, name: "Home", what: "The marketing home: the promise, search, what a watch does, plans." },
       { href: ROUTES.explore, name: "Explore", what: "Live search with filters, the four result answers and the map.", switches: "Search answers" },
-      { href: ROUTES.campground, name: "Campground", what: "One campground's calendar, answer first. Any Explore result opens its own.", switches: "Booking, page state, arrived from" },
+      { href: ROUTES.campground, name: "Campground", what: "One campground's calendar, answer first, and its site map drawn from public data. Any Explore result opens its own.", switches: "Booking, page state, arrived from, map" },
+      { href: `${ROUTES.campground}?id=jedediah-smith`, name: "Campground: a ReserveCalifornia map", what: "Jedediah Smith's site map from California State Parks' campsite data. Local run only until State Parks approves; deployed, it shows the not-drawn state." },
       { href: ROUTES.newWatch, name: "New watch", what: "Pick a campground and nights; only a subscriber can start one.", switches: "Plan, on submit" },
       { href: ROUTES.watches, name: "Your watches", what: "Every watch card state, holds, alert history.", switches: "Plan, page state, phone, provider, auto-cart" },
     ],

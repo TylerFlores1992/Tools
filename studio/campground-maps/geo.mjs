@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+
 // Shared geometry for the campground-map builders (build.mjs = Recreation.gov, build-csp.mjs =
 // California State Parks). Everything is in metres on a local flat projection, north up, rounded
 // to 0.1 m: a campground is under a kilometre across and an SVG wants plain x/y.
@@ -118,20 +121,36 @@ export function makeGeo(points, pad = 55) {
   return { xy, frame, bbox, bboxArr, inFrame, clipLine, pathOf, awayFromRoad, labelFor, spaced };
 }
 
+/**
+ * GET a URL as text, or stop the build. Every source must answer 2xx: a map silently missing its
+ * roads or river is worse than a build that stops (OpenStreetMap's 429 once produced a map with
+ * no roads). 5xx and 429 are retried with back-off. Answers are cached in .cache/ (git-ignored)
+ * so a rebuild doesn't ask these free services again.
+ */
+const CACHE = new URL("./.cache/", import.meta.url);
+export async function getText(url, headers = {}, body = undefined) {
+  const key = createHash("sha1").update(url + (body ?? "")).digest("hex");
+  const file = new URL(key + ".txt", CACHE);
+  if (existsSync(file)) return readFileSync(file, "utf8");
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(url, body === undefined ? { headers } : { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body });
+    if (res.ok) {
+      const text = await res.text();
+      mkdirSync(CACHE, { recursive: true });
+      writeFileSync(file, text);
+      return text;
+    }
+    const retry = res.status >= 500 || res.status === 429;
+    if (!retry || attempt === 4) throw new Error(`${url.slice(0, 120)}: HTTP ${res.status}`);
+    await new Promise((r) => setTimeout(r, (res.status === 429 ? 30000 : 2000) * attempt));
+  }
+}
+
 export async function arcgis(url, bbox, fields, where = "1=1") {
   const q = new URLSearchParams({ where, geometry: bbox, geometryType: "esriGeometryEnvelope", inSR: "4326", outSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: fields, f: "geojson" });
-  // Federal map servers answer the odd 5xx under load; three tries, then fail loudly (a map
-  // silently missing its river or roads is worse than a build that stops).
-  for (let attempt = 1; ; attempt++) {
-    const res = await fetch(`${url}/query?${q}`);
-    if (res.ok) {
-      const j = await res.json();
-      if (j.error) throw new Error(`${url}: ${JSON.stringify(j.error)}`);
-      return j.features;
-    }
-    if (res.status < 500 || attempt === 3) throw new Error(`${url}: HTTP ${res.status}`);
-    await new Promise((r) => setTimeout(r, 2000 * attempt));
-  }
+  const j = JSON.parse(await getText(`${url}/query?${q}`));
+  if (j.error || !Array.isArray(j.features)) throw new Error(`${url}: ${JSON.stringify(j.error ?? "no features array")}`);
+  return j.features;
 }
 
 export const NHD = "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer";

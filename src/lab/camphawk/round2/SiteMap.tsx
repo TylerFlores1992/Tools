@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Bus, ExternalLink, Info, Search, Toilet, ZoomIn, ZoomOut } from "lucide-react";
+import { Bus, Droplet, ExternalLink, Info, Search, Toilet, ZoomIn, ZoomOut } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { dayLabel } from "./campground-data";
@@ -82,9 +82,13 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
   const kioskAt = kiosk ? centroid(kiosk.d) : null;
   const shuttle = map.pois.find((p) => /shuttle/i.test(p.type));
   const parking = map.pois.filter((p) => p.type === "Parking Lot");
+  const water = map.pois.filter((p) => p.type === "Water");
+  const dump = map.pois.filter((p) => p.type === "Dump Station");
   const symbols: { at: [number, number]; icon: ReactNode; key: string }[] = [
     ...restrooms(map).map((r, i) => ({ at: r.at, icon: <Toilet className="size-[11px]" />, key: `wc${i}` })),
     ...parking.map((p, i) => ({ at: p.at, icon: <span className="text-[10px] font-extrabold leading-none">P</span>, key: `p${i}` })),
+    ...water.map((p, i) => ({ at: p.at, icon: <Droplet className="size-[11px]" />, key: `w${i}` })),
+    ...dump.map((p, i) => ({ at: p.at, icon: <span className="text-[10px] font-extrabold leading-none">D</span>, key: `d${i}` })),
     ...(shuttle ? [{ at: shuttle.at, icon: <Bus className="size-[11px]" />, key: "bus" }] : []),
     ...(kioskAt ? [{ at: kioskAt, icon: <Info className="size-[11px]" />, key: "kiosk" }] : []),
   ];
@@ -98,7 +102,8 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
   const pinned = new Set([...openSites.map((s) => s.name), ...(found ? [found.name] : [])]);
   const obstacles: Box[] = W ? [
     ...symbols.map((s) => boxAt(s.at, 22, 22)),
-    ...openSites.flatMap((s) => [boxAt(s.at, 34, 44, 0, -16), boxAt(s.at, 40, 22, 34, -6)]),
+    // The pin, and its number tag to the right (wider when the pin is picked and scaled up).
+    ...openSites.flatMap((s) => [boxAt(s.at, 40, 50, 0, -18), boxAt(s.at, 50, 26, 40, -8)]),
     ...(found ? [boxAt(found.at, 26, 26), boxAt(found.at, 40, 22, 34, 0)] : []),
     // A name runs along its road at an angle: cover it with small boxes along that line.
     ...map.labels.flatMap((l) => {
@@ -167,7 +172,9 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
         <p aria-live="polite" className="basis-full text-[14px] text-ch-ink-2 empty:hidden">{findMsg}</p>
       </form>
 
-      <div className="mt-3 grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6">
+      {/* A tall, narrow campground would draw taller than a screen: from lg the map's column is
+          capped so its height stays near 85% of the viewport, and the details take the rest. */}
+      <div className="mt-3 grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,var(--map-cap))_minmax(300px,1fr)] lg:gap-6" style={{ ["--map-cap" as string]: `max(360px, calc(85svh * ${(f.w / f.h).toFixed(3)}))` }}>
         {/* min-w-0: the zoomed drawing is wider than this box, and must scroll inside it, not widen it. */}
         <div ref={viewport} className="relative min-w-0">
           <div ref={scroller} className={cx("relative w-full rounded-ch-input border border-ch-line bg-ch-shell", zoom > 1 ? "overflow-auto overscroll-contain" : "overflow-hidden")} style={{ aspectRatio: `${f.w} / ${f.h}` }}>
@@ -257,6 +264,8 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
             <Key mark={<span className="size-[14px] rounded-full border-[3px] border-ch-ink" />}>A site you found</Key>
             <Key mark={<span className={KEY}><Toilet className="size-[11px]" /></span>}>Restroom</Key>
             {parking.length > 0 && <Key mark={<span className={cx(KEY, "text-[10px] font-extrabold")}>P</span>}>Parking</Key>}
+            {water.length > 0 && <Key mark={<span className={KEY}><Droplet className="size-[11px]" /></span>}>Drinking water</Key>}
+            {dump.length > 0 && <Key mark={<span className={cx(KEY, "text-[10px] font-extrabold")}>D</span>}>Dump station</Key>}
             {shuttle && <Key mark={<span className={KEY}><Bus className="size-[11px]" /></span>}>Shuttle stop</Key>}
             {kioskAt && <Key mark={<span className={KEY}><Info className="size-[11px]" /></span>}>Kiosk</Key>}
             <Key mark={<span className="h-[7px] w-6 rounded-full border-[1.5px] border-ch-muted bg-ch-card" />}>Road</Key>
@@ -265,7 +274,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
         </div>
       </div>
       <p className="mt-4 px-1 text-[13px] leading-relaxed text-ch-muted sm:px-0">
-        Drawn by CampHawk from {provider}&apos;s published site locations (RIDB, CC BY 4.0), National Park Service roads and restrooms, and USGS water. Positions are approximate. Check the booking site before you go.
+        {map.credits ?? `Drawn by CampHawk from ${provider}'s published site locations (RIDB, CC BY 4.0), National Park Service roads and restrooms, and USGS water. Positions are approximate. Check the booking site before you go.`}
       </p>
     </section>
   );
@@ -282,6 +291,8 @@ function Key({ mark, wide, children }: { mark: ReactNode; wide?: boolean; childr
 function SiteDetails({ map, site, picked }: { map: SiteMapData; site: MapSite; picked: string }) {
   const toilet = nearestRestroomFt(map, site);
   const facts = [
+    site.loop && site.loop,
+    site.spurFt && `Parking spur ${site.spurFt}${site.spurWidthFt ? ` × ${site.spurWidthFt}` : ""} ft`,
     site.maxVehicleFt && `Vehicles up to ${site.maxVehicleFt} ft`,
     site.backIn && "Back-in parking",
     site.maxPeople && `Up to ${site.maxPeople} people`,

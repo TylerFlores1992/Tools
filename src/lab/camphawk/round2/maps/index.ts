@@ -12,6 +12,11 @@ export type MapSite = {
   /** Unit vector pointing away from the nearest campground road: where the number goes. */
   out?: [number, number];
   accessible: boolean;
+  /** The loop it's on, where the source says (State Parks via RC's own area names). */
+  loop?: string;
+  /** Parking spur size, where State Parks records it. Not a vehicle limit. */
+  spurFt?: number;
+  spurWidthFt?: number;
   maxVehicleFt?: number;
   maxPeople?: number;
   backIn?: boolean;
@@ -20,6 +25,12 @@ export type MapSite = {
 export type SiteMapData = {
   facilityId: string;
   source: { ridbExport: string; built: string };
+  /** The map's credit line; Recreation.gov maps use the built-in one. */
+  credits?: string;
+  /** Set when a source hasn't approved this use yet: the map is never deployed. */
+  pending?: string;
+  /** What the build left off on purpose, for a person to check. */
+  review?: { duplicateNumbers: string[]; notInStateParksData: string[] };
   frame: { x: number; y: number; w: number; h: number };
   labels: { text: string; kind: "road" | "trail" | "water"; at: [number, number]; angle: number }[];
   roads: { name: string; cls: string; oneWay: string; d: string }[];
@@ -37,6 +48,13 @@ const MAPS: Record<string, SiteMapData> = {
 };
 
 export const mapFor = (campgroundId: string): SiteMapData | null => MAPS[campgroundId] ?? null;
+
+/** Maps built from data still awaiting its owner's permission (California State Parks). They are
+    written to public/lab-local/ (git-ignored), so they load on a local run and are absent from
+    every deploy, where the page shows "not drawn yet". */
+export const LOCAL_MAPS: Record<string, string> = {
+  "jedediah-smith": "/lab-local/csp-jedediah-smith.json",
+};
 
 /** "STANDARD NONELECTRIC" → "standard nonelectric"; RV stays an initialism. Reads after a comma. */
 export const siteTypeLabel = (type: string) => type.toLowerCase().replace(/\brv\b/g, "RV");

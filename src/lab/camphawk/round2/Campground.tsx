@@ -13,11 +13,12 @@ import { LabNote } from "./LabPage";
 import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
 import { canWatch, ROUTES, watchCtaLabel } from "./gates";
 import { campgroundFor } from "./campground-lookup";
-import { mapFor, type SiteMapData } from "./maps";
+import type { SiteMapData } from "./maps";
+import { useSiteMap } from "./maps/useSiteMap";
 import { SiteMap } from "./SiteMap";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import {
-  FIRST_COME_BADGE, FIRST_COME_WHY, FIRST_MONTH, LAST_MONTH, SITES, TODAY, siteLine, type Month,
+  FIRST_COME_BADGE, FIRST_COME_WHY, FIRST_MONTH, LAST_MONTH, TODAY, siteLine, type Month, type Site,
   dayLabel, daysIn, firstWeekday, monthLabel, openingsBody, openingsHeading, pad2, shiftMonth,
 } from "./campground-data";
 
@@ -72,7 +73,7 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
   );
 }
 
-function Calendar({ visitor, id, months, map, name, provider }: { visitor: Visitor; id: string; months: Record<string, Month>; map: SiteMapData | null; name: string; provider: string }) {
+function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, name, provider }: { visitor: Visitor; id: string; months: Record<string, Month>; sites: Record<string, Site>; map: SiteMapData | null; mapPending: boolean; mapLoading: boolean; name: string; provider: string }) {
   const [month, setMonth] = useState(FIRST_MONTH);
   // A night with a single open site shows that site's details straight away; with more, the
   // visitor picks one on the map or with the day panel's Map button.
@@ -89,7 +90,7 @@ function Calendar({ visitor, id, months, map, name, provider }: { visitor: Visit
   ];
   const openDays = Object.keys(data.open).filter((d) => d >= TODAY);
   const picked = selected && selected.startsWith(month) ? selected : null;
-  const pickedSites = picked ? (data.open[picked] ?? []).map((id) => SITES[id]) : [];
+  const pickedSites = picked ? (data.open[picked] ?? []).map((id) => sites[id]) : [];
   const shift = (by: number) => { setMonth(shiftMonth(month, by)); setSelected(null); setSite(null); };
   const showOnMap = (siteId: string) => { setSite(siteId); document.getElementById("site-map-h")?.scrollIntoView({ behavior: "smooth", block: "start" }); };
   const summary = data.error ? "Availability unavailable"
@@ -231,18 +232,21 @@ function Calendar({ visitor, id, months, map, name, provider }: { visitor: Visit
     {map ? (
       <SiteMap map={map} name={name} provider={provider} picked={picked} openIds={picked ? data.open[picked] ?? [] : []} selectedId={site} onSelect={setSite}
         note={unread ? "We couldn't check which sites are open this month, so none are marked." : undefined} />
-    ) : <NoMap name={name} provider={provider} />}
+    ) : mapLoading ? (
+      <div role="status" className="mt-4 h-[320px] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none sm:mt-5"><span className="sr-only">Loading the site map…</span></div>
+    ) : <NoMap name={name} provider={provider} pending={mapPending} />}
     </>
   );
 }
 
 /** CampHawk's state today for every campground: no drawn map, so hand off to the provider's. */
-function NoMap({ name, provider }: { name: string; provider: string }) {
+function NoMap({ name, provider, pending }: { name: string; provider: string; pending?: boolean }) {
   return (
     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:mt-5 sm:p-6">
       <div>
         <h2 className="font-ch-display text-[19px] font-bold text-ch-ink">Site map</h2>
         <p className="mt-1 text-[15px] text-ch-ink-2">We haven&apos;t drawn a map of {name} yet. You can see its sites on {provider}.</p>
+        {pending && <LabNote className="mt-3">This map is drawn from California State Parks&apos; campsite data, which waits on their permission. It renders on a local run only and is never deployed.</LabNote>}
       </div>
       <a href="#" className={buttonClasses({ variant: "cart", className: "px-5" })}>See the sites on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
     </div>
@@ -258,12 +262,14 @@ export function Campground() {
   // Arriving from Explore carries the search, so "Back to search" restores it.
   const backQuery = useUrlParam("back");
   const searchHref = withVisitor(`${ROUTES.explore}${backQuery?.startsWith("?") ? backQuery : ""}`, visitor);
-  const { info: CAMPGROUND, months } = campgroundFor(useUrlParam("id"));
+  const { info: CAMPGROUND, months, sites } = campgroundFor(useUrlParam("id"));
   // A campground that takes no reservations is first come whatever the switch says.
   const booking: Booking = CAMPGROUND.reservable ? bookingSwitch : "first-come";
   const watchable = booking === "reservable";
   const { name, place, provider, description, amenities, phone, stateName } = CAMPGROUND;
-  const siteMap = mapSwitch === "drawn" ? mapFor(CAMPGROUND.id) : null;
+  const mapState = useSiteMap(CAMPGROUND.id, mapSwitch === "drawn");
+  const siteMap = mapState.map;
+  const mapPending = mapState.status === "pending";
   const back = (
     <Link href={searchHref} className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
       <ChevronLeft aria-hidden="true" className="size-4" /> Back to search
@@ -383,7 +389,7 @@ export function Campground() {
 
         <section aria-label="Availability" className="mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-8">
           {watchable ? (
-            <Calendar key={CAMPGROUND.id} visitor={visitor} id={CAMPGROUND.id} months={months} map={siteMap} name={name} provider={provider} />
+            <Calendar key={CAMPGROUND.id} visitor={visitor} id={CAMPGROUND.id} months={months} sites={sites} map={siteMap} mapPending={mapPending} mapLoading={mapState.status === "loading"} name={name} provider={provider} />
           ) : (
             <>
               <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
@@ -392,11 +398,11 @@ export function Campground() {
               </div>
               {/* First come still has sites worth finding: the map shows where, never which are free. */}
               {siteMap ? <SiteMap map={siteMap} name={name} provider={provider} picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="Sites aren't reserved here, so the map shows where they are, not which are free." />
-                : <NoMap name={name} provider={provider} />}
+                : <NoMap name={name} provider={provider} pending={mapPending} />}
             </>
           )}
           <LabNote className="mt-3">
-            {siteMap ? "Example availability. The site map is real: every site, road and restroom is where the public data puts it. " : "Example data. "}
+            {siteMap ? `Example availability. The site map is real: every site, road and restroom is where the public data puts it.${siteMap.pending ? " Local run only: this map waits on " + siteMap.pending + "." : ""} ` : "Example data. "}
             Photos are illustrations, not the campground.
           </LabNote>
         </section>
