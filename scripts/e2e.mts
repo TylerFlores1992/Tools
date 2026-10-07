@@ -442,6 +442,8 @@ try {
     await p.getByText("Nothing traced yet").waitFor();
     const status = p.locator("p[aria-live=polite]");
     // Three clicks and Finish: one road.
+    // Snapping off, so every point lands exactly where it was put (checked in the file below).
+    await p.getByRole("button", { name: "Snap to roads" }).click();
     // Clicks relative to the photo (Playwright scrolls each into view: the photo is taller than the window).
     const box = (await area.boundingBox())!;
     const at = (fx: number, fy: number) => area.click({ position: { x: box.width * fx, y: box.height * fy } });
@@ -456,8 +458,6 @@ try {
     await status.filter({ hasText: "Restroom placed." }).waitFor();
     // The keyboard way: a second road from the cross, Escape to finish.
     await p.getByRole("group", { name: "Draw" }).getByRole("button", { name: "Road" }).click();
-    // Snapping off, so the measured length is the cross's own 20 m.
-    await p.getByRole("button", { name: "Snap to roads" }).click();
     await area.focus();
     for (let i = 0; i < 5; i++) await p.keyboard.press("ArrowLeft");
     await p.keyboard.press("Enter");
@@ -491,6 +491,14 @@ try {
     assert.equal(file.roads[0].coords.length, 3);
     assert.deepEqual(file.points.map((x: { type: string }) => x.type), ["Restroom"]);
     assert.deepEqual(traceProblems(file, "ridb-233488", built.bbox), [], "the build accepts the downloaded file");
+    // Each point is where it was clicked: a fraction across and down the photo is that fraction of the bbox.
+    const [w, so, e, no] = built.bbox as number[];
+    const near = ([lon, lat]: number[], fx: number, fy: number) =>
+      assert.ok(Math.abs((lon - w) / (e - w) - fx) < 0.01 && Math.abs((no - lat) / (no - so) - fy) < 0.01, `[${lon}, ${lat}] is not at ${fx}, ${fy}`);
+    near(file.roads[0].coords[0], 0.3, 0.3);
+    near(file.roads[0].coords[1], 0.5, 0.5);
+    near(file.roads[0].coords[2], 0.7, 0.4);
+    near(file.points[0].at, 0.45, 0.7);
     // Delete one road; then delete everything, two steps.
     await list.getByRole("button", { name: "Delete road 2" }).click();
     assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
