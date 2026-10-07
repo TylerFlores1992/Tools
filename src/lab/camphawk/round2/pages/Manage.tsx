@@ -242,7 +242,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               <li key={o.unit} className="flex flex-wrap items-center gap-3 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-bold text-ch-ink">{o.unit}</span>
-                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{stayFrom(o.from, o.nights)}, {o.nights} nights</span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{stayFrom(o.from, o.nights)}, {o.nights} nights, releases {releaseLong()}</span>
                 </span>
                 <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it for me: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it for me</Link>
               </li>

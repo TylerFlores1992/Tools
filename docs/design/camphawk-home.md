@@ -405,6 +405,14 @@ the weakest templates over more rounds or paid photos.
   at 8.55–8.7; the floor is the published legal text (Terms and Privacy, 7.9–8.5, which the lab
   doesn't reword) and copy drift each fresh critic finds anew.
 
+## After PR #18 opened (2026-10-07)
+- Campground selects its first open night, so the day panel answers "First open night: …".
+- Manage: every "Hold it for me" row says when it releases, like the asked-for row.
+- Sign up: "By continuing, you agree to CampHawk's Terms of Service and Privacy Policy" under
+  Continue (Clerk's legal-consent line).
+- Kept: Welcome's Finish and Skip (carrier rules need a way past the text opt-in), Claim's way out
+  below its cards.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the

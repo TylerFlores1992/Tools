@@ -8,7 +8,7 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import type { Visitor } from "../../data";
 import { BareCard, BareFrame } from "../BareFrame";
-import { LabNote } from "../LabPage";
+import { A, LabNote } from "../LabPage";
 import { ROUTES } from "../gates";
 import { useUrlParam, withVisitor } from "../labState";
 import { TRIAL_DAYS } from "./tier2-data";
@@ -70,6 +70,8 @@ function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Vi
         )}
         {error && <p id="auth-error" role="alert" className="text-[14px] font-bold text-ch-alert-deep">{error.text}</p>}
         <button type="submit" disabled={busy} className={main}>{busy && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Continue</button>
+        {/* What signing up agrees to, under the button (Clerk's legal-consent line, worded in the lab). */}
+        {up && <p className="text-center text-[13px] leading-relaxed text-ch-ink-2">By continuing, you agree to CampHawk’s <A href={ROUTES.terms} visitor={visitor}>Terms of Service</A> and <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>.</p>}
       </form>
       <p className="mt-6 border-t border-ch-line pt-5 text-center text-[15px] text-ch-ink-2">
         {up ? "Already have an account? " : "Don’t have an account? "}

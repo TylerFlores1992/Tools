@@ -71,7 +71,8 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
 
 function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; months: Record<string, Month> }) {
   const [month, setMonth] = useState(FIRST_MONTH);
-  const [selected, setSelected] = useState<string | null>(() => (months[FIRST_MONTH].open["2026-07-18"] ? "2026-07-18" : null));
+  // The first open night is selected, so the day panel answers the headline above it (round 17).
+  const [selected, setSelected] = useState<string | null>(() => Object.keys(months[FIRST_MONTH].open).filter((d) => d >= TODAY && months[FIRST_MONTH].open[d]).sort()[0] ?? null);
   const data = months[month];
   const unread = Boolean(data.unknown || data.error);
   const known = !unread;

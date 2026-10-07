@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, on branch `ccr-c1332bd1-j9qtgp`, in a PR for the owner's review. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
+*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 open for the owner's review. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
 
 ## At a glance
 
@@ -57,6 +57,14 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    Finish/Skip pair; Claim and Connect frames differ. Open a PR when the owner asks; merge only on
    their word. **Terms** (published text, not reworded) says billing is through Stripe only and
    alerts are email and text only, and doesn't cover auto-cart or holds: for the owner.
+   **Round 17 and after (2026-10-07):** a second rework (Explore first run, New watch's "Your watch",
+   the in-app paywall) held critics at 8.6. **PR #18** is open for the owner's review (CI green,
+   mergeable; this session watches it). Done after it opened: the campground page opens on its
+   first open night, every holdable row on Manage says when it releases, sign-up has a consent
+   line. Kept on purpose: Welcome's Finish and Skip (carrier rules need a way past texts), Claim's
+   "Not now" outside its cards (Claim is three cards; Connect is one). Still open, owner's call:
+   the three legal-text gaps above; numbered-step boxes remain on Home, Welcome, the auto-cart
+   guide and Pricing (where they explain a process, not a screen).
    **For the owner, from CampHawk's real Privacy Policy** (flagged in a lab note, not reworded): it
    says email alerts can be turned off (the product keeps email always on), and it doesn't mention
    the saved Recreation.gov login auto-cart keeps.
