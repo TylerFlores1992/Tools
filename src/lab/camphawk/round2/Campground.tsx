@@ -55,7 +55,7 @@ const firstMonthName = monthLabel(FIRST_MONTH).split(" ")[0];
 function OpenSummary({ months }: { months: Record<string, Month> }) {
   const first = months[FIRST_MONTH];
   // An unread month is not a booked one: say we couldn't check.
-  if (first.unknown || first.error) return <p className="mt-4 text-[17px] text-ch-line">We couldn&apos;t check {firstMonthName} just now. A watch keeps checking around the clock.</p>;
+  if (first.unknown || first.error) return <p className="mt-4 text-[17px] text-ch-line">We couldn’t check {firstMonthName} just now. A watch keeps checking around the clock.</p>;
   const open = Object.keys(first.open).filter((d) => d >= TODAY).sort();
   if (!open.length) return <p className="mt-4 text-[17px] text-ch-line">Nothing open in {firstMonthName} right now.</p>;
   return (
@@ -85,7 +85,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
   const pickedSites = picked ? (data.open[picked] ?? []).map((id) => SITES[id]) : [];
   const shift = (by: number) => { setMonth(shiftMonth(month, by)); setSelected(null); };
   const summary = data.error ? "Availability unavailable"
-    : data.unknown ? "Couldn't check this month"
+    : data.unknown ? "Couldn’t check this month"
     : data.closed ? "Not open for booking this month"
     : openDays.length ? `${openDays.length} day${openDays.length === 1 ? "" : "s"} with openings`
     : "Nothing open this month";
@@ -118,7 +118,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
             const isBooked = known && !isPast && !isOpen && !isClosed;
             const on = picked === day;
             const label = isPast ? `${dayLabel(day)}, past`
-              : !known ? `${dayLabel(day)}, couldn't check`
+              : !known ? `${dayLabel(day)}, couldn’t check`
               : isOpen ? `${dayLabel(day)}, ${sites.length} site${sites.length === 1 ? "" : "s"} open`
               : isClosed ? `${dayLabel(day)}, not open for booking`
               : `${dayLabel(day)}, fully booked`;
@@ -174,12 +174,12 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         </div>
         {data.unknown && (
           <p className="mt-3 rounded-ch-input bg-ch-paper px-3 py-2.5 text-[14px] leading-relaxed text-ch-ink-2">
-            We can&apos;t show this month&apos;s calendar right now. A watch still checks it for openings around the clock.
+            We can’t show this month’s calendar right now. A watch still checks it for openings around the clock.
           </p>
         )}
         {data.error && (
           <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">
-            We couldn&apos;t load this month&apos;s availability. This is usually the reservation provider, not your connection.
+            We couldn’t load this month’s availability. This is usually the reservation provider, not your connection.
           </p>
         )}
       </div>
@@ -265,7 +265,7 @@ export function Campground() {
             <option value="loaded">Loaded</option>
             <option value="loading">Loading</option>
             <option value="missing">Not found</option>
-            <option value="failed">Couldn&apos;t load</option>
+            <option value="failed">Couldn’t load</option>
           </select>
         </label>
         <label className="flex items-center gap-2"><span aria-hidden="true" className="font-bold">From</span>
@@ -292,15 +292,15 @@ export function Campground() {
               {page === "missing" && (
                 <div className="pt-10">
                   <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">Campground not found</h1>
-                  <p className="mt-3 text-[17px] text-ch-line">We don&apos;t have this campground.</p>
+                  <p className="mt-3 text-[17px] text-ch-line">We don’t have this campground.</p>
                   <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "mt-6 px-5" })}>Back to search</Link>
                 </div>
               )}
               {page === "failed" && (
                 <div className="pt-10">
-                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">We couldn&apos;t load this campground</h1>
+                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">We couldn’t load this campground</h1>
                   <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">
-                    Something went wrong on our side or with the connection — this doesn&apos;t mean the campground is gone. Try again in a moment.
+                    Something went wrong on our side or with the connection — this doesn’t mean the campground is gone. Try again in a moment.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
                     <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ variant: "ink", className: "px-5" })}>Try again</button>

@@ -29,7 +29,7 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 // Contract: docs/design/camphawk-home.md, "Screen 3". What it keeps from CampHawk, on purpose:
 // - Searching is free and says so; the status box sells only to someone who can't watch yet,
 //   and a subscriber is never sold to.
-// - Three availability answers, not two: open, booked, and "Couldn't check" (a provider that
+// - Three availability answers, not two: open, booked, and "Couldn’t check" (a provider that
 //   didn't answer is never drawn as booked), plus first come, which offers no watch. With no
 //   dates nothing is claimed at all.
 // - The map's pins carry state as a shape as well as a hue, and picking one hoists its card to
@@ -77,9 +77,9 @@ function writeSearch(s: { place: string; radius: number; when: When; range: Date
 }
 
 /** The status box above the results: context, not a paywall. Nothing for a subscriber. */
-const guestLine = (visitor: Visitor) => (visitor === "signed-out" || visitor === "app" ? "You're searching as a guest" : "You're searching with a free account");
+const guestLine = (visitor: Visitor) => (visitor === "signed-out" || visitor === "app" ? "You’re searching as a guest" : "You’re searching with a free account");
 const guestBody = (visitor: Visitor) => visitor === "signed-out"
-  ? "Live availability is free and always will be. An account is only needed to watch a campground that's already booked."
+  ? "Live availability is free and always will be. An account is only needed to watch a campground that’s already booked."
   : visitor === "app"
     ? "Live availability is free and always will be. Watching a booked campground needs a subscription, no account needed."
     : "Live availability is free and always will be. Watching a booked campground, and the text the moment someone cancels, needs a subscription.";
@@ -101,7 +101,7 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
 
 function FirstRun({ visitor }: { visitor: Visitor }) {
   const steps = [
-    ["Say where", "A city, park or ZIP, or tap the crosshair to use your location. Leave it empty and we'll search near you."],
+    ["Say where", "A city, park or ZIP, or tap the crosshair to use your location. Leave it empty and we’ll search near you."],
     ["Say when", "Exact dates, tonight or this weekend. Flexible finds the most: how many nights you need, anywhere in a range."],
     ["Search", "Each result says in words whether a site is free right now. Tap one for its full calendar, or the map to see where they are."],
   ] as const;
@@ -120,10 +120,12 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
           </li>
         ))}
       </ol>
-      <div className="mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5 xl:grid-cols-2">
+      {/* Two columns only when there are two things to say: a subscriber has no account line, and
+          one column beside an empty one read as unfinished (round 10). */}
+      <div className={cx("mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5", visitor !== "subscriber" && "xl:grid-cols-2")}>
         <div>
           <p className="text-[16px] font-bold text-ch-ink">Everything booked?</p>
-          <p className="mt-1 max-w-[56ch] text-[15px] leading-relaxed text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text, email and push you the moment someone cancels.</p>
+          <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">That’s what we’re for. Start a watch on a full campground and we’ll check it every 15 seconds and text, email and push you the moment someone cancels.{visitor === "subscriber" && <> <Link href={withVisitor(ROUTES.newWatch, visitor)} className="font-bold text-ch-ink underline underline-offset-[3px]">Start a watch</Link></>}</p>
         </div>
         {visitor !== "subscriber" && (
           <div>
@@ -144,7 +146,7 @@ function pinState(c: Result, datesChosen: boolean): PinState {
   if (c.hasAvailability === false) return "booked";
   return c.reservable ? "unknown" : "first-come";
 }
-const PIN_WORDS: Record<PinState, string | null> = { open: "sites open", booked: "booked", unknown: "couldn't check", "first-come": FIRST_COME_BADGE.toLowerCase(), plain: null };
+const PIN_WORDS: Record<PinState, string | null> = { open: "sites open", booked: "booked", unknown: "couldn’t check", "first-come": FIRST_COME_BADGE.toLowerCase(), plain: null };
 
 /** ResultsMap, as an illustration: the pins are real buttons on a painted valley. */
 function ResultsMap({ results, datesChosen, selectedId, onSelect }: { results: Result[]; datesChosen: boolean; selectedId: string | null; onSelect: (id: string) => void }) {
@@ -156,7 +158,7 @@ function ResultsMap({ results, datesChosen, selectedId, onSelect }: { results: R
               <>
                 <span><i aria-hidden="true" className={cx(swatch, "inline-grid size-3.5 place-items-center bg-ch-green align-[-2px] text-[9px] font-extrabold not-italic leading-none text-ch-white")}>✓</i>Sites open</span>
                 <span><i aria-hidden="true" className={cx(swatch, "size-2.5 bg-ch-muted")} />Booked</span>
-                <span><i aria-hidden="true" className={cx(swatch, "size-2.5 border-[2.5px] border-ch-muted bg-ch-card")} />Couldn&apos;t check</span>
+                <span><i aria-hidden="true" className={cx(swatch, "size-2.5 border-[2.5px] border-ch-muted bg-ch-card")} />Couldn’t check</span>
                 {anyFirstCome && <span><i aria-hidden="true" className={cx(swatch, "size-2 bg-ch-faint")} />First come</span>}
               </>
             )}
@@ -211,7 +213,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {open && <Tag kind="open">Sites open</Tag>}
           {booked && <Tag kind="paused" mark="booked">Booked — watch it</Tag>}
-          {unknown && <Tag kind="paused" mark="unknown" srPrefix="Availability:">Couldn&apos;t check</Tag>}
+          {unknown && <Tag kind="paused" mark="unknown" srPrefix="Availability:">Couldn’t check</Tag>}
           {firstCome && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
           {c.provider === "Recreation.gov" && !firstCome && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           <Tag kind="src">{c.provider}</Tag>
@@ -226,7 +228,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
       </div>
       <div className="mt-4 grid gap-2 border-t border-ch-line pt-4">
         <Link href={href} className={buttonClasses({ variant: open ? "primary" : "quiet", fullWidth: true })}>
-          {open ? "See what's open" : firstCome ? "See details" : "See full calendar"}
+          {open ? "See what’s open" : firstCome ? "See details" : "See full calendar"}
         </Link>
         {!open && (firstCome
           ? <p className="text-[14px] leading-normal text-ch-ink-2">{FIRST_COME_WHY}</p>
@@ -283,7 +285,7 @@ export function Explore() {
     setError(null);
     window.setTimeout(() => {
       setLocating(false);
-      if (answer === "no-location") { setError("We couldn't get your location. Type a place instead."); return; }
+      if (answer === "no-location") { setError("We couldn’t get your location. Type a place instead."); return; }
       setPlace("My location");
       setPicked(true);
     }, 400);
@@ -296,13 +298,13 @@ export function Explore() {
     let where = place.trim();
     if (where && !picked && where !== "My location" && where !== "Near me") {
       const hit = suggest(where)[0];
-      if (!hit) { setError(`We couldn't find “${where}”. Try a city, park or ZIP, and pick it from the list.`); return; }
+      if (!hit) { setError(`We couldn’t find “${where}”. Try a city, park or ZIP, and pick it from the list.`); return; }
       where = hit.name;
       setPlace(where);
       setPicked(true);
     }
     if (!where) {
-      if (answer === "no-location") { setError("Type a place to search around — we couldn't get your location."); return; }
+      if (answer === "no-location") { setError("Type a place to search around — we couldn’t get your location."); return; }
       where = "Near me";
       setPlace(where);
       setPicked(true);
@@ -312,7 +314,7 @@ export function Explore() {
     window.setTimeout(() => {
       if (id !== requestId.current) return;
       setLoading(false);
-      if (answer === "fails") { setError("Search didn't go through. Try again in a moment."); return; }
+      if (answer === "fails") { setError("Search didn’t go through. Try again in a moment."); return; }
       setResults(search({ radius, start: range.start, end: range.end, flexNights: flex, filters }));
       setSearched({ place: where, radius, range, flexNights: flex });
       setSelectedId(null);
@@ -394,8 +396,8 @@ export function Explore() {
         <AppBand
           visitor={visitor}
           current="explore"
-          title="Find a campsite that's open"
-          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada's 13 provinces and territories.`}
+          title="Find a campsite that’s open"
+          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 
@@ -531,9 +533,9 @@ export function Explore() {
                   <div className="mt-5 rounded-ch-card border border-dashed border-ch-line bg-ch-card p-6 text-center sm:p-8">
                     {/* CampHawk's title, unless something IS open: then it would contradict the heading. */}
                     <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
-                    <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we&apos;ll alert you within seconds of a cancellation.</p>
+                    <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we’ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
-                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
+                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
                       : <Link href={withVisitor(`${ROUTES.newWatch}${searched.range.start && searched.range.end ? `?start=${searched.range.start}&end=${searched.range.end}` : ""}`, visitor)} className={buttonClasses({ className: "px-5" })}>Create a watch</Link>}
                   </div>
                 )}

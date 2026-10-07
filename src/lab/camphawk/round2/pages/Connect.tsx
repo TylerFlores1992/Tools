@@ -31,8 +31,8 @@ type Status = "idle" | "connecting" | "form" | "stream" | "done" | "error" | "ti
 const STATUSES: readonly Status[] = ["idle", "connecting", "form", "stream", "done", "error", "timeout"];
 
 const ERRORS: Partial<Record<Status, string>> = {
-  error: "We couldn't reach the sign-in service just now. Nothing was saved — try again in a minute.",
-  timeout: "The sign-in helper didn't respond. That usually means it needs updating or briefly dropped offline — not that your details are wrong. Try again in a minute, and email alerts@camphawk.app if it keeps happening.",
+  error: "We couldn’t reach the sign-in service just now. Nothing was saved — try again in a minute.",
+  timeout: "The sign-in helper didn’t respond. That usually means it needs updating or briefly dropped offline — not that your details are wrong. Try again in a minute, and email alerts@camphawk.app if it keeps happening.",
 };
 
 const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
@@ -66,7 +66,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
           statement, so the lab states it. */}
       <p className="flex items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3 text-[14px] leading-relaxed text-ch-ink-2">
         <Lock aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-ch-ink" />
-        <span>We save your login, encrypted, on a private machine we run, so auto-cart can sign back in on its own when the session drops. <strong className="font-bold text-ch-ink">It never reaches CampHawk&apos;s web servers or database.</strong></span>
+        <span>We save your login, encrypted, on a private machine we run, so auto-cart can sign back in on its own when the session drops. <strong className="font-bold text-ch-ink">It never reaches CampHawk’s web servers or database.</strong></span>
       </p>
       <button type="submit" disabled={busy} aria-describedby="rg-why" className={blue()}>
         {busy ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing you in…</> : "Sign in to Recreation.gov"}
@@ -85,7 +85,7 @@ function StreamWindow() {
   return (
     <div>
       <p className="flex items-start gap-2 rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3 text-[15px] font-bold text-ch-ink">
-        <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />Recreation.gov wants to check you&apos;re a person. Please finish signing in in the window below.
+        <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />Recreation.gov wants to check you’re a person. Please finish signing in in the window below.
       </p>
       <p className="mt-2 text-[14px] text-ch-ink-2">Tap the window and type as usual — the keyboard opens when you tap a field. Sign in and it finishes on its own.</p>
       <div role="img" aria-label="Recreation.gov sign-in window (lab stand-in)" className="mt-4 overflow-hidden rounded-ch-input border border-ch-line bg-ch-white">
@@ -114,7 +114,7 @@ export function Connect() {
   }, [status, setStatus]);
   return (
     <BareFrame page="Connect Recreation.gov" homeLabel="CampHawk — back to the site" controls={() => (
-      <LabSelect label="Sign-in step" short="Step" value={status} onChange={setStatus} options={[["idle", "Start"], ["connecting", "Opening"], ["form", "Form"], ["stream", "Live window (CAPTCHA)"], ["done", "Connected"], ["error", "Couldn't reach service"], ["timeout", "Helper didn't respond"]]} />
+      <LabSelect label="Sign-in step" short="Step" value={status} onChange={setStatus} options={[["idle", "Start"], ["connecting", "Opening"], ["form", "Form"], ["stream", "Live window (CAPTCHA)"], ["done", "Connected"], ["error", "Couldn’t reach service"], ["timeout", "Helper didn’t respond"]]} />
     )}>
       {({ visitor }) => (
         <BareCard>
@@ -122,13 +122,13 @@ export function Connect() {
           <h1 className="mt-2 font-ch-display text-[28px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">Connect Recreation.gov</h1>
           {status !== "done" && (
             <p className="mt-2 text-[15px] leading-relaxed text-ch-ink-2">
-              Sign in once so auto-cart can add openings to your Recreation.gov cart, even at 3 AM.
+              Sign in once so auto-cart can add openings to your Recreation.gov cart, even at 3 AM.
             </p>
           )}
           <div className="mt-6">
             {status === "idle" && (
               <div className="grid gap-4">
-                <p className="text-[15px] leading-relaxed text-ch-ink-2">Click below to start a secure sign-in. You&apos;ll enter your Recreation.gov email and password, and this page closes itself automatically once you&apos;re in.</p>
+                <p className="text-[15px] leading-relaxed text-ch-ink-2">Click below to start a secure sign-in. You’ll enter your Recreation.gov email and password, and this page closes itself automatically once you’re in.</p>
                 <button type="button" onClick={() => setStatus("connecting")} className={blue()}>Start secure sign-in</button>
               </div>
             )}
@@ -150,8 +150,8 @@ export function Connect() {
                 <div className="flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4">
                   <CheckCircle2 aria-hidden="true" className="mt-0.5 size-6 shrink-0 text-ch-ink" />
                   <div>
-                    <h2 className="text-[18px] font-extrabold text-ch-ink">You&apos;re connected</h2>
-                    <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Recreation.gov sign-in complete. When a site you&apos;re watching opens, auto-cart adds it to your Recreation.gov cart — just finish checkout on your phone. You can turn it off any time in Settings.</p>
+                    <h2 className="text-[18px] font-extrabold text-ch-ink">You’re connected</h2>
+                    <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Recreation.gov sign-in complete. When a site you’re watching opens, auto-cart adds it to your Recreation.gov cart — just finish checkout on your phone. You can turn it off any time in Settings.</p>
                   </div>
                 </div>
                 <Link href={withVisitor(ROUTES.settings, visitor)} className={blue()}>Done</Link>

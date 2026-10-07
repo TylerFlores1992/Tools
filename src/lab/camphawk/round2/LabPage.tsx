@@ -174,7 +174,7 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
     content below the fold. */
 export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly [id: string, label: string]>; children: ReactNode; extra?: ReactNode }) {
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-16">
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-12">
       {/* First in the DOM, so keyboard and screen-reader users meet it before the article; drawn
           on the right. */}
       <aside className="hidden lg:order-last lg:block">

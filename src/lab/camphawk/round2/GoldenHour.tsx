@@ -26,7 +26,7 @@ import { WatchProofs } from "./WatchProofs";
 
 // Round-2 copy edit: "any N nights" is system language; say it the camper's way. Current keeps
 // CampHawk's exact words (copy.ts).
-const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you're free", "or how many nights you need inside a window you're free")] as const);
+const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you’re free", "or how many nights you need inside a window you’re free")] as const);
 
 /** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
 function AlertCard({ compact }: { compact?: boolean }) {
@@ -103,7 +103,7 @@ function PhoneProof() {
             <p className="flex items-center gap-1.5 text-[13px] font-extrabold text-ch-muted">
               <BellRing aria-hidden="true" className="size-3.5" /> CampHawk <span className="ml-auto font-bold">now</span>
             </p>
-            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines is open for Jul 18–21. It&apos;s in your cart.</p>
+            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines is open for Jul 18–21. It’s in your cart.</p>
           </div>
         </div>
         <div className="space-y-2.5 p-4">
@@ -203,8 +203,8 @@ export function GoldenHour() {
           <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-3 px-5 py-[clamp(48px,6vw,72px)] sm:px-8 lg:grid-cols-2">
             {/* A lead under the heading, so the left column isn't one line beside a list. */}
             <div className="lg:pt-3">
-              <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink">What we don&apos;t do</h2>
-              <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you&apos;re paying for before you pay.</p>
+              <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink">What we don’t do</h2>
+              <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you’re paying for before you pay.</p>
             </div>
             <ul className="max-w-[64ch] border-t border-ch-line">
               {LIMITS.map((line) => (
@@ -218,7 +218,7 @@ export function GoldenHour() {
           <Art art={ART.a4} sizes="100vw" className="absolute inset-0 -z-10 size-full object-cover object-[20%_60%]" />
           <div aria-hidden="true" className="gh-band-scrim absolute inset-0 -z-10" />
           <div className="mx-auto flex min-h-[min(64vh,600px)] max-w-[var(--gh-max)] flex-col items-start justify-start px-5 py-14 sm:px-8 md:items-end md:justify-center md:text-right">
-            <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">Start with a search. It&apos;s free.</h2>
+            <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">Start with a search. It’s free.</h2>
             <div className="mt-6 flex flex-wrap items-center gap-4 md:justify-end">
               <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />

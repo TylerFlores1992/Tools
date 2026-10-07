@@ -3,7 +3,7 @@
 import { Tag } from "../../ui/Tag";
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, MessageSquare } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { ART } from "../Art";
@@ -37,7 +37,7 @@ export function Welcome() {
   const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
   // One title per screen: the band says it, the card doesn't repeat it.
   const [viewer] = useVisitor();
-  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "Your free trial has started. Let's set up your alerts." : "You're in. How should we reach you?";
+  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "Your free trial has started. Let’s set up your alerts." : "You’re in. How should we reach you?";
   return (
     <LabPage
       page="Welcome"
@@ -52,7 +52,7 @@ export function Welcome() {
         if (visitor === "signed-out") {
           return (
             <div className="max-w-[720px] rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
-              <p className="mx-auto max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Once you&apos;re signed in, you&apos;ll choose how we reach you when a campsite opens up. New here? Creating an account takes a minute.</p>
+              <p className="mx-auto max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Once you’re signed in, you’ll choose how we reach you when a campsite opens up. New here? Creating an account takes a minute.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Create an account</Link>
                 <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Sign in</Link>
@@ -70,22 +70,31 @@ export function Welcome() {
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
-            <section aria-labelledby="w-email" className="mt-7 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h2 id="w-email" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[17px] font-extrabold text-ch-ink">Email alerts<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag></h2>
-              {/* Email is always on, as Settings says (CampHawk's Welcome has an email checkbox that
-                  Settings then ignores; the lab keeps one model). */}
-              <p className="mt-2 flex items-start gap-3 text-[15px] leading-relaxed text-ch-ink-2"><Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0" /><span>Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</span></p>
+            {/* The same rows as Settings: icon, a sans title with its state, then the line. */}
+            <section aria-labelledby="w-email" className="mt-7 flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+              <Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+              <div className="min-w-0 flex-1">
+                <h2 id="w-email" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-ch-body text-[15px] font-bold text-ch-ink">Email<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag></h2>
+                {/* Email is always on, as Settings says (CampHawk's Welcome has an email checkbox that
+                    Settings then ignores; the lab keeps one model). */}
+                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</p>
+              </div>
             </section>
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h2 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts</h2>
-              <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text wakes you; an email waits until you look.</p>
+              <div className="flex gap-3">
+                <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+                <div className="min-w-0 flex-1">
+                  <h2 id="w-text" className="font-ch-body text-[15px] font-bold text-ch-ink">Text alerts</h2>
+                  <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text wakes you; an email waits until you look.</p>
+                </div>
+              </div>
               <SmsAlerts visitor={visitor} secondary />
             </section>
 
             {subscribed && plan === "autocart" && (
               <section aria-labelledby="w-cart" className="mt-4 rounded-ch-input border border-l-4 border-ch-line border-l-ch-blue bg-ch-card p-4 sm:p-5">
-                <h2 id="w-cart" className="text-[17px] font-extrabold text-ch-ink">Set up auto-cart</h2>
+                <h2 id="w-cart" className="font-ch-body text-[15px] font-bold text-ch-ink">Set up auto-cart</h2>
                 <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
                 <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", className: "mt-4 min-h-12 px-5 text-[15px]" })}>Sign in to Recreation.gov</Link>
               </section>
@@ -108,8 +117,8 @@ export function Welcome() {
             <ol className="mt-3 grid gap-3 text-[15px] leading-relaxed text-ch-ink-2">
               {[
                 `Start a watch on a booked campground. We check it every ${CHECK_SECONDS} seconds, around the clock.`,
-                "The moment a site frees up, we tell you by every channel you've turned on, at once.",
-                subscribed && plan === "autocart" ? "On Recreation.gov, auto-cart puts it straight in your cart. You check out." : "You book it on the booking site, while it's still open.",
+                "The moment a site frees up, we tell you by every channel you’ve turned on, at once.",
+                subscribed && plan === "autocart" ? "On Recreation.gov, auto-cart puts it straight in your cart. You check out." : "You book it on the booking site, while it’s still open.",
               ].map((line, i) => (
                 <li key={i} className="flex gap-3"><span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span><span>{line}</span></li>
               ))}

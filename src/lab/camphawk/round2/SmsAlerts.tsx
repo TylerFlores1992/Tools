@@ -22,7 +22,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
   const [phone, setPhone] = useState(start === "saved" ? "(415) 555-0187" : "");
   const [agreed, setAgreed] = useState(start === "saved");
   const [busy, setBusy] = useState<"save" | "off" | null>(null);
-  const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
+  const [error, setError] = useState<string | null>(start === "error" ? "Couldn’t save that number" : null);
   const [tried, setTried] = useState(false);
   const [announce, setAnnounce] = useState("");
   // A saved number is one line; the carrier-worded form opens only to change it.
@@ -112,7 +112,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
         <input id="sms-consent" aria-describedby="sms-why" aria-invalid={(tried && !agreed) || undefined} type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
-        <span>Yes, I&apos;d like to receive automated text messages from CampHawk when campgrounds I&apos;m watching have availability. Consent is not a condition of purchase.</span>
+        <span>Yes, I’d like to receive automated text messages from CampHawk when campgrounds I’m watching have availability. Consent is not a condition of purchase.</span>
       </label>
       <p className="text-[13px] leading-relaxed text-ch-ink-2">
         <strong className="font-bold">Message frequency</strong> varies with campsite availability (typically at most one per watch). <strong className="font-bold">Message and data rates may apply.</strong> Reply <strong className="font-bold">HELP</strong> for help or <strong className="font-bold">STOP</strong> to cancel any time.{" "}

@@ -46,14 +46,14 @@ export const WATCHES: ExampleWatch[] = [
 
 /** Alert history, one row per alert (not per channel). */
 export const ALERTS = [
-  { id: "a1", when: "Jul 6, 6:02 AM", campground: "Upper Pines", site: "Site 042", channels: ["Email", "Push", "Text"], failed: [] as string[] },
-  { id: "a2", when: "Jul 2, 11:48 PM", campground: "North Pines", site: "Site 063", channels: ["Email", "Push", "Text"], failed: ["Text"] },
-  { id: "a3", when: "Jun 28, 7:15 AM", campground: "Leo Carrillo State Park", site: "Site 031", channels: ["Email", "Push"], failed: [] as string[] },
+  { id: "a1", when: "Jul 6, 6:02 AM", campground: "Upper Pines", site: "Site 042", channels: ["Email", "Push", "Text"], failed: [] as string[] },
+  { id: "a2", when: "Jul 2, 11:48 PM", campground: "North Pines", site: "Site 063", channels: ["Email", "Push", "Text"], failed: ["Text"] },
+  { id: "a3", when: "Jun 28, 7:15 AM", campground: "Leo Carrillo State Park", site: "Site 031", channels: ["Email", "Push"], failed: [] as string[] },
 ];
 
 /** NewWatchOutlook's words (campsite-finder src/lib/watch-outlook.ts): shown after creating a
     watch on a fully booked stay more than two weeks out. */
-export const OUTLOOK_HEADING = "You're watching a stay that's fully booked";
+export const OUTLOOK_HEADING = "You’re watching a stay that’s fully booked";
 export function outlookBody(leadDays: number): string {
   const weeks = Math.round(leadDays / 7);
   const when = weeks >= 2 ? `about ${weeks} weeks away` : `${leadDays} days away`;

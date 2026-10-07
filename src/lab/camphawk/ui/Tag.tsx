@@ -13,9 +13,9 @@ import { cx } from "@/components/cx";
 // Lab changes: `text-white` is `text-ch-white` (stock colours are deleted in this repo). And every
 // status carries a MARK, a small shape of its own (2026-10-06 fix round, for the owner's red-green
 // colour blindness: CampHawk's tags differed by hue alone). The marks match Explore's map pins:
-// a tick for open, a solid dot for booked, a ring for "couldn't check", a small dot for first
+// a tick for open, a solid dot for booked, a ring for "couldn’t check", a small dot for first
 // come; the rest are line icons at one size and weight. A clock is time running out; an alarm
-// clock is an 8 AM hold you asked for. And tags are sentence case at 12.5px (2026-10-06 round 6):
+// clock is an 8 AM hold you asked for. And tags are sentence case at 12.5px (2026-10-06 round 6):
 // CampHawk's 10px tracked caps were the smallest text on every card and read as admin chrome.
 export type TagKind = "open" | "watch" | "cart" | "paused" | "alert" | "src";
 

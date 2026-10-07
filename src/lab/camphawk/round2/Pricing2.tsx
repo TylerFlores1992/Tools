@@ -2,7 +2,7 @@ import { Check, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../Pricing";
-import { TRIAL_DAYS } from "./pages/tier2-data";
+import { LAUNCH_PRICING, TRIAL_DAYS } from "./pages/tier2-data";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor } from "../data";
 
 // Round-2 pricing: the same three branches, prices and words as Pricing.tsx, set as a section of
@@ -29,7 +29,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
           </li>
         ))}
       </ul>
-      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start {TRIAL_DAYS}-day free trial</a>
+      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
     </div>
   );
 }
@@ -40,12 +40,12 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") {
     return (
       <div>
-        <h2 className={head}>You&apos;re all set. Here&apos;s what you can do.</h2>
+        <h2 className={head}>You’re all set. Here’s what you can do.</h2>
         <ul className="mt-6 grid max-w-[64ch] gap-3 text-[16px] leading-relaxed text-ch-ink-2">
           <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
-          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.</li>
+          <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.</li>
           <li>With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.</li>
-          <li>Any alert lets you pause the watch, reopen it, or mute a site you don&apos;t want.</li>
+          <li>Any alert lets you pause the watch, reopen it, or mute a site you don’t want.</li>
         </ul>
         <div className="mt-7 flex flex-wrap gap-2.5">
           <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
@@ -70,14 +70,13 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
       <div className="grid gap-x-14 gap-y-4 lg:grid-cols-2 lg:items-end">
         <h2 className={head}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
         <p className="max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">
-          This is launch pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
+          {LAUNCH_PRICING} Prices in US dollars.
         </p>
       </div>
-      <div className="mt-10 grid gap-4 md:grid-cols-2">
+      <div className="mt-10 grid gap-8 md:grid-cols-2 md:gap-4">
         <Plan name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)} />
         <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
       </div>
-      <p className="mt-5 text-[15px] text-ch-ink-2">Prices in US dollars.</p>
     </div>
   );
 }

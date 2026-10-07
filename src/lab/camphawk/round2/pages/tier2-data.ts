@@ -16,9 +16,12 @@ export const HOLD_MINUTES = 60;
 export const RC_HOLD_OPEN = false;
 export const RC_HOLD_CLOSED_ON = "September 22, 2026";
 
-/** The one beta note for 8 AM holds, word for word wherever a hold is offered or explained. */
+/** One launch-pricing line, on Home and Pricing alike. */
+export const LAUNCH_PRICING = "Launch pricing: the rate goes up as we add campgrounds and states. Subscribe now and you keep yours for as long as your subscription runs.";
+
+/** The one beta note for 8 AM holds, word for word wherever a hold is offered or explained. */
 export const HOLD_BETA_LABEL = "Invite-only beta";
-export const HOLD_BETA_NOTE = "8 AM holds are an invite-only beta. They've worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.";
+export const HOLD_BETA_NOTE = "8 AM holds are an invite-only beta. Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.";
 
 const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
 export const inWords = (n: number) => WORDS[n] ?? n.toLocaleString("en-US");

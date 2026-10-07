@@ -17,7 +17,7 @@ export interface ExampleCampground {
   distance: number;
   /** false = first come, first served (no reservations, so nothing to watch). */
   reservable: boolean;
-  /** true = the provider didn't answer this search: "Couldn't check", never "booked". */
+  /** true = the provider didn't answer this search: "Couldn’t check", never "booked". */
   unreadable?: boolean;
   /** Nights (check-in dates) with at least one free site. Anything else is booked. */
   openNights: ISODate[];

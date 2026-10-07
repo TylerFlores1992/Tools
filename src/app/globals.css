@@ -438,11 +438,13 @@ html:has(.gh) { background: var(--color-ch-forest); }
 @media (min-width: 1024px) { .gh-app-photo { object-position: var(--gh-pos-lg, 50% 62%); } }
 /* Their scrim: peaks and lights can sit behind the header and the headline, so the top and the
    left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+/* Phones: the lede sits low in the band, often over the photo's one warm light (tents, a lantern),
+   so the scrim stays strong further down than it did (round 10). */
 .gh-app-scrim {
   background: linear-gradient(to bottom,
-    color-mix(in srgb, var(--color-ch-forest) 86%, transparent) 0%,
-    color-mix(in srgb, var(--color-ch-forest) 74%, transparent) 55%,
-    color-mix(in srgb, var(--color-ch-forest) 35%, transparent) 100%);
+    color-mix(in srgb, var(--color-ch-forest) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 60%,
+    color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 100%);
 }
 @media (min-width: 1024px) {
   .gh-app-scrim {

@@ -39,16 +39,17 @@ import {
 //   "Search California by date" opens an empty search, and it has six other names).
 
 const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-const LAB_NOTE = "California's counts and lists stand in for CampHawk's catalog; other states' counts and every campground list are illustrative.";
+const LAB_NOTE = "California’s counts and lists stand in for CampHawk’s catalog; other states' counts and every campground list are illustrative.";
 
 function Crumbs({ items, visitor }: { items: Array<[string, string | null]>; visitor: Visitor }) {
   return (
     <nav aria-label="Breadcrumb" className="text-[14px] text-ch-ink-2">
       <ol className="flex flex-wrap items-center gap-y-1">
         {items.map(([label, href], i) => (
+          // The separator ends the item before it, so a wrapped trail never starts a line with "›".
           <li key={label} className="flex items-center">
-            {i > 0 && <span aria-hidden="true" className="mx-2 text-ch-muted">›</span>}
             {href ? <A href={href} visitor={visitor} className="font-semibold">{label}</A> : <span aria-current="page">{label}</span>}
+            {i < items.length - 1 && <span aria-hidden="true" className="mx-2 text-ch-muted">›</span>}
           </li>
         ))}
       </ol>
@@ -88,7 +89,7 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
         <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
             <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
-            {g.campgrounds.length >= 3 && <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
+            {<span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
           </h2>
           <ul className="mt-1">
             {g.campgrounds.map((n) => (
@@ -141,7 +142,7 @@ export function CampingHub() {
           <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
             <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] text-ch-forest">Camping in Canada</h2>
-            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada&apos;s 13 provinces and territories — Parks Canada&apos;s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
+            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada’s 13 provinces and territories — Parks Canada’s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
             <div className="mt-5"><RegionGrid rows={PROVINCES} href={statePath} visitor={visitor} caption="The number beside each is how many campgrounds we track there." /></div>
           </section>
           <Note />
@@ -180,12 +181,12 @@ export function StatePage({ slug }: { slug: string }) {
             <>
               <Towns groups={CALIFORNIA.groups} code={r.code} name={r.name} visitor={visitor} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
-                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}&apos;s {r.count.toLocaleString("en-US")} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
+                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}’s {r.count.toLocaleString("en-US")} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
                 <Search visitor={visitor} />
               </div>
             </>
           ) : (
-            <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws California&apos;s campground list; <A href={`${ROUTES.camping}/california`} visitor={visitor}>see it there</A>. CampHawk lists every campground in {r.name} here, by town.</p>
+            <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws California’s campground list; <A href={`${ROUTES.camping}/california`} visitor={visitor}>see it there</A>. CampHawk lists every campground in {r.name} here, by town.</p>
           )}
           <Note />
         </div>
@@ -254,7 +255,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
       if (left <= 0) break;
       // Yosemite's Pines loops are tent sites only (the campground page says so), so they never
       // appear under cabins, groups or yurts.
-      const take = g.campgrounds.filter((n) => !/Pines$/.test(n)).slice(0, Math.min(2, left));
+      const take = g.campgrounds.filter((n) => !/Pines Campground$/.test(n)).slice(0, Math.min(2, left));
       if (!take.length) continue;
       groups.push({ ...g, campgrounds: take });
       left -= take.length;
@@ -266,7 +267,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />
           <div className="mt-5">
-            <Lead><p>We track live availability at {count} campgrounds with {hub.noun} in {r.name}. {hub.blurb}</p></Lead>
+            <Lead><p>We track live availability at {count} campgrounds with {hub.noun} in {r.name}. Watch one and we recheck it every {CHECK_SECONDS} seconds, so a cancellation reaches you while it’s still there to book.</p></Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">{ca ? `Booking goes through ${joinAnd(CALIFORNIA.providers)}. ` : ""}Searching is free.</p>
             <Search visitor={visitor} className="mt-6" />
           </div>
@@ -274,7 +275,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
             <>
               <Towns groups={groups} code={r.code} name={r.name} visitor={visitor} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
-                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(groups)} of {r.name}&apos;s {count} campgrounds with {hub.noun}</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
+                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(groups)} of {r.name}’s {count} campgrounds with {hub.noun}</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
                 <Search visitor={visitor} />
               </div>
             </>
@@ -322,7 +323,7 @@ export function HardestToBook() {
             ))}
           </ol>
           <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
-          <LabNote className="mt-12">The parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
+          <LabNote className="mt-12">The parks and their order are CampHawk’s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>
       )}
     </LabPage>

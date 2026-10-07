@@ -38,9 +38,9 @@ const RESULTS: Partial<Record<Action, Result>> = {
   "stop-again": { ok: true, title: "Done", message: "Already stopped.", inverse: ["Reopen this watch", "reopen"] },
   reopen: { ok: true, title: "Done", message: `Watching ${CG} again.`, inverse: ["Stop watching", "stop"] },
   keep: { ok: true, title: "Done", message: `Kept ${CG} active.`, inverse: ["Stop watching", "stop"] },
-  mute: { ok: true, title: "Done", message: `Muted Site 101 at ${CG}. You'll still hear about other sites.` },
-  "bad-link": { ok: false, title: "That link didn't work", message: "It has expired or was already used. Open CampHawk to manage your watches." },
-  unknown: { ok: false, title: "That link didn't work", message: "We couldn't tell what this link was for. Open CampHawk to manage your watches." },
+  mute: { ok: true, title: "Done", message: `Muted Site 101 at ${CG}. You’ll still hear about other sites.` },
+  "bad-link": { ok: false, title: "That link didn’t work", message: "It has expired or was already used. Open CampHawk to manage your watches." },
+  unknown: { ok: false, title: "That link didn’t work", message: "We couldn’t tell what this link was for. Open CampHawk to manage your watches." },
   "hold-not-entitled": { ok: false, title: "We didn’t hold this one", message: "Holding a site at release time is part of the Auto-Cart plan. Your alerts carry on as normal — you can still book it yourself the moment it opens." },
   "hold-unchecked": { ok: false, title: "We couldn’t check just now", message: "We couldn’t read this hold’s status. Try the link again in a minute — nothing has been changed." },
   "hold-in-cart": { ok: true, title: "It’s in our cart", message: `We got ${HOLD.unit} at ${HOLD.campground} into our cart. Open the alert we sent when we carted it to claim it — we hold it for up to 60 minutes, so do it soon.` },
@@ -80,7 +80,7 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
     <BareCard>
       <h1 className="font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">Hold this site for you?</h1>
       <Facts rows={[["Campground", HOLD.campground], ["Site", <span key="s" className="font-ch-display text-[22px] font-extrabold">{HOLD.unit}</span>], ["Nights", `${HOLD.stay}, ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
-      <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, we try to cart this exact site the second it opens and hold it for you for up to 60 minutes, so claim it within that time when we tell you. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
+      <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, we try to cart this exact site the second it opens and hold it for you for up to 60 minutes. We’ll tell you the moment it’s held, and you have 60 minutes to claim it. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
       {/* The beta note stays above the promise, on purpose. */}
       <BetaNote className="mt-4" />
       {/* Never disabled: a second tap while it works is harmless, and a dead button reads as broken. */}
@@ -122,7 +122,7 @@ const LABELS: Record<Action, string> = {
   stop: "Stop watching", "stop-again": "Stop (already stopped)", reopen: "Reopen", keep: "Keep (still want this?)", mute: "Mute a site", "bad-link": "Expired link", unknown: "Unknown action",
   "hold-offer": "8am hold: offer", "hold-offer-second": "8am hold: offer, second in line", "hold-refused": "8am hold: not on Auto-Cart", "hold-confirmed": "8am hold: confirmed",
   "hold-full": "8am hold: confirmed, slots full", "hold-bot-offline": "8am hold: confirmed, bot offline", "hold-revisit": "8am hold: opened again",
-  "hold-not-entitled": "8am hold: plan doesn't include it", "hold-unchecked": "8am hold: couldn't check", "hold-in-cart": "8am hold: already in our cart",
+  "hold-not-entitled": "8am hold: plan doesn’t include it", "hold-unchecked": "8am hold: couldn’t check", "hold-in-cart": "8am hold: already in our cart",
   "hold-withdrawn": "8am hold: withdrawn by ReserveCalifornia", "hold-booked": "8am hold: booked by someone", "hold-gone": "8am hold: offer closed",
 };
 

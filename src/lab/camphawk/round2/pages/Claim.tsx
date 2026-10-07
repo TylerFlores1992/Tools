@@ -7,14 +7,15 @@ import { buttonClasses } from "../../ui";
 import { Tag } from "../../ui/Tag";
 import { LabSelect } from "../AppParts";
 import { BareFrame } from "../BareFrame";
-import { useUrlState } from "../labState";
+import { ROUTES } from "../gates";
+import { useUrlState, withVisitor } from "../labState";
 import { CLAIM } from "./alert-data";
 
 // Tier 1: Claim a held site (campsite-finder src/app/claim/[id], ClaimFlow.tsx, RcSignInForm.tsx,
 // lib/claim-copy). The bot is holding a ReserveCalifornia site in ITS cart; this hands it to you.
 // The riskiest moment in the product: during the swap the site is open to anyone for a couple of
 // seconds. What it keeps on purpose:
-// - Nothing is released until you press the button, and signing in is not "I'm ready".
+// - Nothing is released until you press the button, and signing in is not "I’m ready".
 // - The site number is set at display size: it's the one fact you carry into RC's grid.
 // - The words depend on what the device can do: the app that can sign you in, a plain browser,
 //   or an old app build that can't (which must SAY so; one lost a site in August by not saying).
@@ -43,13 +44,13 @@ const COPY = {
   },
   app: {
     prepareTitle: "Sign in to ReserveCalifornia here",
-    prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia, and we don't store it.",
+    prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia, and we don’t store it.",
     prepareCta: "Sign in to ReserveCalifornia",
     waitingTitle: "Waiting for you to sign in",
     waitingBody: "Sign in in that window, then close it. Nothing has been released yet — your site is still ours.",
-    readyTitle: "Signed in. It's yours whenever you're ready",
-    releasingBody: "Stay on this screen — we'll open ReserveCalifornia the moment it's yours.",
-    afterBody: "We're putting it in your cart. When ReserveCalifornia opens, check out from the button below.",
+    readyTitle: "Signed in. It’s yours whenever you’re ready",
+    releasingBody: "Stay on this screen — we’ll open ReserveCalifornia the moment it’s yours.",
+    afterBody: "We’re putting it in your cart. When ReserveCalifornia opens, check out from the button below.",
     afterCta: "Finish on ReserveCalifornia",
   },
 };
@@ -93,6 +94,15 @@ function Notice({ children, warn, alert }: { children: ReactNode; warn?: boolean
   );
 }
 
+/** One line saying what's still missing, in the words Connect uses ("Enter your email and
+    password to continue."). */
+function whyLine(email: string, password: string, checked: boolean) {
+  const fields = !email && !password ? "your email and password" : !email ? "your email" : !password ? "your password" : null;
+  if (fields && !checked) return `Enter ${fields}, and check the box, to continue.`;
+  if (fields) return `Enter ${fields} to continue.`;
+  return "Check the box above to continue.";
+}
+
 function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -117,7 +127,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
       <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in to ReserveCalifornia"}</button>
-      {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{missing.length === 1 && !checked ? "Check the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
+      {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{whyLine(email, password, checked)}</p>}
     </form>
   );
 }
@@ -128,7 +138,7 @@ export function Claim() {
   return (
     <BareFrame page="Claim a held site" controls={() => (
       <>
-        <LabSelect label="Hold status" short="Hold" value={status} onChange={setStatus} options={[["carted", "We're holding it"], ["carted-late", "Hold running out"], ["claiming", "Handing over"], ["claiming-stuck", "Handing over, stuck"], ["released", "Yours to book"], ["expired", "Expired"], ["failed", "Couldn't hold"], ["nothing", "Nothing held"], ["invalid", "Link no longer valid"]]} />
+        <LabSelect label="Hold status" short="Hold" value={status} onChange={setStatus} options={[["carted", "We’re holding it"], ["carted-late", "Hold running out"], ["claiming", "Handing over"], ["claiming-stuck", "Handing over, stuck"], ["released", "Yours to book"], ["expired", "Expired"], ["failed", "Couldn’t hold"], ["nothing", "Nothing held"], ["invalid", "Link no longer valid"]]} />
         <LabSelect label="Device" short="Device" value={device} onChange={setDevice} options={[["app", "The app"], ["browser", "A browser"], ["old-app", "An old app build"]]} />
       </>
     )}>
@@ -151,7 +161,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
 
   if (status === "invalid") return <><h1 className="sr-only">Claim a held site</h1><Notice>This link is no longer valid.</Notice></>;
   if (status === "expired") return <><h1 className="sr-only">Claim a held site</h1><Notice>That hold expired — nobody claimed it, so the site is back on the open market.</Notice></>;
-  if (status === "failed") return <><h1 className="sr-only">Claim a held site</h1><Notice>We couldn&apos;t hold that site. Your alerts carry on as normal.</Notice></>;
+  if (status === "failed") return <><h1 className="sr-only">Claim a held site</h1><Notice>We couldn’t hold that site. Your alerts carry on as normal.</Notice></>;
   if (status === "nothing") return <><h1 className="sr-only">Claim a held site</h1><Notice>Nothing is being held for you right now.</Notice></>;
 
   if (status === "claiming" || status === "claiming-stuck") {
@@ -189,24 +199,24 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
         <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">2</span>
         <div className="min-w-0 flex-1">
           <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 inline-flex items-center gap-1 align-middle text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
-          <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you&apos;re signed in, tap <strong className="text-ch-ink">It&apos;s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
+          <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you’re signed in, tap <strong className="text-ch-ink">It’s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
         </div>
       </div>
-      {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It's mine — hand it over"}</button>}
+      {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It’s mine — hand it over"}</button>}
     </div>
   );
   return (
     <>
-      <SiteCard heading={late ? "This may already be gone" : "We're holding this for you"} tone={late ? "warn" : "hold"}
+      <SiteCard heading={late ? "This may already be gone" : "We’re holding this for you"} tone={late ? "warn" : "hold"}
         footer={late ? "Our hold on it has run out, so it may already be free again — worth trying anyway." : <><Tag kind="alert" mark="queued" srPrefix="Time left:">{CLAIM.minutesLeft} min left</Tag><span>We hold it for up to 60 minutes.</span></>} />
-      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It&apos;s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
+      {device === "old-app" && <Notice warn>This version of the app cannot sign in or add to your cart for you. Do that yourself on ReserveCalifornia now — the site stays held until you tap “It’s mine — hand it over”, so it is not lost. Afterwards, update CampHawk from the App Store so the next one is automatic.</Notice>}
       {ready ? (
         <Step tone="done" title={c.readyTitle} />
       ) : opened && !canInject ? (
         <Step tone="busy" title={c.waitingTitle} body={c.waitingBody}>
           <label className="flex cursor-pointer items-start gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4 text-[15px] leading-relaxed text-ch-ink">
             <input type="checkbox" onChange={(e) => setReady(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
-            <span>I&apos;m signed in to ReserveCalifornia and looking at {CLAIM.unit}</span>
+            <span>I’m signed in to ReserveCalifornia and looking at {CLAIM.unit}</span>
           </label>
         </Step>
       ) : (
@@ -220,6 +230,8 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
       {!ready && !canInject && (
         <p className="mt-3 text-center text-[14px] text-ch-ink-2">Check the box once you’re signed in and on the page — we won’t let go until then.</p>
       )}
+      {/* A way out that isn't the back button, as Connect has. The hold runs out on its own. */}
+      <p className="mt-4 text-center"><a href={withVisitor(ROUTES.watches, device === "browser" ? "subscriber" : "app")} className="inline-flex min-h-11 items-center text-[15px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">Not now, back to your watches</a></p>
     </>
   );
 }

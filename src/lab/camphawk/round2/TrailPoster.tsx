@@ -127,7 +127,7 @@ export function TrailPoster() {
         </section>
 
         <section className="mx-auto max-w-[var(--ch-max)] px-5 py-[clamp(56px,8vw,104px)]">
-          <h2 className="font-ch-display text-[22px] font-extrabold text-ch-forest">What we don&apos;t do</h2>
+          <h2 className="font-ch-display text-[22px] font-extrabold text-ch-forest">What we don’t do</h2>
           <ul className="mt-3 max-w-[64ch] border-t-2 border-ch-forest">
             {LIMITS.map((line) => (
               <li key={line} className="border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2">{line}</li>
@@ -137,7 +137,7 @@ export function TrailPoster() {
 
         <section className="mx-auto max-w-[var(--ch-max)] px-5 pb-[clamp(64px,9vw,120px)]">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-black leading-[1] tracking-[-.04em] text-ch-forest">Start with a search. It&apos;s free.</h2>
+            <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-black leading-[1] tracking-[-.04em] text-ch-forest">Start with a search. It’s free.</h2>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <a href="#" className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />

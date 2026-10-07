@@ -49,7 +49,7 @@ export const CAMPGROUND = {
 // From campsite-finder src/lib/booking-policy.ts (same words).
 export const FIRST_COME_BADGE = "First come, first served";
 export const FIRST_COME_WHY =
-  "This campground doesn't take reservations, so there's nothing to cancel and an alert would never arrive. Sites go to whoever turns up.";
+  "This campground doesn’t take reservations, so there’s nothing to cancel and an alert would never arrive. Sites go to whoever turns up.";
 
 // From campsite-finder src/lib/seo.ts campgroundOpeningsHeading/Body (same words).
 export const openingsHeading = (name: string) => `Is ${name} fully booked?`;

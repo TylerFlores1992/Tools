@@ -60,17 +60,17 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">8 AM hold</Tag>}
+        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">8 AM hold</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
-          ? "Releases tomorrow at 8 AM. We can try to cart it for you the second it opens — tap below if you want it."
-          : "We'll try for this the second it opens, tomorrow at 8 AM. We'll tell you either way — keep an alarm set in case we miss."}
+          ? "Releases tomorrow at 8 AM. We can try to cart it for you the second it opens — tap below if you want it."
+          : "We’ll try for this the second it opens, tomorrow at 8 AM. We’ll tell you either way — keep an alarm set in case we miss."}
       </p>
       <div className="flex flex-wrap gap-2">
         {offered && <a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 flex-1 px-4" })}>Hold it for me</a>}
-        <button type="button" onClick={() => onRemove(h.id)} aria-label={offered ? `I don't want this one: Site ${h.site}` : `Call this off: the hold on Site ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
-          {offered ? "I don't want this one" : "Call this off"}
+        <button type="button" onClick={() => onRemove(h.id)} aria-label={offered ? `I don’t want this one: Site ${h.site}` : `Call this off: the hold on Site ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+          {offered ? "I don’t want this one" : "Call this off"}
         </button>
       </div>
     </div>
@@ -95,7 +95,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
-          {asked.length > 0 && <Tag kind="watch" mark="hold">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
+          {asked.length > 0 && <Tag kind="watch" mark="hold">8 AM hold: {asked.length === 1 ? `Site ${asked[0].site}` : `${asked.length} sites`}</Tag>}
           {carted && <Tag kind="cart">{carted.length === 1 ? `${carted[0]} in your cart` : `${carted.length} in your cart`}</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
@@ -111,7 +111,9 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
         <p className="mt-0.5 text-[14px] text-ch-ink-2">On {w.provider}</p>
         {w.parts && (
           <p className="mt-1 text-[15px] leading-normal text-ch-ink-2">
-            <span className="font-bold">{w.parts.length} parts:</span> {w.parts.length > 4 ? `${w.parts.slice(0, 4).join(", ")} and ${w.parts.length - 4} more` : joinAnd(w.parts)}
+            {/* Inline on a card, "Campground" is dropped: "Canyon Campground (sites 1–24), Canyon
+                Campground (sites 25–77)" read like a duplicate. Manage lists the full names. */}
+            <span className="font-bold">{w.parts.length} parts:</span> {(() => { const short = w.parts.map((x) => x.replace(/ Campground\b/, "")); return short.length > 4 ? `${short.slice(0, 4).join(", ")} and ${short.length - 4} more` : joinAnd(short); })()}
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>
@@ -120,19 +122,19 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
 
       {state === "authexpired" && (
         <div className="mt-3 border-t border-ch-line pt-3">
-          <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Auto-cart can&apos;t hold a site for you right now — the machine holding your Recreation.gov session is reconnecting. It signs back in by itself, and we&apos;re still checking and still alerting you meanwhile.</p>
+          <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Auto-cart can’t hold a site for you right now — the machine holding your Recreation.gov session is reconnecting. It signs back in by itself, and we’re still checking and still alerting you meanwhile.</p>
           <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in again if this sticks</a>
         </div>
       )}
       {state === "disconnected" && (
         <div className="mt-3 border-t border-ch-line pt-3">
-          <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Recreation.gov signed CampHawk out of your account, so auto-cart can&apos;t put an opening in your cart. We&apos;re still checking and still alerting you. Sign in again and it picks back up.</p>
+          <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Recreation.gov signed CampHawk out of your account, so auto-cart can’t put an opening in your cart. We’re still checking and still alerting you. Sign in again and it picks back up.</p>
           <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Reconnect Recreation.gov</a>
         </div>
       )}
       {state === "stalled" && (
         <div className="mt-3 border-t border-ch-line pt-3">
-          <p className="text-[14px] text-ch-ink-2">{w.provider} isn&apos;t responding. We&apos;re retrying — your other watches are unaffected.</p>
+          <p className="text-[14px] text-ch-ink-2">{w.provider} isn’t responding. We’re retrying — your other watches are unaffected.</p>
         </div>
       )}
       {(offered.length > 0 || asked.length > 0) && (
@@ -144,7 +146,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
             </Collapsible>
           )}
           {offered.length > 0 && (
-            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
+            <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
               <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
@@ -219,7 +221,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
   return (
     <Panel>
       <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Watches need an account</h2>
-      <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">Searching stays free. Watches run on our servers around the clock, so they&apos;re tied to your account.</p>
+      <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">Searching stays free. Watches run on our servers around the clock, so they’re tied to your account.</p>
       <Steps icons={[Eye, Bell, ShoppingCart]} steps={[
         [`Up to ${WATCH_LIMIT} watches at once`, "One for each campground and set of dates."],
         ["Alerts in seconds", "Push, text and email the moment a site frees up."],
@@ -228,7 +230,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
       {/* One account step carries the weight; the rest are plain links, so the wall reads as an
           explanation with a way in, not a stack of equal buttons. */}
       <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a href="#" className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Start {TRIAL_DAYS}-day free trial</a>
+        <a href="#" className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Start {TRIAL_DAYS}‑day free trial</a>
         <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">See plans</a>
         <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Sign in</a>
       </div>
@@ -243,7 +245,7 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
       <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">No watches yet</h2>
       <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">A watch keeps checking a booked campground for you and tells you the moment someone cancels.</p>
       <Steps steps={[
-        ["Pick a campground and your nights", "Exact dates, or how many nights you need inside a month you're free."],
+        ["Pick a campground and your nights", "Exact dates, or how many nights you need inside a month you’re free."],
         ["We check every 15 seconds", "Around the clock, right up until your trip date."],
         ["You get the site", `${visitor === "app" ? "A notification" : "Push, text and email"} in seconds, and on Recreation.gov we can drop it straight in your cart.`],
       ]} />
@@ -321,7 +323,7 @@ export function Watches() {
   } else if (list === "failed") {
     body = (
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-6 shadow-ch-pop sm:p-8">
-        <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">We couldn&apos;t load your watches</h2>
+        <h2 className="font-ch-display text-[24px] font-extrabold text-ch-ink">We couldn’t load your watches</h2>
         <p role="alert" className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Your watches are still running — this is only the page. Try again in a moment.</p>
         <button type="button" onClick={() => setList("list")} className={buttonClasses({ variant: "ink", className: "mt-5 px-5" })}>Try again</button>
       </div>
@@ -333,8 +335,8 @@ export function Watches() {
           <div className="mb-4 flex gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
             <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
             <div>
-              <p className="text-[16px] font-bold text-ch-ink">ReserveCalifornia isn&apos;t responding</p>
-              <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{stalled === 1 ? "1 watch is" : `${stalled} watches are`} affected. We&apos;re retrying automatically. Your other watches are unaffected.</p>
+              <p className="text-[16px] font-bold text-ch-ink">ReserveCalifornia isn’t responding</p>
+              <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{stalled === 1 ? "1 watch is" : `${stalled} watches are`} affected. We’re retrying automatically. Your other watches are unaffected.</p>
             </div>
           </div>
         )}
@@ -392,7 +394,7 @@ export function Watches() {
         {subscriber && (
           <>
             <LabSelect label="Plan" short="Plan" value={plan} onChange={setPlan} options={[["autocart", "Auto-Cart"], ["alerts", "Alerts"]]} />
-            <LabSelect label="Page state" short="Page" value={list} onChange={setList} options={[["list", "Watches"], ["empty", "None yet"], ["loading", "Loading"], ["failed", "Couldn't load"]]} />
+            <LabSelect label="Page state" short="Page" value={list} onChange={setList} options={[["list", "Watches"], ["empty", "None yet"], ["loading", "Loading"], ["failed", "Couldn’t load"]]} />
             <LabSelect label="Text alerts" short="Phone" value={setup} onChange={setSetup} options={[["done", "Added"], ["no-phone", "Missing"]]} />
             <LabSelect label="ReserveCalifornia" short="Provider" value={provider} onChange={setProvider} options={[["up", "Answering"], ["down", "Not responding"]]} />
             <LabSelect label="Auto-cart connection" short="Auto-cart" value={cart} onChange={setCart} options={[["connected", "Connected"], ["reconnecting", "Reconnecting"], ["disconnected", "Signed out"]]} />

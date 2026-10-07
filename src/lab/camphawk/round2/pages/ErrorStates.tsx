@@ -45,11 +45,11 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
       <div className="max-w-[34rem]">
         <div className="flex justify-center"><Badge /></div>
         <h1 className="mt-6 text-balance font-ch-display text-[clamp(32px,5vw,48px)] font-extrabold leading-tight tracking-[-.02em] text-ch-paper">
-          {notFound ? "This trail doesn't lead anywhere" : "Something went wrong"}
+          {notFound ? "This trail doesn’t lead anywhere" : "Something went wrong"}
         </h1>
         <p className="mt-3 text-[17px] leading-relaxed text-ch-line">
           {notFound
-            ? "The page you're looking for may have moved or never existed."
+            ? "The page you’re looking for may have moved or never existed."
             : <>We hit an unexpected error. Try again — if it keeps happening, email <a href="mailto:alerts@camphawk.app" className="font-bold text-ch-paper underline underline-offset-[3px]">alerts@camphawk.app</a>.</>}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">

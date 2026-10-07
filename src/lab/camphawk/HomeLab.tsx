@@ -97,7 +97,7 @@ export function HomeLab({ initialLook = DEFAULT_LOOK }: { initialLook?: LookId }
 
         <section className="mx-auto max-w-[var(--ch-max)] px-5 py-6">
           <div className="look-card rounded-ch-card border border-ch-line bg-ch-card p-4">
-            <h2 className="font-ch-display text-ch-h font-bold">What we don&apos;t do</h2>
+            <h2 className="font-ch-display text-ch-h font-bold">What we don’t do</h2>
             <ul className="mt-2 max-w-[62ch]">
               {LIMITS.map((line) => (
                 <li key={line} className="flex gap-2 border-b border-ch-line py-2 text-ch-body leading-normal text-ch-ink-2 last:border-b-0">

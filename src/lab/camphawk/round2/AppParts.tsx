@@ -76,8 +76,8 @@ export function PricingLink({ visitor, plan, className }: { visitor: Visitor; pl
 export function PhoneNudge({ className }: { className?: string }) {
   return (
     <div className={cx("rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5", className)}>
-      <p className="text-[16px] font-bold text-ch-ink">You&apos;re only getting email alerts</p>
-      <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we&apos;ll send both.</p>
+      <p className="text-[16px] font-bold text-ch-ink">You’re only getting email alerts</p>
+      <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we’ll send both.</p>
       <a href="#" className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">Turn on text alerts</a>
     </div>
   );

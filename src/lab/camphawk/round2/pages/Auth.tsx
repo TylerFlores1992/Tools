@@ -53,7 +53,7 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
   return (
     <BareCard>
       <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your CampHawk account" : "Sign in to CampHawk"}</h1>
-      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "Free to make. Searching never needs one." : "Welcome back."}</p>
+      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "It’s free. Searching never needs an account." : "Welcome back."}</p>
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
@@ -82,9 +82,9 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
 
 function Context({ plan, next, mode }: { plan: string | null; next: string | null; mode: "in" | "up" }) {
   const line = plan === "autocart" || plan === "base"
-    ? `Your ${TRIAL_DAYS}-day free trial of ${plan === "autocart" ? "Auto-Cart" : "Alerts"} starts after this. Nothing is charged today.`
+    ? `Your ${TRIAL_DAYS}‑day free trial of ${plan === "autocart" ? "Auto-Cart" : "Alerts"} starts after this. Nothing is charged today.`
     : next?.includes("/new")
-      ? mode === "up" ? "Create a free account, and we'll take you straight back to your watch." : "Sign in, and we'll take you straight back to your watch."
+      ? mode === "up" ? "Create a free account, and we’ll take you straight back to your watch." : "Sign in, and we’ll take you straight back to your watch."
       : null;
   if (!line) return null;
   return <p className="mx-auto mt-4 max-w-[34ch] text-center text-[16px] font-bold leading-relaxed text-ch-paper">{line}</p>;
@@ -100,7 +100,7 @@ function AuthPage({ mode }: { mode: "in" | "up" }) {
       {({ visitor }) => (
         <>
           <Widget key={visitor} mode={mode} visitor={visitor} next={next} />
-          <LabNote className="mt-4">A stand-in for Clerk&apos;s sign-{mode} widget, themed and worded through Clerk&apos;s appearance and localization settings. Continue moves on as if it worked.</LabNote>
+          <LabNote className="mt-4">A stand-in for Clerk’s sign-{mode} widget, themed and worded through Clerk’s appearance and localization settings. Continue moves on as if it worked.</LabNote>
         </>
       )}
     </BareFrame>
