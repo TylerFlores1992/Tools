@@ -26,6 +26,13 @@ California State Parks' needs their permission first.**
 Full RC findings, the private check against RC's maps, and the time estimate are in
 "ReserveCalifornia: the State Parks campsite layer" below.
 
+**The Recreation.gov sample is done (2026-10-07, evening).** Of 50 random campgrounds with two or
+more sites, the automatic check passed **32 (64%; 50–76% across all 2,196)**. Looking at all 50
+over the aerial photo, none it passed was unusable, but 12 of those 32 are missing some
+campground roads. 6 of the 18 it held were fine. **After one look, 38 of 50 (76%; 63–86%) can go
+live.** RIDB's site points were right wherever the pads could be seen; **the gap is roads**.
+Details: "The 50-campground sample" below. Review page: `/private/camphawk/golden-hour/admin/site-maps`.
+
 ## What exists, per provider (measured 2026-10-07)
 
 ### Recreation.gov (RIDB): ready now
@@ -183,12 +190,14 @@ The work, in order. Times are focused working sessions, not calendar days.
      with tests and a UI audit.
    - **Gated on the owner's go-ahead:** the lab's standing rule is not to start camphawk.app work
      before Apple accepts the current app build.
-2. **Recreation.gov rollout:** about 2-3 days of batch runs plus review.
-   - 3,623 campgrounds have points for 90%+ of their sites.
-   - **The automatic share is NOT measured yet**; only Upper Pines was checked. Do a 50-campground
-     sample first. Forest Service and Army Corps campgrounds rely on OpenStreetMap roads, which
-     vary.
-   - Flagged maps take about a minute each to review.
+2. **Recreation.gov rollout:** about 2-3 days of batch runs plus review, and the road gap below.
+   - 3,212 overnight campgrounds have points for 90%+ of their sites (the earlier "3,623" counted
+     411 day-use facilities). 1,016 of them are one unit, a cabin or lookout, and need no site map.
+   - **Measured on a 50-campground sample (section below):** about 64% of the 2,196 multi-site
+     campgrounds pass the check on their own (1,100–1,670), about 12% more pass after a person's
+     look, and about 24% (roughly 300–800) need roads added or the listing split before a map is
+     usable.
+   - Review time per map was not measured.
 3. **ReserveCalifornia rollout,** once State Parks approves or the records request delivers:
    about 3-5 days.
    - The same pipeline: 150 areas are automatic, 48 need review, 17 need hand work. The 126 areas
@@ -319,6 +328,94 @@ come from public data.
    to OSM, or wait?
 4. Is a straight-line "restroom about 90 ft" helpful, or would you rather have nothing than an
    approximation?
+
+## The 50-campground sample (Recreation.gov, 2026-10-07)
+
+**The question:** how many Recreation.gov campground maps can go live without a person, and what
+stops the rest? Build: `studio/campground-maps/` (README has the commands). Review page:
+`/private/camphawk/golden-hour/admin/site-maps`.
+
+### How it was drawn
+- **Population** (RIDB export of 2026-10-06): campgrounds that are reservable and enabled,
+  counting overnight sites that aren't staff sites, with a point for at least 90% of them. That
+  is **3,212**. The earlier "3,623" counted day-use sites too, so 411 of those were picnic and
+  shelter facilities with no overnight site.
+- **1,016 of the 3,212 are a single unit** (a cabin, a fire lookout, a guard station, one group
+  site). They hold 1% of the sites and need a location, not a site map. They are counted, not
+  sampled.
+- **The sample is 50 of the other 2,196**, stratified by agency (Forest Service 30, Army Corps 12,
+  Park Service 6, BLM 2) and random within each (seed 20261007; `sample.mjs` re-draws it exactly).
+- **Changed once, and said so:** the first draw took all 3,212, and 17 of its 50 were single
+  units. The rule was changed to two or more sites before any map was built.
+
+### How each map was checked
+- **The automatic check (`qa.mjs`)** has seven checks: sites with a point, stacked points,
+  outliers, spread, distance to the drawn roads, inside OpenStreetMap's campground outline, and
+  agreement with OSM's numbered pitches.
+  - **The thresholds were fixed before the sample was built**, from Upper Pines (measured: sites a
+    median 14 m from the Park Service's roads, worst 19 m) and State Parks' 1-9 m.
+  - Tested, 19 of 19 mutants killed (six only after the tests were fixed).
+- **A first look:** every map over the USDA aerial photo (NAIP, public domain), drawn by
+  `aerial-check.mjs` and judged by eye. It gives one of four calls: good, usable (sites right, some
+  roads missing), not usable as drawn, or can't tell.
+  - It is one look at 0.6-1 m imagery. Under trees a pad can't be seen, so "good" there means
+    nothing looked wrong.
+  - The calls are in `src/lab/camphawk/round2/maps/sample-review.ts`, and shown on the review page
+    apart from the owner's own decisions.
+
+### What it found
+| The check said | Good | Usable, roads incomplete | Not usable as drawn | Can't tell |
+|---|---|---|---|---|
+| Ready (32) | 18 | 12 | 0 | 2 |
+| Needs a look (18) | 6 | 0 | 12 | 0 |
+
+- **Ready on its own: 32 of 50 (64%).** Across the 2,196, that is 50-76% (Wilson 95%), about
+  1,100 to 1,670 maps.
+- **No map the check passed looked unusable.** The check never let a map through that would send
+  someone to the wrong loop.
+  - **But 12 of the 32 it passed are missing some campground roads** (a spur, the inner lanes).
+    Their sites are right, so they're usable, not polished.
+  - The check measures how far sites are from the roads that ARE drawn. It can't see a road that
+    is missing when another road passes close.
+- **6 of the 18 it held were fine:**
+  - three were held only for one site with no point;
+  - Cottonwood Group and Antietam Creek are walk-in sites, legitimately far from a road;
+  - White Rock's cabins sit outside OSM's campground outline, as cabins should.
+- **After one look: 38 of 50 (76%; 63-86%) can go live.**
+- **The 12 that can't, and why:**
+  - **9 are missing campground roads:** Yellowbottom, Twin Peaks, Cave Creek, Dog Creek, Murrell,
+    Covered Bridge, Salt Springs, Pringle Falls, Edna Creek.
+  - **3 aren't one campground:** Rabbit Valley spreads over 8 km, Medicine Lake is several
+    campgrounds under one listing, and Pioneer Trail's three group sites span 770 m.
+- **RIDB's site points were right wherever the pads could be seen.** Not one point was seen off
+  its pad. The weak layer is roads, not sites.
+- **Where the layers came from:**
+  - Roads: OpenStreetMap 43, Park Service 6, none 1 (Rabbit Valley, too spread to fetch). Forest
+    Service system roads were never needed.
+  - Water: USGS 11, OpenStreetMap 38, none 1. **USGS's hydrography service timed out for hours that
+    day**, so most maps fell back to OSM's lakes and rivers. Each map records its source.
+  - No build failed.
+
+### What would raise it (owner's call)
+1. **Pick the road source by fit, not by agency.** Twin Peaks' Park Service roads have only the
+   outer loop. OSM has the twelve inner rows: sites a median 11 m from them, against 66 m. A rule
+   "use the source whose roads the sites sit along" would pass it. That is one map in this sample
+   (+2%). Measured on cached data; not built.
+2. **Add the missing loops to OpenStreetMap,** traced from NAIP (public domain; OSM accepts NAIP
+   tracing). That fixes our maps and everyone's. The time per campground was not measured. ODbL applies to what goes into OSM, as it already does to
+   what we take out.
+3. **Draw the camper's map over the aerial photo** instead of a road layer. This fills every road
+   gap at once, but it changes the look, the photos can be a few years old, and pages get heavier. It is a
+   design decision, not a fix.
+4. **Split multi-campground listings** (Medicine Lake) into one map per cluster, and show
+   dispersed areas (Rabbit Valley) as a list of areas, not one map.
+5. **Single units** (1,016) get a pin on a small area map, not a site map.
+
+### Not measured
+- How long a person takes per map.
+- Whether OSM is better or worse in the rest of the country than in this sample.
+- Positions under dense canopy (the photo can't show them).
+- The sample doesn't touch ReserveCalifornia, whose route is State Parks' layer, above.
 
 ## The map review screen (lab mock of CampHawk's admin, 2026-10-07)
 

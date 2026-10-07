@@ -42,7 +42,6 @@ export function AdminFrame({ page, home, children }: { page: string; home: strin
               <span aria-hidden="true" className="absolute bottom-2 left-0 top-2 w-1 rounded-full bg-ch-white" />
               <Map aria-hidden="true" className="size-[18px] shrink-0" />
               <span className="flex-1">Site maps</span>
-              <span className="rounded-ch-chip bg-ch-white/15 px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-[.08em]">New</span>
             </Link>
           </nav>
           <div className="border-t border-ch-white/10 px-3 py-3">

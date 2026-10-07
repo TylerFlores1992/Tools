@@ -20,6 +20,19 @@ export function naipUrl(bbox: [number, number, number, number], frame: { w: numb
 
 export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
   const [overlay, setOverlay] = useState(true);
+  const [strength, setStrength] = useState(100);
+  // Metres per CSS pixel on the drawn photo, so the site rings keep one size at any width.
+  const box = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const perPx = width ? map.frame.w / width : 0;
+  const ring = width && width < 560 ? 3 : 4.5;
   const [numbers, setNumbers] = useState(false);
   const [photo, setPhoto] = useState<"loading" | "ready" | "error">("loading");
   // A photo already in the browser's cache can finish before React attaches onLoad.
@@ -34,11 +47,16 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
       <div className="flex flex-wrap items-center gap-2">
         <Toggle on={overlay} onChange={setOverlay}>Sites and roads on top</Toggle>
         <Toggle on={numbers} onChange={setNumbers} disabled={!overlay}>Site numbers</Toggle>
+        <label className="flex min-h-10 items-center gap-2 text-[13.5px] font-bold text-ch-ink-2">
+          Strength
+          <input type="range" min={0} max={100} step={5} value={strength} disabled={!overlay} onChange={(e) => setStrength(Number(e.target.value))}
+            aria-valuetext={`${strength}%`} className="w-28 accent-ch-ink disabled:cursor-not-allowed" />
+        </label>
         <p className="text-[13.5px] text-ch-muted sm:ml-auto">{placed.length} sites · {Math.round(f.w)} × {Math.round(f.h)} m</p>
       </div>
-      {/* A tall campground would draw taller than the screen: the width is capped so the photo
-          stays near 85% of the viewport's height, centred. */}
-      <div className="relative mx-auto mt-3 overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}`, width: `min(100%, calc(85svh * ${(f.w / f.h).toFixed(3)}))` }}>
+      {/* The photo fills the column: the decision rides along beside it (from lg), so a tall
+          campground can scroll rather than shrink. */}
+      <div ref={box} className="relative mt-3 overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
         <img ref={img} src={naipUrl(map.bbox, f)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
           className={cx("absolute inset-0 size-full object-fill transition-opacity duration-300", photo === "ready" ? "opacity-100" : "opacity-0")} />
@@ -48,23 +66,25 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
           </p>
         )}
         {overlay && (
-          <svg aria-hidden="true" viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} preserveAspectRatio="none" className="absolute inset-0 size-full">
+          <svg aria-hidden="true" viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} preserveAspectRatio="none" className="absolute inset-0 size-full" style={{ opacity: strength / 100 }}>
             {/* Told from the roads by shape (dashes), not by a colour that means something else in CampHawk. */}
             {map.evidence?.outline && <path d={map.evidence.outline} fill="none" className="stroke-ch-ink" strokeOpacity={0.7} strokeWidth={4} strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />}
             {map.evidence?.outline && <path d={map.evidence.outline} fill="none" className="stroke-ch-white" strokeWidth={2} strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />}
             {map.roads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={0.7} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
             {map.roads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-white" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-            <path d={placed.map((s) => `M${s.at[0]} ${s.at[1]}h0`).join("")} className="stroke-ch-ink" strokeWidth={9} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-            <path d={placed.map((s) => `M${s.at[0]} ${s.at[1]}h0`).join("")} className="stroke-ch-white" strokeWidth={5.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+            {/* Hollow rings, so the pad under each site stays visible: 9px across, 6px on a phone,
+                where a big campground's rings would otherwise cover the pads they mark. */}
+            {perPx > 0 && placed.map((s) => <circle key={`k${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-ink" strokeWidth={ring > 3 ? 3.5 : 2.5} vectorEffect="non-scaling-stroke" />)}
+            {perPx > 0 && placed.map((s) => <circle key={`w${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-white" strokeWidth={ring > 3 ? 1.75 : 1.25} vectorEffect="non-scaling-stroke" />)}
           </svg>
         )}
-        {overlay && numbers && placed.map((s) => {
+        {overlay && numbers && strength > 0 && placed.map((s) => {
           const p = pct(map, s.at);
           return <span key={s.name} aria-hidden="true" style={{ left: p.left, top: p.top }} className="pointer-events-none absolute ml-[6px] -translate-y-1/2 text-[11px] font-extrabold leading-none tabular-nums text-ch-white [paint-order:stroke] [-webkit-text-stroke:2.5px_var(--color-ch-ink)]">{s.name}</span>;
         })}
       </div>
       <ul aria-label="What’s drawn on the photo" className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
-        <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[9px] rounded-full border-2 border-ch-ink bg-ch-white" />Sites, where Recreation.gov places them</li>
+        <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[10px] rounded-full border-2 border-ch-white shadow-[0_0_0_1.5px_var(--color-ch-ink)]" />Sites, where Recreation.gov places them</li>
         <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads the map draws</li>
         {map.evidence?.outline && <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-[3px] border-dashed border-ch-ink" />OpenStreetMap’s campground outline</li>}
         <li className="text-ch-muted">Photo: USDA NAIP via USGS (public domain)</li>

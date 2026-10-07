@@ -45,6 +45,18 @@ and `studio/campground-maps/README.md` (how to build one).
 - **Jedediah Smith (ReserveCalifornia),** `?id=jedediah-smith`. Its map is built from California
   State Parks' own campsite layer, so it **shows only on a local run**. Deployed, it shows the
   "not drawn yet" state.
+- **Site maps review (admin mock), `/private/camphawk/golden-hour/admin/site-maps`:** the
+  50-campground Recreation.gov sample, built 2026-10-07 evening.
+  - A queue with each map's verdict and thumbnail; each map's checks and its aerial-photo
+    overlay; Approve / Keep hidden (saved in the browser only).
+  - **Results:**
+    - The check passed **32 of 50 (64%; 50-76% across 2,196)**.
+    - A first look over the aerial photo found none of those unusable, but 12 are missing some
+      roads; 6 of the 18 it held were fine.
+    - **38 of 50 can go live after one look.**
+    - RIDB's site points were right wherever the pads could be seen; **the gap is roads** (9 of
+      the 12 unusable maps).
+  - Full write-up: the design doc's "The 50-campground sample".
 
 **Waiting on California State Parks** (both emails sent 2026-10-07 from the owner's Gmail):
 - **Public Records Act request** to Parks.PRA@parks.ca.gov, for their campsite layer (ArcGIS item
@@ -71,18 +83,25 @@ both are git-ignored. Rebuild locally with
 `NODE_USE_ENV_PROXY=1` is required in a session, or RC's firewall answers 403.
 
 **Measured, so nobody re-derives it:**
-- **Recreation.gov:** 3,623 campgrounds have points for 90% or more of their sites.
+- **Recreation.gov:** 3,212 overnight campgrounds have points for 90% or more of their sites
+  (the earlier "3,623" counted 411 day-use facilities). 1,016 of them are a single unit and need
+  no site map; the other 2,196 are what a rollout draws.
 - **ReserveCalifornia,** across 341 RC areas in CampHawk's catalog:
   - 87% of drawable sites match a State Parks point;
   - 64% would draw automatically, 21% need review, 7% need hand work, and 8% have no points.
 - **State Parks' accuracy:** points sit a median 1-9 m from real roads. RC's own drawings are
   partly schematic, a typical 13 m off.
-- **Not measured:** how many Recreation.gov maps pass automatically. Only Upper Pines was checked.
-  Sample 50 before estimating a rollout.
+- **Recreation.gov automatic share (50-campground sample):** 64% pass on their own, 76% after one
+  look. Not measured: review time per map, and positions under dense canopy.
 
 **Next, when the owner says so** (about 3-4 weeks of sessions for both providers; the breakdown is
 in the design doc):
-1. A 50-campground Recreation.gov sample.
+1. ~~A 50-campground Recreation.gov sample.~~ Done 2026-10-07 (above). Options it raised, each the
+   owner's call (design doc, "What would raise it"):
+   - pick the road source by fit (+1 of 50, measured, not built);
+   - trace missing loops into OpenStreetMap from NAIP;
+   - draw maps over the aerial photo;
+   - split multi-campground listings.
 2. Bring the map into CampHawk (campsite-finder). Gated on Apple's approval of the current build
    and the owner's go-ahead.
 3. The Recreation.gov rollout.

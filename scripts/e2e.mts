@@ -388,7 +388,7 @@ try {
     await p.getByRole("heading", { level: 1, name: "Site maps" }).waitFor();
     await p.getByText("Ready on their own", { exact: true }).waitFor();
     // A filter shows exactly the maps it counts, and is kept in the URL.
-    const filter = p.getByRole("button", { name: /^Need a look \d+$/ });
+    const filter = p.getByRole("button", { name: /^Needs a look \d+$/ });
     const count = Number((await filter.innerText()).match(/\d+/)![0]);
     await filter.click();
     assert.equal(await filter.getAttribute("aria-pressed"), "true");

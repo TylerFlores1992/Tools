@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, EyeOff, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, EyeOff, RotateCcw, Route } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { StatusMark } from "../../ui/StatusMark";
@@ -22,9 +22,9 @@ import { AerialCheck } from "./AerialCheck";
 // be laid over the aerial photo of the same ground. Decisions are kept in this browser only.
 
 const ORDER: Verdict[] = ["review", "not-drawn", "ready"];
-const FILTERS = [["all", "All"], ["review", "Need a look"], ["not-drawn", "Can’t be drawn"], ["ready", "Ready"]] as const;
+const FILTERS = [["all", "All"], ["review", "Needs a look"], ["not-drawn", "Can’t be drawn"], ["ready", "Ready"]] as const;
 type Filter = (typeof FILTERS)[number][0];
-type Decision = "approved" | "hidden";
+type Decision = "approved" | "roads" | "hidden";
 
 /* ---------- decisions, kept in this browser ---------- */
 
@@ -56,7 +56,14 @@ function useDecisions(): [Record<string, Decision>, (id: string, d: Decision | n
   return [value, set];
 }
 
-const sorted = [...SAMPLE.entries].sort((a, b) => ORDER.indexOf(a.verdict) - ORDER.indexOf(b.verdict) || tidyCase(a.name).localeCompare(tidyCase(b.name)));
+// The queue's order: maps that need a look first, and among them the ones a first look found fine
+// (a quick approval) ahead of the ones that need work.
+const LOOK_ORDER = ["good", "usable", "unsure", "hold"];
+const sorted = [...SAMPLE.entries].sort((a, b) =>
+  ORDER.indexOf(a.verdict) - ORDER.indexOf(b.verdict)
+  || LOOK_ORDER.indexOf(FIRST_LOOK[a.id]?.call ?? "hold") - LOOK_ORDER.indexOf(FIRST_LOOK[b.id]?.call ?? "hold")
+  || tidyCase(a.name).localeCompare(tidyCase(b.name)));
+const lookCount = (v: Verdict, call: FirstLook) => SAMPLE.entries.filter((e) => e.verdict === v && FIRST_LOOK[e.id]?.call === call).length;
 const pct = (k: number, n: number) => Math.round((k / n) * 100);
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -107,9 +114,9 @@ function Queue({ home }: { home: string }) {
         <div className="col-span-2 rounded-ch-card bg-ch-forest p-5 text-ch-white shadow-ch-card lg:col-span-1">
           <p className="flex items-center gap-1.5 text-ch-meta font-bold uppercase tracking-[.08em] text-ch-white/80"><Check aria-hidden="true" className="size-4" />Ready on their own</p>
           <p className="mt-2 font-ch-display text-[40px] font-extrabold leading-none tabular-nums">{summary.ready}<span className="text-[22px] font-bold text-ch-white/80"> of {n}</span></p>
-          <p className="mt-2 text-[14px] leading-snug text-ch-white/85">{pct(summary.ready, n)}% of the sample. Across all {fmt(multi)}, likely {lo}–{hi}%: about {fmt(Math.round((multi * lo) / 100 / 10) * 10)} to {fmt(Math.round((multi * hi) / 100 / 10) * 10)} maps.</p>
+          <p className="mt-2 text-[14px] leading-snug text-ch-white/85">{pct(summary.ready, n)}% of the sample; across all {fmt(multi)}, likely {lo}–{hi}%. A first look found {lookCount("ready", "good")} good and {lookCount("ready", "usable")} with some roads missing{lookCount("ready", "unsure") ? `; ${lookCount("ready", "unsure")} it couldn’t tell` : ""}.</p>
         </div>
-        <Tile verdict="review" count={summary.review} n={n} note={decided ? `${decided} decided so far` : "Each takes about a minute with the aerial photo"} />
+        <Tile verdict="review" count={summary.review} n={n} note={decided ? `${decided} decided so far` : "Each waits for a person to compare it with the aerial photo"} />
         <Tile verdict="not-drawn" count={summary.notDrawn} n={n} note="Shown as “not drawn yet” on the campground page" />
         <div className="col-span-2 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5 lg:col-span-1">
           <p className="text-ch-meta font-bold uppercase tracking-[.08em] text-ch-muted">No map needed</p>
@@ -118,7 +125,33 @@ function Queue({ home }: { home: string }) {
         </div>
       </section>
 
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:items-start">
+      <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">The {n} maps</h2>
+        <div role="group" aria-label="Show" className="flex flex-wrap gap-1.5">
+          {FILTERS.map(([v, label]) => {
+            const count = v === "all" ? n : entries.filter((e) => e.verdict === v).length;
+            if (!count && filter !== v) return null; // a filter that shows nothing isn't offered
+            const on = filter === v;
+            return (
+              <button key={v} type="button" aria-pressed={on} onClick={() => setFilter(v)}
+                className={cx("inline-flex min-h-10 items-center gap-1.5 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green", on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
+                {label}<span className={cx("tabular-nums", on ? "text-ch-white/80" : "text-ch-muted")}>{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {shown.length ? (
+        <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
+          {shown.map((e) => <Card key={e.id} entry={e} home={home} decision={decisions[e.id]} />)}
+        </ul>
+      ) : (
+        <p className="mt-3 rounded-ch-card border border-dashed border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">No maps in this group.</p>
+      )}
+
+      <h2 className="mt-10 font-ch-display text-[20px] font-bold text-ch-ink">How the check did</h2>
+      <div className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:items-start">
       <CrossCheck />
       {notReady > 0 && (
         <section aria-labelledby="why-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
@@ -141,31 +174,7 @@ function Queue({ home }: { home: string }) {
       )}
       </div>
 
-      <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">The {n} maps</h2>
-        <div role="group" aria-label="Show" className="flex flex-wrap gap-1.5">
-          {FILTERS.map(([v, label]) => {
-            const count = v === "all" ? n : entries.filter((e) => e.verdict === v).length;
-            const on = filter === v;
-            return (
-              <button key={v} type="button" aria-pressed={on} onClick={() => setFilter(v)}
-                className={cx("inline-flex min-h-10 items-center gap-1.5 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green", on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
-                {label}<span className={cx("tabular-nums", on ? "text-ch-white/80" : "text-ch-muted")}>{count}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {shown.length ? (
-        <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
-          {shown.map((e) => <Card key={e.id} entry={e} home={home} decision={decisions[e.id]} />)}
-        </ul>
-      ) : (
-        <p className="mt-3 rounded-ch-card border border-dashed border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">No maps in this group.</p>
-      )}
-
-      <p className="mt-8 max-w-[80ch] text-[13px] leading-relaxed text-ch-muted">
+      <p className="mt-8 max-w-[80ch] text-[13px] leading-relaxed text-ch-ink-2">
         Drawn {SAMPLE.built} from the {SAMPLE.drawn.export} (seed {SAMPLE.drawn.seed}, stratified by agency). The range is a 95% interval for {n} draws. Build: <code className="font-mono text-[12px]">studio/campground-maps/build-sample.mjs</code>.
       </p>
     </>
@@ -209,7 +218,7 @@ function CrossCheck() {
         </table>
       </div>
       <p className="border-t border-ch-line px-4 py-3 text-[14px] leading-snug text-ch-ink-2 sm:px-5">
-        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {heldGood} of the {rows[1].n} it held were fine and take a minute to approve, which makes <strong className="font-bold text-ch-ink">{rows[0].n + heldGood} of {SAMPLE.entries.length} ready to go live after one look</strong>.
+        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {heldGood} of the {rows[1].n} it held looked fine on the photo, which makes <strong className="font-bold text-ch-ink">{rows[0].n + heldGood} of {SAMPLE.entries.length} ready to go live after one look</strong>.
       </p>
     </section>
   );
@@ -219,7 +228,7 @@ function Tile({ verdict, count, n, note }: { verdict: Verdict; count: number; n:
   const v = VERDICT[verdict];
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5">
-      <StatusMark level={v.level} label={v.plural} className="whitespace-normal text-ch-meta uppercase tracking-[.08em]" />
+      <StatusMark level={v.level} label={v.word} className="whitespace-normal text-[13.5px]" />
       <p className="mt-2 font-ch-display text-[32px] font-extrabold leading-none tabular-nums text-ch-ink">{count}<span className="text-[18px] font-bold text-ch-muted"> of {n}</span></p>
       <p className="mt-2 text-[14px] leading-snug text-ch-ink-2">{note}</p>
     </div>
@@ -234,7 +243,7 @@ function Card({ entry: e, home, decision }: { entry: SampleEntry; home: string; 
       {/* The box keeps its shape whatever the campground's (square in a phone's row, 4:3 on a
           card); the drawing fits inside it. */}
       <div className="relative aspect-square w-28 shrink-0 border-r border-ch-line bg-ch-shell sm:aspect-[4/3] sm:w-auto sm:border-b sm:border-r-0">
-        <div className="absolute inset-1.5 sm:inset-2"><MapThumb thumb={e.thumb} label={`${name}: ${e.metrics.placed} sites`} /></div>
+        <div className="absolute inset-1.5 sm:inset-2"><MapThumb id={e.id} thumb={e.thumb} label={`${name}: ${e.metrics.placed} sites`} /></div>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 p-3 sm:gap-1.5 sm:p-4">
         <StatusMark level={v.level} label={v.word} className="text-[13px]" />
@@ -242,6 +251,7 @@ function Card({ entry: e, home, decision }: { entry: SampleEntry; home: string; 
           <Link href={`${home}?id=${e.id}`} className="after:absolute after:inset-0 focus-visible:outline-none group-focus-within:underline">{name}</Link>
         </h3>
         <p className="text-[13.5px] text-ch-muted">{[AGENCY_SHORT[e.agency] ?? e.agency, e.state, `${e.metrics.sites} sites`].filter(Boolean).join(" · ")}</p>
+        {e.reasons.length === 0 && <p className="text-[13.5px] leading-snug text-ch-ink-2">All {e.checks.length} checks passed.</p>}
         {e.reasons.length > 0 && (
           <p className="text-[13.5px] leading-snug text-ch-ink-2">{e.reasons[0].text}{e.reasons.length > 1 ? `, and ${e.reasons.length - 1} more reason${e.reasons.length > 2 ? "s" : ""}` : ""}.</p>
         )}
@@ -252,11 +262,17 @@ function Card({ entry: e, home, decision }: { entry: SampleEntry; home: string; 
   );
 }
 
+const DECIDED: Record<Decision, { Icon: typeof Check; text: string }> = {
+  approved: { Icon: Check, text: "You approved it" },
+  roads: { Icon: Route, text: "You sent it for roads to be added" },
+  hidden: { Icon: EyeOff, text: "You kept it hidden" },
+};
+
 function DecisionNote({ decision, className }: { decision: Decision; className?: string }) {
+  const { Icon, text } = DECIDED[decision];
   return (
     <p className={cx("flex items-center gap-1.5 text-[13px] font-bold text-ch-ink", className)}>
-      {decision === "approved" ? <Check aria-hidden="true" className="size-4" /> : <EyeOff aria-hidden="true" className="size-4" />}
-      {decision === "approved" ? "You approved it" : "You kept it hidden"}
+      <Icon aria-hidden="true" className="size-4" />{text}
     </p>
   );
 }
@@ -287,83 +303,110 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
   const name = tidyCase(entry.name);
   const decision = decisions[entry.id];
   const at = sorted.findIndex((e) => e.id === entry.id);
-  const nextEntry = sorted.slice(at + 1).find((e) => e.verdict !== "ready" && !decisions[e.id]);
+  const nextEntry = [...sorted.slice(at + 1), ...sorted.slice(0, at)].find((e) => e.verdict !== "ready" && !decisions[e.id]);
+  const nextHref = nextEntry ? `${home}?id=${nextEntry.id}` : null;
+  const look = FIRST_LOOK[entry.id];
+  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} />;
 
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         {back}
-        {nextEntry && <Link href={`${home}?id=${nextEntry.id}`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink-2 underline-offset-2 hover:underline">Next to look at<ArrowRight aria-hidden="true" className="size-4" /></Link>}
+        {nextHref && <Link href={nextHref} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink-2 underline-offset-2 hover:underline">Next to look at<ArrowRight aria-hidden="true" className="size-4" /></Link>}
       </div>
 
-      <div className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+      {/* The work on the left; from lg the first look and the decision ride along on the right, so
+          the buttons are in reach while the photo and the checks scroll. On a phone the decision
+          follows the photo, so the evidence comes first. */}
+      <div className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
         <div className="min-w-0">
           <StatusMark level={v.level} label={v.word} className="text-[14px]" />
           <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">{name}</h1>
           <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, `${entry.metrics.sites} sites`].filter(Boolean).join(" · ")}</p>
           {entry.reasons.length > 0 && (
-            <ul className="mt-3 grid gap-1 text-[15px] text-ch-ink">
-              {entry.reasons.map((r) => <li key={r.code} className="flex gap-2"><span aria-hidden="true" className="text-ch-muted">–</span>{r.text}</li>)}
+            <ul className="mt-3 grid list-disc gap-1 pl-5 text-[15px] text-ch-ink marker:text-ch-muted">
+              {entry.reasons.map((r) => <li key={r.code}>{r.text}</li>)}
             </ul>
           )}
-          {FIRST_LOOK[entry.id] && (
-            <div className="mt-4 max-w-[65ch] rounded-ch-input border border-ch-line bg-ch-shell px-4 py-3">
-              <p className="text-[12px] font-bold uppercase tracking-[.06em] text-ch-muted">First look over the aerial photo</p>
-              <p className="mt-1 text-[15px] text-ch-ink"><strong className="font-bold">{FIRST_LOOK_WORD[FIRST_LOOK[entry.id].call]}.</strong> {FIRST_LOOK[entry.id].note}</p>
-              <p className="mt-1 text-[12.5px] text-ch-muted">By the session that built the sample, 2026-10-07. One look; your decision is separate.</p>
-            </div>
-          )}
+          {look && <div className="mt-4 lg:hidden"><FirstLookNote id={entry.id} /></div>}
+
+          <Panel id="aerial-h" title="Against the aerial photo" className="mt-5">
+            {state === "ready" && map ? <AerialCheck map={map} name={name} /> : <Pending state={state} />}
+          </Panel>
+          <div className="mt-4 lg:hidden">{decisionBox}</div>
+
+          <Panel id="checks-h" title="The automatic checks" className="mt-4" pad={false}>
+            <Checks checks={entry.checks} />
+          </Panel>
+
+          <div className="mt-6">
+            <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">What campers would see</h2>
+            <p className="mt-0.5 text-[14px] text-ch-ink-2">The campground page’s site map, drawn from this data.</p>
+            {state === "ready" && map ? (
+              <SiteMap map={map} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
+            ) : <div className="mt-3"><Pending state={state} /></div>}
+          </div>
+
+          <Panel id="sources-h" title="Where each layer came from" className="mt-4">
+            <Sources entry={entry} />
+          </Panel>
         </div>
 
-        {/* Beside the header from lg; on a phone it follows the photo, so the evidence comes first. */}
-        <div className="hidden lg:block"><DecisionBox entry={entry} decision={decision} decide={decide} /></div>
+        <aside aria-label="Review" className="hidden gap-4 lg:sticky lg:top-6 lg:grid">
+          {look && <FirstLookNote id={entry.id} />}
+          {decisionBox}
+        </aside>
       </div>
-
-      <Panel id="aerial-h" title="Against the aerial photo" className="mt-5">
-        {state === "ready" && map ? <AerialCheck map={map} name={name} /> : <Pending state={state} />}
-      </Panel>
-      <div className="mt-4 lg:hidden"><DecisionBox entry={entry} decision={decision} decide={decide} /></div>
-
-      <Panel id="checks-h" title="The automatic checks" className="mt-4" pad={false}>
-        <Checks checks={entry.checks} />
-      </Panel>
-
-      <div className="mt-4">
-        <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">What campers would see</h2>
-        <p className="mt-0.5 text-[14px] text-ch-ink-2">The campground page’s site map, drawn from this data.</p>
-        {state === "ready" && map ? (
-          <SiteMap map={map} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
-        ) : <div className="mt-3"><Pending state={state} /></div>}
-      </div>
-
-      <Panel id="sources-h" title="Where each layer came from" className="mt-4">
-        <Sources entry={entry} />
-      </Panel>
     </>
   );
 }
 
-function DecisionBox({ entry, decision, decide }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void }) {
+function FirstLookNote({ id }: { id: string }) {
+  const look = FIRST_LOOK[id];
+  return (
+    <div className="rounded-ch-card bg-ch-shell px-4 py-3.5">
+      <p className="text-[13px] font-bold text-ch-ink-2">First look over the aerial photo</p>
+      <p className="mt-1 text-[15px] leading-snug text-ch-ink"><strong className="font-bold">{FIRST_LOOK_WORD[look.call]}.</strong> {look.note}</p>
+      <p className="mt-1.5 text-[13px] leading-snug text-ch-ink-2">By the session that built the sample, 2026-10-07. One look; your decision is separate.</p>
+    </div>
+  );
+}
+
+/** What a reviewer does with a map. The firm (ink) button follows the evidence: approve when the
+    first look found nothing wrong, otherwise the outcome the first look points to. */
+function DecisionBox({ entry, decision, decide, nextHref }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null }) {
+  const look = FIRST_LOOK[entry.id]?.call;
+  const roadsMissing = entry.reasons.some((r) => r.code === "far-from-roads" || r.code === "no-roads");
+  const primary: Decision = look === "hold" ? (roadsMissing && !entry.reasons.some((r) => r.code === "spread") ? "roads" : "hidden") : "approved";
+  const OPTIONS: { d: Decision; label: string; Icon: typeof Check; show: boolean }[] = [
+    { d: "approved", label: "Approve map", Icon: Check, show: entry.verdict !== "not-drawn" },
+    { d: "roads", label: "Needs roads added", Icon: Route, show: entry.verdict !== "ready" },
+    { d: "hidden", label: "Keep it hidden", Icon: EyeOff, show: true },
+  ];
+  const shown = OPTIONS.filter((o) => o.show).sort((a, b) => Number(b.d === primary) - Number(a.d === primary));
   return (
     <section aria-label="Your decision" className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card">
-      {entry.verdict === "ready" && !decision ? (
-        <p className="text-[14.5px] leading-snug text-ch-ink-2">Every check passed, so this map would go live on its own. You can still keep it hidden.</p>
-      ) : !decision ? (
-        <p className="text-[14.5px] leading-snug text-ch-ink-2">Compare the sites with the aerial photo. Approve the map if they sit on real pads along real roads.</p>
-      ) : (
+      {decision ? (
         <DecisionNote decision={decision} />
+      ) : (
+        <p className="text-[14.5px] leading-snug text-ch-ink-2">
+          {entry.verdict === "ready" ? "Every check passed, so this map would go live on its own. You can still hold it back."
+            : primary === "roads" ? "The first look found campground roads missing. Send it for roads, or approve it if the photo says otherwise."
+            : primary === "hidden" ? "The first look found this isn’t one campground’s map. Keep it hidden, or approve it if the photo says otherwise."
+            : "Compare the sites with the aerial photo. Approve the map if they sit on real pads along real roads."}
+        </p>
       )}
       <div className="mt-3 grid gap-2">
         {decision ? (
-          <button type="button" onClick={() => decide(entry.id, null)} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><RotateCcw aria-hidden="true" className="size-4" />Undo</button>
-        ) : (
           <>
-            {entry.verdict !== "not-drawn" && <button type="button" onClick={() => decide(entry.id, "approved")} className={buttonClasses({ variant: "ink", size: "sm", fullWidth: true })}><Check aria-hidden="true" className="size-4" />Approve map</button>}
-            <button type="button" onClick={() => decide(entry.id, "hidden")} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><EyeOff aria-hidden="true" className="size-4" />Keep it hidden</button>
+            {nextHref && <Link href={nextHref} className={buttonClasses({ variant: "ink", size: "sm", fullWidth: true })}>Next to look at<ArrowRight aria-hidden="true" className="size-4" /></Link>}
+            <button type="button" onClick={() => decide(entry.id, null)} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><RotateCcw aria-hidden="true" className="size-4" />Undo</button>
           </>
-        )}
+        ) : shown.map(({ d, label, Icon }) => (
+          <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{label}</button>
+        ))}
       </div>
-      <p className="mt-3 text-[12.5px] leading-snug text-ch-muted">Lab: decisions are saved in this browser only.</p>
+      <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: decisions are saved in this browser only.</p>
     </section>
   );
 }
@@ -394,7 +437,20 @@ const RESULT: Record<QaCheck["result"], ReactNode> = {
 
 function Checks({ checks }: { checks: QaCheck[] }) {
   return (
-    <div className="overflow-x-auto">
+    <>
+      {/* A phone gets a list, so every result stays in view; from sm, a table. */}
+      <ul className="divide-y divide-ch-line sm:hidden">
+        {checks.map((c) => (
+          <li key={c.code} className="grid gap-1 px-4 py-3">
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-[14px] font-semibold text-ch-ink">{c.label}</span>
+              <span className="shrink-0">{RESULT[c.result]}</span>
+            </div>
+            <p className="text-[13.5px] text-ch-ink-2"><span className="tabular-nums text-ch-ink">{c.value}</span> <span className="text-ch-ink-2">(limit: {c.limit.charAt(0).toLowerCase() + c.limit.slice(1)})</span></p>
+          </li>
+        ))}
+      </ul>
+      <div className="hidden overflow-x-auto sm:block">
       <table className="w-full min-w-[560px] text-left text-[14px]">
         <thead className="text-[12px] font-bold uppercase tracking-[.06em] text-ch-muted">
           <tr className="border-b border-ch-line">
@@ -415,7 +471,8 @@ function Checks({ checks }: { checks: QaCheck[] }) {
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   );
 }
 

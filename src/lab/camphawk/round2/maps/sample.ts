@@ -50,10 +50,10 @@ export type Sample = {
 export const SAMPLE = manifest as unknown as Sample;
 
 /** The three answers, each a shape and a word in CampHawk's admin vocabulary (StatusMark). */
-export const VERDICT: Record<Verdict, { level: Level; word: string; plural: string }> = {
-  ready: { level: "ok", word: "Ready", plural: "Ready on their own" },
-  review: { level: "warn", word: "Needs a look", plural: "Need a look" },
-  "not-drawn": { level: "fail", word: "Can’t be drawn", plural: "Can’t be drawn" },
+export const VERDICT: Record<Verdict, { level: Level; word: string }> = {
+  ready: { level: "ok", word: "Ready" },
+  review: { level: "warn", word: "Needs a look" },
+  "not-drawn": { level: "fail", word: "Can’t be drawn" },
 };
 
 /** Why a map needs a look, as the summary groups it. */
