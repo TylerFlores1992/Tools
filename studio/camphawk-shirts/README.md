@@ -50,9 +50,25 @@ Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. One-ink pipeline: `node
 under 1 mm in the illustration only) → `node kitone.mjs` (vector per ink). Critic: 7/10 before those fixes.
 Image credit used in total: $0.40 of the owner's $0.75.
 
-## Tent mockup (2026-10-07, owner's ask)
-A small A-frame tent (0.87 x 0.5 in, 30% up on the first try) on the left shore at the base of the mountain, mirrored in the lake like the rest
-of the design, with a lit doorway (a knockout on the one-ink print, mist ink on the three-ink). Mockup
-only: `python3 tent.py <kit 300 dpi png> <out> <ink hex> knockout|<door hex>` draws it onto the kit
-render, then `composite.py` puts it on the shirt photos. The vector kit files are unchanged until the
-owner picks it; then the tent goes into `round2.mjs` and the kits are rebuilt and print-checked.
+## The camp (2026-10-07, owner's ask): tent and campfire in the print files
+Both Still Water back prints now have a camp on the far shore under the peak. The fire burns just left
+of the peak's axis and the tent stands just right of it, with its doorway facing the fire. Both are
+mirrored in the lake as a few broken strokes, with two glints under the fire.
+
+- **Tent:** Recraft v4.1 linocut (`ref/recraft-camp.png`, picked from four tries at $0.035 each), 1.2 in
+  wide. Its walls flare into the shore, it has pole tips at the ridge ends, and one blunt lit doorway.
+- **Fire:** drawn in `camp.py`, because Recraft's own fire turned to mush at an inch wide. It is one
+  flame with a side lick and a 2.3 mm heart, over square-cut crossed logs, with hand-cut edges.
+- **Knockouts:** the doorway and the fire's heart show the natural shirt (one ink) or mist ink (three).
+
+Rebuild: `python3 camp.py [tent in] [axis x] [fire scale]` reads the camp-free renders
+(`ref/still-water*_base_300dpi.png`) and writes `out2/camp-*`. Then `node campkit.mjs` traces each ink
+into `kit/`. On print size:
+- every knockout under 1.1 mm is closed in the file;
+- the camp keeps at least 3.4 mm from the mountain;
+- `printcheck.py` flags only tips and corners.
+
+Critic: 6/10 on the first pass; 8/10 after redrawing the fire, calming the reflection and centering on
+the peak. The last round's fixes (hand-cut fire edges, flared tent base, cleaner strokes) are in.
+`gen.mjs` needs `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt` in this container.
+Image credit used in total: $0.54 of the owner's $0.75.

@@ -38,8 +38,12 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 0. **CampHawk shirts: final pair, owner to choose a printer** (2026-10-07). Still Water in three inks on
    sage (the owners) and in one ink on natural (the giveaway; round 3 idea 5). Night Watch was dropped.
    Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. Print files: `studio/camphawk-shirts/kit/`
-   (`still-water_*` and `still-water-one-ink_*`). Image credit: $0.40 of the owner's $0.75; AI Gateway
-   balance $1.645. Open, the owner's call: blank, printer, quantity, a strike-off (test print).
+   (`still-water_*` and `still-water-one-ink_*`). Both back prints now carry the owner's camp: a
+   Recraft linocut ridge tent and a drawn campfire under the peak, mirrored in the lake
+   (`camp.py` → `campkit.mjs`; critic 6 → 8/10; print-checked). Image credit: $0.54 of the owner's
+   $0.75; AI Gateway balance $1.505 (`gen.mjs` stops at $1.40, so about 3 images are left; run it with
+   `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt`). Open, the owner's call: blank,
+   printer, quantity, a strike-off (test print).
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
