@@ -33,6 +33,14 @@ campground roads. 6 of the 18 it held were fine. **After one look, 38 of 50 (76%
 live.** RIDB's site points were right wherever the pads could be seen; **the gap is roads**.
 Details: "The 50-campground sample" below. Review page: `/private/camphawk/golden-hour/admin/site-maps`.
 
+**Then the roads were fixed (2026-10-07, night): 45 of 50 (90%; 79–96%) can go live after one
+look.** Each map now draws its roads from the source the sites actually sit along (pick by fit,
+four sources), and a tracing tool on the review page lets a person draw what no source has, over
+the aerial photo. A session traced the missing roads on 13 sample maps. Traced roads always wait
+for a person to approve them, so fewer maps are ready *on their own* (27); the five left are three
+listings that aren't one campground, one under full canopy, and one where no lanes are visible.
+Details: "Roads: picked by fit, then traced" below.
+
 ## What exists, per provider (measured 2026-10-07)
 
 ### Recreation.gov (RIDB): ready now
@@ -397,13 +405,13 @@ stops the rest? Build: `studio/campground-maps/` (README has the commands). Revi
   - No build failed.
 
 ### What would raise it (owner's call)
-1. **Pick the road source by fit, not by agency.** Twin Peaks' Park Service roads have only the
-   outer loop. OSM has the twelve inner rows: sites a median 11 m from them, against 66 m. A rule
-   "use the source whose roads the sites sit along" would pass it. That is one map in this sample
-   (+2%). Measured on cached data; not built.
-2. **Add the missing loops to OpenStreetMap,** traced from NAIP (public domain; OSM accepts NAIP
-   tracing). That fixes our maps and everyone's. The time per campground was not measured. ODbL applies to what goes into OSM, as it already does to
-   what we take out.
+1. ~~**Pick the road source by fit, not by agency.**~~ **Built the same night**, with two more
+   sources than first measured (Forest Service and Census roads); it helped 4 maps on its own,
+   not 1. See "Roads: picked by fit, then traced".
+2. **Trace the missing loops from NAIP.** ~~Into OpenStreetMap~~ **Built as our own trace files
+   instead** (same section): a person draws them on the review page and the build adds them.
+   Putting them into OpenStreetMap as well would fix everyone's maps; that needs the owner's own
+   OSM account (no automated edits), and is still open.
 3. **Draw the camper's map over the aerial photo** instead of a road layer. This fills every road
    gap at once, but it changes the look, the photos can be a few years old, and pages get heavier. It is a
    design decision, not a fix.
@@ -416,6 +424,99 @@ stops the rest? Build: `studio/campground-maps/` (README has the commands). Revi
 - Whether OSM is better or worse in the rest of the country than in this sample.
 - Positions under dense canopy (the photo can't show them).
 - The sample doesn't touch ReserveCalifornia, whose route is State Parks' layer, above.
+
+## Roads: picked by fit, then traced (2026-10-07, night)
+
+The sample showed the gap is roads, not sites. Two fixes, both built and tested.
+
+### 1. Pick the road source by fit (`studio/campground-maps/roads.mjs`)
+- **Four sources, one per map** (two sources' copies of one road would draw it twice):
+  - the Park Service's GIS;
+  - OpenStreetMap;
+  - the Forest Service's system roads (`EDW_RoadBasic_01`);
+  - the Census Bureau's TIGER roads (`tigerweb.geo.census.gov`, public domain), new.
+- **The rule:** measure every site's distance to each source's roads and take the source with the
+  shortest "9 in 10 sites within" (p90) distance. A missing loop is exactly what moves that number.
+  The usual order (Park Service, OpenStreetMap, Forest Service, Census) still wins when its p90 is
+  within 5 m or a quarter of the best, whichever is larger.
+- **The margin was set after measuring the sample, not before** (unlike the QA thresholds), so it
+  is fitted to these 50. Tested on the sample's own cases (`scripts/campground-maps-roads.test.mts`,
+  8 of 8 mutants killed).
+- **What it changed:** 10 of 50 maps took a different source. Twin Peaks went from the Park Service
+  to OpenStreetMap. Three went to Census roads (Cave Creek, Dog Creek, Udall Park), and six to the
+  Forest Service (Covered Bridge, Salt Springs, Colorado, Dennis Cove, Blue Lake Creek, Edna Creek).
+  - **Ready on its own went from 32 to 36.** Twin Peaks, Dog Creek, Covered Bridge and Edna Creek
+    now pass.
+  - **Each change was checked over the photo:**
+    - better and right: Twin Peaks, Dog Creek, Edna Creek, Colorado;
+    - better, still missing lanes (then traced): Cave Creek, Salt Springs, Udall Park;
+    - can't confirm under canopy: Covered Bridge, Blue Lake Creek, and Dennis Cove, whose Forest
+      Service loop runs exactly through the site points, as if one was drawn from the other.
+- The review page shows each map's fits for all four sources and why the one used won.
+
+### 2. Trace what no source has (`studio/campground-maps/trace.mjs`, the review page)
+- **The file:** `studio/campground-maps/traces/ridb-<id>.json`, roads and points in degrees, so it
+  survives a rebuild. The build checks it and stops on a bad one.
+  - A road can be named and marked a through road.
+  - `replace: true` makes the trace the map's only roads. That's for a map whose source has the
+    roads but draws them in the wrong places (Lost Creek: up to 20 m off).
+  - Points are restrooms and water taps.
+- **The photo is USDA NAIP (public domain)**, so what is traced from it is our own work, with
+  nothing to license. Credits say "traced by CampHawk from USDA aerial photos".
+- **A traced map always waits for a person:** the automatic check has an eighth check, "Traced from
+  the aerial photo", which holds any map with traces for approval, however well its sites fit.
+- **The tool** ("Trace what's missing", on each map's page):
+  - draw roads, restrooms and water taps over the photo at 1×, 2× or 4×;
+  - snaps to a nearby road, so a new lane joins the one it leaves;
+  - works by keyboard (arrows move a cross, Enter places a point, Escape finishes);
+  - name a road, mark it a through road, replace the source's roads;
+  - saved in the browser, and the camper's map preview shows the traces at once;
+  - "Download trace file" gives the exact file the build reads. It goes on the map when a session
+    adds it to `traces/` and rebuilds (lab: there is no server to save to).
+- **Tested:** lab arithmetic and file round trip (`src/lab/camphawk/round2/maps/trace.test.mts`); the
+  build's file check (`scripts/campground-maps-trace.test.mts`, all mutants killed); and two browser
+  checks (mouse, keyboard, reload, preview, download validated by the build's own check, delete,
+  phone zoom, a built-in trace). Mutation results for the browser checks are in the PR.
+
+### What a session traced, and what it didn't
+- **Traced, 13 maps:** Udall Park, Cave Creek, Salt Springs, Pringle Falls, Preston Bend,
+  Trimmer, Six Mile, Lost Creek (whole road layer replaced), Murray Bay, Buck Hall, Lower Little
+  Truckee, Rio de las Vacas and Murrell Park.
+  - **Only what could be seen was traced.** Each was checked over the photo after rebuilding, and a
+    trace that sat off the visible road was moved.
+  - Every trace file has a note saying what was left out and why.
+- **Left alone:**
+  - Yellowbottom and Hearts Content are under full canopy.
+  - Ward Mountain's and Dog Creek's missing pieces are short spurs that can't be made out.
+  - Crystal Creek's drawn spur is within a few metres of its track.
+- **No restrooms or water taps were traced by the session.** A building on the photo can't be
+  told from a shed with confidence. The tool lets a person place them.
+
+### The result
+- **After one look: 45 of 50 (90%; 79–96% across all 2,196), up from 38.**
+  - 32 good, 10 usable with some lanes still missing, 3 that passed but can't be confirmed under
+    canopy.
+  - Of the 23 the check holds, 18 are usable on the photo: 12 with roads traced from it, and 6 held
+    for other reasons (one site with no point, walk-in sites).
+- **Ready on its own: 27 (40–67%).** That is lower than before on purpose: 12 of the maps that would
+  pass now wait only for someone to approve their traced roads.
+- **The five left:**
+  - Rabbit Valley, Medicine Lake and Pioneer Trail aren't one campground (option 4 above);
+  - Yellowbottom is under full canopy, and only one short lane shows;
+  - Murrell Park: no lanes to its sites are visible, though Recreation.gov allows a 20 ft vehicle
+    at each.
+- **Not measured:** how long a person takes with the tool. A session traced and checked the 13
+  maps in about three hours, but that includes building the checking aids, and it was done from
+  coordinates on a grid, not with the tool.
+
+### Restrooms and water: what the agencies publish
+- **The Forest Service publishes text only, not locations.** `EDW_RecInfraRecreationSites_02` has
+  one point per site, with `restroom_availability` ("Vault toilet(s)") and `water_availability`
+  ("drinking water is available from faucets").
+- So locations come from the Park Service (its own parks), OpenStreetMap or a person's trace. In
+  the sample, 20 of 50 maps have a restroom and 7 a water tap.
+- **Not built:** saying "Vault toilets; water from faucets (locations not mapped)" from that text,
+  where the map has none.
 
 ## The map review screen (lab mock of CampHawk's admin, 2026-10-07)
 

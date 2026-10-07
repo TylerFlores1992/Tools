@@ -25,17 +25,45 @@ NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs ridb
 #    → src/lab/camphawk/round2/maps/sample-manifest.json (verdicts, checks, thumbnails)
 # 3. Optional: each map over the aerial photo, as PNGs, for a person to judge
 node studio/campground-maps/aerial-check.mjs /tmp/aerial public/private/camphawk/maps/ridb-*.json
+# Rebuild only some (after adding a trace, say); the rest of the manifest is kept
+NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs ridb 233411 10243253
 ```
 
 The lab's review page is `/private/camphawk/golden-hour/admin/site-maps`. What the sample found
 is in `docs/design/campground-maps.md`.
 
 - **`build.mjs` is one function for both** (`buildRidbMap`). Each layer comes from one source,
-  never merged: roads from the Park Service where it has any in the frame, else OpenStreetMap,
-  else the Forest Service's system roads; restrooms and water taps per kind; lakes and rivers
-  from USGS, or OpenStreetMap when USGS doesn't answer (recorded in the map's `sources.water`).
+  never merged:
+  - **Roads: the source the sites sit along** (`roads.mjs`, tested). All four are fetched (Park
+    Service, OpenStreetMap, Forest Service, Census TIGER), and the one with the shortest "9 in 10
+    sites within" distance wins, unless the usual order's pick is within 5 m (or a quarter) of it.
+    Each map records every source's fit and the reason in `sources.roadPick`.
+  - Trails, parking and buildings: the Park Service's when its roads were picked, else OSM's.
+  - Restrooms and water taps per kind; lakes and rivers from USGS, or OpenStreetMap when USGS
+    doesn't answer (recorded in the map's `sources.water`).
+  - **Then the map's trace, if it has one** (below).
 - **`qa.mjs` is the automatic check** (tested in `scripts/campground-maps-qa.test.mts`, 19 of 19
-  mutants killed). Its thresholds were fixed before the sample was built.
+  mutants killed). Its thresholds were fixed before the sample was built. Its eighth check holds
+  any map with traced roads or points for a person to approve.
+
+## Traces: roads and points no source has (`traces/`, `trace.mjs`)
+
+`traces/ridb-<id>.json` is what a person traced from the aerial photo (USDA NAIP, public domain,
+so it's our own work). The review page's **Trace what's missing** tool downloads exactly this file.
+To put one on the map, add it here and rebuild that campground (command above).
+
+```json
+{ "version": 1, "map": "ridb-233411", "traced": "2026-10-07", "by": "…", "photo": "USDA NAIP via USGS The National Map (public domain)",
+  "roads": [{ "coords": [[lon, lat], …], "name": "optional", "through": false }],
+  "points": [{ "type": "Restroom", "at": [lon, lat] }], "replace": false, "note": "what was left out and why" }
+```
+
+- **Roads add to the source's.** A traced road is a campground road (thin) unless `through`.
+- **`replace: true` makes the trace the map's only roads**, for a source that has the roads but in
+  the wrong places (Lost Creek). Trace every road then, and mark the through roads.
+- **The build stops on a bad file** (another map's, a road far outside the frame, an unknown point
+  type): a trace that silently fails to apply is a map that silently keeps its gap.
+- Trace only what you can see on the photo, and say in `note` what you left out.
 - **A build waits mostly on remote services.** On 2026-10-07 USGS's hydrography service timed
   out for hours; each campground spent up to 90 s on it before falling back. Three build at once.
 - **OpenStreetMap's API is for editing, not bulk reads.** Fifty small requests is within its
@@ -50,8 +78,10 @@ is in `docs/design/campground-maps.md`.
 | Campground roads, restrooms, kiosk, parking, shuttle stop, trails | NPS national datasets, `mapservices.nps.gov/arcgis/rest/services/NationalDatasets/NPS_Public_*_Geographic` | Federal government data. The service credits "National Park Service". |
 | Lakes and rivers | USGS NHD, `hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer` (layers 6, 9, 12) | US government work (USGS). |
 | Roads, paths, restrooms, water taps, parking, campground outlines, numbered pitches (where the Park Service has none) | OpenStreetMap API (`api.openstreetmap.org/api/0.6/map`) | ODbL 1.0. Every map that uses it says "© OpenStreetMap contributors". The OSM-derived layers in the map JSON files are offered under ODbL. |
-| Forest Service system roads (only when nothing else has roads) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
-| Aerial photo (review only, never drawn on a camper's map) | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain. Loaded live by the review page; nothing is committed. |
+| Forest Service system roads (when they fit best) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
+| Census TIGER roads (when they fit best) | `tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer` (layers 2, 6, 8) | US government work (Census Bureau). |
+| Roads and points traced by a person | `traces/`, from the USDA NAIP photo | Our own work, from a public-domain photo. |
+| Aerial photo (review and tracing only, never drawn on a camper's map) | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain. Loaded live by the review page; nothing is committed. |
 
 **Never used:** recreation.gov's own `/api/camps` endpoints (robots.txt disallows `/api/*`,
 and its terms ban scraping), provider map images, and Google, Esri or Bing imagery for tracing

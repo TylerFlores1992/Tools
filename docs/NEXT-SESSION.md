@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07, evening (campground site maps: the 50-campground Recreation.gov sample, 32 of 50 ready on their own and 38 after one look; a Site maps review page in the lab; PR #19 merged, production smoke 29/29, the State Parks map confirmed absent from the live site (404)). Earlier the same day: Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged, production smoke 27/27.*
+*Last updated: 2026-10-07, night (campground site maps: roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps; 45 of 50 can go live after one look, up from 38). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -57,6 +57,29 @@ and `studio/campground-maps/README.md` (how to build one).
     - RIDB's site points were right wherever the pads could be seen; **the gap is roads** (9 of
       the 12 unusable maps).
   - Full write-up: the design doc's "The 50-campground sample".
+- **Roads fixed the same night** (design doc, "Roads: picked by fit, then traced"):
+  - **Pick by fit (`roads.mjs`):** each map draws its roads from whichever of four sources the
+    sites sit along: Park Service, OpenStreetMap, Forest Service or Census TIGER (new). 10 of 50
+    maps changed source, and 4 more passed on their own (32 → 36).
+  - **The tracing tool:** "Trace what's missing" on each map's review page.
+    - Draw roads, restrooms and water taps over the photo, with zoom, snapping and the keyboard.
+    - Name a road, mark it a through road, or replace the source's roads.
+    - Saved in the browser. **Download trace file** gives `studio/campground-maps/traces/ridb-<id>.json`.
+    - **To put a trace on the map:** add the file to `traces/` and run
+      `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir> <id>`.
+    - A traced map always waits for approval (an eighth check).
+  - **Traces on 13 sample maps,** each checked over the photo. Only visible roads were traced, and
+    every file's note says what was left out.
+  - **Result:** **45 of 50 can go live after one look (90%; 79–96%)**, up from 38. 27 are ready on
+    their own; that number fell on purpose, because 12 maps wait only for their traced roads to be
+    approved.
+  - **The five left:**
+    - Rabbit Valley, Medicine Lake and Pioneer Trail aren't one campground;
+    - Yellowbottom is under full canopy;
+    - Murrell Park shows no lanes to its sites.
+  - **Restrooms and water:** the Forest Service publishes only text ("Vault toilet(s)"), not
+    locations. Saying that text on the map where no location exists is not built.
+  - **Rebuilding needs the RIDB export** (248 MB, not committed; README step 1).
 
 **Waiting on California State Parks** (both emails sent 2026-10-07 from the owner's Gmail):
 - **Public Records Act request** to Parks.PRA@parks.ca.gov, for their campsite layer (ArcGIS item
@@ -96,12 +119,14 @@ both are git-ignored. Rebuild locally with
 
 **Next, when the owner says so** (about 3-4 weeks of sessions for both providers; the breakdown is
 in the design doc):
-1. ~~A 50-campground Recreation.gov sample.~~ Done 2026-10-07 (above). Options it raised, each the
-   owner's call (design doc, "What would raise it"):
-   - pick the road source by fit (+1 of 50, measured, not built);
-   - trace missing loops into OpenStreetMap from NAIP;
+1. ~~A 50-campground Recreation.gov sample.~~ Done 2026-10-07 (above), then ~~pick the road
+   source by fit~~ and ~~trace missing loops~~, both built the same night. Options still open, each
+   the owner's call (design doc, "What would raise it"):
+   - **approve the 23 held maps** on the review page (12 only need their traces approved);
+   - put the traced roads into OpenStreetMap too (needs the owner's own OSM account);
    - draw maps over the aerial photo;
-   - split multi-campground listings.
+   - split multi-campground listings;
+   - restroom and water text from the Forest Service where the map has no location.
 2. Bring the map into CampHawk (campsite-finder). Gated on Apple's approval of the current build
    and the owner's go-ahead.
 3. The Recreation.gov rollout.
