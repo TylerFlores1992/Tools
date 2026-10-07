@@ -157,7 +157,7 @@ export function StatePage({ slug }: { slug: string }) {
   const ca = r.code === "CA";
   const types = hubsIn(r.code);
   return (
-    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false} photo={r.code === "CA" ? { art: ART.r1, pos: "30% 60%", posLg: "50% 60%" } : undefined}>
+    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />

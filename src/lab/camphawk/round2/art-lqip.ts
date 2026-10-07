@@ -21,7 +21,6 @@ export const LQIP: Record<string, string> = {
   "m1-coast-wide": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADQAQCdASoQAAcAA4BaJQBOgCPbGI/+wAD+8ahTC8rDhgGKZkaVCei4AXbE4+FxQk4AAA==",
   "n1-newwatch-wide": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAcAA4BaJYwCdAEefr1mfgPgAP7zU9CTPEdLWZd8oQVMWnVt/JOS82L8kJUMAAA=",
   "p1-pricing-wide": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAQCdASoQAAcAA4BaJZACdAD6I2rnMAAA/qoG0ON7gBgggZKRfow4Qfymd3sd01J+eW0tKWGIAA==",
-  "r1-sierra-wide": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAACQAQCdASoQAAcAA4BaJZwAAlwlI3gA/tKOrdQHAMBq9x8aVu9HGlBZZ1SH8+eTDcuQeAAA",
   "s1-ranger-wide": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADQAQCdASoQAAcAA4BaJQBOgB6JNW8aAAD+wFz0bkoFDFcjiZpiCilIHwAcEmxpOmAAAA==",
   "t1-tent-wide": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAwAgCdASoQAAcAA4BaJZwC7AEPhWfm3hZ8AAD+9pIlvE5HocJxxWNbBceiDwkOJel5FVoAAAA=",
   "v1-fork-wide": "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAADwAQCdASoQAAcAA4BaJYwCdAEO1PQG7QAA/vd7078S0NBADpB+WW1sCo7MRAAA",

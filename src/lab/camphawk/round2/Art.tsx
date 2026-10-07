@@ -32,7 +32,6 @@ export const ART = {
   // Round 6: cut from earlier unused generations (no new images), for pages that had a plain band.
   k1: { name: "k1-halfdome-wide", widths: [828, 1440, 2048], w: 2048, h: 878 },
   g1: { name: "g1-sitepost-wide", widths: [828, 1440, 2048], w: 2048, h: 878 },
-  r1: { name: "r1-sierra-wide", widths: [828, 1440, 1664], w: 1664, h: 713 },
   t1: { name: "t1-tent-wide", widths: [828, 1440, 1856], w: 1856, h: 796 },
 } as const;
 export type Piece = (typeof ART)[keyof typeof ART];
