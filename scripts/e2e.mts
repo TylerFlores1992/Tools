@@ -1,6 +1,7 @@
 /**
  * Behaviour checks in a real browser against a production build.
  *   npm run e2e            (starts `next start` itself if nothing answers on BASE_URL)
+ *   E2E_ONLY="site-map tracing" npm run e2e   (only the checks whose name contains it)
  * Covers what unit tests can't: deep links, keyboard control, unit switching, error copy.
  */
 import { chromium } from "playwright-core";
@@ -25,7 +26,10 @@ if (!(await up())) {
 }
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
 const results: string[] = [];
+// E2E_ONLY=<text> runs only the checks whose name contains it (for a mutation run, say).
+const ONLY = process.env.E2E_ONLY;
 async function check(name: string, fn: () => Promise<void>) {
+  if (ONLY && !name.includes(ONLY)) return;
   try { await fn(); results.push(`ok   ${name}`); } catch (e) { results.push(`FAIL ${name}\n     ${(e as Error).message.split("\n").slice(0, 4).join(" / ")}`); }
 }
 try {
