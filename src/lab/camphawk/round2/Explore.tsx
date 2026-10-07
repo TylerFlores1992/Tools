@@ -17,7 +17,7 @@ import { addDays, thisWeekendRange, todayISO, type ISODate } from "../ui/date";
 import { Art, ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, WatchCtaLink, type Plan } from "./AppParts";
 import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
-import { ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
+import { CAMPGROUNDS as EXAMPLES, ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
 import { TRIAL_DAYS } from "./pages/tier2-data";
 import { COVERAGE } from "./pages/camping-data";
@@ -100,29 +100,31 @@ function StatusBox({ visitor }: { visitor: Visitor }) {
   );
 }
 
-function FirstRun({ visitor }: { visitor: Visitor }) {
-  const steps = [
-    ["Say where", "A city, park or ZIP, or tap the crosshair to use your location. Leave it empty and we’ll search near you."],
-    ["Say when", "Exact dates, tonight or this weekend. Flexible finds the most: how many nights you need, anywhere in a range."],
-    ["Search", "Each result says in words whether a site is free right now. Tap one for its full calendar, or the map to see where they are."],
-  ] as const;
+/** Before a search (round 17 rework): the map a search will fill, with one button that runs it near
+    you. It replaced three numbered steps that told what the screen could show. The pins are a
+    picture here (decorative); the real, pressable pins come with results. */
+function FirstRun({ visitor, onSearch }: { visitor: Visitor; onSearch: () => void }) {
   return (
-    <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
-      <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">How search works</h2>
-      {/* Wide screens: the three steps side by side, so the card has no dead half. */}
-      <ol className="mt-4 max-w-[56ch] xl:mt-6 xl:grid xl:max-w-none xl:grid-cols-3 xl:gap-6">
-        {steps.map(([title, sub], i) => (
-          <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0 xl:border-b-0 xl:border-t xl:pt-4">
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
-            <span>
-              <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
-              <span className="mt-0.5 block text-[15px] leading-relaxed text-ch-ink-2">{sub}</span>
+    <div className="flex h-full flex-col rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">Campgrounds near you</h2>
+        <p className="text-[14px] text-ch-ink-2">Around {ORIGIN}</p>
+      </div>
+      <figure className="mt-4 flex flex-1 flex-col">
+        <div className="relative min-h-[240px] flex-1 overflow-hidden rounded-ch-card border border-ch-line bg-ch-shell sm:min-h-[300px]">
+          <Art art={ART.e2} sizes="(min-width: 1024px) 760px, 100vw" className="absolute inset-0 size-full object-cover" />
+          {EXAMPLES.map((c) => (
+            <span key={c.id} aria-hidden="true" style={{ left: `${c.pin.x}%`, ["--y" as string]: c.pin.y }} className="gh-map-pin absolute grid size-11 -translate-x-1/2 -translate-y-[78%] place-items-center">
+              <span className="gh-pin block" data-state="plain" data-selected={false} />
             </span>
-          </li>
-        ))}
-      </ol>
-      {/* Two columns only when there are two things to say: a subscriber has no account line, and
-          one column beside an empty one read as unfinished (round 10). */}
+          ))}
+          <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:p-5">
+            <button type="button" onClick={onSearch} className={buttonClasses({ size: "lg", className: "px-6 shadow-ch-pop" })}><Search aria-hidden="true" className="size-5" />Show what’s open near you</button>
+          </div>
+        </div>
+        <figcaption className="mt-2 text-[13px] text-ch-muted">Illustrated map with example pins. Each result says in words whether a site is free for your dates.</figcaption>
+      </figure>
+      {/* Two columns only when there are two things to say (round 10). */}
       <div className={cx("mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5", visitor !== "subscriber" && "xl:grid-cols-2")}>
         <div>
           <p className="text-[16px] font-bold text-ch-ink">Everything booked?</p>
@@ -499,11 +501,11 @@ export function Explore() {
 
           {/* Results start on paper, under the band; the first-run card is a card, so it docks across
               the band's edge level with the search card (round 12: it sat 110px lower, by accident). */}
-          <section aria-label="Results" aria-busy={loading} className={cx("min-w-0", (results !== null || loading) && "lg:pt-[calc(var(--gh-dock)+24px)]")}>
+          <section aria-label="Results" aria-busy={loading} className={cx("min-w-0", results !== null || loading ? "lg:pt-[calc(var(--gh-dock)+24px)]" : "lg:self-stretch")}>
             {/* One short line is announced, not every card in the list. */}
             <p role="status" className="sr-only">{loading ? "Searching…" : results === null || !searched ? "" : openCount > 0 ? `${results.length} campgrounds, ${openCount} with openings` : `${results.length} campgrounds, none with openings for those dates`}</p>
             {(results !== null || loading) && <StatusBox visitor={visitor} />}
-            {results === null && !loading && <FirstRun visitor={visitor} />}
+            {results === null && !loading && <FirstRun visitor={visitor} onSearch={run} />}
             {loading && <ResultsSkeleton />}
             {results !== null && searched && !loading && (
               <>

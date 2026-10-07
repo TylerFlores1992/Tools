@@ -6,6 +6,7 @@ import { Check, Loader2, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Collapsible } from "../../ui/Collapsible";
+import { RadioChips } from "../../ui/RadioChips";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../../Pricing";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor, type PlanTier } from "../../data";
 import { LIMITS } from "../../copy";
@@ -154,43 +155,73 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
 }
 
 /** The app, not subscribed: the store's own paywall, or a sentence where the store can't sell. */
+/** One plan in the app paywall: flat inside the paywall card, the same features as the web cards. */
+function AppPlan({ name, tier, features, billing, recommended, children }: { name: string; tier: PlanTier; features: string[]; billing: "monthly" | "yearly"; recommended?: boolean; children: ReactNode }) {
+  const other = billing === "monthly" ? "yearly" : "monthly";
+  return (
+    <div className={cx("relative flex flex-col rounded-ch-input bg-ch-paper p-5 sm:p-6", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
+      {recommended && <p className="absolute -top-3.5 left-5 inline-flex items-center gap-1.5 rounded-full border border-ch-forest bg-ch-card px-3 py-1 text-[13px] font-bold text-ch-forest sm:left-6"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
+      <h3 className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
+      <p className="mt-2 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, billing)}</p>
+      <p className="mt-2 text-[14px] text-ch-ink-2">{billing === "yearly" ? `Save ${yearlySavingPercent(tier)}% on monthly, ${priceShort(tier, other)}` : `or ${priceShort(tier, other)}, save ${yearlySavingPercent(tier)}%`}</p>
+      <ul className="mt-4 grid gap-2 border-t border-ch-line pt-4">
+        {features.map((f) => (
+          <li key={f} className="flex gap-2.5 text-[15px] leading-snug text-ch-ink-2">
+            <Check aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-ch-ink" />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-auto pt-5">{children}</div>
+    </div>
+  );
+}
+
+/** The store paywall (round 17 rework): one card, one choice at the top (monthly or yearly), the
+    two plans as the web shows them, and the store's own terms in a row underneath. It had a second
+    headline over four uneven price tiles and a half-width block of terms. */
 function AppPaywall({ store }: { store: Store }) {
   const [buying, setBuying] = useState<string | null>(null);
   const [restore, setRestore] = useState<"idle" | "busy" | "none">("idle");
-  const tiles = [
-    { id: "base-m", title: "Alerts, monthly", tier: "base" as const, i: "month" },
-    { id: "base-y", title: "Alerts, yearly", tier: "base" as const, i: "year" },
-    { id: "ac-m", title: "Auto-Cart, monthly", tier: "autocart" as const, i: "month" },
-    { id: "ac-y", title: "Auto-Cart, yearly", tier: "autocart" as const, i: "year" },
-  ];
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+  if (store === "cant") {
+    return (
+      <section aria-labelledby="app-pay" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
+        <h2 id="app-pay" className="font-ch-display text-[22px] font-extrabold text-ch-ink">Subscriptions are managed at camphawk.app</h2>
+        <p className="mt-2 max-w-[58ch] text-[16px] leading-relaxed text-ch-ink-2">Once yours is active, everything works here. Searching is free either way.</p>
+      </section>
+    );
+  }
+  const buy = (tier: PlanTier) => {
+    const id = `${tier}-${billing}`;
+    return (
+      <button type="button" disabled={buying !== null} onClick={() => { setBuying(id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>
+        {buying === id ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Opening…</> : `Try free for ${TRIAL_DAYS} days, then ${priceShort(tier, billing)}`}
+      </button>
+    );
+  };
   return (
-    <section aria-labelledby="app-pay" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
-      <h2 id="app-pay" className="font-ch-display text-[clamp(24px,3vw,34px)] font-extrabold leading-[1.1] tracking-[-.02em] text-ch-forest">Searching is free. Watching needs a subscription.</h2>
-      {/* A guest has no email or number, so the channels aren't promised. */}
-      <p className="mt-3 max-w-[62ch] text-[17px] leading-relaxed text-ch-ink-2">A subscription covers up to {WATCH_LIMIT} watches at once, with an alert the moment a site opens; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.</p>
-      {store === "cant" ? (
-        <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ch-ink-2">Subscriptions are managed at camphawk.app. Once yours is active, everything works here.</p>
-      ) : (
-        <>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {tiles.map((t) => (
-              <li key={t.id} className="flex flex-col rounded-ch-input border border-ch-line bg-ch-paper p-4">
-                <p className="text-[16px] font-bold text-ch-ink">{t.title}</p>
-                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Run up to ${WATCH_LIMIT} watches around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus auto-cart: on Recreation.gov an opening goes straight into your cart, and in California, 8 AM holds (invite-only beta)."}</p>
-                <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}{t.i === "year" ? ` (save ${yearlySavingPercent(t.tier)}%)` : ""}. Renews automatically.</p>
-                <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
-                  {buying === t.id ? "Opening…" : `Try free for ${TRIAL_DAYS} days, then ${priceShort(t.tier, t.i === "month" ? "monthly" : "yearly")}`}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", className: "mt-4 min-h-11 border-transparent! px-0! underline underline-offset-4 shadow-none!" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
-          <p role="status" className="mt-2 text-[14px] text-ch-ink-2">{restore === "none" ? "We didn’t find an active subscription for this Apple ID." : ""}</p>
-          <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
-          <p className="mt-3 max-w-[70ch] text-[13px] leading-relaxed text-ch-ink-2">Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless it is canceled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the current period. Manage or cancel any time in your App Store account settings. Any unused portion of a free trial is forfeited when you buy a subscription.</p>
-          <p className="mt-2 text-[13px] text-ch-ink-2"><A href="#">Terms of Use</A> · <A href={ROUTES.privacy} visitor="app">Privacy Policy</A></p>
-        </>
-      )}
+    <section aria-labelledby="app-pay" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <h2 id="app-pay" className="font-ch-body! text-[17px] font-bold text-ch-ink">Watching needs a subscription. Searching stays free.</h2>
+        <RadioChips label="Billing" value={billing} onChange={setBilling} options={[{ value: "monthly", label: "Monthly" }, { value: "yearly", label: `Yearly, save up to ${yearlySavingPercent("autocart")}%` }]} />
+      </div>
+      <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-5">
+        <AppPlan name="Alerts" tier="base" billing={billing} features={BASE_FEATURES.map(plainNights)}>{buy("base")}</AppPlan>
+        <AppPlan name="Auto-Cart" tier="autocart" billing={billing} features={AUTOCART_FEATURES} recommended>{buy("autocart")}</AppPlan>
+      </div>
+      <p className="mt-3 text-[14px] text-ch-ink-2">{TRIAL_DAYS} days free, then the price above. Renews automatically.</p>
+      <div className="mt-6 grid gap-x-10 gap-y-4 border-t border-ch-line pt-5 lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]">
+        <div>
+          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className="inline-flex min-h-11 cursor-pointer items-center text-[15px] font-bold text-ch-ink underline underline-offset-4 hover:decoration-2 disabled:cursor-wait">{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
+          <p role="status" className="max-w-[30ch] text-[14px] text-ch-ink-2">{restore === "none" ? "We didn’t find an active subscription for this Apple ID." : ""}</p>
+        </div>
+        <p className="text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
+        <div className="text-[13px] leading-relaxed text-ch-ink-2">
+          <p>Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless it is canceled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the current period. Manage or cancel any time in your App Store account settings. Any unused portion of a free trial is forfeited when you buy a subscription.</p>
+          <p className="mt-2"><A href="#">Terms of Use</A> · <A href={ROUTES.privacy} visitor="app">Privacy Policy</A></p>
+        </div>
+      </div>
     </section>
   );
 }

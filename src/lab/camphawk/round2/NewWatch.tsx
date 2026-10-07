@@ -17,7 +17,8 @@ import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
-import { TRIAL_DAYS } from "./pages/tier2-data";
+import { CHECK_SECONDS, TRIAL_DAYS } from "./pages/tier2-data";
+import { AlertCard } from "./GoldenHour";
 import { BetaNote } from "./BareFrame";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
@@ -228,7 +229,6 @@ export function NewWatch() {
   const weekend = thisWeekendRange();
   const isThisWeekend = range.start === weekend.start && range.end === weekend.end;
   const gate = accountGate(visitor);
-  const notifyWords = visitor === "app" ? "send you a notification" : "email, push and text you";
 
   const favoriteRows = chosen ? [] : PICKABLE.filter((p) => favorites.has(p.id) && (!q.trim() || [p.name, p.place].some((v) => v.toLowerCase().includes(q.trim().toLowerCase()))));
   const hits = chosen ? [] : findCampgrounds(q).filter((p) => !favorites.has(p.id));
@@ -468,40 +468,33 @@ export function NewWatch() {
             </div>
           </form>
 
-          <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6 lg:sticky lg:top-6">
-            <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-forest">What we’ll do</h2>
-            {chosen ? (
-              <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                Watch <strong className="font-extrabold">{chosen.name}</strong> for{" "}
-                {mode === "flexible"
-                  ? <>any <strong className="font-extrabold">{flexNights}-night</strong>{weekendsOnly ? " weekend" : ""} opening</>
-                  : <strong className="font-extrabold">{formatRange(range.start, range.end) ?? "your dates"}</strong>}
-                {mode === "flexible" && range.start && <> between <strong className="font-extrabold">{formatRange(range.start, range.end)}</strong></>}
-                , around the clock. We’ll {notifyWords} the moment a site frees up — you don’t need to keep this open.
-              </p>
-            ) : (
-              <>
-                <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch keeps checking a booked campground for you, around the clock. The moment someone cancels, we {notifyWords}, so the site goes to you and not the next person hitting refresh.
-                </p>
-                <ol className="mt-3">
-                  {[
-                    ["Find the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
-                    ["Choose your nights", "Pick exact dates or this weekend, or choose Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
-                    ["Start watching", "Then go about your day. We’ll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
-                  ].map(([title, sub], i) => (
-                    <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
-                      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[14px] font-extrabold text-ch-ink">{i + 1}</span>
-                      <span>
-                        <span className="block text-[16px] font-bold text-ch-ink">{title}</span>
-                        <span className="mt-0.5 block text-[15px] leading-relaxed text-ch-ink-2">{sub}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              </>
-            )}
-
+          {/* The watch as it will be created, filling in as you choose (round 17 rework: it was three
+              numbered steps, the sixth numbered box in the set), then what an opening sends you. */}
+          <aside aria-labelledby="nw-what" className="grid gap-4 lg:sticky lg:top-6">
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6">
+              <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-forest">Your watch</h2>
+              <dl className="mt-3 divide-y divide-ch-line border-y border-ch-line">
+                {([
+                  ["Campground", chosen ? chosen.name : null],
+                  ["Nights", mode === "flexible"
+                    ? <>Any {flexNights}-night{weekendsOnly ? " weekend" : ""} opening{range.start ? <>, {formatRange(range.start, range.end)}</> : null}</>
+                    : formatRange(range.start, range.end)],
+                  ["Checked", `Every ${CHECK_SECONDS} seconds, around the clock`],
+                  ["Alerts", visitor === "app" ? "Notifications on this phone" : "Email, push and text, at once"],
+                  ...(offer === "promise" && canAutoCart ? [["Auto-cart", "On: an opening goes straight into your cart"] as const] : []),
+                ] as Array<readonly [string, React.ReactNode]>).map(([k, v]) => (
+                  <div key={k} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 py-2.5 text-[15px] leading-snug">
+                    <dt className="font-bold text-ch-ink-2">{k}</dt>
+                    <dd className={v ? "text-ch-ink" : "text-ch-muted"}>{v ?? "Not picked yet"}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-3 text-[14px] leading-relaxed text-ch-ink-2">You don’t need to keep this open. Flexible dates catch far more cancellations.</p>
+            </div>
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+              <p className="mb-3 text-[13px] font-extrabold text-ch-ink-2">When a site opens, you get this</p>
+              <AlertCard compact cart={offer === "promise"} />
+            </div>
           </aside>
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>
