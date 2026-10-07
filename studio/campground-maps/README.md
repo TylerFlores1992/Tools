@@ -14,13 +14,44 @@ node studio/campground-maps/build.mjs ridb 232447
 The script fetches the rest live. Add the campground to `MAPS` in
 `src/lab/camphawk/round2/maps/index.ts`.
 
+## The 50-campground sample (2026-10-07)
+
+```sh
+# 1. Draw the sample (no network; seeded, so it re-draws exactly) → specs/ridb-sample.json
+node studio/campground-maps/sample.mjs ridb
+# 2. Build all 50 and run the automatic check on each (NODE_USE_ENV_PROXY=1 in a session container)
+NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs ridb
+#    → public/private/camphawk/maps/ridb-<id>.json (served to signed-in lab visitors only)
+#    → src/lab/camphawk/round2/maps/sample-manifest.json (verdicts, checks, thumbnails)
+# 3. Optional: each map over the aerial photo, as PNGs, for a person to judge
+node studio/campground-maps/aerial-check.mjs /tmp/aerial public/private/camphawk/maps/ridb-*.json
+```
+
+The lab's review page is `/private/camphawk/golden-hour/admin/site-maps`. What the sample found
+is in `docs/design/campground-maps.md`.
+
+- **`build.mjs` is one function for both** (`buildRidbMap`). Each layer comes from one source,
+  never merged: roads from the Park Service where it has any in the frame, else OpenStreetMap,
+  else the Forest Service's system roads; restrooms and water taps per kind; lakes and rivers
+  from USGS, or OpenStreetMap when USGS doesn't answer (recorded in the map's `sources.water`).
+- **`qa.mjs` is the automatic check** (tested in `scripts/campground-maps-qa.test.mts`, 19 of 19
+  mutants killed). Its thresholds were fixed before the sample was built.
+- **A build waits mostly on remote services.** On 2026-10-07 USGS's hydrography service timed
+  out for hours; each campground spent up to 90 s on it before falling back. Three build at once.
+- **OpenStreetMap's API is for editing, not bulk reads.** Fifty small requests is within its
+  usage policy; a rollout reads a Geofabrik extract instead (unreachable from session containers
+  on 2026-10-07, like Overpass).
+
 ## Sources and terms (checked 2026-10-07)
 
 | Layer | Source | Terms |
 |---|---|---|
 | Site points, type, accessibility, max vehicle length, people, shade | RIDB full export, `Campsites_API_v1.csv` + `CampsiteAttributes_API_v1.csv` | CC BY 4.0 (data.gov record). Credit Recreation.gov; don't imply endorsement. |
 | Campground roads, restrooms, kiosk, parking, shuttle stop, trails | NPS national datasets, `mapservices.nps.gov/arcgis/rest/services/NationalDatasets/NPS_Public_*_Geographic` | Federal government data. The service credits "National Park Service". |
-| River | USGS NHD, `hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer` (layers 6, 9) | US government work (USGS). |
+| Lakes and rivers | USGS NHD, `hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer` (layers 6, 9, 12) | US government work (USGS). |
+| Roads, paths, restrooms, water taps, parking, campground outlines, numbered pitches (where the Park Service has none) | OpenStreetMap API (`api.openstreetmap.org/api/0.6/map`) | ODbL 1.0. Every map that uses it says "© OpenStreetMap contributors". The OSM-derived layers in the map JSON files are offered under ODbL. |
+| Forest Service system roads (only when nothing else has roads) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
+| Aerial photo (review only, never drawn on a camper's map) | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain. Loaded live by the review page; nothing is committed. |
 
 **Never used:** recreation.gov's own `/api/camps` endpoints (robots.txt disallows `/api/*`,
 and its terms ban scraping), provider map images, and Google, Esri or Bing imagery for tracing

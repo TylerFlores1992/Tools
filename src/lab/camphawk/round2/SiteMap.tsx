@@ -180,7 +180,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
           <div ref={scroller} className={cx("relative w-full rounded-ch-input border border-ch-line bg-ch-shell", zoom > 1 ? "overflow-auto overscroll-contain" : "overflow-hidden")} style={{ aspectRatio: `${f.w} / ${f.h}` }}>
             <div className="relative" style={{ width: zoom > 1 ? `${W}px` : "100%", aspectRatio: `${f.w} / ${f.h}` }}>
               <svg role="img" aria-label={summary} viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full">
-                {map.water.map((w, i) => <path key={i} d={w.d} className="fill-ch-map-water" />)}
+                {map.water.map((w, i) => <path key={i} d={w.d} fillRule="evenodd" className="fill-ch-map-water" />)}
                 {map.lots.map((l, i) => <path key={i} d={l.d} className="fill-ch-line stroke-ch-faint" strokeWidth={1} />)}
                 {map.trails.map((t, i) => <path key={i} d={t.d} fill="none" className="stroke-ch-muted" strokeWidth={1.4} strokeDasharray="5 4" strokeLinecap="round" />)}
                 {/* Roads: a muted casing under a white fill, in metres, wider for through roads. */}
@@ -274,7 +274,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
         </div>
       </div>
       <p className="mt-4 px-1 text-[13px] leading-relaxed text-ch-muted sm:px-0">
-        {map.credits ?? `Drawn by CampHawk from ${provider}'s published site locations (RIDB, CC BY 4.0), National Park Service roads and restrooms, and USGS water. Positions are approximate. Check the booking site before you go.`}
+        {map.credits ?? `Drawn by CampHawk from ${provider}’s published site locations (RIDB, CC BY 4.0), National Park Service roads and restrooms, and USGS water. Positions are approximate. Check the booking site before you go.`}
       </p>
     </section>
   );

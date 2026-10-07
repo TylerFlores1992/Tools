@@ -200,6 +200,11 @@
   --color-ch-alert-deep: #8C3524;
   --color-ch-alert-hover: #C7503A;
   --color-ch-forest: #24382A;
+  /* CampHawk's admin sidebar: hover and current-item fills on forest, and the border of an
+     alert-soft panel (campsite-finder globals.css). */
+  --color-ch-forest-2: #2F4736;
+  --color-ch-forest-3: #3A5643;
+  --color-ch-alert-line: #E7BFB4;
   --color-ch-white: #FFFFFF;
   /* Lab additions, not in CampHawk yet: the site map's water and its label (water-ink 5.5:1 on
      water). Water is never blue: in CampHawk blue means the hand-off to a provider. */

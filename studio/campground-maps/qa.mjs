@@ -71,8 +71,8 @@ export const sameNumber = (a, b) => {
  * @param {{ name: string, at: [number, number] | null }[]} input.sites  every bookable overnight site
  * @param {[[number, number], [number, number]][]} input.roadSegments   drawn roads, in metres
  * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "none"
- * @param {[number, number][][]} input.outlineRings  OSM campground outlines, in metres
- * @param {{ ref: string, at: [number, number] }[]} input.pitches  OSM numbered pitches, in metres
+ * @param {[number, number][][]} [input.outlineRings]  OSM campground outlines, in metres
+ * @param {{ ref: string, at: [number, number] }[]} [input.pitches]  OSM numbered pitches, in metres
  */
 export function checkMap({ sites, roadSegments, roadSource, outlineRings = [], pitches = [] }) {
   const placed = sites.filter((s) => s.at);

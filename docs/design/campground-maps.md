@@ -319,3 +319,45 @@ come from public data.
    to OSM, or wait?
 4. Is a straight-line "restroom about 90 ft" helpful, or would you rather have nothing than an
    approximation?
+
+## The map review screen (lab mock of CampHawk's admin, 2026-10-07)
+
+`/private/camphawk/golden-hour/admin/site-maps`. Built with `design-direction`, gates 1, 3, 5
+and 6. Gate 2's references are CampHawk's own admin (AdminShell, Books), because the look is fixed
+and this is one more section of it. There are no alternative directions to offer.
+
+**Brief.**
+1. *Subject and audience:* the owner (or, later, a helper) at a desk or on a phone, deciding
+   whether a map CampHawk drew is right before a camper relies on it to find a site. Daylight
+   work, so light. That is CampHawk's only theme anyway.
+2. *Mode:* Operate. Clarity first; the brand lives in the admin shell, the type and the map.
+3. *The one job:* say which maps can go live, and make the ones that need a person quick to judge.
+   It works if a reviewer can clear a "Needs a look" map in under a minute with the aerial photo.
+4. *Fixed:* CampHawk's admin language (forest sidebar, `PageHeader`, `Panel`, `StatusMark`:
+   shape and word, never colour alone), its tokens and its copy rules (`camphawk-design`).
+5. *Free:* the thumbnail drawing, the reasons summary, the detail layout, how the aerial check
+   reads.
+
+**Direction contract.**
+- *Thesis:* the evidence is the interface. Every verdict carries its reason in words, and every
+  map can be held up against the ground. It refuses the category default, a table of green and
+  red dots.
+- *World:* paper page, white panels, forest sidebar. Status uses the house marks: Ready is a round
+  tick, Needs a look a triangle, Can't be drawn a round cross. Each mark carries its word, and its
+  colour comes last. Thumbnails are drawn in ink on shell (roads as white strokes with a muted
+  casing, sites as ink dots, water in `ch-map-water`), the same drawing as the camper's map.
+- *First viewport (1440):*
+  ```
+  [forest sidebar | Site maps (title, 26px)                                   ]
+  [  Overview     | 50 Recreation.gov campgrounds, drawn at random…            ]
+  [  …            | [forest KPI: N of 50 ready on their own] [Needs a look] [Can't] ]
+  [  Site maps ▌  | [Why maps need a look: reason bars]                        ]
+  [               | [All · Ready · Needs a look · Can't be drawn]  filter pills ]
+  [               | [card][card][card][card]  thumbnail, name, mark+word, reason ]
+  ```
+  At 390 the sidebar becomes the slim forest header with a tab row, and the cards stack one per row.
+- *Signature moment:* the aerial check. In a map's detail the same frame is shown over the USDA
+  aerial photo (NAIP, public domain), with sites and roads drawn on top, so "is site 42 on a real
+  pad?" is answered by looking.
+- *Assets:* none generated. The maps are code (real data); the photo is NAIP, loaded live from
+  USGS, never committed.

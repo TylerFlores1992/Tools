@@ -374,6 +374,49 @@ try {
     await ctx.close();
   });
 
+  await check("lab site-map review: the queue filters, a map opens with its checks and the aerial check, and a decision sticks", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 390, height: 844 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    // The aerial photo is USGS's, live; here it's a stand-in so the check needs no network.
+    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    await p.getByRole("heading", { level: 1, name: "Site maps" }).waitFor();
+    await p.getByText("Ready on their own", { exact: true }).waitFor();
+    // A filter shows exactly the maps it counts, and is kept in the URL.
+    const filter = p.getByRole("button", { name: /^Need a look \d+$/ });
+    const count = Number((await filter.innerText()).match(/\d+/)![0]);
+    await filter.click();
+    assert.equal(await filter.getAttribute("aria-pressed"), "true");
+    await p.waitForURL(/show=review/);
+    const cards = p.locator("main ul li h3 a");
+    assert.equal(await cards.count(), count);
+    assert.equal(await p.locator("main ul li").filter({ hasText: "Needs a look" }).count(), count);
+    // Open one: its checks, the aerial check (photo loaded, sites on top), and a decision.
+    const name = (await cards.first().innerText()).trim();
+    await cards.first().click();
+    await p.getByRole("heading", { level: 1, name }).waitFor();
+    assert.equal(await p.locator("table tbody tr").count(), 7);
+    await p.getByRole("img", { name: new RegExp(`^Aerial photo of ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`) }).waitFor();
+    await p.getByRole("button", { name: "Sites and roads on top" }).waitFor();
+    await p.getByRole("button", { name: "Approve map" }).click();
+    await p.getByText("You approved it").first().waitFor();
+    // The phone page never scrolls sideways (the checks table scrolls inside its panel).
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), "page scrolls sideways at 390px");
+    // Back in the queue, the card says so; Undo clears it.
+    await p.getByRole("link", { name: "All maps" }).click();
+    await p.locator("main ul li").filter({ hasText: name }).getByText("You approved it").waitFor();
+    await p.locator("main ul li h3 a", { hasText: name }).click();
+    await p.getByRole("button", { name: "Undo" }).click();
+    await p.getByRole("button", { name: "Approve map" }).waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk’s", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
     const errors: string[] = [];

@@ -40,8 +40,12 @@ for (const s of csvObjects(join(ridbDir, "Campsites_API_v1.csv"))) {
   if (!fac.has(s.FacilityID) || s.CampsiteType === "MANAGEMENT" || s.TypeOfUse !== "Overnight") continue;
   (sites.get(s.FacilityID) ?? sites.set(s.FacilityID, []).get(s.FacilityID)).push(s);
 }
+// RIDB's address table mostly writes a state code, sometimes the full name ("OREGON").
+const STATES = "AL Alabama AK Alaska AZ Arizona AR Arkansas CA California CO Colorado CT Connecticut DE Delaware FL Florida GA Georgia HI Hawaii ID Idaho IL Illinois IN Indiana IA Iowa KS Kansas KY Kentucky LA Louisiana ME Maine MD Maryland MA Massachusetts MI Michigan MN Minnesota MS Mississippi MO Missouri MT Montana NE Nebraska NV Nevada NH New_Hampshire NJ New_Jersey NM New_Mexico NY New_York NC North_Carolina ND North_Dakota OH Ohio OK Oklahoma OR Oregon PA Pennsylvania RI Rhode_Island SC South_Carolina SD South_Dakota TN Tennessee TX Texas UT Utah VT Vermont VA Virginia WA Washington WV West_Virginia WI Wisconsin WY Wyoming".split(" ");
+const CODE = new Map(); for (let i = 0; i < STATES.length; i += 2) CODE.set(STATES[i + 1].replace(/_/g, " ").toUpperCase(), STATES[i]);
+const stateCode = (raw) => { const s = raw.trim().toUpperCase(); return s.length === 2 ? s : CODE.get(s) ?? ""; };
 const state = new Map();
-for (const a of csvObjects(join(ridbDir, "FacilityAddresses_API_v1.csv"))) if (fac.has(a.FacilityID) && a.AddressStateCode && !state.has(a.FacilityID)) state.set(a.FacilityID, a.AddressStateCode.toUpperCase());
+for (const a of csvObjects(join(ridbDir, "FacilityAddresses_API_v1.csv"))) if (fac.has(a.FacilityID) && stateCode(a.AddressStateCode) && !state.has(a.FacilityID)) state.set(a.FacilityID, stateCode(a.AddressStateCode));
 const recArea = new Map();
 for (const r of csvObjects(join(ridbDir, "RecAreas_API_v1.csv"))) recArea.set(r.RecAreaID, r.RecAreaName);
 

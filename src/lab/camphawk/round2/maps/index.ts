@@ -32,6 +32,13 @@ export type SiteMapData = {
   /** What the build left off on purpose, for a person to check. */
   review?: { duplicateNumbers: string[]; notInStateParksData: string[] };
   frame: { x: number; y: number; w: number; h: number };
+  /** The frame in degrees [west, south, east, north] (maps built since 2026-10-07). */
+  bbox?: [number, number, number, number];
+  name?: string;
+  /** Which source drew each layer (maps built since 2026-10-07). */
+  sources?: { roads: string; water: string; osm: boolean };
+  /** What the automatic checks compared against (OpenStreetMap's outline and numbered pitches). */
+  evidence?: { outline: string; pitches: { ref: string; at: [number, number] }[] };
   labels: { text: string; kind: "road" | "trail" | "water"; at: [number, number]; angle: number }[];
   roads: { name: string; cls: string; oneWay: string; d: string }[];
   trails: { name: string; d: string }[];

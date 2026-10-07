@@ -79,6 +79,13 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
       { href: `${ROUTES.home}/errors`, name: "Not found and errors", what: "The not-found, error and whole-app-failed screens.", switches: "Screen" },
     ],
   },
+  {
+    title: "Admin",
+    note: "A new section for CampHawk’s admin, in its own look.",
+    items: [
+      { href: ROUTES.siteMaps, name: "Site maps", what: "The 50-campground Recreation.gov sample: which maps can go live on their own, and each one against the aerial photo.", switches: "Show (ready, need a look, can’t be drawn)" },
+    ],
+  },
 ];
 
 export function Screens() {
