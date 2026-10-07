@@ -210,7 +210,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
         )}
         {/* The next step after the calendar: the same gated watch control as the band. */}
         <div className="mt-2 border-t border-ch-line pt-4">
-          <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the second a site opens.</p>
+          <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the moment a site opens.</p>
           {/* A link, not a second button: the band's button is the page's one watch action. */}
           <Link href={watchHref(visitor, id)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{watchCtaLabel(visitor, "Watch this campground")}<ChevronRight aria-hidden="true" className="size-4" /></Link>
         </div>

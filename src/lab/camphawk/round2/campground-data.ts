@@ -56,10 +56,10 @@ export const openingsHeading = (name: string) => `Is ${name} fully booked?`;
 export function openingsBody(name: string, place: string, hasAutoCart: boolean): string[] {
   const where = place ? ` in ${place}` : "";
   return [
-    "A campground showing no availability is almost never full for good. People cancel — plans change, weather turns, someone books three weekends and keeps one — and the site goes straight back into the booking system, usually without warning and often at odd hours. The reason sold-out campgrounds feel impossible is not that sites never free up; it is that nobody is watching at the moment they do.",
+    "A campground showing no availability is almost never full for good. People cancel — plans change, weather turns, someone books three weekends and keeps one — and the site goes straight back into the booking system, usually without warning and often at odd hours. The reason sold-out campgrounds feel impossible is not that sites never free up; it’s that nobody is watching at the moment they do.",
     `CampHawk watches ${name}${where} for you. We recheck it every 15 seconds, around the clock, and the moment a site opens we send an email, a push notification and a text` +
       (hasAutoCart
-        ? " — and on Recreation.gov we can put the site straight into your cart, so it is held while you get to your phone."
+        ? " — and on Recreation.gov we can put the site straight into your cart, so it’s held while you get to your phone."
         : ", with a link straight to the booking page."),
     `Searching is free and needs no account — the calendar above is live right now. Watching ${name} for cancellations is the paid part.`,
   ];

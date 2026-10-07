@@ -338,7 +338,7 @@ export function Settings() {
               </Section>
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you’ve turned on, at once. Whichever gets to you first wins.">
-                <Box icon={<Mail className="size-5" />} title="Email" status={<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag>}>Every opening we find goes to {EMAIL}.</Box>
+                <Box icon={<Mail className="size-5" />} title="Email" status={<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag>}>Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</Box>
                 <Box icon={<Bell className="size-5" />} title="Push notifications" status={<Tag kind="paused" mark="not-set-up" srPrefix="Status:">App only</Tag>}>Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>

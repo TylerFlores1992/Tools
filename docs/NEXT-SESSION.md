@@ -51,7 +51,12 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    the data (`facts` on `LabPage`); state, site-type and hub pages use `CatalogLayout` (lead and list
    in one column, sticky "Narrow it down" card); Always booked shares it; Welcome is a plain band, a
    700px setup column and the example alert beside it. Round-15 critic scores: see
-   `docs/design/camphawk-home.md`. Open a PR when the owner asks; merge only on their word.
+   `docs/design/camphawk-home.md`: rounds 15 and 16 averaged 8.65 (best screens 9.0–9.2; the
+   floor is now the guide and app-paywall pages at 8.3–8.5). Still open from round 16: Explore's
+   default capture shows no results or map; numbered-step boxes on six screens; Welcome's
+   Finish/Skip pair; Claim and Connect frames differ. Open a PR when the owner asks; merge only on
+   their word. **Terms** (published text, not reworded) says billing is through Stripe only and
+   alerts are email and text only, and doesn't cover auto-cart or holds: for the owner.
    **For the owner, from CampHawk's real Privacy Policy** (flagged in a lab note, not reworded): it
    says email alerts can be turned off (the product keeps email always on), and it doesn't mention
    the saved Recreation.gov login auto-cart keeps.

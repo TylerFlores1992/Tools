@@ -64,8 +64,8 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
-          ? "Releases tomorrow at 8 AM. We can try to cart it for you the second it opens — tap below if you want it."
-          : "We’ll try for this the second it opens, tomorrow at 8 AM. We’ll tell you either way — keep an alarm set in case we miss."}
+          ? "Releases tomorrow at 8 AM. We can try to cart it for you the moment it opens — tap below if you want it."
+          : "We’ll try for this the moment it opens, tomorrow at 8 AM. We’ll tell you either way — keep an alarm set in case we miss."}
       </p>
       <div className="flex flex-wrap gap-2">
         {offered && <a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 flex-1 px-4" })}>Hold it for me</a>}
@@ -114,7 +114,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
           {state === "watching" && <Tag kind="watch">Watching</Tag>}
-          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart" className={carted ? "max-sm:hidden" : undefined}>Auto-cart</Tag>}
+          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           {state === "paused" && <Tag kind="paused">Paused</Tag>}
           {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
           {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
@@ -239,7 +239,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
       <Steps icons={[Eye, Bell, ShoppingCart]} steps={[
         [`Up to ${WATCH_LIMIT} watches at once`, "One for each campground and set of dates."],
         ["Alerts in seconds", "Email, push and text the moment a site frees up."],
-        ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
+        ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart within seconds."],
       ]} />
       {/* One account step carries the weight; the rest are plain links, so the wall reads as an
           explanation with a way in, not a stack of equal buttons. */}

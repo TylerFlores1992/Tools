@@ -126,7 +126,7 @@ const indexLabel = (r: Region) => (r.canada ? "Camping in Canada" : "Camping by 
 /** The catalog pages' frame: the lead and the list in one column, and beside it a card that says
     where to go next, held in view while the list scrolls (round 14: a lead, a line of links and a
     button stacked up before the list, and the right of the page sat empty). */
-function CatalogLayout({ lead, links, visitor, aside, children, endsWithSearch = false }: { lead: ReactNode; links?: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; aside?: ReactNode; children: ReactNode; endsWithSearch?: boolean }) {
+function CatalogLayout({ lead, links, visitor, aside, children, note }: { lead: ReactNode; links?: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; aside?: ReactNode; children: ReactNode; note?: ReactNode }) {
   return (
     <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
       <div className="min-w-0">
@@ -134,7 +134,7 @@ function CatalogLayout({ lead, links, visitor, aside, children, endsWithSearch =
         {children}
       </div>
       <aside aria-label="Where to next" className="lg:sticky lg:top-6 lg:self-start">
-        {aside ?? (links && <NarrowCard links={links} visitor={visitor} search={endsWithSearch ? "wide" : "always"} />)}
+        {aside ?? (links && <NarrowCard links={links} visitor={visitor} note={note} />)}
       </aside>
     </div>
   );
@@ -152,12 +152,13 @@ function ArrowRows({ links, visitor }: { links: ReadonlyArray<readonly [label: s
   );
 }
 
-/** `search: "wide"` when the page already ends with a search card: on a phone, where this card
-    falls below the list, two buttons would sit back to back. */
-function NarrowCard({ links, visitor, search }: { links: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; search: "always" | "wide" }) {
+/** One card per catalog page: what the list is (`note`), search, then where else to look
+    (round 16: a separate "These are N of M" card made two search buttons on one page). */
+function NarrowCard({ links, visitor, note }: { links: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; note?: ReactNode }) {
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
-      <div className={cx("mb-5 border-b border-ch-line pb-4", search === "wide" && "max-lg:hidden")}>
+      <div className="mb-5 border-b border-ch-line pb-4">
+        {note && <p className="mb-4 text-[15px] leading-relaxed text-ch-ink-2">{note}</p>}
         <Search visitor={visitor} className="w-full" />
         <p className="mt-2 text-center text-[14px] text-ch-ink-2">Searching is free and needs no account.</p>
       </div>
@@ -233,7 +234,7 @@ export function StatePage({ slug }: { slug: string }) {
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />
           <CatalogLayout
             visitor={visitor}
-            endsWithSearch={ca}
+            note={ca && <><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}’s {n(r.count)} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</>}
             lead={<>
               <p>{WHY_WATCH}</p>
               {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
@@ -243,10 +244,6 @@ export function StatePage({ slug }: { slug: string }) {
           {ca ? (
             <>
               <Towns groups={CALIFORNIA.groups} code={r.code} name={r.name} visitor={visitor} />
-              <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
-                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}’s {n(r.count)} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
-                <Search visitor={visitor} />
-              </div>
             </>
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws California’s campground list; <A href={`${ROUTES.camping}/california`} visitor={visitor}>see it there</A>. CampHawk lists every campground in {r.name} here, by town.</p>
@@ -343,7 +340,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />
           <CatalogLayout
             visitor={visitor}
-            endsWithSearch={ca}
+            note={ca && <><strong className="text-ch-ink">These are {shownIn(groups)} of {r.name}’s {count} campgrounds with {hub.noun}</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</>}
             lead={<>
               <p>A campground with {hub.noun} in {r.name} is usually fully booked months ahead, so a cancellation is the realistic way in. It drops back into the booking system with no warning, often overnight; watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock.</p>
               {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
@@ -353,10 +350,6 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
           {ca ? (
             <>
               <Towns groups={groups} code={r.code} name={r.name} visitor={visitor} />
-              <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
-                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(groups)} of {r.name}’s {count} campgrounds with {hub.noun}</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
-                <Search visitor={visitor} />
-              </div>
             </>
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws lists for California only; <A href={`${ROUTES.camping}/${hub.slug}/california`} visitor={visitor}>see California {hub.label.toLowerCase()}</A>. CampHawk lists each campground here, by town.</p>

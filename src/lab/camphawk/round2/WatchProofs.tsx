@@ -67,7 +67,7 @@ function HeldCart() {
 /** Live search: open and booked campgrounds, said in words. */
 function MiniResults() {
   const rows = [
-    { name: "Upper Pines", where: "Yosemite Valley, CA", open: "Open for Jul 18–21" },
+    { name: "Upper Pines", where: "Yosemite Valley, CA", open: "Jul 18–21 · 3 nights" },
     { name: "North Pines", where: "Yosemite Valley, CA" },
     { name: "Wawona", where: "Wawona, CA" },
   ];

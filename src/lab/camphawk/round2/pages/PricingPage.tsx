@@ -200,7 +200,7 @@ function HoldExplainer() {
     <Steps steps={[
       "Someone cancels, and the site waits for the next 8 AM release. There’s nothing to switch on.",
       "You get an alert naming the site, the nights and the release time, with a “Hold it for me” button. Nothing happens unless you tap it: holding a site takes it off the market for everyone else, so there’s no standing setting for it.",
-      "Within seconds of the release, we put the site in a cart, before most people have found the page.",
+      "Within a couple of seconds of the release, we put the site in a cart, before most people have found the page.",
       "Open the claim link, sign in to ReserveCalifornia, and we hand it over. You do the booking and the paying; we never do either.",
     ].map((body, i) => [`${HOLD_STEPS[i][0]}: ${HOLD_STEPS[i][1].toLowerCase()}`, body] as const)} />
   );
@@ -261,7 +261,7 @@ export function PricingPage() {
           <HoldExplainer />
           {/* The limits read as three plain statements on paper, as on the home page: not a
               third card stretched to match the hold card's height. */}
-          <section aria-labelledby="dont" className="mt-4 grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <section aria-labelledby="dont" className="mt-12 grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
             <div>
               <h2 id="dont" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-forest">What we don’t do</h2>
               <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you’re paying for before you pay.</p>
@@ -270,10 +270,11 @@ export function PricingPage() {
               {LIMITS.map((l) => <li key={l} className="border-b border-ch-line py-3.5 text-[17px] leading-relaxed text-ch-ink-2">{l}</li>)}
             </ul>
           </section>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          {/* Not in the app: a marketing close inside a paywall reads as an ad (round 16). */}
+          {visitor !== "app" && <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds</Link>
             <A href={ROUTES.alerts} visitor={visitor}>How cancellation alerts work</A>
-          </div>
+          </div>}
         </div>
       )}
     </LabPage>
