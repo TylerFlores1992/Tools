@@ -34,3 +34,9 @@ ink (sized in inches, text outlined), a combined SVG, and 300 dpi transparent PN
   knockouts under 1 mm and lines under 0.3 mm (it over-reports stroke tips and letter corners).
   `kit.mjs` traces those separations into the print files. `composite.py` puts a print onto a photo.
 - `gen.mjs` calls AI Gateway directly and stops at a $1.30 balance (the owner's $0.75 limit).
+
+## Round 3 (2026-10-07): ten new giveaway ideas
+
+The owner kept Still Water and turned down Night Watch. `round3.mjs` draws ten one-ink giveaway
+mockups for free (code, the traced hawk, and the already-paid treeline and lake layers) into `out3/`.
+Gallery: https://claude.ai/artifact/FUmtsCoWaENHSEuTgqPg4E

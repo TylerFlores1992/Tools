@@ -35,7 +35,10 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
-0. **CampHawk shirts: owner to choose a printer** (2026-10-07). The owner picked 3 "Night Watch" (1 ink,
+0. **CampHawk shirts: owner to pick a giveaway from round 3** (2026-10-07). Still Water is kept; Night
+   Watch was turned down. Ten new one-ink ideas: https://claude.ai/artifact/FUmtsCoWaENHSEuTgqPg4E
+   (`studio/camphawk-shirts/round3.mjs`). Earlier notes, Still Waters print kit and spend:
+   **CampHawk shirts: owner to choose a printer** (2026-10-07). The owner picked 3 "Night Watch" (1 ink,
    bone on charcoal) and 7 "Still Water" (3 inks on sage). Both refined through two critic rounds and
    a 300 dpi print check. Review page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. Print files:
    `studio/camphawk-shirts/kit/`. Image credit: $0.36 of the owner's $0.75 used; AI Gateway balance
