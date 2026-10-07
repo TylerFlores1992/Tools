@@ -16,9 +16,9 @@ California State Parks' needs their permission first.**
   site numbers and parking-spur sizes, updated weekly. They are on its public ArcGIS account
   (item `f0374d8702f14ad5962023c7a502da65`, layer `InternalCampsiteSpur`).
   - Its GIS terms ask for approval before commercial use. So it is used only on a local run, and
-    it is never committed to this public repository or deployed. Both requests are drafted in
-    the owner's Gmail, unsent: permission (geodata@parks.ca.gov) and a Public Records Act
-    request (Parks.PRA@parks.ca.gov).
+    it is never committed to this public repository or deployed. Both requests were **sent 2026-10-07**
+    from the owner's Gmail: permission (geodata@parks.ca.gov) and a Public Records Act request
+    (Parks.PRA@parks.ca.gov), whose 10-day answer is due by about 2026-10-17.
   - **It is more accurate than RC's own maps.** Its points sit a median 1-9 m from the real
     campground roads (checked against OpenStreetMap at 11 campgrounds). RC's drawings are partly
     schematic, 3-30 m off.
@@ -100,8 +100,8 @@ open GIS? About an hour per provider.
     week before this reading.
   - It is public, with an empty license field. Its name says "Internal", so it may have been
     shared by mistake. **Ask before relying on it.**
-- **Permission:** State Parks' GIS page asks for approval before commercial use. Two drafts sit
-  in the owner's Gmail, **unsent**:
+- **Permission:** State Parks' GIS page asks for approval before commercial use. Two requests
+  were **sent 2026-10-07** from the owner's Gmail:
   - **Permission**, to geodata@parks.ca.gov. It names the layer, how it would be used and
     credited, asks whether it is meant to be public, and asks who owns RC's map artwork.
   - **Public Records Act request**, to Parks.PRA@parks.ca.gov. It asks for the layer and any
@@ -111,6 +111,7 @@ open GIS? About an hour per provider.
     - Release can't be tied to a license (*County of Santa Clara*, 2009).
     - A GIS database is a public record, not exempt software (*Sierra Club*, 2013).
   - **Not legal advice.**
+  - **Answer due:** by about 2026-10-17 for the records request; the permission email has no deadline.
 - **Until State Parks approves, its data stays out of this public repository and every deploy.**
   `build-csp.mjs` writes to `public/lab-local/` (git-ignored). Deployed, the page shows the
   not-drawn state.

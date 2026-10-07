@@ -45,8 +45,8 @@ NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-csp.mjs studio/campground
 - **Site points:** California State Parks' campsite layer (ArcGIS item
   `f0374d8702f14ad5962023c7a502da65`, service `InternalCampsiteSpur`). **Its GIS terms ask for
   approval before commercial use, so the output must never be committed (this repo is public) or
-  deployed until State Parks approves.** The permission and records requests are drafted in the
-  owner's Gmail.
+  deployed until State Parks approves.** The permission and records requests were sent on
+  2026-10-07 (docs/NEXT-SESSION.md has what to do when they answer).
 - **Which units exist, and their loops:** RC's own unit list (its `search/grid`, the list
   CampHawk's availability check reads), with a loop name per RC area in the spec. These are
   facts; nothing from RC's map pictures is used.
