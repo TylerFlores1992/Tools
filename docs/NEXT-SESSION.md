@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07, evening (campground site maps: the 50-campground Recreation.gov sample, 32 of 50 ready on their own and 38 after one look; a Site maps review page in the lab; PR #19). Earlier the same day: Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged, production smoke 27/27.*
+*Last updated: 2026-10-07, evening (campground site maps: the 50-campground Recreation.gov sample, 32 of 50 ready on their own and 38 after one look; a Site maps review page in the lab; PR #19 merged, production smoke 29/29, the State Parks map confirmed absent from the live site (404)). Earlier the same day: Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged, production smoke 27/27.*
 
 ## At a glance
 
@@ -30,15 +30,15 @@ for Production only, and the sign-in fails closed without it. To review a branch
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
 **Checks, all green:** `npm run verify` (168 tests) · `npm run e2e` (34 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29 checks after #19 merges; 27 live now, including
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29/29 on production after #19 merged, 2026-10-07, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
-## Campground site maps (2026-10-07, PR #19)
+## Campground site maps (2026-10-07, PR #19, merged)
 **Start here for maps:** `docs/design/campground-maps.md` (research, measurements, time estimate)
 and `studio/campground-maps/README.md` (how to build one).
 
-**Live in the lab after #19 merges:**
+**Live in the lab (PR #19 merged 2026-10-07):**
 - **Upper Pines** has a real site map: `/private/camphawk/golden-hour/campground`. It is built
   from RIDB (CC BY 4.0), NPS GIS and USGS, with Find a site, zoom, and numbers beside their dots.
   Critic rounds went 5.5 → 7, with the main finding fixed after.
@@ -109,10 +109,6 @@ in the design doc):
 
 **For CampHawk's issue list:** campsite-finder's `docs/CONTEXT.md` says providers don't publish
 site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync drops them.
-
-**Open PR #18** (another session's lab fix rounds) conflicts with #19 in 6 files: NEXT-SESSION,
-`scripts/e2e.mts`, `globals.css`, `Campground.tsx`, `pages/Screens.tsx` and `pages/alert-data.ts`.
-Whoever merges #18 resolves them, keeping both sides: #19's site map and #18's fixes.
 
 ## Waiting on the owner
 0. **CampHawk shirts: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
