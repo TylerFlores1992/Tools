@@ -226,7 +226,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">8 AM hold</Tag></span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
-                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call this off: the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Call this off</button>
+                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Cancel hold: ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Cancel hold</button>
               </li>
             ))}
           </ul>

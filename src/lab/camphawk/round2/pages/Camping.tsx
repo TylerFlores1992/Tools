@@ -2,6 +2,7 @@
 
 import { ART } from "../Art";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
@@ -130,9 +131,10 @@ export function CampingHub() {
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", null]]} />
           <div className="mt-5"><Lead><p>These are the {STATES.length} states with enough campgrounds for a page of their own: {usTotal.toLocaleString("en-US")} bookable campgrounds, national forests, state parks and everything in between. Pick a state to see what we cover there. (Our full catalog is {CAMPGROUNDS_ROUNDED} campgrounds across the US and Canada.)</p></Lead></div>
-          <ul aria-label="Kinds of site" className="mt-5 flex flex-wrap gap-2">
+          {/* Links, not pills: pills read as filters (round 13). */}
+          <ul aria-label="Kinds of site" className="mt-5 flex flex-wrap gap-x-6">
             {HUBS.map((h) => (
-              <li key={h.slug}><Link href={withVisitor(`${ROUTES.camping}/${h.slug}`, visitor)} className="inline-flex min-h-11 items-center rounded-ch-chip border border-ch-line bg-ch-card px-4 text-[15px] font-bold text-ch-ink hover:border-ch-ink-2">{h.heading}</Link></li>
+              <li key={h.slug}><Link href={withVisitor(`${ROUTES.camping}/${h.slug}`, visitor)} className="inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-4 hover:decoration-2">{h.heading}<ArrowRight aria-hidden="true" className="size-4" /></Link></li>
             ))}
           </ul>
           <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
@@ -317,7 +319,7 @@ export function HardestToBook() {
           </div>
           {/* One row per park, in CampHawk's order (Yosemite first), its campgrounds inline: a ranked
               list reads top to bottom, and twelve one-link cards read as filler (round 9). */}
-          <ol className="mt-10 border-t border-ch-line">
+          <ol className="mt-10 max-w-[900px] border-t border-ch-line">
             {HARD_TO_BOOK.map((p) => (
               <li key={p.park} className="grid gap-x-8 gap-y-1 border-b border-ch-line py-3.5 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline">
                 <h2 className="font-ch-display text-[17px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>

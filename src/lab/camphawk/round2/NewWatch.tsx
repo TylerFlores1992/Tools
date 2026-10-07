@@ -264,7 +264,7 @@ export function NewWatch() {
       </LabBar>
 
       <main id="main">
-        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We check it every 15 seconds until a site opens." photo={<BandPhoto art={ART.n1} pos="80% 45%" posLg="50% 34%" />} />
+        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We’ll tell you the moment a site opens." photo={<BandPhoto art={ART.n1} pos="80% 45%" posLg="50% 34%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}

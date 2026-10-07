@@ -5,7 +5,7 @@ import { CAMPGROUNDS_ROUNDED } from "./data";
 // current home and the round-2 directions so every design says the same thing.
 
 export const HEADLINE = "The campsite you wanted is already booked. We wait for it.";
-export const INTRO = `CampHawk watches booked campgrounds around the clock and tells you the second someone cancels — usually within seconds. Live search across ${CAMPGROUNDS_ROUNDED} campgrounds is always free.`;
+export const INTRO = `CampHawk watches booked campgrounds around the clock and tells you the moment someone cancels. Live search across ${CAMPGROUNDS_ROUNDED} campgrounds is always free.`;
 export const FOOTER_LINKS = ["Pricing", "Support", "Data sources", "Terms", "Privacy"] as const;
 
 export const FEATURES = [

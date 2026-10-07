@@ -92,7 +92,7 @@ export function Welcome() {
             {/* Texts: the same row header (from SmsAlerts, so it flips to On once a number is saved),
                 then the carrier-approved opt-in under it. */}
             <section aria-label="Text alerts" className="mt-3">
-              <SmsAlerts visitor={visitor} secondary intro="A text wakes you; an email waits until you look." />
+              <SmsAlerts visitor={visitor} secondary intro="Add your number below and every opening is texted to you too. A text wakes you; an email waits until you look." />
             </section>
 
             {subscribed && plan === "autocart" && (

@@ -545,7 +545,7 @@ try {
     assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
     await p.getByRole("button", { name: "Holds you asked for" }).click();
-    await p.getByRole("button", { name: "Call this off: the hold on Site 046" }).click();
+    await p.getByRole("button", { name: "Cancel hold: Site 046" }).click();
     assert.equal(await p.getByText("8 AM hold: Site 046").count(), 0);
     // A provider not answering is a banner and a card state, not a broken watch.
     await p.getByLabel("ReserveCalifornia").selectOption("down");

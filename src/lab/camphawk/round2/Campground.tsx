@@ -317,18 +317,21 @@ export function Campground() {
           <PhotoHeader visitor={visitor} />
           <div className="mx-auto max-w-[var(--gh-max)] px-5 pt-4 sm:px-8 sm:pt-8">
             {arrival === "google" ? crumbs : back}
-            <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,8vw,112px)]">
-              <div className="min-w-0">
-                <div className="mb-3 flex flex-wrap gap-1.5">
-                  {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
-                  <Tag kind="src">{provider}</Tag>
-                </div>
-                <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
-                <p className="mt-2 text-[17px] text-ch-line">{place}</p>
-                {watchable && <OpenSummary months={months} />}
+            <div className="mt-2 pb-[clamp(56px,8vw,112px)]">
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+                {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
+                <Tag kind="src">{provider}</Tag>
               </div>
-              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
+              <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
+              <p className="mt-2 text-[17px] text-ch-line">{place}</p>
+              {/* The answer and the action on one row (round 13: the button floated between lines). */}
+              {watchable && (
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+                  <div className="[&>p]:mt-0"><OpenSummary months={months} /></div>
+                  <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>
+                </div>
+              )}
             </div>
           </div>
         </section>
