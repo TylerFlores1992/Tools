@@ -40,15 +40,19 @@ export function WatchCtaLink({
 export function SubscribeCta({ visitor, fullWidth = false, className }: { visitor: Visitor; fullWidth?: boolean; className?: string }) {
   const gate = accountGate(visitor);
   if (gate === "ready") return null;
-  const row = cx(fullWidth ? "grid gap-2" : "flex flex-wrap items-center gap-2", className);
-  const btn = (variant: ButtonVariant = "ink") => buttonClasses({ variant, fullWidth, className: fullWidth ? undefined : "px-5" });
+  const btn = buttonClasses({ variant: "ink", fullWidth, className: cx("min-h-12", !fullWidth && "px-6") });
+  const link = "inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2";
   // The app sells through the store's own paywall: no price, no account needed.
-  if (gate === "appGuest") return <div className={row}><a href="#" className={btn()}>See plans</a></div>;
+  if (gate === "appGuest") return <div className={className}><a href="#" className={btn}>See plans</a></div>;
+  // One account step carries the weight; plans and sign-in are links beside it, never a stack
+  // of equal buttons competing with the page's own action.
   return (
-    <div className={row}>
-      <a href="#" className={btn()}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</a>
-      <a href="#" className={btn("quiet")}>Plan options</a>
-      {gate === "signedOut" && <a href="#" className={btn("quiet")}>Sign in</a>}
+    <div className={className}>
+      <a href="#" className={btn}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</a>
+      <p className={cx("flex flex-wrap items-center gap-x-6 gap-y-1", fullWidth ? "mt-2 justify-center" : "mt-3")}>
+        <a href="#" className={link}>See plans</a>
+        {gate === "signedOut" && <a href="#" className={link}>Sign in</a>}
+      </p>
     </div>
   );
 }
@@ -72,8 +76,8 @@ export function PricingLink({ visitor, plan, className }: { visitor: Visitor; pl
 export function PhoneNudge({ className }: { className?: string }) {
   return (
     <div className={cx("rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5", className)}>
-      <p className="text-[16px] font-bold text-ch-ink">You&apos;re only getting email alerts</p>
-      <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we&apos;ll send both.</p>
+      <p className="text-[16px] font-bold text-ch-ink">You’re only getting email alerts</p>
+      <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we’ll send both.</p>
       <a href="#" className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">Turn on text alerts</a>
     </div>
   );
@@ -108,16 +112,37 @@ export function BandPhoto({ art, alt = "", pos, posLg }: { art: Piece; alt?: str
 
 /** The forest band an app screen opens with: the header, then the screen's title in paper
     type. `dock` is how far the first card below rises into it. */
-export function AppBand({ visitor, current, title, sub, children, photo, dock = true }: { visitor: Visitor; current?: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode; dock?: boolean }) {
+/** A plain band's numbers: value and what it counts, from the data. */
+export type Fact = readonly [value: string, label: string];
+
+export function AppBand({ visitor, current, title, sub, children, photo, dock = true, facts }: { visitor: Visitor; current?: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode; dock?: boolean; facts?: ReadonlyArray<Fact> }) {
   return (
     <section className="relative isolate overflow-hidden bg-ch-forest">
       {photo}
       <PhotoHeader visitor={visitor} current={current} />
       {/* A photo band with only a title gets more room on wide screens, so the picture reads as
           a place, not a strip; the title sits low, near the card it introduces. */}
-      <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-10", dock ? "pb-[calc(var(--gh-dock)+28px)]" : "pb-[clamp(40px,5vw,72px)]", Boolean(photo) && !sub && "lg:pt-[clamp(72px,7vw,128px)]")}>
-        <h1 className="max-w-[18ch] text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper">{title}</h1>
-        {sub && <div className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">{sub}</div>}
+      <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-10", dock ? "pb-[calc(var(--gh-dock)+28px)]" : photo ? "pb-[clamp(40px,5vw,72px)]" : "pb-[clamp(36px,3.6vw,52px)]", Boolean(photo) && !sub && "lg:pt-[clamp(72px,7vw,128px)]")}>
+        {/* A plain band has no photo to keep clear, so its title runs wider: a short title on two lines,
+            not three (round 13). */}
+        <div className={cx(facts && "lg:flex lg:items-end lg:justify-between lg:gap-14")}>
+          <div className="min-w-0">
+            <h1 className={cx(photo ? "max-w-[18ch]" : facts ? "max-w-[18ch] lg:max-w-[22ch]" : "max-w-[18ch] lg:max-w-[26ch]", "text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper")}>{title}</h1>
+            {sub && <div className="mt-3 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-ch-line">{sub}</div>}
+          </div>
+          {/* The page's numbers where the empty half of a plain band was (round 14): a phone gets
+              them as a row under the title, hairlines between. */}
+          {facts && (
+            <dl className={cx("mt-7 grid border-t border-ch-white/15 pt-5 lg:mt-0 lg:shrink-0 lg:border-t-0 lg:pb-1.5 lg:pt-0", facts.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+              {facts.map(([value, label], i) => (
+                <div key={label} className={cx("flex min-w-0 flex-col gap-1 pr-3 lg:pr-7", i > 0 && "border-l border-ch-white/15 pl-3 lg:pl-7", i === facts.length - 1 && "pr-0 lg:pr-0")}>
+                  <dt className="order-last text-[13px] leading-snug text-ch-line lg:text-[14px]">{label}</dt>
+                  <dd className="font-ch-display text-[clamp(24px,2.6vw,36px)] font-extrabold leading-none tracking-[-.02em] text-ch-paper tabular-nums">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
         {children}
       </div>
     </section>

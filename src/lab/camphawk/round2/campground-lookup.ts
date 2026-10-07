@@ -1,7 +1,7 @@
 // Which example campground the campground page shows (`?id=`), so every Explore result opens a
 // page of its own. Upper Pines keeps its hand-made calendar (every CampHawk calendar state); the
 // others get July and August from their open nights in explore-data, then the same later months.
-// A campground whose provider didn't answer reads "couldn't check" all the way through, never
+// A campground whose provider didn't answer reads "couldn’t check" all the way through, never
 // "booked". All of it is example data.
 import { CAMPGROUND, MONTHS, SITES, type Month, type Site } from "./campground-data";
 import { CAMPGROUNDS } from "./explore-data";

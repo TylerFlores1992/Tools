@@ -138,14 +138,14 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     const s = findSite(map, query);
     if (!s || !s.at) {
       setFound(null);
-      setFindMsg(query.trim() ? `There's no site “${query.trim()}” at ${name}.` : "Type a site number.");
+      setFindMsg(query.trim() ? `There’s no site “${query.trim()}” at ${name}.` : "Type a site number.");
       return;
     }
     const p = s as Placed;
     if (open.has(p.name)) { setFound(null); pick(p); setFindMsg(`Site ${p.name} is open on ${dayLabel(picked!)}.`); }
     else {
       setFound(p);
-      setFindMsg(picked ? `Site ${p.name} is ringed on the map. It isn't open on ${dayLabel(picked)}.` : `Site ${p.name} is ringed on the map.`);
+      setFindMsg(picked ? `Site ${p.name} is ringed on the map. It isn’t open on ${dayLabel(picked)}.` : `Site ${p.name} is ringed on the map.`);
     }
     if (zoom > 1) requestAnimationFrame(() => center(p.at));
   };

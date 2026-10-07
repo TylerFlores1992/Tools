@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
@@ -27,7 +27,7 @@ import {
 // CampgroundOpenings.tsx), ported with example data. Contract: docs/design/camphawk-home.md,
 // "Screen 2". What it keeps from CampHawk, on purpose:
 // - The answer comes first: whether anything is open, in words, under the name.
-// - Booked days are neutral and struck through, never red; open days carry a dot; days that are
+// - Booked days are neutral and struck through, never red; open days carry a tick (the open mark everywhere, as on Explore's pins; a solid dot means booked); days that are
 //   not open for booking carry a bar. A month we couldn't read gets NO marks and says so: an
 //   absent reading is not "booked". A failed request is said in words, without internals.
 // - The watch button follows WatchCta's gate: one control, a label per visitor, never a price.
@@ -58,7 +58,7 @@ const firstMonthName = monthLabel(FIRST_MONTH).split(" ")[0];
 function OpenSummary({ months }: { months: Record<string, Month> }) {
   const first = months[FIRST_MONTH];
   // An unread month is not a booked one: say we couldn't check.
-  if (first.unknown || first.error) return <p className="mt-4 text-[17px] text-ch-line">We couldn&apos;t check {firstMonthName} just now. A watch keeps checking around the clock.</p>;
+  if (first.unknown || first.error) return <p className="mt-4 text-[17px] text-ch-line">We couldn’t check {firstMonthName} just now. A watch keeps checking around the clock.</p>;
   const open = Object.keys(first.open).filter((d) => d >= TODAY).sort();
   if (!open.length) return <p className="mt-4 text-[17px] text-ch-line">Nothing open in {firstMonthName} right now.</p>;
   return (
@@ -66,8 +66,7 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
       <Tag kind="open">Sites open</Tag>
       <span>
         {/* The count lives in the calendar's key; up here, just the next date. */}
-        <strong className="font-bold">Next opening {dayLabel(open[0])}.</strong>{" "}
-        <span className="text-ch-line">Pick a day below to see the sites.</span>
+        <strong className="font-bold">First open night: {dayLabel(open[0])}.</strong>
       </span>
     </p>
   );
@@ -75,11 +74,12 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
 
 function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, name, provider }: { visitor: Visitor; id: string; months: Record<string, Month>; sites: Record<string, Site>; map: SiteMapData | null; mapPending: boolean; mapLoading: boolean; name: string; provider: string }) {
   const [month, setMonth] = useState(FIRST_MONTH);
+  // The first open night is selected, so the day panel answers the headline above it (round 17).
   // A night with a single open site shows that site's details straight away; with more, the
   // visitor picks one on the map or with the day panel's Map button.
   const only = (day: string | null) => { const ids = day ? months[day.slice(0, 7)]?.open[day] ?? [] : []; return ids.length === 1 ? ids[0] : null; };
-  const [site, setSite] = useState<string | null>(() => only(months[FIRST_MONTH].open["2026-07-18"] ? "2026-07-18" : null));
-  const [selected, setSelected] = useState<string | null>(() => (months[FIRST_MONTH].open["2026-07-18"] ? "2026-07-18" : null));
+  const [selected, setSelected] = useState<string | null>(() => Object.keys(months[FIRST_MONTH].open).filter((d) => d >= TODAY && months[FIRST_MONTH].open[d]).sort()[0] ?? null);
+  const [site, setSite] = useState<string | null>(() => only(selected));
   const data = months[month];
   const unread = Boolean(data.unknown || data.error);
   const known = !unread;
@@ -94,7 +94,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
   const shift = (by: number) => { setMonth(shiftMonth(month, by)); setSelected(null); setSite(null); };
   const showOnMap = (siteId: string) => { setSite(siteId); document.getElementById("site-map-h")?.scrollIntoView({ behavior: "smooth", block: "start" }); };
   const summary = data.error ? "Availability unavailable"
-    : data.unknown ? "Couldn't check this month"
+    : data.unknown ? "Couldn’t check this month"
     : data.closed ? "Not open for booking this month"
     : openDays.length ? `${openDays.length} day${openDays.length === 1 ? "" : "s"} with openings`
     : "Nothing open this month";
@@ -108,7 +108,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
           <button type="button" onClick={() => shift(-1)} disabled={month <= FIRST_MONTH} aria-label="Previous month" className={navButton}>
             <ChevronLeft aria-hidden="true" className="size-5" />
           </button>
-          <h2 aria-live="polite" className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-ink">{monthLabel(month)}</h2>
+          <h2 aria-live="polite" className="font-ch-display text-[22px] font-extrabold text-ch-ink">{monthLabel(month)}</h2>
           <button type="button" onClick={() => shift(1)} disabled={month >= LAST_MONTH} aria-label="Next month" className={navButton}>
             <ChevronRight aria-hidden="true" className="size-5" />
           </button>
@@ -128,7 +128,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
             const isBooked = known && !isPast && !isOpen && !isClosed;
             const on = picked === day;
             const label = isPast ? `${dayLabel(day)}, past`
-              : !known ? `${dayLabel(day)}, couldn't check`
+              : !known ? `${dayLabel(day)}, couldn’t check`
               : isOpen ? `${dayLabel(day)}, ${sites.length} site${sites.length === 1 ? "" : "s"} open`
               : isClosed ? `${dayLabel(day)}, not open for booking`
               : `${dayLabel(day)}, fully booked`;
@@ -143,14 +143,15 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
                 className={cx(
                   "flex aspect-square flex-col items-center justify-center rounded-[11px] text-[15px] font-semibold tabular-nums sm:aspect-auto sm:h-14 sm:text-[16px]",
                   isOpen && !on && "cursor-pointer bg-ch-green-soft font-bold text-ch-green-deep hover:bg-ch-green-soft-hover",
-                  isOpen && on && "cursor-pointer bg-ch-green font-bold text-ch-white",
+                  // Selected has its own shape too (a ring), not only a darker fill.
+                  isOpen && on && "cursor-pointer bg-ch-green font-bold text-ch-white ring-2 ring-ch-green ring-offset-2 ring-offset-ch-card",
                   isBooked && "cursor-default text-ch-muted line-through decoration-[1.5px]",
                   (isClosed || !known) && !isPast && "cursor-default text-ch-muted",
                   isPast && "cursor-default text-ch-faint",
                 )}
               >
                 {n}
-                {isOpen && <span aria-hidden="true" className={cx("mt-0.5 size-[5px] rounded-full", on ? "bg-ch-card" : "bg-ch-green-deep")} />}
+                {isOpen && <Check aria-hidden="true" strokeWidth={3.5} className={cx("-mb-0.5 size-[11px]", on ? "text-ch-card" : "text-ch-green-deep")} />}
                 {isClosed && <span aria-hidden="true" className="mt-1 h-[2px] w-2.5 rounded-full bg-ch-faint" />}
               </button>
             );
@@ -160,7 +161,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-ch-ink-2">
           {/* Each key repeats the mark its days carry, so it reads without hue. */}
           <span className="inline-flex items-center gap-1.5">
-            <i aria-hidden="true" className="inline-flex size-4 items-end justify-center rounded-[4px] bg-ch-green-soft pb-[2px]"><span className="size-[4px] rounded-full bg-ch-green-deep" /></i>
+            <i aria-hidden="true" className="inline-grid size-4 place-items-center rounded-[4px] bg-ch-green-soft"><Check strokeWidth={3.5} className="size-[11px] text-ch-green-deep" /></i>
             Sites open
           </span>
           <span className="inline-flex items-center gap-1.5">
@@ -183,12 +184,12 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
         </div>
         {data.unknown && (
           <p className="mt-3 rounded-ch-input bg-ch-paper px-3 py-2.5 text-[14px] leading-relaxed text-ch-ink-2">
-            We can&apos;t show this month&apos;s calendar right now. A watch still checks it for openings around the clock.
+            We can’t show this month’s calendar right now. A watch still checks it for openings around the clock.
           </p>
         )}
         {data.error && (
           <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">
-            We couldn&apos;t load this month&apos;s availability. This is usually the reservation provider, not your connection.
+            We couldn’t load this month’s availability. This is usually the reservation provider, not your connection.
           </p>
         )}
       </div>
@@ -224,14 +225,15 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
         )}
         {/* The next step after the calendar: the same gated watch control as the band. */}
         <div className="mt-2 border-t border-ch-line pt-4">
-          <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the second a site opens.</p>
-          <Link href={watchHref(visitor, id)} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-3" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>
+          <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the moment a site opens.</p>
+          {/* A link, not a second button: the band's button is the page's one watch action. */}
+          <Link href={watchHref(visitor, id)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{watchCtaLabel(visitor, "Watch this campground")}<ChevronRight aria-hidden="true" className="size-4" /></Link>
         </div>
       </aside>
     </div>
     {map ? (
       <SiteMap map={map} name={name} provider={provider} picked={picked} openIds={picked ? data.open[picked] ?? [] : []} selectedId={site} onSelect={setSite}
-        note={unread ? "We couldn't check which sites are open this month, so none are marked." : undefined} />
+        note={unread ? "We couldn’t check which sites are open this month, so none are marked." : undefined} />
     ) : mapLoading ? (
       <div role="status" className="mt-4 h-[320px] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none sm:mt-5"><span className="sr-only">Loading the site map…</span></div>
     ) : <NoMap name={name} provider={provider} pending={mapPending} />}
@@ -245,8 +247,8 @@ function NoMap({ name, provider, pending }: { name: string; provider: string; pe
     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:mt-5 sm:p-6">
       <div>
         <h2 className="font-ch-display text-[19px] font-bold text-ch-ink">Site map</h2>
-        <p className="mt-1 text-[15px] text-ch-ink-2">We haven&apos;t drawn a map of {name} yet. You can see its sites on {provider}.</p>
-        {pending && <LabNote className="mt-3">This map is drawn from California State Parks&apos; campsite data, which waits on their permission. It renders on a local run only and is never deployed.</LabNote>}
+        <p className="mt-1 text-[15px] text-ch-ink-2">We haven’t drawn a map of {name} yet. You can see its sites on {provider}.</p>
+        {pending && <LabNote className="mt-3">This map is drawn from California State Parks’ campsite data, which waits on their permission. It renders on a local run only and is never deployed.</LabNote>}
       </div>
       <a href="#" className={buttonClasses({ variant: "cart", className: "px-5" })}>See the sites on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
     </div>
@@ -303,7 +305,7 @@ export function Campground() {
             <option value="loaded">Loaded</option>
             <option value="loading">Loading</option>
             <option value="missing">Not found</option>
-            <option value="failed">Couldn&apos;t load</option>
+            <option value="failed">Couldn’t load</option>
           </select>
         </label>
         <label className="flex items-center gap-2"><span aria-hidden="true" className="font-bold">Map</span>
@@ -336,15 +338,15 @@ export function Campground() {
               {page === "missing" && (
                 <div className="pt-10">
                   <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">Campground not found</h1>
-                  <p className="mt-3 text-[17px] text-ch-line">We don&apos;t have this campground.</p>
+                  <p className="mt-3 text-[17px] text-ch-line">We don’t have this campground.</p>
                   <Link href={searchHref} className={buttonClasses({ variant: "quiet", className: "mt-6 px-5" })}>Back to search</Link>
                 </div>
               )}
               {page === "failed" && (
                 <div className="pt-10">
-                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">We couldn&apos;t load this campground</h1>
+                  <h1 className="font-ch-display text-[clamp(34px,4.5vw,48px)] font-extrabold leading-[1.05] tracking-[-.03em] text-ch-paper">We couldn’t load this campground</h1>
                   <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-ch-line">
-                    Something went wrong on our side or with the connection — this doesn&apos;t mean the campground is gone. Try again in a moment.
+                    Something went wrong on our side or with the connection — this doesn’t mean the campground is gone. Try again in a moment.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
                     <button type="button" onClick={() => setPage("loaded")} className={buttonClasses({ variant: "ink", className: "px-5" })}>Try again</button>
@@ -361,18 +363,21 @@ export function Campground() {
           <PhotoHeader visitor={visitor} />
           <div className="mx-auto max-w-[var(--gh-max)] px-5 pt-4 sm:px-8 sm:pt-8">
             {arrival === "google" ? crumbs : back}
-            <div className="mt-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 pb-[clamp(56px,8vw,112px)]">
-              <div className="min-w-0">
-                <div className="mb-3 flex flex-wrap gap-1.5">
-                  {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
-                  {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
-                  <Tag kind="src">{provider}</Tag>
-                </div>
-                <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
-                <p className="mt-2 text-[17px] text-ch-line">{place}</p>
-                {watchable && <OpenSummary months={months} />}
+            <div className="mt-2 pb-[clamp(56px,8vw,112px)]">
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {!watchable && <Tag kind="paused" mark="first-come" srPrefix="Booking:">{FIRST_COME_BADGE}</Tag>}
+                {watchable && CAMPGROUND.autoCart && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
+                <Tag kind="src">{provider}</Tag>
               </div>
-              {watchable && <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>}
+              <h1 className="font-ch-display text-[clamp(40px,5vw,56px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">{name}</h1>
+              <p className="mt-2 text-[17px] text-ch-line">{place}</p>
+              {/* The answer and the action on one row (round 13: the button floated between lines). */}
+              {watchable && (
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+                  <div className="[&>p]:mt-0"><OpenSummary months={months} /></div>
+                  <Link href={watchHref(visitor, CAMPGROUND.id)} className={buttonClasses({ variant: canWatch(visitor) ? "primary" : "paper", size: "lg", className: "w-full px-6 sm:w-auto" })}>{watchCtaLabel(visitor, "Watch this campground")}</Link>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -397,7 +402,7 @@ export function Campground() {
                 <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{FIRST_COME_WHY}</p>
               </div>
               {/* First come still has sites worth finding: the map shows where, never which are free. */}
-              {siteMap ? <SiteMap map={siteMap} name={name} provider={provider} picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="Sites aren't reserved here, so the map shows where they are, not which are free." />
+              {siteMap ? <SiteMap map={siteMap} name={name} provider={provider} picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="Sites aren’t reserved here, so the map shows where they are, not which are free." />
                 : <NoMap name={name} provider={provider} pending={mapPending} />}
             </>
           )}
@@ -421,18 +426,15 @@ export function Campground() {
             </p>
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
-          <section className="px-2 sm:px-0">
-            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} books up` : openingsHeading(name)}</h2>
+          <section>
+            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} is fully booked` : openingsHeading(name)}</h2>
             <div className="mt-3 max-w-[66ch] space-y-3">
               {openingsBody(name, place, CAMPGROUND.autoCart).map((t) => (
                 <p key={t.slice(0, 40)} className="text-[17px] leading-relaxed text-ch-ink-2">{t}</p>
               ))}
             </div>
             <p className="mt-5 text-[16px] text-ch-ink-2">
-              Fully booked? <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">What actually works when a campground is sold out</a>.
-            </p>
-            <p className="mt-2 text-[16px] text-ch-ink-2">
-              Also booked out? See <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we watch</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
+              Fully booked? Read <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">what actually works when a campground is fully booked</a>, see <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we track</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
             </p>
           </section>
         </div>

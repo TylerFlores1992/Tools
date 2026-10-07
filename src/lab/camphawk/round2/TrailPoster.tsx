@@ -21,7 +21,7 @@ function TicketAlert() {
     <figure className="tp-ticket w-[260px] rounded-[12px] border-2 border-ch-forest bg-ch-card text-ch-ink">
       <div className="px-4 pb-3 pt-3.5">
         <p className="text-[13px] font-bold text-ch-ochre-ink">A site just opened, 14 sec ago</p>
-        <p className="mt-1 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">Upper Pines, site 042</p>
+        <p className="mt-1 font-ch-display text-[20px] font-extrabold leading-tight text-ch-forest">Upper Pines, Site 042</p>
         <p className="mt-0.5 text-[14px] text-ch-ink-2">Yosemite. Jul 18 to 21, 3 nights.</p>
       </div>
       <div className="flex items-center gap-1.5 border-t-2 border-dashed border-ch-forest px-4 py-2.5 text-[14px] font-bold text-ch-blue-deep">
@@ -97,7 +97,7 @@ export function TrailPoster() {
                 <li key={title} className="grid grid-cols-[96px_1fr] items-start gap-5 sm:grid-cols-[136px_1fr]">
                   <Art art={SMALL[i]} sizes="136px" className="aspect-square w-full" />
                   <div>
-                    <h3 className="font-ch-display text-[21px] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{title}</h3>
+                    <h3 className="font-ch-display text-[21px] font-extrabold leading-tight text-ch-forest">{title}</h3>
                     <p className="mt-1.5 text-[16px] leading-relaxed text-ch-ink-2">{body}</p>
                   </div>
                 </li>
@@ -127,7 +127,7 @@ export function TrailPoster() {
         </section>
 
         <section className="mx-auto max-w-[var(--ch-max)] px-5 py-[clamp(56px,8vw,104px)]">
-          <h2 className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-forest">What we don&apos;t do</h2>
+          <h2 className="font-ch-display text-[22px] font-extrabold text-ch-forest">What we don’t do</h2>
           <ul className="mt-3 max-w-[64ch] border-t-2 border-ch-forest">
             {LIMITS.map((line) => (
               <li key={line} className="border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2">{line}</li>
@@ -137,7 +137,7 @@ export function TrailPoster() {
 
         <section className="mx-auto max-w-[var(--ch-max)] px-5 pb-[clamp(64px,9vw,120px)]">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-black leading-[1] tracking-[-.04em] text-ch-forest">Start with a search. It&apos;s free.</h2>
+            <h2 className="max-w-[14ch] font-ch-display text-[clamp(36px,5vw,64px)] font-black leading-[1] tracking-[-.04em] text-ch-forest">Start with a search. It’s free.</h2>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <a href="#" className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />

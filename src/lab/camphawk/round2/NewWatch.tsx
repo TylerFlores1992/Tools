@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BellOff, Check, ChevronDown } from "lucide-react";
+import { BellOff, BellRing, Check, ChevronDown } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { priceShort, WATCH_LIMIT } from "../data";
@@ -10,13 +10,16 @@ import { LabBar } from "../LabBar";
 import { Collapsible } from "../ui/Collapsible";
 import { DatePicker, type DateRange } from "../ui/DatePicker";
 import { NightsPicker } from "../ui/NightsPicker";
+import { Chip } from "../ui/Chip";
 import { RadioChips } from "../ui/RadioChips";
 import { addDays, formatRange, nightsBetween, thisWeekendRange, todayISO, type ISODate } from "../ui/date";
 import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
-import { TRIAL_DAYS } from "./pages/tier2-data";
+import { CHECK_SECONDS, TRIAL_DAYS } from "./pages/tier2-data";
+import { AlertCard } from "./GoldenHour";
+import { BetaNote } from "./BareFrame";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sitesFor, type Division, type Pickable } from "./newwatch-data";
@@ -32,11 +35,13 @@ import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sites
 //   exactly what will be created.
 // - Auto-cart is promised only to someone on the Auto-Cart plan; anyone else is told what still
 //   happens. No filter panel: the poller doesn't read one, so this screen doesn't offer it.
-// Lab changes: the "What we'll do" panel is a plain card (CampHawk tints it green, which its own
+// Lab changes: the "What we’ll do" panel is a plain card (CampHawk tints it green, which its own
 // rules keep for an open site or an action). A muted site is neutral (a word and a crossed bell), not CampHawk's red button,
 // because red means "you must act" in its own rules.
 
 const MAX_DIVISIONS = 10;
+/** The picker's starting suggestions (example data): the lab's most-watched campgrounds. */
+const OFTEN_WATCHED = ["upper-pines", "north-pines", "leo-carrillo"];
 type Mode = "exact" | "flexible";
 type OnSubmit = "saves" | "limit" | "expired" | "needs-sub";
 const ON_SUBMIT = ["saves", "limit", "expired", "needs-sub"] as const;
@@ -55,17 +60,17 @@ function TrustPanel() {
   return (
     <div className="mt-2.5 grid gap-2.5">
       <div className={panel}>
-        <h3 className="text-[15px] font-bold text-ch-ink">What we can and can&apos;t do</h3>
+        <h3 className="text-[15px] font-bold text-ch-ink">What we can and can’t do</h3>
         <ul className="mt-1.5">
           {[
             <>We stay signed in to your account in a browser on a private machine we run — never on our web servers, and never in our cloud database.</>,
             <>The only thing we do with it is <strong className="font-extrabold text-ch-ink">add a site to your cart</strong>. Nothing is ever bought.</>,
-            <>We can&apos;t check out, cancel, or change a reservation you already have.</>,
+            <>We can’t check out, cancel, or change a reservation you already have.</>,
             <>Disconnecting signs out and deletes the session right away. Your watches keep running — just without auto-cart.</>,
           ].map(tick)}
         </ul>
         <p className="mt-1.5 border-t border-ch-line pt-2 text-[13px] leading-normal text-ch-muted">
-          Recreation.gov sessions drop from time to time. Because your login is saved, the machine signs back in on its own — you don&apos;t have to do anything. Auto-cart pauses for those few minutes, and your watches keep alerting you normally throughout.
+          Recreation.gov sessions drop from time to time. Because your login is saved, the machine signs back in on its own — you don’t have to do anything. Auto-cart pauses for those few minutes, and your watches keep alerting you normally throughout.
         </p>
       </div>
       <div className="rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5">
@@ -79,9 +84,9 @@ function TrustPanel() {
         {open && (
           <ul className="mt-2 border-t border-ch-ochre-line pt-2">
             {[
-              <>We store your Recreation.gov <strong className="font-extrabold">password</strong>, encrypted, on that same private machine. It never reaches CampHawk&apos;s servers or database.</>,
-              <>We use it for exactly one thing: signing you back in when the session drops, so auto-cart doesn&apos;t quietly stop working.</>,
-              <>After two failed sign-ins we delete it and ask you to reconnect, so a changed password can&apos;t lock your account.</>,
+              <>We store your Recreation.gov <strong className="font-extrabold">password</strong>, encrypted, on that same private machine. It never reaches CampHawk’s servers or database.</>,
+              <>We use it for exactly one thing: signing you back in when the session drops, so auto-cart doesn’t quietly stop working.</>,
+              <>After two failed sign-ins we delete it and ask you to reconnect, so a changed password can’t lock your account.</>,
               <>Turning auto-cart off, or disconnecting, deletes the stored password immediately.</>,
             ].map((t, i) => (
               <li key={i} className="flex items-start gap-2 py-1 text-[14px] leading-normal text-ch-ink-2">
@@ -90,7 +95,7 @@ function TrustPanel() {
               </li>
             ))}
             <li className="mt-1.5 border-t border-ch-ochre-line pt-2 text-[13px] leading-normal text-ch-ochre-ink">
-              A saved password is more than a session — it&apos;s a reusable key to your Recreation.gov account. Auto-cart can&apos;t work without it. If you&apos;d rather not, leave auto-cart off: your watches still find the opening and still alert you in seconds, you just add the site to the cart yourself.
+              A saved password is more than a session — it’s a reusable key to your Recreation.gov account. Auto-cart can’t work without it. If you’d rather not, leave auto-cart off: your watches still find the opening and still alert you in seconds, you just add the site to the cart yourself.
             </li>
           </ul>
         )}
@@ -112,11 +117,11 @@ function MuteList({ ids, divisions, muted, setMuted }: { ids: string[]; division
   const small = buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-3.5" });
   return (
     <>
-      <p className="pb-3 text-[14px] leading-normal text-ch-ink-2">Only want a handful of sites? Mute all, then unmute the ones you&apos;d actually take — we&apos;ll only wake you for those. You can change this any time from the watch.</p>
+      <p className="pb-3 text-[14px] leading-normal text-ch-ink-2">Only want a handful of sites? Mute all, then unmute the ones you’d actually take — we’ll only wake you for those. You can change this any time from the watch.</p>
       <div className="mb-2 flex flex-wrap items-center gap-2">
         {toMute.length > 0 && <button type="button" onClick={() => change(toMute, [])} className={small}>Mute all {toMute.length}</button>}
         {toUnmute.length > 0 && <button type="button" onClick={() => change([], toUnmute)} className={small}>Unmute all {toUnmute.length}</button>}
-        <span className="text-[13px] text-ch-muted">{muted.size ? `${muted.size} of ${sites.length} muted` : "Mute all, then unmute the few you'd take"}</span>
+        <span className="text-[13px] text-ch-muted">{muted.size ? `${muted.size} of ${sites.length} muted` : "Mute all, then unmute the few you’d take"}</span>
       </div>
       <ul className="max-h-[320px] overflow-y-auto overscroll-contain">
         {sites.map((s) => {
@@ -153,7 +158,7 @@ function PickerRow({ p, onPick }: { p: Pickable; onPick: (p: Pickable) => void }
       <span className="block font-semibold text-ch-ink">
         {p.name}
         {ok && parts > 1 && <span className="ml-1.5 rounded-full border border-ch-line bg-ch-paper px-1.5 py-0.5 text-[12px] font-semibold text-ch-muted">{parts} parts</span>}
-        <span className="font-normal text-ch-muted"> · {p.place}</span>
+        <span className="ml-2 font-normal text-ch-muted">{p.place}</span>
       </span>
       {!ok && <span className="mt-0.5 block text-[13px] text-ch-ink-2">{FIRST_COME_BADGE} — no reservations, so there is nothing to watch.</span>}
     </>
@@ -224,7 +229,6 @@ export function NewWatch() {
   const weekend = thisWeekendRange();
   const isThisWeekend = range.start === weekend.start && range.end === weekend.end;
   const gate = accountGate(visitor);
-  const notifyWords = visitor === "app" ? "send you a notification" : "text, email and push you";
 
   const favoriteRows = chosen ? [] : PICKABLE.filter((p) => favorites.has(p.id) && (!q.trim() || [p.name, p.place].some((v) => v.toLowerCase().includes(q.trim().toLowerCase()))));
   const hits = chosen ? [] : findCampgrounds(q).filter((p) => !favorites.has(p.id));
@@ -242,7 +246,7 @@ export function NewWatch() {
     setAnswer(null);
     window.setTimeout(() => {
       setSaving(false);
-      if (onSubmit === "limit") return setError(`You've hit the ${WATCH_LIMIT}-watch limit. Delete one to add another.`);
+      if (onSubmit === "limit") return setError(`You’ve hit the ${WATCH_LIMIT}-watch limit. Delete one to add another.`);
       if (onSubmit === "expired" || onSubmit === "needs-sub") return setAnswer(onSubmit);
       const nights = mode === "flexible" ? `&nights=${flexNights}${weekendsOnly ? "&weekends=1" : ""}` : "";
       router.push(withVisitor(`${ROUTES.watches}?new=${chosen.id}&start=${range.start}&end=${range.end}${nights}`, visitor));
@@ -260,7 +264,7 @@ export function NewWatch() {
       </LabBar>
 
       <main id="main">
-        <AppBand visitor={visitor} current="new" title="New watch" photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
+        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We’ll tell you the moment a site opens." photo={<BandPhoto art={ART.n1} pos="80% 45%" posLg="50% 34%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
@@ -327,6 +331,15 @@ export function NewWatch() {
                 </div>
               )}
             </div>
+            {/* An empty box gets a start: the campgrounds people watch most, one tap to pick. */}
+            {!chosen && !shown && !q.trim() && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="w-full text-[14px] text-ch-ink-2">Often watched</span>
+                {OFTEN_WATCHED.map((id) => PICKABLE.find((p) => p.id === id)!).map((p) => (
+                  <Chip key={p.id} size="sm" onClick={() => pick(p)}>{p.name}</Chip>
+                ))}
+              </div>
+            )}
 
             {divisions.length > 1 && (
               <fieldset className="mt-6">
@@ -373,7 +386,7 @@ export function NewWatch() {
                 minDate={todayISO()}
                 defaultMonth={range.start ?? addDays(todayISO(), 1)}
               /></div>
-              {flexTooLong && <p role="alert" className="mt-2 text-[14px] text-ch-alert-deep">{flexNights} nights doesn&apos;t fit in a {windowNights}-night window. Widen the window or shorten the stay.</p>}
+              {flexTooLong && <p role="alert" className="mt-2 text-[14px] text-ch-alert-deep">{flexNights} nights doesn’t fit in a {windowNights}-night window. Widen the window or shorten the stay.</p>}
             </fieldset>
 
             {targets.length > 0 && !firstCome && (
@@ -390,7 +403,7 @@ export function NewWatch() {
                 <button type="button" onClick={() => setAutoCart(!autoCart)} aria-pressed={autoCart} className="flex w-full cursor-pointer items-center gap-3 rounded-ch-input border border-ch-line bg-ch-card px-4 py-3.5 text-left hover:border-ch-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">
                   <span className="flex-1">
                     <span className="block text-[15px] font-bold text-ch-ink">Add it to my cart automatically</span>
-                    <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">We put the site in your Recreation.gov cart the moment it opens, so it&apos;s waiting when your phone buzzes.</span>
+                    <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">We put the site in your Recreation.gov cart the moment it opens, so it’s waiting when your phone buzzes.</span>
                   </span>
                   {/* The switch carries its state as position and a word as well as hue. */}
                   <span className="flex shrink-0 flex-col items-center gap-1">
@@ -408,24 +421,21 @@ export function NewWatch() {
                 <legend className={label}>Auto-cart</legend>
                 <div className={panel}>
                   <p className="text-[15px] font-bold text-ch-ink">Auto-cart is on the Auto-Cart plan</p>
-                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We&apos;ll still check this campground every 15 seconds and alert you the moment a site opens — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We’ll still alert you the moment a site opens — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
                 </div>
               </fieldset>
             )}
             {canRcHold && offer === "promise" && (
               <div className={cx(panel, "mt-6")}>
-                <p className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</span>
-                  <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">Beta</span>
-                </p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
-                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</p>
+                <p className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we’ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
+                <BetaNote className="mt-2" />
               </div>
             )}
             {canRcHold && offer === "upsell" && (
               <div className={cx(panel, "mt-6")}>
-                <p className="text-[15px] font-bold text-ch-ink">8 AM holds are on the Auto-Cart plan</p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We&apos;ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                <p className="text-[15px] font-bold text-ch-ink">8 AM holds are on the Auto-Cart plan</p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We’ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
               </div>
             )}
             {/* The action sits under the fields it submits (CampHawk puts it in the side panel, which
@@ -440,52 +450,51 @@ export function NewWatch() {
                 ) : (
                   <SubscribeCta visitor={visitor} fullWidth />
                 )}
+                {/* Where the alert will go, so "Start watching" has a visible consequence. */}
+                {gate === "ready" && (
+                  <p className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[14px] text-ch-ink-2">
+                    <BellRing aria-hidden="true" className="size-4 shrink-0" />
+                    {visitor === "app" ? "Alerts come to this phone as notifications." : <>Alerts go by email, push and text. <a href="#" className="font-bold text-ch-ink underline underline-offset-[3px]">Change in Settings</a></>}
+                  </p>
+                )}
               </div>
               {answer === "needs-sub" && (
-                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}-day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
+                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}‑day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
               )}
               {answer === "expired" && (
-                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you&apos;ve entered is lost.</p>
+                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you’ve entered is lost.</p>
               )}
               {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
             </div>
           </form>
 
-          <aside aria-labelledby="nw-what" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6 lg:sticky lg:top-6">
-            <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-forest">What we&apos;ll do</h2>
-            {chosen ? (
-              <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                Watch <strong className="font-extrabold">{chosen.name}</strong> for{" "}
-                {mode === "flexible"
-                  ? <>any <strong className="font-extrabold">{flexNights}-night</strong>{weekendsOnly ? " weekend" : ""} opening</>
-                  : <strong className="font-extrabold">{formatRange(range.start, range.end) ?? "your dates"}</strong>}
-                {mode === "flexible" && range.start && <> between <strong className="font-extrabold">{formatRange(range.start, range.end)}</strong></>}
-                , checking every 15 seconds. We&apos;ll {notifyWords} the moment a site frees up — you don&apos;t need to keep this open.
-              </p>
-            ) : (
-              <>
-                <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch is our bot refreshing a booked campground for you. We check it <strong className="font-extrabold">every 15 seconds, around the clock</strong>, and the instant someone cancels we {notifyWords} — so you get the site instead of the next person hitting refresh.
-                </p>
-                <ol className="mt-3">
-                  {[
-                    ["Pick the campground", "Search by name in the box. Your favorites show up when you tap it."],
-                    ["Choose your nights", "Exact dates, or Flexible: set how many nights you want and the date range to look in. Three nights anywhere next month gives us far more chances to catch a cancellation than one fixed weekend."],
-                    ["Start watching", "Then close the app. We'll find you when something opens."],
-                  ].map(([title, sub], i) => (
-                    <li key={title} className="flex gap-3 border-b border-ch-line py-3 last:border-b-0">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span>
-                      <span>
-                        <span className="block text-[15px] font-bold text-ch-ink">{title}</span>
-                        <span className="mt-0.5 block text-[14px] leading-normal text-ch-ink-2">{sub}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-                <p className="mt-3 text-[14px] leading-normal text-ch-ink-2">On Recreation.gov we can go one better and drop the site straight into your cart, so it&apos;s held while you get to your phone.</p>
-              </>
-            )}
-
+          {/* The watch as it will be created, filling in as you choose (round 17 rework: it was three
+              numbered steps, the sixth numbered box in the set), then what an opening sends you. */}
+          <aside aria-labelledby="nw-what" className="grid gap-4 lg:sticky lg:top-6">
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-6">
+              <h2 id="nw-what" className="font-ch-display text-[20px] font-extrabold text-ch-forest">Your watch</h2>
+              <dl className="mt-3 divide-y divide-ch-line border-y border-ch-line">
+                {([
+                  ["Campground", chosen ? chosen.name : null],
+                  ["Nights", mode === "flexible"
+                    ? <>Any {flexNights}-night{weekendsOnly ? " weekend" : ""} opening{range.start ? <>, {formatRange(range.start, range.end)}</> : null}</>
+                    : formatRange(range.start, range.end)],
+                  ["Checked", `Every ${CHECK_SECONDS} seconds, around the clock`],
+                  ["Alerts", visitor === "app" ? "Notifications on this phone" : "Email, push and text, at once"],
+                  ...(offer === "promise" && canAutoCart ? [["Auto-cart", "On: an opening goes straight into your cart"] as const] : []),
+                ] as Array<readonly [string, React.ReactNode]>).map(([k, v]) => (
+                  <div key={k} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 py-2.5 text-[15px] leading-snug">
+                    <dt className="font-bold text-ch-ink-2">{k}</dt>
+                    <dd className={v ? "text-ch-ink" : "text-ch-muted"}>{v ?? "Not picked yet"}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-3 text-[14px] leading-relaxed text-ch-ink-2">You don’t need to keep this open. Flexible dates catch far more cancellations.</p>
+            </div>
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+              <p className="mb-3 text-[13px] font-extrabold text-ch-ink-2">When a site opens, you get this</p>
+              <AlertCard compact cart={offer === "promise"} />
+            </div>
           </aside>
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />
         </div>

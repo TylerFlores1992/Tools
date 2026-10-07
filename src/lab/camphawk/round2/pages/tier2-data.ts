@@ -16,8 +16,26 @@ export const HOLD_MINUTES = 60;
 export const RC_HOLD_OPEN = false;
 export const RC_HOLD_CLOSED_ON = "September 22, 2026";
 
+/** One launch-pricing line, on Home and Pricing alike. */
+export const LAUNCH_PRICING = "Launch pricing: the rate goes up as we add campgrounds and states. Subscribe now and you keep yours for as long as your subscription runs.";
+
+/** The one beta note for 8 AM holds, word for word wherever a hold is offered or explained. */
+export const HOLD_BETA_LABEL = "Invite-only beta";
+export const HOLD_BETA_NOTE = "8 AM holds are an invite-only beta. Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.";
+
 const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
 export const inWords = (n: number) => WORDS[n] ?? n.toLocaleString("en-US");
 
 /** Reservation systems CampHawk reads, one per data source. */
 export const SOURCE_COUNT = DATA_SOURCES.length;
+/** The one way the lab names its sources in a sentence (round 12: four phrasings read as four counts). */
+export const SOURCES_LINE = `Recreation.gov, ReserveCalifornia and ${SOURCE_COUNT - 2} other sources in the US and Canada`;
+
+/** The 8 AM hold's four steps, when and what: the guide and Pricing tell the same story (round 12:
+    they told two, with different names). */
+export const HOLD_STEPS = [
+  ["Any day", "Watch the park"],
+  ["Night before", "We offer"],
+  ["8\u00a0AM", "We cart it"],
+  [`Within ${HOLD_MINUTES} min`, "You take it over"],
+] as const;

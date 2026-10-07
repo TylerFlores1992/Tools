@@ -43,7 +43,7 @@ try {
     assert.equal(await handle.getAttribute("aria-valuenow"), "5");
   });
 
-  await check("switching to m · kg converts the rig (it doesn't just relabel it)", async () => {
+  await check("switching to m · kg converts the rig (it doesn’t just relabel it)", async () => {
     await page.goto(`${BASE}/workshop/bridle-calculator?span=12&load=2000&x=4&drop=6&rise=0&u=imperial`);
     await page.waitForFunction(() => document.querySelector("section[aria-label=Results] .text-title")?.textContent?.includes("1,602"));
     await page.getByRole("radio", { name: /m · kg/ }).click();
@@ -53,7 +53,7 @@ try {
     assert.match(page.url(), /u=metric/);
   });
 
-  await check("typing something that isn't a number explains it in words and keeps the last good result", async () => {
+  await check("typing something that isn’t a number explains it in words and keeps the last good result", async () => {
     const before = await leftTension();
     await page.getByLabel("Span between beams").fill("abc");
     await page.getByText("Enter a number.").waitFor();
@@ -88,7 +88,7 @@ try {
     await page.getByText("1 of 25 answered").waitFor();
   });
 
-  await check("study: an answer can't be changed once it's locked in", async () => {
+  await check("study: an answer can’t be changed once it’s locked in", async () => {
     const q2 = page.locator("#a02");
     await q2.getByRole("button", { name: /120°/ }).click({ force: true }); // aria-disabled, so Playwright would refuse
     await page.getByText("1 of 25 answered").waitFor();
@@ -122,7 +122,7 @@ try {
     await ctx.close();
   });
 
-  await check("private: the sign-in page asks for a password and nothing else, in the site's own design", async () => {
+  await check("private: the sign-in page asks for a password and nothing else, in the site’s own design", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private`);
     await p.waitForURL(/\/private\/sign-in/);
@@ -157,7 +157,7 @@ try {
     await ctx.close();
   });
 
-  await check("private: Show / Hide reveals the password and says which state it's in", async () => {
+  await check("private: Show / Hide reveals the password and says which state it’s in", async () => {
     const { ctx, p } = await fresh();
     await p.goto(`${BASE}/private/sign-in`);
     const field = p.getByLabel("Password", { exact: true });
@@ -217,7 +217,7 @@ try {
     await ctx.close();
   });
 
-  await check("private: ?next can't send you anywhere outside the private area", async () => {
+  await check("private: ?next can’t send you anywhere outside the private area", async () => {
     for (const next of ["//evil.example/private", "https://evil.example", "/workshop", "/private/sign-in"]) {
       const { ctx, p } = await fresh();
       await p.goto(`${BASE}/private/sign-in?next=${encodeURIComponent(next)}`);
@@ -305,7 +305,7 @@ try {
       const art = p.locator(hero).first();
       assert.ok(await art.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), `${path}: hero art loaded`);
       assert.match(await art.evaluate((img: HTMLImageElement) => img.currentSrc), /\/round2\/[ab][12]-/, `${path}: round-2 art`);
-      await p.getByRole("search").getByRole("button", { name: "Search campgrounds free" }).waitFor();
+      await p.getByRole("search").getByRole("button", { name: "Search campgrounds" }).waitFor();
       // The three pricing branches still switch, in the new layout.
       await p.getByRole("heading", { level: 2, name: /Watching starts at/ }).waitFor();
       await p.getByRole("radio", { name: "Subscriber" }).click();
@@ -338,10 +338,11 @@ try {
     await signIn(p);
     await p.waitForURL(`${BASE}/private/camphawk/golden-hour/campground`);
     const map = p.getByRole("region", { name: "Site map" });
-    // Jul 18 has one open site: its pin is a button, pressed, and its details offer Book.
-    const pin = map.getByRole("button", { name: "Site 042, open on Saturday, July 18" });
+    // The first open night (Jul 9) is picked and has one open site: its pin is a button, pressed,
+    // and its details offer Book.
+    const pin = map.getByRole("button", { name: "Site 117, open on Thursday, July 9" });
     assert.equal(await pin.getAttribute("aria-pressed"), "true");
-    await map.getByRole("link", { name: "Book Site 042 (opens the booking site)" }).waitFor();
+    await map.getByRole("link", { name: "Book Site 117 (opens the booking site)" }).waitFor();
     // Another night: its two sites become the pins; picking one shows its facts.
     await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
     assert.equal(await map.getByRole("button", { name: /open on Monday, July 27/ }).count(), 2);
@@ -351,10 +352,10 @@ try {
     // Find: a site that isn't open is ringed and said so; one that doesn't exist is said so.
     await map.getByLabel("Find a site", { exact: true }).fill("157");
     await map.getByRole("button", { name: "Find" }).click();
-    await map.getByText("Site 157 is ringed on the map. It isn't open on Monday, July 27.").waitFor();
+    await map.getByText("Site 157 is ringed on the map. It isn’t open on Monday, July 27.").waitFor();
     await map.getByLabel("Find a site", { exact: true }).fill("999");
     await map.getByRole("button", { name: "Find" }).click();
-    await map.getByText("There's no site “999” at Upper Pines.").waitFor();
+    await map.getByText("There’s no site “999” at Upper Pines.").waitFor();
     // Zoom draws the map wider than its frame, which scrolls instead of growing.
     const zoom = map.getByRole("button", { name: /^Zoom in/ });
     await zoom.click();
@@ -368,12 +369,12 @@ try {
     assert.ok(page <= 390, `the page itself must not scroll sideways (${page}px)`);
     // A campground with no drawn map hands off without claiming the provider has one.
     await p.getByRole("combobox", { name: "Site map" }).selectOption("none");
-    await p.getByText("We haven't drawn a map of Upper Pines yet. You can see its sites on Recreation.gov.").waitFor();
+    await p.getByText("We haven’t drawn a map of Upper Pines yet. You can see its sites on Recreation.gov.").waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });
 
-  await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk's", async () => {
+  await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk’s", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
     const errors: string[] = [];
     p.on("pageerror", (e) => errors.push(String(e)));
@@ -384,17 +385,21 @@ try {
     await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
     const panel = p.getByRole("complementary", { name: "Selected day" });
     // An open day lists its sites; a booked day can't be picked.
-    await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
+    const july27 = p.getByRole("button", { name: /July 27, 2 sites open/ });
+    // The open mark is a tick, as on Explore's pins (a solid dot means booked): shape, not hue.
+    assert.ok(await july27.locator("svg.lucide-check").count() === 1, "an open day carries the tick");
+    assert.equal(await p.getByRole("button", { name: /July 12, fully booked/ }).locator("svg").count(), 0, "a booked day carries no mark");
+    await july27.click();
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
     // The answer comes first, in words, under the name.
-    await p.getByText(/^Next opening /).waitFor();
+    await p.getByText(/^First open night: /).waitFor();
     // A month we couldn't read: no day is called booked, and the page says why.
     const next = p.getByRole("button", { name: "Next month" });
     await next.click();
     await next.click();
     await p.getByRole("heading", { level: 2, name: "September 2026" }).waitFor();
-    await p.getByText("Couldn't check this month").waitFor();
+    await p.getByText("Couldn’t check this month").waitFor();
     assert.equal(await p.getByRole("button", { name: /September \d+, fully booked/ }).count(), 0, "unknown month is never booked");
     // Not open for booking is its own state, not "booked".
     await next.click();
@@ -419,7 +424,7 @@ try {
     await p.getByLabel("Page state").selectOption("missing");
     await p.getByRole("heading", { level: 1, name: "Campground not found" }).waitFor();
     await p.getByLabel("Page state").selectOption("failed");
-    await p.getByRole("heading", { level: 1, name: "We couldn't load this campground" }).waitFor();
+    await p.getByRole("heading", { level: 1, name: "We couldn’t load this campground" }).waitFor();
     await p.getByRole("button", { name: "Try again" }).click();
     await p.getByRole("heading", { level: 1, name: "Upper Pines" }).waitFor();
     assert.equal(await p.getByRole("navigation", { name: "Breadcrumb" }).filter({ hasText: "Camping by state" }).count(), 0, "search arrivals get a back link");
@@ -454,8 +459,12 @@ try {
     await signIn(p);
     await p.waitForURL(`${GH}/explore`);
     // Guests get context, not a paywall, and the first-run box until they search.
-    await p.getByText("You're searching as a guest").waitFor();
-    await p.getByRole("heading", { level: 2, name: "How search works" }).waitFor();
+    await p.getByText("You’re searching as a guest").waitFor();
+    await p.getByRole("heading", { level: 2, name: "Campgrounds near you" }).waitFor();
+    // The first-run map's one button is a real search near you, not a picture of one.
+    await p.getByRole("button", { name: "Search near you" }).click();
+    await p.getByRole("group", { name: "Map of results" }).waitFor();
+    await p.goto(`${GH}/explore`);
     await p.getByLabel("Where").fill("yos");
     // The suggestions are a combobox: arrows reach them from the field, Enter picks.
     await p.getByRole("option", { name: "Yosemite Valley, CA place" }).waitFor();
@@ -472,16 +481,16 @@ try {
     // Open, booked, couldn't check and first come are four different words, never one.
     const results = p.getByRole("region", { name: "Results" });
     // (Tags carry a hidden "Status:" prefix for screen readers, so match within the text.)
-    for (const word of ["Sites open", "Booked — watch it", "Couldn't check", "First come, first served"]) await results.getByText(word).first().waitFor();
+    for (const word of ["Sites open", "Booked — watch it", "Couldn’t check", "First come, first served"]) await results.getByText(word).first().waitFor();
     // Each card carries its own answer, and each pin says the same in its name (the map key
-    // also says "Couldn't check", so read the cards and pins, not the page).
+    // also says "Couldn’t check", so read the cards and pins, not the page).
     const cardSays = async (name: string, word: string) => assert.match(await results.locator("div[data-state]", { has: p.getByRole("heading", { name, exact: true }) }).innerText(), new RegExp(word, "i"), name);
     await cardSays("Upper Pines", "Sites open");
     await cardSays("North Pines", "Booked — watch it");
-    await cardSays("Lower Pines", "Couldn't check");
+    await cardSays("Lower Pines", "Couldn’t check");
     await cardSays("Camp 4", "First come, first served");
-    for (const pin of ["Upper Pines, sites open", "North Pines, booked", "Lower Pines, couldn't check", "Camp 4, first come, first served"]) await p.getByRole("button", { name: pin, exact: true }).waitFor();
-    assert.equal(await results.getByRole("link", { name: "Sign up to watch" }).count(), 2, "booked and couldn't-check offer a watch; open and first come don't");
+    for (const pin of ["Upper Pines, sites open", "North Pines, booked", "Lower Pines, couldn’t check", "Camp 4, first come, first served"]) await p.getByRole("button", { name: pin, exact: true }).waitFor();
+    assert.equal(await results.getByRole("link", { name: "Sign up to watch" }).count(), 2, "booked and couldn’t-check offer a watch; open and first come don’t");
     // Picking a pin moves its card to the front.
     await p.getByRole("button", { name: "North Pines, booked" }).click();
     assert.equal(await results.getByRole("heading", { level: 3 }).first().innerText(), "North Pines");
@@ -489,7 +498,7 @@ try {
     // A result opens its own page, and "Back to search" brings the search back.
     await results.getByRole("link", { name: "Lower Pines", exact: true }).click();
     await p.getByRole("heading", { level: 1, name: "Lower Pines" }).waitFor();
-    await p.getByText("We couldn't check July just now.").waitFor();
+    await p.getByText("We couldn’t check July just now.").waitFor();
     await p.getByRole("link", { name: "Back to search" }).click();
     await p.getByRole("heading", { level: 2, name: "1 campground with openings" }).waitFor();
     // Who's looking changes the watch control, never the results.
@@ -498,11 +507,11 @@ try {
       assert.equal(await results.getByRole("link", { name: label, exact: true }).count(), 2, who);
     }
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
-    assert.equal(await p.getByText("You're searching", { exact: false }).count(), 0, "a subscriber is never sold to");
+    assert.equal(await p.getByText("You’re searching", { exact: false }).count(), 0, "a subscriber is never sold to");
     // A failed search says so in words, with no internals.
     await p.getByLabel("Search answers").selectOption("fails");
     await p.getByRole("search").getByRole("button", { name: "Search" }).click();
-    const alert = p.getByRole("alert").filter({ hasText: "Search didn't go through" });
+    const alert = p.getByRole("alert").filter({ hasText: "Search didn’t go through" });
     await alert.waitFor();
     assert.doesNotMatch(await alert.innerText(), /\d{3}/, "no status codes");
     assert.deepEqual(errors, []);
@@ -515,7 +524,7 @@ try {
     await p.goto(`${GH}/new`);
     await signIn(p);
     await p.waitForURL(`${GH}/new`);
-    assert.equal(await p.getByRole("button", { name: "Start watching" }).count(), 0, "a guest isn't offered a button that can't work");
+    assert.equal(await p.getByRole("button", { name: "Start watching" }).count(), 0, "a guest isn’t offered a button that can’t work");
     await p.getByRole("link", { name: "Start free trial" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByRole("button", { name: "Start watching" }).click();
@@ -548,7 +557,7 @@ try {
     await p.getByRole("button", { name: "Mute individual campsites" }).click();
     const mute042 = p.getByRole("button", { name: "Mute site Site 042" });
     await mute042.click();
-    assert.equal(await mute042.getAttribute("aria-pressed"), "true", "the site's own toggle is pressed");
+    assert.equal(await mute042.getAttribute("aria-pressed"), "true", "the site’s own toggle is pressed");
     await p.getByText("1 of 7 muted").waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
@@ -564,8 +573,8 @@ try {
     await p.getByRole("radio", { name: "Lapsed", exact: true }).click();
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
-    await p.getByText("3 watches running · 1 paused").waitFor();
-    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 042", "Paused"]) await p.getByText(tag).first().waitFor();
+    await p.getByText("3 watches running, 1 paused").waitFor();
+    for (const tag of ["1 site open", "Site 042 in your cart", "8 AM hold: Site 046", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.
     const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
@@ -585,34 +594,39 @@ try {
     assert.equal(await northPines.getAttribute("data-state"), "default", "reconnecting is not a warning");
     // Calling off the queued hold takes its tag with it.
     await p.getByRole("button", { name: "Holds you asked for" }).click();
-    await p.getByRole("button", { name: "Call off the hold on 042" }).click();
-    assert.equal(await p.getByText("8 AM hold: Site 042").count(), 0);
+    await p.getByRole("button", { name: "Cancel hold: Site 046" }).click();
+    assert.equal(await p.getByText("8 AM hold: Site 046").count(), 0);
     // A provider not answering is a banner and a card state, not a broken watch.
     await p.getByLabel("ReserveCalifornia").selectOption("down");
-    await p.getByText("ReserveCalifornia isn't responding", { exact: true }).waitFor();
+    await p.getByText("ReserveCalifornia isn’t responding", { exact: true }).waitFor();
     await p.getByText("Checks paused").first().waitFor();
     // Auto-cart signed out: the hit card stops claiming a cart, and the running one says why.
     await p.getByLabel("Auto-cart connection").selectOption("disconnected");
     await p.getByText("Not carted — reconnect auto-cart").waitFor();
-    assert.equal(await p.getByText(/In your cart$/).count(), 0, "no cart claim without the connection");
+    assert.equal(await p.getByText(/in your cart$/i).count(), 0, "no cart claim without the connection");
     assert.equal(await p.getByRole("link", { name: "Check out on Recreation.gov" }).count(), 0, "no checkout without a cart");
-    assert.equal(await northPines.getAttribute("data-state"), "warn", "signed out needs you, so it's the warning card");
+    assert.equal(await northPines.getAttribute("data-state"), "warn", "signed out needs you, so it’s the warning card");
     await p.getByRole("link", { name: "Reconnect Recreation.gov" }).waitFor();
     // A new watch on a stay that's booked weeks out is told to expect quiet.
     await p.goto(`${GH}/watches?as=subscriber&new=north-pines&start=2026-07-25&end=2026-07-27`);
-    await p.getByText("You're watching a stay that's fully booked").waitFor();
+    await p.getByText("You’re watching a stay that’s fully booked").waitFor();
     await p.getByText("about 3 weeks away", { exact: false }).waitFor();
     await p.getByRole("button", { name: "Dismiss" }).click();
-    assert.equal(await p.getByText("You're watching a stay that's fully booked").count(), 0);
+    assert.equal(await p.getByText("You’re watching a stay that’s fully booked").count(), 0);
     // The header tabs keep who we're pretending to be.
     await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).click();
     await p.waitForURL(/\/explore\?as=subscriber/);
     assert.equal(await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).getAttribute("aria-current"), "page");
+    // Signed out, the tabs lead to search and Pricing, not to a Watches page with nothing behind it.
+    await p.goto(`${GH}/explore`);
+    const outTabs = await p.getByRole("navigation", { name: "Main" }).first().getByRole("link").allInnerTexts();
+    assert.deepEqual(outTabs.map((t) => t.trim()), ["Explore", "New watch", "Pricing"]);
+    await p.getByRole("navigation", { name: "Footer" }).getByRole("link", { name: "Pricing" }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });
 
-  await check("lab after an alert: Manage, the one-tap page and Claim keep CampHawk's promises", async () => {
+  await check("lab after an alert: Manage, the one-tap page and Claim keep CampHawk’s promises", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/manage?as=subscriber`);
@@ -635,7 +649,7 @@ try {
     // An 8am offer shows the site before anything happens, then confirms on a yes.
     await p.goto(`${GH}/manage?as=subscriber&watch=leo`);
     await p.getByRole("heading", { name: "Holds you asked for" }).waitFor();
-    await p.getByRole("link", { name: "Hold it: Site 017" }).click();
+    await p.getByRole("link", { name: "Hold it for me: Site 017" }).click();
     await p.waitForURL(/\/w\?action=hold-offer/);
     await p.getByRole("heading", { name: "Hold this site for you?" }).waitFor();
     await p.getByText("Tue, Jul 7 at 8 AM PT").first().waitFor();
@@ -651,14 +665,14 @@ try {
     // Claim: nothing is released until you say so, and the release names its button in words.
     await p.goto(`${GH}/claim?as=app`);
     await p.getByText("we let go so you can take it", { exact: false }).waitFor();
-    assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
-    await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
+    assert.equal(await p.getByRole("button", { name: "It’s mine — hand it over" }).count(), 0, "no release before sign-in");
+    await p.getByText("Enter your email and password, and check the box, to continue.").waitFor();
     await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");
     await p.getByLabel("ReserveCalifornia password", { exact: true }).fill("not-a-real-password");
     await p.getByRole("checkbox").check();
     await p.getByRole("button", { name: "Sign in to ReserveCalifornia" }).click();
-    await p.getByRole("button", { name: "It's mine — hand it over" }).click();
-    await p.getByText("Site 042 is yours to book").waitFor({ timeout: 8000 });
+    await p.getByRole("button", { name: "It’s mine — hand it over" }).click();
+    await p.getByText("Site 046 is yours to book").waitFor({ timeout: 8000 });
     await p.getByRole("link", { name: "Check out on ReserveCalifornia" }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
@@ -670,10 +684,10 @@ try {
     await p.goto(`${GH}/settings`);
     await signIn(p);
     await p.waitForURL(`${GH}/settings`);
-    await p.getByRole("heading", { name: "Settings need an account" }).waitFor();
+    await p.getByRole("heading", { name: "Sign up or sign in to choose how we reach you" }).waitFor();
     // An Alerts-plan subscriber is never told auto-cart is on; the upgrade names its price.
     await p.goto(`${GH}/settings?as=subscriber&plan=alerts`);
-    await p.getByText("Your subscription is active").waitFor();
+    await p.locator("p", { hasText: "Your subscription" }).getByText("Active").first().waitFor();
     assert.equal(await p.getByText("auto-cart are all switched on", { exact: false }).count(), 0);
     await p.getByText("$10 a month, or $50 a year", { exact: false }).waitFor();
     await p.getByRole("button", { name: "Upgrade to Auto-Cart" }).click();
@@ -696,7 +710,7 @@ try {
     assert.equal(await p.evaluate(() => document.activeElement?.textContent), "Keep my account");
     // In the app: no account, no prices.
     await p.goto(`${GH}/settings?as=app`);
-    await p.getByText("No account — and you don't need one.").waitFor();
+    await p.getByText("No account — and you don’t need one.").waitFor();
     assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price in the app");
     // Connect: the waiting notes show under the form, and Done goes to Settings.
     await p.goto(`${GH}/connect?as=subscriber`);
@@ -710,36 +724,37 @@ try {
     await p.waitForURL(/\/settings\?as=subscriber/);
     // Welcome: the Auto-Cart step only for a plan that includes it.
     await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
-    await p.getByRole("heading", { name: "You're subscribed. Let's set up your alerts." }).waitFor();
+    await p.getByRole("heading", { name: "Your free trial has started. Let’s set up your alerts." }).waitFor();
     assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
     // Email is always on, as Settings says; Welcome doesn't offer to turn it off.
-    await p.getByText("Always on. Every opening we find goes to", { exact: false }).waitFor();
+    await p.locator("#w-email").getByText("Always on").waitFor();
+    await p.getByText("Every opening we find goes to", { exact: false }).first().waitFor();
     assert.equal(await p.getByRole("checkbox", { name: /Email me/ }).count(), 0);
     // Pressing "Turn on text alerts" too early says what's missing and goes there.
     await p.getByRole("button", { name: "Turn on text alerts" }).click();
-    await p.getByRole("alert").filter({ hasText: "Enter your number and tick the box" }).waitFor();
+    await p.getByRole("alert").filter({ hasText: "Enter your number and check the box" }).waitFor();
     assert.equal(await p.evaluate(() => document.activeElement?.id), "sms-phone");
     assert.deepEqual(errors, []);
     await ctx.close();
   });
 
-  await check("lab pricing and sign-up: subscribers aren't sold to, the app shows no web price, and a picked plan survives sign-up", async () => {
+  await check("lab pricing and sign-up: subscribers aren’t sold to, the app shows no web price, and a picked plan survives sign-up", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/pricing?as=subscriber&plan=autocart`);
     await signIn(p);
     await p.waitForURL(/\/pricing\?as=subscriber/);
-    await p.getByRole("heading", { name: "You're all set — here's what you can do" }).waitFor();
+    await p.getByRole("heading", { name: "You’re all set — here’s what you can do" }).waitFor();
     assert.doesNotMatch(await p.locator("main").innerText(), /\$\d/, "no price for an Auto-Cart subscriber");
     // A past subscriber gets no second trial; a failed lookup says so; checkout failing says nothing was charged.
     await p.goto(`${GH}/pricing?as=lapsed`);
     await p.getByRole("button", { name: "$10 / month" }).waitFor(); // the lapsed view has landed
     assert.equal(await p.getByText("Free for 7 days", { exact: false }).count(), 0);
     await p.goto(`${GH}/pricing?as=member&lookup=failed&checkout=fails`);
-    await p.getByText("We couldn't check your current plan just now.").waitFor();
-    await p.getByRole("button", { name: "$10 / month" }).click();
+    await p.getByText("We couldn’t check your current plan just now.").waitFor();
+    await p.getByRole("button", { name: /^Start 7‑day free trial: Auto-Cart/ }).click();
     await p.getByRole("alert").filter({ hasText: "Nothing was charged" }).waitFor();
     // The app: the store's paywall, with Restore purchases and the renewal terms.
     await p.goto(`${GH}/pricing?as=app`);
@@ -748,10 +763,10 @@ try {
     // Signed out: the trial carries the plan through sign-up and Welcome, back to Pricing.
     await p.goto(`${GH}/pricing`);
     // Green means an open site or an action that gets you one; a trial is neither.
-    for (const trial of await p.getByRole("link", { name: "Start 7-day free trial" }).all()) assert.doesNotMatch((await trial.getAttribute("class")) ?? "", /bg-ch-green\b/);
-    await p.getByRole("link", { name: "Start 7-day free trial" }).last().click();
+    for (const trial of await p.getByRole("link", { name: "Start 7‑day free trial" }).all()) assert.doesNotMatch((await trial.getAttribute("class")) ?? "", /bg-ch-green\b/);
+    await p.getByRole("link", { name: "Start 7‑day free trial" }).last().click();
     await p.waitForURL(/\/sign-up\?plan=autocart/);
-    await p.getByText("Your 7-day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
+    await p.getByText("Your 7‑day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
     await p.getByLabel("Email address").fill("camper@example.com");
     await p.getByLabel("Password").fill("long-enough-password");
     await p.getByRole("button", { name: "Continue" }).click();
@@ -766,7 +781,7 @@ try {
     await ctx.close();
   });
 
-  await check("lab search pages: thin pages don't exist, states and provinces stay apart, and no page claims a ranking or a competitor fact", async () => {
+  await check("lab search pages: thin pages don’t exist, states and provinces stay apart, and no page claims a ranking or a competitor fact", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, timezoneId: "America/Los_Angeles", reducedMotion: "reduce" });
     const errors = watchErrors(p);
     await p.goto(`${GH}/camping`);
@@ -774,7 +789,7 @@ try {
     await p.waitForURL(`${GH}/camping`);
     await p.getByText("These are the 47 states with enough campgrounds for a page of their own", { exact: false }).waitFor();
     // Canada's coverage reads the same here as on the home page (it said 9 provinces here, 12 there).
-    await p.getByText("390 bookable campgrounds in 12 of Canada's 13 provinces and territories", { exact: false }).waitFor();
+    await p.getByText("390 bookable campgrounds in 12 of Canada’s 13 provinces and territories", { exact: false }).waitFor();
     // Under five campgrounds there's no page: a real 404, not a thin one.
     for (const missing of ["/camping/hawaii", "/camping/yurts/texas", "/camping/cabins/quebec"]) {
       const res = await p.goto(`${GH}${missing}`);
@@ -787,14 +802,14 @@ try {
     await p.goto(`${GH}/camping/california`);
     await p.getByRole("heading", { level: 1, name: "Campgrounds in California" }).waitFor();
     await p.getByText("Booking goes through Recreation.gov and ReserveCalifornia.", { exact: false }).waitFor();
-    await p.getByRole("link", { name: "California yurt camping" }).click();
+    await p.getByRole("link", { name: "California Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts\/california/);
     await p.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts$/);
     await p.getByText("across 4 states, on Recreation.gov and the state park reservation systems we read", { exact: false }).waitFor();
     // Hardest to book: CampHawk's pick, not a ranking — no "#1", no percentages.
     await p.goto(`${GH}/camping/hardest-to-book`);
-    await p.getByText("This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking.").waitFor();
+    await p.getByText("This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking.").waitFor();
     assert.doesNotMatch(await p.locator("main").innerText(), /#\d|\d%/);
     assert.equal(await p.getByRole("heading", { level: 2 }).first().innerText(), "Yosemite National Park");
     // Comparison: no table, no competitor price; in the app, no price at all.

@@ -30,7 +30,7 @@ export const CAMPGROUNDS_ROUNDED = "8,000+";
 /** Canada's provinces and territories with at least one campground we read (of 13). */
 export const CANADA_REGIONS = 12;
 export const COVERAGE_SENTENCE =
-  `Every Recreation.gov campground in all 50 states, plus state parks in 34 — and national, provincial and territorial parks in ${CANADA_REGIONS} of Canada's 13 provinces and territories.`;
+  `Every Recreation.gov campground in all 50 states, plus state parks in 34 — and national, provincial and territorial parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`;
 
 /** Who the lab is pretending to be. CampHawk's pricing block has a branch for each; "member"
     (signed in, never subscribed) sees the same pitch as signed out but a different watch button

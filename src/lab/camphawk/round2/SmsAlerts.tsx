@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, MessageSquare } from "lucide-react";
 import { buttonClasses } from "../ui";
+import { Tag } from "../ui/Tag";
 import { ROUTES } from "./gates";
 import { A } from "./LabPage";
 import type { Visitor } from "../data";
@@ -16,12 +17,14 @@ import type { Visitor } from "../data";
 
 export type SmsState = "new" | "saved" | "loading" | "error";
 
-export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean }) {
+/** `intro`: before a number is saved, show the row header Settings' rows have (title, an Off pill
+    and this line), so the row reads the same before and after saving (Welcome). */
+export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false, intro }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean; intro?: string }) {
   const [saved, setSaved] = useState<string | null>(start === "saved" ? "(415) 555-0187" : null);
   const [phone, setPhone] = useState(start === "saved" ? "(415) 555-0187" : "");
   const [agreed, setAgreed] = useState(start === "saved");
   const [busy, setBusy] = useState<"save" | "off" | null>(null);
-  const [error, setError] = useState<string | null>(start === "error" ? "Couldn't save that number" : null);
+  const [error, setError] = useState<string | null>(start === "error" ? "Couldn’t save that number" : null);
   const [tried, setTried] = useState(false);
   const [announce, setAnnounce] = useState("");
   // A saved number is one line; the carrier-worded form opens only to change it.
@@ -72,17 +75,30 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
   return (
     <div className="grid gap-4">
       {saved && (
-        <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
-          <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
-          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts on · <span className="whitespace-nowrap">{saved}</span></p>
-          {!editing && (
-            <span className="flex gap-2">
-              <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
-              <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
-                {busy === "off" ? "Turning off…" : "Turn off"}
-              </button>
-            </span>
-          )}
+        // Laid out like Settings' Email and Push rows: icon, title and state pill, a line, then actions.
+        <div className="flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+          <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+          <div className="min-w-0 flex-1">
+            <p className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink"><span>Text alerts</span><Tag kind="paused" mark="on" srPrefix="Status:">On</Tag></p>
+            <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Every opening we find is texted to <span className="whitespace-nowrap font-bold text-ch-ink">{saved}</span>.</p>
+            {!editing && (
+              <span className="mt-3 flex flex-wrap gap-2">
+                <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
+                <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+                  {busy === "off" ? "Turning off…" : "Turn off"}
+                </button>
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+      {!saved && intro && (
+        <div className="flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+          <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+          <div className="min-w-0 flex-1">
+            <h2 className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-ch-body! text-[15px] font-bold text-ch-ink"><span>Text alerts</span><Tag kind="paused" mark="off" srPrefix="Status:">Off</Tag></h2>
+            <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{intro}</p>
+          </div>
         </div>
       )}
       {(!saved || editing) && (
@@ -102,12 +118,12 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="(555) 123-4567"
-          className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-card px-4 text-[16px] text-ch-ink placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
+          className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
         />
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
         <input id="sms-consent" aria-describedby="sms-why" aria-invalid={(tried && !agreed) || undefined} type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
-        <span>Yes, I&apos;d like to receive automated text messages from CampHawk when campgrounds I&apos;m watching have availability. Consent is not a condition of purchase.</span>
+        <span>Yes, I’d like to receive automated text messages from CampHawk when campgrounds I’m watching have availability. Consent is not a condition of purchase.</span>
       </label>
       <p className="text-[13px] leading-relaxed text-ch-ink-2">
         <strong className="font-bold">Message frequency</strong> varies with campsite availability (typically at most one per watch). <strong className="font-bold">Message and data rates may apply.</strong> Reply <strong className="font-bold">HELP</strong> for help or <strong className="font-bold">STOP</strong> to cancel any time.{" "}
@@ -116,12 +132,12 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       {/* With a number saved and nothing changed there is nothing to update: no button. */}
       {!(saved && !changed) && (
         <div>
-          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
+          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: !secondary, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (secondary && !demo ? " border-ch-ink-2! px-5 text-ch-ink!" : "") + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
             {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : saved ? "Update number" : "Turn on text alerts"}
           </button>
           {!busy && (demo || blocked) && (
             <p id="sms-why" role={tried ? "alert" : undefined} className={tried ? "mt-2 text-[14px] font-bold text-ch-ink" : "mt-2 text-[13px] text-ch-ink-2"}>
-              {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and tick the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Tick the box above to turn texts on."}
+              {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and check the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Check the box above to turn texts on."}
             </p>
           )}
         </div>

@@ -50,7 +50,7 @@ export type Hub = { slug: HubSlug; heading: string; label: string; noun: string;
 export const HUBS: Hub[] = [
   {
     slug: "cabins", heading: "Campgrounds with Cabins", label: "Campgrounds with Cabins", noun: "cabins",
-    blurb: "A cabin is the hardest thing to get in most park systems: there are only ever a handful per campground, they book the day the window opens, and they stay booked through the whole season. When one comes back it is usually a cancellation, and it is usually gone within the hour.",
+    blurb: "A cabin is the hardest thing to get in most park systems: there are only ever a handful per campground, they book the day the window opens, and they stay booked through the whole season. When one comes back it is usually a cancellation, and it is rarely open for long.",
     // 38 states and 5 provinces, 1,145 in all (the total is CampHawk's; the split is illustrative).
     byRegion: {
       AL: 14, AK: 41, AZ: 22, AR: 31, CA: 128, CO: 52, FL: 38, GA: 35, ID: 33, IL: 21, IN: 12, IA: 18, KS: 9, KY: 29, ME: 7, MD: 11,
@@ -89,15 +89,15 @@ export const CALIFORNIA: { towns: number; providers: string[]; groups: Town[] } 
     { city: "Lake Tahoe", campgrounds: ["D. L. Bliss State Park", "Emerald Bay State Park", "Fallen Leaf Campground", "Meeks Bay Campground", "Nevada Beach Campground"] },
     { city: "Malibu", campgrounds: ["Leo Carrillo State Park", "Malibu Creek State Park", "Point Mugu State Park"] },
     { city: "Mammoth Lakes", campgrounds: ["Lake Mary Campground", "Twin Lakes Campground", "Coldwater Campground", "New Shady Rest Campground"] },
-    { city: "Sequoia National Park", campgrounds: ["Lodgepole Campground", "Dorst Creek Campground", "Potwisha Campground", "Buckeye Flat Campground"] },
-    { city: "Yosemite National Park", campgrounds: ["Upper Pines", "Lower Pines", "North Pines", "Hodgdon Meadow", "Crane Flat", "Wawona", "Tuolumne Meadows"] },
-    { city: null, campgrounds: ["Anthony Chabot Regional Park", "Butano State Park", "Patrick's Point (Sue-meg) State Park"] },
+    { city: "Sequoia & Kings Canyon", campgrounds: ["Lodgepole Campground", "Dorst Creek Campground", "Potwisha Campground", "Buckeye Flat Campground"] },
+    { city: "Yosemite National Park", campgrounds: ["Upper Pines Campground", "Lower Pines Campground", "North Pines Campground", "Hodgdon Meadow Campground", "Crane Flat Campground", "Wawona Campground", "Tuolumne Meadows Campground"] },
+    { city: null, campgrounds: ["Anthony Chabot Regional Park", "Butano State Park", "Patrick’s Point (Sue-meg) State Park"] },
   ],
 };
 
 /** The hardest-to-book list: CampHawk's own pick, in its order (Yosemite first, on purpose). */
 export const HARD_TO_BOOK: Array<{ park: string; campgrounds: string[] }> = [
-  { park: "Yosemite National Park", campgrounds: ["Upper Pines", "Lower Pines", "North Pines", "Hodgdon Meadow", "Crane Flat", "Wawona"] },
+  { park: "Yosemite National Park", campgrounds: ["Upper Pines Campground", "Lower Pines Campground", "North Pines Campground", "Hodgdon Meadow Campground", "Crane Flat Campground", "Wawona Campground"] },
   { park: "Zion National Park", campgrounds: ["Watchman Campground"] },
   { park: "Arches National Park", campgrounds: ["Devils Garden Campground"] },
   { park: "Joshua Tree National Park", campgrounds: ["Black Rock Campground"] },

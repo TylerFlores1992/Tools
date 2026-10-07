@@ -8,7 +8,7 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import type { Visitor } from "../../data";
 import { BareCard, BareFrame } from "../BareFrame";
-import { LabNote } from "../LabPage";
+import { A, LabNote } from "../LabPage";
 import { ROUTES } from "../gates";
 import { useUrlParam, withVisitor } from "../labState";
 import { TRIAL_DAYS } from "./tier2-data";
@@ -32,7 +32,7 @@ import { TRIAL_DAYS } from "./tier2-data";
 const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
 const main = buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-wait" });
 
-function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; next: string | null }) {
+function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Visitor; next: string | null; trial: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,11 +53,12 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
   return (
     <BareCard>
       <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your CampHawk account" : "Sign in to CampHawk"}</h1>
-      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "Free to make. Searching never needs one." : "Welcome back."}</p>
+      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{!up ? "Welcome back." : trial ? "Takes about a minute." : "It’s free. Searching never needs an account."}</p>
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
-            <span aria-hidden="true" className="grid size-5 place-items-center rounded-full border border-ch-line text-[12px] font-extrabold">G</span>Continue with Google
+            {/* eslint-disable-next-line @next/next/no-img-element -- a 20px brand mark, nothing for next/image to do */}
+            <img src="/private/camphawk/google-g.svg" alt="" width={20} height={20} className="size-5" />Continue with Google
           </a>
           <div className="my-5 flex items-center gap-3 text-[14px] text-ch-ink-2"><span className="h-px flex-1 bg-ch-line" />or<span className="h-px flex-1 bg-ch-line" /></div>
         </>
@@ -69,6 +70,8 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
         )}
         {error && <p id="auth-error" role="alert" className="text-[14px] font-bold text-ch-alert-deep">{error.text}</p>}
         <button type="submit" disabled={busy} className={main}>{busy && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Continue</button>
+        {/* What signing up agrees to, under the button (Clerk's legal-consent line, worded in the lab). */}
+        {up && <p className="text-center text-[13px] leading-relaxed text-ch-ink-2">By continuing, you agree to CampHawk’s <A href={ROUTES.terms} visitor={visitor}>Terms of Service</A> and <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>.</p>}
       </form>
       <p className="mt-6 border-t border-ch-line pt-5 text-center text-[15px] text-ch-ink-2">
         {up ? "Already have an account? " : "Don’t have an account? "}
@@ -81,9 +84,9 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
 
 function Context({ plan, next, mode }: { plan: string | null; next: string | null; mode: "in" | "up" }) {
   const line = plan === "autocart" || plan === "base"
-    ? `Your ${TRIAL_DAYS}-day free trial of ${plan === "autocart" ? "Auto-Cart" : "Alerts"} starts after this. Nothing is charged today.`
+    ? `Your ${TRIAL_DAYS}‑day free trial of ${plan === "autocart" ? "Auto-Cart" : "Alerts"} starts after this. Nothing is charged today.`
     : next?.includes("/new")
-      ? mode === "up" ? "Create a free account, and we'll take you straight back to your watch." : "Sign in, and we'll take you straight back to your watch."
+      ? mode === "up" ? "Create a free account, and we’ll take you straight back to your watch." : "Sign in, and we’ll take you straight back to your watch."
       : null;
   if (!line) return null;
   return <p className="mx-auto mt-4 max-w-[34ch] text-center text-[16px] font-bold leading-relaxed text-ch-paper">{line}</p>;
@@ -98,8 +101,8 @@ function AuthPage({ mode }: { mode: "in" | "up" }) {
     <BareFrame page={mode === "up" ? "Sign up" : "Sign in"} centered lead={<Context plan={plan} next={next} mode={mode} />}>
       {({ visitor }) => (
         <>
-          <Widget key={visitor} mode={mode} visitor={visitor} next={next} />
-          <LabNote className="mt-4">A stand-in for Clerk&apos;s sign-{mode} widget, themed and worded through Clerk&apos;s appearance and localization settings. Continue moves on as if it worked.</LabNote>
+          <Widget key={visitor} mode={mode} visitor={visitor} next={next} trial={plan === "autocart" || plan === "base"} />
+          <LabNote className="mt-4">A stand-in for Clerk’s sign-{mode} widget, themed and worded through Clerk’s appearance and localization settings. Continue moves on as if it worked.</LabNote>
         </>
       )}
     </BareFrame>

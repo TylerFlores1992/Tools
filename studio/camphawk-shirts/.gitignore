@@ -1,0 +1,17 @@
+node_modules/
+out/
+*.png
+*.pbm
+traced-*.svg
+fonts.css
+package*.json
+fonts/
+!ref/
+!ref/*
+!kit/
+!kit/*
+out2/
+gen/
+site*/
+*.log
+out3/

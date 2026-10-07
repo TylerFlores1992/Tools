@@ -12,7 +12,7 @@ test("this weekend is Friday to Sunday from the lab's Monday, Jul 6", () => {
 test("ranges and stays read the way CampHawk writes them", () => {
   assert.equal(formatRange("2026-07-18", "2026-07-21"), "Sat Jul 18 – Tue Jul 21");
   assert.equal(formatRange("2026-07-18", null), "Sat Jul 18 – …");
-  assert.equal(stayDates("2026-07-18", "2026-07-21"), "Jul 18-21");
-  assert.equal(stayDates("2026-07-30", "2026-08-02"), "Jul 30-Aug 2");
+  assert.equal(stayDates("2026-07-18", "2026-07-21"), "Jul 18–21");
+  assert.equal(stayDates("2026-07-30", "2026-08-02"), "Jul 30 – Aug 2");
   assert.equal(nightsBetween("2026-07-30", "2026-08-02"), 3);
 });

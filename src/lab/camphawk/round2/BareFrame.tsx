@@ -1,5 +1,7 @@
 "use client";
 
+import { Info } from "lucide-react";
+import { HOLD_BETA_NOTE } from "./pages/tier2-data";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
@@ -17,14 +19,14 @@ import { useVisitor, withVisitor } from "./labState";
 // marketing page with prices.
 
 export function BareFrame({
-  page, controls, children, narrow = true, homeLabel = "CampHawk home", centered = false, lead,
+  page, controls, children, narrow = true, homeLabel = "CampHawk home", centered = true, lead,
 }: {
   page: string;
   controls?: (ctx: { visitor: Visitor }) => ReactNode;
   children: (ctx: { visitor: Visitor }) => ReactNode;
   narrow?: boolean;
   homeLabel?: string;
-  /** Center the badge, for screens whose card is centered (sign in, sign up). */
+  /** Center the badge over the card (every bare screen; the card is centered too). */
   centered?: boolean;
   /** One line of context on the forest, under the badge. */
   lead?: ReactNode;
@@ -43,7 +45,7 @@ export function BareFrame({
             <Link href={withVisitor(home, visitor)} aria-label={homeLabel} className="inline-flex min-h-11 items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/private/camphawk/round2/badge-golden-80.webp" srcSet="/private/camphawk/round2/badge-golden-80.webp 2x, /private/camphawk/round2/badge-golden-120.webp 3x" alt="" width={40} height={40} className="size-10" />
-              <span translate="no" className="font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
+              <span translate="no" className="font-ch-display text-[22px] font-extrabold text-ch-paper">CampHawk</span>
             </Link>
             {lead}
           </div>
@@ -75,12 +77,13 @@ export function Facts({ rows }: { rows: ReadonlyArray<readonly [string, ReactNod
   );
 }
 
-/** The "Beta" pill and its note: above the promise, on purpose. */
-export function BetaNote({ className }: { className?: string }) {
+/** The 8 AM hold's beta note, one look wherever a hold is offered or explained: an (i) and the
+    sentence, with an optional line after it. On the offer page it sits above the promise, on purpose. */
+export function BetaNote({ className, extra }: { className?: string; extra?: string }) {
   return (
-    <p className={cx("flex items-start gap-2 text-[14px] leading-relaxed text-ch-ink-2", className)}>
-      <span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span>
-      <span>8 AM holds are in beta. They have worked on real releases, and can still miss — set an alarm for the release time and be ready to book it yourself.</span>
+    <p className={cx("flex items-start gap-2.5 text-[15px] leading-relaxed text-ch-ink-2", className)}>
+      <Info aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" />
+      <span>{HOLD_BETA_NOTE}{extra ? ` ${extra}` : ""}</span>
     </p>
   );
 }

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { LQIP } from "./art-lqip";
 
 // Round-2 art (public/private/camphawk/round2/, made by studio/camphawk-round2/). Plain <img>
 // with a width srcset: the files sit behind the private-area sign-in, which Next's image
@@ -28,6 +29,9 @@ export const ART = {
   p1: { name: "p1-pricing-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   v1: { name: "v1-fork-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   s1: { name: "s1-ranger-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
+  // Round 6: cut from earlier unused generations (no new images): Hardest to book, Welcome.
+  k1: { name: "k1-halfdome-wide", widths: [828, 1440, 2048], w: 2048, h: 878 },
+  t1: { name: "t1-tent-wide", widths: [828, 1440, 1856], w: 1856, h: 796 },
 } as const;
 export type Piece = (typeof ART)[keyof typeof ART];
 
@@ -48,10 +52,14 @@ export function Art({ art, alt = "", className, sizes = "100vw", eager, style }:
       decoding="async"
       draggable={false}
       className={className}
-      style={style}
+      style={placeholder(art.name, style)}
     />
   );
 }
+
+/** The blurred copy sits behind the photo until it paints over it. */
+const placeholder = (name: string, style?: CSSProperties): CSSProperties | undefined =>
+  LQIP[name] ? { backgroundImage: `url(${LQIP[name]})`, backgroundSize: "cover", backgroundPosition: "center", ...style } : style;
 
 /** A wide crop from `at` px up (default 640) and a tall one below, as one picture. */
 export function ArtPair({ wide, tall, className, eager, at = 640 }: Common & { wide: Piece; tall: Piece; at?: number }) {

@@ -25,9 +25,10 @@ export function radioKeys<T>(values: readonly T[], current: T, set: (v: T) => vo
 
 export function LabBar({ page, visitor, onVisitor, children }: { page: string; visitor: Visitor; onVisitor: (v: Visitor) => void; children?: ReactNode }) {
   return (
-    <div className="bg-ch-forest text-ch-white">
+    // A landmark of its own, so the lab's switches aren't loose content beside the page's.
+    <aside aria-label="Lab controls" className="bg-ch-forest text-ch-white">
       <div className="mx-auto flex max-w-[var(--ch-max)] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2.5 text-ch-meta">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-x-2">
+        <nav aria-label="Lab breadcrumb" className="flex items-center gap-x-2">
           <Link href="/private" className="flex min-h-11 items-center gap-1.5 underline-offset-2 hover:underline">
             <span aria-hidden="true">←</span> Private
           </Link>
@@ -58,7 +59,7 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
           })}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
 

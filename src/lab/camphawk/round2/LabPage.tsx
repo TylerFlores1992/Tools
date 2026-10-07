@@ -8,7 +8,7 @@ import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import type { Piece } from "./Art";
-import { AppBand, BandPhoto, LabSelect, PLANS, type Plan } from "./AppParts";
+import { AppBand, BandPhoto, LabSelect, PLANS, type Fact, type Plan } from "./AppParts";
 import { GhFooter, ScreenLinks, type Tab } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
 
@@ -21,13 +21,14 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 export type LabCtx = { visitor: Visitor; plan: Plan; setVisitor: (v: Visitor) => void };
 
 export function LabPage({
-  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true,
+  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true, facts,
 }: {
   /** The lab bar's breadcrumb label. */
   page: string;
   tab?: Tab;
   title: string;
-  sub?: ReactNode;
+  /** The line under the title; a function when it depends on who's looking. */
+  sub?: ReactNode | ((ctx: LabCtx) => ReactNode);
   photo?: { art: Piece; pos: string; posLg: string };
   /** The screen's own lab switches, rendered in the lab bar. */
   controls?: (ctx: LabCtx) => ReactNode;
@@ -36,6 +37,8 @@ export function LabPage({
   showPlan?: boolean;
   /** The first card rises into the band (app screens); reading pages start on paper. */
   dock?: boolean;
+  /** Numbers for a plain band's right side. */
+  facts?: ReadonlyArray<Fact>;
   /** Kept for callers; every page now uses the band's column. */
   wide?: boolean;
 }) {
@@ -50,7 +53,7 @@ export function LabPage({
         {controls?.(ctx)}
       </LabBar>
       <main id="main">
-        <AppBand visitor={visitor} current={tab} title={title} sub={sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} />
+        <AppBand visitor={visitor} current={tab} title={title} sub={typeof sub === "function" ? sub(ctx) : sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} facts={facts} />
         {/* The page shares the band's column and gutters, so the title above and the content below
             start on one left edge at every width. */}
         <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pb-[clamp(48px,7vw,96px)] sm:px-8", dock ? "-mt-[var(--gh-dock)]" : "pt-[clamp(32px,5vw,64px)]")}>
@@ -173,7 +176,7 @@ export function CtaBand({ title, body, action }: { title: string; body?: ReactNo
     content below the fold. */
 export function WithRail({ toc, children, extra }: { toc: ReadonlyArray<readonly [id: string, label: string]>; children: ReactNode; extra?: ReactNode }) {
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-16">
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-12">
       {/* First in the DOM, so keyboard and screen-reader users meet it before the article; drawn
           on the right. */}
       <aside className="hidden lg:order-last lg:block">

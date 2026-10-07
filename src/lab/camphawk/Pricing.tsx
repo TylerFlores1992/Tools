@@ -8,9 +8,9 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 // bridge: signed out (the pitch), subscriber (navigation, never prices), app (no prices).
 
 export const BASE_FEATURES = [
-  `Watch up to ${WATCH_LIMIT} campgrounds at once`,
+  `Run up to ${WATCH_LIMIT} watches at once`,
   "Checked every 15 seconds, around the clock",
-  "Text, push and email the moment a site opens",
+  "Email, push and text the moment a site opens",
   "Flexible dates — any N nights in a window",
 ];
 export const AUTOCART_FEATURES = [
@@ -18,6 +18,7 @@ export const AUTOCART_FEATURES = [
   "An opening goes straight into your Recreation.gov cart",
   "The site is held while you get to your phone",
   "You just sign in and check out",
+  "8 AM holds in California (invite-only beta)",
 ];
 
 function PlanCard({ name, price, sub, features, highlight, cta }: { name: string; price: string; sub: string; features: string[]; highlight?: boolean; cta: ReactNode }) {
@@ -53,7 +54,7 @@ function Plans() {
           price={priceShort("base", "monthly")}
           sub={`or ${priceShort("base", "yearly")} — save ${yearlySavingPercent("base")}%`}
           features={BASE_FEATURES}
-          cta={<a href="#" className={buttonClasses({ variant: "quiet", size: "sm" })}>Start 7-day free trial</a>}
+          cta={<a href="#" className={buttonClasses({ variant: "quiet", size: "sm" })}>Start 7‑day free trial</a>}
         />
         <PlanCard
           name="Auto-Cart"
@@ -61,14 +62,14 @@ function Plans() {
           sub={`or ${priceShort("autocart", "yearly")} — save ${yearlySavingPercent("autocart")}%`}
           features={AUTOCART_FEATURES}
           highlight
-          cta={<a href="#" className={buttonClasses({ size: "sm" })}>Start 7-day free trial</a>}
+          cta={<a href="#" className={buttonClasses({ size: "sm" })}>Start 7‑day free trial</a>}
         />
       </div>
       <p className="mt-3 max-w-[58ch] text-ch-fine leading-normal text-ch-muted">
-        Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you&apos;ve unlocked your phone.
+        Popular sites are rebooked within minutes of a cancellation. Alerts tell you the moment one opens; Auto-Cart has it in your cart before you’ve unlocked your phone.
       </p>
       <p className="mt-2 text-ch-fine text-ch-muted">
-        Prices in US dollars. Free for 7 days · cancel any time before you&apos;re charged. Launch pricing — your rate is locked in while you stay subscribed.
+        Prices in US dollars. Free for 7 days · cancel any time before you’re charged. Launch pricing — your rate is locked in while you stay subscribed.
       </p>
     </div>
   );
@@ -78,12 +79,12 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
   if (visitor === "subscriber") {
     return (
       <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
-        <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">You&apos;re all set — here&apos;s what you can do</h2>
+        <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">You’re all set — here’s what you can do</h2>
         <ul className="mt-2.5 max-w-[58ch] space-y-1.5 text-ch-body leading-relaxed text-ch-green-deep">
-          <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
+          <li>Run up to {WATCH_LIMIT} watches at once. We check each one every 15 seconds, around the clock.</li>
           <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.</li>
           <li>With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.</li>
-          <li>Any alert lets you pause the watch, reopen it, or mute a site you don&apos;t want.</li>
+          <li>Any alert lets you pause the watch, reopen it, or mute a site you don’t want.</li>
         </ul>
         <div className="mt-4 flex flex-wrap gap-2.5">
           <a href="#" className={buttonClasses({ variant: "primary" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
@@ -98,7 +99,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
       <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
         <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">Searching is free. Watching needs a subscription.</h2>
         <p className="mt-2 max-w-[58ch] text-ch-body leading-relaxed text-ch-green-deep">
-          A subscription covers up to {WATCH_LIMIT} watches at once with push, text and email alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
+          A subscription covers up to {WATCH_LIMIT} watches at once with email, push and text alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
         </p>
       </div>
     );
@@ -109,7 +110,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
       <h2 className="mt-2.5 font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
       <p className="mt-2 max-w-[58ch] text-ch-body leading-relaxed text-ch-green-deep">Cancel any time — and live search keeps working either way.</p>
       <p className="mt-2 max-w-[58ch] text-ch-meta leading-normal text-ch-green-deep">
-        This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
+        This is introductory pricing while we’re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
       </p>
       <div className="mt-4">
         <Plans />
