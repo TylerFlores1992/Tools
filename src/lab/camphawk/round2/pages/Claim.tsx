@@ -186,12 +186,9 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
     // Solid, not dashed: a dashed box is the lab's note style. Locked reads as a quieter card.
     <div className={cx("mt-3 rounded-ch-card border border-ch-line p-5", ready ? "bg-ch-card shadow-ch-card" : "bg-ch-paper")}>
       <div className="flex gap-3">
-        <span aria-hidden="true" className="relative grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-ch-ink">
-          <span className="text-[14px] font-extrabold">2</span>
-          {!ready && <span className="absolute -bottom-1 -right-1 grid size-4 place-items-center rounded-full bg-ch-ink text-ch-white"><Lock className="size-2.5" strokeWidth={3} /></span>}
-        </span>
+        <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">2</span>
         <div className="min-w-0 flex-1">
-          <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 align-middle text-[13px] font-bold text-ch-ink-2">After you sign in</span>}</p>
+          <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 inline-flex items-center gap-1 align-middle text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
           <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you&apos;re signed in, tap <strong className="text-ch-ink">It&apos;s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
         </div>
       </div>

@@ -47,7 +47,7 @@ function PlanCard({ name, tier, features, recommended, children }: { name: strin
     <div className={cx("flex flex-col rounded-ch-card bg-ch-card p-6 shadow-ch-pop sm:p-8", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
       {/* The badge gets its own line, reserved in both cards, so the titles and prices line up at
           every width (it wrapped under one title at 768). */}
-      <div className="flex min-h-7 items-center">{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
+      <div className={recommended ? "flex min-h-7 items-center" : "hidden min-h-7 items-center md:flex"}>{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
       <h3 className="mt-2 font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
@@ -82,6 +82,16 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       </button>
     );
   };
+  // One button per card (monthly), and yearly as a quieter text choice beside it: four equal
+  // price buttons made the pick harder than it is (round 8).
+  const yearlyBtn = (tier: PlanTier) => {
+    const id = `${tier}-yearly`;
+    return (
+      <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} aria-label={`Pay yearly instead: ${tier === "autocart" ? "Auto-Cart" : "Alerts"}, ${priceShort(tier, "yearly")}`} className="inline-flex min-h-12 cursor-pointer items-center gap-2 px-1 text-[15px] font-bold text-ch-ink underline underline-offset-[3px] hover:decoration-2 disabled:cursor-wait">
+        {busy === id && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Pay yearly instead
+      </button>
+    );
+  };
   const trial = (tier: PlanTier) => (
     <Link href={withVisitor(`${ROUTES.signUp}?plan=${tier}`, visitor)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5" })}>Start {TRIAL_DAYS}-day free trial</Link>
   );
@@ -97,10 +107,10 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       <h2 id="pitch" className="sr-only">Plans</h2>
       <div className="grid gap-4 md:grid-cols-2 md:gap-6">
         <PlanCard name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)}>
-          {signedOut ? trial("base") : [priceBtn("base", "monthly"), priceBtn("base", "yearly")]}
+          {signedOut ? trial("base") : [priceBtn("base", "monthly"), yearlyBtn("base")]}
         </PlanCard>
         <PlanCard name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended>
-          {signedOut ? trial("autocart") : [priceBtn("autocart", "monthly"), priceBtn("autocart", "yearly")]}
+          {signedOut ? trial("autocart") : [priceBtn("autocart", "monthly"), yearlyBtn("autocart")]}
         </PlanCard>
       </div>
       <p role="status" className="sr-only">{busy ? "Opening checkout…" : ""}</p>
@@ -208,7 +218,7 @@ function HoldExplainer() {
               <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
             </p>
             <div className="lg:hidden">{RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}</div>
-            <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Our Recreation.gov auto-cart isn&apos;t in beta: connect once and openings go straight into your cart.</p>
+            <p className="mt-5 text-[15px]">ReserveCalifornia parks only. On Recreation.gov, auto-cart is open to every Auto-Cart subscriber: connect once and openings go straight into your cart.</p>
           </div>
         </div>
         <div className="hidden lg:block">

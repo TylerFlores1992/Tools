@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LocateFixed, MapPin, Search, Tent } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
-import { CAMPGROUNDS_ROUNDED, type Visitor } from "../data";
+import { CAMPGROUNDS_ROUNDED, CANADA_REGIONS, type Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import { Card } from "../ui/Card";
 import { Tag } from "../ui/Tag";
@@ -126,7 +126,7 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
       <div className="mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5 xl:grid-cols-2">
         <div>
           <p className="text-[16px] font-bold text-ch-ink">Everything booked?</p>
-          <p className="mt-1 max-w-[56ch] text-[15px] leading-relaxed text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text you the moment someone cancels.</p>
+          <p className="mt-1 max-w-[56ch] text-[15px] leading-relaxed text-ch-ink-2">That&apos;s what we&apos;re for. Start a watch on a full campground and we&apos;ll check it every 15 seconds and text, email and push you the moment someone cancels.</p>
         </div>
         {visitor !== "subscriber" && (
           <div>
@@ -220,7 +220,7 @@ function ResultCard({ c, visitor, searched, backTo, favorite, onToggleFavorite }
           <Tag kind="src">{c.provider}</Tag>
         </div>
         <div className="flex items-start gap-2">
-          <h3 className="min-w-0 flex-1 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">
+          <h3 className="min-w-0 flex-1 font-ch-display text-[20px] font-extrabold leading-tight text-ch-ink">
             <Link href={href} className="underline-offset-[3px] hover:underline">{c.name}</Link>
           </h3>
           {onToggleFavorite && <FavoriteHeart favorite={favorite} onToggle={onToggleFavorite} name={c.name} className="-mr-1.5 -mt-1" />}
@@ -398,7 +398,7 @@ export function Explore() {
           visitor={visitor}
           current="explore"
           title="Find a campsite that's open"
-          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and national and provincial parks across Canada.`}
+          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada's 13 provinces and territories.`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 

@@ -37,7 +37,7 @@ export function Welcome() {
   const nextPath = nextParam && nextParam.startsWith(`${GH}/`) && !nextParam.startsWith("//") ? nextParam : ROUTES.explore;
   // One title per screen: the band says it, the card doesn't repeat it.
   const [viewer] = useVisitor();
-  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "You're subscribed. Let's set up your alerts." : "You're in. How should we reach you?";
+  const title = viewer === "signed-out" ? "Sign in to finish setting up" : from === "checkout" && viewer === "subscriber" ? "Your free trial has started. Let's set up your alerts." : "You're in. How should we reach you?";
   return (
     <LabPage
       page="Welcome"
@@ -79,7 +79,7 @@ export function Welcome() {
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
               <h2 id="w-text" className="text-[17px] font-extrabold text-ch-ink">Text alerts</h2>
-              <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text is what actually wakes you at 6 AM.</p>
+              <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text wakes you; an email waits until you look.</p>
               <SmsAlerts visitor={visitor} secondary />
             </section>
 

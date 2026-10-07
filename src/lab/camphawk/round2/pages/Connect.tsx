@@ -137,7 +137,13 @@ export function Connect() {
                 <Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />Opening a secure Recreation.gov window…
               </p>
             )}
-            {status === "form" && <SignInForm onDone={() => setStatus("done")} />}
+            {status === "form" && (
+              <>
+                <SignInForm onDone={() => setStatus("done")} />
+                {/* A bare page still needs a way out that isn't the browser's back button. */}
+                <p className="mt-4 text-center"><Link href={withVisitor(ROUTES.settings, visitor)} className="inline-flex min-h-11 items-center text-[15px] font-bold text-ch-ink-2 underline underline-offset-[3px] hover:text-ch-ink">Not now, back to Settings</Link></p>
+              </>
+            )}
             {status === "stream" && <StreamWindow />}
             {status === "done" && (
               <div role="status" className="grid gap-4">

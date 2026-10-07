@@ -26,7 +26,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
           {/* The Golden hour badge (studio/camphawk-round2, logo picks): CampHawk's badge with a warm sky. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/private/camphawk/round2/badge-golden-80.webp" srcSet="/private/camphawk/round2/badge-golden-80.webp 2x, /private/camphawk/round2/badge-golden-120.webp 3x" alt="" width={40} height={40} decoding="async" className="size-10 shrink-0 select-none" draggable={false} />
-          <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
+          <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold text-ch-paper">CampHawk</span>
         </Link>
         <nav aria-label="Main" className="hidden flex-1 gap-1 md:flex">
           {TABS.map((t) => (

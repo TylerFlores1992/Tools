@@ -482,7 +482,7 @@ export function NewWatch() {
                   {[
                     ["Pick the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
                     ["Choose your nights", "Exact dates, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
-                    ["Start watching", "Then close the app. We'll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
+                    ["Start watching", "Then go about your day. We'll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (
                     <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
                       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ch-shell font-ch-display text-[14px] font-extrabold text-ch-ink">{i + 1}</span>

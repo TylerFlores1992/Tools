@@ -220,7 +220,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             {requested.map((r) => (
               <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
                 <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">Asked</Tag></span>
+                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">8 AM hold</Tag></span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
                 <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call this off: the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>
@@ -251,7 +251,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       </div>
       {/* Wide screens: the watch and its sites on the left, the settings and history beside it. */}
-      <div className="grid content-start gap-5">
+      <div className="grid content-start gap-5 lg:sticky lg:top-6">
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
         <Collapsible label="Alerts sent" summary={`${w.alerts.length} sent`}>

@@ -37,7 +37,7 @@ function AlertCard({ compact }: { compact?: boolean }) {
         <span className="font-extrabold">A site just opened</span>
         <span className="ml-auto text-ch-muted tabular-nums">14 sec ago</span>
       </div>
-      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, Site 042</p>
+      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight"}>Upper Pines, Site 042</p>
       <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18–21, 3 nights.</p>
       <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
         <Check aria-hidden="true" className="size-4 shrink-0" />
@@ -182,7 +182,7 @@ export function GoldenHour() {
                   <li key={title} className="grid grid-cols-[48px_1fr] items-start gap-5">
                     <span className="grid size-12 place-items-center rounded-full border-2 border-ch-faint font-ch-display text-[22px] font-extrabold leading-none text-ch-paper tabular-nums">{i + 1}</span>
                     <div>
-                      <p className="pt-2.5 font-ch-display text-[22px] font-bold tracking-[-.015em]">{title}</p>
+                      <p className="pt-2.5 font-ch-display text-[22px] font-bold">{title}</p>
                       <p className="mt-1.5 max-w-[48ch] text-[16px] leading-relaxed text-ch-line">{body}</p>
                     </div>
                   </li>

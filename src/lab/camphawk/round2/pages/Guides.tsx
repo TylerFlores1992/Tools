@@ -1,5 +1,6 @@
 "use client";
 
+import { cx } from "@/components/cx";
 import { Info } from "lucide-react";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
@@ -27,6 +28,26 @@ import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_OPEN, SOURCE_COUNT,
 
 const SAME_SOFTWARE = ["Arizona", "Florida", "Illinois", "Minnesota", "Missouri", "Nevada", "Ohio", "Virginia", "Wyoming"];
 const statDates = `${OPENINGS_STAT.from} and ${OPENINGS_STAT.to}`;
+
+/** The study as a stat tile (one ratio is a headline, not a chart): the figure, what it counts,
+    and one part-to-whole bar where the green sliver is the share that came back. The bar is
+    decoration for the sentence beside it, so it's hidden from screen readers. */
+function StatTile({ className }: { className?: string }) {
+  const share = OPENINGS_STAT.openings / OPENINGS_STAT.checks;
+  return (
+    <figure className={cx("mt-6 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6", className)}>
+      <div className="flex flex-wrap items-end gap-x-5 gap-y-2">
+        <p className="font-ch-display text-[56px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{openingsPercent()}</p>
+        <p className="max-w-[40ch] pb-1 text-[16px] leading-snug text-ch-ink-2"><strong className="font-bold text-ch-ink">{OPENINGS_STAT.openings.toLocaleString("en-US")} came back</strong> out of {OPENINGS_STAT.checks.toLocaleString("en-US")} checks of a sold-out stay.</p>
+      </div>
+      <div aria-hidden="true" className="mt-5 flex h-3 overflow-hidden rounded-[4px] bg-ch-shell">
+        {/* At least 4px, so the sliver is visible at every width. */}
+        <span className="h-full min-w-1 rounded-[4px] bg-ch-green" style={{ width: `${share * 100}%` }} />
+      </div>
+      <figcaption className="mt-2 flex justify-between text-[13px] text-ch-ink-2"><span>Came back</span><span>Still booked an hour later</span></figcaption>
+    </figure>
+  );
+}
 const sources = inWords(SOURCE_COUNT);
 const otherStateSystems = inWords(SOURCE_COUNT - 2);
 
@@ -49,7 +70,7 @@ function HoldClosed() {
 
 export function AutoCartGuide() {
   return (
-    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false}>
+    <LabPage page="Auto-cart" title="Auto‑cart and 8 AM holds" dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["first", "What you need first"], ["recgov", "Recreation.gov"], ["rc", "ReserveCalifornia"], ["good-to-know", "Good to know"]]}>
         <Prose>
@@ -110,7 +131,7 @@ export function CancellationAlerts() {
   return (
     <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false}>
       {({ visitor }) => (
-        <WithRail toc={[["how", "How they work"], ["speed", "How much speed matters"], ["free", "Check the free option first"], ["difference", "The two things that survive"], ["checklist", "What to ask of any service"], ["start", "If you want to try ours"]]}>
+        <WithRail toc={[["how", "How they work"], ["speed", "How much speed matters"], ["free", "Check the free option first"], ["difference", "What still sets one apart"], ["checklist", "What to ask of any service"], ["start", "If you want to try ours"]]}>
         <Prose>
           <P>A cancellation alert service watches a campground you could not book and tells you when a site frees up. Every one of them does that. What separates them is how fast they notice, which reservation systems they can see, and whether they can do anything about it other than tell you.</P>
 
@@ -119,7 +140,8 @@ export function CancellationAlerts() {
           <P>The whole game is the loop interval and what happens next. A service checking every few minutes will genuinely find you openings on quiet campgrounds; on a contested one it will reliably tell you about a site somebody else has already taken.</P>
 
           <H2 id="speed">How much speed matters, in numbers</H2>
-          <P>Between {statDates} we watched {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour and counted only genuine openings — a stay that had been fully booked becoming bookable again. It happened {OPENINGS_STAT.openings.toLocaleString("en-US")} times in {OPENINGS_STAT.checks.toLocaleString("en-US")} checks, about {openingsPercent()} of them.</P>
+          <P>Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour. {OPENINGS_STAT.checks.toLocaleString("en-US")} times, a check found a stay that had been fully booked an hour earlier; {OPENINGS_STAT.openings.toLocaleString("en-US")} of those times, about {openingsPercent()}, it had come back.</P>
+          <StatTile />
           <P>Rare, in other words, and then gone quickly. That’s why the interval is the specification worth reading and why “we check often” isn’t an answer. CampHawk rechecks every watched campground every {CHECK_SECONDS} seconds, continuously.</P>
 
           <H2 id="free">Check the free option first — we mean it</H2>
@@ -128,11 +150,11 @@ export function CancellationAlerts() {
 
           <H2 id="difference">What still sets one apart</H2>
           <Steps steps={[
-            ["State reservation systems.", <>Recreation.gov&apos;s alerts only cover Recreation.gov. A large share of the campgrounds people can’t book are on state systems — ReserveCalifornia above all, plus a dozen others — and those systems don’t offer alerts of their own. CampHawk watches <A href={ROUTES.sources} visitor={visitor}>{sources} sources</A>, and that is where most of what we find lives.</>],
+            ["State reservation systems.", <>Recreation.gov&apos;s alerts only cover Recreation.gov. A large share of the campgrounds people can’t book are on state and provincial systems — ReserveCalifornia above all — and those systems don’t offer alerts of their own. CampHawk watches <A href={ROUTES.sources} visitor={visitor}>{sources} sources</A>, and that is where most of what we find lives.</>],
             ["Doing something about it, not just telling you.", <>An alert still requires you to be holding your phone. On Recreation.gov we can <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart for you</A> — around twelve seconds from the opening appearing{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it to you" : ""}. Recreation.gov will never build that; it would be carting against itself.</>],
           ]} />
 
-          <H2 id="checklist">What to ask of any service, including this one</H2>
+          <H2 id="checklist">What to ask of any service</H2>
           <Ul items={[
             "How often does it actually check, in seconds?",
             "Does it cover your reservation system, or only Recreation.gov?",
@@ -162,10 +184,9 @@ export function SoldOutGuide() {
           <P>Sold out is rarely final. Reservations get canceled, held carts expire, and parks put inventory back. The problem is that the site is usually gone again within minutes, so the question isn’t whether one will appear — it is whether you will be looking at the moment it does.</P>
 
           <H2 id="how-often" className="mt-12">How often does a sold‑out site actually come back?</H2>
-          <P>We can answer this with our own data rather than a guess. Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour and counted only the moments when a stay that had been fully booked became bookable again — a real opening, not a stay that had simply never sold out.</P>
-          <Callout title={`${OPENINGS_STAT.openings.toLocaleString("en-US")} openings across ${OPENINGS_STAT.checks.toLocaleString("en-US")} checks — about ${openingsPercent()} of the time.`}>
-            That is the honest shape of it: on any given hour, almost certainly nothing. Over a few weeks of watching, quite often something. It is also why refreshing the booking page yourself is such poor odds — you would have to be looking during the one hour in a hundred that matters, and then be faster than everyone else looking too.
-          </Callout>
+          <P>We can answer this with our own data rather than a guess. Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour, and looked only at stays that had been fully booked at the previous check, so a stay that never sold out doesn&apos;t count.</P>
+          <StatTile />
+          <P className="mt-4">That is the honest shape of it: on any given hour, almost certainly nothing. Over a few weeks of watching, quite often something. It is also why refreshing the booking page yourself is such poor odds — you would have to be looking during the one hour in a hundred that matters, and then be faster than everyone else looking too.</P>
           <P className="mt-4 text-[15px]">That is a rate across a population of famously difficult campgrounds; your park will differ. We are not going to pretend it predicts yours.</P>
 
           <H2 id="windows">First: check whether it’s sold out, or just not open yet</H2>

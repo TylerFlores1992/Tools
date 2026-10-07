@@ -17,7 +17,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
       {/* The badge gets its own line, reserved in both cards, so the titles and prices line up at
           every width (it wrapped under one title at 768). */}
-      <div className="flex min-h-7 items-center">{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
+      <div className={recommended ? "flex min-h-7 items-center" : "hidden min-h-7 items-center md:flex"}>{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
       <h3 className="mt-2 font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>

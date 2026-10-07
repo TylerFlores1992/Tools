@@ -56,7 +56,7 @@ function HeldCart() {
     <figure className="flex flex-col items-stretch gap-4 rounded-[16px] bg-ch-paper p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-5">
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-[14px] font-bold text-ch-ink-2">Recreation.gov cart <Tag kind="cart">In cart</Tag></p>
-        <p className="mt-1.5 font-ch-display text-[19px] font-extrabold leading-tight text-ch-ink">Upper Pines, site 042</p>
+        <p className="mt-1.5 font-ch-display text-[19px] font-extrabold leading-tight text-ch-ink">Upper Pines, Site 042</p>
         <p className="mt-0.5 text-[15px] text-ch-ink-2 tabular-nums">Open for Jul 18–21, 3 nights</p>
       </div>
       <span className={buttonClasses({ variant: "cart", className: "pointer-events-none shrink-0 px-5" })}>Check out on Recreation.gov</span>
@@ -67,9 +67,9 @@ function HeldCart() {
 /** Live search: open and booked campgrounds, said in words. */
 function MiniResults() {
   const rows = [
-    { name: "Upper Pines", where: "Yosemite, CA", open: "Open for Jul 18–21" },
-    { name: "North Pines", where: "Yosemite, CA" },
-    { name: "Wawona", where: "Yosemite, CA" },
+    { name: "Upper Pines", where: "Yosemite Valley, CA", open: "Open for Jul 18–21" },
+    { name: "North Pines", where: "Yosemite Valley, CA" },
+    { name: "Wawona", where: "Wawona, CA" },
   ];
   return (
     <figure>

@@ -42,7 +42,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
   return (
     <LabPage page={`vs ${c.name}`} title={`CampHawk vs ${c.name}`} dock={false} photo={{ art: ART.v1, pos: "75% 55%", posLg: "50% 58%" }}>
       {({ visitor }) => (
-        <WithRail toc={[["start", "You might not need to pay"], ["does", "What CampHawk does"], ["ask", "What to ask any service"]]}>
+        <WithRail toc={[["start", "You might not need to pay"], ["does", "What CampHawk does"], ["ask", "What to ask before you pick one"]]}>
         <div className="max-w-[46rem]">
           <p className="text-[18px] leading-relaxed text-ch-ink-2">{c.known} So does CampHawk. Rather than tell you what {c.name} does — their site is the honest source for that, and it&apos;s <Out href={c.homepage}>right here</Out> — this page says exactly what CampHawk does, so you can check it against whatever else you&apos;re looking at.</p>
 

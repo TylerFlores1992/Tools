@@ -73,17 +73,21 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
   return (
     <div className="grid gap-4">
       {saved && (
-        <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
-          <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
-          <p className="flex flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink"><span>Text alerts go to <span className="whitespace-nowrap">{saved}</span></span><Tag kind="paused" mark="on" srPrefix="Status:">On</Tag></p>
-          {!editing && (
-            <span className="flex gap-2">
-              <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
-              <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
-                {busy === "off" ? "Turning off…" : "Turn off"}
-              </button>
-            </span>
-          )}
+        // Laid out like Settings' Email and Push rows: icon, title and state pill, a line, then actions.
+        <div className="flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+          <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+          <div className="min-w-0 flex-1">
+            <p className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink"><span>Text alerts</span><Tag kind="paused" mark="on" srPrefix="Status:">On</Tag></p>
+            <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Every opening we find is texted to <span className="whitespace-nowrap font-bold text-ch-ink">{saved}</span>.</p>
+            {!editing && (
+              <span className="mt-3 flex flex-wrap gap-2">
+                <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
+                <button type="button" onClick={turnOff} disabled={busy === "off"} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+                  {busy === "off" ? "Turning off…" : "Turn off"}
+                </button>
+              </span>
+            )}
+          </div>
         </div>
       )}
       {(!saved || editing) && (
@@ -103,7 +107,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="(555) 123-4567"
-          className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-card px-4 text-[16px] text-ch-ink placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
+          className="min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green"
         />
       </div>
       <label className="flex cursor-pointer items-start gap-3 text-[14px] leading-relaxed text-ch-ink-2">
@@ -117,7 +121,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       {/* With a number saved and nothing changed there is nothing to update: no button. */}
       {!(saved && !changed) && (
         <div>
-          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
+          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (secondary && !demo ? " border-ch-ink-2! text-ch-ink!" : "") + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
             {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : saved ? "Update number" : "Turn on text alerts"}
           </button>
           {!busy && (demo || blocked) && (

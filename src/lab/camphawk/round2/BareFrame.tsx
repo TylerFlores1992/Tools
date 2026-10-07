@@ -43,7 +43,7 @@ export function BareFrame({
             <Link href={withVisitor(home, visitor)} aria-label={homeLabel} className="inline-flex min-h-11 items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/private/camphawk/round2/badge-golden-80.webp" srcSet="/private/camphawk/round2/badge-golden-80.webp 2x, /private/camphawk/round2/badge-golden-120.webp 3x" alt="" width={40} height={40} className="size-10" />
-              <span translate="no" className="font-ch-display text-[22px] font-extrabold tracking-[-.025em] text-ch-paper">CampHawk</span>
+              <span translate="no" className="font-ch-display text-[22px] font-extrabold text-ch-paper">CampHawk</span>
             </Link>
             {lead}
           </div>

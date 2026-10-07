@@ -60,7 +60,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           <p className="truncate text-[15px] font-bold text-ch-ink">Site {h.site}</p>
           <p className="text-[13px] text-ch-muted">{h.part}</p>
         </div>
-        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">Asked</Tag>}
+        {offered ? <Tag kind="paused" mark="offered">Can hold</Tag> : <Tag kind="watch" mark="hold">8 AM hold</Tag>}
       </div>
       <p className="text-[14px] leading-normal text-ch-ink-2">
         {offered
@@ -106,7 +106,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
           {state === "stalled" && <Tag kind="paused" mark="provider-down">Checks paused</Tag>}
         </div>
-        <h3 className="font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em] text-ch-ink">{w.name}</h3>
+        <h3 className="font-ch-display text-[20px] font-extrabold leading-tight text-ch-ink">{w.name}</h3>
         {/* The provider is a fact about the watch, not a status: plain text, not a third tag. */}
         <p className="mt-0.5 text-[14px] text-ch-ink-2">On {w.provider}</p>
         {w.parts && (

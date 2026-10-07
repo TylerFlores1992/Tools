@@ -670,7 +670,7 @@ try {
     await p.waitForURL(/\/settings\?as=subscriber/);
     // Welcome: the Auto-Cart step only for a plan that includes it.
     await p.goto(`${GH}/welcome?as=subscriber&plan=alerts&from=checkout`);
-    await p.getByRole("heading", { name: "You're subscribed. Let's set up your alerts." }).waitFor();
+    await p.getByRole("heading", { name: "Your free trial has started. Let's set up your alerts." }).waitFor();
     assert.equal(await p.getByRole("heading", { name: "Set up auto-cart" }).count(), 0);
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();

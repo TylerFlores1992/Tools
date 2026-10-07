@@ -63,8 +63,7 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
       <Tag kind="open">Sites open</Tag>
       <span>
         {/* The count lives in the calendar's key; up here, just the next date. */}
-        <strong className="font-bold">First open night: {dayLabel(open[0])}.</strong>{" "}
-        <span className="text-ch-line">Pick a day below to see the sites.</span>
+        <strong className="font-bold">First open night: {dayLabel(open[0])}.</strong>
       </span>
     </p>
   );
@@ -99,7 +98,7 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
           <button type="button" onClick={() => shift(-1)} disabled={month <= FIRST_MONTH} aria-label="Previous month" className={navButton}>
             <ChevronLeft aria-hidden="true" className="size-5" />
           </button>
-          <h2 aria-live="polite" className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-ink">{monthLabel(month)}</h2>
+          <h2 aria-live="polite" className="font-ch-display text-[22px] font-extrabold text-ch-ink">{monthLabel(month)}</h2>
           <button type="button" onClick={() => shift(1)} disabled={month >= LAST_MONTH} aria-label="Next month" className={navButton}>
             <ChevronRight aria-hidden="true" className="size-5" />
           </button>

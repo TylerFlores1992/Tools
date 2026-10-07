@@ -56,7 +56,7 @@ const off = "disabled:cursor-not-allowed disabled:bg-ch-shell disabled:text-ch-i
 function Section({ title, blurb, children, id }: { title: string; blurb?: ReactNode; children: ReactNode; id: string }) {
   return (
     <section aria-labelledby={id} className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
-      <h2 id={id} className="scroll-mt-6 font-ch-display text-[22px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">{title}</h2>
+      <h2 id={id} className="scroll-mt-6 font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">{title}</h2>
       {blurb && <p className="mt-1.5 max-w-[60ch] text-[15px] leading-relaxed text-ch-ink-2">{blurb}</p>}
       <div className="mt-5 grid gap-4">{children}</div>
     </section>
@@ -127,7 +127,8 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
     );
   }
 
-  const tag = state === "on" ? <Tag kind="cart" mark="on">On</Tag> : <Tag kind="paused" mark={({ off: "off", "not-set-up": "not-set-up", reconnecting: "reconnecting", disconnected: "needs-you" } as const)[state]}>{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
+  // Neutral like every other state in Settings: a state is not a hand-off, so it isn't blue.
+  const tag = state === "on" ? <Tag kind="paused" mark="on">On</Tag> : <Tag kind="paused" mark={({ off: "off", "not-set-up": "not-set-up", reconnecting: "reconnecting", disconnected: "needs-you" } as const)[state]}>{{ off: "Off", "not-set-up": "Not set up", reconnecting: "Reconnecting", disconnected: "Disconnected" }[state]}</Tag>;
   const connected = state === "on" || state === "off";
   return (
     <>
@@ -184,7 +185,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     const on = plan === "autocart" ? "Watching, alerts and auto-cart are all switched on." : "Watching and alerts are switched on, on the Alerts plan.";
     return (
       <div>
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[16px] font-bold text-ch-ink">{known ? <>Your subscription<Tag kind="paused" mark="on" srPrefix="Status:">Active</Tag></> : "Your subscription"}</p>
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[16px] font-bold text-ch-ink">{known ? <>Your subscription<Tag kind="paused" mark="active" srPrefix="Status:">Active</Tag></> : "Your subscription"}</p>
         {known && billing !== "not-billed" && (
           <p className="mt-1 text-[15px] text-ch-ink tabular-nums">
             {plan === "autocart" ? "Auto-Cart plan" : "Alerts plan"}

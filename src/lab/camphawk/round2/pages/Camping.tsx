@@ -279,7 +279,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws lists for California only; <A href={`${ROUTES.camping}/${hub.slug}/california`} visitor={visitor}>see California {hub.label.toLowerCase()}</A>. CampHawk lists each campground here, by town.</p>
           )}
-          <p className="mt-10 text-[15px] text-ch-ink-2">Nothing free? See <A href={statePath(r)} visitor={visitor}>every campground we watch in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
+          <p className="mt-10 text-[15px] text-ch-ink-2">Not finding one? See <A href={statePath(r)} visitor={visitor}>every campground we watch in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
           <Note />
         </div>
       )}
@@ -302,7 +302,7 @@ export function HardestToBook() {
               <p>What does work is being there when somebody gives one back. Cancellations happen constantly — a trip falls through, a group shrinks, a forecast sours — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
               <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
             </Lead>
-            <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
+            <p className="mt-4 max-w-[70ch] text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </div>
           {/* One card per park, in CampHawk's order (Yosemite first), read across the rows so the

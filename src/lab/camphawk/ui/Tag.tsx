@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { AlarmClock, CircleDashed, CirclePlus, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
+import { AlarmClock, CircleCheck, CircleDashed, CirclePlus, Clock, CloudOff, Eye, Pause, Power, PowerOff, RefreshCw, ShoppingCart, TriangleAlert, Zap, type LucideIcon } from "lucide-react";
 import { cx } from "@/components/cx";
 
 // Ported from campsite-finder src/components/ui/Tag.tsx (2026-10-06), so lab screens say status
@@ -23,7 +23,7 @@ export type Mark =
   | "open" | "booked" | "unknown" | "first-come"
   | "watching" | "queued" | "hold" | "offered" | "in-cart" | "auto-cart"
   | "paused" | "reconnecting" | "needs-you" | "provider-down"
-  | "on" | "off" | "not-set-up";
+  | "on" | "off" | "not-set-up" | "active";
 
 const KIND: Record<TagKind, string> = {
   open: "bg-ch-green text-ch-white font-bold",
@@ -46,7 +46,7 @@ const DEFAULT_MARK: Record<TagKind, Mark | null> = {
 const ICONS: Partial<Record<Mark, LucideIcon>> = {
   watching: Eye, queued: Clock, hold: AlarmClock, offered: CirclePlus, "in-cart": ShoppingCart, "auto-cart": Zap, paused: Pause,
   reconnecting: RefreshCw, "needs-you": TriangleAlert, "provider-down": CloudOff,
-  on: Power, off: PowerOff, "not-set-up": CircleDashed,
+  on: Power, off: PowerOff, "not-set-up": CircleDashed, active: CircleCheck,
 };
 
 /** A status shape, 11px, in the tag's own colour. Exported for status lines outside a tag. */
