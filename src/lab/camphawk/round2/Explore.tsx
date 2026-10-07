@@ -119,7 +119,7 @@ function FirstRun({ visitor, onSearch }: { visitor: Visitor; onSearch: () => voi
             </span>
           ))}
           <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:p-5">
-            <button type="button" onClick={onSearch} className={buttonClasses({ size: "lg", className: "px-6 shadow-ch-pop" })}><Search aria-hidden="true" className="size-5" />Show what’s open near you</button>
+            <button type="button" onClick={onSearch} className={buttonClasses({ size: "lg", className: "whitespace-nowrap px-6 shadow-ch-pop" })}><Search aria-hidden="true" className="size-5" />Search near you</button>
           </div>
         </div>
         <figcaption className="mt-2 text-[13px] text-ch-muted">Illustrated map with example pins. Each result says in words whether a site is free for your dates.</figcaption>

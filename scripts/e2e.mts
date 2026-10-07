@@ -417,7 +417,7 @@ try {
     await p.getByText("You’re searching as a guest").waitFor();
     await p.getByRole("heading", { level: 2, name: "Campgrounds near you" }).waitFor();
     // The first-run map's one button is a real search near you, not a picture of one.
-    await p.getByRole("button", { name: "Show what’s open near you" }).click();
+    await p.getByRole("button", { name: "Search near you" }).click();
     await p.getByRole("group", { name: "Map of results" }).waitFor();
     await p.goto(`${GH}/explore`);
     await p.getByLabel("Where").fill("yos");
