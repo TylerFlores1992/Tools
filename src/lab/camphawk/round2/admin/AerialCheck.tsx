@@ -32,7 +32,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
     return () => ro.disconnect();
   }, []);
   const perPx = width ? map.frame.w / width : 0;
-  const ring = width && width < 560 ? 3 : 4.5;
+  const ring = width && width < 560 ? 3.5 : 5.5;
   const [numbers, setNumbers] = useState(false);
   const [photo, setPhoto] = useState<"loading" | "ready" | "error">("loading");
   // A photo already in the browser's cache can finish before React attaches onLoad.
@@ -47,10 +47,11 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
       <div className="flex flex-wrap items-center gap-2">
         <Toggle on={overlay} onChange={setOverlay}>Sites and roads on top</Toggle>
         <Toggle on={numbers} onChange={setNumbers} disabled={!overlay}>Site numbers</Toggle>
-        <label className="flex min-h-10 items-center gap-2 text-[13.5px] font-bold text-ch-ink-2">
+        <label className="flex min-h-11 items-center gap-2 text-[13.5px] font-bold text-ch-ink-2">
           Strength
-          <input type="range" min={0} max={100} step={5} value={strength} disabled={!overlay} onChange={(e) => setStrength(Number(e.target.value))}
+          <input type="range" min={0} max={100} step={5} name="overlay-strength" value={strength} disabled={!overlay} onChange={(e) => setStrength(Number(e.target.value))}
             aria-valuetext={`${strength}%`} className="w-28 accent-ch-ink disabled:cursor-not-allowed" />
+          <span aria-hidden="true" className="w-9 text-right font-normal tabular-nums text-ch-ink-2">{strength}%</span>
         </label>
         <p className="text-[13.5px] text-ch-muted sm:ml-auto">{placed.length} sites · {Math.round(f.w)} × {Math.round(f.h)} m</p>
       </div>
@@ -58,7 +59,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
           campground can scroll rather than shrink. */}
       <div ref={box} className="relative mt-3 overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
-        <img ref={img} src={naipUrl(map.bbox, f)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
+        <img ref={img} src={naipUrl(map.bbox, f)} width={1400} height={Math.round((1400 * f.h) / f.w)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
           className={cx("absolute inset-0 size-full object-fill transition-opacity duration-300", photo === "ready" ? "opacity-100" : "opacity-0")} />
         {photo !== "ready" && (
           <p role={photo === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
@@ -72,10 +73,10 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
             {map.evidence?.outline && <path d={map.evidence.outline} fill="none" className="stroke-ch-white" strokeWidth={2} strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />}
             {map.roads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={0.7} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
             {map.roads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-white" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-            {/* Hollow rings, so the pad under each site stays visible: 9px across, 6px on a phone,
+            {/* Thin hollow rings, so the pad under each site stays visible: 11px across, 7px on a phone,
                 where a big campground's rings would otherwise cover the pads they mark. */}
-            {perPx > 0 && placed.map((s) => <circle key={`k${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-ink" strokeWidth={ring > 3 ? 3.5 : 2.5} vectorEffect="non-scaling-stroke" />)}
-            {perPx > 0 && placed.map((s) => <circle key={`w${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-white" strokeWidth={ring > 3 ? 1.75 : 1.25} vectorEffect="non-scaling-stroke" />)}
+            {perPx > 0 && placed.map((s) => <circle key={`k${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-ink" strokeOpacity={0.75} strokeWidth={2.75} vectorEffect="non-scaling-stroke" />)}
+            {perPx > 0 && placed.map((s) => <circle key={`w${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-white" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />)}
           </svg>
         )}
         {overlay && numbers && strength > 0 && placed.map((s) => {
@@ -96,7 +97,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
 function Toggle({ on, onChange, disabled, children }: { on: boolean; onChange: (v: boolean) => void; disabled?: boolean; children: string }) {
   return (
     <button type="button" aria-pressed={on} disabled={disabled} onClick={() => onChange(!on)}
-      className={cx("inline-flex min-h-10 items-center gap-2 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green disabled:cursor-not-allowed disabled:border-ch-line disabled:bg-ch-shell disabled:text-ch-muted",
+      className={cx("inline-flex min-h-11 items-center gap-2 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green disabled:cursor-not-allowed disabled:border-ch-line disabled:bg-ch-shell disabled:text-ch-muted",
         on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
       <span aria-hidden="true" className={cx("grid size-4 place-items-center rounded-[4px] border text-[11px] leading-none", on ? "border-ch-white" : "border-ch-muted")}>{on ? "✓" : ""}</span>
       {children}

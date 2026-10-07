@@ -458,3 +458,25 @@ and this is one more section of it. There are no alternative directions to offer
   pad?" is answered by looking.
 - *Assets:* none generated. The maps are code (real data); the photo is NAIP, loaded live from
   USGS, never committed.
+
+**Critic rounds** (a separate agent, against CampHawk's admin and the best triage tools):
+- **Round 1: 6/10, "fix then ship".** The findings:
+  - Approve stayed the primary button even where the first look said "not usable".
+  - The decision scrolled away behind the photo.
+  - The photo was shrunk, with dead space around it.
+  - The cards sat under two summary panels.
+  - Thumbnail water had hard edges.
+  - The checks hid their result on phones.
+  - All fixed in one batch:
+    - the firm button follows the evidence, with a third outcome, "Needs roads added";
+    - a sticky rail holds the first look, the failing check and the decision;
+    - the photo fills the column, with thin site rings and a strength slider;
+    - cards come first, and quick approvals lead the queue;
+    - water is clipped to the frame, and phones get a stacked checks list.
+- **Round 2: 7/10, "ship after small fixes".** Its fixes were made after the round: failing checks
+  sort first, one label style, the headline tile split into lines, thinner rings, the failing
+  check in the rail, a visible slider value.
+- **Still below Linear and Mapbox Studio, by its own account,** on keyboard flow and on zooming into
+  the photo. Single-key shortcuts were left out on purpose: WCAG 2.1.4 needs a way to turn them off.
+- **A UI audit (`ui-audit`) found three items, all fixed:** 40px controls raised to 44px, heading
+  levels in the summary, and the photo's size attributes.

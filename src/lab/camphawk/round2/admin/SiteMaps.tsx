@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, EyeOff, RotateCcw, Route } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CircleCheck, EyeOff, RotateCcw, Route } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { StatusMark } from "../../ui/StatusMark";
@@ -112,14 +112,15 @@ function Queue({ home }: { home: string }) {
       {/* The headline, then the other two answers, then the campgrounds that need no map. */}
       <section aria-label="Results" className="grid grid-cols-2 gap-3 lg:grid-cols-[1.35fr_1fr_1fr_1.2fr]">
         <div className="col-span-2 rounded-ch-card bg-ch-forest p-5 text-ch-white shadow-ch-card lg:col-span-1">
-          <p className="flex items-center gap-1.5 text-ch-meta font-bold uppercase tracking-[.08em] text-ch-white/80"><Check aria-hidden="true" className="size-4" />Ready on their own</p>
+          <p className="flex items-center gap-1.5 text-[13.5px] font-bold text-ch-white/85"><CircleCheck aria-hidden="true" className="size-4" />Ready on their own</p>
           <p className="mt-2 font-ch-display text-[40px] font-extrabold leading-none tabular-nums">{summary.ready}<span className="text-[22px] font-bold text-ch-white/80"> of {n}</span></p>
-          <p className="mt-2 text-[14px] leading-snug text-ch-white/85">{pct(summary.ready, n)}% of the sample; across all {fmt(multi)}, likely {lo}–{hi}%. A first look found {lookCount("ready", "good")} good and {lookCount("ready", "usable")} with some roads missing{lookCount("ready", "unsure") ? `; ${lookCount("ready", "unsure")} it couldn’t tell` : ""}.</p>
+          <p className="mt-2.5 text-[14px] font-bold leading-snug">{[`${lookCount("ready", "good")} good`, `${lookCount("ready", "usable")} with roads missing`, lookCount("ready", "unsure") && `${lookCount("ready", "unsure")} unclear`].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-[13px] leading-snug text-ch-white/80">On the aerial photo. Across all {fmt(multi)}: likely {lo}–{hi}%.</p>
         </div>
         <Tile verdict="review" count={summary.review} n={n} note={decided ? `${decided} decided so far` : "Each waits for a person to compare it with the aerial photo"} />
         <Tile verdict="not-drawn" count={summary.notDrawn} n={n} note="Shown as “not drawn yet” on the campground page" />
         <div className="col-span-2 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5 lg:col-span-1">
-          <p className="text-ch-meta font-bold uppercase tracking-[.08em] text-ch-muted">No map needed</p>
+          <p className="text-[13.5px] font-bold text-ch-ink-2">No map needed</p>
           <p className="mt-2 font-ch-display text-[32px] font-extrabold leading-none tabular-nums text-ch-ink">{fmt(population.singleUnit.campgrounds)}</p>
           <p className="mt-2 text-[14px] leading-snug text-ch-ink-2">of the {fmt(population.campgrounds)} campgrounds are a single cabin, lookout or group site. Counted, not sampled.</p>
         </div>
@@ -134,7 +135,7 @@ function Queue({ home }: { home: string }) {
             const on = filter === v;
             return (
               <button key={v} type="button" aria-pressed={on} onClick={() => setFilter(v)}
-                className={cx("inline-flex min-h-10 items-center gap-1.5 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green", on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
+                className={cx("inline-flex min-h-11 items-center gap-1.5 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green", on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
                 {label}<span className={cx("tabular-nums", on ? "text-ch-white/80" : "text-ch-muted")}>{count}</span>
               </button>
             );
@@ -156,7 +157,7 @@ function Queue({ home }: { home: string }) {
       {notReady > 0 && (
         <section aria-labelledby="why-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
           <div className="border-b border-ch-line px-4 py-3 sm:px-5">
-            <h2 id="why-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Why maps need a look</h2>
+            <h3 id="why-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Why maps need a look</h3>
             <p className="text-[13.5px] text-ch-muted">Of the {notReady} that aren’t ready. One map can have several reasons.</p>
           </div>
           <ul className="grid gap-y-2.5 p-4 sm:p-5">
@@ -196,7 +197,7 @@ function CrossCheck() {
   return (
     <section aria-labelledby="cross-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
       <div className="border-b border-ch-line px-4 py-3 sm:px-5">
-        <h2 id="cross-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Did the check get it right?</h2>
+        <h3 id="cross-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Did the check get it right?</h3>
         <p className="text-[13.5px] text-ch-muted">Each verdict against a first look over the aerial photo. “Roads incomplete” maps are usable: sites are right, some roads are missing.</p>
       </div>
       <div className="overflow-x-auto">
@@ -354,10 +355,30 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
 
         <aside aria-label="Review" className="hidden gap-4 lg:sticky lg:top-6 lg:grid">
           {look && <FirstLookNote id={entry.id} />}
+          <FailingChecks checks={entry.checks} />
           {decisionBox}
         </aside>
       </div>
     </>
+  );
+}
+
+/** The checks that didn't pass, with their numbers, beside the photo they're judged against. */
+function FailingChecks({ checks }: { checks: QaCheck[] }) {
+  const failing = byResult(checks).filter((c) => c.result === "review" || c.result === "fail");
+  if (!failing.length) return null;
+  return (
+    <div className="rounded-ch-card border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5">
+      <p className="text-[13px] font-bold text-ch-ochre-ink">{failing.length === 1 ? "The check that didn’t pass" : `The ${failing.length} checks that didn’t pass`}</p>
+      <ul className="mt-1.5 grid gap-2">
+        {failing.map((c) => (
+          <li key={c.code} className="text-[14px] leading-snug text-ch-ink">
+            <span className="font-bold">{c.label}:</span> <span className="tabular-nums">{c.value}</span>
+            <span className="block text-[13px] text-ch-ink-2">Limit: {c.limit}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -367,7 +388,7 @@ function FirstLookNote({ id }: { id: string }) {
     <div className="rounded-ch-card bg-ch-shell px-4 py-3.5">
       <p className="text-[13px] font-bold text-ch-ink-2">First look over the aerial photo</p>
       <p className="mt-1 text-[15px] leading-snug text-ch-ink"><strong className="font-bold">{FIRST_LOOK_WORD[look.call]}.</strong> {look.note}</p>
-      <p className="mt-1.5 text-[13px] leading-snug text-ch-ink-2">By the session that built the sample, 2026-10-07. One look; your decision is separate.</p>
+      <p className="mt-1.5 text-[13px] leading-snug text-ch-ink-2">By the session that built the sample, Oct 7, 2026. One look; your decision is separate.</p>
     </div>
   );
 }
@@ -435,7 +456,12 @@ const RESULT: Record<QaCheck["result"], ReactNode> = {
   none: <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[13.5px] font-bold text-ch-muted"><span aria-hidden="true" className="inline-block w-4 text-center">–</span>Nothing to check</span>,
 };
 
-function Checks({ checks }: { checks: QaCheck[] }) {
+/** Failing checks first: the reason a map needs a look is the first row the eye reaches. */
+const RESULT_ORDER: QaCheck["result"][] = ["fail", "review", "pass", "none"];
+const byResult = (checks: QaCheck[]) => [...checks].sort((a, b) => RESULT_ORDER.indexOf(a.result) - RESULT_ORDER.indexOf(b.result));
+
+function Checks({ checks: raw }: { checks: QaCheck[] }) {
+  const checks = byResult(raw);
   return (
     <>
       {/* A phone gets a list, so every result stays in view; from sm, a table. */}
@@ -446,7 +472,8 @@ function Checks({ checks }: { checks: QaCheck[] }) {
               <span className="text-[14px] font-semibold text-ch-ink">{c.label}</span>
               <span className="shrink-0">{RESULT[c.result]}</span>
             </div>
-            <p className="text-[13.5px] text-ch-ink-2"><span className="tabular-nums text-ch-ink">{c.value}</span> <span className="text-ch-ink-2">(limit: {c.limit.charAt(0).toLowerCase() + c.limit.slice(1)})</span></p>
+            <p className="text-[13.5px] tabular-nums text-ch-ink">{c.value}</p>
+            <p className="text-[13px] text-ch-ink-2">Limit: {c.limit}</p>
           </li>
         ))}
       </ul>
