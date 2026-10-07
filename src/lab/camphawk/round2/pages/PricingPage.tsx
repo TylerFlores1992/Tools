@@ -16,7 +16,7 @@ import { ROUTES } from "../gates";
 import { A, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
-import { HOLD_MINUTES, LAUNCH_PRICING, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
+import { HOLD_STEPS, LAUNCH_PRICING, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
 // StorePaywall.tsx, RcHoldExplainer.tsx). The one place that sells. What it keeps on purpose:
@@ -118,7 +118,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       {error && <p role="alert" className="mt-4 text-[15px] font-bold text-ch-alert-deep">We couldn’t open checkout just now. Nothing was charged. Try again.</p>}
       {/* One block of terms under the plans (two uneven columns, one repeating the band, read as
           leftovers). */}
-      <div className="mx-auto mt-8 max-w-[64ch] text-center text-[16px] leading-relaxed text-ch-ink-2">
+      <div className="mx-auto mt-8 max-w-[64ch] text-[16px] leading-relaxed text-ch-ink-2 sm:text-center">
         <p className="font-bold text-ch-ink">Cancel any time. Live search keeps working either way.</p>
         <p className="mt-1.5">{LAUNCH_PRICING}</p>
         <p className="mt-1.5 text-[15px]">{foot}</p>
@@ -196,11 +196,11 @@ function AppPaywall({ store }: { store: Store }) {
 function HoldExplainer() {
   const steps = (
     <Steps steps={[
-      ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “Hold it for me” button."],
-      ["You tap it, or you don’t.", "Nothing happens unless you do. There is no standing setting for this, on purpose — holding a site takes it off the market for everyone else, and that is not a decision to make weeks in advance."],
-      ["At 8 AM we put it in a cart", "In seconds, before most people have found the page."],
-      ["We alert you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
-    ]} />
+      "Someone cancels, and the site waits for the next 8 AM release. There’s nothing to switch on.",
+      "You get an alert naming the site, the nights and the release time, with a “Hold it for me” button. Nothing happens unless you tap it: holding a site takes it off the market for everyone else, so there’s no standing setting for it.",
+      "Within seconds of the release, we put the site in a cart, before most people have found the page.",
+      "Open the claim link, sign in to ReserveCalifornia, and we hand it over. You do the booking and the paying; we never do either.",
+    ].map((body, i) => [`${HOLD_STEPS[i][0]}: ${HOLD_STEPS[i][1].toLowerCase()}`, body] as const)} />
   );
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">

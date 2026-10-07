@@ -11,7 +11,11 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const LAB = import.meta.dirname;
-const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+// One left-to-right pass, so whichever comment starts first wins: a "//" line holding "/**" (a glob
+// in a path) once opened a block that hid a hundred lines of code. Block comments keep their
+// newlines, so line numbers stay true.
+export const strip = (s: string) =>
+  s.replace(/\/\*[\s\S]*?\*\/|(^|[^:])\/\/.*$/gm, (m, pre: string | undefined) => (m.startsWith("/*") ? m.replace(/[^\n]/g, "") : pre ?? ""));
 
 const RULES: ReadonlyArray<readonly [string, RegExp]> = [
   ["&apos; (use ’)", /&apos;/],
@@ -28,6 +32,11 @@ function files(dir: string): string[] {
     return /\.tsx?$/.test(p) && !/\.test\./.test(p) ? [p] : [];
   });
 }
+
+test("comments are stripped without hiding code", () => {
+  assert.equal(strip("// see src/app/**, and\nconst a = 1; /* x\n y */ b"), "\nconst a = 1; \n b");
+  assert.equal(strip('const u = "https://x"; // note'), 'const u = "https://x"; ');
+});
 
 test("the detector catches each slip and passes the fixed forms", () => {
   const hit = (s: string) => RULES.some(([, re]) => re.test(s));

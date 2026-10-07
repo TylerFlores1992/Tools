@@ -196,7 +196,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
     <div className={cx("mt-3 rounded-ch-card border border-ch-line p-5", ready ? "bg-ch-card shadow-ch-card" : "bg-ch-paper")}>
       <div className="flex items-center gap-3">
         <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">2</span>
-        <p className="min-w-0 flex-1 text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 inline-flex items-center gap-1 align-middle text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
+        <p className="min-w-0 flex-1 text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="mt-0.5 flex items-center gap-1 text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
       </div>
       <p className="mt-3 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you’re signed in, tap <strong className="text-ch-ink">It’s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It’s mine — hand it over"}</button>}

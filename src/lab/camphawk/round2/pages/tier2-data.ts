@@ -30,3 +30,12 @@ export const inWords = (n: number) => WORDS[n] ?? n.toLocaleString("en-US");
 export const SOURCE_COUNT = DATA_SOURCES.length;
 /** The one way the lab names its sources in a sentence (round 12: four phrasings read as four counts). */
 export const SOURCES_LINE = `Recreation.gov, ReserveCalifornia and ${SOURCE_COUNT - 2} other sources in the US and Canada`;
+
+/** The 8 AM hold's four steps, when and what: the guide and Pricing tell the same story (round 12:
+    they told two, with different names). */
+export const HOLD_STEPS = [
+  ["Any day", "Watch the park"],
+  ["Night before", "We offer"],
+  ["8\u00a0AM", "We cart it"],
+  [`Within ${HOLD_MINUTES} min`, "You take it over"],
+] as const;

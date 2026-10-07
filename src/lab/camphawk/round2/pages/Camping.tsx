@@ -89,7 +89,7 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
         <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
             <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
-            {<span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
+            <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length} {g.campgrounds.length === 1 ? "campground" : "campgrounds"}</span>
           </h2>
           <ul className="mt-1">
             {g.campgrounds.map((n) => (
@@ -135,11 +135,12 @@ export function CampingHub() {
               <li key={h.slug}><Link href={withVisitor(`${ROUTES.camping}/${h.slug}`, visitor)} className="inline-flex min-h-11 items-center rounded-ch-chip border border-ch-line bg-ch-card px-4 text-[15px] font-bold text-ch-ink hover:border-ch-ink-2">{h.heading}</Link></li>
             ))}
           </ul>
-          <div className="mt-6 grid gap-3 lg:grid-cols-2">
+          <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
+          {/* After the list, not before it: on a phone they pushed Alabama a screen down (round 12). */}
+          <div className="mt-8 grid gap-3 lg:grid-cols-2">
             <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Chasing somewhere that is never available? <A href={ROUTES.hardest} visitor={visitor}>The campgrounds that are always booked</A> covers Yosemite, Zion, Acadia and {extraParks} more parks whose sites go in minutes — and how a cancellation is the realistic way in.</p>
             <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Already found it booked out? <A href={ROUTES.soldOut} visitor={visitor}>What actually works when a campground is sold out</A>, and <A href={ROUTES.alerts} visitor={visitor}>how campsite cancellation alerts work</A> — including the free options worth checking first.</p>
           </div>
-          <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
             <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] text-ch-forest">Camping in Canada</h2>
             <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada’s 13 provinces and territories — Parks Canada’s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
@@ -320,7 +321,7 @@ export function HardestToBook() {
             {HARD_TO_BOOK.map((p) => (
               <li key={p.park} className="grid gap-x-8 gap-y-1 border-b border-ch-line py-3.5 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline">
                 <h2 className="font-ch-display text-[17px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
-                <ul className="flex flex-wrap gap-x-5">
+                <ul className="grid sm:flex sm:flex-wrap sm:gap-x-5">
                   {p.campgrounds.map((n) => (
                     <li key={n}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
                   ))}

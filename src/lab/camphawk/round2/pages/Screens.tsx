@@ -77,7 +77,7 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
 export function Screens() {
   return (
     <LabPage page="All screens" title="Every screen in the lab" dock={false} wide
-      sub={`CampHawk in the Golden hour look: ${SCREEN_GROUPS.reduce((n, g) => n + g.items.length, 0)} screens, mockups only. "View as" in the bar above carries across every link.`}>
+      sub={`CampHawk in the Golden hour look: ${SCREEN_GROUPS.reduce((n, g) => n + g.items.length, 0)} screens, mockups only. “View as” in the bar above carries across every link.`}>
       {({ visitor }) => (
         <div className="grid gap-12">
           {SCREEN_GROUPS.map((g) => (

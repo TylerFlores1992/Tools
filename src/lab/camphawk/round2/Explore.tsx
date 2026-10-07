@@ -496,7 +496,9 @@ export function Explore() {
             {error && <p role="alert" className="mt-3 rounded-ch-input bg-ch-alert-soft px-3 py-2.5 text-[14px] leading-relaxed text-ch-alert-deep">{error}</p>}
           </form>
 
-          <section aria-label="Results" aria-busy={loading} className="min-w-0 lg:pt-[calc(var(--gh-dock)+24px)]">
+          {/* Results start on paper, under the band; the first-run card is a card, so it docks across
+              the band's edge level with the search card (round 12: it sat 110px lower, by accident). */}
+          <section aria-label="Results" aria-busy={loading} className={cx("min-w-0", (results !== null || loading) && "lg:pt-[calc(var(--gh-dock)+24px)]")}>
             {/* One short line is announced, not every card in the list. */}
             <p role="status" className="sr-only">{loading ? "Searching…" : results === null || !searched ? "" : openCount > 0 ? `${results.length} campgrounds, ${openCount} with openings` : `${results.length} campgrounds, none with openings for those dates`}</p>
             {(results !== null || loading) && <StatusBox visitor={visitor} />}
