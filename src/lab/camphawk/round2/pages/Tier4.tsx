@@ -3,7 +3,9 @@
 import type { ReactNode } from "react";
 import { ART } from "../Art";
 import { ROUTES } from "../gates";
-import { A, Callout, H2, LabPage, P, Prose, Ul } from "../LabPage";
+import { A, Callout, H2, LabNote, LabPage, P, Prose, Ul, WithRail } from "../LabPage";
+import { COVERAGE } from "./camping-data";
+import { SOURCE_COUNT } from "./tier2-data";
 import { SmsAlerts } from "../SmsAlerts";
 import { ADDITIONAL_PORTALS, AFFILIATION_DISCLAIMER, DATA_SOURCES } from "./sources-data";
 import type { Visitor } from "../../data";
@@ -54,31 +56,31 @@ function Sections({ sections, aside }: { sections: ReadonlyArray<{ id: string; t
 function supportSections(visitor: Visitor) {
   return [
     { id: "what", title: "What CampHawk does", body: <P>Searching live campground availability is free and needs no account. If the dates you want are already booked, you can set a <strong className="font-bold text-ch-ink">watch</strong>: we check that campground every 15 seconds, around the clock, and alert you the moment someone cancels — usually within seconds. You book on the official reservation site; CampHawk is not affiliated with Recreation.gov, ReserveCalifornia, or any state park system.</P> },
-    { id: "no-alert", title: "I didn't get an alert", body: <>
-      <P>Work down this list — it is almost always one of these:</P>
+    { id: "no-alert", title: "I didn’t get an alert", body: <>
+      <P>Work down this list — it’s almost always one of these:</P>
       <Ul items={[
-        <><strong className="font-bold text-ch-ink">Check the watch is still active.</strong> Open <A href={ROUTES.watches} visitor={visitor}>Watches</A>. A watch that was stopped, or that has passed its dates, no longer checks anything.</>,
+        <><strong className="font-bold text-ch-ink">Check the watch is still active.</strong> Open <A href={ROUTES.watches} visitor={visitor}>Watches</A>. A paused watch, or one past its dates, no longer checks anything.</>,
         <><strong className="font-bold text-ch-ink">Check your email spam folder.</strong> Email alerts always send; they occasionally get filtered. Add our sending address to your contacts.</>,
         <><strong className="font-bold text-ch-ink">Text alerts need your number saved.</strong> <A href={ROUTES.settings} visitor={visitor}>Settings</A> → How we reach you. Entering the number and agreeing to the consent box is what turns texts on; nothing else does.</>,
-        <><strong className="font-bold text-ch-ink">Push needs permission.</strong> In the app, check CampHawk is allowed to send notifications in your phone&apos;s settings. We only ask after your first watch exists, so it is easy to have never been asked.</>,
-        <><strong className="font-bold text-ch-ink">Nobody canceled.</strong> The unglamorous answer. A popular weekend can go its whole run with no cancellation — we alert when one happens, we can&apos;t make one happen.</>,
+        <><strong className="font-bold text-ch-ink">Push needs permission.</strong> In the app, check CampHawk is allowed to send notifications in your phone’s settings. We only ask after your first watch exists, so it’s easy never to have been asked.</>,
+        <><strong className="font-bold text-ch-ink">Nobody canceled.</strong> The unglamorous answer. A popular weekend can go its whole run with no cancellation — we alert when one happens, we can’t make one happen.</>,
       ]} />
       <P>If none of that explains it, email us with the campground and dates and we will look at the actual alert log for your watch.</P>
     </> },
-    { id: "texts", title: "Text messages", body: <P>Texts are optional and always have been — you are never required to give a number to use CampHawk. Turn them on in Settings by entering your number and agreeing to the consent box, and off again with <strong className="font-bold text-ch-ink">Turn off</strong> beside your number. Reply <strong className="font-bold text-ch-ink">STOP</strong> to any message to stop them immediately. Message and data rates may apply.</P> },
-    { id: "auto-cart", title: "Auto-cart (Recreation.gov only)", body: <><P>For Recreation.gov campgrounds we can add an opening straight to your cart, so you only have to check out. It works only there, because other reservation systems tie the cart to a browser session that can&apos;t reach your phone. You connect your Recreation.gov login once; those credentials are stored encrypted on a private machine we run and <strong className="font-bold text-ch-ink">never reach CampHawk&apos;s web servers or database</strong>. You can turn auto-cart off at any time in Settings.</P><P>ReserveCalifornia gets something different: an 8 AM hold, where we cart a released site and hand it to you. It&apos;s invite-only for now; <A href={ROUTES.autoCart} visitor={visitor}>how holds work</A>.</P></> },
+    { id: "texts", title: "Text messages", body: <P>Texts are optional and always have been — you’re never required to give a number to use CampHawk. Turn them on in Settings by entering your number and agreeing to the consent box, and off again with <strong className="font-bold text-ch-ink">Turn off</strong> beside your number. Reply <strong className="font-bold text-ch-ink">STOP</strong> to any message to stop them immediately. Message and data rates may apply.</P> },
+    { id: "auto-cart", title: "Auto-cart and 8 AM holds", body: <><P>For Recreation.gov campgrounds we can add an opening straight to your cart, so you only have to check out. It works only there, because other reservation systems tie the cart to a browser session that can’t reach your phone. You connect your Recreation.gov login once; those credentials are stored encrypted on a private machine we run and <strong className="font-bold text-ch-ink">never reach CampHawk’s web servers or database</strong>. You can turn auto-cart off at any time in Settings.</P><P>ReserveCalifornia gets something different: an 8 AM hold, where we cart a released site and hand it to you. It’s invite-only for now; <A href={ROUTES.autoCart} visitor={visitor}>how holds work</A>.</P></> },
     { id: "subscription", title: "Managing your subscription", body: <>
-      <P>Searching is free forever. Watching a booked campground, text alerts and auto-cart come with a subscription. <strong className="font-bold text-ch-ink">Where you manage it depends on where you started it.</strong></P>
+      <P>Searching is free forever. Watching a booked campground and auto-cart come with a subscription. In the app it works without an account, with alerts as notifications; a free account adds email and text. <strong className="font-bold text-ch-ink">Where you manage it depends on where you started it.</strong></P>
       <Ul items={[
-        <>Started on <A href={ROUTES.home} visitor={visitor}>camphawk.app</A>: open Settings → Subscription → Manage billing, on the website or in the app.</>,
+        <>Started on <A href={ROUTES.home} visitor={visitor}>camphawk.app</A>: open Settings → Subscription → Manage subscription, on the website or in the app.</>,
         // Hidden inside the iPhone app (Apple 2.3.10: no naming other mobile platforms).
         ...(visitor === "app" ? [] : [<>Started inside the <strong className="font-bold text-ch-ink">Android app</strong>: Google Play holds it. Settings → Subscription in the app opens Play for you, or go to the Play Store → Payments and subscriptions.</>]),
         <>Started inside the <strong className="font-bold text-ch-ink">iPhone app</strong>: Apple holds it. Settings → Subscription in the app opens the App Store for you, or go to Settings → your name → Subscriptions on the phone.</>,
       ]} />
-      <P>Canceling stops future charges whichever of the three it is, and you keep access until the period you have already paid for ends. If you are not sure which one you have, email us and we will look it up.</P>
+      <P>Canceling stops future charges whichever of the three it is, and you keep access until the period you have already paid for ends. If you’re not sure which one you have, email us and we’ll look it up.</P>
     </> },
-    { id: "delete", title: "Deleting your account", body: <P>Settings → <strong className="font-bold text-ch-ink">Delete account</strong>. This removes your watches, alert history and saved campgrounds permanently, and it cannot be undone. If you have a subscription it is <strong className="font-bold text-ch-ink">canceled immediately</strong> — you will not be charged again, and the remainder of the period you have already paid for is not refunded. Delete the account only when that is what you want; to simply stop paying, cancel from wherever your subscription is managed (above) and keep your watches.</P> },
-    { id: "where", title: "Where CampHawk works", body: <P>Every Recreation.gov campground in all 50 states, plus state parks in 34 states across the ReserveCalifornia/UseDirect, ReserveAmerica, GoingToCamp and Tennessee/South Carolina systems. In Canada: Parks Canada, and the provincial and territorial parks of Ontario, British Columbia, Manitoba, Nova Scotia, Newfoundland and Labrador, Yukon and the Northwest Territories. If a campground you want is missing, email us — adding a system is work we do based on what people ask for.</P> },
+    { id: "delete", title: "Deleting your account", body: <P>Settings → <strong className="font-bold text-ch-ink">Delete account</strong>. This removes your watches, alert history and saved campgrounds permanently, and it can’t be undone. A subscription billed by CampHawk on camphawk.app is <strong className="font-bold text-ch-ink">canceled immediately</strong>; one bought in the App Store or Google Play is not, so cancel it there first. Either way, the rest of a period you have already paid for is not refunded. Delete the account only when that is what you want; to simply stop paying, cancel from wherever your subscription is managed (above) and keep your watches.</P> },
+    { id: "where", title: "Where CampHawk works", body: <P>Every Recreation.gov campground in all 50 states, state parks in {COVERAGE.stateParkStates} states, and in Canada, Parks Canada plus the provincial and territorial parks of Ontario, British Columbia, Manitoba, Nova Scotia, Newfoundland and Labrador, Yukon and the Northwest Territories. That’s {SOURCE_COUNT} official sources in all, each named on our <A href={ROUTES.sources} visitor={visitor}>data sources</A> page. If a campground you want is missing, email us — adding a system is work we do based on what people ask for.</P> },
     { id: "contact", title: "Contact", body: <P><Mail />. Also see our <A href={ROUTES.terms} visitor={visitor}>Terms</A> and <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>.</P> },
   ];
 }
@@ -96,38 +98,44 @@ export function Support() {
 
 export function Sources() {
   return (
-    <LabPage page="Data sources" title="Where CampHawk's information comes from" dock={false} wide photo={{ art: ART.c1, pos: "60% 60%", posLg: "50% 55%" }}>
+    <LabPage page="Data sources" title="Where CampHawk’s information comes from" dock={false} wide photo={{ art: ART.c1, pos: "60% 60%", posLg: "50% 55%" }}>
       {() => (
-        <Prose className="max-w-[80ch]">
+        <WithRail toc={[["how", "How the data is obtained"], ["official", "Official sources"], ["portals", "Additional portals"], ["accuracy", "Accuracy"], ["questions", "Questions"]]}>
+        <Prose>
           {/* First and unmissable: Google Play rejected the listing when this sat at the bottom. */}
           <Callout title="CampHawk is not a government app." className="mt-0 border-ch-ink-2">{AFFILIATION_DISCLAIMER}</Callout>
-          <H2 className="mt-12">How the data is obtained</H2>
-          <P>CampHawk does not create campground or availability information. It reads what the official reservation systems below publish, and shows it to you unchanged. When a campsite opens up, CampHawk sends you to that same official site to book it — every reservation, payment and cancellation happens there, under that agency&apos;s terms, not CampHawk&apos;s.</P>
-          <H2>Official sources</H2>
-          <ul className="mt-5 grid gap-3">
+          <H2 id="how" className="mt-12">How the data is obtained</H2>
+          <P>CampHawk does not create campground or availability information. It reads what the official reservation systems below publish, and shows it to you unchanged. When a campsite opens up, CampHawk sends you to that same official site to book it — every reservation, payment and cancellation happens there, under that agency’s terms, not CampHawk’s.</P>
+          <H2 id="official">Official sources</H2>
+          {/* One compact list, the same rows as the portals below (round 12: 14 padded cards made the
+              longest page in the lab for the least information). */}
+          <ul className="mt-5 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {DATA_SOURCES.map((s) => (
-              <li key={s.key} className="rounded-ch-card border border-ch-line bg-ch-card px-5 py-4 shadow-ch-card">
-                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[17px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                <p className="mt-1 text-[15px] text-ch-ink-2">{s.coverage}</p>
-                <p className="mt-1 break-all text-[14px] text-ch-muted">{s.url}</p>
+              <li key={s.key} className="px-5 py-3.5">
+                <span className="grid gap-0.5 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
+                  <span className="text-[14px] text-ch-muted [overflow-wrap:anywhere] sm:shrink-0 sm:whitespace-nowrap">{s.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+                </span>
+                <span className="mt-0.5 block text-[15px] text-ch-ink-2">{s.coverage}</span>
               </li>
             ))}
           </ul>
-          <H2>Additional official portals</H2>
+          <H2 id="portals">Additional official portals</H2>
           <P>Some of the sources above serve more than one state or province, or publish through a separate open-data service. Those portals are:</P>
           <ul className="mt-4 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {ADDITIONAL_PORTALS.map((p) => (
-              <li key={p.url} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3">
+              <li key={p.url} className="grid gap-0.5 px-5 py-3 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
                 <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{p.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                <span className="break-all text-[14px] text-ch-muted">{p.url}</span>
+                <span className="text-[14px] text-ch-muted [overflow-wrap:anywhere] sm:shrink-0 sm:whitespace-nowrap">{p.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
               </li>
             ))}
           </ul>
-          <H2>Accuracy</H2>
+          <H2 id="accuracy">Accuracy</H2>
           <P>Availability changes constantly and CampHawk can only report what a reservation system told it at the time it last checked. The official site linked from every campground page and every alert is always the authority. If the two disagree, the official site is correct.</P>
-          <H2>Questions</H2>
+          <H2 id="questions">Questions</H2>
           <P>Email <Mail /> and a human will answer.</P>
         </Prose>
+        </WithRail>
       )}
     </LabPage>
   );
@@ -184,17 +192,19 @@ const PRIVACY = (visitor: Visitor) => [
 
 const TERMS = (visitor: Visitor) => [
   { id: "service", title: "The service", body: <P>CampHawk (camphawk.app) helps you find campsite availability across US public lands, US state parks, and national, provincial and territorial parks in Canada, and alerts you by email and (optionally) text message when a campground you watch becomes available. CampHawk is not affiliated with Recreation.gov, ReserveCalifornia, the National Park Service, Parks Canada, or any state, provincial or territorial park agency. All bookings happen on the official reservation sites.</P> },
-  { id: "guarantees", title: "No guarantees", body: <P>Availability data comes from third-party reservation systems and can change at any moment. Alerts are best-effort: a site may already be taken by the time you act, and we cannot guarantee delivery timing of any notification. CampHawk is provided &quot;as is&quot; without warranties of any kind.</P> },
+  { id: "guarantees", title: "No guarantees", body: <P>Availability data comes from third-party reservation systems and can change at any moment. Alerts are best-effort: a site may already be taken by the time you act, and we cannot guarantee delivery timing of any notification. CampHawk is provided “as is” without warranties of any kind.</P> },
   { id: "texts", title: "Text alerts", body: <P>Text alerts are <strong className="font-bold text-ch-ink">optional and separate from these Terms</strong> — agreeing to this Terms of Service does <strong className="font-bold text-ch-ink">not</strong> opt you into text messages, and SMS consent is never required to create an account, subscribe, or use any CampHawk feature. You opt in only by deliberately entering your number and checking the consent box in your account settings. Message frequency varies with campsite availability. Message and data rates may apply. Reply STOP to opt out or HELP for help. See our <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A> for how your number is handled.</P> },
-  { id: "subscriptions", title: "Subscriptions", body: <P>Some features require a paid subscription, billed through Stripe. You can cancel any time via the &quot;Manage subscription&quot; option; access continues through the end of the paid period.</P> },
-  { id: "use", title: "Acceptable use", body: <P>Don&apos;t abuse the service, attempt to disrupt it, or use it to violate the terms of the underlying reservation systems.</P> },
+  { id: "subscriptions", title: "Subscriptions", body: <P>Some features require a paid subscription, billed through Stripe. You can cancel any time via the “Manage subscription” option; access continues through the end of the paid period.</P> },
+  { id: "use", title: "Acceptable use", body: <P>Don’t abuse the service, attempt to disrupt it, or use it to violate the terms of the underlying reservation systems.</P> },
   { id: "contact", title: "Contact", body: <P>Questions: <Mail /></P> },
 ];
 
 export function Privacy() {
   return (
     <LabPage page="Privacy" title="CampHawk Privacy Policy" sub="Last updated: October 5, 2026" dock={false} wide>
-      {({ visitor }) => <Sections sections={PRIVACY(visitor)} />}
+      {/* CampHawk's published policy, word for word; the note flags what it says that the product
+          doesn't (round 14). For the owner, not for this lab to reword. */}
+      {({ visitor }) => <Sections sections={PRIVACY(visitor)} aside={<LabNote className="mt-4">CampHawk’s published text, as is. Two gaps for the owner: it says email alerts can be turned off (Settings has email always on), and it doesn’t mention the saved Recreation.gov login that auto-cart keeps.</LabNote>} />}
     </LabPage>
   );
 }
@@ -202,7 +212,7 @@ export function Privacy() {
 export function Terms() {
   return (
     <LabPage page="Terms" title="CampHawk Terms of Service" sub="Last updated: September 30, 2026" dock={false} wide>
-      {({ visitor }) => <Sections sections={TERMS(visitor)} aside={<p className="mt-4 border-t border-ch-line pt-3 text-[13px] leading-relaxed text-ch-ink-2">CampHawk&apos;s published text, as is. Its billing line predates app-store billing (see Support).</p>} />}
+      {({ visitor }) => <Sections sections={TERMS(visitor)} aside={<LabNote className="mt-4">CampHawk’s published text, as is. Its billing line predates app-store billing (see Support).</LabNote>} />}
     </LabPage>
   );
 }

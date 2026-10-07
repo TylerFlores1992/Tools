@@ -1,15 +1,15 @@
 // Example data for the "after an alert" screens (Tier 1). Same story as the rest of the lab:
 // today is Mon, Jul 6, 2026. Upper Pines (Recreation.gov) has site 042 open for Jul 18-21 and
-// in your cart; Leo Carrillo (ReserveCalifornia) releases canceled sites at 8 AM tomorrow, with
+// in your cart; Leo Carrillo (ReserveCalifornia) releases canceled sites at 8 AM tomorrow, with
 // one hold queued and two offered. Nothing here is live.
 //
-// Release times: CampHawk writes one 8am release three ways ("8 AM", "Sep 4 at 08:00 PT",
+// Release times: CampHawk writes one 8am release three ways ("8 AM", "Sep 4 at 08:00 PT",
 // "2026-09-04 08:00"). The lab says it one way everywhere: releaseShort / releaseLong.
 
 export const RELEASE = { date: "2026-07-07", time: "08:00" };
-export const releaseShort = () => "8 AM";
-export const releaseLong = () => "Tue, Jul 7 at 8 AM PT";
-export const releaseTomorrow = () => "tomorrow at 8 AM";
+export const releaseShort = () => "8 AM";
+export const releaseLong = () => "Tue, Jul 7 at 8 AM PT";
+export const releaseTomorrow = () => "tomorrow at 8 AM";
 
 export type ManageWatch = {
   id: string;
@@ -44,12 +44,12 @@ export const MANAGE: Record<"upper-pines" | "leo", ManageWatch> = {
     requested: [],
     offered: [],
     alerts: [
-      { when: "Jul 6, 6:02 AM", channel: "Text", site: "Site 042" },
-      { when: "Jul 6, 6:02 AM", channel: "Email", site: "Site 042" },
-      { when: "Jul 2, 11:48 PM", channel: "App notification", failed: true },
+      { when: "Jul 6, 6:02 AM", channel: "Text", site: "Site 042" },
+      { when: "Jul 6, 6:02 AM", channel: "Email", site: "Site 042" },
+      { when: "Jul 2, 11:48 PM", channel: "App notification", failed: true },
     ],
     sites: [
-      { id: "042", name: "Site 042", note: "open now · Loop A, tent only", alerted: true },
+      { id: "042", name: "Site 042", note: "Loop A, tent only, open now", alerted: true },
       { id: "009", name: "Site 009", note: "Loop A, tent only" },
       { id: "063", name: "Site 063", note: "Loop B, standard nonelectric" },
       { id: "088", name: "Site 088", note: "Loop B, standard nonelectric" },
@@ -71,17 +71,17 @@ export const MANAGE: Record<"upper-pines" | "leo", ManageWatch> = {
     autoCart: false,
     muted: 0,
     open: [],
-    requested: [{ unit: "Site 042", release: "8 AM", stay: "Aug 8–10 · 2 nights" }],
+    requested: [{ unit: "Site 046", release: "8 AM", stay: "Aug 8–10, 2 nights" }],
     offered: [
       { unit: "Site 017", nights: 2, from: "Aug 1" },
       { unit: "Site B12", nights: 2, from: "Aug 8" },
     ],
-    alerts: [{ when: "Jun 28, 7:15 AM", channel: "Email", site: "Site 031" }],
+    alerts: [{ when: "Jun 28, 7:15 AM", channel: "Email", site: "Site 031" }],
     sites: [
       { id: "017", name: "Site 017", note: "Canyon Campground (sites 1⁠–⁠24)" },
       { id: "021", name: "Site 021", note: "Canyon Campground (sites 1⁠–⁠24)" },
-      { id: "031", name: "Site 031", note: "Canyon Campground (sites 25⁠–⁠77) · alerted before", alerted: true },
-      { id: "042", name: "Site 042", note: "Canyon Campground (sites 25⁠–⁠77)" },
+      { id: "031", name: "Site 031", note: "Canyon Campground (sites 25⁠–⁠77), alerted before", alerted: true },
+      { id: "046", name: "Site 046", note: "Canyon Campground (sites 25⁠–⁠77)" },
       { id: "B12", name: "Site B12", note: "Beach Campground" },
       { id: "B20", name: "Site B20", note: "Beach Campground" },
     ],
@@ -99,7 +99,7 @@ export const HOLD = {
 
 /** The site the bot has in its ReserveCalifornia cart (ClaimFlow). */
 export const CLAIM = {
-  unit: "Site 042",
+  unit: "Site 046",
   place: "Leo Carrillo State Park — Canyon Campground (sites 25⁠–⁠77)",
   stay: "Aug 8–10",
   nights: 2,

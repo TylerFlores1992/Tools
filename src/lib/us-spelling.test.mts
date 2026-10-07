@@ -8,9 +8,12 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const SRC = join(import.meta.dirname, "..");
-const BRITISH = /\b(colours?|favourite|behaviour|centre|metre(?!s? per)|organis(e|ed|ing|ation)|recognis(e|ed)|analys(e|ed)|licence|catalogue|grey|travelled|cancelled|cancelling|practise|maths)\b/i;
+const BRITISH = /\b(colours?|favourite|behaviour|centre|metre(?!s? per)|organis(e|ed|ing|ation)|recognis(e|ed)|analys(e|ed)|licence|catalogue|grey|travelled|cancelled|cancelling|practise|maths|tick the box)\b/i;
 
-const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+// One left-to-right pass: whichever comment starts first wins (a "//" line holding a "/**" glob
+// once opened a block that hid real copy from the scan; see the CampHawk typography test).
+const strip = (s: string) =>
+  s.replace(/\/\*[\s\S]*?\*\/|(^|[^:])\/\/.*$/gm, (m, pre: string | undefined) => (m.startsWith("/*") ? m.replace(/[^\n]/g, "") : pre ?? ""));
 
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((e) => {
@@ -23,6 +26,7 @@ function files(dir: string): string[] {
 test("the detector catches British spellings and ignores US ones", () => {
   assert.ok(BRITISH.test("the colour of"));
   assert.ok(BRITISH.test("do the maths"));
+  assert.ok(BRITISH.test("Tick the box above"), "US forms say check the box");
   assert.ok(!BRITISH.test("the color of the math"));
 });
 

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { buttonClasses } from "../../ui";
 import { LabBar } from "../../LabBar";
 import { LabSelect } from "../AppParts";
@@ -46,19 +45,20 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
       <div className="max-w-[34rem]">
         <div className="flex justify-center"><Badge /></div>
         <h1 className="mt-6 text-balance font-ch-display text-[clamp(32px,5vw,48px)] font-extrabold leading-tight tracking-[-.02em] text-ch-paper">
-          {notFound ? "This trail doesn't lead anywhere" : "Something went wrong"}
+          {notFound ? "This trail doesn’t lead anywhere" : "Something went wrong"}
         </h1>
         <p className="mt-3 text-[17px] leading-relaxed text-ch-line">
           {notFound
-            ? "The page you're looking for may have moved or never existed."
+            ? "The page you’re looking for may have moved or never existed."
             : <>We hit an unexpected error. Try again — if it keeps happening, email <a href="mailto:alerts@camphawk.app" className="font-bold text-ch-paper underline underline-offset-[3px]">alerts@camphawk.app</a>.</>}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {/* A way back into the product, not just home (the lab bar's "All screens" covers the lab). */}
+          {notFound && <a href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ className: "px-6" })}>Search campgrounds</a>}
           {!notFound && <button type="button" onClick={() => window.location.reload()} className={buttonClasses({ variant: "quiet", className: "px-6" })}>Try again</button>}
           {/* A hard navigation on purpose: when the client has failed, the router may be what broke. */}
           <a href={withVisitor(ROUTES.home, visitor)} className={buttonClasses({ variant: "quiet", className: "px-6" })}>{notFound ? "Back to home" : "Home"}</a>
         </div>
-        {notFound && <p className="mt-6 text-[14px] text-ch-line">Or see <Link href={withVisitor(ROUTES.screens, visitor)} className="font-bold text-ch-paper underline underline-offset-[3px]">every screen in the lab</Link>.</p>}
       </div>
     </div>
   );

@@ -388,6 +388,9 @@ html:has(.gh) { background: var(--color-ch-forest); }
  * Scrims and crops for the art, and one motion moment each. Hues only from ch-* tokens.
  */
 .gh { --gh-max: 1320px; /* How far a screen's first card rises into the forest band above it. */ --gh-dock: clamp(40px, 6vw, 88px); }
+/* Short pages (a signed-out gate) keep the footer on the floor instead of mid-screen over paper. */
+.gh { display: flex; flex-direction: column; min-height: 100dvh; }
+.gh > main { flex: 1 0 auto; }
 /* `.camphawk h1` points at --font-ch-display, which `@theme inline` never emits, so lab headings
    fall back to the body face. Round 2 names Bitter directly. (Current is left as ported.) */
 .gh :is(h1, h2, h3), .tp :is(h1, h2, h3) { font-family: var(--font-bitter), Georgia, serif; }
@@ -435,11 +438,13 @@ html:has(.gh) { background: var(--color-ch-forest); }
 @media (min-width: 1024px) { .gh-app-photo { object-position: var(--gh-pos-lg, 50% 62%); } }
 /* Their scrim: peaks and lights can sit behind the header and the headline, so the top and the
    left stay dark at every width (measured on rendered pixels, 2026-10-06). */
+/* Phones: the lede sits low in the band, often over the photo's one warm light (tents, a lantern),
+   so the scrim stays strong further down than it did (round 10). */
 .gh-app-scrim {
   background: linear-gradient(to bottom,
-    color-mix(in srgb, var(--color-ch-forest) 86%, transparent) 0%,
-    color-mix(in srgb, var(--color-ch-forest) 74%, transparent) 55%,
-    color-mix(in srgb, var(--color-ch-forest) 35%, transparent) 100%);
+    color-mix(in srgb, var(--color-ch-forest) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-ch-forest) 80%, transparent) 60%,
+    color-mix(in srgb, var(--color-ch-forest) 55%, transparent) 100%);
 }
 @media (min-width: 1024px) {
   .gh-app-scrim {
@@ -448,7 +453,7 @@ html:has(.gh) { background: var(--color-ch-forest); }
         color-mix(in srgb, var(--color-ch-forest) 85%, transparent) 0%,
         color-mix(in srgb, var(--color-ch-forest) 65%, transparent) 36%,
         transparent 62%),
-      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 60%, transparent) 0%, transparent 28%);
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ch-forest) 72%, transparent) 0%, color-mix(in srgb, var(--color-ch-forest) 40%, transparent) 16%, transparent 32%);
   }
 }
 /* Explore's map pins (ResultsMap's shapes): a teardrop pointing at the place. State is the shape
@@ -476,9 +481,10 @@ html:has(.gh) { background: var(--color-ch-forest); }
   scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
 }
 
-/* The alert card arrives once, a beat after the photo. */
-.gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
-@keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
+/* The alert card settles once, a beat after the photo. It is readable from the first frame:
+   only its position and shadow move, never its opacity (a slow device never shows a blank). */
+.gh-rise { animation: gh-rise 700ms var(--ease-out) 300ms backwards; }
+@keyframes gh-rise { from { transform: translateY(14px); box-shadow: none; } }
 
 .tp { position: relative; }
 /* A print: a paper mount and a soft wall shadow (shadow only; no frame line). */

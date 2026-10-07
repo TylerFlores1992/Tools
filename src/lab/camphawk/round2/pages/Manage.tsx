@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BellOff, ChevronLeft, ExternalLink } from "lucide-react";
+import { BellOff, CalendarDays, ChevronLeft, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Card } from "../../ui/Card";
@@ -22,7 +22,7 @@ import { MANAGE, releaseLong, releaseShort, type ManageWatch } from "./alert-dat
 // SiteMuteList.tsx). The token in the link is the credential, so a tapped alert opens it signed
 // out. What it keeps on purpose:
 // - "Open now" first, with when we last saw it: a last-seen record, not a live look.
-// - "Holds you asked for" above the offers: a commitment the bot acts on at 8 AM.
+// - "Holds you asked for" above the offers: a commitment the bot acts on at 8 AM.
 // - Offers read as offers, not availability ("open" would send someone to a site they can't take).
 // - A rejected date edit stays open with the reason, so the typed dates aren't lost.
 // - Remove is last, with an in-page confirm.
@@ -47,7 +47,7 @@ function MuteSites({ w }: { w: ManageWatch }) {
       <div className="mb-2 flex flex-wrap items-center gap-2">
         {toMute.length > 0 && <button type="button" onClick={() => set(toMute, true)} className={small}>Mute all {toMute.length}</button>}
         {toUnmute.length > 0 && <button type="button" onClick={() => set(toUnmute, false)} className={small}>Unmute all {toUnmute.length}</button>}
-        <span className="text-[13px] text-ch-ink-2">{muted.size ? `${muted.size} of ${w.sites.length} muted` : "Mute all, then unmute the few you'd take"}</span>
+        <span className="text-[13px] text-ch-ink-2">{muted.size ? `${muted.size} of ${w.sites.length} muted` : "Mute all, then unmute the few you’d take"}</span>
       </div>
       <ul className="max-h-[320px] overflow-y-auto overscroll-contain">
         {w.sites.map((s) => {
@@ -69,6 +69,11 @@ function MuteSites({ w }: { w: ManageWatch }) {
   );
 }
 
+/** "Aug 1" + 2 nights → "Aug 1–3", the stay format the offer page and the asked holds use. */
+const stayFrom = (from: string, nights: number) => { const [m, d] = from.split(" "); return `${m} ${d}–${Number(d) + nights}`; };
+
+const navLink = "inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
+
 export function Manage() {
   const [which, setWhich] = useUrlState<"upper-pines" | "leo">("watch", "upper-pines", ["upper-pines", "leo"]);
   const [link, setLink] = useUrlState<Link_>("link", "works", ["works", "expired", "fails"]);
@@ -77,12 +82,12 @@ export function Manage() {
     <LabPage
       page="Manage watch"
       tab="watches"
-      title={link === "works" ? w.name : "Can't open this watch"}
+      title={link === "works" ? w.name : "Can’t open this watch"}
       photo={which === "upper-pines" ? { art: ART.c1, pos: "60% 60%", posLg: "50% 55%" } : { art: ART.m1, pos: "28% 65%", posLg: "50% 62%" }}
       controls={() => (
         <>
           <LabSelect label="Example watch" short="Watch" value={which} onChange={setWhich} options={[["upper-pines", "Upper Pines (open now)"], ["leo", "Leo Carrillo (8am holds)"]]} />
-          <LabSelect label="Link" short="Link" value={link} onChange={setLink} options={[["works", "Works"], ["expired", "Expired"], ["fails", "Won't load"]]} />
+          <LabSelect label="Link" short="Link" value={link} onChange={setLink} options={[["works", "Works"], ["expired", "Expired"], ["fails", "Won’t load"]]} />
         </>
       )}
     >
@@ -114,14 +119,14 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
     return (
       <div className="rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
         <h2 className="font-ch-display text-[28px] font-extrabold text-ch-ink">Watch removed</h2>
-        <p className="mx-auto mt-2 max-w-[46ch] text-[17px] text-ch-ink-2">We&apos;ve stopped checking, and you won&apos;t get any more alerts for it.</p>
+        <p className="mx-auto mt-2 max-w-[46ch] text-[17px] text-ch-ink-2">We’ve stopped checking, and you won’t get any more alerts for it.</p>
         <Link href={back} className={buttonClasses({ variant: "quiet", className: "mt-5 px-5" })}>Back to watches</Link>
       </div>
     );
   }
 
   const nights = w.flexNights ?? nightsBetween(saved.start!, saved.end!);
-  const meta = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(" · ");
+  const meta = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.muted ? `${w.muted} sites muted` : null].filter(Boolean).join(", ");
   const saveDates = () => {
     if (!range.start || !range.end) return;
     setSaving(true);
@@ -131,7 +136,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       const n = nightsBetween(range.start!, range.end!);
       // CampHawk shows the API's raw string ("this watch is looking for 3 nights, which does not
       // fit in that window"); the lab says the same thing as a sentence.
-      if (w.flexNights && n < w.flexNights) { setError(`This watch is looking for ${w.flexNights} nights, which don't fit between those dates. Pick a wider window.`); return; }
+      if (w.flexNights && n < w.flexNights) { setError(`This watch is looking for ${w.flexNights} nights, which don’t fit between those dates. Pick a wider window.`); return; }
       if (!w.flexNights && n > 365) { setError("A watch can cover at most 365 days."); return; }
       setSaved(range);
       setEditing(false);
@@ -177,13 +182,18 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             </div>
           </div>
         )}
-        <div className="mt-5 flex flex-wrap gap-2 border-t border-ch-line pt-4">
-          <Link href={calendar} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Calendar</Link>
-          <a href="#" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
-          {!editing && <button ref={editTriggerRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
-          {active
-            ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
-            : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
+        {/* Actions on the watch are buttons; places to go are links, as on the Watches cards. */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-ch-line pt-4">
+          <span className="flex flex-wrap gap-2">
+            {!editing && <button ref={editTriggerRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
+            {active
+              ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
+              : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
+          </span>
+          <span className="flex flex-wrap gap-x-6 sm:ml-auto">
+            <Link href={calendar} className={navLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
+            <a href="#" className={navLink}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+          </span>
         </div>
       </Card>
       {error && <p role="alert" className="rounded-ch-input border border-ch-alert bg-ch-alert-soft px-4 py-3 text-[15px] text-ch-alert-deep">{error}</p>}
@@ -207,16 +217,16 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       )}
 
       {requested.length > 0 && (
-        <section aria-labelledby="grab" className="rounded-ch-card border border-l-4 border-ch-line border-l-ch-ochre bg-ch-card p-5 shadow-ch-card">
+        <section aria-labelledby="grab" className="rounded-ch-card border border-l-4 border-ch-line border-l-ch-ochre bg-ch-card py-5 pl-[17px] pr-5 shadow-ch-card">
           <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
           <ul className="mt-2 divide-y divide-ch-line">
             {requested.map((r) => (
-              <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+              <li key={r.unit} className="grid gap-2 py-3 sm:flex sm:items-center sm:gap-4">
                 <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">Asked</Tag></span>
-                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay} · releases {releaseLong()}</span>
+                  <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">8 AM hold</Tag></span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
-                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call off the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>
+                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Cancel hold: ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Cancel hold</button>
               </li>
             ))}
           </ul>
@@ -232,9 +242,9 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               <li key={o.unit} className="flex flex-wrap items-center gap-3 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-bold text-ch-ink">{o.unit}</span>
-                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{stayFrom(o.from, o.nights)}, {o.nights} nights, releases {releaseLong()}</span>
                 </span>
-                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
+                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it for me: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it for me</Link>
               </li>
             ))}
           </ul>
@@ -244,15 +254,15 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
       </div>
       {/* Wide screens: the watch and its sites on the left, the settings and history beside it. */}
-      <div className="grid content-start gap-5">
+      <div className="grid content-start gap-5 lg:sticky lg:top-6">
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
-        <Collapsible label="Alerts sent" summary={`${w.alerts.length} sent`}>
+        <Collapsible label="Alert history" summary={`${w.alerts.length} recent`}>
           <ul>
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">
                 <p className="text-[15px] font-bold text-ch-ink">{a.site ?? "A site opened up"}</p>
-                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ch-ink-2">{a.when} · {a.channel}{a.failed && <Tag kind="alert">Didn&apos;t go out</Tag>}</p>
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ch-ink-2">{a.when}, {a.channel}{a.failed && <Tag kind="alert">Didn’t go out</Tag>}</p>
               </li>
             ))}
           </ul>

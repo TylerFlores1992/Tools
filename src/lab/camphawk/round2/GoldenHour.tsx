@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BellRing, Check, Search } from "lucide-react";
+import { BellRing, Search, ShoppingCart } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
@@ -26,23 +26,26 @@ import { WatchProofs } from "./WatchProofs";
 
 // Round-2 copy edit: "any N nights" is system language; say it the camper's way. Current keeps
 // CampHawk's exact words (copy.ts).
-const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you're free", "or how many nights you need inside a window you're free")] as const);
+const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you’re free", "or how many nights you need inside a window you’re free")] as const);
 
-/** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
-function AlertCard({ compact }: { compact?: boolean }) {
+/** The proof on the photo: what an alert looks like. Labeled as an example; no real data. Welcome
+    shows it too (`cart` off for a plan without auto-cart). */
+export function AlertCard({ compact, cart = true, className }: { compact?: boolean; cart?: boolean; className?: string }) {
   return (
-    <figure className={cx("rounded-ch-card border-[1.5px] border-ch-green bg-ch-card text-ch-ink", compact ? "p-3.5" : "gh-rise w-[310px] p-4 shadow-ch-pop")}>
+    <figure className={cx("rounded-ch-card border-[1.5px] border-ch-green bg-ch-card text-ch-ink", compact ? "p-3.5" : "gh-rise w-[310px] p-4 shadow-ch-pop", className)}>
       <div className="flex items-center gap-2 text-[13px]">
         <Tag kind="open">Open</Tag>
         <span className="font-extrabold">A site just opened</span>
         <span className="ml-auto text-ch-muted tabular-nums">14 sec ago</span>
       </div>
-      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight tracking-[-.02em]" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight tracking-[-.02em]"}>Upper Pines, Site 042</p>
-      <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18-21, 3 nights.</p>
-      <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
-        <Check aria-hidden="true" className="size-4 shrink-0" />
-        In your Recreation.gov cart
-      </p>
+      <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight"}>Upper Pines, Site 042</p>
+      <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18–21, 3 nights.</p>
+      {cart && (
+        <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
+          <ShoppingCart aria-hidden="true" className="size-4 shrink-0" />
+          In your Recreation.gov cart
+        </p>
+      )}
       <figcaption className="mt-2 text-[13px] text-ch-muted">Example alert</figcaption>
     </figure>
   );
@@ -83,7 +86,7 @@ function SearchDock({ visitor }: { visitor: Visitor }) {
       </label>
       <button type="submit" className={buttonClasses({ className: "h-12 whitespace-nowrap px-6 text-[17px]" })}>
         <Search aria-hidden="true" className="size-4.5" />
-        Search campgrounds free
+        Search campgrounds
       </button>
     </form>
   );
@@ -95,20 +98,22 @@ function PhoneProof() {
     <div aria-label="Example: the alert on a phone, then the site in your cart" role="img" className="mx-auto w-[290px] rounded-[44px] bg-ch-ink p-2.5 shadow-ch-pop">
       <div className="overflow-hidden rounded-[36px] bg-ch-paper text-ch-ink">
         <div className="relative h-[230px] overflow-hidden">
-          <Art art={ART.a1} sizes="900px" className="absolute inset-0 size-full origin-[74%_88%] scale-[2.4] bg-ch-forest object-cover object-[74%_88%]" />
+          {/* A plain dusk wallpaper: a cropped photo put the clock on a bright tent peak on phones
+              and showed a different crop on desktop (round 7). */}
+          <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-ch-ink to-ch-forest" />
           <p className="relative pt-7 text-center font-ch-display text-[52px] font-bold leading-none text-ch-paper">6:02</p>
           <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-ch-card p-3 text-left">
             <p className="flex items-center gap-1.5 text-[13px] font-extrabold text-ch-muted">
               <BellRing aria-hidden="true" className="size-3.5" /> CampHawk <span className="ml-auto font-bold">now</span>
             </p>
-            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines is open for Jul 18-21. It&apos;s in your cart.</p>
+            <p className="mt-1 text-[13px] font-bold leading-snug text-ch-ink">Site 042 at Upper Pines is open for Jul 18–21. It’s in your cart.</p>
           </div>
         </div>
         <div className="space-y-2.5 p-4">
           <p className="text-[13px] font-extrabold text-ch-ink-2">Recreation.gov cart</p>
           <div className="rounded-[14px] border border-ch-line bg-ch-card p-3">
             <p className="font-ch-display text-[16px] font-extrabold">Upper Pines, Site 042</p>
-            <p className="text-[13px] text-ch-ink-2 tabular-nums">Jul 18-21, 3 nights</p>
+            <p className="text-[13px] text-ch-ink-2 tabular-nums">Jul 18–21, 3 nights</p>
             <p className="mt-2"><Tag kind="cart">In your cart</Tag></p>
           </div>
           <span className="flex min-h-10 items-center justify-center rounded-ch-btn bg-ch-blue text-[13px] font-bold text-ch-white">Check out</span>
@@ -147,7 +152,7 @@ export function GoldenHour() {
           </div>
           {/* Phones and tablets: search right under the intro, the tent in a window below it.
               Desktop: search docks across the photo's bottom edge. */}
-          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
+          <div className="relative mx-auto max-w-[var(--gh-max)] px-5 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
             <div className="lg:translate-y-1/2">
               <SearchDock visitor={visitor} />
             </div>
@@ -155,7 +160,7 @@ export function GoldenHour() {
         </section>
 
         <div className="bg-ch-paper pt-6 lg:pt-24">
-          <div className="mx-auto max-w-[var(--gh-max)] px-3 sm:px-8 lg:hidden">
+          <div className="mx-auto max-w-[var(--gh-max)] px-5 sm:px-8 lg:hidden">
             <AlertCard compact />
           </div>
           <p className="mx-auto mt-6 max-w-[var(--gh-max)] px-5 text-[16px] leading-relaxed text-ch-ink sm:px-8 lg:mt-0"><span className="block max-w-[64ch]">{COVERAGE_SENTENCE}</span></p>
@@ -180,7 +185,7 @@ export function GoldenHour() {
                   <li key={title} className="grid grid-cols-[48px_1fr] items-start gap-5">
                     <span className="grid size-12 place-items-center rounded-full border-2 border-ch-faint font-ch-display text-[22px] font-extrabold leading-none text-ch-paper tabular-nums">{i + 1}</span>
                     <div>
-                      <p className="pt-2.5 font-ch-display text-[22px] font-bold tracking-[-.015em]">{title}</p>
+                      <p className="pt-2.5 font-ch-display text-[22px] font-bold">{title}</p>
                       <p className="mt-1.5 max-w-[48ch] text-[16px] leading-relaxed text-ch-line">{body}</p>
                     </div>
                   </li>
@@ -199,7 +204,11 @@ export function GoldenHour() {
 
         <section className="bg-ch-paper">
           <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-3 px-5 py-[clamp(48px,6vw,72px)] sm:px-8 lg:grid-cols-2">
-            <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink lg:pt-3">What we don&apos;t do</h2>
+            {/* A lead under the heading, so the left column isn't one line beside a list. */}
+            <div className="lg:pt-3">
+              <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink">What we don’t do</h2>
+              <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you’re paying for before you pay.</p>
+            </div>
             <ul className="max-w-[64ch] border-t border-ch-line">
               {LIMITS.map((line) => (
                 <li key={line} className="border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2">{line}</li>
@@ -212,7 +221,7 @@ export function GoldenHour() {
           <Art art={ART.a4} sizes="100vw" className="absolute inset-0 -z-10 size-full object-cover object-[20%_60%]" />
           <div aria-hidden="true" className="gh-band-scrim absolute inset-0 -z-10" />
           <div className="mx-auto flex min-h-[min(64vh,600px)] max-w-[var(--gh-max)] flex-col items-start justify-start px-5 py-14 sm:px-8 md:items-end md:justify-center md:text-right">
-            <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">Start with a search. It&apos;s free.</h2>
+            <h2 className="max-w-[14ch] text-balance font-ch-display text-[clamp(36px,5vw,64px)] font-extrabold leading-[1] tracking-[-.03em] text-ch-paper">Start with a search. It’s free.</h2>
             <div className="mt-6 flex flex-wrap items-center gap-4 md:justify-end">
               <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>
                 <Search aria-hidden="true" className="size-4" />

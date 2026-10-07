@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word. ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
+*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 open for the owner's review. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
 
 ## At a glance
 
@@ -29,12 +29,39 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (126 tests) · `npm run e2e` (32 browser checks) ·
+**Checks, all green:** `npm run verify` (126 tests before this branch's new ones) · `npm run e2e` (32 browser checks; the lab's typography and US-spelling scans and the signed-out-tabs and first-run search checks are new on the CampHawk branch) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (27 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
+0. **CampHawk shirts: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
+   - **The art.** Still Water comes in two versions:
+     - giveaway: one ink on a natural shirt;
+     - owners: three inks on sage.
+     Both backs carry the camp (a tent and a campfire under the peak; critic 6 → 8/10). Both chest
+     prints are fixed: they had lost the C and the K.
+   - **The files.**
+     - Print files: `studio/camphawk-shirts/kit/` (an SVG per ink, plus 300 dpi PNGs).
+     - Kit page (mockups, a zip of all 12 files, order spec, printer table):
+       https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM. Emailed to the owner.
+   - **The decision so far.** Screen printing ($13.50–25 a shirt) was too high; the owner wants about
+     $10 at about 20 shirts. Recommended, and the owner is leaning to it: **DTF transfers pressed at
+     home.** The owner's wife has a heat press.
+     - Order one 22 in DTF gang sheet, about 20 ft: all backs plus chests, about $93–107 (DTF
+       Transfers Now or DTF Dallas).
+     - Blanks: Gildan 5000 Natural, $3.41 (Blankstyle).
+     - Total: about $8.30–9 a shirt.
+     - Printify (DTG, back only) is the fallback at about $10.50–11.
+     - Skip AliExpress: duty is now about 36% landed, plus quality risk.
+     - Skip Cricut vinyl (the hatching is too fine to weed) and sublimation (polyester only).
+     - Full comparison: the README's "Printers" and "About $10 a shirt" sections.
+   - **Next step (waiting on the owner):** how many shirts of each version, and the heat press size.
+     The back is 11.5 × 13 in, which fits a 15 × 15 press in one press; a 10 × 12 Cricut EasyPress
+     needs two. Then build the gang-sheet PNG: 22 in wide, 300 dpi, transparent, backs turned
+     sideways, chests in the strip beside them, from `kit/*_300dpi.png`.
+   - **Before the full run:** press one test shirt; the 1 mm gaps are at DTF's limit.
+   - Image credit used: $0.54 of the owner's $0.75 (AI Gateway balance $1.505).
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
@@ -45,6 +72,29 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    app too.
 
 ## Next up (in order)
+0. **CampHawk lab: rounds 6–17 on `ccr-c1332bd1-j9qtgp`** (in a PR for review; PR #16 is merged
+   and done). Critics sat at 8.55–8.65 for six rounds of small fixes, so the owner picked "option
+   1": rework the weakest templates. Done 2026-10-07: plain bands carry two or three numbers from
+   the data (`facts` on `LabPage`); state, site-type and hub pages use `CatalogLayout` (lead and list
+   in one column, sticky "Narrow it down" card); Always booked shares it; Welcome is a plain band, a
+   700px setup column and the example alert beside it. Round-15 critic scores: see
+   `docs/design/camphawk-home.md`: rounds 15 and 16 averaged 8.65 (best screens 9.0–9.2; the
+   floor is now the guide and app-paywall pages at 8.3–8.5). Still open from round 16: Explore's
+   default capture shows no results or map; numbered-step boxes on six screens; Welcome's
+   Finish/Skip pair; Claim and Connect frames differ. Open a PR when the owner asks; merge only on
+   their word. **Terms** (published text, not reworded) says billing is through Stripe only and
+   alerts are email and text only, and doesn't cover auto-cart or holds: for the owner.
+   **Round 17 and after (2026-10-07):** a second rework (Explore first run, New watch's "Your watch",
+   the in-app paywall) held critics at 8.6. **PR #18** is open for the owner's review (CI green,
+   mergeable; this session watches it). Done after it opened: the campground page opens on its
+   first open night, every holdable row on Manage says when it releases, sign-up has a consent
+   line. Kept on purpose: Welcome's Finish and Skip (carrier rules need a way past texts), Claim's
+   "Not now" outside its cards (Claim is three cards; Connect is one). Still open, owner's call:
+   the three legal-text gaps above; numbered-step boxes remain on Home, Welcome, the auto-cart
+   guide and Pricing (where they explain a process, not a screen).
+   **For the owner, from CampHawk's real Privacy Policy** (flagged in a lab note, not reworded): it
+   says email alerts can be turned off (the product keeps email always on), and it doesn't mention
+   the saved Recreation.gov login auto-cart keeps.
 1. **CampHawk lab: fix rounds are merged** (PR #16, 2026-10-06). Five critic/audit rounds took the
    lab from 6.5 to 8.0. What changed and what's still open: `docs/design/camphawk-home.md`, "Fix
    rounds: toward a 10". The open list is the next lab work, if the owner wants it.

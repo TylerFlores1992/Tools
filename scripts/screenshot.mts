@@ -68,6 +68,10 @@ for (const route of routes) {
       // Let entrance animations finish: a mid-animation screenshot (or contrast reading) lies.
       await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running" || a.effect?.getTiming().iterations === Infinity), null, { timeout: 8000 }).catch(() => problems.push(`${tag}: animations still running after 8s`));
       const name = (route === "/" ? "home" : route.slice(1).replace(/\//g, "_")) + `-${w}-${scheme}.png`;
+      // A full-page capture resizes the viewport, which can switch a srcset image to a bigger file
+      // mid-capture and photograph its blurred placeholder: capture once to warm it, then for real.
+      await page.screenshot({ fullPage: true });
+      await page.waitForLoadState("networkidle");
       await page.screenshot({ path: join(OUT, name), fullPage: true });
       for (const line of await checkContrastOverMedia(page)) problems.push(`${tag}: ${line}`);
       await page.close();

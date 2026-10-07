@@ -341,6 +341,78 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 - Coverage is given as "12 of 13" provinces, as "9 provinces" and as "7 provincial systems" on different pages.
 - Search has seven button names.
 
+## Fix rounds 6–12: toward a 9 (2026-10-07)
+The owner's bar: "above a 9". Each round: two fresh critics (same prompt, never the builder), axe-core
+4.14 (WCAG 2.2 AA plus best practice, 390 and 1440, collapsibles open and shut), fix, verify, e2e.
+Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 8.6 (A 8.6, B 8.6) · r14 8.6 (A 8.6, B 8.6) · r15, after the rework, 8.65 (A 8.7, B 8.6) · r16 8.65 (A 8.7, B 8.6) · r17, after the second rework (Explore, New watch, paywall), 8.6 (A 8.6, B 8.6). axe: 0 violations on all 32 routes.
+
+**Typography (guarded by `src/lab/camphawk/typography.test.mts`, mutation-tested).** Curly
+apostrophes only (never `&apos;` or a straight `'` between letters); "8 AM" and other times keep a
+non-breaking space; "7‑day" keeps a non-breaking hyphen (U+2011). US spelling now also catches
+"tick the box".
+
+**One beta note.** `BetaNote` (`round2/BareFrame.tsx`): an (i) and `HOLD_BETA_NOTE`, plus an
+optional line. Used on New watch, the offer page, Pricing, the auto-cart guide and vs. New marks:
+`hold` (alarm clock: an 8 AM hold) and `active` (circle check: subscription Active).
+
+**Guards found broken (round 12).** The typography and US-spelling scans stripped `/* … */`
+before `//`, so a line comment holding a `/**` glob opened a "block" that hid ~100 lines of
+Camping.tsx from both. Now one left-to-right pass; both re-mutation-tested in the hidden region.
+Signed-out tabs (Explore · New watch · Pricing) and Pricing in the footer have an e2e guard.
+
+**Shared words.** `LAUNCH_PRICING` and `HOLD_BETA_LABEL` in `tier2-data.ts`. "Run up to 6 watches
+at once" everywhere (a watch is a campground and dates, so "6 campgrounds" was wrong). Times as en
+dash ranges ("Jul 18–21").
+
+**Shape changes.** Settings-style rows (icon, sans title, state pill, one line) on Settings and
+Welcome (Email, Push, Text). One primary button per plan card, the badge on the card's top edge,
+terms as one block under the plans. Auto-cart guide steps as numbered cards. Towns and Hardest to
+book as cards and a ranked list. Watches: holds you asked for first; cart tag names the site.
+
+**Photos.** k1 (Half Dome at dusk, Hardest to book) and t1 (lit tent, Welcome) are re-crops of
+earlier outputs (no spend). r1 (California) and g1 (auto-cart) were tried and removed: the title
+fell to 1.8:1 and 2.99:1 over bright sky, and `object-position` can't move a full-width image.
+
+## Option 1: the catalog and setup templates, reworked (2026-10-07)
+Six rounds of small fixes held at 8.55–8.65: each fresh pair of critics found a new set of nits,
+and some contradicted the last (counts on cards, the Auto-cart chip). The owner chose a rework of
+the weakest templates over more rounds or paid photos.
+- **Numbers in the band.** `LabPage`/`AppBand` take `facts`: two or three numbers from the data
+  beside a plain band's title (under it on phones, hairlines between). California: 875 tracked,
+  300 towns, 2 booking systems; the hub, site-type and site-type-state pages likewise.
+- **`CatalogLayout`** (`round2/pages/Camping.tsx`): lead and list in one column, a sticky card
+  beside it: search, then "Narrow it down" links (site types, related guides). It replaced the
+  lead + link line + button stack and the two promo cards. On phones the card follows the list,
+  and drops its search button where the page already ends with one.
+- **Always booked** uses the same frame; its card holds the counts (28 campgrounds, 18 parks and
+  seashores), the "our own pick, not a ranking" note, search and next reads. No percentages on
+  this page (an e2e guard).
+- **Welcome**: plain band (t1, the tent, was soft at desktop and is now unused), the setup column
+  capped at 700px, and beside it the alert you're setting up (`AlertCard`, shared with home) and
+  what happens next.
+- California's site-type sample now takes 2, 3 or 1 campgrounds a town in turn.
+
+## Second rework: Explore, New watch, the in-app paywall (2026-10-07)
+- **Explore first run**: the illustrated map a search will fill (pins are a picture there), one
+  outline button "Search near you" that runs the real search (e2e guard, mutation-tested), the
+  card as tall as the search form. Replaced three numbered steps.
+- **New watch**: "Your watch", the watch as it will be created, filling in as you choose, then
+  the alert it sends (`AlertCard`). Replaced three numbered steps.
+- **Paywall** (`?as=app`): one card, a Monthly/Yearly switch, the two plans as the web shows them
+  (the in-app Alerts card promises push, with email and text on a free account), the store terms
+  in one row.
+- Result: critics held at 8.6. Explore 8.4, paywall 8.0–8.6. Eight rounds and two reworks have sat
+  at 8.55–8.7; the floor is the published legal text (Terms and Privacy, 7.9–8.5, which the lab
+  doesn't reword) and copy drift each fresh critic finds anew.
+
+## After PR #18 opened (2026-10-07)
+- Campground selects its first open night, so the day panel answers "First open night: …".
+- Manage: every "Hold it for me" row says when it releases, like the asked-for row.
+- Sign up: "By continuing, you agree to CampHawk's Terms of Service and Privacy Policy" under
+  Continue (Clerk's legal-consent line).
+- Kept: Welcome's Finish and Skip (carrier rules need a way past the text opt-in), Claim's way out
+  below its cards.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
@@ -373,4 +445,5 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | m1-coast-wide | A | Flux 1.1 Ultra | Manage's band (fix round): coastal campground at dusk, tents under cypress. About $0.06. |
 | p1-pricing-wide | A | Flux 1.1 Ultra | Pricing's band: two lit bell tents under pines. About $0.06. |
 | v1-fork-wide | A | Flux 1.1 Ultra | The vs pages' band: a trail fork at blue hour. About $0.06. |
+| k1-halfdome-wide, t1-tent-wide | A | Flux 1.1 Ultra | Re-crops of c4-cliff-dusk-2 and a3-site-dusk-1 (2026-10-07); no new spend. |
 | s1-ranger-wide | A | Flux 1.1 Ultra | Support's band: a ranger cabin at a meadow edge, porch light on. About $0.06. Exported inline with sharp (`export.mjs` stops on the a1 original, which is no longer in `out/`). |

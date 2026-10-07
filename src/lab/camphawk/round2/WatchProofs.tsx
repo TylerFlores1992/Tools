@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { FEATURES } from "../copy";
@@ -54,9 +55,9 @@ function HeldCart() {
   return (
     <figure className="flex flex-col items-stretch gap-4 rounded-[16px] bg-ch-paper p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-5">
       <div className="min-w-0 flex-1">
-        <p className="flex flex-wrap items-center gap-2 text-[14px] font-bold text-ch-ink-2">Recreation.gov cart <Tag kind="cart">In cart</Tag></p>
-        <p className="mt-1.5 font-ch-display text-[19px] font-extrabold leading-tight text-ch-ink">Upper Pines, site 042</p>
-        <p className="mt-0.5 text-[15px] text-ch-ink-2 tabular-nums">Open for Jul 18-21, 3 nights</p>
+        <p className="flex flex-wrap items-center gap-2 text-[14px] font-bold text-ch-ink-2">Recreation.gov cart <Tag kind="cart">In your cart</Tag></p>
+        <p className="mt-1.5 font-ch-display text-[19px] font-extrabold leading-tight text-ch-ink">Upper Pines, Site 042</p>
+        <p className="mt-0.5 text-[15px] text-ch-ink-2 tabular-nums">Open for Jul 18–21, 3 nights</p>
       </div>
       <span className={buttonClasses({ variant: "cart", className: "pointer-events-none shrink-0 px-5" })}>Check out on Recreation.gov</span>
     </figure>
@@ -66,9 +67,9 @@ function HeldCart() {
 /** Live search: open and booked campgrounds, said in words. */
 function MiniResults() {
   const rows = [
-    { name: "Upper Pines", where: "Yosemite, CA", open: "Open for Jul 18-21" },
-    { name: "North Pines", where: "Yosemite, CA" },
-    { name: "Wawona", where: "Yosemite, CA" },
+    { name: "Upper Pines", where: "Yosemite Valley, CA", open: "Jul 18–21 · 3 nights" },
+    { name: "North Pines", where: "Yosemite Valley, CA" },
+    { name: "Wawona", where: "Wawona, CA" },
   ];
   return (
     <figure>
@@ -97,7 +98,7 @@ function DateWindow() {
   const open = new Set([18, 19, 20]);
   return (
     <figure className="rounded-[16px] bg-ch-paper p-4 sm:p-5">
-      <p className="text-[14px] font-bold text-ch-ink-2">3 nights, any time Jul 12-25</p>
+      <p className="text-[14px] font-bold text-ch-ink-2">3 nights, any time Jul 12–25</p>
       <div aria-hidden="true" className="mt-3 grid grid-cols-7 gap-1.5 text-center text-[12px] font-bold text-ch-muted">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => <span key={i}>{d}</span>)}
       </div>
@@ -106,11 +107,13 @@ function DateWindow() {
           <li
             key={d}
             className={cx(
-              "grid aspect-square place-items-center rounded-[8px] text-[14px] font-bold",
+              "flex aspect-square flex-col items-center justify-center rounded-[8px] text-[14px] font-bold leading-none",
               open.has(d) ? "bg-ch-green text-ch-white" : "border border-ch-line bg-ch-card text-ch-ink-2",
             )}
           >
             {d}
+            {/* The open mark, so the open nights read without hue. */}
+            {open.has(d) && <Check aria-hidden="true" strokeWidth={3.5} className="mt-0.5 size-[11px]" />}
           </li>
         ))}
       </ol>
@@ -123,7 +126,7 @@ export function WatchProofs() {
   return (
     <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
       <Tile title={ALERTS.title} body={ALERTS.body} className="lg:col-span-7"><CheckLog /></Tile>
-      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] bg-ch-forest object-cover object-[50%_80%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
+      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] bg-ch-forest object-cover object-[50%_80%] lg:object-[50%_100%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
       <Tile title={AUTOCART.title} body={AUTOCART.body} className="lg:col-span-7"><HeldCart /></Tile>
       <Tile title={SEARCH.title} body={SEARCH.body} className="lg:col-span-6"><MiniResults /></Tile>
       <Tile title={FLEXIBLE.title} body={FLEXIBLE.body} className="lg:col-span-6"><DateWindow /></Tile>
