@@ -5,16 +5,26 @@
 "not drawn yet" state, `?booking=first-come` the map without availability). Build tooling:
 `studio/campground-maps/`.*
 
-## The short answer
+## The short answer (updated 2026-10-07, afternoon)
 
-**We can draw our own maps, legally and for free, but each provider is a different project.**
-Recreation.gov publishes real campsite coordinates under an open license, so it's the easy case
-and should come first. ReserveCalifornia publishes **no** coordinates, only pixel spots on its own
-map pictures, and California's campground GIS needs written permission for commercial use. RC
-is the hard case: it needs a decision from the owner and an email to State Parks before any
-drawing starts.
+**Both providers can be drawn from real survey data. Recreation.gov's is open now, and
+California State Parks' needs their permission first.**
 
-That reverses the requested order (RC, then Rec.gov). Here's why, with what was measured.
+- **Recreation.gov:** RIDB publishes campsite coordinates under CC BY 4.0. Ready now.
+- **ReserveCalifornia:** RC itself publishes no coordinates, only spots on its map pictures.
+  **But California State Parks publishes its own campsite points**: 11,334 of them, with
+  site numbers and parking-spur sizes, updated weekly. They are on its public ArcGIS account
+  (item `f0374d8702f14ad5962023c7a502da65`, layer `InternalCampsiteSpur`).
+  - Its GIS terms ask for approval before commercial use. So it is used only on a local run, and
+    it is never committed to this public repository or deployed. Both requests are drafted in
+    the owner's Gmail, unsent: permission (geodata@parks.ca.gov) and a Public Records Act
+    request (Parks.PRA@parks.ca.gov).
+  - **It is more accurate than RC's own maps.** Its points sit a median 1-9 m from the real
+    campground roads (checked against OpenStreetMap at 12 campgrounds). RC's drawings are partly
+    schematic, 3-30 m off.
+
+Full RC findings, the private check against RC's maps, and the time estimate are in
+"ReserveCalifornia: the State Parks campsite layer" below.
 
 ## What exists, per provider (measured 2026-10-07)
 
@@ -60,8 +70,10 @@ That reverses the requested order (RC, then Rec.gov). Here's why, with what was 
   site's terms (parks.ca.gov Conditions of Use) forbid "spider or other automatic device" and
   "copying, republishing or display of any content".
 - **CA State Parks GIS** (`parks.ca.gov/?page_id=29682`):
-  - It has **no campsite layer**: 531 campground points (one per camp area), plus roads,
-    trails and 3,246 buildings, including comfort stations.
+  - The GIS data page has **no campsite layer**: 531 campground points (one per camp area),
+    plus roads, trails and 3,246 buildings, including comfort stations. ~~So no campsite data
+    exists.~~ **Wrong: a campsite layer is published separately on State Parks' ArcGIS account;
+    see the section below.**
   - License: *"intended for free distribution for personal or public sector use. Commercial uses
     … must be approved by CSP in advance, contact geodata@parks.ca.gov."* CampHawk is
     commercial, so **ask first**.

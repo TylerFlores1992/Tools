@@ -34,6 +34,20 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
+## Campground site maps, part 2: ReserveCalifornia (2026-10-07 afternoon, same branch)
+- **California State Parks publishes campsite points** (ArcGIS item
+  `f0374d8702f14ad5962023c7a502da65`, layer `InternalCampsiteSpur`, 11,334 points). They are
+  accurate: a median of 1-9 m from the campground roads, and better than RC's own maps.
+- **Commercial use needs their approval.** The owner's Gmail holds two UNSENT drafts: permission
+  to geodata@parks.ca.gov and a Public Records Act request to Parks.PRA@parks.ca.gov. Sending
+  them is the owner's call.
+- **Until approval, their data never enters this public repo.** `build-csp.mjs` writes to
+  `public/lab-local/` (git-ignored). Jedediah Smith (`?id=jedediah-smith`) renders on a local run
+  only. Rebuild it with
+  `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-csp.mjs studio/campground-maps/specs/jedediah-smith.json`.
+- Findings, the private check against RC's maps, and the time estimate are in
+  `docs/design/campground-maps.md`, under *ReserveCalifornia: the State Parks campsite layer*.
+
 ## Campground site maps (2026-10-07, branch `ccr-8aad3146-vpxq73`)
 Research, a per-provider plan and one real mockup: `docs/design/campground-maps.md`. Upper Pines'
 campground page now has a site map drawn from public data (RIDB + NPS + USGS; build in
