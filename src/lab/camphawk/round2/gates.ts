@@ -12,6 +12,8 @@ export const ROUTES = {
   watches: `${GH}/watches`,
   campground: `${GH}/campground`,
   screens: `${GH}/screens`,
+  // Admin (lab mock of a CampHawk admin section)
+  siteMaps: `${GH}/admin/site-maps`,
   // Tier 1: the alert loop
   manage: `${GH}/manage`,
   action: `${GH}/w`,

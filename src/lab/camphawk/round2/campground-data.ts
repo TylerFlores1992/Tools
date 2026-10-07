@@ -6,17 +6,23 @@
 
 export const TODAY = "2026-07-06";
 
-/** `type` reads after the loop in a sentence ("Loop C, RV up to 35 ft"), so it is lower-case except for proper initialisms. */
+/** `type` reads after the loop in a sentence ("Loop C, RV nonelectric"), so it is lower-case except
+    for proper initialisms. `loop` is empty where the campground has none: in Recreation.gov's
+    data (RIDB) every Upper Pines site's loop is just "Upper Pines". These seven are real Upper
+    Pines sites with RIDB's types, so the site map (maps/) puts them where they really are. */
 export type Site = { id: string; name: string; loop: string; type: string };
 
+/** The site's second line: "Loop C, RV nonelectric", or "Standard nonelectric" with no loop. */
+export const siteLine = (s: Site) => s.loop ? `${s.loop}, ${s.type}` : s.type.replace(/^./, (c) => c.toUpperCase());
+
 export const SITES: Record<string, Site> = {
-  "009": { id: "009", name: "Site 009", loop: "Loop A", type: "tent only" },
-  "042": { id: "042", name: "Site 042", loop: "Loop A", type: "tent only" },
-  "063": { id: "063", name: "Site 063", loop: "Loop B", type: "standard nonelectric" },
-  "088": { id: "088", name: "Site 088", loop: "Loop B", type: "standard nonelectric" },
-  "101": { id: "101", name: "Site 101", loop: "Loop C", type: "RV nonelectric" },
-  "117": { id: "117", name: "Site 117", loop: "Loop C", type: "standard nonelectric" },
-  "130": { id: "130", name: "Site 130", loop: "Loop D", type: "tent only" },
+  "009": { id: "009", name: "Site 009", loop: "", type: "standard nonelectric" },
+  "042": { id: "042", name: "Site 042", loop: "", type: "standard nonelectric" },
+  "063": { id: "063", name: "Site 063", loop: "", type: "RV nonelectric" },
+  "088": { id: "088", name: "Site 088", loop: "", type: "standard nonelectric" },
+  "101": { id: "101", name: "Site 101", loop: "", type: "standard nonelectric" },
+  "117": { id: "117", name: "Site 117", loop: "", type: "standard nonelectric" },
+  "130": { id: "130", name: "Site 130", loop: "", type: "standard nonelectric" },
 };
 
 export type Month = { open: Record<string, string[]>; unknown?: boolean; closed?: boolean; error?: boolean };

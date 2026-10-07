@@ -2,7 +2,7 @@
 // shapes CampHawk's picker has to handle: single campgrounds, parks with several bookable parts
 // (one watch covers the park), a mixed park whose first-come part is left out, and a first-come
 // campground that can't be picked at all. Sites are what the mute list offers.
-import { CAMPGROUND, SITES } from "./campground-data";
+import { CAMPGROUND, SITES, siteLine } from "./campground-data";
 import type { Provider } from "./explore-data";
 
 export interface Division { id: string; name: string; reservable: boolean }
@@ -56,7 +56,7 @@ export interface MuteSite { id: string; name: string; note: string }
 
 /** The sites a watch on these campgrounds could alert about. */
 export function sitesFor(ids: string[], divisions: Division[]): MuteSite[] {
-  if (ids.length === 1 && ids[0] === CAMPGROUND.id) return Object.values(SITES).map((s) => ({ id: s.id, name: s.name, note: `${s.loop}, ${s.type}` }));
+  if (ids.length === 1 && ids[0] === CAMPGROUND.id) return Object.values(SITES).map((s) => ({ id: s.id, name: s.name, note: siteLine(s) }));
   return ids.flatMap((id, di) => {
     const part = divisions.find((d) => d.id === id);
     return Array.from({ length: 4 }, (_, i) => {

@@ -3,7 +3,7 @@
 // others get July and August from their open nights in explore-data, then the same later months.
 // A campground whose provider didn't answer reads "couldn’t check" all the way through, never
 // "booked". All of it is example data.
-import { CAMPGROUND, MONTHS, SITES, type Month } from "./campground-data";
+import { CAMPGROUND, MONTHS, SITES, type Month, type Site } from "./campground-data";
 import { CAMPGROUNDS } from "./explore-data";
 
 const ABOUT: Record<string, string> = {
@@ -19,10 +19,42 @@ const ABOUT: Record<string, string> = {
 };
 
 export type CampgroundInfo = typeof CAMPGROUND & { reservable: boolean };
+type Lookup = { info: CampgroundInfo; months: Record<string, Month>; sites: Record<string, Site> };
 
-export function campgroundFor(id: string | null): { info: CampgroundInfo; months: Record<string, Month> } {
+// A ReserveCalifornia campground for the site-map lab (not in Explore's example list). Its
+// sites are real RC units on their real loops (RC's own area names); the openings are example
+// data, Upper Pines' calendar moved onto these site numbers.
+const JED_SITES: Record<string, Site> = {
+  "7": { id: "7", name: "Site 7", loop: "Main Loop", type: "campsite" },
+  "33": { id: "33", name: "Site 33", loop: "Main Loop", type: "campsite" },
+  "48": { id: "48", name: "Site 48", loop: "Outer Loop", type: "campsite" },
+  "84": { id: "84", name: "Site 84", loop: "Outer Loop", type: "campsite" },
+  "92": { id: "92", name: "Site 92", loop: "Main Loop", type: "campsite" },
+  "101": { id: "101", name: "Site 101", loop: "Main Loop", type: "campsite" },
+  "A": { id: "A", name: "Site A", loop: "Outer Loop", type: "tent only, walk-in" },
+};
+const UPPER_TO_JED: Record<string, string> = { "009": "7", "042": "33", "063": "48", "088": "84", "101": "101", "117": "92", "130": "A" };
+const JEDEDIAH: Lookup = {
+  info: {
+    ...CAMPGROUND,
+    id: "jedediah-smith",
+    name: "Jedediah Smith Campground",
+    place: "Jedediah Smith Redwoods State Park, CA",
+    stateName: "California",
+    provider: "ReserveCalifornia",
+    autoCart: false,
+    description: "An old-growth redwood campground on the Smith River, with sites tucked among the trees on two loops and a short walk to the river beach.",
+    amenities: ["Flush toilets", "Showers", "Drinking water", "Dump station", "Fire rings", "Picnic tables"],
+    reservable: true,
+  },
+  months: Object.fromEntries(Object.entries(MONTHS).map(([m, v]) => [m, { ...v, open: Object.fromEntries(Object.entries(v.open).map(([d, ids]) => [d, ids.map((i) => UPPER_TO_JED[i])])) }])),
+  sites: JED_SITES,
+};
+
+export function campgroundFor(id: string | null): Lookup {
+  if (id === JEDEDIAH.info.id) return JEDEDIAH;
   const c = CAMPGROUNDS.find((x) => x.id === id);
-  if (!c || c.id === CAMPGROUND.id) return { info: { ...CAMPGROUND, reservable: true }, months: MONTHS };
+  if (!c || c.id === CAMPGROUND.id) return { info: { ...CAMPGROUND, reservable: true }, months: MONTHS, sites: SITES };
   const siteIds = Object.keys(SITES);
   const monthOf = (m: string): Month => {
     if (c.unreadable) return { open: {}, unknown: true };
@@ -47,5 +79,6 @@ export function campgroundFor(id: string | null): { info: CampgroundInfo; months
       "2026-10": c.unreadable ? { open: {}, unknown: true } : MONTHS["2026-10"],
       "2026-11": c.unreadable ? { open: {}, unknown: true } : MONTHS["2026-11"],
     },
+    sites: SITES,
   };
 }

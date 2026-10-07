@@ -59,6 +59,10 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   rest, framed by `LabPage`/`BareFrame`; switches in the URL via `labState.ts`, gates and routes
   in `gates.ts`; CampHawk's controls in `lab/camphawk/ui/`). CampHawk's own design skill binds them; art from
   `studio/camphawk-round2/` (AI Gateway, free credit only)
+- Campground site maps (lab): drawn from public data, `studio/campground-maps/` → `round2/maps/`;
+  plan, research and the 50-campground Rec.gov sample in `docs/design/campground-maps.md`; its
+  review queue (admin mock) is `/private/camphawk/golden-hour/admin/site-maps` (`round2/admin/`). **State Parks' campsite
+  data is local-only (`public/lab-local/`, git-ignored) until they approve: never commit it**
 - `public/media/hero/<hash>/` rendered film + posters, cached immutable (`src/lib/hero-media.ts`)
 
 ## End of every session

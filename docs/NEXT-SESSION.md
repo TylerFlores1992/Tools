@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 merged 2026-10-07, production smoke 27/27. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
+*Last updated: 2026-10-07, evening (campground site maps: the 50-campground Recreation.gov sample, 32 of 50 ready on their own and 38 after one look; a Site maps review page in the lab; PR #19). Earlier the same day: Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged, production smoke 27/27.*
 
 ## At a glance
 
@@ -29,10 +29,90 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (126 tests before this branch's new ones) · `npm run e2e` (32 browser checks; the lab's typography and US-spelling scans and the signed-out-tabs and first-run search checks are new on the CampHawk branch) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (27 checks, including
+**Checks, all green:** `npm run verify` (168 tests) · `npm run e2e` (34 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29 checks after #19 merges; 27 live now, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
+
+## Campground site maps (2026-10-07, PR #19)
+**Start here for maps:** `docs/design/campground-maps.md` (research, measurements, time estimate)
+and `studio/campground-maps/README.md` (how to build one).
+
+**Live in the lab after #19 merges:**
+- **Upper Pines** has a real site map: `/private/camphawk/golden-hour/campground`. It is built
+  from RIDB (CC BY 4.0), NPS GIS and USGS, with Find a site, zoom, and numbers beside their dots.
+  Critic rounds went 5.5 → 7, with the main finding fixed after.
+- **Jedediah Smith (ReserveCalifornia),** `?id=jedediah-smith`. Its map is built from California
+  State Parks' own campsite layer, so it **shows only on a local run**. Deployed, it shows the
+  "not drawn yet" state.
+- **Site maps review (admin mock), `/private/camphawk/golden-hour/admin/site-maps`:** the
+  50-campground Recreation.gov sample, built 2026-10-07 evening.
+  - A queue with each map's verdict and thumbnail; each map's checks and its aerial-photo
+    overlay; Approve / Keep hidden (saved in the browser only).
+  - **Results:**
+    - The check passed **32 of 50 (64%; 50-76% across 2,196)**.
+    - A first look over the aerial photo found none of those unusable, but 12 are missing some
+      roads; 6 of the 18 it held were fine.
+    - **38 of 50 can go live after one look.**
+    - RIDB's site points were right wherever the pads could be seen; **the gap is roads** (9 of
+      the 12 unusable maps).
+  - Full write-up: the design doc's "The 50-campground sample".
+
+**Waiting on California State Parks** (both emails sent 2026-10-07 from the owner's Gmail):
+- **Public Records Act request** to Parks.PRA@parks.ca.gov, for their campsite layer (ArcGIS item
+  `f0374d8702f14ad5962023c7a502da65`, `InternalCampsiteSpur`, 11,334 points) and any campsite
+  GIS. By law they must say within **10 days, by about 2026-10-17**, whether they have records;
+  they can extend by 14. Fees are direct cost only.
+- **Permission request** to geodata@parks.ca.gov, for commercial use of that layer, plus who
+  owns RC's map artwork. No deadline.
+- **When an answer comes:**
+  - If permission is granted, or the records request delivers the data: data from the records
+    request carries no license conditions (*County of Santa Clara*). Remove the local-only rule
+    and commit the State Parks maps:
+    - drop `public/lab-local/` from `.gitignore`;
+    - move the map into `src/lab/camphawk/round2/maps/` and `MAPS`;
+    - remove its `LOCAL_MAPS` entry;
+    - update the CLAUDE.md router line.
+  - If refused: maps stay Recreation.gov-only. The fallback for RC is aerial photos and elevation
+    data, which is hand work, about 30-90 min per campground.
+
+**Hard rule until then:** State Parks' data never enters this public repo or a deploy.
+`build-csp.mjs` writes to `public/lab-local/`, and its cache goes to `studio/campground-maps/.cache/`;
+both are git-ignored. Rebuild locally with
+`NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-csp.mjs studio/campground-maps/specs/jedediah-smith.json`.
+`NODE_USE_ENV_PROXY=1` is required in a session, or RC's firewall answers 403.
+
+**Measured, so nobody re-derives it:**
+- **Recreation.gov:** 3,212 overnight campgrounds have points for 90% or more of their sites
+  (the earlier "3,623" counted 411 day-use facilities). 1,016 of them are a single unit and need
+  no site map; the other 2,196 are what a rollout draws.
+- **ReserveCalifornia,** across 341 RC areas in CampHawk's catalog:
+  - 87% of drawable sites match a State Parks point;
+  - 64% would draw automatically, 21% need review, 7% need hand work, and 8% have no points.
+- **State Parks' accuracy:** points sit a median 1-9 m from real roads. RC's own drawings are
+  partly schematic, a typical 13 m off.
+- **Recreation.gov automatic share (50-campground sample):** 64% pass on their own, 76% after one
+  look. Not measured: review time per map, and positions under dense canopy.
+
+**Next, when the owner says so** (about 3-4 weeks of sessions for both providers; the breakdown is
+in the design doc):
+1. ~~A 50-campground Recreation.gov sample.~~ Done 2026-10-07 (above). Options it raised, each the
+   owner's call (design doc, "What would raise it"):
+   - pick the road source by fit (+1 of 50, measured, not built);
+   - trace missing loops into OpenStreetMap from NAIP;
+   - draw maps over the aerial photo;
+   - split multi-campground listings.
+2. Bring the map into CampHawk (campsite-finder). Gated on Apple's approval of the current build
+   and the owner's go-ahead.
+3. The Recreation.gov rollout.
+4. ReserveCalifornia, after State Parks answers.
+
+**For CampHawk's issue list:** campsite-finder's `docs/CONTEXT.md` says providers don't publish
+site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync drops them.
+
+**Open PR #18** (another session's lab fix rounds) conflicts with #19 in 6 files: NEXT-SESSION,
+`scripts/e2e.mts`, `globals.css`, `Campground.tsx`, `pages/Screens.tsx` and `pages/alert-data.ts`.
+Whoever merges #18 resolves them, keeping both sides: #19's site map and #18's fixes.
 
 ## Waiting on the owner
 0. **CampHawk shirts: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
