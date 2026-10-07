@@ -21,7 +21,7 @@ export function Chip({ selected = false, size = "md", className, type = "button"
       aria-pressed={radio ? undefined : selected}
       aria-checked={radio ? selected : undefined}
       className={cx(
-        "inline-flex items-center rounded-ch-chip border font-ch-body cursor-pointer transition-colors",
+        "inline-flex items-center justify-center rounded-ch-chip border font-ch-body cursor-pointer transition-colors",
         HIT_AREA,
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green",
         "disabled:cursor-not-allowed disabled:text-ch-faint",

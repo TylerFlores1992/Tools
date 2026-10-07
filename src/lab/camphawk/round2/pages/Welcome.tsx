@@ -42,7 +42,7 @@ export function Welcome() {
       page="Welcome"
       title={title}
       showPlan
-      photo={{ art: ART.t1, pos: "60% 45%", posLg: "50% 45%" }}
+      photo={{ art: ART.t1, pos: "60% 20%", posLg: "50% 18%" }}
       controls={({ visitor }) => visitor !== "signed-out" && (
         <LabSelect label="Arrived from" short="From" value={from} onChange={setFrom} options={[["sign-up", "Sign-up"], ["checkout", "Checkout"]]} />
       )}
