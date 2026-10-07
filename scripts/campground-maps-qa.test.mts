@@ -43,7 +43,8 @@ test("every site on one spot can't be drawn; a few shared spots need a look", ()
 });
 
 test("a site far from every other is an outlier, and a wide spread isn't one campground", () => {
-  const s = good(); s[19].at = [10 + 9 * 15 + RULES.outlierM + 50, 12];
+  // A literal distance, not RULES.outlierM + 50: a test that moves with the constant can't catch a bad constant.
+  const s = good(); s[19].at = [10 + 9 * 15 + 350, 12];
   const r = run(s);
   assert.equal(r.verdict, "review");
   assert.deepEqual(r.metrics.outliers, ["020"]);
@@ -58,9 +59,11 @@ test("no roads, or sites far from them, need a look", () => {
   assert.equal(r.verdict, "review");
   assert.equal(r.metrics.roads.medianM, 48);
   // The 90th percentile alone also trips it: three sites in twenty set back 100 m.
-  const tail = good(); for (const i of [0, 1, 2]) tail[i].at = [tail[i].at![0], 100];
+  const tail = good(); for (const i of [0, 2, 4]) tail[i].at = [tail[i].at![0], 100]; // three distinct sites, none stacked
   assert.equal(run(tail).metrics.roads.medianM, 12);
   assert.equal(run(tail).verdict, "review");
+  assert.equal(run(tail).metrics.stackedShare, 0);
+  assert.deepEqual(run(tail).reasons.map((x) => x.code), ["far-from-roads"]);
 });
 
 test("sites outside OpenStreetMap's campground outline, or far from its numbered pitches, need a look", () => {
@@ -98,4 +101,29 @@ test("the checks list says each measurement, its limit and its result, and agree
     assert.equal(worst, r.verdict);
   }
   assert.equal(run(good(), { roadSegments: [], roadSource: "none" }).checks.find((c) => c.code === "far-from-roads")!.value, "No roads to draw");
+});
+
+test("two points a metre apart are one spot; three metres apart are two", () => {
+  const near = good(); near[1].at = [near[0].at![0] + 1, near[0].at![1]];
+  assert.equal(run(near).metrics.stackedShare, 0.1);
+  const apart = good(); apart[1].at = [apart[0].at![0] + 3, apart[0].at![1]];
+  assert.equal(run(apart).metrics.stackedShare, 0);
+});
+
+test("a map that can't be drawn says so, even when it also has things to look at", () => {
+  const r = run(good().map((x) => ({ ...x, at: [5, 5] as At })), { roadSegments: [], roadSource: "none" });
+  assert.equal(r.verdict, "not-drawn");
+  assert.deepEqual(r.reasons.map((x) => x.code), ["one-spot"]);
+});
+
+test("a two-site campground with its sites far apart has no outlier (there's no crowd to stray from)", () => {
+  const r = run([{ name: "1", at: [0, 10] }, { name: "2", at: [400, 10] }], { roadSegments: [[[0, 0], [400, 0]]] });
+  assert.deepEqual(r.metrics.outliers, []);
+  assert.equal(r.verdict, "ready");
+});
+
+test("the checks list marks the road check for review when sites sit far from the roads", () => {
+  const far = good().map((x) => ({ ...x, at: [x.at![0], x.at![1] * 4] as At }));
+  assert.equal(run(far).checks.find((c) => c.code === "far-from-roads")!.result, "review");
+  assert.equal(run().checks.find((c) => c.code === "far-from-roads")!.result, "pass");
 });
