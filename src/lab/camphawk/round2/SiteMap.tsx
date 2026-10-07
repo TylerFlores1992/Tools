@@ -114,12 +114,12 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
             {/* Labels and symbols sit over the drawing in HTML, so their type stays a readable size. */}
             {map.labels.map((l) => (
               <span key={l.text} aria-hidden="true" style={{ ...pct(map, l.at), transform: `translate(-50%, -50%) rotate(${l.angle}deg)` }}
-                className={cx("pointer-events-none absolute whitespace-nowrap text-[11px] sm:text-[12px]", l.kind === "water" ? "font-semibold italic text-ch-map-water-ink" : l.kind === "trail" ? "text-ch-ink-2" : "font-bold text-ch-ink-2")}>
+                className={cx("pointer-events-none absolute whitespace-nowrap text-[11px] sm:text-[12px]", l.kind !== "water" && "gh-map-halo", l.kind === "water" ? "font-semibold italic text-ch-map-water-ink" : l.kind === "trail" ? "text-ch-ink-2" : "font-bold text-ch-ink-2")}>
                 {l.text}
               </span>
             ))}
             {placed.filter((s) => waymarks.has(s.name)).map((s) => (
-              <span key={s.name} aria-hidden="true" style={pct(map, s.at)} className="pointer-events-none absolute -translate-x-1/2 translate-y-[3px] text-[10px] font-bold tabular-nums text-ch-ink-2 sm:text-[11px]">{s.name}</span>
+              <span key={s.name} aria-hidden="true" style={pct(map, s.at)} className="gh-map-halo pointer-events-none absolute -translate-x-1/2 translate-y-[3px] text-[10px] font-bold tabular-nums text-ch-ink sm:text-[11px]">{s.name}</span>
             ))}
             {restrooms(map).map((r, i) => <span key={i} aria-hidden="true" style={pct(map, r.at)} className={ICON}><Toilet className={GLYPH} /></span>)}
             {parking.map((p, i) => <span key={i} aria-hidden="true" style={pct(map, p.at)} className={cx(ICON, "text-[10px] font-extrabold sm:text-[13px]")}>P</span>)}
@@ -157,8 +157,8 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
         <div className="grid gap-5 px-1 sm:px-0">
           {selected && <SiteDetails map={map} site={selected} picked={picked!} />}
           <ul aria-label="Map key" className={cx("grid grid-cols-2 gap-x-4 gap-y-2.5 text-[14px] text-ch-ink-2 lg:grid-cols-1", selected && "border-t border-ch-line pt-4")}>
-            <li className="col-span-2 flex items-center gap-2.5 lg:col-span-1"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className="gh-pin block scale-75" data-state="open" /></span>Open on the picked night</li>
-            <li className="flex items-center gap-2.5"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className="size-[6px] rounded-full bg-ch-ink-2" /></span>Other sites</li>
+            {picked && <li className="col-span-2 flex items-center gap-2.5 lg:col-span-1"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className="gh-pin block scale-75" data-state="open" /></span>Open on the picked night</li>}
+            <li className="flex items-center gap-2.5"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className="size-[6px] rounded-full bg-ch-ink-2" /></span>{picked ? "Other sites" : "Campsites"}</li>
             <li className="flex items-center gap-2.5"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center text-[11px] font-bold tabular-nums">40</span>Site numbers</li>
             <li className="flex items-center gap-2.5"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className={KEY_ICON}><Toilet className="size-3.5" /></span></span>Restroom</li>
             {parking.length > 0 && <li className="flex items-center gap-2.5"><span aria-hidden="true" className="grid w-6 shrink-0 place-items-center"><span className={cx(KEY_ICON, "text-[13px] font-extrabold")}>P</span></span>Parking</li>}

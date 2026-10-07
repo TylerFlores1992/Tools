@@ -480,6 +480,9 @@ html:has(.gh) { background: var(--color-ch-forest); }
   scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
 }
 
+/* Site map type: a ground-coloured halo, so numbers and names read over site dots and roads. */
+.gh-map-halo { text-shadow: 0 0 2px var(--color-ch-shell), 0 0 2px var(--color-ch-shell), 0 0 3px var(--color-ch-shell); }
+
 /* The alert card arrives once, a beat after the photo. */
 .gh-rise { animation: gh-rise 700ms var(--ease-out) 450ms both; }
 @keyframes gh-rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
