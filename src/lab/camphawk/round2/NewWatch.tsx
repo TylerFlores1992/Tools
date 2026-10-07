@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BellOff, Check, ChevronDown } from "lucide-react";
+import { BellOff, BellRing, Check, ChevronDown } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { priceShort, WATCH_LIMIT } from "../data";
@@ -450,6 +450,13 @@ export function NewWatch() {
                   </button>
                 ) : (
                   <SubscribeCta visitor={visitor} fullWidth />
+                )}
+                {/* Where the alert will go, so "Start watching" has a visible consequence. */}
+                {gate === "ready" && (
+                  <p className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[14px] text-ch-ink-2">
+                    <BellRing aria-hidden="true" className="size-4 shrink-0" />
+                    {visitor === "app" ? "Alerts come to this phone as notifications." : <>Alerts go by email, push and text. <a href="#" className="font-bold text-ch-ink underline underline-offset-[3px]">Change in Settings</a></>}
+                  </p>
                 )}
               </div>
               {answer === "needs-sub" && (
