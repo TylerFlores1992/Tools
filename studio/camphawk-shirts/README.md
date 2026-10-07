@@ -51,7 +51,7 @@ under 1 mm in the illustration only) → `node kitone.mjs` (vector per ink). Cri
 Image credit used in total: $0.40 of the owner's $0.75.
 
 ## Tent mockup (2026-10-07, owner's ask)
-A small A-frame tent on the left shore at the base of the mountain, mirrored in the lake like the rest
+A small A-frame tent (0.87 x 0.5 in, 30% up on the first try) on the left shore at the base of the mountain, mirrored in the lake like the rest
 of the design, with a lit doorway (a knockout on the one-ink print, mist ink on the three-ink). Mockup
 only: `python3 tent.py <kit 300 dpi png> <out> <ink hex> knockout|<door hex>` draws it onto the kit
 render, then `composite.py` puts it on the shirt photos. The vector kit files are unchanged until the

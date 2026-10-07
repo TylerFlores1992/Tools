@@ -26,24 +26,24 @@ r = ink[top - 20]
 x = int(W * .2)
 while x < W // 2 and r[x]: x += 1          # end of the left treeline run
 shore = x
-cx = shore + 250                            # tent center: clear of the trees, under the high part of the slope
+cx = shore + 310                            # tent center: clear of the trees, under the high part of the slope
 
-tw, th = 200, 116                           # about 0.67 x 0.39 in at 300 dpi
+tw, th = 260, 151                           # about 0.87 x 0.5 in at 300 dpi (30% up, owner's call)
 # The tent and its reflection go on their own layers (so the ripples cut only the reflection); the
 # doorway is cleared from the finished image, so a knockout shows the shirt through it.
-dw, dh = 64, 74
+dw, dh = 83, 96
 def tent(layer, base_y, sign, colour):
     """sign = -1 draws upward from the shore, +1 draws the reflection downward."""
     d = ImageDraw.Draw(layer)
     apex = (cx, base_y + sign * th)
     d.polygon([(cx - tw // 2, base_y), apex, (cx + tw // 2, base_y)], fill=colour)
-    # the ridge pole pokes a little past the apex (0.9 mm, well over the 0.3 mm line minimum)
-    d.line([(cx, base_y + sign * (th - 24)), (cx, base_y + sign * (th + 18))], fill=colour, width=11)
+    # no ridge pole: at this size its tip met the mountain slope above (and its reflection below)
 def doorway(base_y, sign):
     return [(cx - dw // 2, base_y), (cx, base_y + sign * dh), (cx + dw // 2, base_y)]
 
-up = Image.new("RGBA", im.size, (0, 0, 0, 0)); tent(up, top, -1, INK)
-down = Image.new("RGBA", im.size, (0, 0, 0, 0)); tent(down, bot + 1, 1, REFL)
+# both halves dip 8 px into the waterline, so its wavy edge leaves no hairline gap against the tent
+up = Image.new("RGBA", im.size, (0, 0, 0, 0)); tent(up, top + 8, -1, INK)
+down = Image.new("RGBA", im.size, (0, 0, 0, 0)); tent(down, bot - 7, 1, REFL)
 dd = ImageDraw.Draw(down)
 # a water ripple across the reflection: one horizontal break, 14 px (1.2 mm) tall (two left a stray Y at the tip)
 for k in (0.45,):
