@@ -469,6 +469,9 @@ try {
     await status.filter({ hasText: "Road 2 finished: 2 points, 20 m." }).waitFor();
     const list = p.getByRole("region", { name: "Your traces" });
     await list.getByText("Saved in this browser; not on the map yet").waitFor();
+    // Each road is numbered once on the photo, matching the list (and nowhere else).
+    assert.deepEqual(await area.locator("span", { hasText: /^\d+$/ }).allInnerTexts(), ["1", "2"]);
+    assert.equal(await list.locator("span", { hasText: /^\d+$/ }).count(), 0, "no road numbers inside the list");
     // Kept after a reload (this browser only), and shown on the camper's map.
     await p.reload();
     await area.waitFor();
@@ -500,6 +503,12 @@ try {
     near(file.roads[0].coords[2], 0.7, 0.4);
     near(file.points[0].at, 0.45, 0.7);
     // Delete one road; then delete everything, two steps.
+    await list.getByRole("button", { name: "Delete road 2" }).click();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
+    // A delete can be taken back, until the next change.
+    await p.getByRole("button", { name: "Undo delete" }).click();
+    await status.filter({ hasText: "Road 2 is back." }).waitFor();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 2);
     await list.getByRole("button", { name: "Delete road 2" }).click();
     assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
     await list.getByRole("button", { name: "Delete my traces" }).click();

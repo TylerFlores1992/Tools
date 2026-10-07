@@ -49,6 +49,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const [focused, setFocused] = useState(false);
   const [said, setSaid] = useState("");
   const [confirmClear, setConfirmClear] = useState(false);
+  // The last thing deleted, so a delete can be taken back.
+  const [deleted, setDeleted] = useState<{ draft: TraceDraft; what: string } | null>(null);
+  // Any other change ends the chance to undo a delete (it would throw that change away).
+  const edit = (d: TraceDraft) => { setDeleted(null); setDraft(d); };
   // A road being drawn that has since been deleted (or discarded) is no longer being drawn.
   const active = activeAt !== null && activeAt < draft.roads.length ? activeAt : null;
 
@@ -109,16 +113,16 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     const joined = snapped ? ", joined to a road" : "";
     if (tool === "road") {
       if (active === null) {
-        setDraft({ ...draft, roads: [...draft.roads, { coords: [deg] }] });
+        edit({ ...draft, roads: [...draft.roads, { coords: [deg] }] });
         setActive(draft.roads.length);
         setSaid(`Road ${draft.roads.length + 1} started${joined}. Add the next point.`);
       } else {
         const roads = draft.roads.map((r, i) => (i === active ? { ...r, coords: [...r.coords, deg] } : r));
-        setDraft({ ...draft, roads });
+        edit({ ...draft, roads });
         setSaid(`Road ${active + 1}: ${roads[active].coords.length} points${joined}.`);
       }
     } else {
-      setDraft({ ...draft, points: [...draft.points, { type: tool, at: deg }] });
+      edit({ ...draft, points: [...draft.points, { type: tool, at: deg }] });
       setSaid(`${POINT_WORD[tool]} placed.`);
     }
   };
@@ -126,7 +130,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     if (active === null) return;
     const road = draft.roads[active].coords;
     if (road.length < 2) {
-      setDraft({ ...draft, roads: draft.roads.filter((_, i) => i !== active) });
+      edit({ ...draft, roads: draft.roads.filter((_, i) => i !== active) });
       setSaid("A road needs two points; that one was removed.");
     } else {
       setSaid(`Road ${active + 1} finished: ${road.length} points, ${Math.round(lengthM(xyRoads[active]))} m.`);
@@ -137,11 +141,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     if (active === null) return;
     const road = draft.roads[active].coords;
     if (road.length <= 1) {
-      setDraft({ ...draft, roads: draft.roads.filter((_, i) => i !== active) });
+      edit({ ...draft, roads: draft.roads.filter((_, i) => i !== active) });
       setActive(null);
       setSaid(`Road ${active + 1} removed.`);
     } else {
-      setDraft({ ...draft, roads: draft.roads.map((r, i) => (i === active ? { ...r, coords: r.coords.slice(0, -1) } : r)) });
+      edit({ ...draft, roads: draft.roads.map((r, i) => (i === active ? { ...r, coords: r.coords.slice(0, -1) } : r)) });
       setSaid(`Road ${active + 1}: ${road.length - 1} point${road.length - 1 === 1 ? "" : "s"}.`);
     }
   };
@@ -177,20 +181,30 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   };
 
   const removeRoad = (i: number) => {
+    setDeleted({ draft, what: `Road ${i + 1}` });
     setDraft({ ...draft, roads: draft.roads.filter((_, j) => j !== i) });
     if (active !== null) setActive(i === active ? null : i < active ? active - 1 : active);
     setSaid(`Road ${i + 1} deleted.`);
   };
   const removePoint = (i: number) => {
+    const word = `${POINT_WORD[draft.points[i].type]} ${draft.points.slice(0, i + 1).filter((q) => q.type === draft.points[i].type).length}`;
+    setDeleted({ draft, what: word });
     setDraft({ ...draft, points: draft.points.filter((_, j) => j !== i) });
-    setSaid(`${POINT_WORD[draft.points[i].type]} deleted.`);
+    setSaid(`${word} deleted.`);
+  };
+  const undoDelete = () => {
+    if (!deleted) return;
+    setDraft(deleted.draft);
+    setActive(null);
+    setSaid(`${deleted.what} is back.`);
+    setDeleted(null);
   };
 
   const setThrough = (i: number, through: boolean) => {
-    setDraft({ ...draft, roads: draft.roads.map((r, j) => (j === i ? cleanRoad({ ...r, through }) : r)) });
+    edit({ ...draft, roads: draft.roads.map((r, j) => (j === i ? cleanRoad({ ...r, through }) : r)) });
     setSaid(`Road ${i + 1} is ${through ? "a through road (drawn wide)" : "a campground road (drawn thin)"}.`);
   };
-  const setName = (i: number, name: string) => setDraft({ ...draft, roads: draft.roads.map((r, j) => {
+  const setName = (i: number, name: string) => edit({ ...draft, roads: draft.roads.map((r, j) => {
     if (j !== i) return r;
     const next = { ...r };
     if (name) next.name = name; else delete next.name;
@@ -199,7 +213,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const setReplace = (on: boolean) => {
     const next = { ...draft };
     if (on) next.replace = true; else delete next.replace;
-    setDraft(next);
+    edit(next);
     setSaid(on ? "Your traces replace the source’s roads. Trace every road the map should show, through roads too." : "Your traces add to the source’s roads.");
   };
 
@@ -264,11 +278,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           onKeyDown={onKey}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="relative cursor-crosshair focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
+          className="relative cursor-crosshair touch-manipulation select-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ch-green"
           style={{ width: zoom === 1 ? "100%" : `${zoom * 100}%`, aspectRatio: `${f.w} / ${f.h}` }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
-          <img ref={img} src={src} alt="" draggable={false} onLoad={() => setPhoto({ src, state: "ready" })} onError={() => setPhoto({ src, state: "error" })}
+          <img ref={img} src={src} alt="" width={photoW} height={Math.round((photoW * f.h) / f.w)} draggable={false} onLoad={() => setPhoto({ src, state: "ready" })} onError={() => setPhoto({ src, state: "error" })}
             className={cx("absolute inset-0 size-full select-none object-fill", photoState === "error" && "opacity-0")} />
           <svg aria-hidden="true" viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} preserveAspectRatio="none" className="pointer-events-none absolute inset-0 size-full">
             {/* The source's roads; replaced, they stay as a thin dashed line, so the reviewer sees what goes. */}
@@ -292,6 +306,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
               </g>
             )}
           </svg>
+          {/* Each road's number at its start, matching "Road N" in the list below. */}
+          {draft.roads.map((r, i) => r.coords.length > 0 && (
+            <span key={`n${i}`} aria-hidden="true" style={pct(map, toXY(map, r.coords[0]))}
+              className="pointer-events-none absolute -translate-x-1/2 -translate-y-[135%] rounded-[4px] border-[1.5px] border-ch-ink bg-ch-white px-1 text-[11px] font-extrabold leading-[14px] tabular-nums text-ch-ink">{i + 1}</span>
+          ))}
           {draft.points.map((p, i) => {
             const at = pct(map, toXY(map, p.at));
             const Icon = p.type === "Restroom" ? Toilet : Droplet;
@@ -304,10 +323,13 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           )}
         </div>
       </div>
-      <p aria-live="polite" className="mt-2 min-h-[1.4em] text-[13.5px] font-bold text-ch-ink">{said}</p>
+      <div className="mt-2 flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1">
+        <p aria-live="polite" className="text-[13.5px] font-bold text-ch-ink">{said}</p>
+        {deleted && <button type="button" onClick={undoDelete} className={buttonClasses({ variant: "quiet", size: "sm" })}><Undo2 aria-hidden="true" className="size-4" />Undo delete</button>}
+      </div>
 
       <ul aria-label="What’s drawn on the photo" className="mt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
-        <li className="flex items-center gap-2"><span aria-hidden="true" className="relative h-[6px] w-7 rounded-full border border-ch-ink bg-ch-ochre"><span className="absolute -top-[3px] left-0 size-[10px] rounded-[2px] border-[1.5px] border-ch-ink bg-ch-ochre" /></span>Traced roads, a square at each end</li>
+        <li className="flex items-center gap-2"><span aria-hidden="true" className="relative h-[6px] w-7 rounded-full border border-ch-ink bg-ch-ochre"><span className="absolute -top-[3px] left-0 size-[10px] rounded-[2px] border-[1.5px] border-ch-ink bg-ch-ochre" /></span>Traced roads, numbered at the start, a square at each end</li>
         {sourceWord && sourceRoads.length > 0 && (draft.replace
           ? <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-ch-ink-2" />Roads from {sourceWord}, replaced</li>
           : <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {sourceWord}</li>)}
@@ -330,7 +352,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                 <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 pb-1">
                   <label className="flex min-w-0 basis-full items-center gap-2 text-[13.5px] text-ch-ink-2 sm:flex-1 sm:basis-auto">
                     <span className="shrink-0">Name</span>
-                    <input type="text" value={r.name ?? ""} onChange={(e) => setName(i, e.target.value)} maxLength={80} placeholder="Optional, as on the sign" name={`road-${i + 1}-name`} autoComplete="off"
+                    <input type="text" value={r.name ?? ""} onChange={(e) => setName(i, e.target.value)} maxLength={80} placeholder="Optional, e.g. Loop B…" name={`road-${i + 1}-name`} autoComplete="off"
                       className="min-h-11 w-full min-w-0 rounded-ch-input border border-ch-line bg-ch-card px-3 text-[14px] text-ch-ink placeholder:text-ch-muted focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green" />
                   </label>
                   <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-[13.5px] text-ch-ink-2">
@@ -360,7 +382,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
             <button type="button" onClick={copy} disabled={!hasAny} className={buttonClasses({ variant: "quiet", size: "sm", className: OFF })}><Copy aria-hidden="true" className="size-4" />Copy</button>
             {changed && (confirmClear ? (
               <>
-                <button type="button" onClick={() => { discard(); setActive(null); setConfirmClear(false); setSaid(map.trace ? "Back to the trace built into this map." : "Your traces were deleted."); }} className={buttonClasses({ variant: "warn", size: "sm" })}><Trash2 aria-hidden="true" className="size-4" />{map.trace ? "Yes, discard my changes" : "Yes, delete my traces"}</button>
+                <button type="button" onClick={() => { discard(); setActive(null); setConfirmClear(false); setDeleted(null); setSaid(map.trace ? "Back to the trace built into this map." : "Your traces were deleted."); }} className={buttonClasses({ variant: "warn", size: "sm" })}><Trash2 aria-hidden="true" className="size-4" />{map.trace ? "Yes, discard my changes" : "Yes, delete my traces"}</button>
                 <button type="button" onClick={() => setConfirmClear(false)} className={buttonClasses({ variant: "quiet", size: "sm" })}>Keep them</button>
               </>
             ) : (
@@ -368,7 +390,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
             ))}
           </div>
           <p className="text-[13px] leading-snug text-ch-ink-2">
-            The file is <code className="font-mono text-[12px]">{mapKey}.json</code>. It goes on the map when it’s added to <code className="font-mono text-[12px]">studio/campground-maps/traces/</code> and the map is rebuilt; a traced map then waits here for approval.
+            The file is <code translate="no" className="font-mono text-[12px]">{mapKey}.json</code>. It goes on the map when it’s added to <code translate="no" className="font-mono text-[12px]">studio/campground-maps/traces/</code> and the map is rebuilt; a traced map then waits here for approval.
           </p>
         </div>
       </section>
