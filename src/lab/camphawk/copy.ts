@@ -9,7 +9,7 @@ export const INTRO = `CampHawk watches booked campgrounds around the clock and t
 export const FOOTER_LINKS = ["Pricing", "Support", "Data sources", "Terms", "Privacy"] as const;
 
 export const FEATURES = [
-  { icon: Clock, title: "Alerts in seconds", body: "We check watched campgrounds every 15 seconds, around the clock. When someone cancels, you hear about it within seconds of the site coming back — not after someone else has booked it." },
+  { icon: Clock, title: "Alerts in seconds", body: "We check watched campgrounds every 15 seconds, around the clock. When someone cancels, you usually hear about it within seconds of the site coming back — not after someone else has booked it." },
   { icon: ShoppingCart, title: "Auto-cart on Recreation.gov", body: "We can put the opening straight into your cart, so it’s held while you get to your phone. You just check out." },
   { icon: MapPin, title: "Live search — free, no account", body: `Real-time availability at ${CAMPGROUNDS_ROUNDED} campgrounds, on a map, with filters for tents, RVs, hookups and pad length. No subscription, no sign-up.` },
   { icon: Zap, title: "Flexible dates find more", body: "Say how many nights you need and a window to look in. Any three nights next month gives us far more chances to catch a cancellation than one fixed weekend." },
