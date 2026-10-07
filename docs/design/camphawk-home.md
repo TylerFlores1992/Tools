@@ -341,6 +341,33 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 - Coverage is given as "12 of 13" provinces, as "9 provinces" and as "7 provincial systems" on different pages.
 - Search has seven button names.
 
+## Fix rounds 6–12: toward a 9 (2026-10-07)
+The owner's bar: "above a 9". Each round: two fresh critics (same prompt, never the builder), axe-core
+4.14 (WCAG 2.2 AA plus best practice, 390 and 1440, collapsibles open and shut), fix, verify, e2e.
+Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 ROUND12. axe: 0 violations on all 32 routes.
+
+**Typography (guarded by `src/lab/camphawk/typography.test.mts`, mutation-tested).** Curly
+apostrophes only (never `&apos;` or a straight `'` between letters); "8 AM" and other times keep a
+non-breaking space; "7‑day" keeps a non-breaking hyphen (U+2011). US spelling now also catches
+"tick the box".
+
+**One beta note.** `BetaNote` (`round2/BareFrame.tsx`): an (i) and `HOLD_BETA_NOTE`, plus an
+optional line. Used on New watch, the offer page, Pricing, the auto-cart guide and vs. New marks:
+`hold` (alarm clock: an 8 AM hold) and `active` (circle check: subscription Active).
+
+**Shared words.** `LAUNCH_PRICING` and `HOLD_BETA_LABEL` in `tier2-data.ts`. "Run up to 6 watches
+at once" everywhere (a watch is a campground and dates, so "6 campgrounds" was wrong). Times as en
+dash ranges ("Jul 18–21").
+
+**Shape changes.** Settings-style rows (icon, sans title, state pill, one line) on Settings and
+Welcome (Email, Push, Text). One primary button per plan card, the badge on the card's top edge,
+terms as one block under the plans. Auto-cart guide steps as numbered cards. Towns and Hardest to
+book as cards and a ranked list. Watches: holds you asked for first; cart tag names the site.
+
+**Photos.** k1 (Half Dome at dusk, Hardest to book) and t1 (lit tent, Welcome) are re-crops of
+earlier outputs (no spend). r1 (California) and g1 (auto-cart) were tried and removed: the title
+fell to 1.8:1 and 2.99:1 over bright sky, and `object-position` can't move a full-width image.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
@@ -373,4 +400,5 @@ credit, so posters are 2x Lanczos upscales; GPT Image and the Recraft pro tiers 
 | m1-coast-wide | A | Flux 1.1 Ultra | Manage's band (fix round): coastal campground at dusk, tents under cypress. About $0.06. |
 | p1-pricing-wide | A | Flux 1.1 Ultra | Pricing's band: two lit bell tents under pines. About $0.06. |
 | v1-fork-wide | A | Flux 1.1 Ultra | The vs pages' band: a trail fork at blue hour. About $0.06. |
+| k1-halfdome-wide, t1-tent-wide | A | Flux 1.1 Ultra | Re-crops of c4-cliff-dusk-2 and a3-site-dusk-1 (2026-10-07); no new spend. |
 | s1-ranger-wide | A | Flux 1.1 Ultra | Support's band: a ranger cabin at a meadow edge, porch light on. About $0.06. Exported inline with sharp (`export.mjs` stops on the a1 original, which is no longer in `out/`). |

@@ -8,7 +8,7 @@
 
 export const RELEASE = { date: "2026-07-07", time: "08:00" };
 export const releaseShort = () => "8 AM";
-export const releaseLong = () => "Tue, Jul 7 at 8 AM PT";
+export const releaseLong = () => "Tue, Jul 7 at 8 AM PT";
 export const releaseTomorrow = () => "tomorrow at 8 AM";
 
 export type ManageWatch = {

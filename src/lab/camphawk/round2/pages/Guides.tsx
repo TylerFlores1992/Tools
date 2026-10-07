@@ -101,7 +101,7 @@ export function AutoCartGuide() {
           <P>Cancellations on Recreation.gov happen at any hour, so this lane is a standing setting: once it’s on, a watched site that frees up is added to your cart within seconds, whatever time it is.</P>
           <StepCards label="Recreation.gov auto-cart, start to finish" steps={[
             ["Once", "Set your watches", <>Search for a campground, pick your dates, and tap the watch button on any booked campground. Auto-cart only acts on sites you’re watching.</>],
-            ["Once", "Connect Recreation.gov", <>In <A href={ROUTES.settings} visitor={visitor}>Settings</A>, under Auto-cart, tap <strong className="text-ch-ink">Set up auto-cart</strong> and sign in to Recreation.gov. Your email and password are saved, encrypted, on a private machine we run, so auto-cart signs back in by itself if the session drops; they never reach CampHawk’s web servers or database. The same block turns auto-cart off and on.</>],
+            ["Once", "Connect Recreation.gov", <>In <A href={ROUTES.settings} visitor={visitor}>Settings</A>, under Auto-cart, tap <strong className="text-ch-ink">Set up auto-cart</strong> and sign in to Recreation.gov. The login is saved, encrypted, on a private machine we run, never on our web servers.</>],
             ["From then on", "It’s already in your cart", <>When a watched site opens, it’s added to your cart within seconds and you get your normal alert. Open Recreation.gov on your phone and check out.</>],
           ]} />
 
