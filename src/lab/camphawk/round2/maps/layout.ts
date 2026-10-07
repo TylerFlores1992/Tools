@@ -10,6 +10,8 @@ export function toPx(map: SiteMapData, [x, y]: [number, number], width: number):
   return [(x - map.frame.x) * s, (y - map.frame.y) * s];
 }
 
+/** Distance from a point to the nearest edge of a box (0 inside it). */
+export const gapTo = (b: Box, [x, y]: [number, number]) => Math.hypot(Math.max(b.x0 - x, 0, x - b.x1), Math.max(b.y0 - y, 0, y - b.y1));
 const overlaps = (a: Box, b: Box) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
 const around = ([x, y]: [number, number], w: number, h: number): Box => ({ x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2 });
 
@@ -42,6 +44,10 @@ export function placeNumbers(map: SiteMapData, sites: MapSite[], width: number, 
       if (box.x0 < 2 || box.y0 < 2 || box.x1 > width - 2 || box.y1 > height - 2) continue;
       if (taken.some((t) => overlaps(t, box))) continue;
       if ([...dots].some(([n, d]) => n !== s.name && overlaps(d, box))) continue;
+      // A number must be unmistakably its own dot's: no other dot may sit nearly as close to
+      // it. A number between two dots is worse than none, because it names the wrong site.
+      const mine = gapTo(box, [px, py]);
+      if (order.some((o) => o.name !== s.name && gapTo(box, toPx(map, o.at!, width)) < mine + 6)) continue;
       taken.push(box);
       out.push({ name: s.name, cx: (box.x0 + box.x1) / 2, cy: (box.y0 + box.y1) / 2 });
       break;

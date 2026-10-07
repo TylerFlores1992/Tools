@@ -18,12 +18,12 @@ import { findSite, placeNumbers, toPx, type Box } from "./maps/layout";
 // - It never claims more than the data: distances are straight lines, said so; a fact RIDB
 //   leaves blank (or writes as 0) isn't shown; there's no tree texture because we have no
 //   canopy data, and a forest drawn everywhere would be a guess.
-// - Zoom draws the map at least 1250px wide inside a pannable frame, where every number that
+// - Zoom draws the map at least 1600px wide inside a pannable frame, where every number that
 //   fits is shown (about three in four at Upper Pines). Numbers sit beside their own dot on the side away from the road.
 
 type Placed = MapSite & { at: [number, number] };
 /** Zoomed, the map is drawn at least this wide (px): about 75% of Upper Pines' numbers fit. */
-const ZOOM_PX = 1250;
+const ZOOM_PX = 1600;
 /** Service symbols are outlines, lighter than any pin, so the open sites stay the loudest thing. */
 const SYMBOL = "absolute grid size-[18px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[1.5px] border-ch-ink-2 bg-ch-card text-ch-ink-2";
 const KEY = "grid size-[18px] place-items-center rounded-full border-[1.5px] border-ch-ink-2 bg-ch-card text-ch-ink-2";
@@ -162,7 +162,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
           className="min-h-11 w-28 rounded-ch-input border border-ch-muted bg-ch-paper px-3 text-[16px] font-semibold tabular-nums text-ch-ink placeholder:font-normal placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green" />
         <button type="submit" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-3" })}><Search aria-hidden="true" className="size-3.5" />Find</button>
         <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((z) => !z)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-3 sm:ml-auto" })}>
-          {zoomed ? <><ZoomOut aria-hidden="true" className="size-3.5" />Whole map</> : <><ZoomIn aria-hidden="true" className="size-3.5" />Zoom in</>}
+          {zoomed ? <><ZoomOut aria-hidden="true" className="size-3.5" />Whole map</> : <><ZoomIn aria-hidden="true" className="size-3.5" />{numbers.length < placed.length / 3 ? "Zoom in for site numbers" : "Zoom in"}</>}
         </button>
         <p aria-live="polite" className="basis-full text-[14px] text-ch-ink-2 empty:hidden">{findMsg}</p>
       </form>
@@ -179,7 +179,8 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
                 {/* Roads: a muted casing under a white fill, in metres, wider for through roads. */}
                 {map.roads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-muted" strokeWidth={r.cls === "Service" ? 7.5 : 11} strokeLinecap="round" strokeLinejoin="round" />)}
                 {map.roads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-card" strokeWidth={r.cls === "Service" ? 5 : 8} strokeLinecap="round" strokeLinejoin="round" />)}
-                {map.buildings.map((b, i) => <path key={i} d={b.d} className="fill-ch-faint" />)}
+                {/* Restrooms and the kiosk are marked by their symbols; a footprint under one reads as a shadow. */}
+                {map.buildings.filter((b) => !/restroom|kiosk/i.test(`${b.name} ${b.type}`)).map((b, i) => <path key={i} d={b.d} className="fill-ch-faint" />)}
                 {/* Sites: dots of fixed screen size (zero-length round-capped lines) at any zoom. */}
                 {placed.filter((s) => !open.has(s.name)).map((s) => (
                   <path key={s.name} d={`M${s.at[0]} ${s.at[1]}h0`} className="stroke-ch-ink-2" strokeWidth={picked ? 4.5 : 5.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={picked ? 0.6 : 1} />
@@ -199,7 +200,14 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
               {numbers.map((n) => (
                 <span key={n.name} aria-hidden="true" style={{ left: n.cx, top: n.cy, fontSize: numberPx }} className="gh-map-halo pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 font-bold leading-none tabular-nums text-ch-ink">{n.name}</span>
               ))}
-              {W > 0 && symbols.map((s) => { const [x, y] = toPx(map, s.at, W); return <span key={s.key} aria-hidden="true" style={{ left: x, top: y }} className={SYMBOL}>{s.icon}</span>; })}
+              {W > 0 && symbols.map((s) => {
+                // A symbol under an open pin is hidden (the pin is the point of the map), and one
+                // at the frame's edge is pulled in so it's never cut in half.
+                const [x, y] = toPx(map, s.at, W);
+                if (openSites.some((o) => { const [ox, oy] = toPx(map, o.at, W); return Math.abs(ox - x) < 26 && y - oy < 14 && oy - y < 44; })) return null;
+                const H = (W * f.h) / f.w;
+                return <span key={s.key} aria-hidden="true" style={{ left: Math.min(Math.max(x, 11), W - 11), top: Math.min(Math.max(y, 11), H - 11) }} className={SYMBOL}>{s.icon}</span>;
+              })}
 
               {W > 0 && found && (() => {
                 const [x, y] = toPx(map, found.at, W);

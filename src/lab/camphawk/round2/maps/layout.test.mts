@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mapFor } from "./index.ts";
-import { findSite, placeNumbers, toPx, type Box } from "./layout.ts";
+import { findSite, gapTo, placeNumbers, toPx, type Box } from "./layout.ts";
 
 const map = mapFor("upper-pines")!;
 const opts = { charPx: 12 * 0.62, linePx: 15 };
@@ -15,7 +15,7 @@ test("before the map is measured, no numbers are placed (the dots still draw)", 
   assert.deepEqual(placeNumbers(map, map.sites, 0, [], opts), []);
 });
 
-for (const width of [350, 900, 1250]) {
+for (const width of [350, 900, 1600]) {
   test(`at ${width}px no two numbers touch, none touches an obstacle, and each sits by its own dot`, () => {
     const obstacle: Box = { x0: width / 2 - 20, y0: width / 2 - 20, x1: width / 2 + 20, y1: width / 2 + 20 };
     const placed = placeNumbers(map, map.sites, width, [obstacle], opts);
@@ -25,12 +25,17 @@ for (const width of [350, 900, 1250]) {
       boxes.slice(i + 1).forEach((c, j) => assert.ok(!overlaps(b, c), `${placed[i].name} touches ${placed[i + 1 + j].name}`));
       const [dx, dy] = toPx(map, map.sites.find((s) => s.name === placed[i].name)!.at!, width);
       assert.ok(Math.hypot(placed[i].cx - dx, placed[i].cy - dy) < 30, `${placed[i].name} drifted from its dot`);
+      // Every other dot is clearly farther from this number than its own dot is.
+      const mine = gapTo(b, [dx, dy]);
+      for (const o of map.sites) if (o.at && o.name !== placed[i].name) {
+        assert.ok(gapTo(b, toPx(map, o.at, width)) >= mine + 6, `${placed[i].name} reads as ${o.name}'s`);
+      }
     });
   });
 }
 
-test("zoomed in (the map drawn 1250px wide), at least 70% of sites get their number", () => {
-  const placed = placeNumbers(map, map.sites, 1250, [], opts);
+test("zoomed in (the map drawn 1600px wide), at least 70% of sites get their number", () => {
+  const placed = placeNumbers(map, map.sites, 1600, [], opts);
   assert.ok(placed.length / map.sites.length >= 0.7, `only ${placed.length} of ${map.sites.length}`);
 });
 

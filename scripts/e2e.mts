@@ -329,6 +329,50 @@ try {
     await ctx.close();
   });
 
+  await check("lab site map: the picked night's open sites are pins, Find rings any site by number, and zoom pans", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 390, height: 844 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.goto(`${BASE}/private/camphawk/golden-hour/campground`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/camphawk/golden-hour/campground`);
+    const map = p.getByRole("region", { name: "Site map" });
+    // Jul 18 has one open site: its pin is a button, pressed, and its details offer Book.
+    const pin = map.getByRole("button", { name: "Site 042, open on Saturday, July 18" });
+    assert.equal(await pin.getAttribute("aria-pressed"), "true");
+    await map.getByRole("link", { name: "Book Site 042 (opens the booking site)" }).waitFor();
+    // Another night: its two sites become the pins; picking one shows its facts.
+    await p.getByRole("button", { name: /July 27, 2 sites open/ }).click();
+    assert.equal(await map.getByRole("button", { name: /open on Monday, July 27/ }).count(), 2);
+    await map.getByRole("button", { name: "Site 101, open on Monday, July 27" }).click();
+    await map.getByRole("heading", { level: 3, name: "Site 101" }).waitFor();
+    await map.getByText("Vehicles up to 35 ft").waitFor();
+    // Find: a site that isn't open is ringed and said so; one that doesn't exist is said so.
+    await map.getByLabel("Find a site", { exact: true }).fill("157");
+    await map.getByRole("button", { name: "Find" }).click();
+    await map.getByText("Site 157 is ringed on the map. It isn't open on Monday, July 27.").waitFor();
+    await map.getByLabel("Find a site", { exact: true }).fill("999");
+    await map.getByRole("button", { name: "Find" }).click();
+    await map.getByText("There's no site “999” at Upper Pines.").waitFor();
+    // Zoom draws the map wider than its frame, which scrolls instead of growing.
+    const zoom = map.getByRole("button", { name: /^Zoom in/ });
+    await zoom.click();
+    assert.equal(await map.getByRole("button", { name: "Whole map" }).getAttribute("aria-pressed"), "true");
+    const { frame, inner, page } = await p.evaluate(() => {
+      const svg = document.querySelector('section[aria-labelledby="site-map-h"] svg[role="img"]')!;
+      const inner = svg.parentElement!, frame = inner.parentElement!;
+      return { frame: frame.clientWidth, inner: inner.getBoundingClientRect().width, page: document.documentElement.scrollWidth };
+    });
+    assert.ok(inner >= 1600 && frame < 400, `zoomed drawing ${inner}px in a ${frame}px frame`);
+    assert.ok(page <= 390, `the page itself must not scroll sideways (${page}px)`);
+    // A campground with no drawn map hands off without claiming the provider has one.
+    await p.getByRole("combobox", { name: "Site map" }).selectOption("none");
+    await p.getByText("We haven't drawn a map of Upper Pines yet. You can see its sites on Recreation.gov.").waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk's", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
     const errors: string[] = [];
