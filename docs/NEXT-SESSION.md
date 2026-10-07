@@ -35,6 +35,12 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
+0. **CampHawk shirts: pick two concepts** (2026-10-07). Ten free mockups (no image credit spent):
+   five 1-ink giveaways, five 2–3-ink shirts for the owner and their wife (8 pairs with giveaway 1). Gallery:
+   https://claude.ai/artifact/772LLrJ1YGqZNjsMTtaMSG and `studio/camphawk-shirts/` (hawk and badge
+   traced from the real logo). After the pick: refine free, then Recraft vector finals at $0.08
+   each, up to the owner's $0.75 (AI Gateway balance $2.045; the owner OK'd going under the $2 floor
+   for this, so `generate.mjs`'s FLOOR needs lowering to 1.29 for that run only).
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
