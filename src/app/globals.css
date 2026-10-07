@@ -201,6 +201,10 @@
   --color-ch-alert-hover: #C7503A;
   --color-ch-forest: #24382A;
   --color-ch-white: #FFFFFF;
+  /* Lab additions, not in CampHawk yet: the site map's water and its label (water-ink 5.5:1 on
+     water). Water is never blue: in CampHawk blue means the hand-off to a provider. */
+  --color-ch-map-water: #BFD6D1;
+  --color-ch-map-water-ink: #2F5550;
 
   --text-ch-hero: 34px;
   --text-ch-title: 26px;
