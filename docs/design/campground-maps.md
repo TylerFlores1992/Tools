@@ -166,6 +166,26 @@ come from public data.
 **Lab data changes:** the seven example sites now have RIDB's real types. The lab had invented
 "Loop A, tent only"; Upper Pines has no named loops in RIDB.
 
+## Review rounds (separate critic agent, against an NPS park map)
+- **Round 1: 5.5/10.** No way to find a given site on a phone, service symbols too heavy, Book
+  far from the pin, weak roads, text "▲N". All addressed: Find a site, zoom (the map drawn
+  1600px wide in a pannable frame), numbers beside their dots away from the road, outline
+  symbols, Book straight under the map, a real north arrow, a scale that follows the zoom.
+- **Round 2: 7/10, "fix then ship".** It found numbers sitting between two dots, which can name
+  the wrong site. Fixed after the round: a number is placed only where every other dot is at
+  least 6px farther than its own (tested; mutation-checked). Also fixed: footprints showing
+  under restroom symbols, symbols under pins, symbols cut off at the edge.
+- **Still open (not done, on purpose or for time):**
+  - The frame isn't fitted tightly. About 30% of the desktop map is river and trail with no
+    sites.
+  - The river is a stair-stepped USGS polygon, and roads show facets when zoomed. They need
+    smoothing in the build.
+  - Unzoomed on a phone only a few numbers fit. The zoom button says "Zoom in for site
+    numbers".
+  - About a quarter of sites have no number even zoomed. Find a site reaches all of them.
+  - No hillshade or tree texture: the valley floor is flat, we have no canopy data, and the
+    elevation tile has a seam.
+
 ## Open questions for the owner
 1. Recreation.gov first, then RC? (Recommended; reasons above.)
 2. May we email geodata@parks.ca.gov as CampHawk?

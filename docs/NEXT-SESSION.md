@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word. ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
+*Last updated: 2026-10-07 (campground site maps: research, plan, Upper Pines mockup). Before that, 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word. ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
 
 ## At a glance
 
@@ -33,6 +33,15 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (27 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
+
+## Campground site maps (2026-10-07, branch `ccr-8aad3146-vpxq73`)
+Research, a per-provider plan and one real mockup: `docs/design/campground-maps.md`. Upper Pines'
+campground page now has a site map drawn from public data (RIDB + NPS + USGS; build in
+`studio/campground-maps/`). Critic 5.5 → 7, and the main finding of round 2 has been fixed since.
+**Waiting on the owner:** the order (Recreation.gov first is recommended, because ReserveCalifornia
+publishes no site coordinates), and whether to email geodata@parks.ca.gov. **For CampHawk's issue
+list:** `docs/CONTEXT.md` there says providers don't publish site coordinates. RIDB does, for 84%
+of bookable sites, and the RIDB sync drops them.
 
 ## Waiting on the owner
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
