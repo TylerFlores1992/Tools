@@ -12,20 +12,29 @@
 // is traced from anyone's map picture. Site points are Recreation.gov's published coordinates.
 // Every other layer comes from the best source that has it, one source per layer, never merged
 // (two sources' copies of one road would draw it twice, a few metres apart):
-//   roads, trails, parking, buildings: the Park Service's GIS where it has roads in the frame,
-//     else OpenStreetMap, else the Forest Service's system roads, else none (and QA says so);
+//   roads: the source whose roads the sites sit along (roads.mjs): the Park Service's GIS,
+//     OpenStreetMap, the Forest Service's system roads or the Census Bureau's TIGER roads;
+//   trails, parking, buildings: the Park Service's when its roads were picked, else OpenStreetMap's;
 //   restrooms, water taps, dump stations: per kind, the Park Service's where it has that kind,
 //     else OpenStreetMap's;
-//   lakes and rivers: USGS hydrography.
+//   lakes and rivers: USGS hydrography, else OpenStreetMap's.
+// Then what a person traced from the aerial photo, where no source has it (trace.mjs), on top.
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { csvObjects } from "./ridb.mjs";
 import { NHD, arcgis, kept, lines, makeGeo, rings } from "./geo.mjs";
 import { fetchOsm, fetchWaterRelation, osmLayers } from "./osm.mjs";
 import { checkMap } from "./qa.mjs";
+import { pickRoadSource, roadFit } from "./roads.mjs";
+import { readTrace } from "./trace.mjs";
 
 const NPS = "https://mapservices.nps.gov/arcgis/rest/services/NationalDatasets";
 const USFS_ROADS = "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0";
+/** Census TIGER roads (public domain): primary, secondary and local roads. */
+const TIGER = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer";
+/** TIGER's feature classes that are a through road; the rest (4WD trails, service drives, parking
+    lot roads, private roads, unnamed local roads) are campground roads, drawn thin. */
+const TIGER_THROUGH = new Set(["S1100", "S1200"]);
 export const AGENCY = { 126: "Bureau of Land Management", 127: "Fish and Wildlife Service", 128: "National Park Service", 129: "Bureau of Reclamation", 130: "US Army Corps of Engineers", 131: "Forest Service", 260: "Navy" };
 /** Past this the sites aren't one campground (a trail's camps, a dispersed area): no layers fetched. */
 const MAX_FRAME_M = 5000;
@@ -103,31 +112,44 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   }
 
 
-  let roadSource = "none", roads = [], trails = [], lots = [], buildings = [];
-  if (npsRoads.length) {
-    roadSource = "nps";
-    roads = npsRoads.map((f) => ({ f, name: f.properties.RDNAME ?? "", cls: f.properties.RDCLASS ?? "", oneWay: f.properties.RDONEWAY ?? "" }));
+  // Roads: every source's roads in the frame, then the one the sites sit along (roads.mjs).
+  const [usfsRoads, tigerRoads] = huge ? [none, none] : await Promise.all([
+    arcgis(USFS_ROADS, bbox, "ID,NAME,OPER_MAINT_LEVEL"),
+    Promise.all([2, 6, 8].map((l) => arcgis(`${TIGER}/${l}`, bbox, "NAME,MTFCC"))).then((ls) => ls.flat()),
+  ]);
+  const candidates = {
+    nps: npsRoads.map((f) => ({ f, name: f.properties.RDNAME ?? "", cls: f.properties.RDCLASS ?? "", oneWay: f.properties.RDONEWAY ?? "" })),
+    osm: (osm?.roads ?? []).map((f) => ({ f, name: f.properties.name ?? f.properties.ref ?? "", cls: ["service", "track"].includes(f.properties.highway) ? "Service" : "Local", oneWay: f.properties.oneway ?? "" })),
+    usfs: usfsRoads.map((f) => ({ f, name: f.properties.NAME ?? "", cls: "Service", oneWay: "" })),
+    tiger: tigerRoads.map((f) => ({ f, name: f.properties.NAME ?? "", cls: TIGER_THROUGH.has(f.properties.MTFCC) || (f.properties.MTFCC === "S1400" && f.properties.NAME) ? "Local" : "Service", oneWay: "" })),
+  };
+  const sitePts = sites.filter((s) => s.lat && s.lon).map((s) => xy([s.lon, s.lat]));
+  const roadFits = Object.fromEntries(Object.entries(candidates).map(([k, rs]) => [k, roadFit(sitePts, segmentsOf(rs.map((r) => r.f), xy))]));
+  const picked = pickRoadSource(roadFits);
+  const roadSource = picked.source;
+  let roads = roadSource === "none" ? [] : candidates[roadSource], trails = [], lots = [], buildings = [];
+  if (roadSource === "nps") {
     trails = npsTrails.map((f) => ({ f, name: f.properties.TRLNAME ?? "" }));
     lots = npsLots.map((f) => rings(f.geometry));
     buildings = npsBuildings.map((f) => ({ name: f.properties.BLDGNAME ?? "", type: f.properties.BLDGTYPE ?? "", parts: rings(f.geometry) }));
-  } else if (osm && osm.roads.length) {
-    roadSource = "osm";
-    roads = osm.roads.map((f) => ({ f, name: f.properties.name ?? f.properties.ref ?? "", cls: ["service", "track"].includes(f.properties.highway) ? "Service" : "Local", oneWay: f.properties.oneway ?? "" }));
-  } else if (!huge) {
-    const fs = await arcgis(USFS_ROADS, bbox, "ID,NAME,OPER_MAINT_LEVEL");
-    if (fs.length) { roadSource = "usfs"; roads = fs.map((f) => ({ f, name: f.properties.NAME ?? "", cls: "Service", oneWay: "" })); }
-  }
-  if (roadSource !== "nps" && osm) {
+  } else if (osm) {
     trails = osm.trails.map((f) => ({ f, name: f.properties.name ?? "" }));
     lots = osm.lots.map((ring) => [ring]);
     buildings = osm.buildings.map((b) => ({ name: b.name, type: b.type, parts: [b.ring] }));
   }
 
+  // What a person traced from the aerial photo, where no source has it: campground roads, and
+  // restrooms and water taps they could see. Drawn like any other campground road.
+  const trace = readTrace(`ridb-${facilityId}`, bboxArr);
+  const traced = (trace?.roads ?? []).map((r) => ({ f: { geometry: { type: "LineString", coordinates: r.coords } }, name: "", cls: "Service", oneWay: "", traced: true }));
+  roads = [...roads, ...traced];
+
   // Service points, per kind: the Park Service's where it has that kind, else OpenStreetMap's.
   const npsPoints = npsPois.filter((f) => f.geometry?.type === "Point").map((f) => ({ name: f.properties.POINAME ?? "", type: f.properties.POITYPE ?? "", at: f.geometry.coordinates, src: "nps" }));
   const kinds = new Set(npsPoints.map((p) => p.type));
   const osmPoints = (osm?.pois ?? []).filter((p) => !kinds.has(p.type)).map((p) => ({ ...p, src: "osm" }));
-  const pois = [...npsPoints, ...osmPoints].map((p) => ({ name: p.name, type: p.type, at: xy(p.at), src: p.src })).filter((p) => inFrame(p.at));
+  const tracedPoints = (trace?.points ?? []).map((p) => ({ name: "", type: p.type, at: p.at, src: "traced" }));
+  const pois = [...npsPoints, ...osmPoints, ...tracedPoints].map((p) => ({ name: p.name, type: p.type, at: xy(p.at), src: p.src })).filter((p) => inFrame(p.at));
 
   // --- Sites ---
   const awayFromRoad = geo.awayFromRoad(roads.filter((r) => r.cls === "Service").map((r) => r.f).concat(roads.some((r) => r.cls === "Service") ? [] : roads.map((r) => r.f)));
@@ -161,17 +183,19 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const qa = checkMap({
     sites: outSites.map((s) => ({ name: s.name, at: s.at })),
     roadSegments: segmentsOf(roads.map((r) => r.f), xy),
-    roadSource,
+    roadSource: roadSource === "none" && traced.length ? "traced" : roadSource,
+    traced: { roads: traced.length, points: tracedPoints.length },
     outlineRings: (osm?.outlines ?? []).flatMap((o) => o.rings.map(toM)),
     pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })),
   });
 
   // The credit line names each layer's source, so a reader can tell what came from where.
-  const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", usgs: "USGS" };
+  const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "US Census Bureau (TIGER)", usgs: "USGS", traced: "CampHawk, traced from USDA aerial photos" };
   const poiSrc = [...new Set(pois.map((p) => p.src))];
+  const roadCredit = [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : "campground roads CampHawk traced from USDA aerial photos")].filter(Boolean).join(", and ");
   const credit = [
     "Drawn by CampHawk. Sites: Recreation.gov (RIDB, CC BY 4.0).",
-    roads.length && `Roads: ${SRC[roadSource]}.`,
+    roadCredit && `Roads: ${roadCredit}.`,
     poiSrc.length && `Restrooms and water: ${poiSrc.map((k) => SRC[k]).join(" and ")}.`,
     (waterParts.length || flowlines.length) && `Lakes and rivers: ${SRC[waterSource]}.`,
   ].filter(Boolean);
@@ -187,18 +211,25 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     ...(meta.state ? { state: meta.state } : {}),
     ...(meta.recArea ? { recArea: meta.recArea } : {}),
     source: { ridbExport: "RIDB full export (CSV), Recreation.gov, CC BY 4.0", built: new Date().toISOString().slice(0, 10) },
-    sources: { roads: roadSource, water: waterSource, osm: Boolean(usedOsm) },
+    sources: {
+      roads: roadSource,
+      /** Why that source (roads.mjs), and how every source's roads fit the sites. */
+      roadPick: { why: picked.why, fits: roadFits },
+      water: waterSource,
+      osm: Boolean(usedOsm),
+      traced: { roads: traced.length, points: tracedPoints.length, ...(trace ? { by: trace.by ?? "", on: trace.traced ?? "", note: trace.note ?? "" } : {}) },
+    },
     credits,
     frame,
     /** The frame in degrees [west, south, east, north], to ask for the aerial photo under it. */
     bbox: bboxArr.map((v) => Math.round(v * 1e6) / 1e6),
     labels,
-    roads: kept(roads.map((r) => ({ name: r.name, cls: r.cls, oneWay: r.oneWay, d: pathOf(lines(r.f.geometry), false) }))),
+    roads: kept(roads.map((r) => ({ name: r.name, cls: r.cls, oneWay: r.oneWay, ...(r.traced ? { traced: true } : {}), d: pathOf(lines(r.f.geometry), false) }))),
     trails: kept(trails.map((t) => ({ name: t.name, d: pathOf(lines(t.f.geometry), false) }))),
     lots: kept(lots.map((parts) => ({ d: pathOf(parts, true) }))),
     water: kept(waterParts.map((w) => ({ fcode: w.fcode, d: pathOf(w.parts, true) }))),
     buildings: kept(buildings.map((b) => ({ name: b.name, type: b.type, d: pathOf(b.parts, true) }))),
-    pois: pois.map((p) => ({ name: p.name, type: p.type, at: p.at })),
+    pois: pois.map((p) => ({ name: p.name, type: p.type, at: p.at, ...(p.src === "traced" ? { traced: true } : {}) })),
     sites: outSites,
     /** What the checks compared against, kept so a reviewer sees it on the aerial photo. */
     evidence: {
