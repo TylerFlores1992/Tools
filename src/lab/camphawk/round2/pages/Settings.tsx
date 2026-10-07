@@ -64,12 +64,14 @@ function Section({ title, blurb, children, id }: { title: string; blurb?: ReactN
   );
 }
 
-function Box({ icon, title, children, tone = "plain" }: { icon?: ReactNode; title: ReactNode; children?: ReactNode; tone?: "plain" | "yours" }) {
+// `status`: every channel says its state the same way, a word and a mark on the right (round 7:
+// email said it in its title, push said nothing, auto-cart had a pill).
+function Box({ icon, title, children, tone = "plain", status }: { icon?: ReactNode; title: ReactNode; children?: ReactNode; tone?: "plain" | "yours"; status?: ReactNode }) {
   return (
     <div className={cx("flex gap-3 rounded-ch-input border px-4 py-3.5", tone === "yours" ? "border-ch-ochre-line bg-ch-ochre-soft" : "border-ch-line bg-ch-paper")}>
       {icon && <span aria-hidden="true" className="mt-0.5 shrink-0 text-ch-ink-2">{icon}</span>}
-      <div className="min-w-0">
-        <p className="text-[15px] font-bold text-ch-ink">{title}</p>
+      <div className="min-w-0 flex-1">
+        <p className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink"><span>{title}</span>{status}</p>
         {children && <div className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{children}</div>}
       </div>
     </div>
@@ -183,7 +185,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     const on = plan === "autocart" ? "Watching, alerts and auto-cart are all switched on." : "Watching and alerts are switched on, on the Alerts plan.";
     return (
       <div>
-        <p className="text-[16px] font-bold text-ch-ink">{known ? "Your subscription is active" : "Your subscription"}</p>
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[16px] font-bold text-ch-ink">{known ? <>Your subscription<Tag kind="paused" mark="on" srPrefix="Status:">Active</Tag></> : "Your subscription"}</p>
         {known && billing !== "not-billed" && (
           <p className="mt-1 text-[15px] text-ch-ink tabular-nums">
             {plan === "autocart" ? "Auto-Cart plan" : "Alerts plan"}
@@ -335,8 +337,8 @@ export function Settings() {
               </Section>
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you've turned on, at once. Whichever gets to you first wins.">
-                <Box icon={<Mail className="size-5" />} title="Email — always on">Every opening we find goes to {EMAIL}.</Box>
-                <Box icon={<Bell className="size-5" />} title="Push notifications — in the CampHawk app">Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
+                <Box icon={<Mail className="size-5" />} title="Email" status={<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag>}>Every opening we find goes to {EMAIL}.</Box>
+                <Box icon={<Bell className="size-5" />} title="Push notifications" status={<Tag kind="paused" mark="not-set-up" srPrefix="Status:">In the app only</Tag>}>Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>
             )}

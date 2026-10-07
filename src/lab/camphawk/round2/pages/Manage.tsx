@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BellOff, ChevronLeft, ExternalLink } from "lucide-react";
+import { BellOff, CalendarDays, ChevronLeft, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Card } from "../../ui/Card";
@@ -68,6 +68,8 @@ function MuteSites({ w }: { w: ManageWatch }) {
     </Collapsible>
   );
 }
+
+const navLink = "inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
 
 export function Manage() {
   const [which, setWhich] = useUrlState<"upper-pines" | "leo">("watch", "upper-pines", ["upper-pines", "leo"]);
@@ -177,13 +179,18 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
             </div>
           </div>
         )}
-        <div className="mt-5 flex flex-wrap gap-2 border-t border-ch-line pt-4">
-          <Link href={calendar} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Calendar</Link>
-          <a href="#" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
-          {!editing && <button ref={editTriggerRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
-          {active
-            ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
-            : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
+        {/* Actions on the watch are buttons; places to go are links, as on the Watches cards. */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-ch-line pt-4">
+          <span className="flex flex-wrap gap-2">
+            {!editing && <button ref={editTriggerRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Edit dates</button>}
+            {active
+              ? <button type="button" onClick={() => setActive(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Pause checks</button>
+              : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
+          </span>
+          <span className="flex flex-wrap gap-x-6 sm:ml-auto">
+            <Link href={calendar} className={navLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
+            <a href="#" className={navLink}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+          </span>
         </div>
       </Card>
       {error && <p role="alert" className="rounded-ch-input border border-ch-alert bg-ch-alert-soft px-4 py-3 text-[15px] text-ch-alert-deep">{error}</p>}

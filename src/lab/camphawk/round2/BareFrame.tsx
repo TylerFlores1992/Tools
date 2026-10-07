@@ -17,14 +17,14 @@ import { useVisitor, withVisitor } from "./labState";
 // marketing page with prices.
 
 export function BareFrame({
-  page, controls, children, narrow = true, homeLabel = "CampHawk home", centered = false, lead,
+  page, controls, children, narrow = true, homeLabel = "CampHawk home", centered = true, lead,
 }: {
   page: string;
   controls?: (ctx: { visitor: Visitor }) => ReactNode;
   children: (ctx: { visitor: Visitor }) => ReactNode;
   narrow?: boolean;
   homeLabel?: string;
-  /** Center the badge, for screens whose card is centered (sign in, sign up). */
+  /** Center the badge over the card (every bare screen; the card is centered too). */
   centered?: boolean;
   /** One line of context on the forest, under the badge. */
   lead?: ReactNode;

@@ -28,7 +28,9 @@ const VARIANT: Record<ButtonVariant, string> = {
 };
 
 const SIZE: Record<ButtonSize, string> = {
-  sm: "px-3 py-2.5 text-ch-meta",
+  // 14px, not the 12px meta size: a small button is still a control, and 12px in a 44px pill
+  // read as a placeholder beside 15-17px body text (round-7 critique).
+  sm: "px-3 py-2.5 text-[14px]",
   md: "px-3 py-3 text-[14.5px]",
   lg: "px-3 py-[19px] text-[17px]",
 };

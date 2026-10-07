@@ -15,10 +15,10 @@ const plainNights = (f: string) => f.replace("any N nights in a window", "how ma
 function Plan({ name, tier, features, recommended }: { name: string; tier: "base" | "autocart"; features: string[]; recommended?: boolean }) {
   return (
     <div className={cx("flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
-      </div>
+      {/* The badge gets its own line, reserved in both cards, so the titles and prices line up at
+          every width (it wrapped under one title at 768). */}
+      <div className="flex min-h-7 items-center">{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
+      <h3 className="mt-2 font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">

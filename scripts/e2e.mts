@@ -633,7 +633,7 @@ try {
     await p.getByRole("heading", { name: "Settings need an account" }).waitFor();
     // An Alerts-plan subscriber is never told auto-cart is on; the upgrade names its price.
     await p.goto(`${GH}/settings?as=subscriber&plan=alerts`);
-    await p.getByText("Your subscription is active").waitFor();
+    await p.locator("p", { hasText: "Your subscription" }).getByText("Active").first().waitFor();
     assert.equal(await p.getByText("auto-cart are all switched on", { exact: false }).count(), 0);
     await p.getByText("$10 a month, or $50 a year", { exact: false }).waitFor();
     await p.getByRole("button", { name: "Upgrade to Auto-Cart" }).click();

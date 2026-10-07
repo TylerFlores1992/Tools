@@ -45,10 +45,10 @@ const priceLabel = (t: PlanTier, i: "monthly" | "yearly") => priceShort(t, i).re
 function PlanCard({ name, tier, features, recommended, children }: { name: string; tier: PlanTier; features: string[]; recommended?: boolean; children: ReactNode }) {
   return (
     <div className={cx("flex flex-col rounded-ch-card bg-ch-card p-6 shadow-ch-pop sm:p-8", recommended ? "border-2 border-ch-forest" : "border border-ch-line")}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
-        {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
-      </div>
+      {/* The badge gets its own line, reserved in both cards, so the titles and prices line up at
+          every width (it wrapped under one title at 768). */}
+      <div className="flex min-h-7 items-center">{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
+      <h3 className="mt-2 font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
@@ -196,16 +196,24 @@ function HoldExplainer() {
   );
   return (
     <section aria-labelledby="rc-hold" className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-8">
-      <div className="max-w-[70ch]">
-        <h2 id="rc-hold" className="text-balance font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases: we can hold the site while you wake up</h2>
-        <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
-          <p>When somebody cancels a ReserveCalifornia booking, the site usually does not go back on sale straight away. It is released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what is coming and offer to be there when it opens.</p>
-          <p className="mt-4 flex items-start gap-2.5 border-t border-ch-line pt-4">
-            <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink" />
-            <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
-          </p>
-          {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
-          <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Our Recreation.gov auto-cart isn&apos;t in beta: connect once and openings go straight into your cart.</p>
+      {/* Wide screens: the story on the left, the steps beside it (the card was half empty with the
+          steps folded away). Narrow screens fold the steps into a collapsible under the story. */}
+      <div className="grid gap-x-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div>
+          <h2 id="rc-hold" className="text-balance font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases: we can hold the site while you wake up</h2>
+          <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
+            <p>When somebody cancels a ReserveCalifornia booking, the site usually doesn&apos;t go back on sale straight away. It&apos;s released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what&apos;s coming and offer to be there when it opens.</p>
+            <p className="mt-4 flex items-start gap-2.5 border-t border-ch-line pt-4">
+              <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink" />
+              <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
+            </p>
+            <div className="lg:hidden">{RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}</div>
+            <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Our Recreation.gov auto-cart isn&apos;t in beta: connect once and openings go straight into your cart.</p>
+          </div>
+        </div>
+        <div className="hidden lg:block">
+          <h3 className="text-[17px] font-bold text-ch-ink">How a hold works</h3>
+          <div className="text-[16px] leading-relaxed text-ch-ink-2">{steps}</div>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, MessageSquare } from "lucide-react";
 import { buttonClasses } from "../ui";
+import { Tag } from "../ui/Tag";
 import { ROUTES } from "./gates";
 import { A } from "./LabPage";
 import type { Visitor } from "../data";
@@ -74,7 +75,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       {saved && (
         <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
           <MessageSquare aria-hidden="true" className="size-5 shrink-0 text-ch-ink-2" />
-          <p className="flex-1 text-[15px] font-bold text-ch-ink">Text alerts go to <span className="whitespace-nowrap">{saved}</span></p>
+          <p className="flex flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink"><span>Text alerts go to <span className="whitespace-nowrap">{saved}</span></span><Tag kind="paused" mark="on" srPrefix="Status:">On</Tag></p>
           {!editing && (
             <span className="flex gap-2">
               <button ref={changeRef} type="button" onClick={() => setEditing(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Change number</button>
