@@ -14,7 +14,7 @@ const BASE = `/workshop/${tool.slug}`;
 
 export const metadata: Metadata = {
   title: tool.name,
-  description: "Free ETCP Certified Rigger study: two 25-question practice tests with worked answers, flashcards and a formula reference.",
+  description: "Free ETCP Certified Rigger study: three practice tests (25, 25 and a 50-question exam-weighted set) with worked answers, flashcards and a formula reference.",
   alternates: { canonical: BASE },
   robots: { index: true, follow: true },
 };
@@ -24,7 +24,7 @@ const SECTIONS = [
     href: `${BASE}/practice/${s.slug}`,
     eyebrow: `${s.questions.length} questions`,
     title: s.name,
-    body: "Arena-style multiple choice. Tap an answer to see the working.",
+    body: s.about ?? "Arena-style multiple choice. Tap an answer to see the working.",
   })),
   { href: `${BASE}/flashcards`, eyebrow: `${CARDS.length} cards · ${DECKS.length} decks`, title: "Flashcards", body: DECKS.map((d) => d.label).join(", ") + ". Keep what you miss in rotation." },
   { href: `${BASE}/formulas`, eyebrow: `${FORMULA_COUNT} formulas`, title: "Formula reference", body: "Bridles, beams, rope and forces, each linked to the questions that use it." },

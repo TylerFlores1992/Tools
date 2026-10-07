@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word).*
+*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word. ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
 
 ## At a glance
 
@@ -10,7 +10,7 @@
 | Site | https://tylerflores.dev | Live. Merges to `main` deploy production automatically. |
 | Home hero | `/` | Live. Signed off by the owner. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
-| ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B, 73 flashcards, formula reference. |
+| ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
 | ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
@@ -29,8 +29,8 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (120 tests) · `npm run e2e` (32 browser checks) ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (26 checks, including
+**Checks, all green:** `npm run verify` (126 tests) · `npm run e2e` (32 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (27 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
@@ -77,7 +77,10 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 3. **Speed:** measure LCP with https://pagespeed.web.dev on tylerflores.dev. Target is 1.8 s on
    mobile. If over, trim client JS (home ships only HeroFilm as a client component; check the
    bundle with `next experimental-analyze`).
-4. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
+4. **ETCP study:** if the owner wants more, a Theatre-weighted set (its outline is in the same
+   handbook) or a 150-question timed "full exam" mode drawing from A/B/C. Write new sets the same
+   way as `set-c.ts`: facts verified against primary sources, numbers recomputed in tests.
+5. **Later:** ⌘K palette, `/bench`, offline support for `/workshop/*`, a CampHawk tier-3 page
    with real screenshots (ask before publishing any number).
 
 ## What's built, in more detail
@@ -109,6 +112,15 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   tilting card was backward (the higher pick gains load); fixed, with a geometry test.
 - Formula reference in our own notation, each formula linked to its questions, plus the
   official ETCP PDF. Exam outline counts checked against ETCP's pages.
+- Practice test C (`set-c.ts`, 50 questions): weighted like the real exam by ETCP's Arena
+  outline (handbook rev. 5.0, Feb 2016: 1A 25, 1B 15, 1C 10, 2A 10, 2B 25, 2C 25, 3A 10, 3B 30
+  of 150; each area within one question of its share, tested). It uses ETCP's sample formats:
+  "1 and 2 only" lists and put-in-order items. The score card breaks results down by area.
+  Facts were checked against eCFR (OSHA 1910/1926), Crosby Applications & Warnings, CM Lodestar
+  manual, Prolyte manual, a Tomcat load table and ETCP's formula sheet, with sources named in
+  the explanations. Answer keys are spread across A–D (tested).
+  Left out on purpose: "taildown" and "cable puller" (in the outline, but no public definition
+  found), and an exact WRTB splice-efficiency figure (couldn't reach a primary source).
 - Progress is saved in the browser only (`stored.ts`).
 
 ### Private tab (`src/app/private/`, `src/proxy.ts`, `src/lib/private-auth.ts`)
