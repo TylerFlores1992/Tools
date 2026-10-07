@@ -133,7 +133,8 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
   return (
     <>
       {/* The state is the pill, unless the row below already says it (on and off, with their button). */}
-      <div className="flex flex-wrap gap-1.5">{state !== "on" && state !== "off" && tag}<Tag kind="src">Recreation.gov only</Tag></div>
+      {/* "Recreation.gov only" is in the first line of the body, not a lone chip (round 14). */}
+      {state !== "on" && state !== "off" && <div className="flex flex-wrap gap-1.5">{tag}</div>}
       <p className="text-[15px] leading-relaxed text-ch-ink-2">{AUTOCART_BODY} It signs in to your Recreation.gov account on a private machine we run, and saves that login there — encrypted, never on our web servers — so it can sign back in on its own whenever the session drops.</p>
       {state === "reconnecting" && (
         <Box tone="yours" icon={<AlertTriangle className="size-5" />} title="Auto-cart is reconnecting">

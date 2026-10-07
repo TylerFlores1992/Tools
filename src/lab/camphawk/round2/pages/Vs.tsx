@@ -68,7 +68,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
               <Q q="Plans, and a free trial">There’s a free trial, and you can cancel any time from your store’s subscription settings. See the plans in <A href={ROUTES.settings} visitor={visitor}>Settings</A>.</Q>
             ) : (
               <Q q={`${pricePhrase("base", "monthly")}, or ${dollars(PLAN_PRICE.autocart.monthly)} if you want the carting`}>
-                {priceShort("base", "monthly")} or {priceShort("base", "yearly")} for alerts; {priceShort("autocart", "monthly")} or {priceShort("autocart", "yearly")} for the Auto-Cart plan. There’s a {TRIAL_DAYS}‑day free trial and you can cancel from your own settings. <A href={ROUTES.pricing} visitor={visitor}>Pricing</A>.
+                {priceShort("base", "monthly")} or {priceShort("base", "yearly")} for alerts; {priceShort("autocart", "monthly")} or {priceShort("autocart", "yearly")} for the Auto-Cart plan. There’s a {TRIAL_DAYS}‑day free trial and you can cancel any time. <A href={ROUTES.pricing} visitor={visitor}>Pricing</A>.
               </Q>
             )}
           </ul>

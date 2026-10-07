@@ -70,8 +70,17 @@ export function Welcome() {
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
+            {/* The plan just bought comes first: it was buried under the text opt-in (round 14). */}
+            {subscribed && plan === "autocart" && (
+              <section aria-labelledby="w-cart" className="mt-7 rounded-ch-input border border-l-4 border-ch-line border-l-ch-blue bg-ch-card p-4 sm:p-5">
+                <h2 id="w-cart" className="font-ch-body! text-[15px] font-bold text-ch-ink">Set up auto-cart</h2>
+                <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
+                <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", className: "mt-4 min-h-12 px-5 text-[15px]" })}>Set up auto-cart</Link>
+              </section>
+            )}
+
             {/* The same rows as Settings: icon, a sans title with its state, then the line. */}
-            <section aria-labelledby="w-email" className="mt-7 flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+            <section aria-labelledby="w-email" className="mt-6 flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
               <Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
               <div className="min-w-0 flex-1">
                 <h2 id="w-email" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-ch-body! text-[15px] font-bold text-ch-ink">Email<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag></h2>
@@ -95,13 +104,6 @@ export function Welcome() {
               <SmsAlerts visitor={visitor} secondary intro="Add your number below and every opening is texted to you too. A text wakes you; an email waits until you look." />
             </section>
 
-            {subscribed && plan === "autocart" && (
-              <section aria-labelledby="w-cart" className="mt-6 rounded-ch-input border border-l-4 border-ch-line border-l-ch-blue bg-ch-card p-4 sm:p-5">
-                <h2 id="w-cart" className="font-ch-body! text-[15px] font-bold text-ch-ink">Set up auto-cart</h2>
-                <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">One sign-in to Recreation.gov and we can put an opening straight into your cart, held while you get to your phone. It signs in on a private machine we run and saves that login there — encrypted, never on our web servers.</p>
-                <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "cart", className: "mt-4 min-h-12 px-5 text-[15px]" })}>Set up auto-cart</Link>
-              </section>
-            )}
 
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-ch-line pt-6">
               <button type="button" disabled={saving !== null} onClick={() => go("finish")} className={buttonClasses({ variant: "ink", className: cx("min-h-12 px-8 text-[16px]", saving && "cursor-wait") })}>

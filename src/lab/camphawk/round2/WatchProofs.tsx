@@ -126,7 +126,7 @@ export function WatchProofs() {
   return (
     <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
       <Tile title={ALERTS.title} body={ALERTS.body} className="lg:col-span-7"><CheckLog /></Tile>
-      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] bg-ch-forest object-cover object-[50%_80%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
+      <Art art={ART.a3} sizes="(min-width: 1024px) 40vw, 100vw" className="aspect-[4/3] w-full rounded-[22px] bg-ch-forest object-cover object-[50%_80%] lg:object-[50%_100%] lg:col-span-5 lg:row-span-2 lg:aspect-auto lg:h-full" />
       <Tile title={AUTOCART.title} body={AUTOCART.body} className="lg:col-span-7"><HeldCart /></Tile>
       <Tile title={SEARCH.title} body={SEARCH.body} className="lg:col-span-6"><MiniResults /></Tile>
       <Tile title={FLEXIBLE.title} body={FLEXIBLE.body} className="lg:col-span-6"><DateWindow /></Tile>

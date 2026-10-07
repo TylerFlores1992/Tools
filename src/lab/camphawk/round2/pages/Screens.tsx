@@ -55,7 +55,7 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
       { href: `${ROUTES.camping}/california`, name: "A state: California", what: "One state’s campgrounds, by town." },
       { href: `${ROUTES.camping}/cabins`, name: "Cabins", what: "Where to book a cabin, by state; yurts and group camping share the template." },
       { href: `${ROUTES.camping}/cabins/california`, name: "Cabins in California", what: "One state’s campgrounds with cabins." },
-      { href: ROUTES.hardest, name: "Hardest to book", what: "CampHawk’s own pick of the campgrounds that fill fastest." },
+      { href: ROUTES.hardest, name: "Always booked", what: "CampHawk’s own pick of the campgrounds that fill fastest." },
       { href: ROUTES.vsCampflare, name: "CampHawk vs Campflare", what: "The comparison page; CampHawk makes no claims about the competitor." },
       { href: ROUTES.vsCampnab, name: "CampHawk vs Campnab", what: "The same template, for Campnab." },
     ],

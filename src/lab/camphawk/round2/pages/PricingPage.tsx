@@ -182,7 +182,7 @@ function AppPaywall({ store }: { store: Store }) {
               </li>
             ))}
           </ul>
-          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", fullWidth: true, className: "mt-4 min-h-12" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
+          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", className: "mx-auto mt-4 flex min-h-11 border-transparent! px-3 underline underline-offset-4 shadow-none!" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
           <p role="status" className="mt-2 text-[14px] text-ch-ink-2">{restore === "none" ? "We didn’t find an active subscription for this Apple ID." : ""}</p>
           <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
           <p className="mt-3 max-w-[70ch] text-[13px] leading-relaxed text-ch-ink-2">Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless it is canceled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the current period. Manage or cancel any time in your App Store account settings. Any unused portion of a free trial is forfeited when you buy a subscription.</p>
@@ -238,7 +238,7 @@ export function PricingPage() {
       sub={({ visitor }) => visitor === "subscriber"
         ? "Your plan, what it does for you, and what we never do."
         // No price in the app (store rule): the store's own tiles below carry it.
-        : visitor === "app" ? "Your plan works in the app and on the web. Cancel any time from your store account."
+        : visitor === "app" ? "Works in this app. Add a free account to use it on the web too. Cancel any time from your store account."
         : <><span className="block text-balance font-ch-display text-[clamp(20px,2vw,26px)] font-extrabold leading-snug text-ch-paper">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</span><span className="mt-2 block">A subscription keeps a watch running around the clock, and Auto-Cart wins the sites that vanish in minutes.</span></>}
       photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan

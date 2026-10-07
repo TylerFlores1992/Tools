@@ -487,7 +487,7 @@ export function NewWatch() {
                 <ol className="mt-3">
                   {[
                     ["Find the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
-                    ["Choose your nights", "Exact dates, This weekend, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
+                    ["Choose your nights", "Pick exact dates or this weekend, or choose Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
                     ["Start watching", "Then go about your day. We’ll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (
                     <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">
