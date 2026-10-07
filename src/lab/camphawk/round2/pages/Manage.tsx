@@ -221,12 +221,12 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
           <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
           <ul className="mt-2 divide-y divide-ch-line">
             {requested.map((r) => (
-              <li key={r.unit} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+              <li key={r.unit} className="grid gap-2 py-3 sm:flex sm:items-center sm:gap-4">
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">8 AM hold</Tag></span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
-                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call this off: the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Call this off</button>
+                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Call this off: the hold on ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Call this off</button>
               </li>
             ))}
           </ul>

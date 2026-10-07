@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, Info, Loader2, Star } from "lucide-react";
+import { Check, Loader2, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { Collapsible } from "../../ui/Collapsible";
@@ -11,11 +11,12 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 import { LIMITS } from "../../copy";
 import { ART } from "../Art";
 import { LabSelect, type Plan } from "../AppParts";
+import { BetaNote } from "../BareFrame";
 import { ROUTES } from "../gates";
 import { A, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
-import { HOLD_BETA_NOTE, HOLD_MINUTES, LAUNCH_PRICING, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
+import { HOLD_MINUTES, LAUNCH_PRICING, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
 // StorePaywall.tsx, RcHoldExplainer.tsx). The one place that sells. What it keeps on purpose:
@@ -130,7 +131,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
 function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone: boolean }) {
   const autocart = plan === "autocart";
   const items = [
-    `Watch up to ${WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.`,
+    `Run up to ${WATCH_LIMIT} watches at once. We check each one every 15 seconds, around the clock.`,
     phone ? "Alerts reach you by text as well as email. Change the number any time in Settings." : "Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6 AM.",
     autocart ? "Auto-cart is connected, so an opening on a Recreation.gov watch goes straight into your cart while you get to your phone." : "With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.",
     "Any alert lets you pause the watch, reopen it, or mute a site you don’t want.",
@@ -195,10 +196,10 @@ function AppPaywall({ store }: { store: Store }) {
 function HoldExplainer() {
   const steps = (
     <Steps steps={[
-      ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “hold it for me” button."],
+      ["The night before", "You get an alert naming the site, the nights and the exact release time — with a “Hold it for me” button."],
       ["You tap it, or you don’t.", "Nothing happens unless you do. There is no standing setting for this, on purpose — holding a site takes it off the market for everyone else, and that is not a decision to make weeks in advance."],
       ["At 8 AM we put it in a cart", "In seconds, before most people have found the page."],
-      ["We text you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
+      ["We alert you and let go", `Then your own account can take it. We hold it for up to ${HOLD_MINUTES} minutes, so it is worth answering promptly. You do the booking and the paying — we never do either.`],
     ]} />
   );
   return (
@@ -210,10 +211,7 @@ function HoldExplainer() {
           <h2 id="rc-hold" className="text-balance font-ch-display text-[22px] font-extrabold leading-tight text-ch-ink">California 8 AM releases: we can hold the site while you wake up</h2>
           <div className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">
             <p>When somebody cancels a ReserveCalifornia booking, the site usually doesn’t go back on sale straight away. It’s released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what’s coming and offer to be there when it opens.</p>
-            <p className="mt-4 flex items-start gap-2.5 border-t border-ch-line pt-4">
-              <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink" />
-              <span>{HOLD_BETA_NOTE} Everyone’s ReserveCalifornia watches still alert as usual.</span>
-            </p>
+            <BetaNote className="mt-4 border-t border-ch-line pt-4" extra="Everyone’s ReserveCalifornia watches still alert as usual." />
             <div className="lg:hidden">{RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}</div>
             <p className="mt-5 text-[15px]">ReserveCalifornia parks only. On Recreation.gov, auto-cart is open to every Auto-Cart subscriber: connect once and openings go straight into your cart.</p>
           </div>
@@ -271,7 +269,7 @@ export function PricingPage() {
           </section>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds free</Link>
-            {visitor === "app" ? <A href={ROUTES.explore} visitor={visitor}>Back to search</A> : <A href={ROUTES.home} visitor={visitor}>Back to the home page</A>}
+            {visitor === "app" ? <A href={ROUTES.explore} visitor={visitor}>Back to search</A> : <A href={ROUTES.alerts} visitor={visitor}>How cancellation alerts work</A>}
           </div>
         </div>
       )}

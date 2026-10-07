@@ -3,7 +3,7 @@
 import { Tag } from "../../ui/Tag";
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2, Mail, MessageSquare } from "lucide-react";
+import { Bell, Loader2, Mail } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { ART } from "../Art";
@@ -81,15 +81,18 @@ export function Welcome() {
               </div>
             </section>
 
-            <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <div className="flex gap-3">
-                <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
-                <div className="min-w-0 flex-1">
-                  <h2 id="w-text" className="font-ch-body! text-[15px] font-bold text-ch-ink">Text alerts</h2>
-                  <p className="mb-4 mt-1 text-[14px] leading-relaxed text-ch-ink-2">A text wakes you; an email waits until you look.</p>
-                </div>
+            <section aria-labelledby="w-push" className="mt-3 flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+              <Bell aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+              <div className="min-w-0 flex-1">
+                <h2 id="w-push" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-ch-body! text-[15px] font-bold text-ch-ink">Push notifications<Tag kind="paused" mark="not-set-up" srPrefix="Status:">App only</Tag></h2>
+                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</p>
               </div>
-              <SmsAlerts visitor={visitor} secondary />
+            </section>
+
+            {/* Texts: the same row header (from SmsAlerts, so it flips to On once a number is saved),
+                then the carrier-approved opt-in under it. */}
+            <section aria-label="Text alerts" className="mt-3">
+              <SmsAlerts visitor={visitor} secondary intro="A text wakes you; an email waits until you look." />
             </section>
 
             {subscribed && plan === "autocart" && (

@@ -17,7 +17,8 @@ import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
-import { HOLD_BETA_LABEL, HOLD_BETA_NOTE, TRIAL_DAYS } from "./pages/tier2-data";
+import { TRIAL_DAYS } from "./pages/tier2-data";
+import { BetaNote } from "./BareFrame";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sitesFor, type Division, type Pickable } from "./newwatch-data";
@@ -426,12 +427,9 @@ export function NewWatch() {
             )}
             {canRcHold && offer === "promise" && (
               <div className={cx(panel, "mt-6")}>
-                <p className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</span>
-                  <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">{HOLD_BETA_LABEL}</span>
-                </p>
+                <p className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</p>
                 <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we’ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
-                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">{HOLD_BETA_NOTE}</p>
+                <BetaNote className="mt-2" />
               </div>
             )}
             {canRcHold && offer === "upsell" && (
@@ -489,7 +487,7 @@ export function NewWatch() {
                 <ol className="mt-3">
                   {[
                     ["Pick the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
-                    ["Choose your nights", "Exact dates, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
+                    ["Choose your nights", "Exact dates, This weekend, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
                     ["Start watching", "Then go about your day. We’ll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (
                     <li key={title} className="flex gap-3 border-b border-ch-line py-3.5 last:border-b-0">

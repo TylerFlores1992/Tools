@@ -100,7 +100,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
           {state === "watching" && <Tag kind="watch">Watching</Tag>}
-          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !carted && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
+          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
           {state === "paused" && <Tag kind="paused">Paused</Tag>}
           {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
           {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}

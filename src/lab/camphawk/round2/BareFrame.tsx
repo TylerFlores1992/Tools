@@ -1,6 +1,7 @@
 "use client";
 
-import { HOLD_BETA_NOTE, HOLD_BETA_LABEL } from "./pages/tier2-data";
+import { Info } from "lucide-react";
+import { HOLD_BETA_NOTE } from "./pages/tier2-data";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
@@ -76,12 +77,13 @@ export function Facts({ rows }: { rows: ReadonlyArray<readonly [string, ReactNod
   );
 }
 
-/** The "Beta" pill and its note: above the promise, on purpose. */
-export function BetaNote({ className }: { className?: string }) {
+/** The 8 AM hold's beta note, one look wherever a hold is offered or explained: an (i) and the
+    sentence, with an optional line after it. On the offer page it sits above the promise, on purpose. */
+export function BetaNote({ className, extra }: { className?: string; extra?: string }) {
   return (
-    <p className={cx("flex items-start gap-2 text-[14px] leading-relaxed text-ch-ink-2", className)}>
-      <span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">{HOLD_BETA_LABEL}</span>
-      <span>{HOLD_BETA_NOTE}</span>
+    <p className={cx("flex items-start gap-2.5 text-[15px] leading-relaxed text-ch-ink-2", className)}>
+      <Info aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" />
+      <span>{HOLD_BETA_NOTE}{extra ? ` ${extra}` : ""}</span>
     </p>
   );
 }

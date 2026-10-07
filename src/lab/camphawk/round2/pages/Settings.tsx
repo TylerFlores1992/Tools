@@ -362,7 +362,9 @@ export function Settings() {
                 <>
                   <div>
                     <p className="text-[16px] font-bold text-ch-ink">{EMAIL}</p>
-                    <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Your email address, password and sign-in methods live in your account menu, in the top right of the page.</p>
+                    <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Change your email address, password or sign-in methods here, or from your account menu in the top right.</p>
+                    {/* Opens Clerk's account panel in CampHawk; a stand-in here. */}
+                    <a href="#" className={sm("quiet", "mt-3")}>Manage sign-in</a>
                   </div>
                   <SignOutConfirm textOn={textOn} />
                 </>

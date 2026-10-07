@@ -81,6 +81,8 @@ function RegionGrid({ rows, href, visitor, caption }: { rows: Region[]; href: (r
 // One card per town, the same card Hardest to book uses, so the two catalog pages read as one
 // family (round 8: a long run of bare link rows read as an SEO scaffold).
 function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; name: string; visitor: Visitor }) {
+  // A count only says something when the cards differ; "1" on every card is noise (round 11).
+  const counted = new Set(groups.map((g) => g.campgrounds.length)).size > 1;
   return (
     // Masonry columns (towns are alphabetical, so reading down a column is fine): equal-height grid
     // rows left short towns with empty card bottoms beside Yosemite's seven.
@@ -89,7 +91,7 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
         <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
             <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
-            {<span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
+            {counted && <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
           </h2>
           <ul className="mt-1">
             {g.campgrounds.map((n) => (
@@ -322,7 +324,7 @@ export function HardestToBook() {
               </li>
             ))}
           </ol>
-          <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
+          <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for every other campground.</p>
           <LabNote className="mt-12">The parks and their order are CampHawk’s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { BetaNote } from "../BareFrame";
 import type { ReactNode } from "react";
 import { buttonClasses } from "../../ui";
 import { CAMPGROUNDS_ROUNDED, PLAN_PRICE, dollars, pricePhrase, priceShort } from "../../data";
@@ -10,7 +10,7 @@ import { A, LabPage, WithRail } from "../LabPage";
 import { withVisitor } from "../labState";
 import Link from "next/link";
 import { COMPETITORS, COVERAGE, type Competitor } from "./camping-data";
-import { CHECK_SECONDS, HOLD_BETA_NOTE, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
+import { CHECK_SECONDS, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 3: CampHawk vs Campflare / Campnab (campsite-finder src/components/v2/ComparisonPage.tsx,
 // lib/competitors.ts). THERE IS NO COMPARISON TABLE, BY DESIGN: CampHawk makes no claim about a
@@ -63,7 +63,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
             </Q>
             <Q q="ReserveCalifornia sites are held at the 8 AM release">
               California cancellations mostly don’t go back on sale straight away — they are locked until the next morning’s release, when everybody refreshes at once. CampHawk spots the site the night before, offers to be there, and carts it within a couple of seconds of it freeing, then hands it to you.{" "}
-              <span className="mt-3 flex items-start gap-2.5 border-t border-ch-line pt-3 text-[15px]"><Info aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" /><span>{HOLD_BETA_NOTE}</span></span>
+              <BetaNote className="mt-3 border-t border-ch-line pt-3" />
             </Q>
             <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a sweep every few minutes: every watched campground is rechecked every {CHECK_SECONDS} seconds, around the clock, which is what makes carting within seconds possible at all.</Q>
             <Q q="Flexible dates, and per-site muting">Watch for &ldquo;any two nights in this window&rdquo; rather than one fixed range — which, on a popular weekend, is usually the difference between getting something and getting nothing. And if one loop keeps opening and you don’t want it, mute that site instead of the whole campground.</Q>
@@ -87,8 +87,8 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
           </ul>
 
           <section className="mt-10 rounded-ch-card bg-ch-forest px-6 py-10 text-center">
-            <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold leading-[1.15] text-ch-paper">Search is free, and needs no account</h2>
-            <p className="mx-auto mt-2 max-w-[46ch] text-[17px] leading-relaxed text-ch-line">Look up the campground you want and see what CampHawk knows about it before you decide anything.</p>
+            <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold leading-[1.15] text-ch-paper">Find your campground, then let us watch it</h2>
+            <p className="mx-auto mt-2 max-w-[46ch] text-[17px] leading-relaxed text-ch-line">Searching is free and needs no account. Look up the campground you want and see what CampHawk knows about it before you decide anything.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </section>
           <p className="mt-8 text-[14px] leading-relaxed text-ch-ink-2">{c.name} is not affiliated with CampHawk, and we don’t speak for them. Everything above describes CampHawk; for {c.name}’s features and prices, <Out href={c.homepage}>see their site</Out>.</p>

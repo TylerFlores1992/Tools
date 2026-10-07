@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
-import { Info } from "lucide-react";
+import { BetaNote } from "../BareFrame";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, ActionLink, Callout, CtaBand, H2, LabNote, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
-import { CHECK_SECONDS, HOLD_BETA_LABEL, HOLD_BETA_NOTE, HOLD_MINUTES, inWords, OPENINGS_STAT, openingsPercent, RC_HOLD_OPEN, SOURCE_COUNT } from "./tier2-data";
+import { A, ActionLink, CtaBand, H2, LabNote, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
+import { CHECK_SECONDS, HOLD_MINUTES, inWords, OPENINGS_STAT, openingsPercent, RC_HOLD_OPEN, SOURCE_COUNT } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
 // campsite-cancellation-alerts, sold-out-campsite). Server pages in CampHawk, no account states,
@@ -35,7 +35,7 @@ function StepCards({ label, steps }: { label: string; steps: ReadonlyArray<reado
   return (
     <ol aria-label={label} className="mt-6 grid gap-3 sm:grid-cols-2">
       {steps.map(([when, what, detail], i) => (
-        <li key={what} className="rounded-ch-input border border-ch-line bg-ch-card p-4 shadow-ch-card">
+        <li key={what} className="rounded-ch-input border border-ch-line bg-ch-card p-4 shadow-ch-card sm:odd:last:col-span-2">
           <span className="flex items-center gap-2 text-[15px] font-bold text-ch-ink-2"><span aria-hidden="true" className="grid size-6 place-items-center rounded-full bg-ch-shell font-ch-display text-[13px] font-extrabold text-ch-ink">{i + 1}</span>{when}</span>
           <span className="mt-1 block text-[17px] font-bold leading-snug text-ch-ink">{what}</span>
           <span className="mt-2 block text-[15px] leading-relaxed text-ch-ink-2">{detail}</span>
@@ -78,9 +78,7 @@ function Disclaimer({ visitor }: { visitor: Parameters<typeof A>[0]["visitor"] }
 function HoldClosed() {
   if (RC_HOLD_OPEN) return null;
   return (
-    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />{HOLD_BETA_LABEL}</span>}>
-      {HOLD_BETA_NOTE} Everyone’s ReserveCalifornia watches still alert as usual, and Recreation.gov auto-cart isn’t affected.
-    </Callout>
+    <BetaNote className="mt-4" extra="Everyone’s ReserveCalifornia watches still alert as usual, and Recreation.gov auto-cart isn’t affected." />
   );
 }
 
@@ -103,8 +101,7 @@ export function AutoCartGuide() {
           <P>Cancellations on Recreation.gov happen at any hour, so this lane is a standing setting: once it’s on, a watched site that frees up is added to your cart within seconds, whatever time it is.</P>
           <StepCards label="Recreation.gov auto-cart, start to finish" steps={[
             ["Once", "Set your watches", <>Search for a campground, pick your dates, and tap the watch button on any booked campground. Auto-cart only acts on sites you’re watching.</>],
-            ["Once", "Turn on auto-cart", <>In <A href={ROUTES.settings} visitor={visitor}>Settings</A>, under Auto-cart, tap <strong className="text-ch-ink">Set up auto-cart</strong>. Once it’s connected, the same block has a Turn off button (and Turn on when it’s off).</>],
-            ["Once", "Sign in to Recreation.gov", <>Your email and password are saved, encrypted, on a private machine we run, so auto-cart signs back in by itself if the session drops. They never reach CampHawk’s web servers or database.</>],
+            ["Once", "Connect Recreation.gov", <>In <A href={ROUTES.settings} visitor={visitor}>Settings</A>, under Auto-cart, tap <strong className="text-ch-ink">Set up auto-cart</strong> and sign in to Recreation.gov. Your email and password are saved, encrypted, on a private machine we run, so auto-cart signs back in by itself if the session drops; they never reach CampHawk’s web servers or database. The same block turns auto-cart off and on.</>],
             ["From then on", "It’s already in your cart", <>When a watched site opens, it’s added to your cart within seconds and you get your normal alert. Open Recreation.gov on your phone and check out.</>],
           ]} />
 
@@ -114,8 +111,8 @@ export function AutoCartGuide() {
           {/* The hold, start to finish: when each thing happens and what you do. */}
           <StepCards label="An 8 AM hold, start to finish" steps={[
             ["Any day", "Watch the park", "Someone cancels; the site waits for the next 8 AM release. There’s nothing to switch on — just watch the campground you want."],
-            ["Night before", "We offer", <>You get an alert with a Hold it for me button. Nothing happens unless you tap it.</>],
-            ["8:00 AM", "We cart it", "Within a couple of seconds of the release, we put the site in a cart, so it’s off the market while you get to your phone."],
+            ["Night before", "We offer", <>You get an alert with a “Hold it for me” button. Nothing happens unless you tap it.</>],
+            ["8 AM", "We cart it", "Within a couple of seconds of the release, we put the site in a cart, so it’s off the market while you get to your phone."],
             [`Within ${HOLD_MINUTES} min`, "You take it over", <>Open the claim link, sign in to ReserveCalifornia and tap <strong className="text-ch-ink">It’s mine — hand it over</strong>. About two seconds later it’s in your cart.</>],
           ]} />
 

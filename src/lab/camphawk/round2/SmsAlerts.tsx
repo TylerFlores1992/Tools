@@ -17,7 +17,9 @@ import type { Visitor } from "../data";
 
 export type SmsState = "new" | "saved" | "loading" | "error";
 
-export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean }) {
+/** `intro`: before a number is saved, show the row header Settings' rows have (title, an Off pill
+    and this line), so the row reads the same before and after saving (Welcome). */
+export function SmsAlerts({ demo = false, start = "new", visitor, secondary = false, intro }: { demo?: boolean; start?: SmsState; visitor?: Visitor; secondary?: boolean; intro?: string }) {
   const [saved, setSaved] = useState<string | null>(start === "saved" ? "(415) 555-0187" : null);
   const [phone, setPhone] = useState(start === "saved" ? "(415) 555-0187" : "");
   const [agreed, setAgreed] = useState(start === "saved");
@@ -87,6 +89,15 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
                 </button>
               </span>
             )}
+          </div>
+        </div>
+      )}
+      {!saved && intro && (
+        <div className="flex gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3.5">
+          <MessageSquare aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink-2" />
+          <div className="min-w-0 flex-1">
+            <h2 className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-ch-body! text-[15px] font-bold text-ch-ink"><span>Text alerts</span><Tag kind="paused" mark="off" srPrefix="Status:">Off</Tag></h2>
+            <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{intro}</p>
           </div>
         </div>
       )}

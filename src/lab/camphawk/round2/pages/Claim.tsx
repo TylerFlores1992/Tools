@@ -43,7 +43,7 @@ const COPY = {
     afterCta: "Book it on ReserveCalifornia",
   },
   app: {
-    prepareTitle: "Sign in to ReserveCalifornia here",
+    prepareTitle: "Sign in to ReserveCalifornia",
     prepareBody: "Enter your ReserveCalifornia login and we will sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia, and we don’t store it.",
     prepareCta: "Sign in to ReserveCalifornia",
     waitingTitle: "Waiting for you to sign in",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BellRing, Check, Search } from "lucide-react";
+import { BellRing, Search, ShoppingCart } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
@@ -40,7 +40,7 @@ function AlertCard({ compact }: { compact?: boolean }) {
       <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight"}>Upper Pines, Site 042</p>
       <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18–21, 3 nights.</p>
       <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
-        <Check aria-hidden="true" className="size-4 shrink-0" />
+        <ShoppingCart aria-hidden="true" className="size-4 shrink-0" />
         In your Recreation.gov cart
       </p>
       <figcaption className="mt-2 text-[13px] text-ch-muted">Example alert</figcaption>

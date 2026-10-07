@@ -8,7 +8,7 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 // bridge: signed out (the pitch), subscriber (navigation, never prices), app (no prices).
 
 export const BASE_FEATURES = [
-  `Watch up to ${WATCH_LIMIT} campgrounds at once`,
+  `Run up to ${WATCH_LIMIT} watches at once`,
   "Checked every 15 seconds, around the clock",
   "Text, push and email the moment a site opens",
   "Flexible dates — any N nights in a window",
@@ -18,6 +18,7 @@ export const AUTOCART_FEATURES = [
   "An opening goes straight into your Recreation.gov cart",
   "The site is held while you get to your phone",
   "You just sign in and check out",
+  "8 AM holds in California (invite-only beta)",
 ];
 
 function PlanCard({ name, price, sub, features, highlight, cta }: { name: string; price: string; sub: string; features: string[]; highlight?: boolean; cta: ReactNode }) {
@@ -80,7 +81,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
       <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
         <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">You’re all set — here’s what you can do</h2>
         <ul className="mt-2.5 max-w-[58ch] space-y-1.5 text-ch-body leading-relaxed text-ch-green-deep">
-          <li>Watch up to {WATCH_LIMIT} campgrounds at once. We check each one every 15 seconds, around the clock.</li>
+          <li>Run up to {WATCH_LIMIT} watches at once. We check each one every 15 seconds, around the clock.</li>
           <li>Add your number in Settings so alerts reach you by text as well as email — a text is what actually wakes you at 6am.</li>
           <li>With the Auto-Cart plan, an opening goes straight into your Recreation.gov cart while you get to your phone — add it in Settings.</li>
           <li>Any alert lets you pause the watch, reopen it, or mute a site you don’t want.</li>

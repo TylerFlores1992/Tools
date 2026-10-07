@@ -89,7 +89,7 @@ export const CALIFORNIA: { towns: number; providers: string[]; groups: Town[] } 
     { city: "Lake Tahoe", campgrounds: ["D. L. Bliss State Park", "Emerald Bay State Park", "Fallen Leaf Campground", "Meeks Bay Campground", "Nevada Beach Campground"] },
     { city: "Malibu", campgrounds: ["Leo Carrillo State Park", "Malibu Creek State Park", "Point Mugu State Park"] },
     { city: "Mammoth Lakes", campgrounds: ["Lake Mary Campground", "Twin Lakes Campground", "Coldwater Campground", "New Shady Rest Campground"] },
-    { city: "Sequoia & Kings Canyon National Parks", campgrounds: ["Lodgepole Campground", "Dorst Creek Campground", "Potwisha Campground", "Buckeye Flat Campground"] },
+    { city: "Sequoia & Kings Canyon", campgrounds: ["Lodgepole Campground", "Dorst Creek Campground", "Potwisha Campground", "Buckeye Flat Campground"] },
     { city: "Yosemite National Park", campgrounds: ["Upper Pines Campground", "Lower Pines Campground", "North Pines Campground", "Hodgdon Meadow Campground", "Crane Flat Campground", "Wawona Campground", "Tuolumne Meadows Campground"] },
     { city: null, campgrounds: ["Anthony Chabot Regional Park", "Butano State Park", "Patrick’s Point (Sue-meg) State Park"] },
   ],

@@ -32,7 +32,7 @@ import { TRIAL_DAYS } from "./tier2-data";
 const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
 const main = buttonClasses({ variant: "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-wait" });
 
-function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; next: string | null }) {
+function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Visitor; next: string | null; trial: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +53,7 @@ function Widget({ mode, visitor, next }: { mode: "in" | "up"; visitor: Visitor; 
   return (
     <BareCard>
       <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your CampHawk account" : "Sign in to CampHawk"}</h1>
-      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{up ? "It’s free. Searching never needs an account." : "Welcome back."}</p>
+      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{!up ? "Welcome back." : trial ? `Takes a minute. Cancel within ${TRIAL_DAYS} days and you pay nothing.` : "It’s free. Searching never needs an account."}</p>
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
@@ -99,7 +99,7 @@ function AuthPage({ mode }: { mode: "in" | "up" }) {
     <BareFrame page={mode === "up" ? "Sign up" : "Sign in"} centered lead={<Context plan={plan} next={next} mode={mode} />}>
       {({ visitor }) => (
         <>
-          <Widget key={visitor} mode={mode} visitor={visitor} next={next} />
+          <Widget key={visitor} mode={mode} visitor={visitor} next={next} trial={plan === "autocart" || plan === "base"} />
           <LabNote className="mt-4">A stand-in for Clerk’s sign-{mode} widget, themed and worded through Clerk’s appearance and localization settings. Continue moves on as if it worked.</LabNote>
         </>
       )}
