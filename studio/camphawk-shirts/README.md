@@ -49,3 +49,10 @@ Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. One-ink pipeline: `node
 (base and hatch at 300 dpi) → `python3 cleanone.py` (drops hatch bits under 3 mm / 1 mm², fills knockouts
 under 1 mm in the illustration only) → `node kitone.mjs` (vector per ink). Critic: 7/10 before those fixes.
 Image credit used in total: $0.40 of the owner's $0.75.
+
+## Tent mockup (2026-10-07, owner's ask)
+A small A-frame tent on the left shore at the base of the mountain, mirrored in the lake like the rest
+of the design, with a lit doorway (a knockout on the one-ink print, mist ink on the three-ink). Mockup
+only: `python3 tent.py <kit 300 dpi png> <out> <ink hex> knockout|<door hex>` draws it onto the kit
+render, then `composite.py` puts it on the shirt photos. The vector kit files are unchanged until the
+owner picks it; then the tent goes into `round2.mjs` and the kits are rebuilt and print-checked.
