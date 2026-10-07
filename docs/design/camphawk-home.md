@@ -344,7 +344,7 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 ## Fix rounds 6–12: toward a 9 (2026-10-07)
 The owner's bar: "above a 9". Each round: two fresh critics (same prompt, never the builder), axe-core
 4.14 (WCAG 2.2 AA plus best practice, 390 and 1440, collapsibles open and shut), fix, verify, e2e.
-Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 ROUND12. axe: 0 violations on all 32 routes.
+Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 ROUND13. axe: 0 violations on all 32 routes.
 
 **Typography (guarded by `src/lab/camphawk/typography.test.mts`, mutation-tested).** Curly
 apostrophes only (never `&apos;` or a straight `'` between letters); "8 AM" and other times keep a
@@ -354,6 +354,11 @@ non-breaking space; "7‑day" keeps a non-breaking hyphen (U+2011). US spelling 
 **One beta note.** `BetaNote` (`round2/BareFrame.tsx`): an (i) and `HOLD_BETA_NOTE`, plus an
 optional line. Used on New watch, the offer page, Pricing, the auto-cart guide and vs. New marks:
 `hold` (alarm clock: an 8 AM hold) and `active` (circle check: subscription Active).
+
+**Guards found broken (round 12).** The typography and US-spelling scans stripped `/* … */`
+before `//`, so a line comment holding a `/**` glob opened a "block" that hid ~100 lines of
+Camping.tsx from both. Now one left-to-right pass; both re-mutation-tested in the hidden region.
+Signed-out tabs (Explore · New watch · Pricing) and Pricing in the footer have an e2e guard.
 
 **Shared words.** `LAUNCH_PRICING` and `HOLD_BETA_LABEL` in `tier2-data.ts`. "Run up to 6 watches
 at once" everywhere (a watch is a campground and dates, so "6 campgrounds" was wrong). Times as en
