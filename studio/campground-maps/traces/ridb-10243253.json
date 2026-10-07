@@ -2,7 +2,7 @@
  "version": 1,
  "map": "ridb-10243253",
  "traced": "2026-10-07",
- "by": "Claude (CampHawk session), from the USDA NAIP photo",
+ "by": "Claude (CampHawk session)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -163,8 +163,7 @@
      -107.0759624,
      41.1428919
     ]
-   ],
-   "name": "Lost Creek Campground Road"
+   ]
   },
   {
    "coords": [
@@ -416,11 +415,10 @@
      -107.0789159,
      41.1404159
     ]
-   ],
-   "name": "Battle Creek Divide Road"
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replaces OpenStreetMap's roads, which sit up to 20 m off the visible dirt roads. Every lane traced from the photo; WY 70 and Battle Creek Divide Road follow the visible roads, named as OpenStreetMap names them."
+ "note": "Replaces OpenStreetMap's roads, which sit up to 20 m off the visible dirt roads. Every lane is traced from the photo; WY 70 is the state route along the frame's south edge."
 }

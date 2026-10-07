@@ -14,8 +14,8 @@ import { naipUrl } from "./AerialCheck";
 // here changes a map until that file is added and the map rebuilt.
 //
 // The photo is USDA NAIP (public domain), so what is traced from it is our own work. It is drawn
-// in ochre, CampHawk's "yours" colour, with square corners at each point, so it reads as the
-// reviewer's own lines by shape as well as hue.
+// in ochre, CampHawk's "yours" colour, with a square at each end (and at every point of the road
+// being drawn), so it reads as the reviewer's own lines by shape as well as hue.
 
 type Tool = "road" | TracePointType;
 const ZOOMS = [1, 2, 4] as const;
@@ -220,7 +220,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     catch { setSaid("Copying didn’t work in this browser. Use Download instead."); }
   };
 
-  const vertex = 7 * perPx; // a 7px square at any zoom
+  const vertex = 6 * perPx; // a 6px square at any zoom
   const placed = map.sites.filter((s): s is typeof s & { at: [number, number] } => s.at !== null);
   const sourceWord = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau", none: "" }[map.sources?.roads ?? "none"];
 
@@ -277,7 +277,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
             {perPx > 0 && placed.map((s) => <circle key={s.name} cx={s.at[0]} cy={s.at[1]} r={3.5 * perPx} fill="none" className="stroke-ch-white" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />)}
             {xyRoads.map((r, i) => r.length > 1 && <polyline key={`tc${i}`} points={r.map((p) => p.join(",")).join(" ")} fill="none" className="stroke-ch-ink" strokeWidth={draft.roads[i].through ? 8 : 5.5} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
             {xyRoads.map((r, i) => r.length > 1 && <polyline key={`tf${i}`} points={r.map((p) => p.join(",")).join(" ")} fill="none" className="stroke-ch-ochre" strokeWidth={draft.roads[i].through ? 5 : 2.75} strokeDasharray={i === active ? "6 4" : undefined} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+            {/* Squares: every point of the road being drawn, and each finished road's two ends (a
+                square on every point of a long road hid the road itself on a phone). */}
             {perPx > 0 && xyRoads.flatMap((r, i) => r.map((p, j) => {
+              if (i !== active && j !== 0 && j !== r.length - 1) return null;
               const big = i === active && j === r.length - 1 ? 1.6 : 1;
               return <rect key={`v${i}-${j}`} x={p[0] - (vertex * big) / 2} y={p[1] - (vertex * big) / 2} width={vertex * big} height={vertex * big} className="fill-ch-ochre stroke-ch-ink" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />;
             }))}
@@ -304,7 +307,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
       <p aria-live="polite" className="mt-2 min-h-[1.4em] text-[13.5px] font-bold text-ch-ink">{said}</p>
 
       <ul aria-label="What’s drawn on the photo" className="mt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
-        <li className="flex items-center gap-2"><span aria-hidden="true" className="relative h-[6px] w-7 rounded-full border border-ch-ink bg-ch-ochre"><span className="absolute -top-[3px] left-0 size-[10px] rounded-[2px] border-[1.5px] border-ch-ink bg-ch-ochre" /></span>Traced roads, a square at each point</li>
+        <li className="flex items-center gap-2"><span aria-hidden="true" className="relative h-[6px] w-7 rounded-full border border-ch-ink bg-ch-ochre"><span className="absolute -top-[3px] left-0 size-[10px] rounded-[2px] border-[1.5px] border-ch-ink bg-ch-ochre" /></span>Traced roads, a square at each end</li>
         {sourceWord && sourceRoads.length > 0 && (draft.replace
           ? <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-ch-ink-2" />Roads from {sourceWord}, replaced</li>
           : <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {sourceWord}</li>)}
@@ -325,7 +328,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                 <span className="tabular-nums text-ch-ink-2">{r.coords.length} point{r.coords.length === 1 ? "" : "s"}{r.coords.length > 1 ? ` · ${Math.round(lengthM(xyRoads[i]))} m` : ""}</span>
                 {i === active && <span className="font-bold text-ch-ochre-ink">· drawing</span>}
                 <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 pb-1">
-                  <label className="flex min-w-0 flex-1 items-center gap-2 text-[13.5px] text-ch-ink-2">
+                  <label className="flex min-w-0 basis-full items-center gap-2 text-[13.5px] text-ch-ink-2 sm:flex-1 sm:basis-auto">
                     <span className="shrink-0">Name</span>
                     <input type="text" value={r.name ?? ""} onChange={(e) => setName(i, e.target.value)} maxLength={80} placeholder="Optional, as on the sign" name={`road-${i + 1}-name`} autoComplete="off"
                       className="min-h-11 w-full min-w-0 rounded-ch-input border border-ch-line bg-ch-card px-3 text-[14px] text-ch-ink placeholder:text-ch-muted focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green" />

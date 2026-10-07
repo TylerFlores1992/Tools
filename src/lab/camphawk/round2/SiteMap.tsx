@@ -262,14 +262,14 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
             {picked && <Key wide mark={<span className="gh-pin block scale-75" data-state="open" />}>Open on the picked night</Key>}
             <Key mark={<span className="size-[6px] rounded-full bg-ch-ink-2" />}>{picked ? "Other sites" : "Campsites"}</Key>
             <Key mark={<span className="size-[14px] rounded-full border-[3px] border-ch-ink" />}>A site you found</Key>
-            <Key mark={<span className={KEY}><Toilet className="size-[11px]" /></span>}>Restroom</Key>
+            {restrooms(map).length > 0 && <Key mark={<span className={KEY}><Toilet className="size-[11px]" /></span>}>Restroom</Key>}
             {parking.length > 0 && <Key mark={<span className={cx(KEY, "text-[10px] font-extrabold")}>P</span>}>Parking</Key>}
             {water.length > 0 && <Key mark={<span className={KEY}><Droplet className="size-[11px]" /></span>}>Drinking water</Key>}
             {dump.length > 0 && <Key mark={<span className={cx(KEY, "text-[10px] font-extrabold")}>D</span>}>Dump station</Key>}
             {shuttle && <Key mark={<span className={KEY}><Bus className="size-[11px]" /></span>}>Shuttle stop</Key>}
             {kioskAt && <Key mark={<span className={KEY}><Info className="size-[11px]" /></span>}>Kiosk</Key>}
-            <Key mark={<span className="h-[7px] w-6 rounded-full border-[1.5px] border-ch-muted bg-ch-card" />}>Road</Key>
-            <Key mark={<span className="w-6 border-t-2 border-dashed border-ch-muted" />}>Trail</Key>
+            {map.roads.length > 0 && <Key mark={<span className="h-[7px] w-6 rounded-full border-[1.5px] border-ch-muted bg-ch-card" />}>Road</Key>}
+            {map.trails.length > 0 && <Key mark={<span className="w-6 border-t-2 border-dashed border-ch-muted" />}>Trail</Key>}
           </ul>
         </div>
       </div>

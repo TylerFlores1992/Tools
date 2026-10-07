@@ -321,7 +321,7 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
   const look = FIRST_LOOK[entry.id];
   // "Trace the missing roads" opens the tool and brings the photo into view.
   const openTrace = () => { setTool("trace"); requestAnimationFrame(() => document.getElementById("aerial-h")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" })); };
-  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} />;
+  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} traceChanged={changed} />;
 
   return (
     <>
@@ -421,7 +421,7 @@ function FirstLookNote({ id }: { id: string }) {
 
 /** What a reviewer does with a map. The firm (ink) button follows the evidence: approve when the
     first look found nothing wrong, otherwise the outcome the first look points to. */
-function DecisionBox({ entry, decision, decide, nextHref, onTrace }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null; onTrace?: () => void }) {
+function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null; onTrace?: () => void; traceChanged?: boolean }) {
   const traced = entry.reasons.some((r) => r.code === "traced");
   const look = FIRST_LOOK[entry.id]?.call;
   const roadsMissing = entry.reasons.some((r) => r.code === "far-from-roads" || r.code === "no-roads");
@@ -456,6 +456,12 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace }: { entry: Sa
           <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{label}</button>
         ))}
       </div>
+      {traceChanged && (
+        <p className="mt-3 flex gap-1.5 rounded-ch-input bg-ch-ochre-soft px-3 py-2 text-[13.5px] leading-snug text-ch-ink">
+          <PenLine aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <span>You’ve traced roads here that aren’t on the map yet. Download the trace file; the map is rebuilt with it, then judged again.</span>
+        </p>
+      )}
       <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: decisions are saved in this browser only.</p>
     </section>
   );
@@ -548,6 +554,7 @@ const ROAD_SOURCE: Record<SampleEntry["sources"]["roads"], string> = {
   tiger: "US Census Bureau TIGER roads",
   none: "None: no source had roads here",
 };
+const SOURCE_WORD: Partial<Record<SampleEntry["sources"]["roads"], string>> = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau" };
 const SOURCE_SHORT: Record<Exclude<SampleEntry["sources"]["roads"], "none">, string> = { nps: "Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "Census TIGER" };
 const WATER_SOURCE: Record<SampleEntry["sources"]["water"], string> = {
   usgs: "USGS hydrography",
@@ -560,8 +567,10 @@ function Sources({ entry, map }: { entry: SampleEntry; map: SiteMapData | null }
   const traced = map?.sources?.traced;
   const rows: [string, ReactNode][] = [
     ["Sites", "Recreation.gov’s published points (RIDB, CC BY 4.0)"],
-    ["Roads", <>{ROAD_SOURCE[entry.sources.roads]}{pick && <span className="block text-[13.5px] text-ch-ink-2">{pick.why}.</span>}</>],
-    ...(traced && (traced.roads || traced.points) ? [["Traced", `${[traced.roads && `${traced.roads} road${traced.roads === 1 ? "" : "s"}`, traced.points && `${traced.points} point${traced.points === 1 ? "" : "s"}`].filter(Boolean).join(" and ")} from the aerial photo${traced.by ? `, by ${traced.by}` : ""}${traced.on ? ` (${traced.on})` : ""}${traced.note ? `. ${traced.note}` : ""}`] as [string, ReactNode]] : []),
+    ["Roads", traced?.replace
+      ? <>Traced from the aerial photo, replacing {SOURCE_WORD[entry.sources.roads] ?? "the source"}’s roads<span className="block text-[13.5px] text-ch-ink-2">They were there, but drawn in the wrong places.</span></>
+      : <>{ROAD_SOURCE[entry.sources.roads]}{pick && <span className="block text-[13.5px] text-ch-ink-2">{pick.why}.</span>}</>],
+    ...(traced && (traced.roads || traced.points) ? [["Traced", <>{`${[traced.roads && `${traced.roads} road${traced.roads === 1 ? "" : "s"}`, traced.points && `${traced.points} point${traced.points === 1 ? "" : "s"}`].filter(Boolean).join(" and ")} from the aerial photo${traced.by ? `, by ${traced.by}` : ""}${traced.on ? `, ${traced.on}` : ""}.`}{traced.note && <span className="block text-[13.5px] text-ch-ink-2">{traced.note}</span>}</>] as [string, ReactNode]] : []),
     ["Lakes and rivers", WATER_SOURCE[entry.sources.water]],
     ["Aerial photo", "USDA NAIP, via USGS The National Map (public domain). For checking and tracing; never drawn on a camper’s map."],
   ];
