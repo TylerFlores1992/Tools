@@ -141,8 +141,10 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   // What a person traced from the aerial photo, where no source has it: campground roads, and
   // restrooms and water taps they could see. Drawn like any other campground road.
   const trace = readTrace(`ridb-${facilityId}`, bboxArr);
-  const traced = (trace?.roads ?? []).map((r) => ({ f: { geometry: { type: "LineString", coordinates: r.coords } }, name: "", cls: "Service", oneWay: "", traced: true }));
-  roads = [...roads, ...traced];
+  const traced = (trace?.roads ?? []).map((r) => ({ f: { geometry: { type: "LineString", coordinates: r.coords } }, name: "", cls: r.through ? "Local" : "Service", oneWay: "", traced: true }));
+  // A trace that replaces the roads is the whole road layer (trace.mjs).
+  const replaced = trace?.replace === true;
+  roads = replaced ? traced : [...roads, ...traced];
 
   // Service points, per kind: the Park Service's where it has that kind, else OpenStreetMap's.
   const npsPoints = npsPois.filter((f) => f.geometry?.type === "Point").map((f) => ({ name: f.properties.POINAME ?? "", type: f.properties.POITYPE ?? "", at: f.geometry.coordinates, src: "nps" }));
@@ -183,7 +185,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const qa = checkMap({
     sites: outSites.map((s) => ({ name: s.name, at: s.at })),
     roadSegments: segmentsOf(roads.map((r) => r.f), xy),
-    roadSource: roadSource === "none" && traced.length ? "traced" : roadSource,
+    roadSource: (roadSource === "none" || replaced) && traced.length ? "traced" : roadSource,
     traced: { roads: traced.length, points: tracedPoints.length },
     outlineRings: (osm?.outlines ?? []).flatMap((o) => o.rings.map(toM)),
     pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })),
@@ -192,18 +194,20 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   // The credit line names each layer's source, so a reader can tell what came from where.
   const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "US Census Bureau (TIGER)", usgs: "USGS", traced: "CampHawk, traced from USDA aerial photos" };
   const poiSrc = [...new Set(pois.map((p) => p.src))];
-  const roadCredit = [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : "campground roads CampHawk traced from USDA aerial photos")].filter(Boolean).join(", and ");
+  const roadCredit = replaced ? SRC.traced
+    : [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : "campground roads CampHawk traced from USDA aerial photos")].filter(Boolean).join(", and ");
   const credit = [
     "Drawn by CampHawk. Sites: Recreation.gov (RIDB, CC BY 4.0).",
     roadCredit && `Roads: ${roadCredit}.`,
     poiSrc.length && `Restrooms and water: ${poiSrc.map((k) => SRC[k]).join(" and ")}.`,
     (waterParts.length || flowlines.length) && `Lakes and rivers: ${SRC[waterSource]}.`,
   ].filter(Boolean);
-  const usedOsm = roadSource === "osm" || poiSrc.includes("osm") || (waterSource === "osm" && (waterParts.length || flowlines.length)) || (roadSource !== "nps" && (trails.length || lots.length || buildings.length));
+  const usedOsm = (roadSource === "osm" && !replaced) || poiSrc.includes("osm") || (waterSource === "osm" && (waterParts.length || flowlines.length)) || (roadSource !== "nps" && (trails.length || lots.length || buildings.length));
   if (usedOsm) credit.push("Map data © OpenStreetMap contributors.");
   credit.push("Positions are approximate. Check the booking site before you go.");
   const credits = credit.join(" ");
 
+  const roadOut = (r) => ({ name: r.name, cls: r.cls, oneWay: r.oneWay, ...(r.traced ? { traced: true } : {}), d: pathOf(lines(r.f.geometry), false) });
   const map = {
     facilityId,
     name: fac?.FacilityName?.trim() ?? meta.name ?? "",
@@ -217,20 +221,24 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
       roadPick: { why: picked.why, fits: roadFits },
       water: waterSource,
       osm: Boolean(usedOsm),
-      traced: { roads: traced.length, points: tracedPoints.length, ...(trace ? { by: trace.by ?? "", on: trace.traced ?? "", note: trace.note ?? "" } : {}) },
+      traced: { roads: traced.length, points: tracedPoints.length, ...(replaced ? { replace: true } : {}), ...(trace ? { by: trace.by ?? "", on: trace.traced ?? "", note: trace.note ?? "" } : {}) },
     },
     credits,
     frame,
     /** The frame in degrees [west, south, east, north], to ask for the aerial photo under it. */
     bbox: bboxArr.map((v) => Math.round(v * 1e6) / 1e6),
     labels,
-    roads: kept(roads.map((r) => ({ name: r.name, cls: r.cls, oneWay: r.oneWay, ...(r.traced ? { traced: true } : {}), d: pathOf(lines(r.f.geometry), false) }))),
+    roads: kept(roads.map(roadOut)),
+    /** With a trace that replaces the roads, the source's roads it replaced, for the tracing tool. */
+    ...(replaced && roadSource !== "none" ? { sourceRoads: kept(candidates[roadSource].map(roadOut)) } : {}),
     trails: kept(trails.map((t) => ({ name: t.name, d: pathOf(lines(t.f.geometry), false) }))),
     lots: kept(lots.map((parts) => ({ d: pathOf(parts, true) }))),
     water: kept(waterParts.map((w) => ({ fcode: w.fcode, d: pathOf(w.parts, true) }))),
     buildings: kept(buildings.map((b) => ({ name: b.name, type: b.type, d: pathOf(b.parts, true) }))),
     pois: pois.map((p) => ({ name: p.name, type: p.type, at: p.at, ...(p.src === "traced" ? { traced: true } : {}) })),
     sites: outSites,
+    /** The trace built in (studio/campground-maps/traces/), so the lab's tracing tool edits it whole. */
+    ...(trace ? { trace } : {}),
     /** What the checks compared against, kept so a reviewer sees it on the aerial photo. */
     evidence: {
       outline: (osm?.outlines ?? []).map((o) => pathOf(o.rings, true)).filter(Boolean).join(""),

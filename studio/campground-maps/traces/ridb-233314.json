@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233314",
+ "traced": "2026-10-07",
+ "by": "Claude (CampHawk session), from the USDA NAIP photo",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.289617,
+     36.9060395
+    ],
+    [
+     -119.2896058,
+     36.9058953
+    ],
+    [
+     -119.2896002,
+     36.9057691
+    ],
+    [
+     -119.2895946,
+     36.905679
+    ],
+    [
+     -119.2895385,
+     36.9056249
+    ],
+    [
+     -119.2894487,
+     36.9055799
+    ],
+    [
+     -119.2893758,
+     36.9055357
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The west lane from the loop road down to the spur by site 10. Sites 02-09 sit on open ground with no lanes to trace."
+}

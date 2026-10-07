@@ -6,13 +6,17 @@
 //
 //   { "version": 1, "map": "ridb-274721", "traced": "2026-10-07", "by": "…",
 //     "photo": "USDA NAIP via USGS The National Map (public domain)",
-//     "roads":  [{ "coords": [[lon, lat], …] }],
+//     "roads":  [{ "coords": [[lon, lat], …], "through": true? }],
 //     "points": [{ "type": "Restroom" | "Water", "at": [lon, lat] }],
-//     "note": "…" }
+//     "replace": true?, "note": "…" }
 //
 // Coordinates are degrees (WGS84), so a trace survives a rebuild that moves the frame. The photo
-// is public domain; tracing from it is our own work, with nothing to license. A traced road is
-// always a campground road (drawn thin), because the through roads come from the public sources.
+// is public domain; tracing from it is our own work, with nothing to license.
+//
+// A traced road adds to the source's roads: it is a campground road (drawn thin) unless it says
+// "through": true. With "replace": true the trace replaces the source's roads entirely, for a map
+// whose roads a source has but draws in the wrong places (Lost Creek's are up to 20 m off the
+// visible dirt roads); the person then traces every road the map should show, through roads too.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -37,6 +41,7 @@ export function traceProblems(trace, mapKey, bbox) {
   if (trace.map !== mapKey) out.push(`it is for ${JSON.stringify(trace.map)}, not ${mapKey}`);
   if (!Array.isArray(trace.roads)) out.push("roads must be a list");
   if (!Array.isArray(trace.points)) out.push("points must be a list");
+  if (trace.replace !== undefined && typeof trace.replace !== "boolean") out.push("replace must be true or false");
   if (out.length) return out;
   const [w, s, e, n] = bbox;
   const dx = (e - w) * SLACK, dy = (n - s) * SLACK;
@@ -45,12 +50,14 @@ export function traceProblems(trace, mapKey, bbox) {
     if (!Array.isArray(r?.coords) || r.coords.length < 2) out.push(`road ${i + 1} needs at least two points`);
     else if (!r.coords.every(isPair)) out.push(`road ${i + 1} has a point that isn't [lon, lat]`);
     else if (!r.coords.every(near)) out.push(`road ${i + 1} runs far outside the map`);
+    if (r?.through !== undefined && typeof r.through !== "boolean") out.push(`road ${i + 1}: through must be true or false`);
   });
   trace.points.forEach((p, i) => {
     if (!POINT_TYPES.includes(p?.type)) out.push(`point ${i + 1} must be one of ${POINT_TYPES.join(", ")}`);
     if (!isPair(p?.at)) out.push(`point ${i + 1} isn't at [lon, lat]`);
     else if (!near(p.at)) out.push(`point ${i + 1} is far outside the map`);
   });
+  if (trace.replace === true && !trace.roads.length) out.push("a trace that replaces the roads needs at least one road");
   return out;
 }
 

@@ -35,6 +35,11 @@ test("a road needs two real points inside the map (or a little past its edge)", 
   assert.deepEqual(traceProblems(t, "ridb-274721", bbox), []);
   t.roads = [{ coords: [[-122.385, 44.585], [-122.3649, 44.585]] }];
   assert.deepEqual(traceProblems(t, "ridb-274721", bbox), ["road 1 runs far outside the map"]);
+  // North and south too.
+  t.roads = [{ coords: [[-122.385, 44.585], [-122.385, 44.5926]] }];
+  assert.deepEqual(traceProblems(t, "ridb-274721", bbox), ["road 1 runs far outside the map"]);
+  t.roads = [{ coords: [[-122.385, 44.585], [-122.385, 44.5774]] }];
+  assert.deepEqual(traceProblems(t, "ridb-274721", bbox), ["road 1 runs far outside the map"]);
 });
 
 test("a point must be a restroom or a water tap, inside the map", () => {
@@ -50,4 +55,11 @@ test("readTrace: none when nobody traced it; a broken file stops the build", () 
   assert.equal(readTrace("ridb-274721", bbox, dir).roads.length, 1);
   writeFileSync(join(dir, "ridb-274721.json"), JSON.stringify({ ...ok(), map: "ridb-9" }));
   assert.throws(() => readTrace("ridb-274721", bbox, dir), /it is for "ridb-9"/);
+});
+
+test("replace and through must be true or false; a replacing trace needs a road", () => {
+  assert.deepEqual(traceProblems({ ...ok(), replace: true, roads: [{ coords: [[-122.385, 44.585], [-122.38, 44.586]], through: true }] }, "ridb-274721", bbox), []);
+  assert.deepEqual(traceProblems({ ...ok(), replace: "yes" }, "ridb-274721", bbox), ["replace must be true or false"]);
+  assert.deepEqual(traceProblems({ ...ok(), roads: [{ coords: [[-122.385, 44.585], [-122.38, 44.586]], through: 1 }] }, "ridb-274721", bbox), ["road 1: through must be true or false"]);
+  assert.deepEqual(traceProblems({ ...ok(), replace: true, roads: [] }, "ridb-274721", bbox), ["a trace that replaces the roads needs at least one road"]);
 });

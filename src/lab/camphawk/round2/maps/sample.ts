@@ -3,9 +3,10 @@
 // fetched when one is opened.
 import manifest from "./sample-manifest.json" with { type: "json" };
 import type { Level } from "../../ui/StatusMark";
+import type { SiteMapData } from ".";
 
 export type Verdict = "ready" | "review" | "not-drawn";
-export type ReasonCode = "one-spot" | "stacked" | "unplaced" | "outlier" | "spread" | "no-roads" | "far-from-roads" | "outline" | "pitches";
+export type ReasonCode = "one-spot" | "stacked" | "unplaced" | "outlier" | "spread" | "no-roads" | "far-from-roads" | "outline" | "pitches" | "traced";
 export type Reason = { code: ReasonCode; text: string };
 export type Metrics = {
   sites: number;
@@ -18,6 +19,7 @@ export type Metrics = {
   roads: { source: string; medianM: number | null; p90M: number | null };
   outline: { insideShare: number } | null;
   pitches: { matched: number; medianM: number } | null;
+  traced?: { roads: number; points: number };
 };
 /** One automatic check as the build measured it (studio/campground-maps/qa.mjs, checkList). */
 export type Check = { code: ReasonCode; label: string; value: string; limit: string; result: "pass" | "review" | "fail" | "none" };
@@ -32,7 +34,7 @@ export type SampleEntry = {
   reasons: Reason[];
   checks: Check[];
   metrics: Metrics;
-  sources: { roads: "nps" | "osm" | "usfs" | "none"; water: "usgs" | "osm" | "none"; osm: boolean };
+  sources: NonNullable<SiteMapData["sources"]> & { water: "usgs" | "osm" | "none" };
   thumb: Thumb;
 };
 export type Sample = {
@@ -67,6 +69,7 @@ export const REASON_LABEL: Record<ReasonCode, string> = {
   outline: "Sites outside OpenStreetMap’s outline",
   pitches: "OpenStreetMap places sites elsewhere",
   "one-spot": "Every site on one spot",
+  traced: "Roads traced from the photo, to approve",
 };
 
 /** "Forest Service" → "Forest Service"; the long agency names, shortened for a card. */

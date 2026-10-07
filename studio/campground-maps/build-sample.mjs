@@ -1,6 +1,9 @@
 // Builds every campground in specs/ridb-sample.json and writes the lab's review manifest.
 //
-//   NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir>
+//   NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir> [facility-id…]
+//
+// With ids, only those campgrounds are rebuilt (after adding a trace, say) and the rest of the
+// manifest is kept as it was.
 //
 // Each map goes to public/private/camphawk/maps/ridb-<id>.json (served only to a signed-in lab
 // visitor; the review page loads one when it's opened). The manifest, with each map's automatic
@@ -9,12 +12,12 @@
 // A campground whose sources fail is recorded with the error and the run carries on; run it
 // again to retry those (everything that answered is cached in .cache/). Three campgrounds build
 // at once, so OpenStreetMap's API sees at most three small requests in flight.
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildRidbMap, loadRidb } from "./build.mjs";
 
-const ridbDir = process.argv[2];
-if (!ridbDir) { console.error("usage: build-sample.mjs <ridb-dir>"); process.exit(1); }
+const [ridbDir, ...only] = process.argv.slice(2);
+if (!ridbDir) { console.error("usage: build-sample.mjs <ridb-dir> [facility-id…]"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "../..");
 const spec = JSON.parse(readFileSync(join(import.meta.dirname, "specs/ridb-sample.json"), "utf8"));
 const MAPS = join(ROOT, "public/private/camphawk/maps");
@@ -42,8 +45,12 @@ function thumb(map) {
 }
 
 const ids = spec.picked.map((p) => p.id);
-console.log(`loading RIDB for ${ids.length} campgrounds…`);
-const ridb = loadRidb(ridbDir, ids);
+const unknown = only.filter((id) => !ids.includes(id));
+if (unknown.length) { console.error(`not in the sample: ${unknown.join(", ")}`); process.exit(1); }
+const MANIFEST = join(ROOT, "src/lab/camphawk/round2/maps/sample-manifest.json");
+const before = only.length && existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, "utf8")).entries : [];
+console.log(`loading RIDB for ${only.length || ids.length} campgrounds…`);
+const ridb = loadRidb(ridbDir, only.length ? only : ids);
 // Three at a time: each build waits mostly on remote services (USGS can take a minute to fail).
 // Results keep the sample's order.
 const entries = new Array(ids.length);
@@ -51,6 +58,7 @@ let next = 0;
 async function worker() {
   while (next < ids.length) {
     const i = next++, p = spec.picked[i];
+    if (only.length && !only.includes(p.id)) { entries[i] = before.find((e) => e.id === p.id); continue; }
     const label = `${String(i + 1).padStart(2)}/${ids.length} ${p.id} ${p.name}`;
     try {
       const { map, qa } = await buildRidbMap(ridb, p.id, p);
@@ -73,5 +81,6 @@ const manifest = {
   summary: { ready: count("ready"), review: count("review"), notDrawn: count("not-drawn"), failed: entries.filter((e) => e.error).length },
   entries,
 };
-writeFileSync(join(ROOT, "src/lab/camphawk/round2/maps/sample-manifest.json"), JSON.stringify(manifest) + "\n");
+if (entries.some((e) => !e)) throw new Error("a campground is missing from the manifest; rebuild the whole sample");
+writeFileSync(MANIFEST, JSON.stringify(manifest) + "\n");
 console.log(JSON.stringify(manifest.summary));
