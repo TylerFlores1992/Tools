@@ -125,7 +125,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         <input id="rc-check" type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-1 size-[18px] shrink-0 accent-ch-forest" />
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
-      <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in to ReserveCalifornia"}</button>
+      <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in to ReserveCalifornia"}</button>
       {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{whyLine(email, password, checked)}</p>}
     </form>
   );

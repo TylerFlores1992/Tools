@@ -118,10 +118,12 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       {error && <p role="alert" className="mt-4 text-[15px] font-bold text-ch-alert-deep">We couldn’t open checkout just now. Nothing was charged. Try again.</p>}
       {/* One block of terms under the plans (two uneven columns, one repeating the band, read as
           leftovers). */}
-      <div className="mt-8 max-w-[64ch] text-[16px] leading-relaxed text-ch-ink-2">
+      {/* Under both cards, the width of both: three short columns on wide screens, stacked on phones
+          (round 15: a half-width block left the right half empty). */}
+      <div className="mt-8 grid gap-x-10 gap-y-1.5 border-t border-ch-line pt-5 text-[15px] leading-relaxed text-ch-ink-2 lg:grid-cols-3">
         <p className="font-bold text-ch-ink">Cancel any time. Live search keeps working either way.</p>
-        <p className="mt-1.5">{LAUNCH_PRICING}</p>
-        <p className="mt-1.5 text-[15px]">{foot}</p>
+        <p>{LAUNCH_PRICING}</p>
+        <p>{foot}</p>
       </div>
     </section>
   );
@@ -174,15 +176,15 @@ function AppPaywall({ store }: { store: Store }) {
             {tiles.map((t) => (
               <li key={t.id} className="flex flex-col rounded-ch-input border border-ch-line bg-ch-paper p-4">
                 <p className="text-[16px] font-bold text-ch-ink">{t.title}</p>
-                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Run up to ${WATCH_LIMIT} watches around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
-                <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
+                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Run up to ${WATCH_LIMIT} watches around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus auto-cart: on Recreation.gov an opening goes straight into your cart, and in California, 8 AM holds (invite-only beta)."}</p>
+                <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}{t.i === "year" ? ` (save ${yearlySavingPercent(t.tier)}%)` : ""}. Renews automatically.</p>
                 <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
                   {buying === t.id ? "Opening…" : `Try free for ${TRIAL_DAYS} days, then ${priceShort(t.tier, t.i === "month" ? "monthly" : "yearly")}`}
                 </button>
               </li>
             ))}
           </ul>
-          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", className: "mx-auto mt-4 flex min-h-11 border-transparent! px-3 underline underline-offset-4 shadow-none!" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
+          <button type="button" disabled={restore === "busy"} onClick={() => { setRestore("busy"); window.setTimeout(() => setRestore("none"), 900); }} className={buttonClasses({ variant: "quiet", className: "mt-4 min-h-11 border-transparent! px-0! underline underline-offset-4 shadow-none!" })}>{restore === "busy" ? "Restoring…" : "Restore purchases"}</button>
           <p role="status" className="mt-2 text-[14px] text-ch-ink-2">{restore === "none" ? "We didn’t find an active subscription for this Apple ID." : ""}</p>
           <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
           <p className="mt-3 max-w-[70ch] text-[13px] leading-relaxed text-ch-ink-2">Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless it is canceled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the current period. Manage or cancel any time in your App Store account settings. Any unused portion of a free trial is forfeited when you buy a subscription.</p>
@@ -239,7 +241,7 @@ export function PricingPage() {
         ? "Your plan, what it does for you, and what we never do."
         // No price in the app (store rule): the store's own tiles below carry it.
         : visitor === "app" ? "Works in this app. Add a free account to use it on the web too. Cancel any time from your store account."
-        : <><span className="block text-balance font-ch-display text-[clamp(20px,2vw,26px)] font-extrabold leading-snug text-ch-paper">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</span><span className="mt-2 block">A subscription keeps a watch running around the clock, and Auto-Cart wins the sites that vanish in minutes.</span></>}
+        : <><span className="block text-balance font-ch-display text-[clamp(20px,2vw,26px)] font-extrabold leading-snug text-ch-paper">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</span><span className="mt-2 block">A subscription keeps a watch running around the clock, and Auto-Cart gets you to the sites that vanish in minutes.</span></>}
       photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan
       controls={({ visitor }) => (
@@ -269,8 +271,8 @@ export function PricingPage() {
             </ul>
           </section>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds free</Link>
-            {visitor === "app" ? <A href={ROUTES.explore} visitor={visitor}>Back to search</A> : <A href={ROUTES.alerts} visitor={visitor}>How cancellation alerts work</A>}
+            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "px-6" })}>Search campgrounds</Link>
+            <A href={ROUTES.alerts} visitor={visitor}>How cancellation alerts work</A>
           </div>
         </div>
       )}

@@ -50,7 +50,7 @@ export type Hub = { slug: HubSlug; heading: string; label: string; noun: string;
 export const HUBS: Hub[] = [
   {
     slug: "cabins", heading: "Campgrounds with Cabins", label: "Campgrounds with Cabins", noun: "cabins",
-    blurb: "A cabin is the hardest thing to get in most park systems: there are only ever a handful per campground, they book the day the window opens, and they stay booked through the whole season. When one comes back it is usually a cancellation, and it is usually gone within the hour.",
+    blurb: "A cabin is the hardest thing to get in most park systems: there are only ever a handful per campground, they book the day the window opens, and they stay booked through the whole season. When one comes back it is usually a cancellation, and it is rarely open for long.",
     // 38 states and 5 provinces, 1,145 in all (the total is CampHawk's; the split is illustrative).
     byRegion: {
       AL: 14, AK: 41, AZ: 22, AR: 31, CA: 128, CO: 52, FL: 38, GA: 35, ID: 33, IL: 21, IN: 12, IA: 18, KS: 9, KY: 29, ME: 7, MD: 11,

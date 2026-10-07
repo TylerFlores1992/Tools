@@ -152,7 +152,7 @@ export function GoldenHour() {
           </div>
           {/* Phones and tablets: search right under the intro, the tent in a window below it.
               Desktop: search docks across the photo's bottom edge. */}
-          <div className="relative mx-auto max-w-[var(--gh-max)] px-3 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
+          <div className="relative mx-auto max-w-[var(--gh-max)] px-5 pb-[170px] sm:px-8 sm:pb-[300px] lg:pb-0">
             <div className="lg:translate-y-1/2">
               <SearchDock visitor={visitor} />
             </div>
@@ -160,7 +160,7 @@ export function GoldenHour() {
         </section>
 
         <div className="bg-ch-paper pt-6 lg:pt-24">
-          <div className="mx-auto max-w-[var(--gh-max)] px-3 sm:px-8 lg:hidden">
+          <div className="mx-auto max-w-[var(--gh-max)] px-5 sm:px-8 lg:hidden">
             <AlertCard compact />
           </div>
           <p className="mx-auto mt-6 max-w-[var(--gh-max)] px-5 text-[16px] leading-relaxed text-ch-ink sm:px-8 lg:mt-0"><span className="block max-w-[64ch]">{COVERAGE_SENTENCE}</span></p>

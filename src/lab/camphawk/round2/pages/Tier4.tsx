@@ -114,7 +114,7 @@ export function Sources() {
               <li key={s.key} className="px-5 py-3.5">
                 <span className="grid gap-0.5 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                  <span className="break-all text-[14px] text-ch-muted">{s.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+                  <span className="text-[14px] text-ch-muted [overflow-wrap:anywhere] sm:shrink-0 sm:whitespace-nowrap">{s.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
                 </span>
                 <span className="mt-0.5 block text-[15px] text-ch-ink-2">{s.coverage}</span>
               </li>
@@ -126,7 +126,7 @@ export function Sources() {
             {ADDITIONAL_PORTALS.map((p) => (
               <li key={p.url} className="grid gap-0.5 px-5 py-3 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
                 <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{p.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                <span className="break-all text-[14px] text-ch-muted">{p.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+                <span className="text-[14px] text-ch-muted [overflow-wrap:anywhere] sm:shrink-0 sm:whitespace-nowrap">{p.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
               </li>
             ))}
           </ul>

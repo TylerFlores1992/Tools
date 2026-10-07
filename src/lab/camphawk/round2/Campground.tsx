@@ -373,7 +373,7 @@ export function Campground() {
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
           <section>
-            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} books up` : openingsHeading(name)}</h2>
+            <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} is fully booked` : openingsHeading(name)}</h2>
             <div className="mt-3 max-w-[66ch] space-y-3">
               {openingsBody(name, place, CAMPGROUND.autoCart).map((t) => (
                 <p key={t.slice(0, 40)} className="text-[17px] leading-relaxed text-ch-ink-2">{t}</p>

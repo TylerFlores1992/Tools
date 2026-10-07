@@ -27,12 +27,18 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
     title: "After an alert",
     note: "Where a subscriber lands from a text or an email.",
     items: [
-      { href: ROUTES.manage, name: "Manage a watch", what: "The watch an alert is about: what’s open, dates, muting, pause and remove.", switches: "Watch state" },
-      { href: ROUTES.action, name: "One-tap action", what: "What a tapped link in an alert did, and how to undo it; the 8 AM hold confirm.", switches: "Action" },
+      { href: ROUTES.manage, name: "Manage a watch", what: "The watch an alert is about: what’s open, dates, muting, pause and remove.", switches: "Example watch, link" },
+      { href: ROUTES.action, name: "One-tap action", what: "What a tapped link in an alert did, and how to undo it; the 8 AM hold confirm.", switches: "What the link did" },
       { href: ROUTES.claim, name: "Claim a held site", what: "A ReserveCalifornia site we’re holding, and handing it over to you.", switches: "Hold status, device" },
-      { href: ROUTES.settings, name: "Settings", what: "How we reach you, auto-cart, subscription, sign out, delete account.", switches: "Plan, auto-cart, billing" },
-      { href: ROUTES.connect, name: "Connect Recreation.gov", what: "Linking a Recreation.gov login so auto-cart can work.", switches: "Step" },
-      { href: ROUTES.welcome, name: "Welcome", what: "The one-time step after sign-up.", switches: "Step" },
+    ],
+  },
+  {
+    title: "Account and setup",
+    note: "Settings, the auto-cart sign-in, and the step after sign-up.",
+    items: [
+      { href: ROUTES.settings, name: "Settings", what: "How we reach you, auto-cart, subscription, sign out, delete account.", switches: "Plan, page, billed by, auto-cart, text alerts" },
+      { href: ROUTES.connect, name: "Connect Recreation.gov", what: "Linking a Recreation.gov login so auto-cart can work.", switches: "Sign-in step" },
+      { href: ROUTES.welcome, name: "Welcome", what: "The one-time step after sign-up.", switches: "Plan, Arrived from" },
     ],
   },
   {

@@ -257,7 +257,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       <div className="grid content-start gap-5 lg:sticky lg:top-6">
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
-        <Collapsible label="Alerts sent" summary={`${w.alerts.length}`}>
+        <Collapsible label="Alert history" summary={`${w.alerts.length}`}>
           <ul>
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">

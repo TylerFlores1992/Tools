@@ -635,7 +635,7 @@ try {
     await p.goto(`${GH}/settings`);
     await signIn(p);
     await p.waitForURL(`${GH}/settings`);
-    await p.getByRole("heading", { name: "Settings need an account" }).waitFor();
+    await p.getByRole("heading", { name: "Sign in to choose how we reach you" }).waitFor();
     // An Alerts-plan subscriber is never told auto-cart is on; the upgrade names its price.
     await p.goto(`${GH}/settings?as=subscriber&plan=alerts`);
     await p.locator("p", { hasText: "Your subscription" }).getByText("Active").first().waitFor();
@@ -753,7 +753,7 @@ try {
     await p.goto(`${GH}/camping/california`);
     await p.getByRole("heading", { level: 1, name: "Campgrounds in California" }).waitFor();
     await p.getByText("Booking goes through Recreation.gov and ReserveCalifornia.", { exact: false }).waitFor();
-    await p.getByRole("link", { name: "California yurt camping" }).click();
+    await p.getByRole("link", { name: "California Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts\/california/);
     await p.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Yurt Camping" }).click();
     await p.waitForURL(/\/camping\/yurts$/);

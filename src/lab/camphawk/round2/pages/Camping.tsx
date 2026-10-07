@@ -84,11 +84,11 @@ function RegionGrid({ rows, href, visitor, caption }: { rows: Region[]; href: (r
 // family (round 8: a long run of bare link rows read as an SEO scaffold).
 function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; name: string; visitor: Visitor }) {
   return (
-    // A row grid, read left to right like the alphabet; cards keep their own height (items-start),
-    // so short towns don't get empty bottoms beside Yosemite's seven.
-    <div className="mt-10 grid items-start gap-4 sm:grid-cols-2">
+    // Two masonry columns, read down (alphabetical either way): a row grid left holes beside the
+    // long towns and under a lone last card (round 15).
+    <div className="mt-10 gap-4 sm:columns-2">
       {groups.map((g) => (
-        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
             <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
             <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length} {g.campgrounds.length === 1 ? "campground" : "campgrounds"}</span>
@@ -217,7 +217,7 @@ export function CampingHub() {
 
 /* ---------- /camping/[state] ---------- */
 
-const WHY_WATCH = `Booked out is rarely final. People cancel constantly, and the site drops back into the booking system with no warning, often overnight. Watch one and we recheck it every ${CHECK_SECONDS} seconds, around the clock, so you hear within seconds, not weeks later.`;
+const WHY_WATCH = `Fully booked is rarely final. People cancel constantly, and the site drops back into the booking system with no warning, often overnight. Watch one and we recheck it every ${CHECK_SECONDS} seconds, around the clock, so you hear within seconds, not weeks later.`;
 
 export function StatePage({ slug }: { slug: string }) {
   const r = regionBySlug(slug)!;
@@ -238,7 +238,7 @@ export function StatePage({ slug }: { slug: string }) {
               <p>{WHY_WATCH}</p>
               {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
             </>}
-            links={[...types.map((h) => [`${r.name} ${h.label.toLowerCase()}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [r.canada ? "Every province" : "Every state", r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping]]}
+            links={[...types.map((h) => [`${r.name} ${h.label}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [r.canada ? "Camping in Canada" : "Camping by state", r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping]]}
           >
           {ca ? (
             <>
@@ -291,7 +291,7 @@ export function TypeHub({ type }: { type: string }) {
               <p>{hub.blurb}</p>
               <p>We track them across {places(us.length, ca)}, on {systems(ca.length > 0)}. Most book out months ahead, so a cancellation is the realistic way in: watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock.</p>
             </>}
-            links={[...HUBS.filter((h) => h.slug !== hub.slug).map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["Every state and province", ROUTES.camping], ["The campgrounds that are always booked", ROUTES.hardest]]}
+            links={[...HUBS.filter((h) => h.slug !== hub.slug).map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["Camping by state", ROUTES.camping], ["The campgrounds that are always booked", ROUTES.hardest]]}
           >
           {us.length > 0 && (
             <section aria-labelledby="by-state" className="mt-12">
@@ -337,7 +337,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
   }
   const others = hubsIn(r.code).filter((h) => h.slug !== hub.slug);
   return (
-    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false} facts={[[n(count), `with ${hub.noun}`], [n(r.count), `campgrounds in ${r.name}`]]}>
+    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false} facts={[[n(count), `campgrounds with ${hub.noun}`], [n(r.count), "campgrounds tracked"], [`${CHECK_SECONDS} sec`, "between checks"]]}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />
@@ -345,10 +345,10 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
             visitor={visitor}
             endsWithSearch={ca}
             lead={<>
-              <p>{WHY_WATCH}</p>
+              <p>A campground with {hub.noun} in {r.name} is usually fully booked months ahead, so a cancellation is the realistic way in. It drops back into the booking system with no warning, often overnight; watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock.</p>
               {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
             </>}
-            links={[[`Every campground in ${r.name}`, statePath(r)], ...others.map((h) => [`${r.name} ${h.label.toLowerCase()}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [`${hub.heading} in other ${r.canada ? "states and provinces" : "states"}`, `${ROUTES.camping}/${hub.slug}`]]}
+            links={[[`Campgrounds in ${r.name}`, statePath(r)], ...others.map((h) => [`${r.name} ${h.label}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [hub.heading, `${ROUTES.camping}/${hub.slug}`]]}
           >
           {ca ? (
             <>

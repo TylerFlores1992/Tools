@@ -344,7 +344,7 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 ## Fix rounds 6–12: toward a 9 (2026-10-07)
 The owner's bar: "above a 9". Each round: two fresh critics (same prompt, never the builder), axe-core
 4.14 (WCAG 2.2 AA plus best practice, 390 and 1440, collapsibles open and shut), fix, verify, e2e.
-Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 8.6 (A 8.6, B 8.6) · r14 8.6 (A 8.6, B 8.6). axe: 0 violations on all 32 routes.
+Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 8.6 (A 8.6, B 8.6) · r14 8.6 (A 8.6, B 8.6) · r15, after the rework, 8.65 (A 8.7, B 8.6). axe: 0 violations on all 32 routes.
 
 **Typography (guarded by `src/lab/camphawk/typography.test.mts`, mutation-tested).** Curly
 apostrophes only (never `&apos;` or a straight `'` between letters); "8 AM" and other times keep a
