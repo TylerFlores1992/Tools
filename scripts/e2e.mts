@@ -443,7 +443,7 @@ try {
     const status = p.locator("p[aria-live=polite]");
     // Three clicks and Finish: one road.
     // Snapping off, so every point lands exactly where it was put (checked in the file below).
-    await p.getByRole("button", { name: "Snap to roads" }).click();
+    await p.getByRole("checkbox", { name: "Snap to roads" }).uncheck();
     // Clicks relative to the photo (Playwright scrolls each into view: the photo is taller than the window).
     const box = (await area.boundingBox())!;
     const at = (fx: number, fy: number) => area.click({ position: { x: box.width * fx, y: box.height * fy } });
@@ -477,14 +477,18 @@ try {
     await area.waitFor();
     assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 2);
     assert.equal(await list.getByRole("button", { name: "Delete restroom 1" }).count(), 1);
-    await p.getByText("drawn from this data, with your traces in place.").waitFor();
+    await p.getByText("With your traces in place. They aren’t built yet, so the checks above don’t include them.").waitFor();
+    // The decision can't be mistaken for approving the traces.
+    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve without my traces" }).waitFor();
     // The camper's map counts the traced restroom with the sources' ones.
     const built = await (await p.request.get(`${BASE}/private/camphawk/maps/ridb-233488.json`)).json();
     const before = built.pois.filter((x: { type: string }) => x.type === "Restroom").length;
     await p.getByRole("img", { name: new RegExp(`^Map of .*, ${before + 1} restrooms\\.`) }).waitFor();
-    // Name road 1 and make it a through road; then download the file and check it as the build would.
-    await list.getByRole("textbox", { name: "Name" }).first().fill("Dog Creek Road");
-    await list.getByRole("checkbox", { name: "Through road" }).first().check();
+    // Name road 1 and make it a through road (behind Edit); then download the file and check it as the build would.
+    await list.getByRole("button", { name: "Edit road 1" }).click();
+    assert.equal(await list.getByRole("button", { name: "Edit road 1" }).getAttribute("aria-expanded"), "true");
+    await list.getByRole("textbox", { name: "Name" }).fill("Dog Creek Road");
+    await list.getByRole("checkbox", { name: "Through road" }).check();
     const [download] = await Promise.all([p.waitForEvent("download"), list.getByRole("button", { name: "Download trace file" }).click()]);
     assert.equal(download.suggestedFilename(), "ridb-233488.json");
     const file = JSON.parse(readFileSync(await download.path(), "utf8"));
@@ -502,6 +506,25 @@ try {
     near(file.roads[0].coords[1], 0.5, 0.5);
     near(file.roads[0].coords[2], 0.7, 0.4);
     near(file.points[0].at, 0.45, 0.7);
+    // The queue says which maps have traces waiting in this browser.
+    await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps`);
+    await p.locator("main ul li").filter({ hasText: "Dog Creek" }).getByText("Your traces, not built yet").waitFor();
+    assert.equal(await p.getByText("Your traces, not built yet").count(), 1);
+    await p.goto(url);
+    await area.waitFor();
+    // A finished road can be picked up again: the next point goes on its end.
+    await list.getByRole("button", { name: "Continue road 1" }).click();
+    await status.filter({ hasText: "Continuing road 1: new points go on its end." }).waitFor();
+    await at(0.75, 0.45);
+    await status.filter({ hasText: "Road 1: 4 points." }).waitFor();
+    await p.getByRole("button", { name: "Undo last point" }).click();
+    await status.filter({ hasText: "Road 1: 3 points." }).waitFor();
+    await p.getByRole("button", { name: "Finish road" }).click();
+    // Replacing the source's roads asks first, and Keep leaves them.
+    const replace = p.getByRole("checkbox", { name: "Replace the source’s roads" });
+    await replace.check();
+    await p.getByRole("button", { name: "Keep the source’s roads" }).click();
+    assert.ok(!(await replace.isChecked()), "replace stays off when you keep the source's roads");
     // Delete one road; then delete everything, two steps.
     await list.getByRole("button", { name: "Delete road 2" }).click();
     assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
@@ -535,7 +558,7 @@ try {
     const list = p.getByRole("region", { name: "Your traces" });
     await list.getByText("As built into this map").waitFor();
     assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 11);
-    assert.equal(await p.getByRole("button", { name: "Replace the source’s roads" }).getAttribute("aria-pressed"), "true");
+    assert.ok(await p.getByRole("checkbox", { name: "Replace the source’s roads" }).isChecked());
     // The checks say what was traced; the sources say why the road source was picked.
     await p.getByRole("cell", { name: "11 roads" }).waitFor();
     await p.getByRole("region", { name: "Your decision" }).getByText(/traced from this photo/).waitFor();

@@ -45,3 +45,9 @@ export function useTraceDraft(id: string, map: SiteMapData | null): [TraceDraft,
   const set = (d: TraceDraft) => write(id, sameDraft(d, built) ? null : d);
   return [draft, set, !sameDraft(draft, built), () => write(id, null)];
 }
+
+/** The maps with traces saved in this browser that aren't built yet (the queue tags them). */
+export function useSavedTraceIds(): Set<string> {
+  const all = useSyncExternalStore(subscribe, snapshot, () => NONE);
+  return new Set(Object.keys(all));
+}

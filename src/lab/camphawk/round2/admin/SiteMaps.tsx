@@ -16,7 +16,7 @@ import { AdminFrame } from "./AdminFrame";
 import { MapThumb } from "./MapThumb";
 import { AerialCheck } from "./AerialCheck";
 import { TraceTool } from "./TraceTool";
-import { useTraceDraft } from "./useTraceDraft";
+import { useSavedTraceIds, useTraceDraft } from "./useTraceDraft";
 import { withDraft } from "../maps/trace";
 
 // Site maps: the queue where CampHawk's automatically drawn campground maps wait for a person
@@ -91,6 +91,7 @@ function Queue({ home }: { home: string }) {
   // once, with no server round trip, and a filter is not a new page.
   const setFilter = (f: Filter) => window.history.replaceState(null, "", f === "all" ? home : `${home}?show=${f}`);
   const [decisions] = useDecisions();
+  const localTraces = useSavedTraceIds();
   const { summary, population, entries } = SAMPLE;
   const n = entries.length;
   const [lo, hi] = wilson(summary.ready, n);
@@ -149,7 +150,7 @@ function Queue({ home }: { home: string }) {
 
       {shown.length ? (
         <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
-          {shown.map((e) => <Card key={e.id} entry={e} home={home} decision={decisions[e.id]} />)}
+          {shown.map((e) => <Card key={e.id} entry={e} home={home} decision={decisions[e.id]} traced={localTraces.has(e.id)} />)}
         </ul>
       ) : (
         <p className="mt-3 rounded-ch-card border border-dashed border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">No maps in this group.</p>
@@ -242,7 +243,7 @@ function Tile({ verdict, count, n, note }: { verdict: Verdict; count: number; n:
   );
 }
 
-function Card({ entry: e, home, decision }: { entry: SampleEntry; home: string; decision?: Decision }) {
+function Card({ entry: e, home, decision, traced }: { entry: SampleEntry; home: string; decision?: Decision; traced?: boolean }) {
   const v = VERDICT[e.verdict];
   const name = tidyCase(e.name);
   return (
@@ -264,6 +265,7 @@ function Card({ entry: e, home, decision }: { entry: SampleEntry; home: string; 
         )}
         {FIRST_LOOK[e.id] && <p className="mt-auto pt-1 text-[13px] text-ch-muted">First look: <span className="font-bold text-ch-ink-2">{FIRST_LOOK_WORD[FIRST_LOOK[e.id].call]}</span></p>}
         {decision && <DecisionNote decision={decision} />}
+        {traced && <p className="flex items-center gap-1.5 text-[13px] font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-4" />Your traces, not built yet</p>}
       </div>
     </li>
   );
@@ -368,7 +370,7 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
 
           <div className="mt-6">
             <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">What campers would see</h2>
-            <p className="mt-0.5 text-[14px] text-ch-ink-2">The campground page’s site map, drawn from this data{changed ? ", with your traces in place" : ""}.</p>
+            <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : "The campground page’s site map, drawn from this data."}</p>
             {state === "ready" && shown ? (
               <SiteMap map={shown} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
             ) : <div className="mt-3"><Pending state={state} /></div>}
@@ -434,8 +436,16 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
   const shown = OPTIONS.filter((o) => o.show).sort((a, b) => Number(b.d === primary) - Number(a.d === primary));
   return (
     <section aria-label="Your decision" className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card">
+      {traceChanged && !decision && (
+        <p className="mb-3 flex gap-1.5 rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-3 py-2 text-[13.5px] leading-snug text-ch-ink">
+          <PenLine aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <span>Your traces aren’t on this map yet: its checks and verdict are for the map as built. Download the trace file to have it rebuilt, then judge it again.</span>
+        </p>
+      )}
       {decision ? (
         <DecisionNote decision={decision} />
+      ) : traceChanged ? (
+        <p className="text-[14.5px] leading-snug text-ch-ink-2">Approving now approves the map without your traces.</p>
       ) : (
         <p className="text-[14.5px] leading-snug text-ch-ink-2">
           {entry.verdict === "ready" ? "Every check passed, so this map would go live on its own. You can still hold it back."
@@ -453,15 +463,9 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
             <button type="button" onClick={() => decide(entry.id, null)} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><RotateCcw aria-hidden="true" className="size-4" />Undo</button>
           </>
         ) : shown.map(({ d, label, Icon }) => (
-          <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{label}</button>
+          <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary && !traceChanged ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{d === "approved" && traceChanged ? "Approve without my traces" : label}</button>
         ))}
       </div>
-      {traceChanged && (
-        <p className="mt-3 flex gap-1.5 rounded-ch-input bg-ch-ochre-soft px-3 py-2 text-[13.5px] leading-snug text-ch-ink">
-          <PenLine aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <span>You’ve traced roads here that aren’t on the map yet. Download the trace file; the map is rebuilt with it, then judged again.</span>
-        </p>
-      )}
       <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: decisions are saved in this browser only.</p>
     </section>
   );
@@ -586,28 +590,28 @@ function Sources({ entry, map }: { entry: SampleEntry; map: SiteMapData | null }
         ))}
       </dl>
       {fits.length > 0 && (
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-left text-[14px]">
-            <caption className="pb-1.5 text-left text-[13.5px] text-ch-ink-2">How far the sites are from each source’s roads. The map uses one source; the closest fit wins unless the usual one is nearly as close.</caption>
+        <div className="mt-4">
+          <p id="fits-cap" className="pb-1.5 text-[13.5px] leading-snug text-ch-ink-2">How far the sites are from each source’s roads. The map uses one source; the closest fit wins unless the usual one is nearly as close.</p>
+          <table aria-describedby="fits-cap" className="w-full text-left text-[14px]">
             <thead className="text-[12px] font-bold text-ch-muted">
               <tr className="border-b border-ch-line">
-                <th scope="col" className="py-2 pr-3 font-bold">Source</th>
-                <th scope="col" className="px-3 py-2 text-right font-bold">Median</th>
-                <th scope="col" className="px-3 py-2 text-right font-bold">9 in 10 within</th>
-                <th scope="col" className="py-2 pl-3 font-bold"><span className="sr-only">Used</span></th>
+                <th scope="col" className="py-2 pr-2 font-bold">Source</th>
+                <th scope="col" className="px-2 py-2 text-right font-bold">Median</th>
+                <th scope="col" className="py-2 pl-2 text-right font-bold">9 in 10 within</th>
               </tr>
             </thead>
             <tbody>
               {fits.map(([k, fit]) => (
                 <tr key={k} className="border-b border-ch-line last:border-b-0">
-                  <th scope="row" className={cx("py-2 pr-3", k === entry.sources.roads ? "font-bold text-ch-ink" : "font-normal text-ch-ink-2")}>{SOURCE_SHORT[k]}</th>
+                  <th scope="row" className={cx("py-2 pr-2", k === entry.sources.roads ? "font-bold text-ch-ink" : "font-normal text-ch-ink-2")}>
+                    <span className="inline-flex items-center gap-1">{SOURCE_SHORT[k]}{k === entry.sources.roads && <><Check aria-hidden="true" className="size-4" /><span className="text-[13px]">used</span></>}</span>
+                  </th>
                   {fit ? (
                     <>
-                      <td className="px-3 py-2 text-right tabular-nums text-ch-ink">{Math.round(fit.medianM)} m</td>
-                      <td className="px-3 py-2 text-right tabular-nums text-ch-ink">{Math.round(fit.p90M)} m</td>
+                      <td className="px-2 py-2 text-right tabular-nums text-ch-ink">{Math.round(fit.medianM)} m</td>
+                      <td className="py-2 pl-2 text-right tabular-nums text-ch-ink">{Math.round(fit.p90M)} m</td>
                     </>
-                  ) : <td colSpan={2} className="px-3 py-2 text-right text-ch-muted">No roads here</td>}
-                  <td className="py-2 pl-3">{k === entry.sources.roads && <span className="inline-flex items-center gap-1 font-bold text-ch-ink"><Check aria-hidden="true" className="size-4" />Used</span>}</td>
+                  ) : <td colSpan={2} className="py-2 pl-2 text-right text-ch-muted">No roads here</td>}
                 </tr>
               ))}
             </tbody>
