@@ -101,3 +101,26 @@ Before ordering:
 - ask for a fine mesh screen for the hatching;
 - ask whether mist needs a white underbase on sage.
 
+## About $10 a shirt at about 20 (researched 2026-10-07)
+The screen-print quotes above were too high for about 20 shirts. Routes that reach about $10, per shirt
+at 20, with sources in the session's research:
+
+| Route | Per shirt | Trade-off |
+|---|---|---|
+| **DTF gang sheet pressed at home** (chosen direction) | $8.30–9 | Someone presses each shirt; the 1 mm gaps are at DTF's limit |
+| Ooshirts screen print, Gildan 5000 Natural, back only, 24 min | $9–11 (est.) | No chest print; a lighter blank |
+| Printify DTG, Gildan 64000, back only | $10.50–11 (est.) | Softer lines; the green varies |
+| Local screen printer, 24 | $12–14 (est.) | Price |
+| AliExpress / Alibaba | $7–12, or $18–33 (est.) | About 36% duty since 2025, colour and line risk; skip |
+
+DTF details:
+- **Sheet:** one 22 in wide gang sheet. Backs turned sideways (13 × 11.5 in), about 240 in for 20,
+  with the chests in the 9 in strip beside them.
+- **Price:** DTF Transfers Now about $93 (free shipping over $75), or DTF Dallas $97.50.
+- **Blanks:** Gildan 5000 Natural, $3.41 (S–XL) at Blankstyle.
+- **Pressing:** use a heat press, not a household iron.
+  - A 15 × 15 press does each back in one press; a 10 × 12 Cricut EasyPress needs two.
+  - Cricut-cut vinyl can't hold the hatching, and sublimation needs polyester.
+- **Files:** the transfers print from `kit/*_300dpi.png`.
+- **Still to build:** the gang-sheet layout, once the owner gives the shirt counts and the press size.
+
