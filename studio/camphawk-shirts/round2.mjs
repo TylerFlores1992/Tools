@@ -200,6 +200,34 @@ async function main() {
     writeFileSync("out2/night-watch.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n.vb[0]} ${n.vb[1]}">${n.art}</svg>`);
     writeFileSync("out2/still-water.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.vb[0]} ${s.vb[1]}">${s.art}</svg>`);
   }
+  if (mode === "onelayers") {
+    for (const [name, a, inches] of [["one-base", stillWaterOne({ ink: "#000", only: "base" }), 11.5], ["one-hatch", stillWaterOne({ ink: "#000", only: "hatch" }), 11.5], ["one-chest", stillWaterOneChest({ ink: "#000" }), 3.75]]) {
+      const w = Math.round(inches * 300), h = Math.round((w * a.vb[1]) / a.vb[0]);
+      await shot(name, `<svg width="${w}" height="${h}" viewBox="0 0 ${a.vb[0]} ${a.vb[1]}" style="display:block">${a.art}</svg>`, w, h, "#fff");
+    }
+  }
+  if (mode === "one") {
+    const n = stillWaterOne({ ink: "#24382A" }), c = stillWaterChest3({ dark: "#24382A" });
+    const backW = 11.5 * IN, chestW = 3.75 * IN;
+    const backOf = (a) => place(500 - backW / 2, 95 + 3 * IN, backW, a.vb, a.art);
+    const chestOf = (a) => place(612 - chestW / 2, 95 + 3.2 * IN, chestW, a.vb, a.art);
+    const sh = "#E9E2D0";
+    await shot("one-tees", `<div style="display:flex;width:1800px;height:700px;align-items:center"><div style="flex:1;padding:30px 10px">${tee(sh, chestOf(c))}</div><div style="flex:1;padding:30px 10px">${tee(sh, backOf(n), true)}</div>${flat(n, sh, 600, 700)}</div>`, 1800, 700);
+    await shot("one-flat", flat(n, sh, 1400, 1600), 1400, 1600);
+    if (process.env.VARIANTS) {
+      const vs = [[-35, 0], [-35, 2.4], [0, 2.4], [55, 2.4]];
+      await shot("one-variants", `<div style="display:flex">${vs.map(([an, ol]) => `<div style="position:relative">${flat(stillWaterOne({ ink: "#24382A", angle: an, outline: ol }), sh, 700, 820)}<div style="position:absolute;top:8px;left:10px;font:14px sans-serif;color:#555">angle ${an} · outline ${ol}</div></div>`).join("")}</div>`, 2800, 820);
+    }
+    for (const [name, a, inches] of [["one-print", n, 11.5], ["one-chest-print", c, 3.75]]) {
+      const w = Math.round(inches * 300), h = Math.round((w * a.vb[1]) / a.vb[0]);
+      await shot(name, `<svg width="${w}" height="${h}" viewBox="0 0 ${a.vb[0]} ${a.vb[1]}" style="display:block">${a.art}</svg>`, w, h, sh);
+    }
+    const w = 1200, h = Math.round((w * n.vb[1]) / n.vb[0]);
+    await page.setViewportSize({ width: w, height: h });
+    await page.setContent(`<!doctype html><meta charset="utf-8"><style>${FONTS} html,body{margin:0;background:transparent}</style><svg width="${w}" height="${h}" viewBox="0 0 ${n.vb[0]} ${n.vb[1]}" style="display:block">${n.art}</svg>`, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready); await page.waitForTimeout(120);
+    await page.screenshot({ path: "out2/one-alpha.png", omitBackground: true });
+  }
   if (mode === "alpha") {
     // transparent renders for compositing onto the shirt photos
     for (const [name, a] of [["nw-alpha", nightWatch3({ ink: INKS.bone })], ["sw-alpha", stillWater4({ dark: INKS.forest, mid: INKS.moss, light: INKS.mist, shirt: SH.sage })]]) {
@@ -315,6 +343,31 @@ export function stillWater4({ dark, mid, light, shirt, tagline = "THE CAMPSITE Y
    <text x="${cx}" y="${sy + S + 120}" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="84" letter-spacing="36" fill="${dark}"><tspan dx="18">CAMPHAWK</tspan></text>
    <text x="${cx}" y="${sy + S + 172}" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="23" letter-spacing="3.2" fill="${dark}">${tagline}</text>`;
   return { vb: [W, H], art };
+}
+
+
+// =====================================================================================
+// 5 (round 3) → final giveaway: STILL WATER, ONE INK. Rock strata become hatching in the same ink.
+// =====================================================================================
+export function stillWaterOne({ ink, hatchW = 4.1, hatchGap = 5.9, angle = -35, outline = 2.2, only = "all", tagline = "THE CAMPSITE YOU WANTED IS BOOKED · WE WAIT FOR IT" }) {
+  const W = 1000, H = 1130, S = 900, sx = 500 - 0.512 * S, sy = 10, k = 4096 / S;
+  let hatch = ""; for (let i = -4096; i < 4096 * 2; i += (hatchW + hatchGap) * k) hatch += `<rect x="${i.toFixed(0)}" y="-4096" width="${(hatchW * k).toFixed(1)}" height="${4096 * 3}"/>`;
+  const art = `<defs><clipPath id="m1ink"><path fill-rule="evenodd" d="${LF("mid")}"/></clipPath></defs>
+    <svg x="${sx}" y="${sy}" width="${S}" height="${S}" viewBox="0 0 4096 4096">
+      ${only !== "base" ? `<g clip-path="url(#m1ink)" fill="${ink}"><g transform="rotate(${angle} 2048 2048)">${hatch}</g></g>` : ""}
+      ${only !== "hatch" ? `${outline ? `<path fill="none" stroke="${ink}" stroke-width="${outline * k}" stroke-linejoin="round" d="${LF("mid")}"/><path fill="none" stroke="${ink}" stroke-width="${outline * k}" stroke-linejoin="round" d="${LF("light")}"/>` : ""}
+      <path fill="${ink}" fill-rule="evenodd" d="${LF("dark")}"/>` : ""}
+    </svg>
+    ${only !== "hatch" ? `<g fill="${ink}">${hawkAt(735, 110, 205, "sil")}</g>` : ""}
+    ${only !== "hatch" ? `<text x="500" y="${sy + S + 115}" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="84" letter-spacing="36" fill="${ink}"><tspan dx="18">CAMPHAWK</tspan></text>
+    <text x="500" y="${sy + S + 165}" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="26" letter-spacing="3.2" fill="${ink}">${tagline}</text>` : ""}`;
+  return { vb: [W, H], art };
+}
+// chest for the one-ink shirt: the hawk thickened slightly so its feather gaps don't clog at 3.75in
+export function stillWaterOneChest({ ink }) {
+  const art = `<text x="300" y="90" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="92" letter-spacing="20" fill="${ink}">CAMPHAWK</text>
+    <g fill="${ink}" stroke="${ink}" stroke-width="${(2.2 * HAWK.w) / 270}" stroke-linejoin="round">${hawkAt(165, 118, 270, "sil")}</g>`;
+  return { vb: [600, 330], art };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main();

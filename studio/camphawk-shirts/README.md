@@ -40,3 +40,12 @@ ink (sized in inches, text outlined), a combined SVG, and 300 dpi transparent PN
 The owner kept Still Water and turned down Night Watch. `round3.mjs` draws ten one-ink giveaway
 mockups for free (code, the traced hawk, and the already-paid treeline and lake layers) into `out3/`.
 Gallery: https://claude.ai/artifact/FUmtsCoWaENHSEuTgqPg4E
+
+## Final (2026-10-07): Still Water, two ways
+
+The owner picked round 3 idea 5: the one-ink Still Water becomes the giveaway (natural shirt, forest ink);
+the three-ink Still Water stays for the owners. Night Watch is dropped (its kit files remain for reference).
+Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. One-ink pipeline: `node round2.mjs onelayers`
+(base and hatch at 300 dpi) → `python3 cleanone.py` (drops hatch bits under 3 mm / 1 mm², fills knockouts
+under 1 mm in the illustration only) → `node kitone.mjs` (vector per ink). Critic: 7/10 before those fixes.
+Image credit used in total: $0.40 of the owner's $0.75.

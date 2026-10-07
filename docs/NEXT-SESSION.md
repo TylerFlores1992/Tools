@@ -35,15 +35,11 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
-0. **CampHawk shirts: owner to pick a giveaway from round 3** (2026-10-07). Still Water is kept; Night
-   Watch was turned down. Ten new one-ink ideas: https://claude.ai/artifact/FUmtsCoWaENHSEuTgqPg4E
-   (`studio/camphawk-shirts/round3.mjs`). Earlier notes, Still Waters print kit and spend:
-   **CampHawk shirts: owner to choose a printer** (2026-10-07). The owner picked 3 "Night Watch" (1 ink,
-   bone on charcoal) and 7 "Still Water" (3 inks on sage). Both refined through two critic rounds and
-   a 300 dpi print check. Review page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. Print files:
-   `studio/camphawk-shirts/kit/`. Image credit: $0.36 of the owner's $0.75 used; AI Gateway balance
-   $1.685. Open: Still Water's final redraw hasn't had a third critic pass; whether to give the hawk a
-   red-tail head (it's the logo's bird); blank, printer, quantity and a strike-off are the owner's.
+0. **CampHawk shirts: final pair, owner to choose a printer** (2026-10-07). Still Water in three inks on
+   sage (the owners) and in one ink on natural (the giveaway; round 3 idea 5). Night Watch was dropped.
+   Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. Print files: `studio/camphawk-shirts/kit/`
+   (`still-water_*` and `still-water-one-ink_*`). Image credit: $0.40 of the owner's $0.75; AI Gateway
+   balance $1.645. Open, the owner's call: blank, printer, quantity, a strike-off (test print).
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
