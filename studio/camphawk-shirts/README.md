@@ -80,3 +80,24 @@ C and the K. It is now set to an exact width (`textLength`, 540 of 600 units, ab
 round-1 steps above). Print check: letter corners and the hawk's narrowest feather slits are flagged,
 as before; the slits close a little on press, and the hawk still reads.
 
+## Printers (researched 2026-10-07)
+Prices are per shirt, size M, from each printer's own quote tool. Giveaway = 1 back ink + 1 chest ink;
+owners = 3 + 1. The kit page (https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM) has the full table
+and the order spec.
+
+| Printer | Giveaway at 24 / 50 / 100 / 250 | Owners at 24 | Notes |
+|---|---|---|---|
+| Threadbird | $25.51 / 16.66 / 13.56 / 12.36 | 36 minimum ($23.66) | Best value at 100 and best quality; shipping extra |
+| Ooshirts | $19.51 / 17.48 / 16.27 / 15.58 | $21.78 | All-in, free setup and shipping; best for owners at 24 |
+| RushOrderTees | $21.28 / 18.82 / 16.33 / 14.91 | $25.27 | All-in |
+| Custom Ink | about $14–17 (est.) | — | Add $2–4 for the back (est.) |
+| Real Thread | $11–15 (est.) | — | Water-based, soft print; quote by hand |
+
+Skip DTG (Printful, Printify): it softens the hatching, and mist on sage needs a stiff white base.
+Blanks: Comfort Colors 1717 in Ivory and in Sage, or Bella+Canvas 3001 Natural, about $1.70 less at
+Threadbird.
+Before ordering:
+- ask for a strike-off;
+- ask for a fine mesh screen for the hatching;
+- ask whether mist needs a white underbase on sage.
+

@@ -35,15 +35,17 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
-0. **CampHawk shirts: final pair, owner to choose a printer** (2026-10-07). Still Water in three inks on
-   sage (the owners) and in one ink on natural (the giveaway; round 3 idea 5). Night Watch was dropped.
-   Page: https://claude.ai/artifact/ATGRwtfvCjxre1HkovX4bC. Print files: `studio/camphawk-shirts/kit/`
-   (`still-water_*` and `still-water-one-ink_*`). Both back prints now carry the owner's camp: a
-   Recraft linocut ridge tent and a drawn campfire under the peak, mirrored in the lake
-   (`camp.py` → `campkit.mjs`; critic 6 → 8/10; print-checked). Image credit: $0.54 of the owner's
-   $0.75; AI Gateway balance $1.505 (`gen.mjs` stops at $1.40, so about 3 images are left; run it with
-   `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt`). Open, the owner's call: blank,
-   printer, quantity, a strike-off (test print).
+0. **CampHawk shirts: final and print-ready; owner to order** (2026-10-07). Still Water in three inks on
+   sage (the owners) and in one ink on natural (the giveaway). Both backs carry the camp (a tent and a
+   campfire under the peak; critic 6 → 8/10). Both chest prints are fixed: they had lost the C and the K.
+   - Kit page (mockups, all 12 files as a zip, order spec, printer table):
+     https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM. Emailed to the owner on Oct 7.
+   - Print files: `studio/camphawk-shirts/kit/`.
+   - Printer research (Oct 7, from each printer's own quote tool): Threadbird for the giveaway ($13.56
+     at 100 on CC1717 Ivory, the best quality); Ooshirts for the owners' shirt ($21.78 at 24, all-in).
+     Skip DTG. Details are in the README's "Printers" section.
+   - Image credit: $0.54 of the owner's $0.75.
+   - Open, the owner's call: quantity, printer, a strike-off, and whether mist needs a white underbase.
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
