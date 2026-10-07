@@ -114,14 +114,14 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     (picked ? `. ${openSites.length ? `${openSites.length} open on ${dayLabel(picked)}: ${openSites.map((s) => s.name).join(", ")}` : `None open on ${dayLabel(picked)}`}.` : ".");
 
   // Bring a site into view inside the zoomed frame.
-  const centre = (at: [number, number]) => {
+  const center = (at: [number, number]) => {
     const el = scroller.current;
     if (!el) return;
     const [x, y] = toPx(map, at, W);
     el.scrollTo({ left: x - el.clientWidth / 2, top: y - el.clientHeight / 2, behavior: "smooth" });
   };
   useLayoutEffect(() => {
-    if (zoom > 1) { const at = found?.at ?? selected?.at; if (at) centre(at); }
+    if (zoom > 1) { const at = found?.at ?? selected?.at; if (at) center(at); }
   }, [zoom]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pick = (s: Placed) => {
@@ -142,7 +142,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
       setFound(p);
       setFindMsg(picked ? `Site ${p.name} is ringed on the map. It isn't open on ${dayLabel(picked)}.` : `Site ${p.name} is ringed on the map.`);
     }
-    if (zoom > 1) requestAnimationFrame(() => centre(p.at));
+    if (zoom > 1) requestAnimationFrame(() => center(p.at));
   };
 
   return (
