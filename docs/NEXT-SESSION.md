@@ -29,7 +29,8 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (168 tests) · `npm run e2e` (34 browser checks) ·
+**Checks, all green:** `npm run verify` (191 tests) · `npm run e2e` (36 browser checks;
+`E2E_ONLY=<text>` runs the matching ones) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29/29 on production after #19 merged, 2026-10-07, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
@@ -68,6 +69,8 @@ and `studio/campground-maps/README.md` (how to build one).
     - **To put a trace on the map:** add the file to `traces/` and run
       `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir> <id>`.
     - A traced map always waits for approval (an eighth check).
+    - Reviewed: UI audit, and critic rounds 6.5 → 8/10, every finding fixed. Not checked on a
+      real phone: at 2×/4×, the sticky road bar may cover the bottom strip of the photo.
   - **Traces on 13 sample maps,** each checked over the photo. Only visible roads were traced, and
     every file's note says what was left out.
   - **Result:** **45 of 50 can go live after one look (90%; 79–96%)**, up from 38. 27 are ready on

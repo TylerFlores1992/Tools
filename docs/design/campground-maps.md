@@ -467,16 +467,33 @@ The sample showed the gap is roads, not sites. Two fixes, both built and tested.
   the aerial photo", which holds any map with traces for approval, however well its sites fit.
 - **The tool** ("Trace what's missing", on each map's page):
   - draw roads, restrooms and water taps over the photo at 1×, 2× or 4×;
-  - snaps to a nearby road, so a new lane joins the one it leaves;
+  - snaps to a nearby road, so a new lane joins the one it leaves (the join is ringed);
   - works by keyboard (arrows move a cross, Enter places a point, Escape finishes);
-  - name a road, mark it a through road, replace the source's roads;
-  - saved in the browser, and the camper's map preview shows the traces at once;
+  - Finish road and Undo stay in reach at the bottom of the screen while a road is being drawn;
+  - each road is numbered on the photo, matching the list, and a row you point at haloes its road;
+  - a road can be named, marked a through road, or continued later (under Edit);
+  - "Replace the source's roads" asks first, then says the source's roads are hidden;
+  - a deleted road or point can be brought back until the next change;
+  - saved in the browser. The camper's map preview shows the traces at once. The page and the
+    queue say the traces aren't built yet, and Approve becomes "Approve without my traces";
   - "Download trace file" gives the exact file the build reads. It goes on the map when a session
     adds it to `traces/` and rebuilds (lab: there is no server to save to).
-- **Tested:** lab arithmetic and file round trip (`src/lab/camphawk/round2/maps/trace.test.mts`); the
-  build's file check (`scripts/campground-maps-trace.test.mts`, all mutants killed); and two browser
-  checks (mouse, keyboard, reload, preview, download validated by the build's own check, delete,
-  phone zoom, a built-in trace). Mutation results for the browser checks are in the PR.
+- **Review:**
+  - a UI audit (Vercel's guidelines plus the house rules) found three must-fixes: taps on phones,
+    an undo for deletes, and road numbers on the photo. All were fixed.
+  - a separate critic agent scored it 6.5, then 8/10, with every must-fix and should-fix of
+    both rounds made.
+  - Not checked on a real phone: whether, at 2× and 4×, the sticky road bar covers points you
+    want to place at the bottom of the visible photo. (Scrolling the page clears it.)
+- **Tested:**
+  - lab arithmetic and file round trip (`src/lab/camphawk/round2/maps/trace.test.mts`, cross-checked
+    against the builder's own projection);
+  - the build's file check (`scripts/campground-maps-trace.test.mts`, all mutants killed);
+  - two browser checks. They cover: mouse, keyboard and point positions; reload, the preview and
+    the queue tag; continue and undo; replace-confirm; download validated by the build's own
+    check; delete and undo-delete; the phone zoom; and a built-in trace.
+  - Mutation round on the browser checks: 8 of 8 killed. One was killed only after a
+    point-position check was added, and one was the duplicated-badge bug, put back on purpose.
 
 ### What a session traced, and what it didn't
 - **Traced, 13 maps:** Udall Park, Cave Creek, Salt Springs, Pringle Falls, Preston Bend,
