@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
 import { BetaNote } from "../BareFrame";
-import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
 import { A, ActionLink, CtaBand, H2, LabNote, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
 import { CHECK_SECONDS, inWords, OPENINGS_STAT, openingsPercent, HOLD_STEPS, RC_HOLD_OPEN, SOURCE_COUNT, SOURCES_LINE } from "./tier2-data";
@@ -123,7 +122,7 @@ export function AutoCartGuide() {
             <><strong className="text-ch-ink">One grab per site.</strong> Once a specific site is carted for you, it won’t be re-added — but a different site opening in the same campground still will.</>,
             <>This automates <em>your own</em> account for personal use. Keep your watches current so it knows what to grab.</>,
           ]} />
-          <CtaBand title="Find your campground, then let auto-cart do the fast part." body="Searching is free and needs no account." action={<WatchCtaLink visitor={visitor} fullWidth={false} onDark className="min-h-12 px-6" />} />
+          <CtaBand title="Find your campground, then let auto-cart do the fast part." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
         </Prose>
         </WithRail>
       )}
@@ -140,7 +139,7 @@ export function CancellationAlerts() {
           <P>A cancellation alert service watches a campground you could not book and tells you when a site frees up. Every one of them does that. What separates them is how fast they notice, which reservation systems they can see, and whether they can do anything about it other than tell you.</P>
 
           <H2 id="how" className="mt-12">How they work</H2>
-          <P>Reservation systems publish availability, so a service polls that availability on a loop and compares it with the last look. When a stay you asked for goes from booked to bookable, it sends you a text, an email or a push notification with a link.</P>
+          <P>Reservation systems publish availability, so a service polls that availability on a loop and compares it with the last look. When a stay you asked for goes from booked to bookable, it sends you an email, a push notification or a text with a link.</P>
           <P>The whole game is the loop interval and what happens next. A service checking every few minutes will genuinely find you openings on quiet campgrounds; on a contested one it will reliably tell you about a site somebody else has already taken.</P>
 
           <H2 id="speed">How much speed matters, in numbers</H2>
@@ -216,7 +215,7 @@ export function SoldOutGuide() {
           ]} />
 
           <H2 id="camphawk">Where CampHawk fits</H2>
-          <P>We check every watched campground every {CHECK_SECONDS} seconds, across {SOURCES_LINE}, and text, email or push you the moment a stay you asked for becomes bookable.</P>
+          <P>We check every watched campground every {CHECK_SECONDS} seconds, across {SOURCES_LINE}, and email, push or text you the moment a stay you asked for becomes bookable.</P>
           <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — measured at about twelve seconds from the site opening to it being held for you{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That’s the part a plain alert can’t do, because by the time you’ve read a text and opened an app, the fast people are already at checkout.</P>
           <P>Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
           <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />

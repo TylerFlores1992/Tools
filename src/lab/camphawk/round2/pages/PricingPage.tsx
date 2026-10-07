@@ -118,7 +118,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
       {error && <p role="alert" className="mt-4 text-[15px] font-bold text-ch-alert-deep">We couldn’t open checkout just now. Nothing was charged. Try again.</p>}
       {/* One block of terms under the plans (two uneven columns, one repeating the band, read as
           leftovers). */}
-      <div className="mx-auto mt-8 max-w-[64ch] text-[16px] leading-relaxed text-ch-ink-2 sm:text-center">
+      <div className="mt-8 max-w-[64ch] text-[16px] leading-relaxed text-ch-ink-2">
         <p className="font-bold text-ch-ink">Cancel any time. Live search keeps working either way.</p>
         <p className="mt-1.5">{LAUNCH_PRICING}</p>
         <p className="mt-1.5 text-[15px]">{foot}</p>
@@ -177,7 +177,7 @@ function AppPaywall({ store }: { store: Store }) {
                 <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Run up to ${WATCH_LIMIT} watches around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
                 <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
                 <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
-                  {buying === t.id ? "Opening…" : `Start ${TRIAL_DAYS}‑day free trial, then ${t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "/month") : priceShort(t.tier, "yearly").replace("/yr", "/year")}`}
+                  {buying === t.id ? "Opening…" : `Try free for ${TRIAL_DAYS} days, then ${priceShort(t.tier, t.i === "month" ? "monthly" : "yearly")}`}
                 </button>
               </li>
             ))}

@@ -3,6 +3,7 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../Pricing";
 import { LAUNCH_PRICING, TRIAL_DAYS } from "./pages/tier2-data";
+import { ROUTES } from "./gates";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor } from "../data";
 
 // Round-2 pricing: the same three branches, prices and words as Pricing.tsx, set as a section of
@@ -21,7 +22,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
       <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
-      <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
+      <ul className="mb-6 mt-5 grid gap-2.5 border-t border-ch-line pt-5">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
             <Check aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" />
@@ -29,7 +30,8 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
           </li>
         ))}
       </ul>
-      <a href="#" className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-6 self-start px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
+      {/* Pinned to the card's foot, so both trial buttons sit level whatever the list length. */}
+      <a href={`${ROUTES.signUp}?plan=${tier}`} className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-auto self-start px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
     </div>
   );
 }
@@ -60,7 +62,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
       <div>
         <h2 className={head}>Searching is free. Watching needs a subscription.</h2>
         <p className={body}>
-          A subscription covers up to {WATCH_LIMIT} watches at once with push, text and email alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
+          A subscription covers up to {WATCH_LIMIT} watches at once with email, push and text alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
         </p>
       </div>
     );

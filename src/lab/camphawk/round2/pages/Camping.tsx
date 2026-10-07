@@ -310,7 +310,7 @@ export function HardestToBook() {
             <Lead>
               <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you’ve finished typing. It isn’t a queue you can win by being organized — for these {count} campgrounds, being early isn’t early enough.</p>
               <p>What does work is being there when somebody gives one back. Cancellations happen constantly — a trip falls through, a group shrinks, a forecast sours — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
-              <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
+              <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we email, push and text you a link straight to it.</p>
             </Lead>
             <p className="mt-4 max-w-[70ch] text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>

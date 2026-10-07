@@ -79,6 +79,20 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
 
 const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
 
+/** Parts that share a name read as one: "Canyon Campground (sites 1–24)" and "(sites 25–77)"
+    become "Canyon Campground (sites 1–24 and 25–77)" (round 13: two "Canyon Campground"s read as a typo). */
+function mergeParts(parts: ReadonlyArray<string>): string[] {
+  const out: Array<{ base: string; sites: string[] }> = [];
+  for (const p of parts) {
+    const m = p.match(/^(.*) \(sites (.+)\)$/);
+    const base = m ? m[1] : p;
+    const prev = out.find((o) => o.base === base);
+    if (prev && m) prev.sites.push(m[2]);
+    else out.push({ base, sites: m ? [m[2]] : [] });
+  }
+  return out.map((o) => (o.sites.length ? `${o.base} (sites ${joinAnd(o.sites)})` : o.base));
+}
+
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
@@ -100,7 +114,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {state === "hit" && w.autoCart && recgov && cart === "disconnected" && <Tag kind="paused" mark="needs-you">Not carted — reconnect auto-cart</Tag>}
           {state === "hit" && w.autoCart && recgov && cart === "reconnecting" && <Tag kind="paused" mark="reconnecting">Not carted — reconnecting</Tag>}
           {state === "watching" && <Tag kind="watch">Watching</Tag>}
-          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart">Auto-cart</Tag>}
+          {w.autoCart && recgov && state !== "authexpired" && state !== "disconnected" && !(state === "hit" && cart !== "connected") && <Tag kind="cart" mark="auto-cart" className={carted ? "max-sm:hidden" : undefined}>Auto-cart</Tag>}
           {state === "paused" && <Tag kind="paused">Paused</Tag>}
           {state === "authexpired" && <Tag kind="paused" mark="reconnecting">Auto-cart reconnecting</Tag>}
           {state === "disconnected" && <Tag kind="paused" mark="needs-you">Auto-cart disconnected</Tag>}
@@ -113,7 +127,7 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           <p className="mt-1 text-[15px] leading-normal text-ch-ink-2">
             {/* Full names, as Manage lists them: "Canyon (sites 1–24), Canyon (sites 25–77)" read
                 like a duplicate (round 12). */}
-            <span className="font-bold">{w.parts.length} parts:</span> {w.parts.length > 4 ? `${w.parts.slice(0, 4).join(", ")} and ${w.parts.length - 4} more` : joinAnd(w.parts)}
+            <span className="font-bold">{w.parts.length} parts:</span> {(() => { const names = mergeParts(w.parts); return names.length > 4 ? `${names.slice(0, 4).join(", ")} and ${names.length - 4} more` : joinAnd(names); })()}
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>
@@ -224,7 +238,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
       <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">Searching stays free. Watches run on our servers around the clock, so they’re tied to your account.</p>
       <Steps icons={[Eye, Bell, ShoppingCart]} steps={[
         [`Up to ${WATCH_LIMIT} watches at once`, "One for each campground and set of dates."],
-        ["Alerts in seconds", "Push, text and email the moment a site frees up."],
+        ["Alerts in seconds", "Email, push and text the moment a site frees up."],
         ["Auto-cart on Recreation.gov", "With the Auto-Cart plan, the site lands in your cart before you finish reading the alert."],
       ]} />
       {/* One account step carries the weight; the rest are plain links, so the wall reads as an
@@ -247,7 +261,7 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
       <Steps steps={[
         ["Pick a campground and your nights", "Exact dates, or how many nights you need inside a month you’re free."],
         ["We check every 15 seconds", "Around the clock, right up until your trip date."],
-        ["You get the site", `${visitor === "app" ? "A notification" : "Push, text and email"} in seconds, and on Recreation.gov we can drop it straight in your cart.`],
+        ["You get the site", `${visitor === "app" ? "A notification" : "Email, push and text"} in seconds, and on Recreation.gov we can drop it straight in your cart.`],
       ]} />
       <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
         <WatchCtaLink visitor={visitor} label="Create your first watch" fullWidth={false} className="min-h-12 px-6" />

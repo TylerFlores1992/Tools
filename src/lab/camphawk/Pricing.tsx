@@ -10,7 +10,7 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 export const BASE_FEATURES = [
   `Run up to ${WATCH_LIMIT} watches at once`,
   "Checked every 15 seconds, around the clock",
-  "Text, push and email the moment a site opens",
+  "Email, push and text the moment a site opens",
   "Flexible dates — any N nights in a window",
 ];
 export const AUTOCART_FEATURES = [
@@ -99,7 +99,7 @@ export function PricingSection({ visitor }: { visitor: Visitor }) {
       <div className="rounded-ch-card border border-ch-green-line bg-ch-green-soft p-5 sm:p-6">
         <h2 className="font-ch-display text-ch-title font-extrabold tracking-[-.03em] text-ch-green-deep">Searching is free. Watching needs a subscription.</h2>
         <p className="mt-2 max-w-[58ch] text-ch-body leading-relaxed text-ch-green-deep">
-          A subscription covers up to {WATCH_LIMIT} watches at once with push, text and email alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
+          A subscription covers up to {WATCH_LIMIT} watches at once with email, push and text alerts; the Auto-Cart plan adds automatic carting on Recreation.gov. Live search keeps working either way.
         </p>
       </div>
     );

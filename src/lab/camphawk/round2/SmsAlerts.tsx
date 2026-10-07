@@ -132,7 +132,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
       {/* With a number saved and nothing changed there is nothing to update: no button. */}
       {!(saved && !changed) && (
         <div>
-          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: true, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (secondary && !demo ? " border-ch-ink-2! text-ch-ink!" : "") + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
+          <button type="button" onClick={save} disabled={demo || busy !== null} aria-describedby="sms-why" className={buttonClasses({ variant: secondary ? "quiet" : "ink", fullWidth: !secondary, className: "min-h-12 text-[16px] disabled:cursor-not-allowed" + (secondary && !demo ? " border-ch-ink-2! px-5 text-ch-ink!" : "") + (demo ? " disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none" : "") })}>
             {busy === "save" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Saving…</> : saved ? "Update number" : "Turn on text alerts"}
           </button>
           {!busy && (demo || blocked) && (

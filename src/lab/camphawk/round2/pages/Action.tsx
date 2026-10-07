@@ -84,7 +84,7 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
       {/* The beta note stays above the promise, on purpose. */}
       <BetaNote className="mt-4" />
       {/* Never disabled: a second tap while it works is harmless, and a dead button reads as broken. */}
-      <button type="button" onClick={() => { setBusy(true); window.setTimeout(onYes, 700); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-5" })}>
+      <button type="button" onClick={() => { setBusy(true); window.setTimeout(onYes, 700); }} className={buttonClasses({ fullWidth: true, className: "mt-5 min-h-12 text-[16px]" })}>
         {busy ? <><Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />Holding…</> : "Yes — hold it for me"}
       </button>
       <p className="mt-3 text-center text-[14px] text-ch-ink-2">Do nothing and we won’t hold it. You’ll still get the normal alert when it opens.</p>

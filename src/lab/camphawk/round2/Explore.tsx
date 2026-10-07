@@ -125,7 +125,7 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
       <div className={cx("mt-5 grid gap-x-8 gap-y-5 border-t border-ch-line pt-5", visitor !== "subscriber" && "xl:grid-cols-2")}>
         <div>
           <p className="text-[16px] font-bold text-ch-ink">Everything booked?</p>
-          <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">That’s what we’re for. Start a watch on a full campground and we’ll check it every 15 seconds and text, email and push you the moment someone cancels.{visitor === "subscriber" && <> <Link href={withVisitor(ROUTES.newWatch, visitor)} className="font-bold text-ch-ink underline underline-offset-[3px]">Start a watch</Link></>}</p>
+          <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">That’s what we’re for. Start a watch on a full campground and we’ll check it every 15 seconds and email, push and text you the moment someone cancels.{visitor === "subscriber" && <> <Link href={withVisitor(ROUTES.newWatch, visitor)} className="font-bold text-ch-ink underline underline-offset-[3px]">Start a watch</Link></>}</p>
         </div>
         {visitor !== "subscriber" && (
           <div>
@@ -397,7 +397,7 @@ export function Explore() {
           visitor={visitor}
           current="explore"
           title="Find a campsite that’s open"
-          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
+          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov campground in all 50 states, state parks in 34, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 

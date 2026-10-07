@@ -110,7 +110,7 @@ export function Sources() {
           <ul className="mt-5 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {DATA_SOURCES.map((s) => (
               <li key={s.key} className="px-5 py-3.5">
-                <span className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <span className="grid gap-0.5 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
                   <span className="break-all text-[14px] text-ch-muted">{s.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
                 </span>
@@ -122,7 +122,7 @@ export function Sources() {
           <P>Some of the sources above serve more than one state or province, or publish through a separate open-data service. Those portals are:</P>
           <ul className="mt-4 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {ADDITIONAL_PORTALS.map((p) => (
-              <li key={p.url} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3">
+              <li key={p.url} className="grid gap-0.5 px-5 py-3 sm:flex sm:items-baseline sm:justify-between sm:gap-4">
                 <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{p.name}<span className="sr-only"> (opens in a new tab)</span></a>
                 <span className="break-all text-[14px] text-ch-muted">{p.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
               </li>
@@ -190,9 +190,9 @@ const PRIVACY = (visitor: Visitor) => [
 
 const TERMS = (visitor: Visitor) => [
   { id: "service", title: "The service", body: <P>CampHawk (camphawk.app) helps you find campsite availability across US public lands, US state parks, and national, provincial and territorial parks in Canada, and alerts you by email and (optionally) text message when a campground you watch becomes available. CampHawk is not affiliated with Recreation.gov, ReserveCalifornia, the National Park Service, Parks Canada, or any state, provincial or territorial park agency. All bookings happen on the official reservation sites.</P> },
-  { id: "guarantees", title: "No guarantees", body: <P>Availability data comes from third-party reservation systems and can change at any moment. Alerts are best-effort: a site may already be taken by the time you act, and we cannot guarantee delivery timing of any notification. CampHawk is provided &quot;as is&quot; without warranties of any kind.</P> },
+  { id: "guarantees", title: "No guarantees", body: <P>Availability data comes from third-party reservation systems and can change at any moment. Alerts are best-effort: a site may already be taken by the time you act, and we cannot guarantee delivery timing of any notification. CampHawk is provided “as is” without warranties of any kind.</P> },
   { id: "texts", title: "Text alerts", body: <P>Text alerts are <strong className="font-bold text-ch-ink">optional and separate from these Terms</strong> — agreeing to this Terms of Service does <strong className="font-bold text-ch-ink">not</strong> opt you into text messages, and SMS consent is never required to create an account, subscribe, or use any CampHawk feature. You opt in only by deliberately entering your number and checking the consent box in your account settings. Message frequency varies with campsite availability. Message and data rates may apply. Reply STOP to opt out or HELP for help. See our <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A> for how your number is handled.</P> },
-  { id: "subscriptions", title: "Subscriptions", body: <P>Some features require a paid subscription, billed through Stripe. You can cancel any time via the &quot;Manage subscription&quot; option; access continues through the end of the paid period.</P> },
+  { id: "subscriptions", title: "Subscriptions", body: <P>Some features require a paid subscription, billed through Stripe. You can cancel any time via the “Manage subscription” option; access continues through the end of the paid period.</P> },
   { id: "use", title: "Acceptable use", body: <P>Don’t abuse the service, attempt to disrupt it, or use it to violate the terms of the underlying reservation systems.</P> },
   { id: "contact", title: "Contact", body: <P>Questions: <Mail /></P> },
 ];

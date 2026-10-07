@@ -302,14 +302,14 @@ export function Settings() {
                 <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Settings need an account</h2>
                 <p className="mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they’re tied to your account. Searching stays free either way.</p>
                 <div className="mt-6 flex flex-wrap gap-2">
-                  <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
-                  <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Back to Explore</Link>
+                  <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Create an account</Link>
+                  <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "quiet", className: "min-h-12 px-6" })}>Sign in</Link>
                 </div>
               </div>
               <div className="border-t border-ch-line bg-ch-paper p-6 sm:p-10 lg:border-l lg:border-t-0">
                 <h3 className="text-[15px] font-bold text-ch-ink">What you set here</h3>
                 <ul className="mt-3 grid gap-3 text-[15px] leading-snug text-ch-ink-2">
-                  {([[Bell, "How we reach you", "Email, text messages and push."], [ShoppingCart, "Auto-cart", "Connect Recreation.gov so an opening can land in your cart."], [CreditCard, "Subscription", "Your plan, and how to change or cancel it."], [UserRound, "Account", "Signing out, and deleting your account and its data."]] as const).map(([Icon, t, d]) => (
+                  {([[Bell, "How we reach you", "Email, push notifications and text messages."], [ShoppingCart, "Auto-cart", "Connect Recreation.gov so an opening can land in your cart."], [CreditCard, "Subscription", "Your plan, and how to change or cancel it."], [UserRound, "Account", "Signing out, and deleting your account and its data."]] as const).map(([Icon, t, d]) => (
                     <li key={t} className="flex gap-3"><Icon aria-hidden="true" className="mt-0.5 size-[18px] shrink-0 text-ch-ink-2" /><span><strong className="block text-ch-ink">{t}</strong>{d}</span></li>
                   ))}
                 </ul>

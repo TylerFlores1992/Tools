@@ -18,7 +18,7 @@ export const FEATURES = [
 export const STEPS = [
   ["Find the campground", "Search by place and dates. If sites are open you’ll see them right there — that part’s free."],
   ["Watch it if it’s full", "One tap. Pick exact dates, or any N nights inside a window you’re free."],
-  ["Get the site", "Text, email and push the moment it opens — and on Recreation.gov it can already be in your cart."],
+  ["Get the site", "Email, push and text the moment it opens — and on Recreation.gov it can already be in your cart."],
 ] as const;
 
 export const LIMITS = [

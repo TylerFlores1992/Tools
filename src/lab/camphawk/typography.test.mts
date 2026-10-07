@@ -19,6 +19,7 @@ export const strip = (s: string) =>
 
 const RULES: ReadonlyArray<readonly [string, RegExp]> = [
   ["&apos; (use ’)", /&apos;/],
+  ["&quot; (use “ ”)", /&quot;/],
   ["straight apostrophe (use ’)", /(?<=[A-Za-z0-9])'(?=[A-Za-z])/],
   ["straight plural possessive (use ’)", /(?<=[a-z]s)'(?= [a-z])/],
   ["breakable 8 AM (use a non-breaking space)", /\b\d{1,2} AM\b/],
@@ -40,7 +41,7 @@ test("comments are stripped without hiding code", () => {
 
 test("the detector catches each slip and passes the fixed forms", () => {
   const hit = (s: string) => RULES.some(([, re]) => re.test(s));
-  for (const bad of ["don&apos;t", `"It's mine"`, "other states' counts", "at 8 AM", "a 7-day trial", "${TRIAL_DAYS}-day"]) assert.ok(hit(bad), bad);
+  for (const bad of ["don&apos;t", "&quot;as is&quot;", `"It's mine"`, "other states' counts", "at 8 AM", "a 7-day trial", "${TRIAL_DAYS}-day"]) assert.ok(hit(bad), bad);
   for (const good of ["other states’ counts", "don’t", "at 8 AM", "a 7‑day trial", "Auto-Cart"]) assert.ok(!hit(good), good);
 });
 

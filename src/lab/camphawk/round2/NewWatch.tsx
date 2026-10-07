@@ -228,7 +228,7 @@ export function NewWatch() {
   const weekend = thisWeekendRange();
   const isThisWeekend = range.start === weekend.start && range.end === weekend.end;
   const gate = accountGate(visitor);
-  const notifyWords = visitor === "app" ? "send you a notification" : "text, email and push you";
+  const notifyWords = visitor === "app" ? "send you a notification" : "email, push and text you";
 
   const favoriteRows = chosen ? [] : PICKABLE.filter((p) => favorites.has(p.id) && (!q.trim() || [p.name, p.place].some((v) => v.toLowerCase().includes(q.trim().toLowerCase()))));
   const hits = chosen ? [] : findCampgrounds(q).filter((p) => !favorites.has(p.id));
