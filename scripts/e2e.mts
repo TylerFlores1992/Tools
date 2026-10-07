@@ -403,16 +403,19 @@ try {
     assert.equal(await p.locator("table tbody tr").count(), 7);
     await p.getByRole("img", { name: new RegExp(`^Aerial photo of ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`) }).waitFor();
     await p.getByRole("button", { name: "Sites and roads on top" }).waitFor();
-    await p.getByRole("button", { name: "Approve map" }).click();
-    await p.getByText("You approved it").first().waitFor();
+    // At 390 the decision follows the photo (the copy beside the header is hidden there).
+    const decision = p.getByRole("region", { name: "Your decision" });
+    assert.equal(await decision.count(), 1);
+    await decision.getByRole("button", { name: "Approve map" }).click();
+    await decision.getByText("You approved it").waitFor();
     // The phone page never scrolls sideways (the checks table scrolls inside its panel).
     assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), "page scrolls sideways at 390px");
     // Back in the queue, the card says so; Undo clears it.
     await p.getByRole("link", { name: "All maps" }).click();
     await p.locator("main ul li").filter({ hasText: name }).getByText("You approved it").waitFor();
     await p.locator("main ul li h3 a", { hasText: name }).click();
-    await p.getByRole("button", { name: "Undo" }).click();
-    await p.getByRole("button", { name: "Approve map" }).waitFor();
+    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Undo" }).click();
+    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve map" }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });

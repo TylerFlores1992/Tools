@@ -76,7 +76,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
 function Toggle({ on, onChange, disabled, children }: { on: boolean; onChange: (v: boolean) => void; disabled?: boolean; children: string }) {
   return (
     <button type="button" aria-pressed={on} disabled={disabled} onClick={() => onChange(!on)}
-      className={cx("inline-flex min-h-10 items-center gap-2 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green disabled:cursor-not-allowed disabled:opacity-50",
+      className={cx("inline-flex min-h-10 items-center gap-2 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green disabled:cursor-not-allowed disabled:border-ch-line disabled:bg-ch-shell disabled:text-ch-muted",
         on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
       <span aria-hidden="true" className={cx("grid size-4 place-items-center rounded-[4px] border text-[11px] leading-none", on ? "border-ch-white" : "border-ch-muted")}>{on ? "✓" : ""}</span>
       {children}

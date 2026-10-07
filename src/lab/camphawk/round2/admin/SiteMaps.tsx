@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, EyeOff, RotateCcw } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
@@ -76,10 +76,11 @@ export function SiteMaps() {
 
 function Queue({ home }: { home: string }) {
   const params = useSearchParams();
-  const router = useRouter();
   const raw = params.get("show");
   const filter: Filter = FILTERS.some(([v]) => v === raw) ? (raw as Filter) : "all";
-  const setFilter = (f: Filter) => router.replace(f === "all" ? home : `${home}?show=${f}`, { scroll: false });
+  // The native History API syncs with useSearchParams (Next's SPA guide): the filter changes at
+  // once, with no server round trip, and a filter is not a new page.
+  const setFilter = (f: Filter) => window.history.replaceState(null, "", f === "all" ? home : `${home}?show=${f}`);
   const [decisions] = useDecisions();
   const { summary, population, entries } = SAMPLE;
   const n = entries.length;
