@@ -451,7 +451,7 @@ try {
     await status.filter({ hasText: "Road 1: 3 points" }).waitFor();
     await p.getByRole("button", { name: "Finish road" }).click();
     await status.filter({ hasText: /^Road 1 finished: 3 points, \d+ m\.$/ }).waitFor();
-    assert.ok(await p.getByRole("button", { name: "Finish road" }).isDisabled(), "nothing left to finish");
+    assert.equal(await p.getByRole("button", { name: "Finish road" }).count(), 0, "nothing left to finish");
     // A restroom.
     await p.getByRole("group", { name: "Draw" }).getByRole("button", { name: "Restroom" }).click();
     await at(0.45, 0.7);
@@ -512,7 +512,8 @@ try {
     assert.equal(await p.getByText("Your traces, not built yet").count(), 1);
     await p.goto(url);
     await area.waitFor();
-    // A finished road can be picked up again: the next point goes on its end.
+    // A finished road can be picked up again (under Edit): the next point goes on its end.
+    await list.getByRole("button", { name: "Edit road 1" }).click();
     await list.getByRole("button", { name: "Continue road 1" }).click();
     await status.filter({ hasText: "Continuing road 1: new points go on its end." }).waitFor();
     await at(0.75, 0.45);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
-import { Check, ChevronDown, Copy, Download, Droplet, PenLine, RotateCcw, Route, Toilet, Trash2, Undo2 } from "lucide-react";
+import { Check, ChevronDown, Copy, Download, Droplet, EyeOff, PenLine, RotateCcw, Route, Toilet, Trash2, Undo2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
@@ -88,18 +88,18 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   useEffect(() => { const el = img.current; if (el?.complete && el.src === src) setPhoto({ src, state: el.naturalWidth ? "ready" : "error" }); }, [src]);
 
   // Keep the middle of the view in the middle when zooming.
-  const centre = useRef<[number, number] | null>(null);
+  const viewMid = useRef<[number, number] | null>(null);
   const changeZoom = (z: Zoom) => {
     const el = outer.current;
-    if (el) centre.current = [(el.scrollLeft + el.clientWidth / 2) / el.scrollWidth, (el.scrollTop + el.clientHeight / 2) / el.scrollHeight];
+    if (el) viewMid.current = [(el.scrollLeft + el.clientWidth / 2) / el.scrollWidth, (el.scrollTop + el.clientHeight / 2) / el.scrollHeight];
     setZoom(z);
   };
   useLayoutEffect(() => {
-    const el = outer.current, c = centre.current;
+    const el = outer.current, c = viewMid.current;
     if (!el || !c) return;
     el.scrollLeft = c[0] * el.scrollWidth - el.clientWidth / 2;
     el.scrollTop = c[1] * el.scrollHeight - el.clientHeight / 2;
-    centre.current = null;
+    viewMid.current = null;
   }, [zoom]);
 
   // What a new point may snap to: the source's roads, and every traced road (an earlier point of the
@@ -260,6 +260,14 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     const x = Math.min(97, Math.max(3, ((c[0] - f.x) / f.w) * 100)), y = Math.min(100, Math.max(6, ((c[1] - f.y) / f.h) * 100));
     return { left: `${x}%`, top: `${y}%` };
   };
+  // Where each road's number goes: its start, unless that's within 18px of a number already placed;
+  // then its second point, its end or its middle, whichever is clear first.
+  const labels: XY[] = [];
+  for (const r of xyRoads) {
+    const tries = r.length ? [r[0], r[1], r.at(-1), r[Math.floor(r.length / 2)]].filter((c): c is XY => !!c) : [];
+    const clear = (c: XY) => labels.every((l) => Math.abs(l[0] - c[0]) > 18 * perPx || Math.abs(l[1] - c[1]) > 14 * perPx);
+    labels.push(tries.find(clear) ?? tries[0] ?? [f.x, f.y]);
+  }
   const toggleOpen = (i: number) => setOpen((o) => { const n = new Set(o); if (n.has(i)) n.delete(i); else n.add(i); return n; });
   const placedKinds = TRACE_KINDS.filter((k) => draft.points.some((p) => p.type === k.type));
 
@@ -284,6 +292,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
         </label>
       </div>
 
+      {draft.replace && (
+        <p className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-ch-ink"><EyeOff aria-hidden="true" className="size-4 shrink-0" />The source’s roads are hidden: your traces are this map’s only roads.</p>
+      )}
       {/* The photo at 1×, 2× or 4×; zoomed, it scrolls inside its own frame and the page doesn't. */}
       <div ref={outer} className="relative mt-3 max-h-[75svh] overflow-auto overscroll-contain rounded-t-ch-input border border-b-0 border-ch-line bg-ch-shell">
         <div
@@ -330,7 +341,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           </svg>
           {/* Each road's number at its start, matching "Road N" in the list below. */}
           {draft.roads.map((r, i) => r.coords.length > 0 && (
-            <span key={`n${i}`} aria-hidden="true" style={labelAt(toXY(map, r.coords[0]))}
+            <span key={`n${i}`} aria-hidden="true" style={labelAt(labels[i])}
               className={cx("pointer-events-none absolute -translate-x-1/2 -translate-y-[135%] rounded-[4px] border-[1.5px] border-ch-ink px-1 text-[11px] font-extrabold leading-[14px] tabular-nums", i === hi ? "z-10 bg-ch-ink text-ch-white" : "bg-ch-white text-ch-ink")}>{i + 1}</span>
           ))}
           {draft.points.map((p, i) => {
@@ -347,11 +358,13 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
       </div>
       {/* The road controls and what just happened, kept in reach at the bottom of the screen while
           the photo is in view (on a phone the photo is taller than the window). */}
-      <div className="sticky bottom-0 z-20 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-b-ch-input border border-ch-line bg-ch-card px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-6px_16px_-12px_rgb(22_41_31/0.35)]">
-        <button type="button" onClick={finish} disabled={active === null} className={buttonClasses({ variant: "ink", size: "sm", className: OFF })}><Check aria-hidden="true" className="size-4" />Finish road</button>
-        <button type="button" onClick={undo} disabled={active === null} className={buttonClasses({ variant: "quiet", size: "sm", className: OFF })}><Undo2 aria-hidden="true" className="size-4" />Undo last point</button>
+      <div className={cx("flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1.5 rounded-b-ch-input border border-ch-line bg-ch-card px-3 py-2",
+        active !== null && "sticky bottom-0 z-20 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-6px_16px_-12px_rgb(22_41_31/0.35)]")}>
+        {active !== null && <button type="button" onClick={finish} className={buttonClasses({ variant: "ink", size: "sm" })}><Check aria-hidden="true" className="size-4" />Finish road</button>}
+        {active !== null && <button type="button" onClick={undo} className={buttonClasses({ variant: "quiet", size: "sm" })}><Undo2 aria-hidden="true" className="size-4" />Undo last point</button>}
         {deleted && <button type="button" onClick={undoDelete} className={buttonClasses({ variant: "quiet", size: "sm" })}><RotateCcw aria-hidden="true" className="size-4" />Undo delete</button>}
-        <p aria-live="polite" className="min-w-0 basis-full text-[13.5px] font-bold text-ch-ink sm:flex-1 sm:basis-auto">{said}</p>
+        <p aria-live="polite" className={cx("min-w-0 basis-full text-[13.5px] font-bold text-ch-ink sm:flex-1 sm:basis-auto", !said && "sr-only")}>{said}</p>
+        {!said && <p className="text-[13.5px] text-ch-ink-2">{tool === "road" ? "Tap the photo to start a road." : `Tap the photo to place a ${POINT_WORD[tool].toLowerCase()}.`}</p>}
       </div>
 
       <ul aria-label="What’s drawn on the photo" className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
@@ -372,15 +385,19 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           <ul className="divide-y divide-ch-line">
             {draft.roads.map((r, i) => (
               <li key={`r${i}`} className="px-4 py-1.5 text-[14px]" onMouseEnter={() => setHi(i)} onMouseLeave={() => setHi(null)} onFocus={() => setHi(i)} onBlur={() => setHi(null)}>
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <Route aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" />
-                  <span className="font-bold text-ch-ink">Road {i + 1}</span>
-                  <span className="tabular-nums text-ch-ink-2">{r.coords.length} point{r.coords.length === 1 ? "" : "s"}{r.coords.length > 1 ? ` · ${Math.round(lengthM(xyRoads[i]))} m` : ""}</span>
-                  {r.through && <span className="text-ch-ink-2">· through road</span>}
-                  {r.name && <span className="min-w-0 truncate text-ch-ink-2">· “{r.name}”</span>}
-                  {i === active && <span className="inline-flex items-center gap-1 font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-3.5" />drawing</span>}
-                  <span className="ml-auto flex items-center gap-1">
-                    {i !== active && r.coords.length > 0 && <button type="button" onClick={() => continueRoad(i)} className={ROW_BTN}>Continue<span className="sr-only"> road {i + 1}</span></button>}
+                <div className="flex items-start gap-2">
+                  <Route aria-hidden="true" className="mt-[13px] size-4 shrink-0 text-ch-ink-2" />
+                  <div className="min-w-0 flex-1 py-2">
+                    <p className="flex flex-wrap items-center gap-x-2 leading-snug">
+                      <span className="font-bold text-ch-ink">Road {i + 1}</span>
+                      {i === active && <span className="inline-flex items-center gap-1 font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-3.5" />drawing</span>}
+                    </p>
+                    {/* The facts on a line of their own, so a narrow row never starts a line mid-list. */}
+                    <p className="text-[13.5px] leading-snug text-ch-ink-2 [overflow-wrap:anywhere]">
+                      {[`${r.coords.length} point${r.coords.length === 1 ? "" : "s"}`, r.coords.length > 1 && <span key="m" className="tabular-nums">{Math.round(lengthM(xyRoads[i]))} m</span>, r.through && "through road", r.name && `“${r.name}”`].filter(Boolean).flatMap((x, k) => (k ? [" · ", x] : [x]))}
+                    </p>
+                  </div>
+                  <span className="flex shrink-0 items-center gap-1">
                     <button type="button" onClick={() => toggleOpen(i)} aria-expanded={open.has(i)} aria-controls={`road-${i}-edit`} className={ROW_BTN}>
                       Edit<span className="sr-only"> road {i + 1}</span><ChevronDown aria-hidden="true" className={cx("size-4 transition-transform motion-reduce:transition-none", open.has(i) && "rotate-180")} />
                     </button>
@@ -388,7 +405,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                   </span>
                 </div>
                 {open.has(i) && (
-                  <div id={`road-${i}-edit`} className="flex flex-wrap items-center gap-x-3 gap-y-1 pb-1.5">
+                  <div id={`road-${i}-edit`} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-2 pl-6">
                     <label className="flex min-w-0 basis-full items-center gap-2 text-[13.5px] text-ch-ink-2 sm:flex-1 sm:basis-auto">
                       <span className="shrink-0">Name</span>
                       <input type="text" value={r.name ?? ""} onChange={(e) => setName(i, e.target.value)} maxLength={80} placeholder="Optional, e.g. Loop B…" name={`road-${i + 1}-name`} autoComplete="off"
@@ -398,6 +415,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                       <input type="checkbox" checked={!!r.through} onChange={(e) => setThrough(i, e.target.checked)} className="size-4 accent-ch-ink" />
                       Through road
                     </label>
+                    {i !== active && r.coords.length > 0 && (
+                      <button type="button" onClick={() => continueRoad(i)} className={buttonClasses({ variant: "quiet", size: "sm" })}><PenLine aria-hidden="true" className="size-4" />Continue road {i + 1}</button>
+                    )}
                   </div>
                 )}
               </li>

@@ -337,7 +337,10 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
           follows the photo, so the evidence comes first. */}
       <div className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
         <div className="min-w-0">
-          <StatusMark level={v.level} label={v.word} className="text-[14px]" />
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <StatusMark level={v.level} label={v.word} className="text-[14px]" />
+            {changed && <span className="inline-flex items-center gap-1 text-[13.5px] font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-4" />your traces aren’t built yet</span>}
+          </p>
           <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">{name}</h1>
           <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, `${entry.metrics.sites} sites`].filter(Boolean).join(" · ")}</p>
           {entry.reasons.length > 0 && (
