@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-250035",
+ "traced": "2026-10-07",
+ "by": "Claude (CampHawk session), from the USDA NAIP photo",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -113.814864,
+     48.2667107
+    ],
+    [
+     -113.8150082,
+     48.2666298
+    ],
+    [
+     -113.8150809,
+     48.2665335
+    ],
+    [
+     -113.8151294,
+     48.266404
+    ],
+    [
+     -113.8151779,
+     48.2662745
+    ],
+    [
+     -113.8152385,
+     48.2661612
+    ],
+    [
+     -113.8153355,
+     48.2660812
+    ],
+    [
+     -113.8153477,
+     48.266074
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The road from the entrance road down past site 20 to the loop."
+}

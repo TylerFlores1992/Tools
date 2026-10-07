@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mapFor, type SiteMapData } from "./index.ts";
-import { draftOf, lengthM, sameDraft, segmentsOfPath, snap, toDeg, toXY, traceFile, withDraft, type TraceDraft } from "./trace.ts";
+import { cleanRoad, draftOf, lengthM, sameDraft, segmentsOfPath, snap, toDeg, toXY, traceFile, withDraft, type TraceDraft } from "./trace.ts";
 import { makeGeo } from "../../../../../studio/campground-maps/geo.mjs";
 import { traceProblems } from "../../../../../studio/campground-maps/trace.mjs";
 
@@ -102,4 +102,18 @@ test("a draft that replaces the roads is the whole road layer; a through road is
   // Neither key is written when it's off.
   const plain = traceFile("ridb-232447", { roads: [{ coords: [a, b] }], points: [] }, "x", "2026-10-07");
   assert.ok(!("replace" in plain) && !("through" in plain.roads[0]));
+});
+
+test("a road's name is drawn and written; an empty name or a through road that's off is left out", () => {
+  const map = framed();
+  const a = toDeg(map, [0, 0]), b = toDeg(map, [20, 10]);
+  const out = withDraft(map, { roads: [{ coords: [a, b], name: " WY 70 ", through: true }], points: [] });
+  assert.equal(out.roads[0].name, "WY 70");
+  const file = traceFile("ridb-232447", { roads: [{ coords: [a, b], name: " WY 70 " }, { coords: [a, b], name: "  " }], points: [] }, "x", "2026-10-07");
+  assert.deepEqual(file.roads, [{ coords: [a, b], name: "WY 70" }, { coords: [a, b] }]);
+  assert.deepEqual(traceProblems(file, "ridb-232447", map.bbox), []);
+  assert.deepEqual(cleanRoad({ coords: [a, b], through: false, name: "" }), { coords: [a, b] });
+  // So switching a setting off and on again is no change from the built trace.
+  const built = draftOf({ ...map, trace: file });
+  assert.ok(sameDraft(built, { roads: [cleanRoad({ coords: [a, b], name: "WY 70", through: false }), { coords: [a, b] }], points: [] }));
 });

@@ -6,7 +6,7 @@
 //
 //   { "version": 1, "map": "ridb-274721", "traced": "2026-10-07", "by": "…",
 //     "photo": "USDA NAIP via USGS The National Map (public domain)",
-//     "roads":  [{ "coords": [[lon, lat], …], "through": true? }],
+//     "roads":  [{ "coords": [[lon, lat], …], "through": true?, "name": "…"? }],
 //     "points": [{ "type": "Restroom" | "Water", "at": [lon, lat] }],
 //     "replace": true?, "note": "…" }
 //
@@ -51,6 +51,7 @@ export function traceProblems(trace, mapKey, bbox) {
     else if (!r.coords.every(isPair)) out.push(`road ${i + 1} has a point that isn't [lon, lat]`);
     else if (!r.coords.every(near)) out.push(`road ${i + 1} runs far outside the map`);
     if (r?.through !== undefined && typeof r.through !== "boolean") out.push(`road ${i + 1}: through must be true or false`);
+    if (r?.name !== undefined && (typeof r.name !== "string" || r.name.length > 80)) out.push(`road ${i + 1}: name must be text, up to 80 characters`);
   });
   trace.points.forEach((p, i) => {
     if (!POINT_TYPES.includes(p?.type)) out.push(`point ${i + 1} must be one of ${POINT_TYPES.join(", ")}`);

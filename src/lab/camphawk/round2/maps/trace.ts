@@ -21,8 +21,11 @@ export type TraceFile = {
   replace?: boolean;
   note: string;
 };
-/** A traced road: a campground road (drawn thin) unless `through`. */
-export type TraceRoad = { coords: LonLat[]; through?: boolean };
+/** A traced road: a campground road (drawn thin) unless `through`; a name is drawn along it. */
+export type TraceRoad = { coords: LonLat[]; through?: boolean; name?: string };
+
+/** A road as the file writes it: only the keys that say something. */
+export const cleanRoad = (r: TraceRoad): TraceRoad => ({ coords: r.coords, ...(r.through ? { through: true } : {}), ...(r.name?.trim() ? { name: r.name.trim() } : {}) });
 /** What the tool edits: the file's roads and points, in degrees. */
 export type TraceDraft = { roads: TraceRoad[]; points: { type: TracePointType; at: LonLat }[]; replace?: boolean };
 
@@ -85,7 +88,7 @@ export function withDraft(map: SiteMapData, draft: TraceDraft): SiteMapData {
   const traced = draft.roads.filter((r) => r.coords.length > 1);
   const roads: MapRoad[] = [
     ...(draft.replace && traced.length ? [] : map.sourceRoads ?? map.roads.filter((r) => !r.traced)),
-    ...traced.map((r) => ({ name: "", cls: r.through ? "Local" : "Service", oneWay: "", traced: true, d: pathD(r.coords.map((c) => toXY(framed, c))) })),
+    ...traced.map((r) => ({ name: r.name?.trim() ?? "", cls: r.through ? "Local" : "Service", oneWay: "", traced: true, d: pathD(r.coords.map((c) => toXY(framed, c))) })),
   ];
   const pois: MapPoi[] = [
     ...map.pois.filter((p) => !p.traced),
@@ -97,7 +100,7 @@ export function withDraft(map: SiteMapData, draft: TraceDraft): SiteMapData {
 /** The draft a map starts with: what was traced and built into it, or nothing. */
 export const draftOf = (map: SiteMapData): TraceDraft =>
   map.trace
-    ? { roads: map.trace.roads.map((r) => (r.through ? { coords: r.coords, through: true } : { coords: r.coords })), points: map.trace.points.map((p) => ({ type: p.type, at: p.at })), ...(map.trace.replace ? { replace: true } : {}) }
+    ? { roads: map.trace.roads.map(cleanRoad), points: map.trace.points.map((p) => ({ type: p.type, at: p.at })), ...(map.trace.replace ? { replace: true } : {}) }
     : EMPTY_DRAFT;
 
 /** The file to save as studio/campground-maps/traces/<map>.json. */
@@ -108,7 +111,7 @@ export function traceFile(mapKey: string, draft: TraceDraft, by: string, today: 
     traced: today,
     by,
     photo: PHOTO_CREDIT,
-    roads: draft.roads.filter((r) => r.coords.length > 1).map((r) => (r.through ? { coords: r.coords, through: true } : { coords: r.coords })),
+    roads: draft.roads.filter((r) => r.coords.length > 1).map(cleanRoad),
     points: draft.points.map((p) => ({ type: p.type, at: p.at })),
     ...(draft.replace ? { replace: true } : {}),
     note,

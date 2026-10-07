@@ -5,7 +5,7 @@ import { Check, Copy, Download, Droplet, RotateCcw, Route, Toilet, Trash2, Undo2
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
-import { lengthM, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
+import { cleanRoad, lengthM, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
 import { naipUrl } from "./AerialCheck";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
@@ -187,12 +187,19 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   };
 
   const setThrough = (i: number, through: boolean) => {
-    setDraft({ ...draft, roads: draft.roads.map((r, j) => (j === i ? (through ? { ...r, through: true } : { coords: r.coords }) : r)) });
+    setDraft({ ...draft, roads: draft.roads.map((r, j) => (j === i ? cleanRoad({ ...r, through }) : r)) });
     setSaid(`Road ${i + 1} is ${through ? "a through road (drawn wide)" : "a campground road (drawn thin)"}.`);
   };
+  const setName = (i: number, name: string) => setDraft({ ...draft, roads: draft.roads.map((r, j) => {
+    if (j !== i) return r;
+    const next = { ...r };
+    if (name) next.name = name; else delete next.name;
+    return next;
+  }) });
   const setReplace = (on: boolean) => {
-    const { replace: _drop, ...rest } = draft;
-    setDraft(on ? { ...rest, replace: true } : rest);
+    const next = { ...draft };
+    if (on) next.replace = true; else delete next.replace;
+    setDraft(next);
     setSaid(on ? "Your traces replace the source’s roads. Trace every road the map should show, through roads too." : "Your traces add to the source’s roads.");
   };
 
@@ -317,10 +324,17 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                 <span className="font-bold text-ch-ink">Road {i + 1}</span>
                 <span className="tabular-nums text-ch-ink-2">{r.coords.length} point{r.coords.length === 1 ? "" : "s"}{r.coords.length > 1 ? ` · ${Math.round(lengthM(xyRoads[i]))} m` : ""}</span>
                 {i === active && <span className="font-bold text-ch-ochre-ink">· drawing</span>}
-                <label className="ml-auto inline-flex min-h-11 cursor-pointer items-center gap-2 text-[13.5px] text-ch-ink-2">
-                  <input type="checkbox" checked={!!r.through} onChange={(e) => setThrough(i, e.target.checked)} className="size-4 accent-ch-ink" />
-                  Through road
-                </label>
+                <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 pb-1">
+                  <label className="flex min-w-0 flex-1 items-center gap-2 text-[13.5px] text-ch-ink-2">
+                    <span className="shrink-0">Name</span>
+                    <input type="text" value={r.name ?? ""} onChange={(e) => setName(i, e.target.value)} maxLength={80} placeholder="Optional, as on the sign" name={`road-${i + 1}-name`} autoComplete="off"
+                      className="min-h-11 w-full min-w-0 rounded-ch-input border border-ch-line bg-ch-card px-3 text-[14px] text-ch-ink placeholder:text-ch-muted focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ch-green" />
+                  </label>
+                  <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-[13.5px] text-ch-ink-2">
+                    <input type="checkbox" checked={!!r.through} onChange={(e) => setThrough(i, e.target.checked)} className="size-4 accent-ch-ink" />
+                    Through road
+                  </label>
+                </span>
               </Item>
             ))}
             {draft.points.map((p, i) => {

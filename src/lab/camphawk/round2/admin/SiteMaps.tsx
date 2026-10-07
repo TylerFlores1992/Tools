@@ -67,7 +67,6 @@ const sorted = [...SAMPLE.entries].sort((a, b) =>
   || LOOK_ORDER.indexOf(FIRST_LOOK[a.id]?.call ?? "hold") - LOOK_ORDER.indexOf(FIRST_LOOK[b.id]?.call ?? "hold")
   || tidyCase(a.name).localeCompare(tidyCase(b.name)));
 const lookCount = (v: Verdict, call: FirstLook) => SAMPLE.entries.filter((e) => e.verdict === v && FIRST_LOOK[e.id]?.call === call).length;
-const pct = (k: number, n: number) => Math.round((k / n) * 100);
 const fmt = (n: number) => n.toLocaleString("en-US");
 
 export function SiteMaps() {
@@ -100,6 +99,8 @@ function Queue({ home }: { home: string }) {
   const reasons = reasonCounts(entries);
   const notReady = n - summary.ready;
   const decided = Object.keys(decisions).filter((k) => entries.some((e) => e.id === k && e.verdict !== "ready")).length;
+  // Maps held for nothing but their traced roads: one approval each.
+  const onlyTraced = entries.filter((e) => e.verdict === "review" && e.reasons.every((r) => r.code === "traced")).length;
 
   return (
     <>
@@ -107,7 +108,7 @@ function Queue({ home }: { home: string }) {
         <div className="min-w-0">
           <h1 className="text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">Site maps</h1>
           <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">
-            {n} Recreation.gov campgrounds, drawn at random from the {fmt(multi)} with two or more sites, built from public data and checked automatically. A map goes live on its own only when every check passes; the rest wait here for a person and the aerial photo.
+            {n} Recreation.gov campgrounds, drawn at random from the {fmt(multi)} with two or more sites, built from public data and checked automatically. A map goes live on its own only when every check passes; the rest wait here for a person and the aerial photo, where roads no public source has can be traced.
           </p>
         </div>
       </div>
@@ -120,7 +121,7 @@ function Queue({ home }: { home: string }) {
           <p className="mt-2.5 text-[14px] font-bold leading-snug">{[`${lookCount("ready", "good")} good`, `${lookCount("ready", "usable")} with roads missing`, lookCount("ready", "unsure") && `${lookCount("ready", "unsure")} unclear`].filter(Boolean).join(" · ")}</p>
           <p className="mt-1 text-[13px] leading-snug text-ch-white/80">On the aerial photo. Across all {fmt(multi)}: likely {lo}–{hi}%.</p>
         </div>
-        <Tile verdict="review" count={summary.review} n={n} note={decided ? `${decided} decided so far` : "Each waits for a person to compare it with the aerial photo"} />
+        <Tile verdict="review" count={summary.review} n={n} note={[onlyTraced && `${onlyTraced} only need their traced roads approved.`, decided ? `${decided} decided so far.` : "Each waits for a person and the aerial photo."].filter(Boolean).join(" ")} />
         <Tile verdict="not-drawn" count={summary.notDrawn} n={n} note="Shown as “not drawn yet” on the campground page" />
         <div className="col-span-2 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5 lg:col-span-1">
           <p className="text-[13.5px] font-bold text-ch-ink-2">No map needed</p>
@@ -196,7 +197,9 @@ function CrossCheck() {
     return { v, n: es.length, counts: LOOKS.map((l) => es.filter((e) => FIRST_LOOK[e.id]?.call === l).length) };
   });
   const passedBad = rows[0].counts[2];
-  const heldGood = rows[1].counts[0];
+  // Held maps a first look found usable: some only because roads were traced from the photo.
+  const held = SAMPLE.entries.filter((e) => e.verdict === "review" && ["good", "usable"].includes(FIRST_LOOK[e.id]?.call ?? ""));
+  const heldTraced = held.filter((e) => e.reasons.some((r) => r.code === "traced")).length;
   return (
     <section aria-labelledby="cross-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
       <div className="border-b border-ch-line px-4 py-3 sm:px-5">
@@ -222,7 +225,7 @@ function CrossCheck() {
         </table>
       </div>
       <p className="border-t border-ch-line px-4 py-3 text-[14px] leading-snug text-ch-ink-2 sm:px-5">
-        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {heldGood} of the {rows[1].n} it held looked fine on the photo, which makes <strong className="font-bold text-ch-ink">{rows[0].n + heldGood} of {SAMPLE.entries.length} ready to go live after one look</strong>.
+        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {held.length} of the {rows[1].n} it held are usable on the photo{heldTraced ? `, ${heldTraced} of them with roads traced from it` : ""}, which makes <strong className="font-bold text-ch-ink">{rows[0].n - passedBad + held.length} of {SAMPLE.entries.length} ready to go live after one look</strong>.
       </p>
     </section>
   );
@@ -316,7 +319,9 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
   const nextEntry = [...sorted.slice(at + 1), ...sorted.slice(0, at)].find((e) => e.verdict !== "ready" && !decisions[e.id]);
   const nextHref = nextEntry ? `${home}?id=${nextEntry.id}` : null;
   const look = FIRST_LOOK[entry.id];
-  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} />;
+  // "Trace the missing roads" opens the tool and brings the photo into view.
+  const openTrace = () => { setTool("trace"); requestAnimationFrame(() => document.getElementById("aerial-h")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" })); };
+  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} />;
 
   return (
     <>
@@ -416,7 +421,8 @@ function FirstLookNote({ id }: { id: string }) {
 
 /** What a reviewer does with a map. The firm (ink) button follows the evidence: approve when the
     first look found nothing wrong, otherwise the outcome the first look points to. */
-function DecisionBox({ entry, decision, decide, nextHref }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null }) {
+function DecisionBox({ entry, decision, decide, nextHref, onTrace }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null; onTrace?: () => void }) {
+  const traced = entry.reasons.some((r) => r.code === "traced");
   const look = FIRST_LOOK[entry.id]?.call;
   const roadsMissing = entry.reasons.some((r) => r.code === "far-from-roads" || r.code === "no-roads");
   const primary: Decision = look === "hold" ? (roadsMissing && !entry.reasons.some((r) => r.code === "spread") ? "roads" : "hidden") : "approved";
@@ -435,13 +441,15 @@ function DecisionBox({ entry, decision, decide, nextHref }: { entry: SampleEntry
           {entry.verdict === "ready" ? "Every check passed, so this map would go live on its own. You can still hold it back."
             : primary === "roads" ? "The first look found campground roads missing. Send it for roads, or approve it if the photo says otherwise."
             : primary === "hidden" ? "The first look found this isn’t one campground’s map. Keep it hidden, or approve it if the photo says otherwise."
+            : traced ? "Some of its roads were traced from this photo (ochre on the photo). Approve the map if they follow real roads and the sites sit on real pads."
             : "Compare the sites with the aerial photo. Approve the map if they sit on real pads along real roads."}
         </p>
       )}
       <div className="mt-3 grid gap-2">
         {decision ? (
           <>
-            {nextHref && <Link href={nextHref} className={buttonClasses({ variant: "ink", size: "sm", fullWidth: true })}>Next to look at<ArrowRight aria-hidden="true" className="size-4" /></Link>}
+            {decision === "roads" && onTrace && <button type="button" onClick={onTrace} className={buttonClasses({ variant: "ink", size: "sm", fullWidth: true })}><PenLine aria-hidden="true" className="size-4" />Trace the missing roads</button>}
+            {nextHref && <Link href={nextHref} className={buttonClasses({ variant: decision === "roads" && onTrace ? "quiet" : "ink", size: "sm", fullWidth: true })}>Next to look at<ArrowRight aria-hidden="true" className="size-4" /></Link>}
             <button type="button" onClick={() => decide(entry.id, null)} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><RotateCcw aria-hidden="true" className="size-4" />Undo</button>
           </>
         ) : shown.map(({ d, label, Icon }) => (

@@ -141,7 +141,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   // What a person traced from the aerial photo, where no source has it: campground roads, and
   // restrooms and water taps they could see. Drawn like any other campground road.
   const trace = readTrace(`ridb-${facilityId}`, bboxArr);
-  const traced = (trace?.roads ?? []).map((r) => ({ f: { geometry: { type: "LineString", coordinates: r.coords } }, name: "", cls: r.through ? "Local" : "Service", oneWay: "", traced: true }));
+  const traced = (trace?.roads ?? []).map((r) => ({ f: { geometry: { type: "LineString", coordinates: r.coords } }, name: r.name?.trim() ?? "", cls: r.through ? "Local" : "Service", oneWay: "", traced: true }));
   // A trace that replaces the roads is the whole road layer (trace.mjs).
   const replaced = trace?.replace === true;
   roads = replaced ? traced : [...roads, ...traced];

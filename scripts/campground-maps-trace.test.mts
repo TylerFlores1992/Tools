@@ -63,3 +63,10 @@ test("replace and through must be true or false; a replacing trace needs a road"
   assert.deepEqual(traceProblems({ ...ok(), roads: [{ coords: [[-122.385, 44.585], [-122.38, 44.586]], through: 1 }] }, "ridb-274721", bbox), ["road 1: through must be true or false"]);
   assert.deepEqual(traceProblems({ ...ok(), replace: true, roads: [] }, "ridb-274721", bbox), ["a trace that replaces the roads needs at least one road"]);
 });
+
+test("a road's name is optional text, up to 80 characters", () => {
+  const road = (name: unknown) => ({ ...ok(), roads: [{ coords: [[-122.385, 44.585], [-122.38, 44.586]], name }] });
+  assert.deepEqual(traceProblems(road("WY 70"), "ridb-274721", bbox), []);
+  assert.deepEqual(traceProblems(road(7), "ridb-274721", bbox), ["road 1: name must be text, up to 80 characters"]);
+  assert.deepEqual(traceProblems(road("x".repeat(81)), "ridb-274721", bbox), ["road 1: name must be text, up to 80 characters"]);
+});
