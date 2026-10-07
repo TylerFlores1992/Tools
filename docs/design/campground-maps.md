@@ -20,7 +20,7 @@ California State Parks' needs their permission first.**
     the owner's Gmail, unsent: permission (geodata@parks.ca.gov) and a Public Records Act
     request (Parks.PRA@parks.ca.gov).
   - **It is more accurate than RC's own maps.** Its points sit a median 1-9 m from the real
-    campground roads (checked against OpenStreetMap at 12 campgrounds). RC's drawings are partly
+    campground roads (checked against OpenStreetMap at 11 campgrounds). RC's drawings are partly
     schematic, 3-30 m off.
 
 Full RC findings, the private check against RC's maps, and the time estimate are in
@@ -89,6 +89,114 @@ GoingToCamp, ReserveAmerica, TNSC and the other UseDirect states are untested. E
 same check: does the API carry per-site coordinates, what do the terms say, and is there
 open GIS? About an hour per provider.
 
+## ReserveCalifornia: the State Parks campsite layer (2026-10-07, afternoon)
+
+### What it is
+- California State Parks publishes campsite points on its own ArcGIS account: item
+  `f0374d8702f14ad5962023c7a502da65` ("03. Camping"), service `InternalCampsiteSpur`.
+  - **11,334 points across 120 park units.** Each carries the site number, type, parking-spur
+    length and width, and the campground name.
+  - Its description says "Update Schedule: Weekly on Fridays". The newest edits were about a
+    week before this reading.
+  - It is public, with an empty license field. Its name says "Internal", so it may have been
+    shared by mistake. **Ask before relying on it.**
+- **Permission:** State Parks' GIS page asks for approval before commercial use. Two drafts sit
+  in the owner's Gmail, **unsent**:
+  - **Permission**, to geodata@parks.ca.gov. It names the layer, how it would be used and
+    credited, asks whether it is meant to be public, and asks who owns RC's map artwork.
+  - **Public Records Act request**, to Parks.PRA@parks.ca.gov. It asks for the layer and any
+    campsite GIS or site plans.
+    - The agency must answer within 10 days, extendable by 14 (Gov. Code §7922.535).
+    - Fees for electronic records are limited to direct cost (§7922.575).
+    - Release can't be tied to a license (*County of Santa Clara*, 2009).
+    - A GIS database is a public record, not exempt software (*Sierra Club*, 2013).
+  - **Not legal advice.**
+- **Until State Parks approves, its data stays out of this public repository and every deploy.**
+  `build-csp.mjs` writes to `public/lab-local/` (git-ignored). Deployed, the page shows the
+  not-drawn state.
+
+### How accurate it is (measured)
+- **Against real roads:** at 11 campgrounds, State Parks' points sit a median 0.8-9.5 m from the
+  nearest OpenStreetMap campground road. They hug the loops on both sides, where parking spurs
+  are. At Jedediah Smith, under redwoods, the 1 m USGS elevation data shows the same loops
+  faintly.
+- **Against RC's own maps (option 6, private yardstick, never published):**
+  - **Method:** for each RC area, fit the best scale, rotation and shift from RC's map-picture
+    positions to State Parks' points, then measure what's left.
+  - **Result:** typical gap 13 m across 197 RC areas. Where RC's drawing is near to scale the
+    two agree closely: Hearst San Simeon/Washburn 3.4 m, Doheny 5.0 m, Carpinteria 7.3 m.
+  - Elsewhere RC's drawings are partly schematic, 20-30 m off: Jedediah Smith 13-19 m,
+    Pfeiffer Big Sur 27 m, Elk Prairie 30 m. The road check above shows it is RC's drawing that
+    is off, not State Parks' points.
+  - **So State Parks' data is more accurate than RC's own maps.**
+- **What option 3 (aerial photos and elevation data) can and can't do:**
+  - The aerial photo shows nothing under the Jedediah Smith canopy.
+  - The 1 m elevation data shows the loop roads faintly. It does not show individual site pads.
+  - It cannot say which numbers sit where without a fact source.
+  - **So option 3 is the fallback for campgrounds State Parks hasn't mapped. It is not the plan.**
+
+### Coverage across every RC area in CampHawk's catalog (measured)
+Matching rules are in `match.mjs`: same kind (cabin to cabin), same number, and RC's letter
+prefix allowed onto a plain number (Leo Carrillo "L006" is State Parks' "6"). Oceano Dunes' 1,067
+off-road-vehicle "units" are left out, since they are not campsites.
+
+| | RC areas | sites | share of sites |
+|---|---|---|---|
+| Drawable sites (hike-in and boat-in excluded) | 341 | 7,921 | |
+| Matched to a State Parks point | | **6,926** | **87%** |
+| **Automatic:** 90%+ matched and agrees with RC's layout (median under 35 m) | 150 | 5,033 | 64% |
+| **Review:** mostly matched, or a larger gap to check | 48 | 1,659 | 21% |
+| **Manual:** few matches or large gaps | 17 | 560 | 7% |
+| **No State Parks points** | 126 | 669 | 8% |
+
+- **No points**, mostly:
+  - small cabin and group areas;
+  - Big Basin, still rebuilding after the 2020 fire;
+  - Mt. San Jacinto and Mount Diablo.
+- **Unmatched although points exist:** Humboldt Redwoods' camps (Hidden Springs, Burlington,
+  Albee Creek), where site numbers repeat across camps. A per-area spec, like Jedediah Smith's,
+  fixes these.
+- **Two numbering faults found in State Parks' data:** Jedediah Smith has two site 56s and no
+  57. The build leaves such sites off and lists them, never guessing. They are worth reporting
+  back to State Parks.
+
+### The mockup
+`?id=jedediah-smith` on a local run: 75 of RC's 82 units drawn. Site 56 is left off (recorded
+twice) and so is 57 (no point), and the 5 hike-in pads are left off by design. Cabins J24, J26,
+J30 and J105 sit on their real spots. Restrooms, water and the dump station come from
+OpenStreetMap.
+
+## How long all of Recreation.gov and ReserveCalifornia would take (estimate, 2026-10-07)
+
+The work, in order. Times are focused working sessions, not calendar days.
+
+1. **Bring it into CampHawk** (campsite-finder): about 1.5-2 weeks.
+   - **Database:** a migration for site coordinates, spur sizes and loop. The RIDB sync keeps the
+     coordinates it already reads.
+   - **Builder as a weekly job,** for Recreation.gov and later State Parks:
+     - OpenStreetMap from a Geofabrik extract, not the rate-limited API;
+     - output stored in Supabase Storage or R2;
+     - an automatic QA gate (match rate, distance to roads, duplicates);
+     - a small admin review page.
+   - **Port the site map** into CampHawk's campground page, wired to real per-site availability,
+     with tests and a UI audit.
+   - **Gated on the owner's go-ahead:** the lab's standing rule is not to start camphawk.app work
+     before Apple accepts the current app build.
+2. **Recreation.gov rollout:** about 2-3 days of batch runs plus review.
+   - 3,623 campgrounds have points for 90%+ of their sites.
+   - **The automatic share is NOT measured yet**; only Upper Pines was checked. Do a 50-campground
+     sample first. Forest Service and Army Corps campgrounds rely on OpenStreetMap roads, which
+     vary.
+   - Flagged maps take about a minute each to review.
+3. **ReserveCalifornia rollout,** once State Parks approves or the records request delivers:
+   about 3-5 days.
+   - The same pipeline: 150 areas are automatic, 48 need review, 17 need hand work. The 126 areas
+     with no points stay "not drawn yet", or get option 3 later.
+   - **Calendar time depends on State Parks.** The records request has a legal 10-day answer
+     (plus up to 14); the permission email has no deadline.
+
+**Total:** roughly 3-4 weeks of sessions for both, with RC's start set by State Parks' reply.
+
 ## Options for ReserveCalifornia (owner's call)
 
 1. **Ask State Parks.** Email geodata@parks.ca.gov for (a) commercial-use approval for the GIS
@@ -110,6 +218,11 @@ open GIS? About an hour per provider.
 Recommendation: **send option 1 now and build Rec.gov meanwhile**. If State Parks says no or
 doesn't answer, do option 2 for the most-watched RC campgrounds first. CampHawk's watch counts
 say which ones.
+
+> **Superseded the same afternoon:** State Parks turned out to publish its own campsite layer
+> (section above). Option 1 is now "permission for that layer", plus a records request in
+> parallel. Option 2 (aerial photos and elevation data) is only the fallback for the 126 areas it
+> doesn't cover.
 
 ## The pipeline (proven on one campground)
 

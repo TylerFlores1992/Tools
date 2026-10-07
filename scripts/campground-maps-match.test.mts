@@ -41,6 +41,14 @@ test("hike-in and boat-in units are not drawn, and say so", () => {
   assert.deepEqual(r.skipped, ["Hike In Primitive Campsite #HBA", "Boat In Campsite #3"]);
 });
 
+test("RC's letter prefix matches State Parks' plain number (Leo Carrillo L006 = 6), but an exact match wins", () => {
+  const six = pt("6"), l6 = pt("L6");
+  assert.equal(matchUnits([unit("Campsite #L006")], [six]).matched[0].f, six);
+  assert.equal(matchUnits([unit("Campsite #L006")], [six, l6]).matched[0].f, l6, "exact code first");
+  assert.deepEqual(matchUnits([unit("Campsite #L006")], [pt("6A")]).notFound, ["Campsite #L006"], "only onto a plain number");
+  assert.deepEqual(matchUnits([unit("Cabin (6 People) #J24")], [pt("24")]).notFound, ["Cabin (6 People) #J24"], "never a cabin onto a campsite");
+});
+
 test("State Parks' site types read as the lab's type labels", () => {
   assert.equal(typeOf("Tent, Non-elect, std"), "TENT NONELECTRIC");
   assert.equal(typeOf("RV, Elect, std"), "RV ELECTRIC");
