@@ -307,7 +307,7 @@ export function Settings() {
               <div className="border-t border-ch-line bg-ch-paper p-6 sm:p-10 lg:border-l lg:border-t-0">
                 <h3 className="text-[15px] font-bold text-ch-ink">What you set here</h3>
                 <ul className="mt-3 grid gap-3 text-[15px] leading-snug text-ch-ink-2">
-                  {([[Bell, "How we reach you", "Email, text messages and push."], [ShoppingCart, "Auto-cart", "Connect Recreation.gov so an opening can land in your cart."], [CreditCard, "Subscription", "Your plan, and how to change or cancel it."], [UserRound, "Account", "Your email address, and deleting your account."]] as const).map(([Icon, t, d]) => (
+                  {([[Bell, "How we reach you", "Email, text messages and push."], [ShoppingCart, "Auto-cart", "Connect Recreation.gov so an opening can land in your cart."], [CreditCard, "Subscription", "Your plan, and how to change or cancel it."], [UserRound, "Account", "Signing out, and deleting your account and its data."]] as const).map(([Icon, t, d]) => (
                     <li key={t} className="flex gap-3"><Icon aria-hidden="true" className="mt-0.5 size-[18px] shrink-0 text-ch-ink-2" /><span><strong className="block text-ch-ink">{t}</strong>{d}</span></li>
                   ))}
                 </ul>

@@ -162,7 +162,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
           <Loader2 aria-hidden="true" className="size-6 shrink-0 animate-spin text-ch-ink-2 motion-reduce:animate-none" />
           <p className="text-[16px] leading-relaxed text-ch-ink-2">{c.releasingBody}</p>
         </div>
-        {status === "claiming-stuck" && <Notice warn>This is taking longer than it should — our bot may be offline. The site is still held, so nothing is lost. Try again in a minute, or open ReserveCalifornia and search for {CLAIM.unit}.</Notice>}
+        {status === "claiming-stuck" && <Notice warn>This is taking longer than it should — our side may be offline. The site is still held, so nothing is lost. Try again in a minute, or open ReserveCalifornia and search for {CLAIM.unit}.</Notice>}
       </>
     );
   }

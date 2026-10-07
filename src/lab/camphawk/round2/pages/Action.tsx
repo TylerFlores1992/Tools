@@ -80,7 +80,7 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
     <BareCard>
       <h1 className="font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">Hold this site for you?</h1>
       <Facts rows={[["Campground", HOLD.campground], ["Site", <span key="s" className="font-ch-display text-[22px] font-extrabold">{HOLD.unit}</span>], ["Nights", `${HOLD.stay}, ${HOLD.nights} nights`], ["Releases", releaseLong()]]} />
-      <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, our bot tries to cart this exact site the second it opens and hold it for you for up to 60 minutes, so claim it within that time when we tell you. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
+      <p className="mt-4 text-[16px] leading-relaxed text-ch-ink-2">If you say yes, we try to cart this exact site the second it opens and hold it for you for up to 60 minutes, so claim it within that time when we tell you. Only say yes if you actually want it: while we’re holding it, nobody else can book it.</p>
       {/* The beta note stays above the promise, on purpose. */}
       <BetaNote className="mt-4" />
       {/* Never disabled: a second tap while it works is harmless, and a dead button reads as broken. */}

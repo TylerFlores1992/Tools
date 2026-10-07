@@ -234,7 +234,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="block text-[16px] font-bold text-ch-ink">{o.unit}</span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
                 </span>
-                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it</Link>
+                <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it for me: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it for me</Link>
               </li>
             ))}
           </ul>

@@ -595,7 +595,7 @@ try {
     // An 8am offer shows the site before anything happens, then confirms on a yes.
     await p.goto(`${GH}/manage?as=subscriber&watch=leo`);
     await p.getByRole("heading", { name: "Holds you asked for" }).waitFor();
-    await p.getByRole("link", { name: "Hold it: Site 017" }).click();
+    await p.getByRole("link", { name: "Hold it for me: Site 017" }).click();
     await p.waitForURL(/\/w\?action=hold-offer/);
     await p.getByRole("heading", { name: "Hold this site for you?" }).waitFor();
     await p.getByText("Tue, Jul 7 at 8 AM PT").first().waitFor();

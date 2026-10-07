@@ -100,12 +100,13 @@ export function formatRange(start: ISODate | null, end: ISODate | null): string 
   return `${shortDate(start)} – ${shortDate(end)}`;
 }
 
-/** CampHawk's stay format, from formatStayDates: "Jul 18-21", or "Jul 30-Aug 2" across months. */
+/** CampHawk's stay format, from formatStayDates, with the lab's en dash: "Jul 18–21", or
+    "Jul 30 – Aug 2" across months (CampHawk uses a hyphen; every other range in the lab is a dash). */
 export function stayDates(start: ISODate, end: ISODate): string {
   const a = parseISO(start), b = parseISO(end);
   return a.getMonth() === b.getMonth()
-    ? `${MO3[a.getMonth()]} ${a.getDate()}-${b.getDate()}`
-    : `${MO3[a.getMonth()]} ${a.getDate()}-${MO3[b.getMonth()]} ${b.getDate()}`;
+    ? `${MO3[a.getMonth()]} ${a.getDate()}–${b.getDate()}`
+    : `${MO3[a.getMonth()]} ${a.getDate()} – ${MO3[b.getMonth()]} ${b.getDate()}`;
 }
 
 /** The coming Friday to Sunday (two nights). On a Friday it means today. */

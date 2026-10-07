@@ -251,7 +251,10 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
     let left = count;
     for (const g of CALIFORNIA.groups) {
       if (left <= 0) break;
-      const take = g.campgrounds.slice(0, Math.min(2, left));
+      // Yosemite's Pines loops are tent sites only (the campground page says so), so they never
+      // appear under cabins, groups or yurts.
+      const take = g.campgrounds.filter((n) => !/Pines$/.test(n)).slice(0, Math.min(2, left));
+      if (!take.length) continue;
       groups.push({ ...g, campgrounds: take });
       left -= take.length;
     }
@@ -262,11 +265,19 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />
           <div className="mt-5">
-            <Lead><p>We track live availability at {count} campgrounds with {hub.noun} in {r.name}{ca ? `, across ${groups.length} towns` : ""}. {hub.blurb}</p></Lead>
+            <Lead><p>We track live availability at {count} campgrounds with {hub.noun} in {r.name}. {hub.blurb}</p></Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">{ca ? `Booking goes through ${joinAnd(CALIFORNIA.providers)}. ` : ""}Searching is free.</p>
             <Search visitor={visitor} className="mt-6" />
           </div>
-          {ca ? <Towns groups={groups} code={r.code} name={r.name} visitor={visitor} /> : (
+          {ca ? (
+            <>
+              <Towns groups={groups} code={r.code} name={r.name} visitor={visitor} />
+              <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
+                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(groups)} of {r.name}&apos;s {count} campgrounds with {hub.noun}</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
+                <Search visitor={visitor} />
+              </div>
+            </>
+          ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws lists for California only; <A href={`${ROUTES.camping}/${hub.slug}/california`} visitor={visitor}>see California {hub.label.toLowerCase()}</A>. CampHawk lists each campground here, by town.</p>
           )}
           <p className="mt-10 text-[15px] text-ch-ink-2">Nothing free? See <A href={statePath(r)} visitor={visitor}>every campground we watch in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
@@ -292,7 +303,7 @@ export function HardestToBook() {
               <p>What does work is being there when somebody gives one back. Cancellations happen constantly — a trip falls through, a group shrinks, a forecast sours — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
               <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we text, email and push you a link straight to it.</p>
             </Lead>
-            <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking. Live availability for every one of them is free to check.</p>
+            <p className="mt-4 text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </div>
           {/* One card per park, in CampHawk's order (Yosemite first), read across the rows so the

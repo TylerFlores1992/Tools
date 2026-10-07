@@ -419,7 +419,7 @@ export function NewWatch() {
                 <legend className={label}>Auto-cart</legend>
                 <div className={panel}>
                   <p className="text-[15px] font-bold text-ch-ink">Auto-cart is on the Auto-Cart plan</p>
-                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We&apos;ll still check this campground every 15 seconds and alert you the moment a site opens — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We&apos;ll still alert you the moment a site opens — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
                 </div>
               </fieldset>
             )}
@@ -471,12 +471,12 @@ export function NewWatch() {
                   ? <>any <strong className="font-extrabold">{flexNights}-night</strong>{weekendsOnly ? " weekend" : ""} opening</>
                   : <strong className="font-extrabold">{formatRange(range.start, range.end) ?? "your dates"}</strong>}
                 {mode === "flexible" && range.start && <> between <strong className="font-extrabold">{formatRange(range.start, range.end)}</strong></>}
-                , checking every 15 seconds. We&apos;ll {notifyWords} the moment a site frees up — you don&apos;t need to keep this open.
+                , around the clock. We&apos;ll {notifyWords} the moment a site frees up — you don&apos;t need to keep this open.
               </p>
             ) : (
               <>
                 <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">
-                  A watch keeps checking a booked campground for you, every 15 seconds and around the clock. The moment someone cancels, we {notifyWords}, so the site goes to you and not the next person hitting refresh.
+                  A watch keeps checking a booked campground for you, around the clock. The moment someone cancels, we {notifyWords}, so the site goes to you and not the next person hitting refresh.
                 </p>
                 <ol className="mt-3">
                   {[

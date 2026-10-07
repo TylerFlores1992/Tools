@@ -57,7 +57,7 @@ function HeldCart() {
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-[14px] font-bold text-ch-ink-2">Recreation.gov cart <Tag kind="cart">In cart</Tag></p>
         <p className="mt-1.5 font-ch-display text-[19px] font-extrabold leading-tight text-ch-ink">Upper Pines, site 042</p>
-        <p className="mt-0.5 text-[15px] text-ch-ink-2 tabular-nums">Open for Jul 18-21, 3 nights</p>
+        <p className="mt-0.5 text-[15px] text-ch-ink-2 tabular-nums">Open for Jul 18–21, 3 nights</p>
       </div>
       <span className={buttonClasses({ variant: "cart", className: "pointer-events-none shrink-0 px-5" })}>Check out on Recreation.gov</span>
     </figure>
@@ -67,7 +67,7 @@ function HeldCart() {
 /** Live search: open and booked campgrounds, said in words. */
 function MiniResults() {
   const rows = [
-    { name: "Upper Pines", where: "Yosemite, CA", open: "Open for Jul 18-21" },
+    { name: "Upper Pines", where: "Yosemite, CA", open: "Open for Jul 18–21" },
     { name: "North Pines", where: "Yosemite, CA" },
     { name: "Wawona", where: "Yosemite, CA" },
   ];
@@ -98,7 +98,7 @@ function DateWindow() {
   const open = new Set([18, 19, 20]);
   return (
     <figure className="rounded-[16px] bg-ch-paper p-4 sm:p-5">
-      <p className="text-[14px] font-bold text-ch-ink-2">3 nights, any time Jul 12-25</p>
+      <p className="text-[14px] font-bold text-ch-ink-2">3 nights, any time Jul 12–25</p>
       <div aria-hidden="true" className="mt-3 grid grid-cols-7 gap-1.5 text-center text-[12px] font-bold text-ch-muted">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => <span key={i}>{d}</span>)}
       </div>

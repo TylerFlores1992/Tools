@@ -22,7 +22,7 @@ export const STEPS = [
 ] as const;
 
 export const LIMITS = [
-  "We never book or pay for anything. Checkout is always yours, on the provider's site.",
+  "We never check out or pay for anything. Checkout is always yours, on the provider's site.",
   "We can't create availability — if nobody cancels, there's nothing to find.",
   "We can't cancel or change a reservation you already have.",
 ];

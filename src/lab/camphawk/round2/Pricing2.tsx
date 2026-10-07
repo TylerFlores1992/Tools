@@ -70,7 +70,7 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
       <div className="grid gap-x-14 gap-y-4 lg:grid-cols-2 lg:items-end">
         <h2 className={head}>Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</h2>
         <p className="max-w-[60ch] text-[17px] leading-relaxed text-ch-ink-2">
-          This is introductory pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
+          This is launch pricing while we&apos;re new, and it will go up as we add campgrounds and states. Subscribe now and you keep the rate you signed up at for as long as your subscription runs.
         </p>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2">

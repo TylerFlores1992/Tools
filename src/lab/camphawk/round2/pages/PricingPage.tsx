@@ -50,7 +50,7 @@ function PlanCard({ name, tier, features, recommended, children }: { name: strin
         {recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
       </div>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
-      <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")} — save {yearlySavingPercent(tier)}%</p>
+      <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[16px] leading-snug text-ch-ink-2">
@@ -78,7 +78,7 @@ function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Loo
     const id = `${tier}-${i}`;
     return (
       <button key={id} type="button" disabled={busy !== null} onClick={() => go(id)} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", className: "min-h-12 px-5 disabled:cursor-wait" })}>
-        {busy === id && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}{priceLabel(tier, i)}
+        {busy === id && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}{visitor === "lapsed" ? priceLabel(tier, i) : `${TRIAL_DAYS} days free, then ${priceShort(tier, i)}`}
       </button>
     );
   };
@@ -205,7 +205,7 @@ function HoldExplainer() {
             <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
           </p>
           {RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}
-          <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Recreation.gov has its own auto-cart, which is not in testing and works differently: you connect it once and openings go straight into your cart.</p>
+          <p className="mt-5 text-[15px]">ReserveCalifornia parks only. Our Recreation.gov auto-cart isn&apos;t in beta: connect once and openings go straight into your cart.</p>
         </div>
       </div>
     </section>
@@ -224,7 +224,7 @@ export function PricingPage() {
       sub={({ visitor }) => visitor === "subscriber"
         ? "Your plan, what it does for you, and what we never do."
         // No price in the app (store rule): the store's own tiles below carry it.
-        : visitor === "app" ? "Live search is free and needs no account. A subscription keeps a watch running around the clock."
+        : visitor === "app" ? "Your plan works in the app and on the web. Cancel any time from your store account."
         : <><span className="block text-balance font-ch-display text-[clamp(20px,2vw,26px)] font-extrabold leading-snug text-ch-paper">Searching is free. Watching starts at {pricePhrase("base", "monthly")}.</span><span className="mt-2 block">A subscription keeps a watch running around the clock, and Auto-Cart wins the sites that vanish in minutes.</span></>}
       photo={{ art: ART.p1, pos: "78% 60%", posLg: "50% 62%" }}
       showPlan

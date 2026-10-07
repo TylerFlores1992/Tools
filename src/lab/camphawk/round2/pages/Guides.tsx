@@ -80,7 +80,7 @@ export function AutoCartGuide() {
             {([
               ["Any day", "Watch the park", "Someone cancels; the site waits for the next 8 AM release. There’s nothing to switch on — just watch the campground you want."],
               ["Night before", "We offer", <>You get an alert with a <strong className="text-ch-ink">Hold it for me</strong> button. Nothing happens unless you tap it.</>],
-              ["8:00 AM", "We cart it", "Within a couple of seconds of the release, our bot puts the site in a cart, so it’s off the market while you get to your phone."],
+              ["8:00 AM", "We cart it", "Within a couple of seconds of the release, we put the site in a cart, so it’s off the market while you get to your phone."],
               [`Within ${HOLD_MINUTES} min`, "You take it over", <>Open the claim link, sign in to ReserveCalifornia and tap <strong className="text-ch-ink">It’s mine — hand it over</strong>. About two seconds later it’s in your cart.</>],
             ] as const).map(([when, what, detail], i) => (
               <li key={when} className="rounded-ch-input border border-ch-line bg-ch-card p-4 shadow-ch-card">
@@ -127,7 +127,7 @@ export function CancellationAlerts() {
           <P>Recreation.gov has had its own availability alerts since 2024. They are free, they cover every reservable Recreation.gov location, and you are limited to a few active alerts at a time. If your trip is a Recreation.gov campground and you are happy to race everyone else to the booking page, start there. You should not pay for something the booking system gives away.</P>
           <P>There are free tiers elsewhere in this category too. It is worth ten minutes to check whether one covers you before paying anybody, including us.</P>
 
-          <H2 id="difference">The two things that survive that</H2>
+          <H2 id="difference">What still sets one apart</H2>
           <Steps steps={[
             ["State reservation systems.", <>Recreation.gov&apos;s alerts only cover Recreation.gov. A large share of the campgrounds people can’t book are on state systems — ReserveCalifornia above all, plus a dozen others — and those systems don’t offer alerts of their own. CampHawk watches <A href={ROUTES.sources} visitor={visitor}>{sources} sources</A>, and that is where most of what we find lives.</>],
             ["Doing something about it, not just telling you.", <>An alert still requires you to be holding your phone. On Recreation.gov we can <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart for you</A> — around twelve seconds from the opening appearing{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it to you" : ""}. Recreation.gov will never build that; it would be carting against itself.</>],
@@ -138,7 +138,7 @@ export function CancellationAlerts() {
             "How often does it actually check, in seconds?",
             "Does it cover your reservation system, or only Recreation.gov?",
             "Can it handle flexible dates, or only one exact stay?",
-            "Does it text you, or only email? An email at 3am isn’t an alert.",
+            "Does it text you, or only email? An email at 3 AM isn’t an alert.",
             "Does it do anything beyond notifying you?",
             "Can you cancel in one click without emailing anybody?",
           ]} />

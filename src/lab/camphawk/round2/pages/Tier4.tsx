@@ -57,7 +57,7 @@ function supportSections(visitor: Visitor) {
     { id: "no-alert", title: "I didn't get an alert", body: <>
       <P>Work down this list — it is almost always one of these:</P>
       <Ul items={[
-        <><strong className="font-bold text-ch-ink">Check the watch is still active.</strong> Open <A href={ROUTES.watches} visitor={visitor}>Watches</A>. A watch that was stopped, or that has passed its dates, no longer checks anything.</>,
+        <><strong className="font-bold text-ch-ink">Check the watch is still active.</strong> Open <A href={ROUTES.watches} visitor={visitor}>Watches</A>. A paused watch, or one past its dates, no longer checks anything.</>,
         <><strong className="font-bold text-ch-ink">Check your email spam folder.</strong> Email alerts always send; they occasionally get filtered. Add our sending address to your contacts.</>,
         <><strong className="font-bold text-ch-ink">Text alerts need your number saved.</strong> <A href={ROUTES.settings} visitor={visitor}>Settings</A> → How we reach you. Entering the number and agreeing to the consent box is what turns texts on; nothing else does.</>,
         <><strong className="font-bold text-ch-ink">Push needs permission.</strong> In the app, check CampHawk is allowed to send notifications in your phone&apos;s settings. We only ask after your first watch exists, so it is easy to have never been asked.</>,
