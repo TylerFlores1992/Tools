@@ -128,12 +128,14 @@ export function makeGeo(points, pad = 55) {
  * so a rebuild doesn't ask these free services again.
  */
 const CACHE = new URL("./.cache/", import.meta.url);
-export async function getText(url, headers = {}, body = undefined) {
+export async function getText(url, headers = {}, body = undefined, attempts = 4) {
   const key = createHash("sha1").update(url + (body ?? "")).digest("hex");
   const file = new URL(key + ".txt", CACHE);
   if (existsSync(file)) return readFileSync(file, "utf8");
   for (let attempt = 1; ; attempt++) {
-    const res = await fetch(url, body === undefined ? { headers } : { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body });
+    // A hung server is retried like a 5xx (USGS's hydrography layers hung for minutes on 2026-10-07).
+    const res = await fetch(url, { signal: AbortSignal.timeout(45000), ...(body === undefined ? { headers } : { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body }) })
+      .catch((e) => ({ ok: false, status: e.name === "TimeoutError" ? 504 : 599 }));
     if (res.ok) {
       const text = await res.text();
       mkdirSync(CACHE, { recursive: true });
@@ -141,15 +143,18 @@ export async function getText(url, headers = {}, body = undefined) {
       return text;
     }
     const retry = res.status >= 500 || res.status === 429;
-    if (!retry || attempt === 4) throw new Error(`${url.slice(0, 120)}: HTTP ${res.status}`);
+    if (!retry || attempt >= attempts) throw new Error(`${url.slice(0, 120)}: HTTP ${res.status}`);
     await new Promise((r) => setTimeout(r, (res.status === 429 ? 30000 : 2000) * attempt));
   }
 }
 
-export async function arcgis(url, bbox, fields, where = "1=1") {
-  const q = new URLSearchParams({ where, geometry: bbox, geometryType: "esriGeometryEnvelope", inSR: "4326", outSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: fields, f: "geojson" });
-  const j = JSON.parse(await getText(`${url}/query?${q}`));
+export async function arcgis(url, bbox, fields, where = "1=1", extra = {}, attempts = 4) {
+  const q = new URLSearchParams({ where, geometry: bbox, geometryType: "esriGeometryEnvelope", inSR: "4326", outSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: fields, f: "geojson", ...extra });
+  const j = JSON.parse(await getText(`${url}/query?${q}`, {}, undefined, attempts));
   if (j.error || !Array.isArray(j.features)) throw new Error(`${url}: ${JSON.stringify(j.error ?? "no features array")}`);
+  // A service caps how many features one query returns. A capped answer is a layer with holes in
+  // it, which is worse than a build that stops.
+  if (j.exceededTransferLimit || j.properties?.exceededTransferLimit) throw new Error(`${url}: more features than one query returns`);
   return j.features;
 }
 

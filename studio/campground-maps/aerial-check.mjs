@@ -1,0 +1,49 @@
+// A reviewer's check: each built map's sites and roads over the USDA aerial photo (NAIP, public
+// domain, via USGS The National Map) of the same frame, as a PNG. Not part of any map: it is how
+// a person (or a session) judges whether the points sit on real pads and the roads on real roads.
+//
+//   node studio/campground-maps/aerial-check.mjs <out-dir> <map.json>…
+//
+// The photo is asked for in Web Mercator for the map's own bbox, with the frame's proportions,
+// so it lines up with the map's local metres (the two projections differ by far less than a
+// pixel across a campground).
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, join } from "node:path";
+import sharp from "sharp";
+
+const NAIP = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage";
+const [outDir, ...files] = process.argv.slice(2);
+if (!outDir || !files.length) { console.error("usage: aerial-check.mjs <out-dir> <map.json>…"); process.exit(1); }
+mkdirSync(outDir, { recursive: true });
+
+export function naipUrl(bbox, frame, width = 1000) {
+  const height = Math.round((width * frame.h) / frame.w);
+  const q = new URLSearchParams({ bbox: bbox.join(","), bboxSR: "4326", imageSR: "3857", size: `${width},${height}`, format: "jpg", f: "image" });
+  return { url: `${NAIP}?${q}`, width, height };
+}
+
+for (const file of files) {
+  const map = JSON.parse(readFileSync(file, "utf8"));
+  if (!map.bbox) { console.log(`${file}: no bbox (rebuild it)`); continue; }
+  const { url, width: W, height: H } = naipUrl(map.bbox, map.frame);
+  let photo;
+  for (let i = 0; i < 3 && !photo; i++) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(60000) }).catch(() => null);
+    if (res?.ok && /image/.test(res.headers.get("content-type") ?? "")) photo = Buffer.from(await res.arrayBuffer());
+  }
+  if (!photo) { console.log(`${file}: no aerial photo`); continue; }
+  const f = map.frame, s = W / f.w;
+  const px = ([x, y]) => [((x - f.x) * s).toFixed(1), ((y - f.y) * s).toFixed(1)];
+  const path = (d) => d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_m, x, y) => px([Number(x), Number(y)]).join(" "));
+  const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    ${map.roads.map((r) => `<path d="${path(r.d)}" fill="none" stroke="#ffd400" stroke-width="2" stroke-opacity="0.85"/>`).join("")}
+    ${map.sites.filter((x) => x.at).map((x) => { const [a, b] = px(x.at); return `<circle cx="${a}" cy="${b}" r="4" fill="#ff2fd0" stroke="#fff" stroke-width="1.5"/><text x="${Number(a) + 6}" y="${Number(b) + 4}" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" stroke="#000" stroke-width="2.5" paint-order="stroke">${esc(x.name)}</text>`; }).join("")}
+    ${map.pois.map((p) => { const [a, b] = px(p.at); return `<rect x="${Number(a) - 5}" y="${Number(b) - 5}" width="10" height="10" fill="#00e5ff" stroke="#000"/>`; }).join("")}
+    <rect x="0" y="0" width="${W}" height="26" fill="#000" fill-opacity="0.6"/>
+    <text x="8" y="18" font-family="sans-serif" font-size="14" fill="#fff">${esc(map.name)} · ${esc(map.facilityId)} · ${esc(map.qa?.verdict ?? "")} · roads ${esc(map.sources?.roads ?? "")} · ${Math.round(f.w)}×${Math.round(f.h)} m</text>
+  </svg>`;
+  const out = join(outDir, basename(file).replace(/\.json$/, ".png"));
+  writeFileSync(out, await sharp(photo).resize(W, H, { fit: "fill" }).composite([{ input: Buffer.from(svg) }]).png().toBuffer());
+  console.log(out);
+}
