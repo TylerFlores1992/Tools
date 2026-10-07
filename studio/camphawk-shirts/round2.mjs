@@ -281,9 +281,12 @@ export function stillWater3({ dark, mid, light, shirt, tagline = "THE CAMPSITE Y
    <text x="${cx}" y="${cy + D + 160}" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="24" letter-spacing="7" fill="${dark}">${tagline}</text>`;
   return { vb: [W, H], art };
 }
+// The chest wordmark is set to an exact width (textLength): at its old size and tracking it ran past the
+// 600-unit canvas and the print files lost the C and the K (found 2026-10-07). 540 units leaves 30 each side.
+const CHEST_WORD = (fill) => `<text x="300" y="84" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="76" textLength="540" lengthAdjust="spacing" fill="${fill}">CAMPHAWK</text>`;
 export function stillWaterChest3({ dark }) {
-  // wordmark over the logo's hawk, centred: cap height ≈ 0.2in at 3.75in wide
-  const art = `<text x="300" y="90" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="92" letter-spacing="20" fill="${dark}">CAMPHAWK</text>
+  // wordmark over the logo's hawk, centred
+  const art = `${CHEST_WORD(dark)}
     <g fill="${dark}">${hawkAt(300 - 135, 118, 270, "sil")}</g>`;
   return { vb: [600, 330], art };
 }
@@ -292,8 +295,9 @@ export function stillWaterChest3({ dark }) {
 // =====================================================================================
 // 3, v3 — NIGHT WATCH with the Recraft treeline; critic fixes
 // =====================================================================================
-const TREES = { d: rf("traced-trees1.svg", "utf8").match(/ d="([^"]+)"/)[1], w: 4608, h: 2304, ground: 0.875 };
+let _trees; const trees = () => (_trees ??= { d: rf("traced-trees1.svg", "utf8").match(/ d="([^"]+)"/)[1], w: 4608, h: 2304, ground: 0.875 });
 export function nightWatch3({ ink, headSize = 84, arcSize = 46 }) {
+  const TREES = trees();
   const W = 1000, H = 940, cx = 500, cy = 450, R = 360;
   const cut = cy + R * 0.62;            // the moon ends on the ground line
   const tw = 2 * R + 300, th = (tw * TREES.h) / TREES.w, tx = cx - tw / 2, ty = cut + 6 - th * TREES.ground;
@@ -365,7 +369,7 @@ export function stillWaterOne({ ink, hatchW = 4.1, hatchGap = 5.9, angle = -35, 
 }
 // chest for the one-ink shirt: the hawk thickened slightly so its feather gaps don't clog at 3.75in
 export function stillWaterOneChest({ ink }) {
-  const art = `<text x="300" y="90" text-anchor="middle" font-family="Josefin Sans" font-weight="700" font-size="92" letter-spacing="20" fill="${ink}">CAMPHAWK</text>
+  const art = `${CHEST_WORD(ink)}
     <g fill="${ink}" stroke="${ink}" stroke-width="${(2.2 * HAWK.w) / 270}" stroke-linejoin="round">${hawkAt(165, 118, 270, "sil")}</g>`;
   return { vb: [600, 330], art };
 }

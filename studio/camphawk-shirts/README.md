@@ -72,3 +72,11 @@ Critic: 6/10 on the first pass; 8/10 after redrawing the fire, calming the refle
 the peak. The last round's fixes (hand-cut fire edges, flared tent base, cleaner strokes) are in.
 `gen.mjs` needs `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt` in this container.
 Image credit used in total: $0.54 of the owner's $0.75.
+
+## Chest fix (2026-10-07)
+The chest wordmark on both Still Water shirts ran past its 3.75 in canvas, so the print files had lost the
+C and the K. It is now set to an exact width (`textLength`, 540 of 600 units, about 5 mm clear each side).
+`node chest.mjs` rebuilds both chest prints on their own (it needs the hawk traces and fonts from the
+round-1 steps above). Print check: letter corners and the hawk's narrowest feather slits are flagged,
+as before; the slits close a little on press, and the hawk still reads.
+
