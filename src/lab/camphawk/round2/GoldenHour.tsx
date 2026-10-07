@@ -28,10 +28,11 @@ import { WatchProofs } from "./WatchProofs";
 // CampHawk's exact words (copy.ts).
 const STEPS = CH_STEPS.map(([t, body]) => [t, body.replace("or any N nights inside a window you’re free", "or how many nights you need inside a window you’re free")] as const);
 
-/** The proof on the photo: what an alert looks like. Labeled as an example; no real data. */
-function AlertCard({ compact }: { compact?: boolean }) {
+/** The proof on the photo: what an alert looks like. Labeled as an example; no real data. Welcome
+    shows it too (`cart` off for a plan without auto-cart). */
+export function AlertCard({ compact, cart = true, className }: { compact?: boolean; cart?: boolean; className?: string }) {
   return (
-    <figure className={cx("rounded-ch-card border-[1.5px] border-ch-green bg-ch-card text-ch-ink", compact ? "p-3.5" : "gh-rise w-[310px] p-4 shadow-ch-pop")}>
+    <figure className={cx("rounded-ch-card border-[1.5px] border-ch-green bg-ch-card text-ch-ink", compact ? "p-3.5" : "gh-rise w-[310px] p-4 shadow-ch-pop", className)}>
       <div className="flex items-center gap-2 text-[13px]">
         <Tag kind="open">Open</Tag>
         <span className="font-extrabold">A site just opened</span>
@@ -39,10 +40,12 @@ function AlertCard({ compact }: { compact?: boolean }) {
       </div>
       <p className={compact ? "mt-2 font-ch-display text-[18px] font-extrabold leading-tight" : "mt-3 font-ch-display text-[20px] font-extrabold leading-tight"}>Upper Pines, Site 042</p>
       <p className="mt-0.5 text-[14px] text-ch-ink-2 tabular-nums">Yosemite National Park. Open for Jul 18–21, 3 nights.</p>
-      <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
-        <ShoppingCart aria-hidden="true" className="size-4 shrink-0" />
-        In your Recreation.gov cart
-      </p>
+      {cart && (
+        <p className="mt-2.5 flex items-center gap-1.5 rounded-ch-tag bg-ch-blue-soft px-2.5 py-2 text-[13.5px] font-bold text-ch-blue-deep">
+          <ShoppingCart aria-hidden="true" className="size-4 shrink-0" />
+          In your Recreation.gov cart
+        </p>
+      )}
       <figcaption className="mt-2 text-[13px] text-ch-muted">Example alert</figcaption>
     </figure>
   );

@@ -8,7 +8,7 @@ import { buttonClasses } from "../ui";
 import type { Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import type { Piece } from "./Art";
-import { AppBand, BandPhoto, LabSelect, PLANS, type Plan } from "./AppParts";
+import { AppBand, BandPhoto, LabSelect, PLANS, type Fact, type Plan } from "./AppParts";
 import { GhFooter, ScreenLinks, type Tab } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
 
@@ -21,7 +21,7 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 export type LabCtx = { visitor: Visitor; plan: Plan; setVisitor: (v: Visitor) => void };
 
 export function LabPage({
-  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true,
+  page, tab, title, sub, photo, controls, children, showPlan = false, dock = true, facts,
 }: {
   /** The lab bar's breadcrumb label. */
   page: string;
@@ -37,6 +37,8 @@ export function LabPage({
   showPlan?: boolean;
   /** The first card rises into the band (app screens); reading pages start on paper. */
   dock?: boolean;
+  /** Numbers for a plain band's right side. */
+  facts?: ReadonlyArray<Fact>;
   /** Kept for callers; every page now uses the band's column. */
   wide?: boolean;
 }) {
@@ -51,7 +53,7 @@ export function LabPage({
         {controls?.(ctx)}
       </LabBar>
       <main id="main">
-        <AppBand visitor={visitor} current={tab} title={title} sub={typeof sub === "function" ? sub(ctx) : sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} />
+        <AppBand visitor={visitor} current={tab} title={title} sub={typeof sub === "function" ? sub(ctx) : sub} photo={photo ? <BandPhoto {...photo} /> : undefined} dock={dock} facts={facts} />
         {/* The page shares the band's column and gutters, so the title above and the content below
             start on one left edge at every width. */}
         <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pb-[clamp(48px,7vw,96px)] sm:px-8", dock ? "-mt-[var(--gh-dock)]" : "pt-[clamp(32px,5vw,64px)]")}>

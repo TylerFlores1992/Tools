@@ -9,6 +9,7 @@ import { buttonClasses } from "../../ui";
 import type { Visitor } from "../../data";
 import { CAMPGROUNDS_ROUNDED } from "../../data";
 import { ROUTES } from "../gates";
+import type { Fact } from "../AppParts";
 import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
 import { CHECK_SECONDS, SOURCES_LINE, inWords } from "./tier2-data";
@@ -85,7 +86,7 @@ function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; 
   return (
     // A row grid, read left to right like the alphabet; cards keep their own height (items-start),
     // so short towns don't get empty bottoms beside Yosemite's seven.
-    <div className="mt-10 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mt-10 grid items-start gap-4 sm:grid-cols-2">
       {groups.map((g) => (
         <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
@@ -122,32 +123,91 @@ const indexLabel = (r: Region) => (r.canada ? "Camping in Canada" : "Camping by 
 
 /* ---------- /camping ---------- */
 
+/** The catalog pages' frame: the lead and the list in one column, and beside it a card that says
+    where to go next, held in view while the list scrolls (round 14: a lead, a line of links and a
+    button stacked up before the list, and the right of the page sat empty). */
+function CatalogLayout({ lead, links, visitor, aside, children, endsWithSearch = false }: { lead: ReactNode; links?: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; aside?: ReactNode; children: ReactNode; endsWithSearch?: boolean }) {
+  return (
+    <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
+      <div className="min-w-0">
+        <Lead>{lead}</Lead>
+        {children}
+      </div>
+      <aside aria-label="Where to next" className="lg:sticky lg:top-6 lg:self-start">
+        {aside ?? (links && <NarrowCard links={links} visitor={visitor} search={endsWithSearch ? "wide" : "always"} />)}
+      </aside>
+    </div>
+  );
+}
+
+function ArrowRows({ links, visitor }: { links: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor }) {
+  return (
+    <ul>
+      {links.map(([label, href]) => (
+        <li key={href} className="border-b border-ch-line last:border-b-0">
+          <Link href={withVisitor(href, visitor)} className={cx(rowLink, "text-[15px] font-bold")}><span>{label}</span><ArrowRight aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" /></Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** `search: "wide"` when the page already ends with a search card: on a phone, where this card
+    falls below the list, two buttons would sit back to back. */
+function NarrowCard({ links, visitor, search }: { links: ReadonlyArray<readonly [label: string, href: string]>; visitor: Visitor; search: "always" | "wide" }) {
+  return (
+    <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+      <div className={cx("mb-5 border-b border-ch-line pb-4", search === "wide" && "max-lg:hidden")}>
+        <Search visitor={visitor} className="w-full" />
+        <p className="mt-2 text-center text-[14px] text-ch-ink-2">Searching is free and needs no account.</p>
+      </div>
+      <p className="text-[13px] font-extrabold text-ch-ink-2">Narrow it down</p>
+      <ArrowRows links={links} visitor={visitor} />
+    </div>
+  );
+}
+
+/** Numbers in a card: value over what it counts, top-aligned however the labels wrap. */
+function CardFacts({ facts }: { facts: ReadonlyArray<Fact> }) {
+  return (
+    <dl className="grid grid-cols-2 border-b border-ch-line pb-4">
+      {facts.map(([v, l], i) => (
+        <div key={l} className={cx("flex flex-col gap-1", i > 0 && "border-l border-ch-line pl-4")}>
+          <dt className="order-last text-[14px] leading-snug text-ch-ink-2">{l}</dt>
+          <dd className="font-ch-display text-[34px] font-extrabold leading-none tracking-[-.02em] text-ch-forest tabular-nums">{v}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+const n = (x: number) => x.toLocaleString("en-US");
+
+/* ---------- /camping ---------- */
+
 export function CampingHub() {
   const usTotal = total(STATES);
   const extraParks = HARD_TO_BOOK.length - 3;
   return (
-    <LabPage page="Camping by state" title="Camping by state" dock={false}>
+    <LabPage page="Camping by state" title="Camping by state" dock={false} facts={[[String(STATES.length), "states with a page"], [n(usTotal), "campgrounds in them"], [CAMPGROUNDS_ROUNDED, "in the US and Canada"]]}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", null]]} />
-          <div className="mt-5"><Lead><p>These are the {STATES.length} states with enough campgrounds for a page of their own: {usTotal.toLocaleString("en-US")} bookable campgrounds, national forests, state parks and everything in between. Pick a state to see what we cover there. (Our full catalog is {CAMPGROUNDS_ROUNDED} campgrounds across the US and Canada.)</p></Lead></div>
-          {/* Links, not pills: pills read as filters (round 13). */}
-          <ul aria-label="Kinds of site" className="mt-5 flex flex-wrap gap-x-6">
-            {HUBS.map((h) => (
-              <li key={h.slug}><Link href={withVisitor(`${ROUTES.camping}/${h.slug}`, visitor)} className="inline-flex min-h-11 items-center gap-1.5 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-4 hover:decoration-2">{h.heading}<ArrowRight aria-hidden="true" className="size-4" /></Link></li>
-            ))}
-          </ul>
-          <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
-          {/* After the list, not before it: on a phone they pushed Alabama a screen down (round 12). */}
-          <div className="mt-8 grid gap-3 lg:grid-cols-2">
-            <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Chasing somewhere that is never available? <A href={ROUTES.hardest} visitor={visitor}>The campgrounds that are always booked</A> covers Yosemite, Zion, Acadia and {extraParks} more parks whose sites go in minutes — and how a cancellation is the realistic way in.</p>
-            <p className="rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] leading-relaxed text-ch-ink-2 shadow-ch-card">Already found it booked out? <A href={ROUTES.soldOut} visitor={visitor}>What actually works when a campground is sold out</A>, and <A href={ROUTES.alerts} visitor={visitor}>how campsite cancellation alerts work</A> — including the free options worth checking first.</p>
-          </div>
+          <CatalogLayout
+            visitor={visitor}
+            lead={<>
+              <p>These are the {STATES.length} states with enough campgrounds for a page of their own: national forests, state parks and everything in between. Pick one to see what we track there.</p>
+              <p>Chasing somewhere that is never available? Yosemite, Zion, Acadia and {extraParks} more parks go in minutes, and a cancellation is the realistic way in.</p>
+            </>}
+            links={[...HUBS.map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["The campgrounds that are always booked", ROUTES.hardest], ["When a campground is sold out", ROUTES.soldOut]]}
+          >
+          <div className="mt-12"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
             <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] text-ch-forest">Camping in Canada</h2>
-            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada’s 13 provinces and territories — Parks Canada’s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
+            <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{n(total(PROVINCES) + UNPAGED.canada)} bookable campgrounds in {COVERAGE.canadaRegions} of Canada’s 13 provinces and territories — Parks Canada’s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
             <div className="mt-5"><RegionGrid rows={PROVINCES} href={statePath} visitor={visitor} caption="The number beside each is how many campgrounds we track there." /></div>
           </section>
+          </CatalogLayout>
           <Note />
         </div>
       )}
@@ -157,40 +217,41 @@ export function CampingHub() {
 
 /* ---------- /camping/[state] ---------- */
 
+const WHY_WATCH = `Booked out is rarely final. People cancel constantly, and the site drops back into the booking system with no warning, often overnight. Watch one and we recheck it every ${CHECK_SECONDS} seconds, around the clock, so you hear within seconds, not weeks later.`;
+
 export function StatePage({ slug }: { slug: string }) {
   const r = regionBySlug(slug)!;
   const ca = r.code === "CA";
   const types = hubsIn(r.code);
+  const facts: Fact[] = ca
+    ? [[n(r.count), "campgrounds tracked"], [String(CALIFORNIA.towns), "towns"], [String(CALIFORNIA.providers.length), "booking systems"]]
+    : [[n(r.count), "campgrounds tracked"], [`${CHECK_SECONDS} sec`, "between checks"]];
   return (
-    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false}>
+    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false} facts={facts}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />
-          <div className="mt-5">
-            <Lead>
-              <p>We track live availability at {r.count.toLocaleString("en-US")} bookable campgrounds across {r.name}{ca ? `, in ${CALIFORNIA.towns} towns` : ""}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Booked out is rarely final — people cancel constantly, and the site drops back into the booking system with no warning, often overnight — so when one frees up you hear about it in seconds rather than finding out weeks later that it was open for an hour.</p>
-            </Lead>
-            <p className="mt-3 text-[15px] text-ch-ink-2">{ca ? `Booking goes through ${joinAnd(CALIFORNIA.providers)}. ` : ""}Searching is free.</p>
-            {types.length > 0 && (
-              <p className="mt-2 text-[15px] text-ch-ink-2">Looking for something specific?{" "}
-                {types.map((h, i) => (
-                  <span key={h.slug}>{i > 0 && (i === types.length - 1 ? " or " : ", ")}<A href={`${ROUTES.camping}/${h.slug}/${r.slug}`} visitor={visitor}>{r.name} {h.label.toLowerCase()}</A></span>
-                ))}.
-              </p>
-            )}
-            <Search visitor={visitor} className="mt-6" />
-          </div>
+          <CatalogLayout
+            visitor={visitor}
+            endsWithSearch={ca}
+            lead={<>
+              <p>{WHY_WATCH}</p>
+              {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
+            </>}
+            links={[...types.map((h) => [`${r.name} ${h.label.toLowerCase()}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [r.canada ? "Every province" : "Every state", r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping]]}
+          >
           {ca ? (
             <>
               <Towns groups={CALIFORNIA.groups} code={r.code} name={r.name} visitor={visitor} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6">
-                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}’s {r.count.toLocaleString("en-US")} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
+                <p className="max-w-[60ch] text-[16px] leading-relaxed text-ch-ink-2"><strong className="text-ch-ink">These are {shownIn(CALIFORNIA.groups)} of {r.name}’s {n(r.count)} campgrounds</strong>, the ones people watch most. Search by name, town or ZIP to find the rest.</p>
                 <Search visitor={visitor} />
               </div>
             </>
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws California’s campground list; <A href={`${ROUTES.camping}/california`} visitor={visitor}>see it there</A>. CampHawk lists every campground in {r.name} here, by town.</p>
           )}
+          </CatalogLayout>
           <Note />
         </div>
       )}
@@ -211,24 +272,27 @@ const places = (us: number, ca: ReadonlyArray<{ code: string }>) => {
   return `${us} ${us === 1 ? "state" : "states"}${ca.length ? ` and ${ca.length} Canadian ${kind}` : ""}`;
 };
 
+const canadaKind = (ca: ReadonlyArray<{ code: string }>) => places(0, ca).replace(/^0 states and \d+ Canadian /, "Canadian ");
+
 export function TypeHub({ type }: { type: string }) {
   const hub = hubBySlug(type)!;
   const rows = regionsFor(hub);
   const us = rows.filter((x) => !x.canada);
   const ca = rows.filter((x) => x.canada);
+  const facts: Fact[] = [[n(total(rows)), `campgrounds with ${hub.noun}`], [String(us.length), us.length === 1 ? "state" : "states"], ...(ca.length ? [[String(ca.length), canadaKind(ca)] as const] : [])];
   return (
-    <LabPage page={hub.heading} title={hub.heading} dock={false}>
+    <LabPage page={hub.heading} title={hub.heading} dock={false} facts={facts}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Camping by state", ROUTES.camping], [hub.heading, null]]} />
-          <div className="mt-5">
-            <Lead>
+          <CatalogLayout
+            visitor={visitor}
+            lead={<>
               <p>{hub.blurb}</p>
-              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Most of these book out months ahead, so a cancellation is the realistic way in, and you’ll know within seconds of one.</p>
-            </Lead>
-            <p className="mt-3 text-[15px] text-ch-ink-2">Searching live availability is free and needs no account.</p>
-            <Search visitor={visitor} className="mt-6" />
-          </div>
+              <p>We track them across {places(us.length, ca)}, on {systems(ca.length > 0)}. Most book out months ahead, so a cancellation is the realistic way in: watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock.</p>
+            </>}
+            links={[...HUBS.filter((h) => h.slug !== hub.slug).map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["Every state and province", ROUTES.camping], ["The campgrounds that are always booked", ROUTES.hardest]]}
+          >
           {us.length > 0 && (
             <section aria-labelledby="by-state" className="mt-12">
               <h2 id="by-state" className="mb-4 font-ch-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.15] text-ch-forest">{hub.heading} by state</h2>
@@ -241,7 +305,7 @@ export function TypeHub({ type }: { type: string }) {
               <RegionGrid rows={ca} href={(x) => `${ROUTES.camping}/${hub.slug}/${x.slug}`} visitor={visitor} caption={`The number beside each is how many campgrounds with ${hub.noun} we track there.`} />
             </section>
           )}
-          <p className="mt-10 text-[15px] text-ch-ink-2">Looking for something else? <A href={ROUTES.camping} visitor={visitor}>Browse every state and province</A>, or see <A href={ROUTES.hardest} visitor={visitor}>the campgrounds that are always booked</A>.</p>
+          </CatalogLayout>
           <Note />
         </div>
       )}
@@ -260,26 +324,32 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
   const groups: Town[] = [];
   if (ca) {
     let left = count;
-    for (const g of CALIFORNIA.groups) {
+    // 1 to 3 per town in turn, so the sample reads as picked, not as "2" on every card (round 14).
+    for (const [gi, g] of CALIFORNIA.groups.entries()) {
       if (left <= 0) break;
       // Yosemite's Pines loops are tent sites only (the campground page says so), so they never
       // appear under cabins, groups or yurts.
-      const take = g.campgrounds.filter((n) => !/Pines Campground$/.test(n)).slice(0, Math.min(2, left));
+      const take = g.campgrounds.filter((x) => !/Pines Campground$/.test(x)).slice(0, Math.min([2, 3, 1][gi % 3], left));
       if (!take.length) continue;
       groups.push({ ...g, campgrounds: take });
       left -= take.length;
     }
   }
+  const others = hubsIn(r.code).filter((h) => h.slug !== hub.slug);
   return (
-    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false}>
+    <LabPage page={`${r.name} ${hub.label}`} title={`${r.name} ${hub.label}`} dock={false} facts={[[n(count), `with ${hub.noun}`], [n(r.count), `campgrounds in ${r.name}`]]}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), ROUTES.camping], [hub.heading, `${ROUTES.camping}/${hub.slug}`], [r.name, null]]} />
-          <div className="mt-5">
-            <Lead><p>We track live availability at {count} campgrounds with {hub.noun} in {r.name}. Watch one and we recheck it every {CHECK_SECONDS} seconds, so a cancellation reaches you while it’s still there to book.</p></Lead>
-            <p className="mt-3 text-[15px] text-ch-ink-2">{ca ? `Booking goes through ${joinAnd(CALIFORNIA.providers)}. ` : ""}Searching is free.</p>
-            <Search visitor={visitor} className="mt-6" />
-          </div>
+          <CatalogLayout
+            visitor={visitor}
+            endsWithSearch={ca}
+            lead={<>
+              <p>{WHY_WATCH}</p>
+              {ca && <p>Booking goes through {joinAnd(CALIFORNIA.providers)}.</p>}
+            </>}
+            links={[[`Every campground in ${r.name}`, statePath(r)], ...others.map((h) => [`${r.name} ${h.label.toLowerCase()}`, `${ROUTES.camping}/${h.slug}/${r.slug}`] as const), [`${hub.heading} in other ${r.canada ? "states and provinces" : "states"}`, `${ROUTES.camping}/${hub.slug}`]]}
+          >
           {ca ? (
             <>
               <Towns groups={groups} code={r.code} name={r.name} visitor={visitor} />
@@ -291,7 +361,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
           ) : (
             <p className="mt-10 rounded-ch-card border border-ch-line bg-ch-card p-5 text-[16px] text-ch-ink-2 shadow-ch-card">The lab draws lists for California only; <A href={`${ROUTES.camping}/${hub.slug}/california`} visitor={visitor}>see California {hub.label.toLowerCase()}</A>. CampHawk lists each campground here, by town.</p>
           )}
-          <p className="mt-10 text-[15px] text-ch-ink-2">Not finding one? See <A href={statePath(r)} visitor={visitor}>every campground we track in {r.name}</A>, or <A href={`${ROUTES.camping}/${hub.slug}`} visitor={visitor}>{hub.heading} in other {r.canada ? "states and provinces" : "states"}</A>.</p>
+          </CatalogLayout>
           <Note />
         </div>
       )}
@@ -302,36 +372,43 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
 /* ---------- /camping/hardest-to-book ---------- */
 
 export function HardestToBook() {
-  const count = HARD_TO_BOOK.reduce((n, p) => n + p.campgrounds.length, 0);
+  const count = HARD_TO_BOOK.reduce((x, p) => x + p.campgrounds.length, 0);
   return (
     <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.k1, pos: "55% 40%", posLg: "50% 40%" }}>
       {({ visitor }) => (
-        <div className="max-w-[900px]">
+        <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />
-          <div className="mt-5">
-            <Lead>
-              <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you’ve finished typing. It isn’t a queue you can win by being organized — for these {count} campgrounds, being early isn’t early enough.</p>
-              <p>What does work is being there when somebody gives one back. Cancellations happen constantly — a trip falls through, a group shrinks, a forecast sours — and the site drops back into the booking system with no announcement, often in the middle of the night. Nearly every one of them is taken within minutes by whoever happened to be looking.</p>
-              <p>CampHawk is the part that happens to be looking. Watch one of these campgrounds and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we email, push and text you a link straight to it.</p>
-            </Lead>
-            <p className="mt-4 max-w-[70ch] text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
-            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
-          </div>
-          {/* One row per park, in CampHawk's order (Yosemite first), its campgrounds inline: a ranked
-              list reads top to bottom, and twelve one-link cards read as filler (round 9). */}
-          <ol className="mt-10 max-w-[900px] border-t border-ch-line">
-            {HARD_TO_BOOK.map((p) => (
-              <li key={p.park} className="grid gap-x-8 gap-y-1 border-b border-ch-line py-3.5 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline">
-                <h2 className="font-ch-display text-[17px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
-                <ul className="grid sm:flex sm:flex-wrap sm:gap-x-5">
-                  {p.campgrounds.map((n) => (
-                    <li key={n}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for every other campground.</p>
+          <CatalogLayout
+            visitor={visitor}
+            lead={<>
+              <p>Some campgrounds are gone the moment their booking window opens. Refresh at the wrong second and a whole summer of Yosemite Valley is spoken for before you’ve finished typing. For these {count} campgrounds, being early isn’t early enough.</p>
+              <p>What does work is being there when somebody gives one back. Cancellations happen constantly, and the site drops back into the booking system with no announcement, often in the middle of the night. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock, and the moment a site frees up we email, push and text you a link straight to it.</p>
+            </>}
+            aside={
+              <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+                <CardFacts facts={[[String(count), "campgrounds"], [String(HARD_TO_BOOK.length), "parks and seashores"]]} />
+                <p className="mt-4 text-[15px] leading-relaxed text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
+                <Search visitor={visitor} className="mt-5 w-full" />
+                <div className="mt-4 border-t border-ch-line"><ArrowRows links={[["When a campground is sold out", ROUTES.soldOut], ["How cancellation alerts work", ROUTES.alerts]]} visitor={visitor} /></div>
+              </div>
+            }
+          >
+            {/* One row per park, in CampHawk's order (Yosemite first), its campgrounds inline: a ranked
+                list reads top to bottom, and twelve one-link cards read as filler (round 9). */}
+            <ol className="mt-10 border-t border-ch-line">
+              {HARD_TO_BOOK.map((p) => (
+                <li key={p.park} className="grid gap-x-8 gap-y-1 border-b border-ch-line py-3.5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-baseline">
+                  <h2 className="font-ch-display text-[17px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
+                  <ul className="grid sm:flex sm:flex-wrap sm:gap-x-5">
+                    {p.campgrounds.map((c) => (
+                      <li key={c}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{c}</Link></li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-8 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for every other campground.</p>
+          </CatalogLayout>
           <LabNote className="mt-12">The parks and their order are CampHawk’s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>
       )}

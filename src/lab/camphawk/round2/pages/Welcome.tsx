@@ -6,8 +6,8 @@ import Link from "next/link";
 import { Bell, Loader2, Mail } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
-import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
+import { AlertCard } from "../GoldenHour";
 import { GH, ROUTES } from "../gates";
 import { LabNote, LabPage } from "../LabPage";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "../labState";
@@ -43,7 +43,6 @@ export function Welcome() {
       page="Welcome"
       title={title}
       showPlan
-      photo={{ art: ART.t1, pos: "60% 20%", posLg: "50% 18%" }}
       controls={({ visitor }) => visitor !== "signed-out" && (
         <LabSelect label="Arrived from" short="From" value={from} onChange={setFrom} options={[["sign-up", "Sign-up"], ["checkout", "Checkout"]]} />
       )}
@@ -65,7 +64,9 @@ export function Welcome() {
         const next = withVisitor(nextPath, visitor);
         const go = (kind: "finish" | "skip") => { setSaving(kind); window.setTimeout(() => window.location.assign(next), 700); };
         return (
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
+          // A readable setup column (round 14: rows ran 820px), and beside it what all this is for: the
+          // alert they're setting up, then what happens next. Plain band: the tent photo was soft at desktop.
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,700px)_minmax(0,1fr)] lg:items-start lg:gap-8">
           <div className="grid min-w-0 gap-4">
           <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-pop sm:p-9">
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
@@ -117,17 +118,23 @@ export function Welcome() {
           {from === "checkout" && visitor !== "subscriber" && <LabNote>The after-checkout version is for a subscriber: switch View as to Subscriber.</LabNote>}
           </div>
           {/* Wide screens only: on a phone it would sit under Finish, after the job is done. */}
-          <aside aria-labelledby="w-next" className="hidden rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card lg:sticky lg:top-6 lg:block">
-            <h2 id="w-next" className="font-ch-display text-[19px] font-extrabold text-ch-ink">What happens next</h2>
-            <ol className="mt-3 grid gap-3 text-[15px] leading-relaxed text-ch-ink-2">
-              {[
-                `Start a watch on a booked campground. We check it every ${CHECK_SECONDS} seconds, around the clock.`,
-                "The moment a site frees up, we tell you by every channel you’ve turned on, at once.",
-                subscribed && plan === "autocart" ? "On Recreation.gov, auto-cart puts it straight in your cart. You check out." : "You book it on the booking site, while it’s still open.",
-              ].map((line, i) => (
-                <li key={i} className="flex gap-3"><span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span><span>{line}</span></li>
-              ))}
-            </ol>
+          <aside aria-labelledby="w-next" className="hidden lg:sticky lg:top-6 lg:grid lg:gap-4">
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+              <p className="mb-3 text-[13px] font-extrabold text-ch-ink-2">What you’re setting up</p>
+              <AlertCard compact cart={subscribed && plan === "autocart"} />
+            </div>
+            <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
+              <h2 id="w-next" className="font-ch-display text-[19px] font-extrabold text-ch-ink">What happens next</h2>
+              <ol className="mt-3 grid gap-3 text-[15px] leading-relaxed text-ch-ink-2">
+                {[
+                  `Start a watch on a booked campground. We check it every ${CHECK_SECONDS} seconds, around the clock.`,
+                  "The moment a site frees up, we tell you by every channel you’ve turned on, at once.",
+                  subscribed && plan === "autocart" ? "On Recreation.gov, auto-cart puts it straight in your cart. You check out." : "You book it on the booking site, while it’s still open.",
+                ].map((line, i) => (
+                  <li key={i} className="flex gap-3"><span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-ch-shell text-[13px] font-extrabold text-ch-ink">{i + 1}</span><span>{line}</span></li>
+                ))}
+              </ol>
+            </div>
           </aside>
           </div>
         );

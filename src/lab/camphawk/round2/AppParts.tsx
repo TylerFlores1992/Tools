@@ -112,7 +112,10 @@ export function BandPhoto({ art, alt = "", pos, posLg }: { art: Piece; alt?: str
 
 /** The forest band an app screen opens with: the header, then the screen's title in paper
     type. `dock` is how far the first card below rises into it. */
-export function AppBand({ visitor, current, title, sub, children, photo, dock = true }: { visitor: Visitor; current?: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode; dock?: boolean }) {
+/** A plain band's numbers: value and what it counts, from the data. */
+export type Fact = readonly [value: string, label: string];
+
+export function AppBand({ visitor, current, title, sub, children, photo, dock = true, facts }: { visitor: Visitor; current?: Tab; title: string; sub?: ReactNode; children?: ReactNode; photo?: ReactNode; dock?: boolean; facts?: ReadonlyArray<Fact> }) {
   return (
     <section className="relative isolate overflow-hidden bg-ch-forest">
       {photo}
@@ -122,8 +125,24 @@ export function AppBand({ visitor, current, title, sub, children, photo, dock = 
       <div className={cx("relative mx-auto max-w-[var(--gh-max)] px-5 pt-6 sm:px-8 sm:pt-10", dock ? "pb-[calc(var(--gh-dock)+28px)]" : photo ? "pb-[clamp(40px,5vw,72px)]" : "pb-[clamp(36px,3.6vw,52px)]", Boolean(photo) && !sub && "lg:pt-[clamp(72px,7vw,128px)]")}>
         {/* A plain band has no photo to keep clear, so its title runs wider: a short title on two lines,
             not three (round 13). */}
-        <h1 className={cx(photo ? "max-w-[18ch]" : "max-w-[18ch] lg:max-w-[26ch]", "text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper")}>{title}</h1>
-        {sub && <div className="mt-3 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-ch-line">{sub}</div>}
+        <div className={cx(facts && "lg:flex lg:items-end lg:justify-between lg:gap-14")}>
+          <div className="min-w-0">
+            <h1 className={cx(photo ? "max-w-[18ch]" : facts ? "max-w-[18ch] lg:max-w-[22ch]" : "max-w-[18ch] lg:max-w-[26ch]", "text-balance font-ch-display text-[clamp(34px,4.4vw,56px)] font-extrabold leading-[1.02] tracking-[-.03em] text-ch-paper")}>{title}</h1>
+            {sub && <div className="mt-3 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-ch-line">{sub}</div>}
+          </div>
+          {/* The page's numbers where the empty half of a plain band was (round 14): a phone gets
+              them as a row under the title, hairlines between. */}
+          {facts && (
+            <dl className={cx("mt-7 grid border-t border-ch-white/15 pt-5 lg:mt-0 lg:shrink-0 lg:border-t-0 lg:pb-1.5 lg:pt-0", facts.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+              {facts.map(([value, label], i) => (
+                <div key={label} className={cx("flex min-w-0 flex-col gap-1 pr-3 lg:pr-7", i > 0 && "border-l border-ch-white/15 pl-3 lg:pl-7", i === facts.length - 1 && "pr-0 lg:pr-0")}>
+                  <dt className="order-last text-[13px] leading-snug text-ch-line lg:text-[14px]">{label}</dt>
+                  <dd className="font-ch-display text-[clamp(24px,2.6vw,36px)] font-extrabold leading-none tracking-[-.02em] text-ch-paper tabular-nums">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
         {children}
       </div>
     </section>
