@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07 (campground site maps: Upper Pines live in the lab, ReserveCalifornia from State Parks' data local-only, both State Parks requests sent; PR #19, merged with main after #18). Before that, 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 merged).*
+*Last updated: 2026-10-07, evening (campground site maps: the 50-campground Recreation.gov sample, 32 of 50 ready on their own and 38 after one look; a Site maps review page in the lab; PR #19). Earlier the same day: Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged, production smoke 27/27.*
 
 ## At a glance
 
@@ -29,8 +29,8 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` · `npm run e2e` ·
-`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (27 checks, including
+**Checks, all green:** `npm run verify` (168 tests) · `npm run e2e` (34 browser checks) ·
+`npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29 checks after #19 merges; 27 live now, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
@@ -165,8 +165,8 @@ Whoever merges #18 resolves them, keeping both sides: #19's site map and #18's f
    their word. **Terms** (published text, not reworded) says billing is through Stripe only and
    alerts are email and text only, and doesn't cover auto-cart or holds: for the owner.
    **Round 17 and after (2026-10-07):** a second rework (Explore first run, New watch's "Your watch",
-   the in-app paywall) held critics at 8.6. **PR #18** is open for the owner's review (CI green,
-   mergeable; this session watches it). Done after it opened: the campground page opens on its
+   the in-app paywall) held critics at 8.6. **PR #18** merged 2026-10-07
+   (production smoke 27/27). Done after it opened: the campground page opens on its
    first open night, every holdable row on Manage says when it releases, sign-up has a consent
    line. Kept on purpose: Welcome's Finish and Skip (carrier rules need a way past texts), Claim's
    "Not now" outside its cards (Claim is three cards; Connect is one). Still open, owner's call:
