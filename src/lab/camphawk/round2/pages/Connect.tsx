@@ -122,7 +122,7 @@ export function Connect() {
           <h1 className="mt-2 font-ch-display text-[28px] font-extrabold leading-tight tracking-[-.01em] text-ch-ink">Connect Recreation.gov</h1>
           {status !== "done" && (
             <p className="mt-2 text-[15px] leading-relaxed text-ch-ink-2">
-              Sign in once so auto-cart can add openings to your Recreation.gov cart, even at 3 AM. Unlike a one-off hand-off, that needs your login kept on hand: it goes over an encrypted connection to a private machine we run, the one that keeps your session open.
+              Sign in once so auto-cart can add openings to your Recreation.gov cart, even at 3 AM.
             </p>
           )}
           <div className="mt-6">

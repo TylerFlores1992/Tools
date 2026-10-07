@@ -308,7 +308,7 @@ export function HardestToBook() {
           </div>
           {/* One card per park, in CampHawk's order (Yosemite first), read across the rows so the
               order survives: denser than CampHawk's single column of one-link sections. */}
-          <ul className="mt-10 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {HARD_TO_BOOK.map((p) => (
               // A park with a long list (Yosemite's six) takes the full row, its list in columns, so
               // it doesn't leave a hole beside it.

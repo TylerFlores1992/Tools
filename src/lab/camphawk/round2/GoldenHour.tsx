@@ -95,7 +95,9 @@ function PhoneProof() {
     <div aria-label="Example: the alert on a phone, then the site in your cart" role="img" className="mx-auto w-[290px] rounded-[44px] bg-ch-ink p-2.5 shadow-ch-pop">
       <div className="overflow-hidden rounded-[36px] bg-ch-paper text-ch-ink">
         <div className="relative h-[230px] overflow-hidden">
-          <Art art={ART.a1} sizes="900px" className="absolute inset-0 size-full origin-[74%_88%] scale-[2.4] bg-ch-forest object-cover object-[74%_88%]" />
+          {/* A plain dusk wallpaper: a cropped photo put the clock on a bright tent peak on phones
+              and showed a different crop on desktop (round 7). */}
+          <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-ch-ink to-ch-forest" />
           <p className="relative pt-7 text-center font-ch-display text-[52px] font-bold leading-none text-ch-paper">6:02</p>
           <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-ch-card p-3 text-left">
             <p className="flex items-center gap-1.5 text-[13px] font-extrabold text-ch-muted">

@@ -13,7 +13,7 @@ export interface RadioChipOption<T> {
 }
 
 export function RadioChips<T>({
-  options, value, onChange, label, size = "sm", layout = "row", className,
+  options, value, onChange, label, size = "sm", layout = "row", cols, className,
 }: {
   options: ReadonlyArray<RadioChipOption<T>>;
   value: T | undefined;
@@ -21,6 +21,9 @@ export function RadioChips<T>({
   label: string;
   size?: "sm" | "md";
   layout?: "row" | "contents";
+  /** Phones only: an even grid of this many columns instead of a wrapping row, so no chip is
+      stranded on a line of its own. From 640px it's a row again. */
+  cols?: 2 | 3;
   className?: string;
 }) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -44,7 +47,7 @@ export function RadioChips<T>({
   }
 
   return (
-    <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown} className={cx(layout === "contents" ? "contents" : "flex flex-wrap gap-1.5", className)}>
+    <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown} className={cx(layout === "contents" ? "contents" : cols ? cx("grid gap-1.5 sm:flex sm:flex-wrap", cols === 2 ? "grid-cols-2" : "grid-cols-3") : "flex flex-wrap gap-1.5", className)}>
       {options.map((o, i) => (
         <Chip
           key={String(o.value)}

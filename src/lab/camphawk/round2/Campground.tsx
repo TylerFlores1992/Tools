@@ -63,7 +63,7 @@ function OpenSummary({ months }: { months: Record<string, Month> }) {
       <Tag kind="open">Sites open</Tag>
       <span>
         {/* The count lives in the calendar's key; up here, just the next date. */}
-        <strong className="font-bold">Next opening {dayLabel(open[0])}.</strong>{" "}
+        <strong className="font-bold">First open night: {dayLabel(open[0])}.</strong>{" "}
         <span className="text-ch-line">Pick a day below to see the sites.</span>
       </span>
     </p>
@@ -369,7 +369,7 @@ export function Campground() {
             </p>
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
-          <section className="px-2 sm:px-0">
+          <section>
             <h2 className="font-ch-display text-[clamp(26px,3vw,34px)] font-extrabold leading-tight tracking-[-.02em] text-ch-forest">{watchable && Object.keys(months[FIRST_MONTH].open).some((d) => d >= TODAY) ? `When ${name} books up` : openingsHeading(name)}</h2>
             <div className="mt-3 max-w-[66ch] space-y-3">
               {openingsBody(name, place, CAMPGROUND.autoCart).map((t) => (

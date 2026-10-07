@@ -29,9 +29,8 @@ export const ART = {
   p1: { name: "p1-pricing-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   v1: { name: "v1-fork-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
   s1: { name: "s1-ranger-wide", widths: [828, 1440, 2560], w: 2560, h: 1097 },
-  // Round 6: cut from earlier unused generations (no new images), for pages that had a plain band.
+  // Round 6: cut from earlier unused generations (no new images): Hardest to book, Welcome.
   k1: { name: "k1-halfdome-wide", widths: [828, 1440, 2048], w: 2048, h: 878 },
-  g1: { name: "g1-sitepost-wide", widths: [828, 1440, 2048], w: 2048, h: 878 },
   t1: { name: "t1-tent-wide", widths: [828, 1440, 1856], w: 1856, h: 796 },
 } as const;
 export type Piece = (typeof ART)[keyof typeof ART];

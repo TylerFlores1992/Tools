@@ -397,7 +397,7 @@ export function Explore() {
         <AppBand
           visitor={visitor}
           current="explore"
-          title="Find a campsite that's open tonight"
+          title="Find a campsite that's open"
           sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov site in all 50 states, state parks in 34, and national and provincial parks across Canada.`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
@@ -461,12 +461,14 @@ export function Explore() {
 
             <fieldset className="mt-5">
               <legend className={label}>Within</legend>
-              <RadioChips label="Within" options={RADII.map((r) => ({ value: r, label: `${r} mi` }))} value={radius} onChange={setRadius} />
+              {/* Phones: an even grid (3 + 2, then 2 × 2) instead of one chip stranded on a row. */}
+              <RadioChips cols={3} label="Within" options={RADII.map((r) => ({ value: r, label: `${r} mi` }))} value={radius} onChange={setRadius} />
             </fieldset>
 
             <fieldset className="mt-5">
               <legend className={label}>When</legend>
               <RadioChips
+                cols={2}
                 label="When"
                 className="mb-2.5"
                 options={([["exact", "Exact dates"], ["tonight", "Tonight"], ["weekend", "This weekend"], ["flexible", "Flexible"]] as const).map(([value, l]) => ({ value: value as When, label: l }))}

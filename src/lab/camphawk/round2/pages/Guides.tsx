@@ -1,10 +1,9 @@
 "use client";
 
 import { Info } from "lucide-react";
-import { ART } from "../Art";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
-import { A, ActionLink, Callout, CtaBand, H2, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
+import { A, ActionLink, Callout, CtaBand, H2, LabNote, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
 import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
@@ -50,7 +49,7 @@ function HoldClosed() {
 
 export function AutoCartGuide() {
   return (
-    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false} photo={{ art: ART.g1, pos: "60% 50%", posLg: "18% 50%" }}>
+    <LabPage page="Auto-cart" title="Auto‑cart — how it works" dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["first", "What you need first"], ["recgov", "Recreation.gov"], ["rc", "ReserveCalifornia"], ["good-to-know", "Good to know"]]}>
         <Prose>
@@ -109,7 +108,7 @@ export function AutoCartGuide() {
 
 export function CancellationAlerts() {
   return (
-    <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false} photo={{ art: ART.e1, pos: "50% 55%", posLg: "50% 55%" }}>
+    <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["how", "How they work"], ["speed", "How much speed matters"], ["free", "Check the free option first"], ["difference", "The two things that survive"], ["checklist", "What to ask of any service"], ["start", "If you want to try ours"]]}>
         <Prose>
@@ -146,6 +145,7 @@ export function CancellationAlerts() {
           <H2 id="start">If you want to try ours</H2>
           <P>Searching is free — you can check availability across all {sources} systems without an account. <A href={ROUTES.explore} visitor={visitor}>Search campgrounds</A>, and if it is booked out, <A href={ROUTES.soldOut} visitor={visitor}>here is what actually works</A>. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>the plans are here</A>.</P>
           <Disclaimer visitor={visitor} />
+          <LabNote className="mt-8">The openings study is CampHawk&apos;s real measurement, July 22 to September 4, 2026. The lab&apos;s example watches are dated as if today were July 6, so the two don&apos;t share a calendar.</LabNote>
         </Prose>
         </WithRail>
       )}
@@ -195,6 +195,7 @@ export function SoldOutGuide() {
           <P>Searching is free. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
           <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
           <Disclaimer visitor={visitor} />
+          <LabNote className="mt-8">The openings study is CampHawk&apos;s real measurement, July 22 to September 4, 2026. The lab&apos;s example watches are dated as if today were July 6, so the two don&apos;t share a calendar.</LabNote>
         </Prose>
         </WithRail>
       )}

@@ -348,7 +348,7 @@ try {
     await panel.getByText("2 sites open").waitFor();
     assert.ok(await p.getByRole("button", { name: /July 12, fully booked/ }).isDisabled(), "booked day is not actionable");
     // The answer comes first, in words, under the name.
-    await p.getByText(/^Next opening /).waitFor();
+    await p.getByText(/^First open night: /).waitFor();
     // A month we couldn't read: no day is called booked, and the page says why.
     const next = p.getByRole("button", { name: "Next month" });
     await next.click();
@@ -525,7 +525,7 @@ try {
     await p.getByRole("link", { name: "Resubscribe to watch" }).waitFor();
     await p.getByRole("radio", { name: "Subscriber", exact: true }).click();
     await p.getByText("3 watches running, 1 paused").waitFor();
-    for (const tag of ["1 site open", "In your cart", "8 AM hold: Site 046", "Paused"]) await p.getByText(tag).first().waitFor();
+    for (const tag of ["1 site open", "Site 042 in your cart", "8 AM hold: Site 046", "Paused"]) await p.getByText(tag).first().waitFor();
     // Every status carries a shape of its own, not just a colour (the owner is colour-blind);
     // only the provider label goes without one.
     const statuses = p.locator("main span.rounded-ch-tag").filter({ hasText: /\S/ });
@@ -554,7 +554,7 @@ try {
     // Auto-cart signed out: the hit card stops claiming a cart, and the running one says why.
     await p.getByLabel("Auto-cart connection").selectOption("disconnected");
     await p.getByText("Not carted — reconnect auto-cart").waitFor();
-    assert.equal(await p.getByText(/In your cart$/).count(), 0, "no cart claim without the connection");
+    assert.equal(await p.getByText(/in your cart$/i).count(), 0, "no cart claim without the connection");
     assert.equal(await p.getByRole("link", { name: "Check out on Recreation.gov" }).count(), 0, "no checkout without a cart");
     assert.equal(await northPines.getAttribute("data-state"), "warn", "signed out needs you, so it's the warning card");
     await p.getByRole("link", { name: "Reconnect Recreation.gov" }).waitFor();
@@ -699,7 +699,7 @@ try {
     assert.equal(await p.getByText("Free for 7 days", { exact: false }).count(), 0);
     await p.goto(`${GH}/pricing?as=member&lookup=failed&checkout=fails`);
     await p.getByText("We couldn't check your current plan just now.").waitFor();
-    await p.getByRole("button", { name: "$10 / month" }).click();
+    await p.getByRole("button", { name: "7 days free, then $10/mo" }).click();
     await p.getByRole("alert").filter({ hasText: "Nothing was charged" }).waitFor();
     // The app: the store's paywall, with Restore purchases and the renewal terms.
     await p.goto(`${GH}/pricing?as=app`);
@@ -754,7 +754,7 @@ try {
     await p.getByText("across 4 states, on Recreation.gov and the state park reservation systems we read", { exact: false }).waitFor();
     // Hardest to book: CampHawk's pick, not a ranking — no "#1", no percentages.
     await p.goto(`${GH}/camping/hardest-to-book`);
-    await p.getByText("This is our own pick of famously oversubscribed national-park campgrounds, not a measured ranking.").waitFor();
+    await p.getByText("This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking.").waitFor();
     assert.doesNotMatch(await p.locator("main").innerText(), /#\d|\d%/);
     assert.equal(await p.getByRole("heading", { level: 2 }).first().innerText(), "Yosemite National Park");
     // Comparison: no table, no competitor price; in the app, no price at all.

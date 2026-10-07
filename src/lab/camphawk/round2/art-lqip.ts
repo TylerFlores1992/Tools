@@ -16,7 +16,6 @@ export const LQIP: Record<string, string> = {
   "c3-river-dusk": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAQAgCdASoQABAAA4BaJYwCdAC9W/hGgJQAAP5NDbJLNzX4bzvs3h9JQHvCyvZyzxBlOoKJauqsoDPyAAA=",
   "e1-explore-wide": "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACwAQCdASoQAAYAA4BaJQBOgCHfFf2SAP7s4VtQycwDUS8MXwYXElllacgywXAA",
   "e2-map": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAQCdASoQAAkAA4BaJZQCdAEDXtGXScAA/o8K3yG672a+oaJ4pJySJihRe+77GJ5u3uFe1VoAAA==",
-  "g1-sitepost-wide": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAADwAQCdASoQAAcAA4BaJYwCdADhfpKLHoAA/ve9u2UfQiqul9zi/6yA36LG0YBuwzbPi/z0AAA=",
   "k1-halfdome-wide": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAgCdASoQAAcAA4BaJQBOgCBj54m+Py2AAP4WZ7bDbsB+Q2Rm+B/OdKui0e+2tF3FC1p956tKkj1V7QAAAA==",
   "m1-coast-wide": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADQAQCdASoQAAcAA4BaJQBOgCPbGI/+wAD+8ahTC8rDhgGKZkaVCei4AXbE4+FxQk4AAA==",
   "n1-newwatch-wide": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAcAA4BaJYwCdAEefr1mfgPgAP7zU9CTPEdLWZd8oQVMWnVt/JOS82L8kJUMAAA=",

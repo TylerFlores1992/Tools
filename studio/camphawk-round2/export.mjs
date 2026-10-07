@@ -28,10 +28,9 @@ const PICKS = [
   ["v1-fork-wide", "v1-fork-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
   ["s1-ranger-wide", "s1-ranger-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
   // Round 6 (2026-10-06): bands for the pages that had none, cut from earlier unused generations
-  // (no new images bought): the Half Dome face for Hardest to book, the numbered site post for
-  // the auto-cart guide, a lone tent in the pines for Settings.
+  // (no new images bought): the Half Dome face for Hardest to book, a lone tent in the pines for
+  // Welcome.
   ["k1-halfdome-wide", "c4-cliff-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [2048, 1440, 828]],
-  ["g1-sitepost-wide", "a3-site-post-bfl_flux_pro_1_1_ultra-1.jpeg", [2048, 1440, 828]],
   ["t1-tent-wide", "a3-site-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1856, 1440, 828]],
 ];
 
@@ -44,7 +43,6 @@ const PICKS = [
 const TUNE = {
   "c2-site-dusk": { lift: 0.78 },
   "k1-halfdome-wide": { band: 0.42 },
-  "g1-sitepost-wide": { band: 0.5 },
   "t1-tent-wide": { band: 0.62 },
   "e1-explore-wide": { letterbox: true },
   "e2-map": { soften: 0.45 },
@@ -123,7 +121,7 @@ async function cutout(file) {
 // toward the hero's teal-blue (205°) and their saturation cut to 62%; warm light (lamps, fire,
 // tents) is left as painted, so it stays the one warm note. A gentle shadow lift (v^0.92) opens
 // the near-black. Paintings, the map and the badge are not photos and skip it.
-const PHOTO = /^(a|c|e1|n1|w1|m1|p1|v1|s1|k1|g1|t1)\d?-/;
+const PHOTO = /^(a|c|e1|n1|w1|m1|p1|v1|s1|k1|t1)\d?-/;
 function grade(data, channels = 3, { hue = 205, pull = 0.55, sat = 0.62, lift = 0.92 } = {}) {
   for (let i = 0; i < data.length; i += channels) {
     const r = data[i] / 255, g = data[i + 1] / 255, b = data[i + 2] / 255;

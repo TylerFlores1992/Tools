@@ -262,7 +262,7 @@ export function NewWatch() {
       </LabBar>
 
       <main id="main">
-        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We check it every 15 seconds until a site opens." photo={<BandPhoto art={ART.n1} pos="80% 60%" posLg="50% 52%" />} />
+        <AppBand visitor={visitor} current="new" title="New watch" sub="Pick a booked campground and the nights you want. We check it every 15 seconds until a site opens." photo={<BandPhoto art={ART.n1} pos="80% 45%" posLg="50% 34%" />} />
         <div className="relative mx-auto -mt-[var(--gh-dock)] grid max-w-[var(--gh-max)] items-start gap-6 px-5 pb-[clamp(40px,6vw,80px)] sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
           <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="min-w-0 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-pop sm:p-7">
             {/* Keeps the outline in order (h1, then h2 before the panels' h3s). */}
@@ -332,9 +332,9 @@ export function NewWatch() {
             {/* An empty box gets a start: the campgrounds people watch most, one tap to pick. */}
             {!chosen && !shown && !q.trim() && (
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-[14px] text-ch-ink-2">Often watched:</span>
+                <span className="w-full text-[14px] text-ch-ink-2">Often watched</span>
                 {OFTEN_WATCHED.map((id) => PICKABLE.find((p) => p.id === id)!).map((p) => (
-                  <button key={p.id} type="button" onClick={() => pick(p)} className="inline-flex min-h-11 cursor-pointer items-center rounded-ch-chip border border-ch-line bg-ch-card px-4 text-[15px] font-bold text-ch-ink hover:border-ch-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">{p.name}</button>
+                  <button key={p.id} type="button" onClick={() => pick(p)} className="inline-flex min-h-11 cursor-pointer items-center rounded-ch-chip border border-ch-line bg-ch-card px-3.5 text-[14px] font-semibold text-ch-ink hover:border-ch-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">{p.name}</button>
                 ))}
               </div>
             )}
@@ -480,7 +480,7 @@ export function NewWatch() {
                 </p>
                 <ol className="mt-3">
                   {[
-                    ["Pick the campground", "Search by name in the box. Your favorites show up when you tap it."],
+                    ["Pick the campground", "Search by name in the box, or tap one of the campgrounds people often watch."],
                     ["Choose your nights", "Exact dates, or Flexible: how many nights you need, anywhere in a range. Flexible catches far more cancellations."],
                     ["Start watching", "Then close the app. We'll find you when something opens, and on Recreation.gov we can put the site straight in your cart."],
                   ].map(([title, sub], i) => (
