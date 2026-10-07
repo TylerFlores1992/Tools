@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-06 (CampHawk lab: five fix rounds toward a 10 — status marks, one vocabulary, layout; critic 6.5 → 8.0. PR #16 merged on the owner's word).*
+*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–14 took critics from 8.0 to a flat 8.6; then the owner chose option 1, a rework of the catalog and setup templates. Branch `ccr-c1332bd1-j9qtgp`, not yet in a PR).*
 
 ## At a glance
 
@@ -29,7 +29,7 @@ password (`LAB_PASSWORD`). Vercel preview links for a branch can't sign in: `LAB
 for Production only, and the sign-in fails closed without it. To review a branch before merging,
 add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Variables) and redeploy.
 
-**Checks, all green:** `npm run verify` (120 tests) · `npm run e2e` (32 browser checks) ·
+**Checks, all green:** `npm run verify` · `npm run e2e` (32 browser checks; the lab's typography and US-spelling scans and the signed-out-tabs check are new this round) ·
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (26 checks, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
@@ -45,6 +45,16 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
    app too.
 
 ## Next up (in order)
+0. **CampHawk lab: rounds 6–15 on `ccr-c1332bd1-j9qtgp`** (pushed, no PR yet; PR #16 is merged
+   and done). Critics sat at 8.55–8.65 for six rounds of small fixes, so the owner picked "option
+   1": rework the weakest templates. Done 2026-10-07: plain bands carry two or three numbers from
+   the data (`facts` on `LabPage`); state, site-type and hub pages use `CatalogLayout` (lead and list
+   in one column, sticky "Narrow it down" card); Always booked shares it; Welcome is a plain band, a
+   700px setup column and the example alert beside it. Round-15 critic scores: see
+   `docs/design/camphawk-home.md`. Open a PR when the owner asks; merge only on their word.
+   **For the owner, from CampHawk's real Privacy Policy** (flagged in a lab note, not reworded): it
+   says email alerts can be turned off (the product keeps email always on), and it doesn't mention
+   the saved Recreation.gov login auto-cart keeps.
 1. **CampHawk lab: fix rounds are merged** (PR #16, 2026-10-06). Five critic/audit rounds took the
    lab from 6.5 to 8.0. What changed and what's still open: `docs/design/camphawk-home.md`, "Fix
    rounds: toward a 10". The open list is the next lab work, if the owner wants it.

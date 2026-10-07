@@ -373,6 +373,25 @@ book as cards and a ranked list. Watches: holds you asked for first; cart tag na
 earlier outputs (no spend). r1 (California) and g1 (auto-cart) were tried and removed: the title
 fell to 1.8:1 and 2.99:1 over bright sky, and `object-position` can't move a full-width image.
 
+## Option 1: the catalog and setup templates, reworked (2026-10-07)
+Six rounds of small fixes held at 8.55–8.65: each fresh pair of critics found a new set of nits,
+and some contradicted the last (counts on cards, the Auto-cart chip). The owner chose a rework of
+the weakest templates over more rounds or paid photos.
+- **Numbers in the band.** `LabPage`/`AppBand` take `facts`: two or three numbers from the data
+  beside a plain band's title (under it on phones, hairlines between). California: 875 tracked,
+  300 towns, 2 booking systems; the hub, site-type and site-type-state pages likewise.
+- **`CatalogLayout`** (`round2/pages/Camping.tsx`): lead and list in one column, a sticky card
+  beside it: search, then "Narrow it down" links (site types, related guides). It replaced the
+  lead + link line + button stack and the two promo cards. On phones the card follows the list,
+  and drops its search button where the page already ends with one.
+- **Always booked** uses the same frame; its card holds the counts (28 campgrounds, 18 parks and
+  seashores), the "our own pick, not a ranking" note, search and next reads. No percentages on
+  this page (an e2e guard).
+- **Welcome**: plain band (t1, the tent, was soft at desktop and is now unused), the setup column
+  capped at 700px, and beside it the alert you're setting up (`AlertCard`, shared with home) and
+  what happens next.
+- California's site-type sample now takes 2, 3 or 1 campgrounds a town in turn.
+
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no
   accent word in the headline. Risk: the dark-hero category default. It is mitigated by the
