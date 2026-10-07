@@ -192,7 +192,7 @@ export function SoldOutGuide() {
 
           <H2 id="windows">First: check whether it’s sold out, or just not open yet</H2>
           <P>These are different problems and they look identical on the booking page. Most parks sell a rolling window — Recreation.gov and ReserveCalifornia both open reservations six months ahead — so a date beyond that window shows nothing available because nothing has been released, not because anyone booked it.</P>
-          <P>If that’s your situation, you don’t need a cancellation at all. You need to be there when the window opens, which happens at a fixed local time and is over in seconds. We have measured ReserveCalifornia&apos;s 8 AM Pacific release to the second: sites flip from locked to bookable within a couple of seconds either side of 8:00:00.</P>
+          <P>If that’s your situation, you don’t need a cancellation at all. You need to be there when the window opens, which happens at a fixed local time and is over in seconds. ReserveCalifornia&apos;s booking window opens at 8 AM Pacific, and we&apos;ve measured it to the second: new dates flip from locked to bookable within a couple of seconds of 8:00:00. Its cancellations are released at that same 8 AM, which is what an <A href={ROUTES.autoCart} visitor={visitor}>8 AM hold</A> is for.</P>
 
           <H2 id="cancellations">Why sites come back at all</H2>
           <P>Three things, and they behave differently:</P>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import type { ReactNode } from "react";
 import { buttonClasses } from "../../ui";
 import { CAMPGROUNDS_ROUNDED, PLAN_PRICE, dollars, pricePhrase, priceShort } from "../../data";
@@ -62,7 +63,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
             </Q>
             <Q q="ReserveCalifornia sites are held at the 8 AM release">
               California cancellations mostly don&apos;t go back on sale straight away — they are locked until the next morning&apos;s release, when everybody refreshes at once. CampHawk spots the site the night before, offers to be there, and carts it within a couple of seconds of it freeing, then hands it to you.{" "}
-              <span className="text-[15px]">{HOLD_BETA_NOTE}</span>
+              <span className="mt-3 flex items-start gap-2.5 border-t border-ch-line pt-3 text-[15px]"><Info aria-hidden="true" className="mt-0.5 size-4.5 shrink-0 text-ch-ink" /><span>{HOLD_BETA_NOTE}</span></span>
             </Q>
             <Q q={`Checks every ${CHECK_SECONDS} seconds`}>Not a sweep every few minutes: every watched campground is rechecked every {CHECK_SECONDS} seconds, around the clock, which is what makes carting within seconds possible at all.</Q>
             <Q q="Flexible dates, and per-site muting">Watch for &ldquo;any two nights in this window&rdquo; rather than one fixed range — which, on a popular weekend, is usually the difference between getting something and getting nothing. And if one loop keeps opening and you don&apos;t want it, mute that site instead of the whole campground.</Q>

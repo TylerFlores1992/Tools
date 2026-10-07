@@ -69,6 +69,9 @@ function MuteSites({ w }: { w: ManageWatch }) {
   );
 }
 
+/** "Aug 1" + 2 nights → "Aug 1–3", the stay format the offer page and the asked holds use. */
+const stayFrom = (from: string, nights: number) => { const [m, d] = from.split(" "); return `${m} ${d}–${Number(d) + nights}`; };
+
 const navLink = "inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-ch-ink underline-offset-[3px] hover:underline focus-visible:underline";
 
 export function Manage() {
@@ -239,7 +242,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               <li key={o.unit} className="flex flex-wrap items-center gap-3 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-bold text-ch-ink">{o.unit}</span>
-                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{o.nights} nights from {o.from}</span>
+                  <span className="mt-0.5 block text-[14px] text-ch-ink-2">{stayFrom(o.from, o.nights)}, {o.nights} nights</span>
                 </span>
                 <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, "subscriber")} aria-label={`Hold it for me: ${o.unit}`} className={buttonClasses({ size: "sm", className: "min-h-11 px-5" })}>Hold it for me</Link>
               </li>
@@ -254,7 +257,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       <div className="grid content-start gap-5 lg:sticky lg:top-6">
       <MuteSites w={w} />
       {w.alerts.length > 0 && (
-        <Collapsible label="Alerts sent" summary={`${w.alerts.length} sent`}>
+        <Collapsible label="Alerts sent" summary={`${w.alerts.length}`}>
           <ul>
             {w.alerts.map((a, i) => (
               <li key={i} className="border-b border-ch-line py-2.5 last:border-b-0">
