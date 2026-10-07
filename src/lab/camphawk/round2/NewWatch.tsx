@@ -10,13 +10,14 @@ import { LabBar } from "../LabBar";
 import { Collapsible } from "../ui/Collapsible";
 import { DatePicker, type DateRange } from "../ui/DatePicker";
 import { NightsPicker } from "../ui/NightsPicker";
+import { Chip } from "../ui/Chip";
 import { RadioChips } from "../ui/RadioChips";
 import { addDays, formatRange, nightsBetween, thisWeekendRange, todayISO, type ISODate } from "../ui/date";
 import { ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, type Plan } from "./AppParts";
 import { FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { accountGate, ROUTES } from "./gates";
-import { TRIAL_DAYS } from "./pages/tier2-data";
+import { HOLD_BETA_LABEL, HOLD_BETA_NOTE, TRIAL_DAYS } from "./pages/tier2-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import { bookableParts, FAVORITE_IDS, findCampgrounds, pickable, PICKABLE, sitesFor, type Division, type Pickable } from "./newwatch-data";
@@ -334,7 +335,7 @@ export function NewWatch() {
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="w-full text-[14px] text-ch-ink-2">Often watched</span>
                 {OFTEN_WATCHED.map((id) => PICKABLE.find((p) => p.id === id)!).map((p) => (
-                  <button key={p.id} type="button" onClick={() => pick(p)} className="inline-flex min-h-11 cursor-pointer items-center rounded-ch-chip border border-ch-line bg-ch-card px-3.5 text-[14px] font-semibold text-ch-ink hover:border-ch-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green">{p.name}</button>
+                  <Chip key={p.id} size="sm" onClick={() => pick(p)}>{p.name}</Chip>
                 ))}
               </div>
             )}
@@ -427,10 +428,10 @@ export function NewWatch() {
               <div className={cx(panel, "mt-6")}>
                 <p className="flex flex-wrap items-baseline gap-x-2">
                   <span className="text-[15px] font-bold text-ch-ink">We can hold a site at the 8 AM release</span>
-                  <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">Beta</span>
+                  <span className="rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-bold text-ch-ink-2">{HOLD_BETA_LABEL}</span>
                 </p>
                 <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. The night before, we&apos;ll tell you which site is opening and offer to cart it the second it does — you decide then, site by site. Nothing to switch on here.</p>
-                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">8 AM holds are in beta. They have worked on real releases and can still miss — set an alarm for the release time and be ready to book it yourself.</p>
+                <p className="mt-1.5 text-[14px] leading-normal text-ch-ink-2">{HOLD_BETA_NOTE}</p>
               </div>
             )}
             {canRcHold && offer === "upsell" && (

@@ -48,7 +48,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
         </div>
       </div>
       {/* Phone: the three tabs as a quiet row under the brand. */}
-      <nav aria-label="Main" className="mx-auto flex max-w-[var(--gh-max)] gap-1 px-3 md:hidden">
+      <nav aria-label="Main" className="mx-auto flex max-w-[var(--gh-max)] gap-1 px-5 sm:px-8 md:hidden">
         {TABS.map((t) => (
           <Link key={t.tab} href={withVisitor(t.href, visitor)} aria-current={current === t.tab ? "page" : undefined} className={cx("flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-[10px] text-[13.5px] font-bold hover:bg-ch-white/10", current === t.tab ? "bg-ch-white/10 text-ch-white underline decoration-2 underline-offset-[5px]" : "text-ch-line")}>
             {t.label}

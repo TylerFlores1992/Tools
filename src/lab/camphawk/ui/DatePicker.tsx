@@ -137,7 +137,7 @@ export function DatePicker({
       >
         <span className="min-w-0 flex-1">
           <span className="sr-only">{label}: </span>
-          <span className={cx("block font-ch-display text-[16px] font-bold", rangeLabel ? "text-ch-ink" : "text-ch-muted")}>{rangeLabel ?? placeholder}</span>
+          <span className={cx("block text-[16px]", rangeLabel ? "font-ch-display font-bold text-ch-ink" : "font-ch-body font-semibold text-ch-ink-2")}>{rangeLabel ?? placeholder}</span>
           <span className="mt-0.5 block text-[13px] text-ch-muted">{metaLine}</span>
         </span>
         <ChevronDown aria-hidden="true" className={cx("size-4 shrink-0 text-ch-muted transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} />

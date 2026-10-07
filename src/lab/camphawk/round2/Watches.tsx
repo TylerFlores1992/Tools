@@ -218,7 +218,7 @@ function Panel({ children }: { children: React.ReactNode }) {
 function AccountWall({ visitor }: { visitor: Visitor }) {
   return (
     <Panel>
-      <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-ink">Watches need an account</h2>
+      <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Watches need an account</h2>
       <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">Searching stays free. Watches run on our servers around the clock, so they&apos;re tied to your account.</p>
       <Steps icons={[Eye, Bell, ShoppingCart]} steps={[
         [`Up to ${WATCH_LIMIT} watches at once`, "One for each campground and set of dates."],
@@ -240,7 +240,7 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
 function FirstRun({ visitor }: { visitor: Visitor }) {
   return (
     <Panel>
-      <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-ink">No watches yet</h2>
+      <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">No watches yet</h2>
       <p className="mt-2 max-w-[52ch] text-[16px] leading-relaxed text-ch-ink-2">A watch keeps checking a booked campground for you and tells you the moment someone cancels.</p>
       <Steps steps={[
         ["Pick a campground and your nights", "Exact dates, or how many nights you need inside a month you're free."],

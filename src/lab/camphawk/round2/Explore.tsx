@@ -108,9 +108,6 @@ function FirstRun({ visitor }: { visitor: Visitor }) {
   return (
     <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-7">
       <h2 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">How search works</h2>
-      <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">
-        Explore checks live availability at {CAMPGROUNDS_ROUNDED} campgrounds, from national forests to state and provincial parks, and shows you what&apos;s bookable right now.
-      </p>
       {/* Wide screens: the three steps side by side, so the card has no dead half. */}
       <ol className="mt-4 max-w-[56ch] xl:mt-6 xl:grid xl:max-w-none xl:grid-cols-3 xl:gap-6">
         {steps.map(([title, sub], i) => (
@@ -506,7 +503,7 @@ export function Explore() {
             {results !== null && searched && !loading && (
               <>
                 <div className="mb-4">
-                  <h2 className="font-ch-display text-[clamp(24px,2.4vw,30px)] font-extrabold tracking-[-.02em] text-ch-ink">
+                  <h2 className="font-ch-display text-[clamp(24px,2.4vw,30px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">
                     {openCount > 0 ? `${openCount} campground${openCount === 1 ? "" : "s"} with openings` : `${results.length} campground${results.length === 1 ? "" : "s"} nearby`}
                   </h2>
                   <p className="mt-0.5 text-[15px] text-ch-ink-2">within {searched.radius} mi of {searched.place === "Near me" || searched.place === "My location" ? `you (${ORIGIN})` : searched.place}</p>

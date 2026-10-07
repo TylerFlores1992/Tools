@@ -214,7 +214,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
       )}
 
       {requested.length > 0 && (
-        <section aria-labelledby="grab" className="rounded-ch-card border border-l-4 border-ch-line border-l-ch-ochre bg-ch-card p-5 shadow-ch-card">
+        <section aria-labelledby="grab" className="rounded-ch-card border border-l-4 border-ch-line border-l-ch-ochre bg-ch-card py-5 pl-[17px] pr-5 shadow-ch-card">
           <h2 id="grab" className="font-ch-display text-[19px] font-extrabold text-ch-ink">Holds you asked for</h2>
           <ul className="mt-2 divide-y divide-ch-line">
             {requested.map((r) => (

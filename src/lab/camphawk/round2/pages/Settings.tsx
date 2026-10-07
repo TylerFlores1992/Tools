@@ -298,7 +298,7 @@ export function Settings() {
           return (
             <div className="grid overflow-hidden rounded-ch-card border border-ch-line bg-ch-card shadow-ch-pop lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               <div className="p-6 sm:p-10">
-                <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold tracking-[-.02em] text-ch-ink">Settings need an account</h2>
+                <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Settings need an account</h2>
                 <p className="mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they&apos;re tied to your account. Searching stays free either way.</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   <Link href={withVisitor(ROUTES.signIn, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign in</Link>
@@ -337,7 +337,7 @@ export function Settings() {
             ) : (
               <Section id="s-reach" title="How we reach you" blurb="When a site opens up we send every channel you've turned on, at once. Whichever gets to you first wins.">
                 <Box icon={<Mail className="size-5" />} title="Email" status={<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag>}>Every opening we find goes to {EMAIL}.</Box>
-                <Box icon={<Bell className="size-5" />} title="Push notifications" status={<Tag kind="paused" mark="not-set-up" srPrefix="Status:">In the app only</Tag>}>Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
+                <Box icon={<Bell className="size-5" />} title="Push notifications" status={<Tag kind="paused" mark="not-set-up" srPrefix="Status:">App only</Tag>}>Install CampHawk on your phone and sign in, and alerts arrive there as notifications too.</Box>
                 <SmsAlerts key={sms} start={sms} visitor={visitor} />
               </Section>
             )}

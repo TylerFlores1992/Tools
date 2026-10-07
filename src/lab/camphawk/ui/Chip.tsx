@@ -8,18 +8,19 @@ import { HIT_AREA } from "./hit";
 // selected is forest with a tick, not green (CampHawk tints it green, but a filter isn't an open
 // site), so it reads by shape as well as tone.
 export interface ChipProps extends Omit<ComponentPropsWithRef<"button">, "aria-pressed" | "aria-checked"> {
+  /** Leave unset for a plain action chip (a one-tap pick): no pressed or checked state at all. */
   selected?: boolean;
   size?: "sm" | "md";
 }
 
-export function Chip({ selected = false, size = "md", className, type = "button", role, children, ...rest }: ChipProps) {
+export function Chip({ selected, size = "md", className, type = "button", role, children, ...rest }: ChipProps) {
   const radio = role === "radio";
   return (
     <button
       type={type}
       role={role}
       aria-pressed={radio ? undefined : selected}
-      aria-checked={radio ? selected : undefined}
+      aria-checked={radio ? Boolean(selected) : undefined}
       className={cx(
         "inline-flex items-center justify-center rounded-ch-chip border font-ch-body cursor-pointer transition-colors",
         HIT_AREA,

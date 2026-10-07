@@ -1,5 +1,6 @@
 "use client";
 
+import { HOLD_BETA_NOTE, HOLD_BETA_LABEL } from "./pages/tier2-data";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
@@ -79,8 +80,8 @@ export function Facts({ rows }: { rows: ReadonlyArray<readonly [string, ReactNod
 export function BetaNote({ className }: { className?: string }) {
   return (
     <p className={cx("flex items-start gap-2 text-[14px] leading-relaxed text-ch-ink-2", className)}>
-      <span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">Beta</span>
-      <span>8 AM holds are in beta. They have worked on real releases, and can still miss — set an alarm for the release time and be ready to book it yourself.</span>
+      <span className="mt-0.5 shrink-0 rounded-full bg-ch-shell px-2 py-0.5 text-[12px] font-extrabold text-ch-ink-2">{HOLD_BETA_LABEL}</span>
+      <span>{HOLD_BETA_NOTE}</span>
     </p>
   );
 }

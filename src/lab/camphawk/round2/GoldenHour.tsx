@@ -201,7 +201,11 @@ export function GoldenHour() {
 
         <section className="bg-ch-paper">
           <div className="mx-auto grid max-w-[var(--gh-max)] gap-x-14 gap-y-3 px-5 py-[clamp(48px,6vw,72px)] sm:px-8 lg:grid-cols-2">
-            <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink lg:pt-3">What we don&apos;t do</h2>
+            {/* A lead under the heading, so the left column isn't one line beside a list. */}
+            <div className="lg:pt-3">
+              <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-bold leading-tight tracking-[-.02em] text-ch-ink">What we don&apos;t do</h2>
+              <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you&apos;re paying for before you pay.</p>
+            </div>
             <ul className="max-w-[64ch] border-t border-ch-line">
               {LIMITS.map((line) => (
                 <li key={line} className="border-b border-ch-line py-3.5 text-[16px] leading-relaxed text-ch-ink-2">{line}</li>

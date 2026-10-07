@@ -15,7 +15,7 @@ import { ROUTES } from "../gates";
 import { A, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
-import { HOLD_MINUTES, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
+import { HOLD_BETA_NOTE, HOLD_MINUTES, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
 // StorePaywall.tsx, RcHoldExplainer.tsx). The one place that sells. What it keeps on purpose:
@@ -215,7 +215,7 @@ function HoldExplainer() {
             <p>When somebody cancels a ReserveCalifornia booking, the site usually doesn&apos;t go back on sale straight away. It&apos;s released at 8 AM the next morning, and it can be gone in seconds. Because we can see the release time the night before, we can tell you what&apos;s coming and offer to be there when it opens.</p>
             <p className="mt-4 flex items-start gap-2.5 border-t border-ch-line pt-4">
               <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ch-ink" />
-              <span>{!RC_HOLD_OPEN && <><strong className="text-ch-ink">Invite-only for now.</strong> 8 AM holds go to a small group of beta accounts while we make them more reliable, and everyone&apos;s ReserveCalifornia watches still alert as usual. </>}Holds have worked on real releases and can still miss, so set an alarm for the release time and be ready to book it yourself.</span>
+              <span>{HOLD_BETA_NOTE} Everyone&apos;s ReserveCalifornia watches still alert as usual.</span>
             </p>
             <div className="lg:hidden">{RC_HOLD_OPEN ? steps : <Collapsible label="How a hold works" className="mt-5">{steps}</Collapsible>}</div>
             <p className="mt-5 text-[15px]">ReserveCalifornia parks only. On Recreation.gov, auto-cart is open to every Auto-Cart subscriber: connect once and openings go straight into your cart.</p>
@@ -264,7 +264,10 @@ export function PricingPage() {
           {/* The limits read as three plain statements on paper, as on the home page: not a
               third card stretched to match the hold card's height. */}
           <section aria-labelledby="dont" className="mt-4 grid gap-x-10 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-            <h2 id="dont" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold tracking-[-.02em] text-ch-forest">What we don&apos;t do</h2>
+            <div>
+              <h2 id="dont" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-forest">What we don&apos;t do</h2>
+              <p className="mt-2 max-w-[36ch] text-[16px] leading-relaxed text-ch-ink-2">The limits, plainly, so you know what you&apos;re paying for before you pay.</p>
+            </div>
             <ul className="border-t border-ch-line">
               {LIMITS.map((l) => <li key={l} className="border-b border-ch-line py-3.5 text-[17px] leading-relaxed text-ch-ink-2">{l}</li>)}
             </ul>

@@ -100,7 +100,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
   const [checked, setChecked] = useState(false);
   const [busy, setBusy] = useState(false);
   const [tried, setTried] = useState(false);
-  const missing = [!email && "enter your email", !password && "enter your password", !checked && "tick the box"].filter(Boolean) as string[];
+  const missing = [!email && "enter your email", !password && "enter your password", !checked && "check the box"].filter(Boolean) as string[];
   const field = "min-h-12 w-full rounded-ch-input border border-ch-line bg-ch-paper px-4 text-[16px] text-ch-ink focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
   return (
     <form noValidate onSubmit={(e) => { e.preventDefault(); if (busy) return; if (missing.length) { setTried(true); document.getElementById(!email ? "rc-email" : !password ? "rc-pass" : "rc-check")?.focus(); return; } setBusy(true); window.setTimeout(onSignedIn, 900); }} className="grid gap-3">
@@ -117,7 +117,7 @@ function RcSignInForm({ onSignedIn }: { onSignedIn: () => void }) {
         <span>I have checked these are right. A wrong password can lock the ReserveCalifornia account, and we only get one go at this before the site is back on the open market.</span>
       </label>
       <button type="submit" disabled={busy} aria-describedby="rc-why" className={buttonClasses({ variant: "cart", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>{busy ? "Signing you in…" : "Sign in to ReserveCalifornia"}</button>
-      {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{missing.length === 1 && !checked ? "Tick the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
+      {missing.length > 0 && <p id="rc-why" role={tried ? "alert" : undefined} className={cx("text-center", tried ? "text-[14px] font-bold text-ch-ink" : "text-[13px] text-ch-ink-2")}>{missing.length === 1 && !checked ? "Check the box above to continue." : `To continue: ${missing.join(", ")}.`}</p>}
     </form>
   );
 }
@@ -218,7 +218,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
       )}
       {step2}
       {!ready && !canInject && (
-        <p className="mt-3 text-center text-[14px] text-ch-ink-2">Tick the box once you’re signed in and on the page — we won’t let go until then.</p>
+        <p className="mt-3 text-center text-[14px] text-ch-ink-2">Check the box once you’re signed in and on the page — we won’t let go until then.</p>
       )}
     </>
   );

@@ -97,7 +97,7 @@ export const CALIFORNIA: { towns: number; providers: string[]; groups: Town[] } 
 
 /** The hardest-to-book list: CampHawk's own pick, in its order (Yosemite first, on purpose). */
 export const HARD_TO_BOOK: Array<{ park: string; campgrounds: string[] }> = [
-  { park: "Yosemite National Park", campgrounds: ["Upper Pines", "Lower Pines", "North Pines", "Hodgdon Meadow", "Crane Flat", "Wawona"] },
+  { park: "Yosemite National Park", campgrounds: ["Upper Pines Campground", "Lower Pines Campground", "North Pines Campground", "Hodgdon Meadow Campground", "Crane Flat Campground", "Wawona Campground"] },
   { park: "Zion National Park", campgrounds: ["Watchman Campground"] },
   { park: "Arches National Park", campgrounds: ["Devils Garden Campground"] },
   { park: "Joshua Tree National Park", campgrounds: ["Black Rock Campground"] },

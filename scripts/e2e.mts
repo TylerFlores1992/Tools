@@ -612,7 +612,7 @@ try {
     await p.goto(`${GH}/claim?as=app`);
     await p.getByText("we let go so you can take it", { exact: false }).waitFor();
     assert.equal(await p.getByRole("button", { name: "It's mine — hand it over" }).count(), 0, "no release before sign-in");
-    await p.getByText("To continue: enter your email, enter your password, tick the box.").waitFor();
+    await p.getByText("To continue: enter your email, enter your password, check the box.").waitFor();
     await p.getByLabel("ReserveCalifornia email").fill("camper@example.com");
     await p.getByLabel("ReserveCalifornia password", { exact: true }).fill("not-a-real-password");
     await p.getByRole("checkbox").check();
@@ -680,7 +680,7 @@ try {
     assert.equal(await p.getByRole("checkbox", { name: /Email me/ }).count(), 0);
     // Pressing "Turn on text alerts" too early says what's missing and goes there.
     await p.getByRole("button", { name: "Turn on text alerts" }).click();
-    await p.getByRole("alert").filter({ hasText: "Enter your number and tick the box" }).waitFor();
+    await p.getByRole("alert").filter({ hasText: "Enter your number and check the box" }).waitFor();
     assert.equal(await p.evaluate(() => document.activeElement?.id), "sms-phone");
     assert.deepEqual(errors, []);
     await ctx.close();

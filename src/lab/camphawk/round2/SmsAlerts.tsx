@@ -126,7 +126,7 @@ export function SmsAlerts({ demo = false, start = "new", visitor, secondary = fa
           </button>
           {!busy && (demo || blocked) && (
             <p id="sms-why" role={tried ? "alert" : undefined} className={tried ? "mt-2 text-[14px] font-bold text-ch-ink" : "mt-2 text-[13px] text-ch-ink-2"}>
-              {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and tick the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Tick the box above to turn texts on."}
+              {demo ? "This is a preview of the form; nothing here is sent or saved." : missingNumber && !agreed ? "Enter your number and check the box to turn texts on." : missingNumber ? "Enter your mobile number to turn texts on." : "Check the box above to turn texts on."}
             </p>
           )}
         </div>

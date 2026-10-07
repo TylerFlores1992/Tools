@@ -5,7 +5,7 @@ import { Info } from "lucide-react";
 import { WatchCtaLink } from "../AppParts";
 import { ROUTES } from "../gates";
 import { A, ActionLink, Callout, CtaBand, H2, LabNote, LabPage, P, Prose, Steps, Ul, WithRail } from "../LabPage";
-import { CHECK_SECONDS, HOLD_MINUTES, OPENINGS_STAT, RC_HOLD_OPEN, SOURCE_COUNT, inWords, openingsPercent } from "./tier2-data";
+import { CHECK_SECONDS, HOLD_BETA_LABEL, HOLD_BETA_NOTE, HOLD_MINUTES, inWords, OPENINGS_STAT, openingsPercent, RC_HOLD_OPEN, SOURCE_COUNT } from "./tier2-data";
 
 // Tier 2: the three public guides (campsite-finder src/app/(app)/auto-cart,
 // campsite-cancellation-alerts, sold-out-campsite). Server pages in CampHawk, no account states,
@@ -38,7 +38,7 @@ function StatTile({ className }: { className?: string }) {
     <figure className={cx("mt-6 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:p-6", className)}>
       <div className="flex flex-wrap items-end gap-x-5 gap-y-2">
         <p className="font-ch-display text-[56px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{openingsPercent()}</p>
-        <p className="max-w-[40ch] pb-1 text-[16px] leading-snug text-ch-ink-2"><strong className="font-bold text-ch-ink">{OPENINGS_STAT.openings.toLocaleString("en-US")} came back</strong> out of {OPENINGS_STAT.checks.toLocaleString("en-US")} checks of a sold-out stay.</p>
+        <p className="min-w-[14rem] flex-1 pb-1 text-[16px] leading-snug text-ch-ink-2"><strong className="font-bold text-ch-ink">{OPENINGS_STAT.openings.toLocaleString("en-US")} came back</strong> out of {OPENINGS_STAT.checks.toLocaleString("en-US")} checks of a sold-out stay.</p>
       </div>
       <div aria-hidden="true" className="mt-5 flex h-3 overflow-hidden rounded-[4px] bg-ch-shell">
         {/* At least 4px, so the sliver is visible at every width. */}
@@ -62,15 +62,15 @@ function Disclaimer({ visitor }: { visitor: Parameters<typeof A>[0]["visitor"] }
 function HoldClosed() {
   if (RC_HOLD_OPEN) return null;
   return (
-    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />Invite-only for now</span>}>
-      For now, 8 AM holds go to a small group of beta accounts while we make them more reliable. Everyone&apos;s ReserveCalifornia watches still alert as usual. A hold has worked on real releases and can still miss, so set an alarm for 8 AM and be ready to book it yourself. Recreation.gov auto-cart isn&apos;t affected.
+    <Callout title={<span className="flex items-center gap-2"><Info aria-hidden="true" className="size-5 shrink-0" />{HOLD_BETA_LABEL}</span>}>
+      {HOLD_BETA_NOTE} Everyone&apos;s ReserveCalifornia watches still alert as usual, and Recreation.gov auto-cart isn&apos;t affected.
     </Callout>
   );
 }
 
 export function AutoCartGuide() {
   return (
-    <LabPage page="Auto-cart" title="Auto‑cart and 8 AM holds" dock={false}>
+    <LabPage page="Auto-cart" title="Auto‑cart and 8 AM holds" sub="On Recreation.gov we put the site in your cart. In California we hold it at the 8 AM release." dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["first", "What you need first"], ["recgov", "Recreation.gov"], ["rc", "ReserveCalifornia"], ["good-to-know", "Good to know"]]}>
         <Prose>
@@ -114,7 +114,7 @@ export function AutoCartGuide() {
           <H2 id="good-to-know">Good to know</H2>
           <Ul items={[
             <><strong className="text-ch-ink">Why California needs the hand-off.</strong> A ReserveCalifornia cart belongs to the browser session that made it — a second session on the same account reads that cart as empty. So we can’t simply cart a site and leave it for you the way Recreation.gov allows; we hold it, you take it over, and the gap between those two is about two seconds.</>,
-            <><strong className="text-ch-ink">Holds are California only.</strong> Of the state park systems CampHawk watches, {inWords(SAME_SOFTWARE.length + 1)} run on the same booking software — {SAME_SOFTWARE.slice(0, -1).join(", ")} and {SAME_SOFTWARE.at(-1)} alongside California — and <strong className="text-ch-ink">only ReserveCalifornia gets holds</strong>. For the others your alert carries a direct booking link: tap it on your phone and finish there. We would rather say so than offer a button we can’t honor.</>,
+            <><strong className="text-ch-ink">Holds are California only.</strong> Of the states CampHawk watches, {inWords(SAME_SOFTWARE.length + 1)} share one booking platform — {SAME_SOFTWARE.slice(0, -1).join(", ")} and {SAME_SOFTWARE.at(-1)} alongside California — and <strong className="text-ch-ink">only ReserveCalifornia gets holds</strong>. For the others your alert carries a direct booking link: tap it on your phone and finish there. We&apos;d rather say so than offer a button we can’t honor.</>,
             <><strong className="text-ch-ink">No standing setting on California, on purpose.</strong> A hold takes a real campsite off the market for everybody else watching it. That isn’t something to authorize weeks ahead in a settings screen, so it is authorized one release at a time, by you, the night before.</>,
             <><strong className="text-ch-ink">One grab per site.</strong> Once a specific site is carted for you, it won&apos;t be re-added — but a different site opening in the same campground still will.</>,
             <>This automates <em>your own</em> account for personal use. Keep your watches current so it knows what to grab.</>,
@@ -129,7 +129,7 @@ export function AutoCartGuide() {
 
 export function CancellationAlerts() {
   return (
-    <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" dock={false}>
+    <LabPage page="Cancellation alerts" title="Campsite cancellation alerts: how they work, and what actually differs" sub="What separates one service from another, with our own numbers." dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["how", "How they work"], ["speed", "How much speed matters"], ["free", "Check the free option first"], ["difference", "What still sets one apart"], ["checklist", "What to ask of any service"], ["start", "If you want to try ours"]]}>
         <Prose>
@@ -140,13 +140,12 @@ export function CancellationAlerts() {
           <P>The whole game is the loop interval and what happens next. A service checking every few minutes will genuinely find you openings on quiet campgrounds; on a contested one it will reliably tell you about a site somebody else has already taken.</P>
 
           <H2 id="speed">How much speed matters, in numbers</H2>
-          <P>Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour. {OPENINGS_STAT.checks.toLocaleString("en-US")} times, a check found a stay that had been fully booked an hour earlier; {OPENINGS_STAT.openings.toLocaleString("en-US")} of those times, about {openingsPercent()}, it had come back.</P>
-          <StatTile />
+          <P>Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour. {OPENINGS_STAT.checks.toLocaleString("en-US")} times, a check found a stay that had been fully booked an hour earlier; {OPENINGS_STAT.openings.toLocaleString("en-US")} of those times, about {openingsPercent()}, it had come back. <A href={ROUTES.soldOut} visitor={visitor}>The sold-out guide</A> has the full study and what it does and doesn&apos;t tell you.</P>
           <P>Rare, in other words, and then gone quickly. That’s why the interval is the specification worth reading and why “we check often” isn’t an answer. CampHawk rechecks every watched campground every {CHECK_SECONDS} seconds, continuously.</P>
 
           <H2 id="free">Check the free option first — we mean it</H2>
-          <P>Recreation.gov has had its own availability alerts since 2024. They are free, they cover every reservable Recreation.gov location, and you are limited to a few active alerts at a time. If your trip is a Recreation.gov campground and you are happy to race everyone else to the booking page, start there. You should not pay for something the booking system gives away.</P>
-          <P>There are free tiers elsewhere in this category too. It is worth ten minutes to check whether one covers you before paying anybody, including us.</P>
+          <P>Recreation.gov has had its own availability alerts since 2024. They are free, they cover every reservable Recreation.gov location, and you&apos;re limited to a few active alerts at a time. If your trip is a Recreation.gov campground and you&apos;re happy to race everyone else to the booking page, start there. You should not pay for something the booking system gives away.</P>
+          <P>There are free tiers elsewhere in this category too. It&apos;s worth ten minutes to check whether one covers you before paying anybody, including us.</P>
 
           <H2 id="difference">What still sets one apart</H2>
           <Steps steps={[
@@ -165,7 +164,9 @@ export function CancellationAlerts() {
           ]} />
 
           <H2 id="start">If you want to try ours</H2>
-          <P>Searching is free — you can check availability across all {sources} systems without an account. <A href={ROUTES.explore} visitor={visitor}>Search campgrounds</A>, and if it is booked out, <A href={ROUTES.soldOut} visitor={visitor}>here is what actually works</A>. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>the plans are here</A>.</P>
+          <P>Searching is free — you can check availability across all {sources} sources without an account. <A href={ROUTES.explore} visitor={visitor}>Search campgrounds</A>, and if it is booked out, <A href={ROUTES.soldOut} visitor={visitor}>here is what actually works</A>. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>the plans are here</A>.</P>
+          {/* Every guide ends the same way: one band, one action. */}
+          <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
           <Disclaimer visitor={visitor} />
           <LabNote className="mt-8">The openings study is CampHawk&apos;s real measurement, July 22 to September 4, 2026. The lab&apos;s example watches are dated as if today were July 6, so the two don&apos;t share a calendar.</LabNote>
         </Prose>
@@ -177,7 +178,7 @@ export function CancellationAlerts() {
 
 export function SoldOutGuide() {
   return (
-    <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." dock={false}>
+    <LabPage page="Sold-out guide" title="The campground is fully booked. Here's what actually works." sub="How often sold-out sites come back, measured, and how to be the one who books it." dock={false}>
       {({ visitor }) => (
         <WithRail toc={[["how-often", "How often sites come back"], ["windows", "Sold out, or not open yet?"], ["cancellations", "Why sites come back"], ["what-works", "What to actually do"], ["camphawk", "Where CampHawk fits"]]}>
         <Prose>
@@ -186,8 +187,8 @@ export function SoldOutGuide() {
           <H2 id="how-often" className="mt-12">How often does a sold‑out site actually come back?</H2>
           <P>We can answer this with our own data rather than a guess. Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour, and looked only at stays that had been fully booked at the previous check, so a stay that never sold out doesn&apos;t count.</P>
           <StatTile />
-          <P className="mt-4">That is the honest shape of it: on any given hour, almost certainly nothing. Over a few weeks of watching, quite often something. It is also why refreshing the booking page yourself is such poor odds — you would have to be looking during the one hour in a hundred that matters, and then be faster than everyone else looking too.</P>
-          <P className="mt-4 text-[15px]">That is a rate across a population of famously difficult campgrounds; your park will differ. We are not going to pretend it predicts yours.</P>
+          <P className="mt-4">That&apos;s the honest shape of it: on any given hour, almost certainly nothing. Over a few weeks of watching, quite often something. It&apos;s also why refreshing the booking page yourself is such poor odds — you&apos;d have to be looking during the one hour in a hundred that matters, and then be faster than everyone else looking too.</P>
+          <P className="mt-4 text-[15px]">That&apos;s a rate across a population of famously difficult campgrounds; your park will differ. We won&apos;t pretend it predicts yours.</P>
 
           <H2 id="windows">First: check whether it’s sold out, or just not open yet</H2>
           <P>These are different problems and they look identical on the booking page. Most parks sell a rolling window — Recreation.gov and ReserveCalifornia both open reservations six months ahead — so a date beyond that window shows nothing available because nothing has been released, not because anyone booked it.</P>
@@ -197,7 +198,7 @@ export function SoldOutGuide() {
           <P>Three things, and they behave differently:</P>
           <Ul items={[
             <><strong className="text-ch-ink">Someone cancels.</strong> Most common as the trip gets close and plans change, but we see them at every lead time — including months out.</>,
-            <><strong className="text-ch-ink">A held cart expires.</strong> Someone put the site in a cart and did not check out. It comes back automatically, often within about fifteen minutes.</>,
+            <><strong className="text-ch-ink">A held cart expires.</strong> Someone put the site in a cart and didn&apos;t check out. It comes back automatically, often within about fifteen minutes.</>,
             <><strong className="text-ch-ink">The park releases inventory.</strong> Sites held back for maintenance, group bookings or walk-ups get returned to the pool, sometimes in batches.</>,
           ]} />
           <P>All three produce the same thing from your side: a site that was gone is suddenly bookable, usually without warning and usually not for long.</P>
@@ -207,12 +208,12 @@ export function SoldOutGuide() {
             ["Widen the dates before you widen the park.", "A midweek night at the campground you want beats a Saturday at your third choice, and midweek openings are far easier to catch."],
             ["Set the alert and stop refreshing.", "Watching by hand is the part that doesn’t scale — see the numbers above."],
             ["Be ready to book in under a minute.", "Be signed in to the reservation site in advance, with your details saved. The gap between an alert and the site being gone is measured in minutes."],
-            ["Do not stop watching once the alert arrives.", "If somebody beats you to it, the same site frequently frees again."],
+            ["Don’t stop watching once the alert arrives.", "If somebody beats you to it, the same site frequently frees again."],
           ]} />
 
           <H2 id="camphawk">Where CampHawk fits</H2>
-          <P>We check every watched campground every {CHECK_SECONDS} seconds, across Recreation.gov, ReserveCalifornia and {otherStateSystems} other reservation systems in the US and Canada, and text, email or push you the moment a stay you asked for becomes bookable.</P>
-          <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — measured at about twelve seconds from the site opening to it being held for you{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That is the part a plain alert can’t do, because by the time you have read a text and opened an app, the fast people are already at checkout.</P>
+          <P>We check every watched campground every {CHECK_SECONDS} seconds, across Recreation.gov, ReserveCalifornia and {otherStateSystems} other sources in the US and Canada, and text, email or push you the moment a stay you asked for becomes bookable.</P>
+          <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — measured at about twelve seconds from the site opening to it being held for you{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That&apos;s the part a plain alert can’t do, because by the time you&apos;ve read a text and opened an app, the fast people are already at checkout.</P>
           <P>Searching is free. Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
           <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
           <Disclaimer visitor={visitor} />

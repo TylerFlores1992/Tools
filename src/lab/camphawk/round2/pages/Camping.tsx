@@ -81,12 +81,14 @@ function RegionGrid({ rows, href, visitor, caption }: { rows: Region[]; href: (r
 // family (round 8: a long run of bare link rows read as an SEO scaffold).
 function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; name: string; visitor: Visitor }) {
   return (
-    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    // Masonry columns (towns are alphabetical, so reading down a column is fine): equal-height grid
+    // rows left short towns with empty card bottoms beside Yosemite's seven.
+    <div className="mt-10 gap-4 sm:columns-2 lg:columns-3">
       {groups.map((g) => (
-        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="mb-4 break-inside-avoid rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
           <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
             <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
-            <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>
+            {g.campgrounds.length >= 3 && <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>}
           </h2>
           <ul className="mt-1">
             {g.campgrounds.map((n) => (
@@ -138,7 +140,7 @@ export function CampingHub() {
           </div>
           <div className="mt-10"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
-            <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold text-ch-forest">Camping in Canada</h2>
+            <h2 id="canada-h" className="font-ch-display text-[clamp(24px,2.6vw,30px)] font-extrabold leading-[1.15] text-ch-forest">Camping in Canada</h2>
             <p className="mt-2 max-w-[70ch] text-[17px] leading-relaxed text-ch-ink-2">{(total(PROVINCES) + UNPAGED.canada).toLocaleString("en-US")} bookable campgrounds in {COVERAGE.canadaRegions} of Canada&apos;s 13 provinces and territories — Parks Canada&apos;s national parks, plus {inWords(COVERAGE.canadianProvincialSystems)} provincial and territorial systems. These {inWords(PROVINCES.length)} have enough for a page of their own.</p>
             <div className="mt-5"><RegionGrid rows={PROVINCES} href={statePath} visitor={visitor} caption="The number beside each is how many campgrounds we track there." /></div>
           </section>
@@ -196,7 +198,7 @@ export function StatePage({ slug }: { slug: string }) {
 
 // Worded as the sold-out guide words it, from the source list: one of the 14 sources carries
 // Parks Canada and the provincial systems as well as four states, so "13 state systems" overcounts.
-const systems = (canada: boolean) => (canada ? `Recreation.gov and ${inWords(SOURCE_COUNT - 1)} other reservation systems in the US and Canada` : "Recreation.gov and the state park reservation systems we read");
+const systems = (canada: boolean) => (canada ? `Recreation.gov and ${inWords(SOURCE_COUNT - 1)} other sources in the US and Canada` : "Recreation.gov and the state park reservation systems we read");
 const places = (us: number, ca: number) => `${us} ${us === 1 ? "state" : "states"}${ca ? ` and ${ca} Canadian ${ca === 1 ? "province or territory" : "provinces and territories"}` : ""}`;
 
 export function TypeHub({ type }: { type: string }) {
@@ -219,13 +221,13 @@ export function TypeHub({ type }: { type: string }) {
           </div>
           {us.length > 0 && (
             <section aria-labelledby="by-state" className="mt-12">
-              <h2 id="by-state" className="mb-4 font-ch-display text-[clamp(22px,2.4vw,28px)] font-extrabold text-ch-forest">{hub.heading} by state</h2>
+              <h2 id="by-state" className="mb-4 font-ch-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.15] text-ch-forest">{hub.heading} by state</h2>
               <RegionGrid rows={us} href={(x) => `${ROUTES.camping}/${hub.slug}/${x.slug}`} visitor={visitor} caption={`The number beside each state is how many campgrounds with ${hub.noun} we track there.`} />
             </section>
           )}
           {ca.length > 0 && (
             <section aria-labelledby="in-canada" className="mt-12">
-              <h2 id="in-canada" className="mb-4 font-ch-display text-[clamp(22px,2.4vw,28px)] font-extrabold text-ch-forest">{hub.heading} in Canada</h2>
+              <h2 id="in-canada" className="mb-4 font-ch-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.15] text-ch-forest">{hub.heading} in Canada</h2>
               <RegionGrid rows={ca} href={(x) => `${ROUTES.camping}/${hub.slug}/${x.slug}`} visitor={visitor} caption={`The number beside each is how many campgrounds with ${hub.noun} we track there.`} />
             </section>
           )}
@@ -305,22 +307,20 @@ export function HardestToBook() {
             <p className="mt-4 max-w-[70ch] text-[15px] text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
             <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
           </div>
-          {/* One card per park, in CampHawk's order (Yosemite first), read across the rows so the
-              order survives: denser than CampHawk's single column of one-link sections. */}
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* One row per park, in CampHawk's order (Yosemite first), its campgrounds inline: a ranked
+              list reads top to bottom, and twelve one-link cards read as filler (round 9). */}
+          <ol className="mt-10 border-t border-ch-line">
             {HARD_TO_BOOK.map((p) => (
-              // A park with a long list (Yosemite's six) takes the full row, its list in columns, so
-              // it doesn't leave a hole beside it.
-              <li key={p.park} className={cx("rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card", p.campgrounds.length > 3 && "sm:col-span-2 lg:col-span-3")}>
-                <h2 className="font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
-                <ul className={cx("mt-1", p.campgrounds.length > 3 && "sm:grid sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3")}>
+              <li key={p.park} className="grid gap-x-8 gap-y-1 border-b border-ch-line py-3.5 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline">
+                <h2 className="font-ch-display text-[17px] font-extrabold leading-snug text-ch-ink">{p.park}</h2>
+                <ul className="flex flex-wrap gap-x-5">
                   {p.campgrounds.map((n) => (
-                    <li key={n} className={cx("border-b border-ch-line", p.campgrounds.length > 3 ? "last:border-b-0 sm:border-b-0 sm:border-t sm:[&:nth-child(-n+2)]:border-t-0 lg:[&:nth-child(3)]:border-t-0" : "last:border-b-0")}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
+                    <li key={n}><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
                   ))}
                 </ul>
               </li>
             ))}
-          </ul>
+          </ol>
           <p className="mt-10 text-[15px] text-ch-ink-2">Watching all {inWords(count)} isn’t the point — pick the one you actually want. <A href={ROUTES.camping} visitor={visitor}>Browse every state</A> for the other {CAMPGROUNDS_ROUNDED}.</p>
           <LabNote className="mt-12">The parks and their order are CampHawk&apos;s; the campground names are matched by hand to its Recreation.gov ids and may not be exact.</LabNote>
         </div>

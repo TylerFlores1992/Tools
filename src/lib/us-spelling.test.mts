@@ -8,7 +8,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const SRC = join(import.meta.dirname, "..");
-const BRITISH = /\b(colours?|favourite|behaviour|centre|metre(?!s? per)|organis(e|ed|ing|ation)|recognis(e|ed)|analys(e|ed)|licence|catalogue|grey|travelled|cancelled|cancelling|practise|maths)\b/i;
+const BRITISH = /\b(colours?|favourite|behaviour|centre|metre(?!s? per)|organis(e|ed|ing|ation)|recognis(e|ed)|analys(e|ed)|licence|catalogue|grey|travelled|cancelled|cancelling|practise|maths|tick the box)\b/i;
 
 const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
 
@@ -23,6 +23,7 @@ function files(dir: string): string[] {
 test("the detector catches British spellings and ignores US ones", () => {
   assert.ok(BRITISH.test("the colour of"));
   assert.ok(BRITISH.test("do the maths"));
+  assert.ok(BRITISH.test("Tick the box above"), "US forms say check the box");
   assert.ok(!BRITISH.test("the color of the math"));
 });
 

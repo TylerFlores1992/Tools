@@ -133,7 +133,8 @@ function Calendar({ visitor, id, months }: { visitor: Visitor; id: string; month
                 className={cx(
                   "flex aspect-square flex-col items-center justify-center rounded-[11px] text-[15px] font-semibold tabular-nums sm:aspect-auto sm:h-14 sm:text-[16px]",
                   isOpen && !on && "cursor-pointer bg-ch-green-soft font-bold text-ch-green-deep hover:bg-ch-green-soft-hover",
-                  isOpen && on && "cursor-pointer bg-ch-green font-bold text-ch-white",
+                  // Selected has its own shape too (a ring), not only a darker fill.
+                  isOpen && on && "cursor-pointer bg-ch-green font-bold text-ch-white ring-2 ring-ch-green ring-offset-2 ring-offset-ch-card",
                   isBooked && "cursor-default text-ch-muted line-through decoration-[1.5px]",
                   (isClosed || !known) && !isPast && "cursor-default text-ch-muted",
                   isPast && "cursor-default text-ch-faint",
