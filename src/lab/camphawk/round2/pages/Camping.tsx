@@ -10,7 +10,7 @@ import { CAMPGROUNDS_ROUNDED } from "../../data";
 import { ROUTES } from "../gates";
 import { A, LabNote, LabPage } from "../LabPage";
 import { withVisitor } from "../labState";
-import { CHECK_SECONDS, SOURCE_COUNT, inWords } from "./tier2-data";
+import { CHECK_SECONDS, SOURCES_LINE, inWords } from "./tier2-data";
 import {
   CALIFORNIA, COVERAGE, HARD_TO_BOOK, HUBS, PROVINCES, STATES, UNPAGED, hubBySlug, hubsIn, joinAnd, regionBySlug, regionsFor, total,
   type Hub, type Region, type Town,
@@ -39,7 +39,7 @@ import {
 //   "Search California by date" opens an empty search, and it has six other names).
 
 const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-const LAB_NOTE = "California’s counts and lists stand in for CampHawk’s catalog; other states' counts and every campground list are illustrative.";
+const LAB_NOTE = "California’s counts and lists stand in for CampHawk’s catalog; other states’ counts and every campground list are illustrative.";
 
 function Crumbs({ items, visitor }: { items: Array<[string, string | null]>; visitor: Visitor }) {
   return (
@@ -199,8 +199,14 @@ export function StatePage({ slug }: { slug: string }) {
 
 // Worded as the sold-out guide words it, from the source list: one of the 14 sources carries
 // Parks Canada and the provincial systems as well as four states, so "13 state systems" overcounts.
-const systems = (canada: boolean) => (canada ? `Recreation.gov and ${inWords(SOURCE_COUNT - 1)} other sources in the US and Canada` : "Recreation.gov and the state park reservation systems we read");
-const places = (us: number, ca: number) => `${us} ${us === 1 ? "state" : "states"}${ca ? ` and ${ca} Canadian ${ca === 1 ? "province or territory" : "provinces and territories"}` : ""}`;
+const systems = (canada: boolean) => (canada ? SOURCES_LINE : "Recreation.gov and the state park reservation systems we read");
+// Name Canada's regions for what they are: "5 Canadian provinces" when none is a territory.
+const TERRITORIES = new Set(["NT", "NU", "YT"]);
+const places = (us: number, ca: ReadonlyArray<{ code: string }>) => {
+  const t = ca.filter((r) => TERRITORIES.has(r.code)).length;
+  const kind = t === 0 ? (ca.length === 1 ? "province" : "provinces") : t === ca.length ? (t === 1 ? "territory" : "territories") : "provinces and territories";
+  return `${us} ${us === 1 ? "state" : "states"}${ca.length ? ` and ${ca.length} Canadian ${kind}` : ""}`;
+};
 
 export function TypeHub({ type }: { type: string }) {
   const hub = hubBySlug(type)!;
@@ -215,7 +221,7 @@ export function TypeHub({ type }: { type: string }) {
           <div className="mt-5">
             <Lead>
               <p>{hub.blurb}</p>
-              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca.length)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Most of these book out months ahead, so a cancellation is the realistic way in, and you’ll know within seconds of one.</p>
+              <p>We track live availability at {total(rows).toLocaleString("en-US")} campgrounds with {hub.noun} across {places(us.length, ca)}, on {systems(ca.length > 0)}. Watch one and we recheck it every {CHECK_SECONDS} seconds, around the clock. Most of these book out months ahead, so a cancellation is the realistic way in, and you’ll know within seconds of one.</p>
             </Lead>
             <p className="mt-3 text-[15px] text-ch-ink-2">Searching live availability is free and needs no account.</p>
             <Search visitor={visitor} className="mt-6" />

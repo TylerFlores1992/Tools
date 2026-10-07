@@ -28,3 +28,5 @@ export const inWords = (n: number) => WORDS[n] ?? n.toLocaleString("en-US");
 
 /** Reservation systems CampHawk reads, one per data source. */
 export const SOURCE_COUNT = DATA_SOURCES.length;
+/** The one way the lab names its sources in a sentence (round 12: four phrasings read as four counts). */
+export const SOURCES_LINE = `Recreation.gov, ReserveCalifornia and ${SOURCE_COUNT - 2} other sources in the US and Canada`;

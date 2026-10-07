@@ -16,6 +16,7 @@ const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\{\/\*[
 const RULES: ReadonlyArray<readonly [string, RegExp]> = [
   ["&apos; (use ’)", /&apos;/],
   ["straight apostrophe (use ’)", /(?<=[A-Za-z0-9])'(?=[A-Za-z])/],
+  ["straight plural possessive (use ’)", /(?<=[a-z]s)'(?= [a-z])/],
   ["breakable 8 AM (use a non-breaking space)", /\b\d{1,2} AM\b/],
   ["breakable N-day (use a non-breaking hyphen)", /(\d|\})-day\b/],
 ];
@@ -30,8 +31,8 @@ function files(dir: string): string[] {
 
 test("the detector catches each slip and passes the fixed forms", () => {
   const hit = (s: string) => RULES.some(([, re]) => re.test(s));
-  for (const bad of ["don&apos;t", `"It's mine"`, "at 8 AM", "a 7-day trial", "${TRIAL_DAYS}-day"]) assert.ok(hit(bad), bad);
-  for (const good of ["don’t", "at 8 AM", "a 7‑day trial", "Auto-Cart"]) assert.ok(!hit(good), good);
+  for (const bad of ["don&apos;t", `"It's mine"`, "other states' counts", "at 8 AM", "a 7-day trial", "${TRIAL_DAYS}-day"]) assert.ok(hit(bad), bad);
+  for (const good of ["other states’ counts", "don’t", "at 8 AM", "a 7‑day trial", "Auto-Cart"]) assert.ok(!hit(good), good);
 });
 
 test("lab copy uses curly apostrophes and keeps 8 AM and N-day together", () => {
