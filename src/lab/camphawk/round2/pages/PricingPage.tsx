@@ -44,11 +44,11 @@ const priceLabel = (t: PlanTier, i: "monthly" | "yearly") => priceShort(t, i).re
 
 function PlanCard({ name, tier, features, recommended, children }: { name: string; tier: PlanTier; features: string[]; recommended?: boolean; children: ReactNode }) {
   return (
-    <div className={cx("flex flex-col rounded-ch-card bg-ch-card p-6 shadow-ch-pop sm:p-8", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
-      {/* The badge gets its own line, reserved in both cards, so the titles and prices line up at
-          every width (it wrapped under one title at 768). */}
-      <div className={recommended ? "flex min-h-7 items-center" : "hidden min-h-7 items-center md:flex"}>{recommended && <p className="inline-flex items-center gap-1.5 rounded-full bg-ch-forest px-3 py-1 text-[13px] font-bold text-ch-white"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}</div>
-      <h3 className="mt-2 font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
+    <div className={cx("relative flex flex-col rounded-ch-card bg-ch-card p-6 shadow-ch-pop sm:p-8", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
+      {/* The badge sits on the card's top edge, so both cards start their title at the same
+          height without an empty slot in the other one. */}
+      {recommended && <p className="absolute -top-3.5 left-6 inline-flex items-center gap-1.5 rounded-full border border-ch-forest bg-ch-card px-3 py-1 text-[13px] font-bold text-ch-forest sm:left-8"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
+      <h3 className="font-ch-display text-[24px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-3 font-ch-display text-[40px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, "monthly")}</p>
       <p className="mt-2 text-[15px] text-ch-ink-2">or {priceShort(tier, "yearly")}, save {yearlySavingPercent(tier)}%</p>
       <ul className="mt-5 grid gap-2.5 border-t border-ch-line pt-5">
