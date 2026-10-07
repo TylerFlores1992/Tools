@@ -144,3 +144,4 @@ banner, Short reflection. Review page: https://claude.ai/artifact/SjC3vk4yMahmUM
   does), `printcheck.py` at 300 dpi, then the Vercel image polish the owner planned.
 - Reviewer notes not taken: "hatch gaps under 1 mm" (it measured downscaled previews; the print files
   were cleaned to 1 mm and over), "scale the tent and fire 1.4×" (the owner approved their size).
+- `sheet4-share.mjs` makes the one numbered image of all seven for sharing (`round4-options.jpg`; needs `out4/old-diamond.png`, the old back on natural).
