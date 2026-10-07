@@ -344,7 +344,7 @@ finish, upgrade, Stripe checkout); **paper** for the same on a forest band. e2e 
 ## Fix rounds 6–12: toward a 9 (2026-10-07)
 The owner's bar: "above a 9". Each round: two fresh critics (same prompt, never the builder), axe-core
 4.14 (WCAG 2.2 AA plus best practice, 390 and 1440, collapsibles open and shut), fix, verify, e2e.
-Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 8.6 (A 8.6, B 8.6) · r14 8.6 (A 8.6, B 8.6) · r15, after the rework, 8.65 (A 8.7, B 8.6) · r16 8.65 (A 8.7, B 8.6). axe: 0 violations on all 32 routes.
+Averages: r7 8.35 · r8 8.25 · r9 8.6 · r10 8.55 · r11 8.65 · r12 8.6 (A 8.6, B 8.6) · r13 8.6 (A 8.6, B 8.6) · r14 8.6 (A 8.6, B 8.6) · r15, after the rework, 8.65 (A 8.7, B 8.6) · r16 8.65 (A 8.7, B 8.6) · r17, after the second rework (Explore, New watch, paywall), 8.6 (A 8.6, B 8.6). axe: 0 violations on all 32 routes.
 
 **Typography (guarded by `src/lab/camphawk/typography.test.mts`, mutation-tested).** Curly
 apostrophes only (never `&apos;` or a straight `'` between letters); "8 AM" and other times keep a
@@ -391,6 +391,19 @@ the weakest templates over more rounds or paid photos.
   capped at 700px, and beside it the alert you're setting up (`AlertCard`, shared with home) and
   what happens next.
 - California's site-type sample now takes 2, 3 or 1 campgrounds a town in turn.
+
+## Second rework: Explore, New watch, the in-app paywall (2026-10-07)
+- **Explore first run**: the illustrated map a search will fill (pins are a picture there), one
+  outline button "Search near you" that runs the real search (e2e guard, mutation-tested), the
+  card as tall as the search form. Replaced three numbered steps.
+- **New watch**: "Your watch", the watch as it will be created, filling in as you choose, then
+  the alert it sends (`AlertCard`). Replaced three numbered steps.
+- **Paywall** (`?as=app`): one card, a Monthly/Yearly switch, the two plans as the web shows them
+  (the in-app Alerts card promises push, with email and text on a free account), the store terms
+  in one row.
+- Result: critics held at 8.6. Explore 8.4, paywall 8.0–8.6. Eight rounds and two reworks have sat
+  at 8.55–8.7; the floor is the published legal text (Terms and Privacy, 7.9–8.5, which the lab
+  doesn't reword) and copy drift each fresh critic finds anew.
 
 ## Self-check (tells.md § Defaults)
 - **A** avoids the cream/terracotta and neon-on-black looks, uses one accent, and puts no

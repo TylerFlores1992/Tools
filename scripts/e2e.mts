@@ -639,7 +639,7 @@ try {
     await p.goto(`${GH}/settings`);
     await signIn(p);
     await p.waitForURL(`${GH}/settings`);
-    await p.getByRole("heading", { name: "Sign in to choose how we reach you" }).waitFor();
+    await p.getByRole("heading", { name: "Sign up or sign in to choose how we reach you" }).waitFor();
     // An Alerts-plan subscriber is never told auto-cart is on; the upgrade names its price.
     await p.goto(`${GH}/settings?as=subscriber&plan=alerts`);
     await p.locator("p", { hasText: "Your subscription" }).getByText("Active").first().waitFor();

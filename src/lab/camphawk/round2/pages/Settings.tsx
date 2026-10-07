@@ -300,7 +300,7 @@ export function Settings() {
           return (
             <div className="grid overflow-hidden rounded-ch-card border border-ch-line bg-ch-card shadow-ch-pop lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               <div className="p-6 sm:p-10">
-                <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Sign in to choose how we reach you</h2>
+                <h2 className="font-ch-display text-[clamp(24px,2.6vw,32px)] font-extrabold leading-[1.15] tracking-[-.02em] text-ch-ink">Sign up or sign in to choose how we reach you</h2>
                 <p className="mt-2 max-w-[48ch] text-[16px] leading-relaxed text-ch-ink-2">Alerts go to your email, your phone and your devices, so they’re tied to your account. Searching stays free either way.</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   <Link href={withVisitor(ROUTES.signUp, visitor)} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Sign up</Link>

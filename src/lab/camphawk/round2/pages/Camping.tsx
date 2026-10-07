@@ -200,7 +200,7 @@ export function CampingHub() {
               <p>These are the {STATES.length} states with enough campgrounds for a page of their own: national forests, state parks and everything in between. Pick one to see what we track there.</p>
               <p>Chasing somewhere that is never available? Yosemite, Zion, Acadia and {extraParks} more parks go in minutes, and a cancellation is the realistic way in.</p>
             </>}
-            links={[...HUBS.map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["The campgrounds that are always booked", ROUTES.hardest], ["When a campground is sold out", ROUTES.soldOut]]}
+            links={[...HUBS.map((h) => [h.heading, `${ROUTES.camping}/${h.slug}`] as const), ["The campgrounds that are always booked", ROUTES.hardest], ["When a campground is fully booked", ROUTES.soldOut]]}
           >
           <div className="mt-12"><RegionGrid rows={STATES} href={statePath} visitor={visitor} caption="The number beside each state is how many campgrounds we track there." /></div>
           <section id="canada" aria-labelledby="canada-h" className="mt-14 scroll-mt-24">
@@ -382,7 +382,7 @@ export function HardestToBook() {
                 <CardFacts facts={[[String(count), "campgrounds"], [String(HARD_TO_BOOK.length), "parks and seashores"]]} />
                 <p className="mt-4 text-[15px] leading-relaxed text-ch-ink-2">This is our own pick of famously oversubscribed campgrounds in national parks and seashores, not a measured ranking. Live availability for every one of them is free to check.</p>
                 <Search visitor={visitor} className="mt-5 w-full" />
-                <div className="mt-4 border-t border-ch-line"><ArrowRows links={[["When a campground is sold out", ROUTES.soldOut], ["How cancellation alerts work", ROUTES.alerts]]} visitor={visitor} /></div>
+                <div className="mt-4 border-t border-ch-line"><ArrowRows links={[["When a campground is fully booked", ROUTES.soldOut], ["How cancellation alerts work", ROUTES.alerts]]} visitor={visitor} /></div>
               </div>
             }
           >

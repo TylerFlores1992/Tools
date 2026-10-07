@@ -145,11 +145,11 @@ export function CancellationAlerts() {
           <P>The whole game is the loop interval and what happens next. A service checking every few minutes will genuinely find you openings on quiet campgrounds; on a contested one it will reliably tell you about a site somebody else has already taken.</P>
 
           <H2 id="speed">How much speed matters, in numbers</H2>
-          <P>Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour. Of {OPENINGS_STAT.checks.toLocaleString("en-US")} checks on a stay that had sold out, {OPENINGS_STAT.openings.toLocaleString("en-US")} ({openingsPercent()}) found it bookable again. <A href={ROUTES.soldOut} visitor={visitor}>The sold-out guide</A> has the full study and what it does and doesn’t tell you.</P>
+          <P>Between {statDates} we checked {OPENINGS_STAT.campgrounds.toLocaleString("en-US")} hard-to-book campgrounds every hour. Of {OPENINGS_STAT.checks.toLocaleString("en-US")} checks on a stay that had sold out, {OPENINGS_STAT.openings.toLocaleString("en-US")} ({openingsPercent()}) found it bookable again. <A href={ROUTES.soldOut} visitor={visitor}>The fully booked guide</A> has the full study and what it does and doesn’t tell you.</P>
           <P>Rare, in other words, and at popular campgrounds rarely open for long. That’s why the interval is the specification worth reading and why “we check often” isn’t an answer. CampHawk rechecks every watched campground every {CHECK_SECONDS} seconds, continuously.</P>
 
           <H2 id="free">Check the free option first — we mean it</H2>
-          <P>Recreation.gov has had its own availability alerts since 2024. They are free, they cover every reservable Recreation.gov location, and you’re limited to a few active alerts at a time. If your trip is a Recreation.gov campground and you’re happy to race everyone else to the booking page, start there. You should not pay for something the booking system gives away.</P>
+          <P>Recreation.gov has had its own availability alerts since July 2024. They are free, they cover every reservable Recreation.gov location, and you’re limited to a few active alerts at a time. If your trip is a Recreation.gov campground and you’re happy to race everyone else to the booking page, start there. You should not pay for something the booking system gives away.</P>
           <P>There are free tiers elsewhere in this category too. It’s worth ten minutes to check whether one covers you before paying anybody, including us.</P>
 
           <H2 id="difference">What still sets one apart</H2>
@@ -218,7 +218,7 @@ export function SoldOutGuide() {
 
           <H2 id="camphawk">Where CampHawk fits</H2>
           <P>We check every watched campground every {CHECK_SECONDS} seconds, across {SOURCES_LINE}, and email, push and text you the moment a stay you asked for becomes bookable.</P>
-          <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — measured at within seconds from the site opening to it being held for you{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That’s the part a plain alert can’t do, because by the time you’ve read a text and opened an app, the fast people are already at checkout.</P>
+          <P>On Recreation.gov we can also <A href={ROUTES.autoCart} visitor={visitor}>put the site in your cart automatically</A> — usually within seconds of the site opening{RC_HOLD_OPEN ? " — and on ReserveCalifornia we can hold a site through the 8 AM release and hand it over" : ""}. That’s the part a plain alert can’t do, because by the time you’ve read a text and opened an app, the fast people are already at checkout.</P>
           <P>Watching and alerts are paid; <A href={ROUTES.pricing} visitor={visitor}>see the plans</A>.</P>
           <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
           <Disclaimer visitor={visitor} />

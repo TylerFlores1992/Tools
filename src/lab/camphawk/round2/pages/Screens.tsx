@@ -50,7 +50,7 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
       { href: ROUTES.signUp, name: "Sign up", what: "Clerk’s sign-up, keeping where you were headed." },
       { href: ROUTES.autoCart, name: "Auto-cart", what: "What auto-cart does and doesn’t do." },
       { href: ROUTES.alerts, name: "Cancellation alerts", what: "The landing page for campsite cancellation alerts." },
-      { href: ROUTES.soldOut, name: "Sold-out guide", what: "What actually works when a campground is sold out." },
+      { href: ROUTES.soldOut, name: "Sold-out guide", what: "What actually works when a campground is fully booked." },
     ],
   },
   {

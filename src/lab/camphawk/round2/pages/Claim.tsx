@@ -44,7 +44,7 @@ const COPY = {
   },
   app: {
     prepareTitle: "Sign in to ReserveCalifornia",
-    prepareBody: "Enter your ReserveCalifornia login and we’ll sign you in here, then pass the site straight to you. Your password goes straight to ReserveCalifornia, and we don’t store it.",
+    prepareBody: "Enter your ReserveCalifornia login and we’ll sign you in here, then pass the site to you. Your password goes straight to ReserveCalifornia, and we don’t store it.",
     prepareCta: "Sign in to ReserveCalifornia",
     waitingTitle: "Waiting for you to sign in",
     waitingBody: "Sign in in that window, then close it. Nothing has been released yet — your site is still ours.",

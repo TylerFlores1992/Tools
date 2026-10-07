@@ -157,13 +157,13 @@ function AllSet({ visitor, plan, phone }: { visitor: Visitor; plan: Plan; phone:
 /** The app, not subscribed: the store's own paywall, or a sentence where the store can't sell. */
 /** One plan in the app paywall: flat inside the paywall card, the same features as the web cards. */
 function AppPlan({ name, tier, features, billing, recommended, children }: { name: string; tier: PlanTier; features: string[]; billing: "monthly" | "yearly"; recommended?: boolean; children: ReactNode }) {
-  const other = billing === "monthly" ? "yearly" : "monthly";
   return (
     <div className={cx("relative flex flex-col rounded-ch-input bg-ch-paper p-5 sm:p-6", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
       {recommended && <p className="absolute -top-3.5 left-5 inline-flex items-center gap-1.5 rounded-full border border-ch-forest bg-ch-card px-3 py-1 text-[13px] font-bold text-ch-forest sm:left-6"><Star aria-hidden="true" className="size-3.5" />Best chance to book</p>}
       <h3 className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-forest">{name}</h3>
       <p className="mt-2 font-ch-display text-[34px] font-extrabold leading-none tracking-[-.03em] text-ch-ink tabular-nums">{priceShort(tier, billing)}</p>
-      <p className="mt-2 text-[14px] text-ch-ink-2">{billing === "yearly" ? `Save ${yearlySavingPercent(tier)}% on monthly, ${priceShort(tier, other)}` : `or ${priceShort(tier, other)}, save ${yearlySavingPercent(tier)}%`}</p>
+      {/* The switch does the comparing; the card names only the chosen period (round 17). */}
+      <p className="mt-2 text-[14px] text-ch-ink-2">{billing === "yearly" ? `Billed yearly, save ${yearlySavingPercent(tier)}%` : "Billed monthly"}</p>
       <ul className="mt-4 grid gap-2 border-t border-ch-line pt-4">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5 text-[15px] leading-snug text-ch-ink-2">
@@ -207,7 +207,7 @@ function AppPaywall({ store }: { store: Store }) {
         <RadioChips label="Billing" value={billing} onChange={setBilling} options={[{ value: "monthly", label: "Monthly" }, { value: "yearly", label: `Yearly, save up to ${yearlySavingPercent("autocart")}%` }]} />
       </div>
       <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-5">
-        <AppPlan name="Alerts" tier="base" billing={billing} features={BASE_FEATURES.map(plainNights)}>{buy("base")}</AppPlan>
+        <AppPlan name="Alerts" tier="base" billing={billing} features={BASE_FEATURES.map(plainNights).map((f) => (f.startsWith("Email, push and text") ? "Push alerts the moment a site opens (email and text with a free account)" : f))}>{buy("base")}</AppPlan>
         <AppPlan name="Auto-Cart" tier="autocart" billing={billing} features={AUTOCART_FEATURES} recommended>{buy("autocart")}</AppPlan>
       </div>
       <p className="mt-3 text-[14px] text-ch-ink-2">{TRIAL_DAYS} days free, then the price above. Renews automatically.</p>

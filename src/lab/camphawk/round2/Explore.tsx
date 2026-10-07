@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LocateFixed, MapPin, Search, Tent } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
-import { CAMPGROUNDS_ROUNDED, CANADA_REGIONS, type Visitor } from "../data";
+import { CAMPGROUNDS_ROUNDED, COVERAGE_SENTENCE, type Visitor } from "../data";
 import { LabBar } from "../LabBar";
 import { Card } from "../ui/Card";
 import { Tag } from "../ui/Tag";
@@ -20,7 +20,6 @@ import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data"
 import { CAMPGROUNDS as EXAMPLES, ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
 import { ROUTES } from "./gates";
 import { TRIAL_DAYS } from "./pages/tier2-data";
-import { COVERAGE } from "./pages/camping-data";
 import { LabNote } from "./LabPage";
 import { GhFooter, ScreenLinks } from "./GhChrome";
 import { useUrlState, useVisitor, withVisitor } from "./labState";
@@ -113,13 +112,14 @@ function FirstRun({ visitor, onSearch }: { visitor: Visitor; onSearch: () => voi
       <figure className="mt-4 flex flex-1 flex-col">
         <div className="relative min-h-[240px] flex-1 overflow-hidden rounded-ch-card border border-ch-line bg-ch-shell sm:min-h-[300px]">
           <Art art={ART.e2} sizes="(min-width: 1024px) 760px, 100vw" className="absolute inset-0 size-full object-cover" />
-          {EXAMPLES.map((c) => (
+          {/* Pins under the button's footprint are left out, so none peeks from behind it. */}
+          {EXAMPLES.filter((c) => !(c.pin.y > 66 && c.pin.x > 28 && c.pin.x < 72)).map((c) => (
             <span key={c.id} aria-hidden="true" style={{ left: `${c.pin.x}%`, ["--y" as string]: c.pin.y }} className="gh-map-pin absolute grid size-11 -translate-x-1/2 -translate-y-[78%] place-items-center">
               <span className="gh-pin block" data-state="plain" data-selected={false} />
             </span>
           ))}
           <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:p-5">
-            <button type="button" onClick={onSearch} className={buttonClasses({ size: "lg", className: "whitespace-nowrap px-6 shadow-ch-pop" })}><Search aria-hidden="true" className="size-5" />Search near you</button>
+            <button type="button" onClick={onSearch} className={buttonClasses({ variant: "quiet", size: "lg", className: "whitespace-nowrap border-ch-ink-2! bg-ch-card! px-6 shadow-ch-pop" })}><Search aria-hidden="true" className="size-5" />Search near you</button>
           </div>
         </div>
         <figcaption className="mt-2 text-[13px] text-ch-muted">Illustrated map with example pins. Each result says in words whether a site is free for your dates.</figcaption>
@@ -400,7 +400,7 @@ export function Explore() {
           visitor={visitor}
           current="explore"
           title="Find a campsite that’s open"
-          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds — every Recreation.gov campground in all 50 states, state parks in ${COVERAGE.stateParkStates}, and parks in ${CANADA_REGIONS} of Canada’s 13 provinces and territories.`}
+          sub={`Live availability across ${CAMPGROUNDS_ROUNDED} campgrounds. ${COVERAGE_SENTENCE}`}
           photo={<BandPhoto art={ART.e1} pos="60% 70%" posLg="50% 62%" />}
         />
 
@@ -464,13 +464,12 @@ export function Explore() {
             <fieldset className="mt-5">
               <legend className={label}>Within</legend>
               {/* Phones: an even grid (3 + 2, then 2 × 2) instead of one chip stranded on a row. */}
-              <RadioChips cols={3} label="Within" options={RADII.map((r) => ({ value: r, label: `${r} mi` }))} value={radius} onChange={setRadius} />
+              <RadioChips label="Within" options={RADII.map((r) => ({ value: r, label: `${r} mi` }))} value={radius} onChange={setRadius} />
             </fieldset>
 
             <fieldset className="mt-5">
               <legend className={label}>When</legend>
               <RadioChips
-                cols={2}
                 label="When"
                 className="mb-2.5"
                 options={([["exact", "Exact dates"], ["tonight", "Tonight"], ["weekend", "This weekend"], ["flexible", "Flexible"]] as const).map(([value, l]) => ({ value: value as When, label: l }))}
