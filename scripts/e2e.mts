@@ -675,7 +675,8 @@ try {
     await p.goto(`${GH}/welcome?as=subscriber&from=checkout`);
     await p.getByRole("heading", { name: "Set up auto-cart" }).waitFor();
     // Email is always on, as Settings says; Welcome doesn't offer to turn it off.
-    await p.getByText("Always on. Every opening we find goes to", { exact: false }).waitFor();
+    await p.locator("#w-email").getByText("Always on").waitFor();
+    await p.getByText("Every opening we find goes to", { exact: false }).first().waitFor();
     assert.equal(await p.getByRole("checkbox", { name: /Email me/ }).count(), 0);
     // Pressing "Turn on text alerts" too early says what's missing and goes there.
     await p.getByRole("button", { name: "Turn on text alerts" }).click();

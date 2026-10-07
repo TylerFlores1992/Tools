@@ -1,5 +1,6 @@
 "use client";
 
+import { Tag } from "../../ui/Tag";
 import { useState } from "react";
 import Link from "next/link";
 import { Loader2, Mail } from "lucide-react";
@@ -70,10 +71,10 @@ export function Welcome() {
             <p className="max-w-[56ch] text-[16px] leading-relaxed text-ch-ink-2">Set this up now and an opening reaches you the moment we find it. You can change any of it later in Settings.</p>
 
             <section aria-labelledby="w-email" className="mt-7 rounded-ch-input border border-ch-line p-4 sm:p-5">
-              <h2 id="w-email" className="text-[17px] font-extrabold text-ch-ink">Email alerts</h2>
+              <h2 id="w-email" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[17px] font-extrabold text-ch-ink">Email alerts<Tag kind="paused" mark="on" srPrefix="Status:">Always on</Tag></h2>
               {/* Email is always on, as Settings says (CampHawk's Welcome has an email checkbox that
                   Settings then ignores; the lab keeps one model). */}
-              <p className="mt-2 flex items-start gap-3 text-[15px] leading-relaxed text-ch-ink-2"><Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0" /><span>Always on. Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</span></p>
+              <p className="mt-2 flex items-start gap-3 text-[15px] leading-relaxed text-ch-ink-2"><Mail aria-hidden="true" className="mt-0.5 size-5 shrink-0" /><span>Every opening we find goes to <strong className="font-bold text-ch-ink">{EMAIL}</strong>.</span></p>
             </section>
 
             <section aria-labelledby="w-text" className="mt-4 rounded-ch-input border border-ch-line p-4 sm:p-5">
