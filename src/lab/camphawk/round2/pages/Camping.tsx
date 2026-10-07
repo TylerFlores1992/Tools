@@ -77,23 +77,22 @@ function RegionGrid({ rows, href, visitor, caption }: { rows: Region[]; href: (r
   );
 }
 
-function CampgroundList({ names, visitor, cols = 3 }: { names: string[]; visitor: Visitor; cols?: 2 | 3 }) {
-  return (
-    <ul className={cx("mt-2 grid gap-x-8 sm:grid-cols-2", cols === 3 && "lg:grid-cols-3")}>
-      {names.map((n) => (
-        <li key={n} className="border-b border-ch-line"><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
-      ))}
-    </ul>
-  );
-}
-
+// One card per town, the same card Hardest to book uses, so the two catalog pages read as one
+// family (round 8: a long run of bare link rows read as an SEO scaffold).
 function Towns({ groups, code, name, visitor }: { groups: Town[]; code: string; name: string; visitor: Visitor }) {
   return (
-    <div className="mt-10 grid gap-9">
+    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {groups.map((g) => (
-        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`}>
-          <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="font-ch-display text-[20px] font-extrabold text-ch-ink">{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</h2>
-          <CampgroundList names={g.campgrounds} visitor={visitor} />
+        <section key={g.city ?? "elsewhere"} aria-labelledby={`t-${slugId(g.city ?? "elsewhere")}`} className="rounded-ch-card border border-ch-line bg-ch-card px-5 pb-2 pt-4 shadow-ch-card">
+          <h2 id={`t-${slugId(g.city ?? "elsewhere")}`} className="flex items-baseline justify-between gap-3 font-ch-display text-[18px] font-extrabold leading-snug text-ch-ink">
+            <span>{g.city ? `${g.city}, ${code}` : `Elsewhere in ${name}`}</span>
+            <span className="shrink-0 font-ch-body text-[13px] font-semibold text-ch-ink-2 tabular-nums">{g.campgrounds.length}<span className="sr-only"> campgrounds</span></span>
+          </h2>
+          <ul className="mt-1">
+            {g.campgrounds.map((n) => (
+              <li key={n} className="border-b border-ch-line last:border-b-0"><Link href={withVisitor(ROUTES.campground, visitor)} className={rowLink}>{n}</Link></li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>
