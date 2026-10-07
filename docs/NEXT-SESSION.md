@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07 (CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 merged 2026-10-07, production smoke 27/27. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
+*Last updated: 2026-10-07 (CampHawk shirts round 4: seven layouts without the diamond. CampHawk lab: fix rounds 6–17 and two reworks, critics 8.0 → 8.6–8.7, PR #18 merged 2026-10-07, production smoke 27/27. Earlier: PR #16 merged; ETCP practice test C, 50 questions weighted like the Arena exam, PR #17).*
 
 ## At a glance
 
@@ -35,7 +35,13 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
-0. **CampHawk shirts: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
+0. **CampHawk shirts round 4: the back print is open again** (2026-10-07). The owner's wife says the
+   mirrored peak reads as a diamond. Seven layouts without the diamond:
+   https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j (reviewer's top three: Arch window, Panorama,
+   Round badge). **Waiting on the owner's pick.** Then: vector print files and print check for the pick,
+   then the Vercel image polish. How it's built: `studio/camphawk-shirts/README.md`, "Round 4".
+   The DTF plan below still holds; the gang sheet waits for the new back.
+   **Earlier: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
    - **The art.** Still Water comes in two versions:
      - giveaway: one ink on a natural shirt;
      - owners: three inks on sage.

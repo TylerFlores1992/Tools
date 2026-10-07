@@ -124,3 +124,23 @@ DTF details:
 - **Files:** the transfers print from `kit/*_300dpi.png`.
 - **Still to build:** the gang-sheet layout, once the owner gives the shirt counts and the press size.
 
+
+## Round 4 (2026-10-07): Still Water without the diamond
+The owner's wife: the peak mirrored in the lake makes the whole back print read as a diamond. Round 4 keeps
+the approved peak, camp and hawk and changes only what sits below the shore. Seven layouts, all free:
+Arch window, Panorama, Round badge (the reviewer's top three: 8, 7.5, 7), then Lake plate, Shoreline, Waterline
+banner, Short reflection. Review page: https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j
+
+- `python3 prep4.py` cuts both camp renders (`kit/*_back_300dpi.png`) at the shore, drops the hawk and writes
+  the silhouette masks to `out4/`.
+- `node round4.mjs [id]` draws each layout (one ink on natural, three inks on sage, a drawn tee, and a
+  transparent render) into `out4/`. `python3 composite.py ref/flux-blank-natural.jpg out4/<id>-alpha.png
+  out4/<id>-photo.jpg 520 290 330` puts one on the shirt photo. `sheet4.py` makes contact sheets.
+- Water is drawn, never mirrored: tapering dashes in rows that thin out and spread apart, a column of light
+  under the fire and the tent door, and every field square-edged so the outline can't point downward.
+- Research behind the layouts: frames that cut the water off (arch, circle with a low horizon, panorama),
+  a banner on the waterline, or water as broken dashes stopping at about a third of the peak's height.
+- Mockups use the 300 dpi raster peak. The pick still needs: vector print files (trace as `campkit.mjs`
+  does), `printcheck.py` at 300 dpi, then the Vercel image polish the owner planned.
+- Reviewer notes not taken: "hatch gaps under 1 mm" (it measured downscaled previews; the print files
+  were cleaned to 1 mm and over), "scale the tent and fire 1.4×" (the owner approved their size).
