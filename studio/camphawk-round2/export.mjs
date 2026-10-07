@@ -27,6 +27,13 @@ const PICKS = [
   ["p1-pricing-wide", "p1-pricing-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
   ["v1-fork-wide", "v1-fork-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
   ["s1-ranger-wide", "s1-ranger-wide-bfl_flux_pro_1_1_ultra-1.jpeg", [2560, 1440, 828]],
+  // Round 6 (2026-10-06): bands for the pages that had none, cut from earlier unused generations
+  // (no new images bought): the Half Dome face for Hardest to book, the numbered site post for
+  // the auto-cart guide, a misty Sierra lake for California, a lone tent in the pines for Settings.
+  ["k1-halfdome-wide", "c4-cliff-dusk-bfl_flux_pro_1_1_ultra-2.jpeg", [2048, 1440, 828]],
+  ["g1-sitepost-wide", "a3-site-post-bfl_flux_pro_1_1_ultra-1.jpeg", [2048, 1440, 828]],
+  ["r1-sierra-wide", "a2-hero-tall-bfl_flux_pro_1_1_ultra-1.jpeg", [1664, 1440, 828]],
+  ["t1-tent-wide", "a3-site-dusk-bfl_flux_pro_1_1_ultra-1.jpeg", [1856, 1440, 828]],
 ];
 
 // Per-pick fixes, applied before resizing:
@@ -34,8 +41,13 @@ const PICKS = [
 //             c2 read as a black square at card size (2026-10-06).
 //   letterbox Flux sometimes paints cinema bars; crop the near-black rows off top and bottom.
 //   soften    mix toward ch-paper so a map reads as a quiet ground for the pins on it.
+//   band      cut a 2.33:1 strip (a page band's shape) whose centre sits at this fraction of the height.
 const TUNE = {
   "c2-site-dusk": { lift: 0.78 },
+  "k1-halfdome-wide": { band: 0.42 },
+  "g1-sitepost-wide": { band: 0.5 },
+  "r1-sierra-wide": { band: 0.47 },
+  "t1-tent-wide": { band: 0.62 },
   "e1-explore-wide": { letterbox: true },
   "e2-map": { soften: 0.45 },
 };
@@ -108,11 +120,37 @@ async function cutout(file) {
     .png();
 }
 
+// One dusk grade for every photo (round 6, 2026-10-06): Flux painted each scene in its own electric
+// blue or violet, so the pages read as unrelated stock. Cool hues (170-315°) are pulled halfway
+// toward the hero's teal-blue (205°) and their saturation cut to 62%; warm light (lamps, fire,
+// tents) is left as painted, so it stays the one warm note. A gentle shadow lift (v^0.92) opens
+// the near-black. Paintings, the map and the badge are not photos and skip it.
+const PHOTO = /^(a|c|e1|n1|w1|m1|p1|v1|s1|k1|g1|r1|t1)\d?-/;
+function grade(data, channels = 3, { hue = 205, pull = 0.55, sat = 0.62, lift = 0.92 } = {}) {
+  for (let i = 0; i < data.length; i += channels) {
+    const r = data[i] / 255, g = data[i + 1] / 255, b = data[i + 2] / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0;
+    if (d) h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h = (h * 60 + 360) % 360;
+    let s = max ? d / max : 0;
+    const v = Math.pow(max, lift);
+    const w = h < 170 || h > 315 ? 0 : h < 185 ? (h - 170) / 15 : h > 300 ? (315 - h) / 15 : 1;
+    if (w) { h += (hue - h) * pull * w; s *= 1 - (1 - sat) * w; }
+    const c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c;
+    const [rr, gg, bb] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+    data[i] = Math.round((rr + m) * 255); data[i + 1] = Math.round((gg + m) * 255); data[i + 2] = Math.round((bb + m) * 255);
+  }
+  return data;
+}
+
 async function tuned(name, file) {
-  const t = TUNE[name];
-  if (!t) return null;
+  const t = TUNE[name] ?? {};
+  const photo = PHOTO.test(name);
+  if (!TUNE[name] && !photo) return null;
   const { data, info } = await sharp(SRC + file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width: W, height: H } = info;
+  if (photo) grade(data);
   if (t.lift) {
     const lut = Array.from({ length: 256 }, (_, v) => Math.round(255 * Math.pow(v / 255, t.lift)));
     for (let i = 0; i < data.length; i++) data[i] = lut[data[i]];
@@ -122,6 +160,11 @@ async function tuned(name, file) {
     for (let i = 0; i < data.length; i++) data[i] = Math.round(data[i] * (1 - t.soften) + paper[i % 3] * t.soften);
   }
   let img = sharp(data, { raw: info });
+  if (t.band) {
+    const h = Math.round(W / 2.333);
+    const top = Math.max(0, Math.min(H - h, Math.round(H * t.band - h / 2)));
+    img = sharp(await img.png().toBuffer()).extract({ left: 0, top, width: W, height: h });
+  }
   if (t.letterbox) {
     const rowMean = (y) => { let sum = 0; for (let x = 0; x < W; x++) for (let c = 0; c < 3; c++) sum += data[(y * W + x) * 3 + c]; return sum / (W * 3); };
     let top = 0, bottom = H - 1;

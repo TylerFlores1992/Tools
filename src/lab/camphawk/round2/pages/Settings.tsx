@@ -1,5 +1,6 @@
 "use client";
 
+import { ART } from "../Art";
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { AlertTriangle, Bell, CreditCard, Loader2, Mail, ShoppingCart, Trash2, UserRound } from "lucide-react";
@@ -280,6 +281,7 @@ export function Settings() {
     <LabPage
       page="Settings"
       title="Settings"
+      photo={{ art: ART.t1, pos: "60% 60%", posLg: "50% 62%" }}
       showPlan
       controls={({ visitor, plan }) => (
         <>

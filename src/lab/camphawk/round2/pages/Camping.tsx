@@ -1,5 +1,6 @@
 "use client";
 
+import { ART } from "../Art";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cx } from "@/components/cx";
@@ -156,7 +157,7 @@ export function StatePage({ slug }: { slug: string }) {
   const ca = r.code === "CA";
   const types = hubsIn(r.code);
   return (
-    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false}>
+    <LabPage page={r.name} title={`Campgrounds in ${r.name}`} dock={false} photo={r.code === "CA" ? { art: ART.r1, pos: "30% 60%", posLg: "50% 60%" } : undefined}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], [indexLabel(r), r.canada ? `${ROUTES.camping}#canada` : ROUTES.camping], [r.name, null]]} />
@@ -281,7 +282,7 @@ export function TypeStatePage({ type, slug }: { type: string; slug: string }) {
 export function HardestToBook() {
   const count = HARD_TO_BOOK.reduce((n, p) => n + p.campgrounds.length, 0);
   return (
-    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false}>
+    <LabPage page="Always booked" title="The campgrounds that are always booked" dock={false} photo={{ art: ART.k1, pos: "55% 40%", posLg: "50% 40%" }}>
       {({ visitor }) => (
         <div>
           <Crumbs visitor={visitor} items={[["CampHawk", ROUTES.home], ["Always booked", null]]} />

@@ -69,7 +69,7 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
       </p>
       <div className="flex flex-wrap gap-2">
         {offered && <a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 flex-1 px-4" })}>Hold it for me</a>}
-        <button type="button" onClick={() => onRemove(h.id)} aria-label={offered ? `Don't hold ${h.site} for me` : `Call off the hold on ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+        <button type="button" onClick={() => onRemove(h.id)} aria-label={offered ? `I don't want this one: Site ${h.site}` : `Call this off: the hold on Site ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
           {offered ? "I don't want this one" : "Call this off"}
         </button>
       </div>
