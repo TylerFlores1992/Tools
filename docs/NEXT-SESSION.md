@@ -34,11 +34,11 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
-## Campground site maps (2026-10-07, PR #19)
+## Campground site maps (2026-10-07, PR #19, merged)
 **Start here for maps:** `docs/design/campground-maps.md` (research, measurements, time estimate)
 and `studio/campground-maps/README.md` (how to build one).
 
-**Live in the lab after #19 merges:**
+**Live in the lab (PR #19 merged 2026-10-07):**
 - **Upper Pines** has a real site map: `/private/camphawk/golden-hour/campground`. It is built
   from RIDB (CC BY 4.0), NPS GIS and USGS, with Find a site, zoom, and numbers beside their dots.
   Critic rounds went 5.5 → 7, with the main finding fixed after.
@@ -109,10 +109,6 @@ in the design doc):
 
 **For CampHawk's issue list:** campsite-finder's `docs/CONTEXT.md` says providers don't publish
 site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync drops them.
-
-**Open PR #18** (another session's lab fix rounds) conflicts with #19 in 6 files: NEXT-SESSION,
-`scripts/e2e.mts`, `globals.css`, `Campground.tsx`, `pages/Screens.tsx` and `pages/alert-data.ts`.
-Whoever merges #18 resolves them, keeping both sides: #19's site map and #18's fixes.
 
 ## Waiting on the owner
 0. **CampHawk shirts: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
