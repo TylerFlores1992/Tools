@@ -82,7 +82,7 @@ const cardLink = "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bol
 function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
-  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `${w.mutedSites} site${w.mutedSites === 1 ? "" : "s"} muted` : null].filter(Boolean).join(", ");
+  const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `skipping ${w.mutedSites} muted site${w.mutedSites === 1 ? "" : "s"}` : null].filter(Boolean).join(", ");
   const asked = (w.holds ?? []).filter((h) => h.status === "requested");
   const offered = (w.holds ?? []).filter((h) => h.status === "offered");
   const cardState: CardState = state === "hit" ? "hit" : state === "disconnected" ? "warn" : state === "paused" ? "paused" : "default";
@@ -111,9 +111,9 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
         <p className="mt-0.5 text-[14px] text-ch-ink-2">On {w.provider}</p>
         {w.parts && (
           <p className="mt-1 text-[15px] leading-normal text-ch-ink-2">
-            {/* Inline on a card, "Campground" is dropped: "Canyon Campground (sites 1–24), Canyon
-                Campground (sites 25–77)" read like a duplicate. Manage lists the full names. */}
-            <span className="font-bold">{w.parts.length} parts:</span> {(() => { const short = w.parts.map((x) => x.replace(/ Campground\b/, "")); return short.length > 4 ? `${short.slice(0, 4).join(", ")} and ${short.length - 4} more` : joinAnd(short); })()}
+            {/* Full names, as Manage lists them: "Canyon (sites 1–24), Canyon (sites 25–77)" read
+                like a duplicate (round 12). */}
+            <span className="font-bold">{w.parts.length} parts:</span> {w.parts.length > 4 ? `${w.parts.slice(0, 4).join(", ")} and ${w.parts.length - 4} more` : joinAnd(w.parts)}
           </p>
         )}
         <p className="mt-3 text-[16px] font-bold text-ch-ink-2">{w.flexNights ? `Any ${nights} nights, ${formatRange(w.start, w.end)}` : formatRange(w.start, w.end)}</p>

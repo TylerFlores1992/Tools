@@ -2,13 +2,10 @@
 
 import { BetaNote } from "../BareFrame";
 import type { ReactNode } from "react";
-import { buttonClasses } from "../../ui";
 import { CAMPGROUNDS_ROUNDED, PLAN_PRICE, dollars, pricePhrase, priceShort } from "../../data";
 import { ART } from "../Art";
 import { ROUTES } from "../gates";
-import { A, LabPage, WithRail } from "../LabPage";
-import { withVisitor } from "../labState";
-import Link from "next/link";
+import { A, ActionLink, CtaBand, LabPage, WithRail } from "../LabPage";
 import { COMPETITORS, COVERAGE, type Competitor } from "./camping-data";
 import { CHECK_SECONDS, SOURCE_COUNT, TRIAL_DAYS } from "./tier2-data";
 
@@ -86,11 +83,7 @@ export function Comparison({ slug }: { slug: Competitor["slug"] }) {
             <Q q="What happens when there are no cancellations?">Sometimes there simply aren’t any — a popular weekend can go quiet for a week. Ask what you’re paying for in that case, and how easily you can stop.</Q>
           </ul>
 
-          <section className="mt-10 rounded-ch-card bg-ch-forest px-6 py-10 text-center">
-            <h2 className="font-ch-display text-[clamp(24px,3vw,32px)] font-extrabold leading-[1.15] text-ch-paper">Find your campground, then let us watch it</h2>
-            <p className="mx-auto mt-2 max-w-[46ch] text-[17px] leading-relaxed text-ch-line">Searching is free and needs no account. Look up the campground you want and see what CampHawk knows about it before you decide anything.</p>
-            <Link href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ size: "lg", className: "mt-6 px-6" })}>Search campgrounds</Link>
-          </section>
+          <CtaBand title="Find your campground, then let us watch it." body="Searching is free and needs no account." action={<ActionLink href={ROUTES.explore} visitor={visitor} variant="primary">Search campgrounds</ActionLink>} />
           <p className="mt-8 text-[14px] leading-relaxed text-ch-ink-2">{c.name} is not affiliated with CampHawk, and we don’t speak for them. Everything above describes CampHawk; for {c.name}’s features and prices, <Out href={c.homepage}>see their site</Out>.</p>
         </div>
         </WithRail>

@@ -174,7 +174,7 @@ function AppPaywall({ store }: { store: Store }) {
             {tiles.map((t) => (
               <li key={t.id} className="flex flex-col rounded-ch-input border border-ch-line bg-ch-paper p-4">
                 <p className="text-[16px] font-bold text-ch-ink">{t.title}</p>
-                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Up to ${WATCH_LIMIT} campgrounds watched around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
+                <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{t.tier === "base" ? `Run up to ${WATCH_LIMIT} watches around the clock, with an alert the moment a site opens.` : "Everything in Alerts, plus Auto-Cart: on Recreation.gov an opening goes straight into your cart."}</p>
                 <p className="mt-1 flex-1 text-[13px] text-ch-ink-2">{TRIAL_DAYS} days free, then {t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "") : priceShort(t.tier, "yearly").replace("/yr", "")} per {t.i}. Renews automatically.</p>
                 <button type="button" disabled={buying !== null} onClick={() => { setBuying(t.id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: t.tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "mt-4 min-h-12 disabled:cursor-wait" })}>
                   {buying === t.id ? "Opening…" : `Start ${TRIAL_DAYS}‑day free trial, then ${t.i === "month" ? priceShort(t.tier, "monthly").replace("/mo", "/month") : priceShort(t.tier, "yearly").replace("/yr", "/year")}`}
@@ -233,6 +233,7 @@ export function PricingPage() {
   return (
     <LabPage
       page="Plans & pricing"
+      tab="pricing"
       title="Plans & pricing"
       sub={({ visitor }) => visitor === "subscriber"
         ? "Your plan, what it does for you, and what we never do."

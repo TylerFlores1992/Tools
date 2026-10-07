@@ -53,7 +53,7 @@ function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Vi
   return (
     <BareCard>
       <h1 className="text-center text-[20px] font-extrabold text-ch-ink">{up ? "Create your CampHawk account" : "Sign in to CampHawk"}</h1>
-      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{!up ? "Welcome back." : trial ? `Takes a minute. Cancel within ${TRIAL_DAYS} days and you pay nothing.` : "It’s free. Searching never needs an account."}</p>
+      <p className="mt-1 text-center text-[15px] text-ch-ink-2">{!up ? "Welcome back." : trial ? "Takes about a minute." : "It’s free. Searching never needs an account."}</p>
       {!app && (
         <>
           <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">

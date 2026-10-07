@@ -10,12 +10,21 @@ import { withVisitor } from "./labState";
 // or a plain band) in paper type; the footer closes on forest. The three tabs are CampHawk's
 // (V2Nav) and link between the lab's screens, keeping the "View as" choice.
 
-export type Tab = "watches" | "new" | "explore";
-const TABS: ReadonlyArray<{ tab: Tab; label: string; href: string }> = [
+export type Tab = "watches" | "new" | "explore" | "pricing";
+type TabLink = { tab: Tab; label: string; href: string };
+const TABS: ReadonlyArray<TabLink> = [
   { tab: "watches", label: "Watches", href: ROUTES.watches },
   { tab: "new", label: "New watch", href: ROUTES.newWatch },
   { tab: "explore", label: "Explore", href: ROUTES.explore },
 ];
+// Signed out, "Watches" has nothing behind it and Pricing had no link anywhere (round 12): lead
+// with search, keep New watch (it starts the sign-up), and add Pricing.
+const SIGNED_OUT_TABS: ReadonlyArray<TabLink> = [
+  { tab: "explore", label: "Explore", href: ROUTES.explore },
+  { tab: "new", label: "New watch", href: ROUTES.newWatch },
+  { tab: "pricing", label: "Pricing", href: ROUTES.pricing },
+];
+const tabsFor = (visitor: Visitor) => (visitor === "signed-out" ? SIGNED_OUT_TABS : TABS);
 
 /** Header over the photo: paper type on the dark scrim. Same links and account states as Nav. */
 export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: Tab }) {
@@ -29,7 +38,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
           <span translate="no" className="whitespace-nowrap font-ch-display text-[22px] font-extrabold text-ch-paper">CampHawk</span>
         </Link>
         <nav aria-label="Main" className="hidden flex-1 gap-1 md:flex">
-          {TABS.map((t) => (
+          {tabsFor(visitor).map((t) => (
             <Link key={t.tab} href={withVisitor(t.href, visitor)} aria-current={current === t.tab ? "page" : undefined} className={cx("whitespace-nowrap rounded-[10px] px-3.5 py-2.5 text-[15px] font-bold hover:bg-ch-white/10 hover:text-ch-white", current === t.tab ? "bg-ch-white/10 text-ch-white underline decoration-2 underline-offset-[6px]" : "text-ch-line")}>
               {t.label}
             </Link>
@@ -49,7 +58,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
       </div>
       {/* Phone: the three tabs as a quiet row under the brand. */}
       <nav aria-label="Main" className="mx-auto flex max-w-[var(--gh-max)] gap-1 px-5 sm:px-8 md:hidden">
-        {TABS.map((t) => (
+        {tabsFor(visitor).map((t) => (
           <Link key={t.tab} href={withVisitor(t.href, visitor)} aria-current={current === t.tab ? "page" : undefined} className={cx("flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-[10px] text-[13.5px] font-bold hover:bg-ch-white/10", current === t.tab ? "bg-ch-white/10 text-ch-white underline decoration-2 underline-offset-[5px]" : "text-ch-line")}>
             {t.label}
           </Link>
@@ -61,6 +70,7 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
 
 /** The forest footer, same links as CampHawk's. */
 const FOOTER_HREF: Record<(typeof FOOTER_LINKS)[number], string> = {
+  Pricing: ROUTES.pricing,
   Support: ROUTES.support,
   "Data sources": ROUTES.sources,
   Terms: ROUTES.terms,

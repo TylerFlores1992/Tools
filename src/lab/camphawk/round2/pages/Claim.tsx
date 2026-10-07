@@ -70,15 +70,14 @@ function SiteCard({ heading, tone, footer }: { heading: string; tone: "hold" | "
 function Step({ tone, title, body, children, note }: { tone: "todo" | "busy" | "done"; title: string; body?: string; children?: ReactNode; note?: ReactNode }) {
   return (
     <div className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
-      <div className="flex gap-3">
+      {/* The number sits beside the title only; the body, fields and button share one left edge. */}
+      <div className="flex items-center gap-3">
         <span aria-hidden="true" className={cx("grid size-8 shrink-0 place-items-center rounded-full", tone === "done" ? "bg-ch-ink text-ch-white" : "bg-ch-shell text-ch-ink")}>
           {tone === "done" ? <Check className="size-4" /> : tone === "busy" ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" /> : <span className="text-[14px] font-extrabold">1</span>}
         </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{tone === "done" ? "Done: " : tone === "busy" ? "Waiting: " : "Next: "}</span>{title}</p>
-          {body && <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{body}</p>}
-        </div>
+        <p className="min-w-0 flex-1 text-[17px] font-bold text-ch-ink"><span className="sr-only">{tone === "done" ? "Done: " : tone === "busy" ? "Waiting: " : "Next: "}</span>{title}</p>
       </div>
+      {body && <p className="mt-3 text-[15px] leading-relaxed text-ch-ink-2">{body}</p>}
       {children && <div className="mt-4">{children}</div>}
       {note && <p className="mt-4 border-t border-ch-line pt-4 text-[15px] leading-relaxed text-ch-ink-2">{note}</p>}
     </div>
@@ -195,13 +194,11 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
   const step2 = (
     // Solid, not dashed: a dashed box is the lab's note style. Locked reads as a quieter card.
     <div className={cx("mt-3 rounded-ch-card border border-ch-line p-5", ready ? "bg-ch-card shadow-ch-card" : "bg-ch-paper")}>
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-ch-shell text-[14px] font-extrabold text-ch-ink">2</span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 inline-flex items-center gap-1 align-middle text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
-          <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you’re signed in, tap <strong className="text-ch-ink">It’s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
-        </div>
+        <p className="min-w-0 flex-1 text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="ml-2 inline-flex items-center gap-1 align-middle text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
       </div>
+      <p className="mt-3 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you’re signed in, tap <strong className="text-ch-ink">It’s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
       {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It’s mine — hand it over"}</button>}
     </div>
   );

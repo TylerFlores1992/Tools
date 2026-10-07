@@ -28,7 +28,7 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
     note: "Where a subscriber lands from a text or an email.",
     items: [
       { href: ROUTES.manage, name: "Manage a watch", what: "The watch an alert is about: what’s open, dates, muting, pause and remove.", switches: "Watch state" },
-      { href: ROUTES.action, name: "One-tap action", what: "What a tapped link in an alert did, and how to undo it; the 8am hold confirm.", switches: "Action" },
+      { href: ROUTES.action, name: "One-tap action", what: "What a tapped link in an alert did, and how to undo it; the 8 AM hold confirm.", switches: "Action" },
       { href: ROUTES.claim, name: "Claim a held site", what: "A ReserveCalifornia site we’re holding, and handing it over to you.", switches: "Hold status, device" },
       { href: ROUTES.settings, name: "Settings", what: "How we reach you, auto-cart, subscription, sign out, delete account.", switches: "Plan, auto-cart, billing" },
       { href: ROUTES.connect, name: "Connect Recreation.gov", what: "Linking a Recreation.gov login so auto-cart can work.", switches: "Step" },
@@ -52,7 +52,7 @@ export const SCREEN_GROUPS: ReadonlyArray<{ title: string; note: string; items: 
     note: "The pages people find from Google.",
     items: [
       { href: ROUTES.camping, name: "Camping by state", what: "Every state and province with a page." },
-      { href: `${ROUTES.camping}/california`, name: "A state: California", what: "One state’s campgrounds, by provider." },
+      { href: `${ROUTES.camping}/california`, name: "A state: California", what: "One state’s campgrounds, by town." },
       { href: `${ROUTES.camping}/cabins`, name: "Cabins", what: "Where to book a cabin, by state; yurts and group camping share the template." },
       { href: `${ROUTES.camping}/cabins/california`, name: "Cabins in California", what: "One state’s campgrounds with cabins." },
       { href: ROUTES.hardest, name: "Hardest to book", what: "CampHawk’s own pick of the campgrounds that fill fastest." },

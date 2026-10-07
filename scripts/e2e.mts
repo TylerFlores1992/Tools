@@ -568,6 +568,11 @@ try {
     await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).click();
     await p.waitForURL(/\/explore\?as=subscriber/);
     assert.equal(await p.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Explore" }).getAttribute("aria-current"), "page");
+    // Signed out, the tabs lead to search and Pricing, not to a Watches page with nothing behind it.
+    await p.goto(`${GH}/explore`);
+    const outTabs = await p.getByRole("navigation", { name: "Main" }).first().getByRole("link").allInnerTexts();
+    assert.deepEqual(outTabs.map((t) => t.trim()), ["Explore", "New watch", "Pricing"]);
+    await p.getByRole("navigation", { name: "Footer" }).getByRole("link", { name: "Pricing" }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });

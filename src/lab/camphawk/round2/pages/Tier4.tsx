@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { ART } from "../Art";
 import { ROUTES } from "../gates";
-import { A, Callout, H2, LabPage, P, Prose, Ul } from "../LabPage";
+import { A, Callout, H2, LabNote, LabPage, P, Prose, Ul, WithRail } from "../LabPage";
 import { SmsAlerts } from "../SmsAlerts";
 import { ADDITIONAL_PORTALS, AFFILIATION_DISCLAIMER, DATA_SOURCES } from "./sources-data";
 import type { Visitor } from "../../data";
@@ -70,7 +70,7 @@ function supportSections(visitor: Visitor) {
     { id: "subscription", title: "Managing your subscription", body: <>
       <P>Searching is free forever. Watching a booked campground, text alerts and auto-cart come with a subscription. <strong className="font-bold text-ch-ink">Where you manage it depends on where you started it.</strong></P>
       <Ul items={[
-        <>Started on <A href={ROUTES.home} visitor={visitor}>camphawk.app</A>: open Settings → Subscription → Manage billing, on the website or in the app.</>,
+        <>Started on <A href={ROUTES.home} visitor={visitor}>camphawk.app</A>: open Settings → Subscription → Manage subscription, on the website or in the app.</>,
         // Hidden inside the iPhone app (Apple 2.3.10: no naming other mobile platforms).
         ...(visitor === "app" ? [] : [<>Started inside the <strong className="font-bold text-ch-ink">Android app</strong>: Google Play holds it. Settings → Subscription in the app opens Play for you, or go to the Play Store → Payments and subscriptions.</>]),
         <>Started inside the <strong className="font-bold text-ch-ink">iPhone app</strong>: Apple holds it. Settings → Subscription in the app opens the App Store for you, or go to Settings → your name → Subscriptions on the phone.</>,
@@ -98,36 +98,42 @@ export function Sources() {
   return (
     <LabPage page="Data sources" title="Where CampHawk’s information comes from" dock={false} wide photo={{ art: ART.c1, pos: "60% 60%", posLg: "50% 55%" }}>
       {() => (
-        <Prose className="max-w-[80ch]">
+        <WithRail toc={[["how", "How the data is obtained"], ["official", "Official sources"], ["portals", "Additional portals"], ["accuracy", "Accuracy"], ["questions", "Questions"]]}>
+        <Prose>
           {/* First and unmissable: Google Play rejected the listing when this sat at the bottom. */}
           <Callout title="CampHawk is not a government app." className="mt-0 border-ch-ink-2">{AFFILIATION_DISCLAIMER}</Callout>
-          <H2 className="mt-12">How the data is obtained</H2>
+          <H2 id="how" className="mt-12">How the data is obtained</H2>
           <P>CampHawk does not create campground or availability information. It reads what the official reservation systems below publish, and shows it to you unchanged. When a campsite opens up, CampHawk sends you to that same official site to book it — every reservation, payment and cancellation happens there, under that agency’s terms, not CampHawk’s.</P>
-          <H2>Official sources</H2>
-          <ul className="mt-5 grid gap-3">
+          <H2 id="official">Official sources</H2>
+          {/* One compact list, the same rows as the portals below (round 12: 14 padded cards made the
+              longest page in the lab for the least information). */}
+          <ul className="mt-5 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {DATA_SOURCES.map((s) => (
-              <li key={s.key} className="rounded-ch-card border border-ch-line bg-ch-card px-5 py-4 shadow-ch-card">
-                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[17px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                <p className="mt-1 text-[15px] text-ch-ink-2">{s.coverage}</p>
-                <p className="mt-1 break-all text-[14px] text-ch-muted">{s.url}</p>
+              <li key={s.key} className="px-5 py-3.5">
+                <span className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{s.name}<span className="sr-only"> (opens in a new tab)</span></a>
+                  <span className="break-all text-[14px] text-ch-muted">{s.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+                </span>
+                <span className="mt-0.5 block text-[15px] text-ch-ink-2">{s.coverage}</span>
               </li>
             ))}
           </ul>
-          <H2>Additional official portals</H2>
+          <H2 id="portals">Additional official portals</H2>
           <P>Some of the sources above serve more than one state or province, or publish through a separate open-data service. Those portals are:</P>
           <ul className="mt-4 divide-y divide-ch-line rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
             {ADDITIONAL_PORTALS.map((p) => (
               <li key={p.url} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3">
                 <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{p.name}<span className="sr-only"> (opens in a new tab)</span></a>
-                <span className="break-all text-[14px] text-ch-muted">{p.url}</span>
+                <span className="break-all text-[14px] text-ch-muted">{p.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
               </li>
             ))}
           </ul>
-          <H2>Accuracy</H2>
+          <H2 id="accuracy">Accuracy</H2>
           <P>Availability changes constantly and CampHawk can only report what a reservation system told it at the time it last checked. The official site linked from every campground page and every alert is always the authority. If the two disagree, the official site is correct.</P>
-          <H2>Questions</H2>
+          <H2 id="questions">Questions</H2>
           <P>Email <Mail /> and a human will answer.</P>
         </Prose>
+        </WithRail>
       )}
     </LabPage>
   );
@@ -202,7 +208,7 @@ export function Privacy() {
 export function Terms() {
   return (
     <LabPage page="Terms" title="CampHawk Terms of Service" sub="Last updated: September 30, 2026" dock={false} wide>
-      {({ visitor }) => <Sections sections={TERMS(visitor)} aside={<p className="mt-4 border-t border-ch-line pt-3 text-[13px] leading-relaxed text-ch-ink-2">CampHawk’s published text, as is. Its billing line predates app-store billing (see Support).</p>} />}
+      {({ visitor }) => <Sections sections={TERMS(visitor)} aside={<LabNote className="mt-4">CampHawk’s published text, as is. Its billing line predates app-store billing (see Support).</LabNote>} />}
     </LabPage>
   );
 }

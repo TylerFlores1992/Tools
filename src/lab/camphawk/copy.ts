@@ -6,7 +6,7 @@ import { CAMPGROUNDS_ROUNDED } from "./data";
 
 export const HEADLINE = "The campsite you wanted is already booked. We wait for it.";
 export const INTRO = `CampHawk watches booked campgrounds around the clock and tells you the second someone cancels — usually within seconds. Live search across ${CAMPGROUNDS_ROUNDED} campgrounds is always free.`;
-export const FOOTER_LINKS = ["Support", "Data sources", "Terms", "Privacy"] as const;
+export const FOOTER_LINKS = ["Pricing", "Support", "Data sources", "Terms", "Privacy"] as const;
 
 export const FEATURES = [
   { icon: Clock, title: "Alerts in seconds", body: "We check watched campgrounds every 15 seconds, around the clock. When someone cancels, you hear about it within seconds of the site coming back — not after someone else has booked it." },

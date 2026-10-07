@@ -124,7 +124,7 @@ export function AutoCartGuide() {
             <><strong className="text-ch-ink">One grab per site.</strong> Once a specific site is carted for you, it won’t be re-added — but a different site opening in the same campground still will.</>,
             <>This automates <em>your own</em> account for personal use. Keep your watches current so it knows what to grab.</>,
           ]} />
-          <CtaBand title="Set up a watch, and let auto-cart do the fast part." action={<WatchCtaLink visitor={visitor} fullWidth={false} onDark className="min-h-12 px-6" />} />
+          <CtaBand title="Find your campground, then let auto-cart do the fast part." body="Searching is free and needs no account." action={<WatchCtaLink visitor={visitor} fullWidth={false} onDark className="min-h-12 px-6" />} />
         </Prose>
         </WithRail>
       )}

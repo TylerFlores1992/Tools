@@ -45,7 +45,7 @@ type Page = "ready" | "loading";
 const MANAGE: Record<Billing, { label: string; detail: string }> = {
   play: { label: "Manage on Google Play", detail: "Google Play bills this subscription. Change your plan or cancel it there — anything you change applies to CampHawk right away." },
   "app-store": { label: "Manage in the App Store", detail: "Apple bills this subscription. Change your plan or cancel it from your App Store account — anything you change applies to CampHawk right away." },
-  stripe: { label: "Manage billing", detail: "CampHawk bills this subscription directly. Update your payment method or cancel in the billing portal." },
+  stripe: { label: "Manage subscription", detail: "CampHawk bills this subscription directly. Update your payment method or cancel in the billing portal." },
   "not-billed": { label: "Contact support", detail: "Your CampHawk access isn’t billed through a card or an app store, so there’s nothing to manage here. If you expected to be paying for this, get in touch and we’ll sort it out." },
   unknown: { label: "Get help with your subscription", detail: "We couldn’t check your subscription just now, so we can’t say where it’s billed. If you subscribed inside the app, manage it from your Google Play or App Store account; if you subscribed on camphawk.app, manage it in the billing portal." },
 };
@@ -152,7 +152,7 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
       {connected && (
         <div className="flex flex-wrap items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-bold text-ch-ink">{state === "on" ? "Auto-cart is on" : "Auto-cart is off"}</p>
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[15px] font-bold text-ch-ink">Auto-cart{tag}</p>
             <p className="text-[13px] text-ch-ink-2">Session confirmed 12 minutes ago.</p>
           </div>
           <button type="button" disabled={saving} onClick={() => { setSaving(true); window.setTimeout(() => { setSaving(false); setState(state === "on" ? "off" : "on"); }, 500); }} className={sm(state === "on" ? "quiet" : "cart", off)}>
