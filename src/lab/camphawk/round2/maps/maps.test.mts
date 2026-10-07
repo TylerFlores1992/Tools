@@ -46,9 +46,12 @@ test("nearest restroom is the straight-line distance to the closest one, in feet
 
 test("the scale bar is a round number of feet near a fifth of the map's width", () => {
   const { ft, metres } = scaleBar(map);
-  assert.ok([50, 100, 200, 250, 300, 500, 1000, 2000].includes(ft));
+  assert.ok([25, 50, 100, 200, 250, 300, 500, 1000, 2000].includes(ft));
   assert.ok(Math.abs(metres * 3.28084 - ft) < 1e-9);
   assert.ok(metres > map.frame.w / 10 && metres < map.frame.w / 3);
+  // Zoomed, the bar shrinks with the view instead of running off it.
+  const z = scaleBar(map, 3.5);
+  assert.ok(z.metres < metres && z.metres < map.frame.w / 3.5 / 2);
 });
 
 test("type labels read after a comma, with RV kept as an initialism", () => {

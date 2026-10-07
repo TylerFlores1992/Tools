@@ -69,7 +69,7 @@ const mLon = 111412.84 * Math.cos(rad) - 93.5 * Math.cos(3 * rad);
 const r1 = (v) => Math.round(v * 10) / 10;
 const xy = ([lon, lat]) => [r1((lon - lon0) * mLon), r1(-(lat - lat0) * mLat)];
 
-const PAD = 70; // metres of context around the outermost sites
+const PAD = 55; // metres of context around the outermost sites
 const xs = placed.map((s) => xy([s.lon, s.lat])[0]), ys = placed.map((s) => xy([s.lon, s.lat])[1]);
 const frame = { x: r1(Math.min(...xs) - PAD), y: r1(Math.min(...ys) - PAD), w: r1(Math.max(...xs) - Math.min(...xs) + 2 * PAD), h: r1(Math.max(...ys) - Math.min(...ys) + 2 * PAD) };
 // The frame back in degrees, to ask the map services for what's inside it.
@@ -147,6 +147,21 @@ const pathOf = (parts, close) => parts
   .filter((p) => p.length > (close ? 2 : 1))
   .map((p) => "M" + fmt(p) + (close ? "Z" : "")).join("");
 
+// Which way a site's number goes: straight away from the nearest campground road, so it sits on
+// the outside of the loop beside its own dot instead of on the road or under the next site.
+const roadSegs = roads.flatMap((f) => lines(f.geometry).flatMap((p) => { const m = p.map(xy); return m.slice(1).map((b, i) => [m[i], b]); }));
+function awayFromRoad([x, y]) {
+  let best = null;
+  for (const [[ax, ay], [bx, by]] of roadSegs) {
+    const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
+    const t = L ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / L)) : 0;
+    const px = ax + t * dx, py = ay + t * dy, d = Math.hypot(x - px, y - py);
+    if (!best || d < best.d) best = { d, px, py };
+  }
+  if (!best || best.d < 0.5) return [0, 1];
+  return [Math.round(((x - best.px) / best.d) * 100) / 100, Math.round(((y - best.py) / best.d) * 100) / 100];
+}
+
 const kept = (arr) => arr.filter((f) => f.d);
 
 /** Where a name goes: the middle of its longest straight-ish run inside the frame, along it.
@@ -196,6 +211,7 @@ const out = {
         name: s.name,
         type: s.type,
         at: s.lat && s.lon ? xy([s.lon, s.lat]) : null,
+        out: s.lat && s.lon ? awayFromRoad(xy([s.lon, s.lat])) : undefined,
         accessible: s.accessible || a.Accessibility === "Y",
         maxVehicleFt: num("Max Vehicle Length"),
         maxPeople: num("Max Num of People"),

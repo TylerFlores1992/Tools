@@ -9,6 +9,8 @@ export type MapSite = {
   type: string;
   /** Null when the provider publishes no point for this site. */
   at: [number, number] | null;
+  /** Unit vector pointing away from the nearest campground road: where the number goes. */
+  out?: [number, number];
   accessible: boolean;
   maxVehicleFt?: number;
   maxPeople?: number;
@@ -56,10 +58,11 @@ export function nearestRestroomFt(map: SiteMapData, site: MapSite): number | nul
   return Number.isFinite(best) ? Math.round((best * 3.28084) / 10) * 10 : null;
 }
 
-/** A scale bar that is a round number of feet and about a fifth of the map's width. */
-export function scaleBar(map: SiteMapData): { ft: number; metres: number } {
-  const target = (map.frame.w / 5) * 3.28084;
-  const ft = [50, 100, 200, 250, 300, 500, 1000, 2000].reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
+/** A scale bar that is a round number of feet and about a fifth of the visible width (the whole
+    frame, or a zoomed part of it: `zoom` is drawn width over visible width). */
+export function scaleBar(map: SiteMapData, zoom = 1): { ft: number; metres: number } {
+  const target = (map.frame.w / zoom / 5) * 3.28084;
+  const ft = [25, 50, 100, 200, 250, 300, 500, 1000, 2000].reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
   return { ft, metres: ft / 3.28084 };
 }
 

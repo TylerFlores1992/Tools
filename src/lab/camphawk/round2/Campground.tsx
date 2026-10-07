@@ -242,9 +242,9 @@ function NoMap({ name, provider }: { name: string; provider: string }) {
     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card sm:mt-5 sm:p-6">
       <div>
         <h2 className="font-ch-display text-[19px] font-bold text-ch-ink">Site map</h2>
-        <p className="mt-1 text-[15px] text-ch-ink-2">We haven&apos;t drawn a map of {name} yet. {provider} has one.</p>
+        <p className="mt-1 text-[15px] text-ch-ink-2">We haven&apos;t drawn a map of {name} yet. You can see its sites on {provider}.</p>
       </div>
-      <a href="#" className={buttonClasses({ variant: "cart", className: "px-5" })}>See the map on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+      <a href="#" className={buttonClasses({ variant: "cart", className: "px-5" })}>See the sites on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
     </div>
   );
 }
