@@ -42,4 +42,33 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
 - Anything new: USGS water (hydro.nationalmap.gov) timed out on many maps and the build fell back to OSM water, which made the build slow (about 80 minutes for 90 maps). Two listings (232655, 233703) each have one site placed 14 to 28 km away, across the lake from the rest.
 - Time: build 16:22 to 17:30; first look and traces overlapping, done 17:46.
 
+
+## Wave 15 (us-south, multi)
+- Built 91, failed 0 (232562 Cricket Creek and 232619 Lakeview Park failed once on `osmium getid` of an OSM relation; the retry built both)
+- Check: ready 44, review 46, not drawn 1 (after the split rebuilds)
+- First look: good 12, usable 34, hold 31, unsure 14
+- Traced: 251938 (west loop past 017 to 022), 232582 (road through the campground and the west loop past 18 to 39). Both checked over the photo after the rebuild; nudged 251938's south arc by 3 m.
+- Split calls: 232513 (five fingers), 232557 (two), 232602 (two, 900 m), 233469 (two across a cove), 233527 (three either side of a bridge), 233581 (two across a marina), 234665 (loop and group sites 1 km off), 234726 (two loops 1 km apart). All rebuilt and looked at; the areas follow the real places.
+- Held, and why:
+  - 10218892, 240242: half the sites have no road, under full canopy
+  - 232423: not drawn (27% stacked); sites between and outside the loops
+  - 232513: five areas right, but the long point and two fingers have no roads
+  - 232515: sites 20 to 40 m off the visible roads all round; points look shifted
+  - 232568, 232722: no campground roads; lanes under canopy
+  - 232571, 232562: only a through road; sites in the trees 30 to 60 m off
+  - 232582: traced the west half; the east point is under canopy
+  - 232609, 232747, 233457, 233508, 234478, 232698: drawn roads cut across lawns or trees beside the real lanes (replace traces needed)
+  - 232634: north area's lanes drawn in the wrong places; south under canopy
+  - 232665, 232684, 232662, 233650: no campground lanes drawn though they show plainly (trace candidates)
+  - 232677: almost nothing drawn; lanes only in pieces
+  - 232704, 233590: most visible lanes undrawn
+  - 233493: lanes by the river and in the east woods undrawn
+  - 233527, 233581: splits right, but the visible lanes in each aren't drawn
+  - 233616: four places; east loops cut across trees, west sites have no road
+  - 233633: 01 to 30 in the west woods with no road, 300 m from the loop
+  - 233658: no roads; site 25 placed 14 km away
+  - 233678: north arm's road 5 to 15 m off the gravel lane
+- Anything new: the hold share is higher than wave 14 (31 of 91). Most of the extra holds are not canopy: OSM in eastern Oklahoma and Arkansas often has the park road but not the campground lanes, or has them drawn off the pavement. Fourteen of the holds (232665, 232684, 232662, 233650, 232609, 232747, 233457, 233508, 234478, 232698, 232704, 233590, 232634, 233678) have lanes plainly visible in the open and could be traced (several need a replace trace). I didn't trace them all in this batch, to leave time for wave 16. A third listing (233658) has one site placed 14 km off.
+- Time: build 17:47 to about 19:15; first look done 20:05.
+
 STATUS: started
