@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-247867",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.121123,
+     39.3216318
+    ],
+    [
+     -120.1212448,
+     39.3216165
+    ],
+    [
+     -120.1214431,
+     39.3215507
+    ],
+    [
+     -120.1216425,
+     39.3214895
+    ],
+    [
+     -120.1218211,
+     39.3214273
+    ],
+    [
+     -120.1219406,
+     39.321366
+    ],
+    [
+     -120.1220102,
+     39.3213192
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved lane across the middle of the loop from the east side to the restroom. Left out the short pull-in spurs to the outer sites, the inner lanes to 19 to 24 (partly under trees), and the faint lane south from the restroom, which fades before reaching the loop."
+}

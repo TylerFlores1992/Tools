@@ -1,0 +1,22 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 03.",
+ "listings": [
+  {
+   "id": "232498",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "Upper Scorpion (001 to 022) and the lower camp (A to F, 023 to 025) are separate groves about 500 m apart along the road.",
+   "gap": 150
+  },
+  {
+   "id": "233585",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "The A to O group loop sits about 700 m southwest of the shoreline campground, across fields.",
+   "gap": 150
+  }
+ ]
+}
