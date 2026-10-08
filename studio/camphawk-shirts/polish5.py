@@ -26,11 +26,15 @@ for _ in range(3):                                   # repeat: filling can creat
             if len(vals): lab[sl][blob] = np.bincount(vals + 1).argmax() - 1; changed += 1
     print("filled", changed)
     if not changed: break
-# a snow stripe on the right face ended in a straight vertical cut (x 2148, y 847-915, from the source art):
-# cut its end on a diagonal like the strokes around it, so it tapers to a point
-yy, xx = np.mgrid[840:922, 2060:2150]
-cut = ((xx - 2075) * (915 - 847) - (yy - 847) * (2149 - 2075)) > 0
-blk = lab[840:922, 2060:2150]; blk[cut & (blk == 2)] = 0
+# a snow stripe on the right face ended in a straight vertical cut (x 2148, y 847-915, from the source art).
+# Round 6 cut it on a diagonal inside a box, which left a ruler-flat edge at the box's top (round 9 review);
+# now the stripe's end tapers to a point at the middle of the old cut, inside a cone about its own axis
+T = np.array([2148.0, 881.0]); ax = np.array([-0.62, -0.78]); ax /= np.hypot(*ax)
+yy, xx = np.mgrid[760:930, 1990:2160]
+vx, vy = xx - T[0], yy - T[1]; along = vx * ax[0] + vy * ax[1]; across = np.abs(vx * ax[1] - vy * ax[0])
+cone = (along < 0) | ((along < 110) & (across > along * 0.42))
+blk = lab[760:930, 1990:2160]; ml, _ = nd.label(blk == 2); stripe = ml == ml[881 - 760, 2140 - 1990]   # that stripe only
+blk[cone & stripe] = 0
 # round 7 review: the lower-left snowfield's four forest tongues read as one repeated swoosh (same curve, length
 # and spacing). One is cut back by about 40%, the long low one is broken by a 2.2 mm gap of snow, and one is
 # drawn out about 6 mm further, tapering.
@@ -41,14 +45,13 @@ def band(tip, d, a0, a1, half, taper=False):
     al, ac = (xx - tip[0]) * d[0] + (yy - tip[1]) * d[1], np.abs((xx - tip[0]) * -d[1] + (yy - tip[1]) * d[0])
     w = half * (np.clip((a1 - al) / (a1 - a0), 0, 1) ** 0.8 if taper else 1)
     return (slice(y0, y0 + 400), slice(x0, x0 + 400)), (al >= a0) & (al <= a1) & (ac <= w)
-def gouge_end(sl, m):
-    """Snow over the forest in m, then the cut ends rounded like a gouge's (an opening of the forest near the cut)."""
-    blk = lab[sl]; blk[m & (blk == 0)] = 2
-    near = nd.binary_dilation(m, iterations=40); f = blk == 0
-    rounded = nd.binary_opening(f, structure=np.hypot(*np.mgrid[-11:12, -11:12]) <= 11.5)
-    blk[near & f & ~rounded] = 2
-gouge_end(*band((920, 1375), (0.82, -0.57), -10, 105, 22))     # cut back
-gouge_end(*band((1270, 1392), (0.91, -0.40), -16, 16, 34))     # broken
+def taper_back(tip, d, cut, run, half):
+    """Cut a forest tongue back by `cut` px from its tip, the new end narrowing to a knife point over `run` px
+    (round 8's rounded cut-back and the 2.2 mm break read as square notches, round 9 review)."""
+    sl, m = band(tip, d, -10, cut + run, half); d = np.array(d) / np.hypot(*d)
+    yy, xx = np.mgrid[sl]; al = (xx - tip[0]) * d[0] + (yy - tip[1]) * d[1]; ac = np.abs((xx - tip[0]) * -d[1] + (yy - tip[1]) * d[0])
+    gone = m & ((al < cut) | (ac > half * (al - cut) / run)); blk = lab[sl]; blk[gone & (blk == 0)] = 2
+taper_back((920, 1375), (0.82, -0.57), 70, 90, 22)          # cut back about 40%, ending in a point
 sl, m = band((1246, 1281), (-0.82, 0.57), -6, 72, 11, True); blk = lab[sl]; blk[m & (blk == 2)] = 0  # drawn out
 out = np.zeros(a.shape, np.uint8)
 for k, c in enumerate(INKS): out[lab == k] = c + (255,)

@@ -50,14 +50,14 @@ const spline = (Pts, n = 10) => { const out = [], m = Pts.length;
     for (let s = 0; s < n; s++) { const t = s / n, f = (a, b, c, d) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t ** 3);
       out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]); } } return out; };
 function fire() {
-  const k = 1.55 * MM, bx = FIRE_X, by = GROUND - 2.6 * k;          // the flame's base sits down in the logs
+  const k = 1.2 * MM, bx = FIRE_X, by = GROUND - 2.6 * k;           // the flame's base sits down in the logs; 80% of the tent's height
   // in k units from the flame's base, y up; tips doubled so they stay sharp. Three tongues at about 100, 70
   // and 50% (round 7's side tongues were nubs): the tall one leaning left, the middle one right, the short one
   // tucked in on the left
   const F = [[0, -0.6], [2.5, -0.2], [3.5, 1.4], [3.8, 3.4], [4.0, 5.4], [4.1, 7.4], [4.1, 7.4], [3.0, 6.0], [2.0, 5.2], [1.8, 7.6], [1.0, 10.6], [-0.9, 13.4], [-0.9, 13.4],
     [-1.5, 10.6], [-1.6, 7.0], [-1.9, 3.9], [-2.7, 4.4], [-3.5, 5.0], [-3.5, 5.0], [-3.8, 3.0], [-3.4, 1.0], [-2.4, -0.2]];
   const flame = path(spline(F.map(([x, y]) => [bx + x * k, by - y * k])));
-  const heart = lens(bx + 0.3 * k, by - 0.2 * k, bx - 0.6 * k, by - 6.6 * k, 1.6 * MM);   // a dark tongue inside the lit flame
+  const heart = lens(bx + 0.5 * k, by + 0.2 * k, bx - 0.7 * k, by - 8.6 * k, 2.4 * MM);   // the light inner tongue cut into it
   // two logs crossing at about 25 degrees, round-ended, with open space under the crossing (round 7's ember
   // wedge filled it and the logs read as one bar)
   const half = 5.8 * k, rise = 2.6 * k, g = GROUND - 0.9 * k;
@@ -102,7 +102,7 @@ function water(withGlow) {
   for (let i = 0; i < rows; i++) {
     const p = i / (rows - 1);
     const half = 1480 * Math.sqrt(1 - (0.55 * p) ** 2) - 260 * p;
-    const t = (1.45 + 1.3 * p) * MM;                               // 1.45 mm near the shore, 2.75 mm nearest the viewer
+    const t = (1.45 + 0.45 * p) * MM;                              // 1.45 mm near the shore, 1.9 mm nearest the viewer (2.75 was as heavy as the rock)
     const hw = 0.25 * IN * (1 - 0.3 * p), a = FIRE_X - hw + (r() - 0.5) * 30, b = FIRE_X + hw + (r() - 0.5) * 30;
     // each side is laid out from the lane outward to the same reach, so the lake is even about the fire's axis
     let reach = half;                                              // the right side stops where the left did
@@ -114,14 +114,17 @@ function water(withGlow) {
         if (Math.abs(x2 - x) > 80) { ink += side < 0 ? dash(x2, x, y, t, r) : dash(x, x2, y, t, r); far = x2; }
         x = x2 + side * (60 + 90 * p) * (0.7 + r() * 0.8);
       }
-      if (side < 0) reach = CX - far;
+      if (side < 0) reach = CX - far + (i % 2 ? 1 : -1) * (0.06 + r() * 0.1) * IN;   // near the left's reach, not a stamp
     }
     // the fire's light: the row carries on through the lane broken into short cut strokes, 3.5-6 mm with
     // 1.8-2.4 mm between (mist on three inks, forest on one); the shirt between them is the glitter. These are
     // drawn outside the wobble, which turned strokes this short into blobs
-    for (let sx = a + (0.3 + rg() * 0.8) * MM; sx < b - 3 * MM;) {
+    if (withGlow) for (let sx = a + (0.3 + rg() * 0.8) * MM; sx < b - 3 * MM;) {
       const l = Math.min((3.5 + rg() * 2.5) * MM, b - sx);
-      glow += dash(sx, sx + l, y, withGlow ? Math.max(1.3 * MM, t * 0.7) : Math.max(1.0 * MM, t * 0.5), rg); sx += l + (1.8 + rg() * 0.6) * MM; }   // the round caps eat about 0.5 mm of each gap
+      glow += dash(sx, sx + l, y, Math.max(1.3 * MM, t * 0.7), rg); sx += l + (1.8 + rg() * 0.6) * MM; }   // the round caps eat about 0.5 mm of each gap
+    // one ink: the lane stays open shirt with two short ticks per row (slivers all the way across read as a
+    // dotted line, round 9 review)
+    else for (const f of [0.22 + rg() * 0.12, 0.62 + rg() * 0.12]) { const sx = a + (b - a) * f; glow += dash(sx, sx + 3.6 * MM, y, 1.15 * MM, rg); }
     y += t + (2.0 + 2.6 * p) * MM * (0.75 + r() * 0.5);               // uneven row spacing
   }
   return { ink, glow, end: y };
@@ -132,7 +135,7 @@ const HAWK_W = 1.8 * IN, HAWK_CX = 2650, HAWK_CY = 545, HAWK_ROT = 2;
 // feather cuts in the hawk's own units (1290 x 975): gouges driven in from the trailing edge, each a lens centred
 // on the edge so only its inner half shows, widest where it opens and tapering into the wing (closed cuts read
 // as windows in round 6, and their pointed ends filled in at print). Three on the raised wing, of different
-// lengths, one on the lower wing; plus a 1.5 mm eye (a 1.2 mm eye is under the 1.5 mm2 pinhole fill)
+// lengths, one on the lower wing; plus an almond eye, 2.3 x 1.3 mm (a round one read as cartoonish; under 1.5 mm2 it would fill)
 const FEATHERS = [[158, 577, 242, 353], [357, 715, 413, 565], [1027, 1052, 969, 872]], EYE = [884, 645];
 // the near wing: the source's was a short stub that read as a second beak, so it is replaced by the far wing's
 // shape (with its fingers) turned and mirrored onto the near shoulder at 72% (round 7 review)
@@ -141,7 +144,7 @@ const hawkShape = (fill) => `<clipPath id="hkRaised"><path d="M0 0 L760 0 L690 6
   <g clip-path="url(#hkNoNear)"><path fill="${fill}" d="${P.hawkSil}"/></g><g transform="${NEAR_WING}"><path clip-path="url(#hkRaised)" fill="${fill}" d="${P.hawkSil}"/></g>`;
 // the cuts are knockouts to the shirt on both shirts (mist-filled cuts spilled past the wing and read as teeth)
 const hawk = (fill) => { const h = (HAWK_W * HAWK.h) / HAWK.w, k = HAWK.w / HAWK_W;
-  const er = 0.85 * MM * k, eye = `M ${EYE[0] - er} ${EYE[1]} a ${er} ${er} 0 1 0 ${2 * er} 0 a ${er} ${er} 0 1 0 ${-2 * er} 0 Z`;
+  const eye = lens(EYE[0] - 1.15 * MM * k, EYE[1] + 0.15 * MM * k, EYE[0] + 1.15 * MM * k, EYE[1] - 0.15 * MM * k, 1.3 * MM * k);   // an almond, 2.3 x 1.3 mm
   const cuts = FEATHERS.map(([a, b, c, d], i) => lens(a, b, c, d, (1.8 - 0.15 * (i % 2)) * MM * k)).join(" ") + " " + eye;
   const inner = `<mask id="hk" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1600" height="1300"><rect x="-100" y="-100" width="1600" height="1300" fill="#fff"/><path fill="#000" d="${cuts}"/></mask><g mask="url(#hk)">${hawkShape(fill)}</g>`;
   return `<g transform="translate(${HAWK_CX} ${HAWK_CY}) rotate(${HAWK_ROT}) scale(-1 1) translate(${-HAWK_W / 2} ${-h / 2})"><svg width="${HAWK_W}" height="${h}" viewBox="0 0 ${HAWK.w} ${HAWK.h}" overflow="visible">${inner}</svg></g>`; };
@@ -158,11 +161,12 @@ export function design(v) {
   const { fg, glow } = INK[v];
   const peakImg = (extra = "") => `<image href="${b64(`out5/peak-${v}.png`)}" x="0" y="0" width="${W}" height="4037"${extra}/>`; // both peaks come from the same 3450 x 4037 drawing
   const t = tent(), f = fire(), w = water(!!glow);
-  const capH = 0.7 * WORD_SIZE, wordY = w.end + 0.4 * IN + capH - 40, tagY = wordY + 0.35 * IN + TAG_SIZE * 0.72;
-  // the tent is ink with lit cuts; the fire is the brightest thing in the camp: a light flame (mist on three
-  // inks, bare shirt on one) keylined in forest, with a dark heart, behind two crossed logs
-  const tentShapes = `${t.body} ${t.pole}`, tentLit = `${t.door} ${t.cut}`, KEY = 1.2 * MM;
-  const fireArt = `<path d="${f.flame}" fill="${glow ?? "none"}" stroke="${fg}" stroke-width="${KEY}" stroke-linejoin="round"/><path fill="${fg}" d="${f.heart}"/>`
+  const capH = 0.7 * WORD_SIZE, wordY = w.end + 0.55 * IN + capH - 40, tagY = wordY + 0.35 * IN + TAG_SIZE * 0.72;
+  // the tent and the fire are both carved the same way: solid ink with lit cuts (mist on three inks, bare shirt
+  // on one). Round 8's outlined flame was the only line drawing in a print of solid shapes and faded on snow
+  const tentShapes = `${t.body} ${t.pole}`, tentLit = `${t.door} ${t.cut}`;
+  const fireArt = (glow ? `<path fill="${fg}" d="${f.flame}"/><path fill="${glow}" d="${f.heart}"/>`
+      : `<mask id="fl" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="4000"><rect width="${W}" height="4000" fill="#fff"/><path fill="#000" d="${f.heart}"/></mask><path fill="${fg}" mask="url(#fl)" d="${f.flame}"/>`)
     + `<path d="${f.logs}" fill="none" stroke="${fg}" stroke-width="${f.logW}" stroke-linecap="round"/>`;
   // the rock stops about 2 mm short of the camp (snow on three inks, shirt on one), above the ground line only
   const clearPaths = (c) => `<path clip-path="url(#above)" d="${tentShapes} ${f.flame}" fill="${c}" stroke="${c}" stroke-width="${4.6 * MM}" stroke-linejoin="round"/><path clip-path="url(#above)" d="${f.logs}" fill="none" stroke="${c}" stroke-width="${f.logW + 4.6 * MM}" stroke-linecap="round"/>`;
