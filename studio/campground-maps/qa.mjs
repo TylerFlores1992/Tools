@@ -278,8 +278,8 @@ export const FIRST_COME_RULES = { outlineReachM: 250 };
  * The first-come check: the placeholder has a point, an OpenStreetMap outline holds it or lies
  * within reach, and the listing isn't marked closed. Never "ready" on a guess: no outline or a
  * closed listing waits for a person.
- * @param {{ site: { name: string, at: [number, number] | null }, outlineRings?: [number, number][][], closed?: boolean, traced?: { roads: number, points: number } }} input
- * @returns {{ verdict: "ready" | "review" | "not-drawn", reasons: { code: string, text: string }[], metrics: { kind: "firstcome", sites: number, placed: number, unplaced: string[], outlineM: number | null, closed: boolean, traced: { roads: number, points: number } }, checks: { code: string, label: string, value: string, limit: string, result: string }[] }}
+ * @param {{ site: { name: string, at: [number, number] | null }, outlines?: { ring: [number, number][], name: string }[], name?: string, closed?: boolean, traced?: { roads: number, points: number, sites?: number } }} input
+ * @returns {{ verdict: "ready" | "review" | "not-drawn", reasons: { code: string, text: string }[], metrics: { kind: "firstcome", sites: number, placed: number, unplaced: string[], outlineM: number | null, outlineName: string | null, otherName: string | null, closed: boolean, traced: { roads: number, points: number, sites?: number } }, checks: { code: string, label: string, value: string, limit: string, result: string }[] }}
  */
 export function checkFirstCome({ site, outlines = [], name = "", closed = false, traced = { roads: 0, points: 0 } }) {
   const at = site.at;
