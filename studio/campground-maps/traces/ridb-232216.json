@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-232216",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.1291719,
+     35.3274595
+    ],
+    [
+     -84.1290069,
+     35.3274865
+    ],
+    [
+     -84.1288859,
+     35.3275586
+    ],
+    [
+     -84.1288089,
+     35.3276578
+    ],
+    [
+     -84.128677,
+     35.3277479
+    ],
+    [
+     -84.128512,
+     35.327802
+    ],
+    [
+     -84.128424,
+     35.32782
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the gravel lane from the end of the drawn spur north-east into the clearing where the group site sits. Left out: the lane south from the clearing, which shows only in pieces."
+}
