@@ -23,12 +23,13 @@ test("the five maps that aren't usable stay hidden; the other 18 are approved", 
 });
 
 test("decisionProblems names each fault", () => {
-  const bad: DecisionFile = { version: 1, wave: 9, source: "", decisions: [
+  const bad: DecisionFile = { version: 2 as 1, wave: 9, source: "", decisions: [
     { id: "nope", decision: "approved", by: "x", on: "2026-10-08", note: "" },
     { id: "232471", decision: "maybe" as never, by: "", on: "Oct 8", note: "" },
     { id: "232471", decision: "hidden", by: "x", on: "2026-10-08", note: "" },
   ] };
   assert.deepEqual(decisionProblems(bad, sampleIds), [
+    "version 2 (expected 1)",
     "no source (who decided, and how)",
     "nope: not a map in this wave",
     "232471: unknown decision \"maybe\"",
