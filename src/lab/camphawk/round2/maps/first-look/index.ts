@@ -5,7 +5,12 @@
 import type { FirstLook } from "../sample-review";
 import wave01 from "./wave-01.json" with { type: "json" };
 import wave02 from "./wave-02.json" with { type: "json" };
+import wave24 from "./wave-24.json" with { type: "json" };
+import wave25 from "./wave-25.json" with { type: "json" };
+import wave33 from "./wave-33.json" with { type: "json" };
+import wave34 from "./wave-34.json" with { type: "json" };
+import wave39 from "./wave-39.json" with { type: "json" };
 
 export type LooksFile = { version: 1; wave: number; by: string; on: string; looks: Record<string, { call: FirstLook; note: string }> };
 
-export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile];
+export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile, wave24 as LooksFile, wave25 as LooksFile, wave33 as LooksFile, wave34 as LooksFile, wave39 as LooksFile];
