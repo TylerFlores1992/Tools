@@ -1020,13 +1020,32 @@ First look: 50 good, 59 usable, 127 hold, 35 unsure.
   the retry takes over; west-c sat two hours on a stalled download without it. In a local test,
   curl dropped the stalled connection and the finished file matched byte for byte.
 
+### Fix after: tracing the held maps whose lanes show (2026-10-08)
+The rollout's children listed about 60 held maps whose missing lanes show plainly on the photo.
+Two children traced them from NAIP (trace-a, trace-b), and each traced map had a fresh first look
+and a final check over the photo.
+
+**trace-a (28 maps in waves 14 to 18):** 13 now pass, 15 stay held.
+- **Passed (13):**
+  - wave 14: 232623, 234651;
+  - wave 15: 232662, 233457, 233508, 234478, 233590, 233678;
+  - wave 16: 233589, 233667, 251574, 233409;
+  - wave 18: 232625.
+- Several were `replace` traces: the source's road ran off the visible lane (233409's west lane
+  sat 8 m off it).
+- **Still held (15):** the lanes to a third or more of the sites run under full canopy, so no trace
+  can place them (the usable bar). One exception, 233650: its traced lanes
+  aren't joined to the access road yet.
+- **Borderline, passed:** 232625 Littcarr, where several B sites sit about 30 m off the lane
+  (under the 20 to 40 m spur rule), and 234478, with 28% of its sites roadless (under a third).
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,386 passed, 1,575 held to fix after) |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,399 passed, 1,562 held to fix after; 13 passed after the trace-a fix) |
 | **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).
