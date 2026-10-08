@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-10357061",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout northeast-api)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -77.2497721,
+     39.7972603
+    ],
+    [
+     -77.2496787,
+     39.7971702
+    ],
+    [
+     -77.2495853,
+     39.7970621
+    ],
+    [
+     -77.2494919,
+     39.796954
+    ],
+    [
+     -77.2494218,
+     39.7968639
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel drive from the drawn road's end down past the farmhouse's fence. Mown paths left out."
+}

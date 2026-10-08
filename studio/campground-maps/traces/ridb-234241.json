@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-234241",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout northeast-api)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -71.3665365,
+     43.996469
+    ],
+    [
+     -71.3665115,
+     43.996559
+    ],
+    [
+     -71.3665489,
+     43.996649
+    ],
+    [
+     -71.3665739,
+     43.996721
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel driveway from the highway up to the cabin. Nothing else left out."
+}

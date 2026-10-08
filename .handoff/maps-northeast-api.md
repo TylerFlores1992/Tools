@@ -22,3 +22,14 @@ every map host answered; tylerflores.dev timed out and Geofabrik reset (not need
   - 233652 Tompkins: lettered sites A to X and Loop P (across the bay) have no drawn lane
 - Anything new: many New England forest campgrounds are under full summer canopy (10 unsure). USGS water
   didn't answer for two boxes; the build used OpenStreetMap's water.
+
+## Wave 39 (us-northeast, units)
+- Built 23, failed 0
+- Check: ready 18, review 5, not drawn 0 (review: Hooks Brook has no road or trail within 700 m; four were traced)
+- First look: good 10, usable 3, hold 2, unsure 8
+- Traced: 234241 (Radeke Cabin driveway), 10004657 (Bay View House drive), 10290014 (Slyder Farmhouse lane), 10357061 (Rose Farmhouse drive)
+- Split calls: none
+- Held, and why (one line each):
+  - 10004661 Le Count Beach House: pin on a bare sandy patch with no building; houses 50 m east and 100 m west
+  - 10168556 Cottage at Sailors Haven: pin on open dune grass; the nearest roof is 35 m northwest
+- Anything new: the six Allegheny boat-access sites (10165350 to 10165540) are boat-in under full canopy, so all are unsure; a "road within 700 m" check passes for them on lakeside roads that don't reach them.
