@@ -849,6 +849,7 @@ in here.
 | west-a | 3, 4, 5 | 283 | 176 | 107 | 31 looked at (all 13 traces, all 6 splits, 12 sampled): agreed with all 31 |
 | west-units-b | 30, 31, 32 | 266 | 132 | 134 | 19 looked at (all 7 traces, 12 sampled): agreed with 17; held 2 the child passed (whole campgrounds booked as one "Standard" site) |
 | west-b | 6, 7, 8 | 283 | 189 | 94 | 18 looked at (all 3 traces, both splits, 12 sampled, plus Packard Creek's stray point): agreed with all 18 |
+| west-units-a | 26, 27, 28, 29 | 354 | 239 | 115 | 22 looked at (all 6 traces, 16 sampled): agreed with all 22 |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -912,6 +913,22 @@ look: 61 good, 128 usable, 25 hold, 69 unsure (Pacific Northwest canopy).
 - Packard Creek (232894): one site 4 km across the lake, shown as its own area; held, the same
   stray-point case as colorado's.
 - USGS's water service failed for a few maps; the build fell back to OSM water as designed.
+
+**west-units-a (2026-10-08, us-west extract, single units):** 354 built. First look: 195 good,
+44 usable, 32 hold, 83 unsure.
+- 6 traced, each the last stretch of road to a cabin or lookout, only where it was plain in the
+  open.
+- **Held units fall into two kinds.**
+  - The unit's pin is off while the listing's own point sits on the building: Kentucky Camp,
+    Fivemile Butte, Clear Lake, Whitetail, Deer Ridge, McCain and Trout Creek.
+  - The pin is 60–130 m off a building that plainly shows: Grizzly Ridge, Fall River, Ludlum, La
+    Barge and Gray Pine.
+  - A rule that tries the listing's point when the pin sits on nothing could recover the first
+    kind. It is not built.
+- Wave 29 is a third group sites. Half of them are unsure, because a group site under trees shows
+  nothing a photo can confirm.
+- One full build exited without writing its manifest: a hung request left an unsettled top-level
+  await. A re-run from the cache finished it.
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |

@@ -1,0 +1,67 @@
+{
+ "version": 1,
+ "map": "ridb-234391",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -113.3212302,
+     45.0226381
+    ],
+    [
+     -113.3213191,
+     45.0227011
+    ],
+    [
+     -113.3214333,
+     45.0227686
+    ],
+    [
+     -113.3215601,
+     45.0228405
+    ],
+    [
+     -113.321687,
+     45.0229125
+    ],
+    [
+     -113.3218139,
+     45.02298
+    ],
+    [
+     -113.3219154,
+     45.0230205
+    ],
+    [
+     -113.3219535,
+     45.023025
+    ],
+    [
+     -113.3221311,
+     45.0230205
+    ],
+    [
+     -113.3223215,
+     45.0230205
+    ],
+    [
+     -113.3225118,
+     45.0230295
+    ],
+    [
+     -113.3226767,
+     45.023052
+    ],
+    [
+     -113.3227529,
+     45.023097
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel drive from the Census road to the cabin, plain in the open; the Census line west of where they part runs across open ground and is left as drawn. Nothing else traced."
+}
