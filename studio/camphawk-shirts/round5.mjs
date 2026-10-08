@@ -50,12 +50,12 @@ const spline = (Pts, n = 10) => { const out = [], m = Pts.length;
     for (let s = 0; s < n; s++) { const t = s / n, f = (a, b, c, d) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t ** 3);
       out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]); } } return out; };
 function fire() {
-  const k = 1.25 * MM, bx = FIRE_X, by = GROUND - 2.6 * k;          // the flame's base sits down in the logs
+  const k = 1.55 * MM, bx = FIRE_X, by = GROUND - 2.6 * k;          // the flame's base sits down in the logs
   // in k units from the flame's base, y up; tips doubled so they stay sharp. Three tongues at about 100, 70
   // and 50% (round 7's side tongues were nubs): the tall one leaning left, the middle one right, the short one
   // tucked in on the left
-  const F = [[0, -0.6], [2.5, -0.2], [3.5, 1.4], [3.8, 3.8], [4.1, 6.4], [4.2, 9.2], [4.2, 9.2], [3.1, 7.4], [2.0, 6.0], [1.8, 8.0], [1.0, 10.6], [-0.9, 13.4], [-0.9, 13.4],
-    [-1.5, 10.6], [-1.6, 7.6], [-1.9, 5.0], [-2.8, 5.6], [-3.6, 6.4], [-3.6, 6.4], [-3.9, 3.6], [-3.4, 1.0], [-2.4, -0.2]];
+  const F = [[0, -0.6], [2.5, -0.2], [3.5, 1.4], [3.8, 3.4], [4.0, 5.4], [4.1, 7.4], [4.1, 7.4], [3.0, 6.0], [2.0, 5.2], [1.8, 7.6], [1.0, 10.6], [-0.9, 13.4], [-0.9, 13.4],
+    [-1.5, 10.6], [-1.6, 7.0], [-1.9, 3.9], [-2.7, 4.4], [-3.5, 5.0], [-3.5, 5.0], [-3.8, 3.0], [-3.4, 1.0], [-2.4, -0.2]];
   const flame = path(spline(F.map(([x, y]) => [bx + x * k, by - y * k])));
   const heart = lens(bx + 0.3 * k, by - 0.2 * k, bx - 0.6 * k, by - 6.6 * k, 1.6 * MM);   // a dark tongue inside the lit flame
   // two logs crossing at about 25 degrees, round-ended, with open space under the crossing (round 7's ember
@@ -77,7 +77,8 @@ function pines() { const r = rng(41); let d = "";
   return d; }
 // the shore: a low band from treeline to treeline with a rough, hand-cut top edge
 function shore() { const r = rng(21); let top = [], bot = [];
-  for (let x = 205; x <= 3170; x += 22) { top.push([x, SHORE - 8 - r() * 10]); bot.push([x, SHORE + 12 + r() * 6]); }
+  const notch = (x) => [520, 960, 2790].some((n) => Math.abs(x - n) < 15) ? 12 : 0;      // dips in the bank, clear of the camp
+  for (let x = 205; x <= 3170; x += 22) { top.push([x, SHORE - 8 - r() * 10 - 5 * Math.sin(x / 170) + notch(x)]); bot.push([x, SHORE + 12 + r() * 6]); }
   return path([...top, ...bot.reverse()]); }
 
 // ---- water ---------------------------------------------------------------------------------------------
@@ -104,20 +105,23 @@ function water(withGlow) {
     const t = (1.45 + 1.3 * p) * MM;                               // 1.45 mm near the shore, 2.75 mm nearest the viewer
     const hw = 0.25 * IN * (1 - 0.3 * p), a = FIRE_X - hw + (r() - 0.5) * 30, b = FIRE_X + hw + (r() - 0.5) * 30;
     // each side is laid out from the lane outward to the same reach, so the lake is even about the fire's axis
+    let reach = half;                                              // the right side stops where the left did
     for (const side of [-1, 1]) {
-      let x = (side < 0 ? a : b) + side * (24 + r() * 20);
-      while (side * (x - CX) < half - 60) {
+      let x = (side < 0 ? a : b) + side * (24 + r() * 20), far = x;
+      while (side * (x - CX) < reach - 60) {
         const len = (330 + 360 * p) * (0.55 + r() * 0.8) * (1 - 0.45 * Math.abs(x - CX) / half);   // shorter toward the edges
-        const x2 = side < 0 ? Math.max(x - len, CX - half) : Math.min(x + len, CX + half);
-        if (Math.abs(x2 - x) > 80) ink += side < 0 ? dash(x2, x, y, t, r) : dash(x, x2, y, t, r);
+        const x2 = side < 0 ? Math.max(x - len, CX - reach) : Math.min(x + len, CX + reach);
+        if (Math.abs(x2 - x) > 80) { ink += side < 0 ? dash(x2, x, y, t, r) : dash(x, x2, y, t, r); far = x2; }
         x = x2 + side * (60 + 90 * p) * (0.7 + r() * 0.8);
       }
+      if (side < 0) reach = CX - far;
     }
     // the fire's light: the row carries on through the lane broken into short cut strokes, 3.5-6 mm with
     // 1.2-1.8 mm between (mist on three inks, forest on one); the shirt between them is the glitter. These are
     // drawn outside the wobble, which turned strokes this short into blobs
     for (let sx = a + (0.3 + rg() * 0.8) * MM; sx < b - 3 * MM;) {
-      const l = Math.min((3.5 + rg() * 2.5) * MM, b - sx); glow += dash(sx, sx + l, y, Math.max(1.3 * MM, t * 0.7), rg); sx += l + (1.2 + rg() * 0.6) * MM; }
+      const l = Math.min((3.5 + rg() * 2.5) * MM, b - sx);
+      glow += dash(sx, sx + l, y, withGlow ? Math.max(1.3 * MM, t * 0.7) : Math.max(1.0 * MM, t * 0.5), rg); sx += l + (1.2 + rg() * 0.6) * MM; }
     y += t + (2.0 + 2.6 * p) * MM * (0.75 + r() * 0.5);               // uneven row spacing
   }
   return { ink, glow, end: y };
@@ -129,7 +133,7 @@ const HAWK_W = 1.8 * IN, HAWK_CX = 2650, HAWK_CY = 545, HAWK_ROT = 2;
 // on the edge so only its inner half shows, widest where it opens and tapering into the wing (closed cuts read
 // as windows in round 6, and their pointed ends filled in at print). Three on the raised wing, of different
 // lengths, one on the lower wing; plus a 1.5 mm eye (a 1.2 mm eye is under the 1.5 mm2 pinhole fill)
-const FEATHERS = [[158, 577, 242, 353], [238, 701, 342, 419], [347, 743, 423, 537], [1027, 1052, 969, 872]], EYE = [884, 645];
+const FEATHERS = [[158, 577, 242, 353], [357, 715, 413, 565], [1027, 1052, 969, 872]], EYE = [884, 645];
 // the near wing: the source's was a short stub that read as a second beak, so it is replaced by the far wing's
 // shape (with its fingers) turned and mirrored onto the near shoulder at 72% (round 7 review)
 const NEAR_WING = "translate(760 790) rotate(13) scale(0.72 -0.72) rotate(131.4) translate(-595 -665)";
@@ -137,7 +141,7 @@ const hawkShape = (fill) => `<clipPath id="hkRaised"><path d="M0 0 L760 0 L690 6
   <g clip-path="url(#hkNoNear)"><path fill="${fill}" d="${P.hawkSil}"/></g><g transform="${NEAR_WING}"><path clip-path="url(#hkRaised)" fill="${fill}" d="${P.hawkSil}"/></g>`;
 // the cuts are knockouts to the shirt on both shirts (mist-filled cuts spilled past the wing and read as teeth)
 const hawk = (fill) => { const h = (HAWK_W * HAWK.h) / HAWK.w, k = HAWK.w / HAWK_W;
-  const er = 0.75 * MM * k, eye = `M ${EYE[0] - er} ${EYE[1]} a ${er} ${er} 0 1 0 ${2 * er} 0 a ${er} ${er} 0 1 0 ${-2 * er} 0 Z`;
+  const er = 0.85 * MM * k, eye = `M ${EYE[0] - er} ${EYE[1]} a ${er} ${er} 0 1 0 ${2 * er} 0 a ${er} ${er} 0 1 0 ${-2 * er} 0 Z`;
   const cuts = FEATHERS.map(([a, b, c, d], i) => lens(a, b, c, d, (1.8 - 0.15 * (i % 2)) * MM * k)).join(" ") + " " + eye;
   const inner = `<mask id="hk" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1600" height="1300"><rect x="-100" y="-100" width="1600" height="1300" fill="#fff"/><path fill="#000" d="${cuts}"/></mask><g mask="url(#hk)">${hawkShape(fill)}</g>`;
   return `<g transform="translate(${HAWK_CX} ${HAWK_CY}) rotate(${HAWK_ROT}) scale(-1 1) translate(${-HAWK_W / 2} ${-h / 2})"><svg width="${HAWK_W}" height="${h}" viewBox="0 0 ${HAWK.w} ${HAWK.h}" overflow="visible">${inner}</svg></g>`; };

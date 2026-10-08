@@ -55,7 +55,7 @@ out3 = np.zeros((H, W, 4), np.uint8)
 for k, c in enumerate([(0x2A, 0x3B, 0x2E), (0x4E, 0x5C, 0x3B), (0xE2, 0xE6, 0xDC)]): out3[lab3 == k] = c + (255,)
 Image.fromarray(out3).save("out5/peak-three.png")
 # one-ink: forest solid, snow bare, moss as ink gouges on bare shirt
-g1, strokes = gouges(2.45 * MM, 1.15, 0.0)
+g1, strokes = gouges(3.8 * MM, 1.35, 0.0)
 ink = Image.fromarray((((lab == 0) | g1) * 255).astype(np.uint8)).resize((W * S, H * S), Image.NEAREST)
 inkm = np.asarray(ink.resize((W, H), Image.BOX)) >= 128
 # print floor: drop ink specks under 1 mm2 and fill shirt holes under 1 mm2
