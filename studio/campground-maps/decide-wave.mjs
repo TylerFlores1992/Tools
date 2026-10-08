@@ -13,7 +13,10 @@ import { join } from "node:path";
 const LAB = join(import.meta.dirname, "../../src/lab/camphawk/round2/maps");
 const nn = (n) => String(n).padStart(2, "0");
 
-/** The decisions file for one wave. Every built map in the manifest gets one decision. */
+/**
+ * The decisions file for one wave. Every built map in the manifest gets one decision.
+ * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], checked: number, on: string, by?: string }} opts
+ */
 export function decideWave({ wave, manifest, looks, hold = [], pass = [], checked, on, by = "Claude (final check, owner's delegation)" }) {
   const decisions = manifest.entries.filter((e) => !e.error).map((e) => {
     const call = looks[e.id]?.call;
