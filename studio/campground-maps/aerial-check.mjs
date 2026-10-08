@@ -4,6 +4,7 @@
 // a person (or a session) judges whether the points sit on real pads and the roads on real roads.
 //
 //   node studio/campground-maps/aerial-check.mjs <out-dir> <map.json>…
+//   AERIAL=usfs-r10-rgb node studio/campground-maps/aerial-check.mjs …   (another source, to compare)
 //
 // The photo is asked for in Web Mercator for the map's own bbox, with the frame's proportions,
 // so it lines up with the map's local metres (the two projections differ by far less than a
@@ -11,18 +12,19 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import sharp from "sharp";
-import { aerialSource, exportUrl, photoSize } from "../../src/lab/camphawk/round2/maps/aerial.ts";
+import { AERIAL, aerialSource, exportUrl, photoSize, sizeFor } from "../../src/lab/camphawk/round2/maps/aerial.ts";
 
 const [outDir, ...files] = process.argv.slice(2);
 if (!outDir || !files.length) { console.error("usage: aerial-check.mjs <out-dir> <map.json>…"); process.exit(1); }
 mkdirSync(outDir, { recursive: true });
 
 // The services serve at most 4,000 px a side here (aerial.ts's photoSize, as the review page). Null
-// where no public-domain photo covers the map.
+// where no public-domain photo covers the map. AERIAL=<key> (aerial.ts) asks another source, to
+// compare two photos of one place.
 export function photoUrl(map, width = 1000) {
-  const src = aerialSource(map);
+  const src = process.env.AERIAL ? AERIAL[process.env.AERIAL] : aerialSource(map);
   if (!src) return null;
-  const size = photoSize(map.frame, width);
+  const size = sizeFor(src, map.frame, width);
   return { url: exportUrl(src, map.bbox, size), ...size, src };
 }
 
@@ -42,7 +44,8 @@ for (const file of files) {
   if (!map.bbox) { console.log(`${file}: no bbox (rebuild it)`); continue; }
   const ask = photoUrl(map);
   if (!ask) { console.log(`${file}: no public-domain aerial photo covers this map (aerial.ts)`); continue; }
-  const { url, width: W, height: H, src } = ask;
+  // The PNG is 1,000 px wide whatever size the photo is asked at (a fixed-scale source; sizeFor).
+  const { url, src } = ask, { width: W, height: H } = photoSize(map.frame, 1000);
   // USGS sometimes answers 200 "image/jpeg" with a body that isn't one (2026-10-08, wave 1): a
   // photo counts only once it decodes. A map with no photo is reported and the run carries on.
   let photo;

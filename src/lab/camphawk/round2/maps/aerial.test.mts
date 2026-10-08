@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { AERIAL, PICKS, aerialSource, aerialUrl, exportUrl, photoSize, type Bbox } from "./aerial.ts";
+import { AERIAL, PICKS, aerialSource, aerialUrl, exportUrl, photoSize, sizeFor, type Bbox } from "./aerial.ts";
 
 // Real frames (RIDB facility ids and bboxes from public/private/camphawk/maps/).
 const UPPER_PINES: Bbox = [-119.5683, 37.7333, -119.5596, 37.7389];
@@ -56,4 +56,14 @@ test("the size limit and bands carry into every source's URL", () => {
     assert.ok(w <= 4000 && h <= 4000, `${s.key} ${w}×${h}`);
     assert.equal(u.searchParams.get("bandIds"), s.bands ?? null, s.key);
   }
+});
+
+test("a fixed-scale source is asked at its own scale, whatever width the caller wants", () => {
+  // Spencer Glacier's 115 × 174 m frame: the 2010 photo answers blank at 1,400 px and draws at 0.6 m a pixel.
+  const SPENCER: Bbox = [-149.2235, 60.6076, -149.2214, 60.6092];
+  assert.equal(aerialSource({ facilityId: "10300372", bbox: SPENCER })?.key, "usfs-r10-0.6m");
+  const [w, h] = new URL(aerialUrl({ facilityId: "10300372", bbox: SPENCER }, { w: 115, h: 174 }, 1400)!).searchParams.get("size")!.split(",").map(Number);
+  assert.equal(w, Math.round(115 / 0.6));
+  assert.equal(h, Math.floor((w * 174) / 115));
+  assert.deepEqual(sizeFor(AERIAL["usfs-r10"], { w: 115, h: 174 }, 1400).width, 1400, "the others take the width asked");
 });

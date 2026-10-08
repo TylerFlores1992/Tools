@@ -22,7 +22,7 @@
 // header, so the photo never loads. One limit for all keeps the callers simple.
 
 export type Bbox = [number, number, number, number];
-export type AerialKey = "naip" | "naip-hawaii" | "usfs-r10" | "usfs-r10-rgb";
+export type AerialKey = "naip" | "naip-hawaii" | "usfs-r10" | "usfs-r10-0.6m" | "usfs-r10-rgb";
 
 export interface AerialSource {
   key: AerialKey;
@@ -36,6 +36,9 @@ export interface AerialSource {
   credit: string;
   /** Who to blame when it doesn't load. */
   host: string;
+  /** Ask at exactly this many metres a pixel, whatever the width asked for: a photo the service
+      only draws at its own scale. */
+  fixedM?: number;
 }
 
 const IIPP = "https://imagery.geoplatform.gov/iipp/rest/services";
@@ -64,6 +67,18 @@ export const AERIAL: Record<AerialKey, AerialSource> = {
     credit: "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
     host: "The Forest Service’s imagery platform (IIPP)",
   },
+  // The same service, where the only photo is the 2010 0.6 m one: IIPP draws it only when asked at
+  // about 0.6 m a pixel, and answers blank finer or coarser (Spencer Glacier's 115 m frame at
+  // 1,400 px; a 1.4 km unit frame at 1,000 px). Measured 2026-10-08.
+  "usfs-r10-0.6m": {
+    key: "usfs-r10-0.6m",
+    service: `${IIPP}/Aerial_Imagery/RGBI_post2000_USFS_R10_Alaska_multiRes_Public/ImageServer/exportImage`,
+    bands: "0,1,2",
+    short: "U.S. Forest Service Alaska Region 2010 via IIPP (public domain, CC0)",
+    credit: "U.S. Forest Service Alaska Region orthophotos, 2010 (0.6 m), via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+    host: "The Forest Service’s imagery platform (IIPP)",
+    fixedM: 0.6,
+  },
   "usfs-r10-rgb": {
     key: "usfs-r10-rgb",
     service: `${IIPP}/Aerial_Imagery/RGB_post2000_USFS_R10_Alaska_multiRes_Public/ImageServer/exportImage`,
@@ -83,6 +98,8 @@ export const PICKS: Record<string, AerialKey | "none"> = {
   "234629": "usfs-r10-rgb", "10382456": "usfs-r10-rgb", "233045": "usfs-r10-rgb", "233052": "usfs-r10-rgb",
   "233088": "usfs-r10-rgb", "233089": "usfs-r10-rgb", "233090": "usfs-r10-rgb", "233091": "usfs-r10-rgb",
   "233093": "usfs-r10-rgb", "233094": "usfs-r10-rgb", "233095": "usfs-r10-rgb",
+  // Only the 2010 0.6 m photo, which must be asked for at its own scale.
+  "10300372": "usfs-r10-0.6m", "251714": "usfs-r10-0.6m",
   // Neither Forest Service service: the Dalton Highway and White Mountains (BLM), Kenai Fjords and
   // Lake Clark (Park Service), and Tongass cabins outside the flown blocks.
   "10191011": "none", "10276314": "none", "10322643": "none", "10325233": "none", "10325252": "none",
@@ -115,6 +132,12 @@ export function photoSize(frame: { w: number; h: number }, width: number): { wid
   return { width: Math.max(1, Math.floor(width * scale)), height: Math.max(1, Math.floor(height * scale)) };
 }
 
+/** The pixel size to ask a source for, for `metres` × the frame's shape: `width` wide, unless the
+    source draws only at a fixed scale. */
+export function sizeFor(src: AerialSource, frame: { w: number; h: number }, width: number): { width: number; height: number } {
+  return photoSize(frame, src.fixedM ? Math.max(1, Math.round(frame.w / src.fixedM)) : width);
+}
+
 /** One photo of `bbox` (degrees) from a source, at an exact pixel size, in Web Mercator. */
 export function exportUrl(src: AerialSource, bbox: Bbox, size: { width: number; height: number }): string {
   const q = new URLSearchParams({ bbox: bbox.join(","), bboxSR: "4326", imageSR: "3857", size: `${size.width},${size.height}`, format: "jpg", f: "image" });
@@ -125,5 +148,5 @@ export function exportUrl(src: AerialSource, bbox: Bbox, size: { width: number; 
 /** The photo of a whole map's frame, or null where no source covers it. */
 export function aerialUrl(map: { facilityId?: string; bbox: Bbox }, frame: { w: number; h: number }, width = 1400): string | null {
   const src = aerialSource(map);
-  return src && exportUrl(src, map.bbox, photoSize(frame, width));
+  return src && exportUrl(src, map.bbox, sizeFor(src, frame, width));
 }
