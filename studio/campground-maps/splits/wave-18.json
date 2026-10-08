@@ -1,0 +1,7 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 18.",
+ "listings": [
+  { "id": "10050235", "split": true, "by": "First look (Claude, rollout south-b)", "on": "2026-10-08", "note": "Two clusters: sites in the woods north of the road and a lot by the water in the south-east." }
+ ]
+}

@@ -33,3 +33,27 @@ Network: every map host answered (Geofabrik still resets, not needed).
   - The osmium exit-1 failure above (a relation crossing the extract's edge).
   - "USGS water didn't answer" on many maps (OSM water used instead), as before.
   - aerial-grid.mjs can fail with "unsupported image format" on tall frames at 1600 px; 1400 px works.
+
+## Wave 18 (us-south, multi)
+- Built 90, failed 0 (10238165 Pax River Hog Point timed out once; the retry built it)
+- Check (after traces and the split): ready 54, review 34, not drawn 2
+- First look: good 24, usable 24, hold 18, unsure 24
+- Traced (3): 233809, 232257, 232434 (each checked over the photo after the rebuild)
+- Split calls: 10050235 (Blue Ridge Park: two clusters 800 m apart; now 2 areas, each one cluster)
+- Held, and why:
+  - 10052192: sites spread over 56 km, no road, most on one spot
+  - 10187111, 10236797: all sites stacked on one point (not drawn)
+  - 10050235: split into 2 areas, but neither has a usable road
+  - 10050257: no road; sites under full canopy
+  - 10238170: G01 to G09 sit 100 to 250 m from the only drawn road
+  - 10322742: the drawn ring follows nothing; sites under canopy
+  - 232482, 232484, 251908: drawn rings don't follow the visible lanes
+  - 232596: west loop wrong; east point has no road to its sites
+  - 232625: paved lanes to B1 to B11 and 20 to 34 visible but too branched to trace safely
+  - 232657: a straight line through the middle, plus a housing subdivision's streets drawn in the frame
+  - 232700: drawn roads only partly follow the lanes under pines
+  - 232707: one straight line; sites under full canopy
+  - 232749: two points 1.3 km wide with no roads to the sites
+  - 233814: one road between the loops; B and C sites under canopy
+  - 234703: road ends at a lot; the sites' lanes don't join it
+- Anything new: nothing beyond wave 17's notes.
