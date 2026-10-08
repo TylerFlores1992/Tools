@@ -853,6 +853,7 @@ in here.
 | south-b | 17, 18, 37 | 222 | 100 | 122 | 27 looked at over the photo (all 16 traces, both splits, 9 sampled), then every `usable` note re-read: 25 of 50 usable held (see below) |
 | midwest | 19, 20, 21, 38 | 296 | 146 | 150 | 36 looked at (all 7 traces, all 17 splits, 12 sampled), then every `usable` note re-read: 47 of 112 usable held |
 | south-a | 14, 15, 16 | 271 | 109 | 162 | 24 passing maps looked at over the photo (traced and split maps that pass, 9 sampled): agreed with all 24; the child called waves 15 and 16 under the corrected `usable` bar and re-called wave 14 |
+| west-d | 12, 13 | 189 | 80 | 109 | 19 passing maps looked at over the photo (passing traces and splits, 10 sampled): agreed with all 19; the child called under the corrected `usable` bar |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -989,6 +990,17 @@ First look: 50 good, 59 usable, 127 hold, 35 unsure.
   - 232621 stacks sites two or three to a pad.
   - Three more listings have one site 14–28 km off (232655, 233703, 233658).
 - The same OSM relation (r6265485) failed `osmium getid` in four builds across three batches.
+
+**west-d (2026-10-08, us-west extract, multi-site):** 189 built. First look: 31 good, 49 usable,
+67 hold, 42 unsure.
+- 14 traced, 1 split call.
+- **New, with a clear fix: "Extra Vehicle" twins.** BLM Salmon listings (10206584, 10206603,
+  10206616, 10206646) list every site twice, "Site #N" and "Site #N Extra Vehicle" on one point,
+  so they read as stacked and aren't drawn. Dropping the twins would likely make all four
+  drawable.
+- Forest Service roads were the commonest bad source in wave 13: rings drawn beside the visible
+  loop (Lockaby, Bogus Creek, Clearwater Falls).
+- One RIDB site is literally named "This site should be deleted" (233360).
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |

@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-234107",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.3656561,
+     44.491165
+    ],
+    [
+     -111.3657819,
+     44.491138
+    ],
+    [
+     -111.3659076,
+     44.491111
+    ],
+    [
+     -111.3660208,
+     44.491075
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.3661465,
+     44.4908589
+    ],
+    [
+     -111.3662471,
+     44.4908769
+    ],
+    [
+     -111.3663477,
+     44.4909129
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Two gravel lanes traced from the photo: the one north of the drawn road past 007 and 009's pad, and the spur west to 006. The pull-ins to 002 to 004 and 010, and the track along the river, are left out (faint or under trees)."
+}

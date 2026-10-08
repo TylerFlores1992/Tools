@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-232847",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.1150061,
+     45.1580611
+    ],
+    [
+     -122.1149553,
+     45.1581061
+    ],
+    [
+     -122.1149044,
+     45.1581691
+    ],
+    [
+     -122.114879,
+     45.158259
+    ],
+    [
+     -122.1148535,
+     45.158349
+    ],
+    [
+     -122.1148408,
+     45.158421
+    ],
+    [
+     -122.1148281,
+     45.158484
+    ],
+    [
+     -122.1148026,
+     45.158538
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane northeast past Site 002, traced from the photo from where it leaves the drawn road. The lanes west of the loop to the lot by 007 to 010, and to 005, 006 and 008, are too vague under the snags to place."
+}
