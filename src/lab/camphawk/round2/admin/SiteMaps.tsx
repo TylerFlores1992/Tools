@@ -18,41 +18,52 @@ import { AerialCheck } from "./AerialCheck";
 import { TraceTool } from "./TraceTool";
 import { useSavedTraceIds, useTraceDraft } from "./useTraceDraft";
 import { withDraft } from "../maps/trace";
+import { RECORDED, type Decision } from "../maps/decisions";
 
 // Site maps: the queue where CampHawk's automatically drawn campground maps wait for a person
 // (a lab mock of a CampHawk admin section). The evidence is the interface: every verdict says
 // its reasons in words, every check shows its measurement against its limit, and every map can
-// be laid over the aerial photo of the same ground. Decisions are kept in this browser only.
+// be laid over the aerial photo of the same ground. Decisions recorded with the maps
+// (maps/decisions/) show for everyone; a click here is kept in this browser on top of them.
 
 const ORDER: Verdict[] = ["review", "not-drawn", "ready"];
 const FILTERS = [["all", "All"], ["review", "Needs a look"], ["not-drawn", "Can’t be drawn"], ["ready", "Ready"]] as const;
 type Filter = (typeof FILTERS)[number][0];
-type Decision = "approved" | "roads" | "hidden";
-
-/* ---------- decisions, kept in this browser ---------- */
+/* ---------- decisions: recorded with the maps, then this browser's clicks on top ---------- */
 
 const KEY = "lab-site-map-decisions";
 const EVT = "lab-site-map-decisions";
-function readDecisions(): Record<string, Decision> {
+// A click is saved here; "open" reopens a map whose decision is recorded with the maps (Undo).
+type Local = Record<string, Decision | "open">;
+function readLocal(): Local {
   try { return JSON.parse(window.localStorage.getItem(KEY) ?? "{}") ?? {}; } catch { return {}; }
 }
-let cache: { raw: string | null; value: Record<string, Decision> } = { raw: null, value: {} };
+const RECORDED_ONLY: Record<string, Decision> = Object.fromEntries(Object.entries(RECORDED).map(([id, r]) => [id, r.decision]));
+function merge(local: Local): Record<string, Decision> {
+  const out = { ...RECORDED_ONLY };
+  for (const [id, d] of Object.entries(local)) { if (d === "open") delete out[id]; else out[id] = d; }
+  return out;
+}
+let cache: { raw: string | null; value: Record<string, Decision> } = { raw: null, value: RECORDED_ONLY };
 function snapshot() {
   let raw: string | null = null;
-  try { raw = window.localStorage.getItem(KEY); } catch { /* storage blocked: nothing saved */ }
-  if (raw !== cache.raw) cache = { raw, value: readDecisions() };
+  try { raw = window.localStorage.getItem(KEY); } catch { /* storage blocked: only the recorded decisions */ }
+  if (raw !== cache.raw) cache = { raw, value: merge(readLocal()) };
   return cache.value;
 }
-const EMPTY: Record<string, Decision> = {};
 function useDecisions(): [Record<string, Decision>, (id: string, d: Decision | null) => void] {
   const value = useSyncExternalStore(
     (on) => { window.addEventListener(EVT, on); window.addEventListener("storage", on); return () => { window.removeEventListener(EVT, on); window.removeEventListener("storage", on); }; },
     snapshot,
-    () => EMPTY,
+    () => RECORDED_ONLY,
   );
   const set = (id: string, d: Decision | null) => {
-    const next = { ...readDecisions() };
-    if (d) next[id] = d; else delete next[id];
+    const next = { ...readLocal() };
+    const recorded = RECORDED[id]?.decision;
+    if (d === recorded) delete next[id];
+    else if (d) next[id] = d;
+    else if (recorded) next[id] = "open";
+    else delete next[id];
     try { window.localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* not saved */ }
     window.dispatchEvent(new Event(EVT));
   };
@@ -68,6 +79,7 @@ const sorted = [...SAMPLE.entries].sort((a, b) =>
   || tidyCase(a.name).localeCompare(tidyCase(b.name)));
 const lookCount = (v: Verdict, call: FirstLook) => SAMPLE.entries.filter((e) => e.verdict === v && FIRST_LOOK[e.id]?.call === call).length;
 const fmt = (n: number) => n.toLocaleString("en-US");
+const dayOf = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 export function SiteMaps() {
   const params = useSearchParams();
@@ -446,7 +458,10 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
         </p>
       )}
       {decision ? (
-        <DecisionNote decision={decision} />
+        <>
+          <DecisionNote decision={decision} />
+          {RECORDED[entry.id]?.decision === decision && <p className="mt-1 text-[13px] leading-snug text-ch-ink-2">Recorded with the maps, {dayOf(RECORDED[entry.id].on)}.</p>}
+        </>
       ) : traceChanged ? (
         <p className="text-[14.5px] leading-snug text-ch-ink-2">Approving now approves the map without your traces.</p>
       ) : (
@@ -469,7 +484,7 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
           <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary && !traceChanged ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{d === "approved" && traceChanged ? "Approve without my traces" : label}</button>
         ))}
       </div>
-      <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: decisions are saved in this browser only.</p>
+      <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: a decision made here is saved in this browser until it’s recorded with the maps.</p>
     </section>
   );
 }

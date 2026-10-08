@@ -409,19 +409,25 @@ try {
     assert.equal(await p.getByRole("region", { name: "The automatic checks" }).locator("table tbody tr").count(), 8);
     await p.getByRole("img", { name: new RegExp(`^Aerial photo of ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`) }).waitFor();
     await p.getByRole("button", { name: "Sites and roads on top" }).waitFor();
-    // At 390 the decision follows the photo (the copy beside the header is hidden there).
+    // At 390 the decision follows the photo (the copy beside the header is hidden there). The
+    // owner's decisions are recorded with the maps (maps/decisions/), so this one is decided already.
     const decision = p.getByRole("region", { name: "Your decision" });
     assert.equal(await decision.count(), 1);
-    await decision.getByRole("button", { name: "Approve map" }).click();
-    await decision.getByText("You approved it").waitFor();
+    await decision.getByText(/^Recorded with the maps, /).waitFor();
+    // Undo reopens even a recorded decision, in this browser; deciding again records the click.
+    await decision.getByRole("button", { name: "Undo" }).click();
+    await decision.getByRole("button", { name: "Keep it hidden" }).click();
+    await decision.getByText("You kept it hidden").waitFor();
+    assert.equal(await decision.getByText(/^Recorded with the maps/).count(), 0);
     // The phone page never scrolls sideways (the checks table scrolls inside its panel).
     assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), "page scrolls sideways at 390px");
-    // Back in the queue, the card says so; Undo clears it.
+    // Back in the queue, the card says so; Undo, then the recorded call again, restores it.
     await p.getByRole("link", { name: "All maps" }).click();
-    await p.locator("main ul li").filter({ hasText: name }).getByText("You approved it").waitFor();
+    await p.locator("main ul li").filter({ hasText: name }).getByText("You kept it hidden").waitFor();
     await p.locator("main ul li h3 a", { hasText: name }).click();
     await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Undo" }).click();
-    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve map" }).waitFor();
+    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve map" }).click();
+    await p.getByRole("region", { name: "Your decision" }).getByText(/^Recorded with the maps, /).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
   });
@@ -562,7 +568,11 @@ try {
     assert.ok(await p.getByRole("checkbox", { name: "Replace the source’s roads" }).isChecked());
     // The checks say what was traced; the sources say why the road source was picked.
     await p.getByRole("cell", { name: "11 roads" }).waitFor();
-    await p.getByRole("region", { name: "Your decision" }).getByText(/traced from this photo/).waitFor();
+    // Approved by the owner (recorded); reopened, the prompt names the traced roads.
+    const box = p.getByRole("region", { name: "Your decision" });
+    await box.getByText(/^Recorded with the maps, /).waitFor();
+    await box.getByRole("button", { name: "Undo" }).click();
+    await box.getByText(/traced from this photo/).waitFor();
     await ctx.close();
   });
 

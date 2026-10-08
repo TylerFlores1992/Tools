@@ -80,8 +80,11 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 - **A build waits mostly on remote services.** On 2026-10-07 USGS's hydrography service timed
   out for hours; each campground spent up to 90 s on it before falling back. Three build at once.
 - **OpenStreetMap's API is for editing, not bulk reads.** Fifty small requests is within its
-  usage policy; a rollout reads a Geofabrik extract instead (unreachable from session containers
-  on 2026-10-07, like Overpass).
+  usage policy; a rollout reads a state extract instead. Geofabrik resets the connection from
+  session containers even when allowed (2026-10-08); OpenStreetMap France's extracts answer
+  (playbook §4.1).
+- **The network must reach every host these scripts use**; the list and a one-line probe are in
+  playbook §3.4.
 
 ## Sources and terms (checked 2026-10-07)
 
