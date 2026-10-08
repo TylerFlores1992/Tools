@@ -1,0 +1,7 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 06.",
+ "listings": [
+  { "id": "233739", "split": true, "by": "First look (Claude, rollout west-b)", "on": "2026-10-08", "note": "Two clusters 800 m apart along the road: 001 to 006 at the west end, 007 to 013 at the east end." }
+ ]
+}
