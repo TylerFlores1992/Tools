@@ -463,11 +463,40 @@ try {
     await p.getByRole("heading", { level: 2, name: /^Area 1: / }).waitFor();
     await p.getByText("Site 001 is ringed on the map.").waitFor();
     // The single unit: what it is, the nearest trail and road, and where.
-    const unit = p.getByRole("region", { name: "Where it is" });
+    const unit = p.getByRole("region", { name: "Where it is", exact: true });
     await unit.getByText("What it is").waitFor();
     await unit.getByText("Nearest road on the map").waitFor();
     await unit.getByRole("link", { name: /Open in a maps app/ }).waitFor();
     assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 1280));
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab site-map layouts: a first-come campground says how to get a site, keys its map, and a closed one gives no steps", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 390, height: 844 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    await p.route(/nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    const base = `${BASE}/private/camphawk/golden-hour/admin/site-maps/layouts`;
+    await p.goto(`${base}?fc=glance&f=10165280`);
+    await signIn(p);
+    await p.waitForURL(`${base}?fc=glance&f=10165280`);
+    // Elbert Creek: mapped, so the key says what the hatching is, in words; three steps; facts.
+    const fc = p.getByRole("region", { name: "Where it is, and how to get a site" });
+    await fc.getByText("First come, first served").waitFor();
+    await fc.getByRole("list", { name: "Map key" }).getByText("The campground’s area").waitFor();
+    assert.equal(await fc.getByText("How to get a site", { exact: true }).count(), 1);
+    await fc.getByText("17 sites, by Recreation.gov’s description.").waitFor();
+    // A closed listing: the notice in words, and no steps to take a site there.
+    await p.getByRole("group", { name: "Example" }).last().getByRole("button", { name: "Closed" }).click();
+    const closed = p.getByRole("region", { name: "Where it is, and how to get a site" });
+    await closed.getByRole("note").getByText("Closed.").waitFor();
+    assert.equal(await closed.getByText("How to get a site", { exact: true }).count(), 0);
+    // Direction B on a phone: the steps as a list, the map under them; nothing runs off the page.
+    await p.getByRole("button", { name: "B · Steps first, then a wide map" }).click();
+    await p.getByRole("button", { name: "17 sites, mapped area, restrooms" }).click();
+    await p.getByRole("region", { name: "No reservations here" }).getByText("Take an open site.").waitFor();
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390));
     assert.deepEqual(errors, []);
     await ctx.close();
   });
