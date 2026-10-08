@@ -844,14 +844,14 @@ in here.
 
 | Batch | Waves | Maps | Passed | Held | Final check |
 |---|---|---|---|---|---|
-| northeast-api | 24, 39, 25, 33, 34 | 283 | 37 | 246 | 18 looked at over the photo (all 5 traces, all 3 splits, 10 sampled): agreed with all 18 |
-| colorado | 22, 23, 35, 36 | 232 | 131 | 101 | 30 looked at (all 8 traces, all 5 splits, 17 sampled): agreed with all 30 |
-| west-a | 3, 4, 5 | 283 | 176 | 107 | 31 looked at (all 13 traces, all 6 splits, 12 sampled): agreed with all 31 |
+| northeast-api | 24, 39, 25, 33, 34 | 283 | 33 | 250 | 18 looked at over the photo (all 5 traces, all 3 splits, 10 sampled): agreed with all 18; `usable` re-read: 4 held |
+| colorado | 22, 23, 35, 36 | 232 | 120 | 112 | 30 looked at (all 8 traces, all 5 splits, 17 sampled): agreed with all 30; `usable` re-read: 11 held |
+| west-a | 3, 4, 5 | 283 | 169 | 114 | 31 looked at (all 13 traces, all 6 splits, 12 sampled): agreed with all 31; `usable` re-read: 7 held |
 | west-units-b | 30, 31, 32 | 266 | 132 | 134 | 19 looked at (all 7 traces, 12 sampled): agreed with 17; held 2 the child passed (whole campgrounds booked as one "Standard" site) |
-| west-b | 6, 7, 8 | 283 | 189 | 94 | 18 looked at (all 3 traces, both splits, 12 sampled, plus Packard Creek's stray point): agreed with all 18 |
+| west-b | 6, 7, 8 | 283 | 110 | 173 | 18 looked at (all 3 traces, both splits, 12 sampled, plus Packard Creek's stray point): agreed with all 18 at the time; `usable` re-read: 79 held, 6 of them maps I had agreed with |
 | west-units-a | 26, 27, 28, 29 | 354 | 239 | 115 | 22 looked at (all 6 traces, 16 sampled): agreed with all 22 |
-| south-b | 17, 18, 37 | 222 | 89 | 133 | 27 looked at over the photo (all 16 traces, both splits, 9 sampled), then every `usable` note re-read: 36 of 50 usable held (see below) |
-| midwest | 19, 20, 21, 38 | 296 | 113 | 183 | 36 looked at (all 7 traces, all 17 splits, 12 sampled), then every `usable` note re-read: 80 of 112 usable held |
+| south-b | 17, 18, 37 | 222 | 100 | 122 | 27 looked at over the photo (all 16 traces, both splits, 9 sampled), then every `usable` note re-read: 25 of 50 usable held (see below) |
+| midwest | 19, 20, 21, 38 | 296 | 146 | 150 | 36 looked at (all 7 traces, all 17 splits, 12 sampled), then every `usable` note re-read: 47 of 112 usable held |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -932,16 +932,29 @@ look: 61 good, 128 usable, 25 hold, 69 unsure (Pacific Northwest canopy).
 - One full build exited without writing its manifest: a hung request left an unsettled top-level
   await. A re-run from the cache finished it.
 
-**south-b and midwest (2026-10-08): the `usable` bar drifted, and the final check re-read every one.**
-- The child's notes describe the photo accurately, but its `usable` calls passed maps where a
-  third or more of the sites have no drawn road. On the maps I looked at over the photo, about
-  half the `usable` calls failed the bar the earlier batches were held to. So I read every
-  `usable` note in waves 17 to 21 against a stated bar:
-  - at most about 1 site in 7 without a drawn road within about 20 m;
-  - every drawn road on a visible one.
-  - Walk-in and group fields pass when the drawn parking and lanes are right.
-- Held this way: 116 of 162 `usable` maps (south-b 36 of 50, midwest 80 of 112). Each held map
-  carries the reason in its decision note.
+**south-b and midwest (2026-10-08): some `usable` calls were maps that are wrong, not just incomplete.**
+- The child's notes describe the photo accurately. But some maps it called `usable` have one of
+  three faults:
+  - a drawn road that doesn't follow the visible one;
+  - misplaced or stacked sites;
+  - a third or more of the sites with no drawn road at all (only the highway, or a whole row or
+    loop missing).
+- The owner's own wave 1 and 2 approvals set the bar. They pass maps whose sites and drawn roads
+  are right with some spurs or lanes missing (232215, 232589, 233736), so missing spurs alone
+  don't hold a map; the three faults above do.
+- I read every `usable` note in waves 17 to 21 against that bar: 72 of 162 held (south-b 25 of
+  50, midwest 47 of 112). Each held map carries the reason in its decision note.
+- A stricter first pass (about 1 site in 7 with no road within 20 m) was dropped before merge,
+- **The same re-read was applied to the batches already merged** (waves 3 to 8 and 22 to 24), so
+  every batch is judged alike. It held 101 of their 287 `usable` maps:
+  - west-a 7, colorado 11, northeast 4, and west-b 79;
+  - west-b's waves 7 and 8 called nearly every forest campground with half its sites on undrawn
+    spurs `usable`.
+  - Six of the 101 are maps I had passed in west-b's final check (Camp Sherman, Crystal Springs,
+    Eagle, College, Fawn Lakes, Rock Creek). I judged those against the looser reading, and they
+    are corrected here.
+  - The table's numbers are after the re-read.
+  because it would have held maps the owner's own approvals pass.
 - **The brief and the playbook now state the bar**, and the three children still running were
   told.
 - **south-b (us-south):** 16 traced, 2 splits.

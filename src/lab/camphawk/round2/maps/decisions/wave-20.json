@@ -1,7 +1,7 @@
 {
  "version": 1,
  "wave": 20,
- "source": "The final check (2026-10-08): 14 maps looked at over the photo against the first look (every traced map, every split listing, and a random sample of the rest); good and usable pass, hold and unsure are held to fix after; 25 overridden.",
+ "source": "The final check (2026-10-08): 14 maps looked at over the photo against the first look (every traced map, every split listing, and a random sample of the rest); good and usable pass, hold and unsure are held to fix after; 17 overridden.",
  "decisions": [
   {
    "id": "10047120",
@@ -33,10 +33,10 @@
   },
   {
    "id": "231842",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "231997",
@@ -92,7 +92,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "232391",
@@ -103,10 +103,10 @@
   },
   {
    "id": "232419",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "232429",
@@ -131,10 +131,10 @@
   },
   {
    "id": "233165",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "233172",
@@ -183,7 +183,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233841",
@@ -197,7 +197,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233921",
@@ -211,7 +211,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "234081",
@@ -222,24 +222,24 @@
   },
   {
    "id": "234120",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "234167",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "234613",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "251274",
@@ -250,10 +250,10 @@
   },
   {
    "id": "251547",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "251939",
@@ -288,7 +288,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "10001419",
@@ -316,7 +316,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "10038964",
@@ -330,7 +330,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "232521",
@@ -355,10 +355,10 @@
   },
   {
    "id": "232732",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "233286",
@@ -386,7 +386,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233438",
@@ -435,7 +435,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233541",
@@ -460,17 +460,17 @@
   },
   {
    "id": "233567",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Passed: first look usable."
   },
   {
    "id": "233574",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233575",
@@ -505,7 +505,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233639",
@@ -533,7 +533,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233813",
@@ -547,14 +547,14 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233832",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233896",
@@ -568,7 +568,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "234677",
@@ -596,7 +596,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: more than about 1 in 7 sites have no drawn road to them, or a drawn road doesn't follow the visible one."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "272091",

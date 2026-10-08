@@ -1,7 +1,7 @@
 {
  "version": 1,
  "wave": 22,
- "source": "The final check (2026-10-08): 12 maps looked at over the photo against the first look (every traced map, every split listing, and a random sample of the rest); good and usable pass, hold and unsure are held to fix after.",
+ "source": "The final check (2026-10-08): 12 maps looked at over the photo against the first look (every traced map, every split listing, and a random sample of the rest); good and usable pass, hold and unsure are held to fix after; 4 overridden.",
  "decisions": [
   {
    "id": "10040569",
@@ -33,10 +33,10 @@
   },
   {
    "id": "231853",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "231855",
@@ -173,10 +173,10 @@
   },
   {
    "id": "232280",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "232281",
@@ -418,10 +418,10 @@
   },
   {
    "id": "232462",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "233187",
@@ -432,10 +432,10 @@
   },
   {
    "id": "234052",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
   },
   {
    "id": "260552",

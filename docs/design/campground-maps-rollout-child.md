@@ -60,9 +60,10 @@ branch (the spawn prompt names it).
    `aerial-grid.mjs <map.json> <out.png> x0 y0 x1 y1 <step> 1400` before calling it.
    - **The call**, one of:
      - `good`: sites on visible pads, roads on visible roads, nothing missing;
-     - `usable`: sites right and a few lanes missing: at most about 1 site in 7 without a drawn road
-       within about 20 m, and every drawn road on a visible one. More than that is `hold`, even when
-       the rest is good (the final check holds these; set 2026-10-08 after two batches drifted);
+     - `usable`: sites right and the drawn roads right, some spurs or lanes missing. If a drawn road
+       doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have
+       no drawn road at all, it's `hold` (the bar the owner's wave 1 and 2 approvals set; stated
+       2026-10-08 after two batches drifted);
      - `hold`: not usable as drawn (sites off the pads, roads wrong, a loop with nothing drawn);
      - `unsure`: the photo can't tell (canopy, no photo).
    - **The note:** one or two plain sentences of what you saw, naming loops and site numbers.
