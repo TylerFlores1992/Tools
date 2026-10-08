@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-08, night (owner's map decisions recorded, PR #25; network now too narrow, see the maps section). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-08, night (owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -96,8 +96,10 @@ updates, owner decisions; the `campground-maps` skill loads it on "complete the 
   - **Single-unit and split-listing maps: yes, designed after wave 1.**
   - **Network, after the owner's change (2026-10-08 night):** the environment went to Custom with
     only `download.geofabrik.de`. Every other map source and tylerflores.dev now answer `403`, and
-    Geofabrik resets the connection anyway. **Blocked until the owner sets it back to Full, or lists
-    every host in playbook §3.4.** Probe the hosts first thing (§3.4 has the command).
+    Geofabrik resets the connection anyway. **Fixed the same night: back on Full**, and every host
+    answers except Geofabrik. **OpenStreetMap extracts come from OpenStreetMap France instead**
+    (13.1 GB for the US, a day old, about 0.9 MB/s; playbook §4.1). Probe the hosts first thing
+    anyway (§3.4 has the command).
 
 **Waiting on California State Parks** (both emails sent 2026-10-07 from the owner's Gmail):
 - **Public Records Act request** to Parks.PRA@parks.ca.gov, for their campsite layer (ArcGIS item
