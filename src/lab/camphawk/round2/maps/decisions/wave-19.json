@@ -99,7 +99,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "note": "Still held: the trace pass found nothing it could trace here, so the earlier hold stands (a third or more of the sites have no drawn road, or a drawn road is off the visible one) (2026-10-08)."
   },
   {
    "id": "251865",
@@ -141,7 +141,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "232542",
@@ -197,7 +197,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "233432",
@@ -225,7 +225,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "233449",
@@ -264,10 +264,10 @@
   },
   {
    "id": "233468",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "233471",
@@ -376,10 +376,10 @@
   },
   {
    "id": "233547",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "233551",
@@ -596,7 +596,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "255134",

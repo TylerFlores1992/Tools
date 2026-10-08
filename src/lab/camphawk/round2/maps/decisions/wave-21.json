@@ -148,7 +148,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "233144",
@@ -288,7 +288,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "233983",
@@ -551,10 +551,10 @@
   },
   {
    "id": "10159225",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "10159237",
@@ -575,7 +575,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "232720",
@@ -603,7 +603,7 @@
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "272094",

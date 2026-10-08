@@ -1039,13 +1039,30 @@ and a final check over the photo.
 - **Borderline, passed:** 232625 Littcarr, where several B sites sit about 30 m off the lane
   (under the 20 to 40 m spur rule), and 234478, with 28% of its sites roadless (under a third).
 
+**trace-b (35 maps in the Midwest, West and Northeast):** 16 traced (4 of them `replace`
+traces: 233468, 233547, 233438, 234115), 19 not traced. 10 now pass that were held, 25 are held.
+- **Newly passed (10):** 233468 Cottonwood Point, 233547, 233427 Blanding Landing, 233438 Buck
+  Creek, 233832, 234647, 234115 Boca Rest, 156340, 10159225 and 233835. 231842 and 254084 were
+  already passed; their traces improve them.
+  - 233427: the east lanes (past 25 to 37) are drawn but not joined to the rest (the joins are under
+    trees). It's a minority of the sites, so it stays usable.
+  - 234647: no trace. The A shore sites sit on the open gravel apron the drawn loop runs down, with
+    no separate lane.
+- **Still held: 4 the child called usable but couldn't trace** (251160, 10038827, 233895, 232311).
+  The final check had held them on the usable re-read, and nothing on the map changed.
+- **Still held (19):** the rest are under canopy, open ground with no lane, or broken into
+  fragments.
+  - 233441 and 234540 each have a stray point kilometres away.
+  - 231907 Lucerne and 233425 Berry Bend are dense webs of pull-throughs, better done with the
+    review page's tracing tool.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,399 passed, 1,562 held to fix after; 13 passed after the trace-a fix) |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,409 passed, 1,552 held to fix after; 23 passed after the trace fixes) |
 | **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).
