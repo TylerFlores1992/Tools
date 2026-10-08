@@ -1,0 +1,128 @@
+{
+ "version": 1,
+ "wave": 25,
+ "by": "Claude (rollout northeast-api)",
+ "on": "2026-10-08",
+ "looks": {
+  "232141": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop and the middle lane are drawn and 005 to 024 line them, but nothing can be checked against a photo."
+  },
+  "232324": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two lanes are drawn and 006 to 038 line them, but nothing can be checked against a photo."
+  },
+  "232330": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop is drawn and most sites sit near it, but 001, 003, 016 and 014 sit 20 to 30 m off it, so it can't be checked."
+  },
+  "232352": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 001 to 007 sit 15 to 40 m west of the drawn road with no lanes, and 008 to 014 around the loop."
+  },
+  "232353": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 002, 003, 005, 006, 008, 011, 019 and 021 sit 20 to 40 m outside the one drawn loop, so it can't be checked."
+  },
+  "232360": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 002 to 012 sit 20 to 50 m north of the highway with no drawn lanes; the campground's own lanes aren't drawn."
+  },
+  "233317": {
+   "call": "unsure",
+   "note": "A list of refuge cabins spread over 93 km (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+  },
+  "233909": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the south loop and the north lane are drawn and most sites line them, but nothing can be checked against a photo."
+  },
+  "233974": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop is drawn and 001 to 014 sit beside it, but nothing can be checked against a photo."
+  },
+  "233994": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two loops are drawn and 001 to 025 line them; the walk-in sites 027H to 032H and 039 to 041 have no drawn lane."
+  },
+  "234108": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 014 to 022 sit 50 to 150 m south of the one drawn loop with no lanes, so the south part has nothing drawn."
+  },
+  "234110": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, only one road is drawn and 001 to 034 are spread up to 150 m from it, so the lanes aren't drawn."
+  },
+  "234112": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two drawn roads pass 001 to 019, with 009, 011 to 014 and 016 to 018 sitting 20 to 40 m off them."
+  },
+  "234504": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loops are drawn and 001 to 070 line them, but nothing can be checked against a photo."
+  },
+  "234629": {
+   "call": "unsure",
+   "note": "A list of refuge cabins spread over 142 km on Kodiak (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+  },
+  "234783": {
+   "call": "unsure",
+   "note": "Three wilderness cabins spread over 8 km (dispersed, not drawn as areas) with no roads; the photo is black here too (no NAIP for Hawaii)."
+  },
+  "251356": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop and the lanes are drawn and 001 to 011 sit near them, 006 and 008 west of the west lane."
+  },
+  "251861": {
+   "call": "unsure",
+   "note": "Two park cabins 6 km apart (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska)."
+  },
+  "252494": {
+   "call": "unsure",
+   "note": "A list of remote cabins spread over 66 km (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+  },
+  "10119505": {
+   "call": "unsure",
+   "note": "Wilderness tent sites at Hōlua and Palikū, shown as 2 areas 8 km apart with no roads (reached on foot); the photo is black here too (no NAIP for Hawaii)."
+  },
+  "10156151": {
+   "call": "hold",
+   "note": "The sites are spread across a 4,974 km frame: RV Site 2 to 8 in one place and RV Site 9 to 20 thousands of kilometres east, so the listing's points are wrong; no roads drawn."
+  },
+  "10191011": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the three loops are drawn and Site 2 to Site 27 line them, but Site 5 sits 250 m north of everything with no road, so it can't be checked."
+  },
+  "10276314": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, Site 2 to 19 sit inside a tangle of drawn tracks, with Site 9, 11 and 12 off any of them, so it can't be checked."
+  },
+  "10296828": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two loops are drawn and 1 to 25 sit beside them, but nothing can be checked against a photo."
+  },
+  "10300372": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). Group sites A and B sit 30 to 80 m west of the drawn loop with no lane, at a whistle-stop reached by train."
+  },
+  "10322643": {
+   "call": "unsure",
+   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, Site 1 to 12 are spread around a large loop, several 20 to 40 m off it (Site 3, 4, 8, 12), so it can't be checked."
+  },
+  "10325233": {
+   "call": "hold",
+   "note": "Not drawn: every site is on one spot (T6), so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+  },
+  "10325252": {
+   "call": "hold",
+   "note": "Not drawn: every site is on one spot, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+  },
+  "10325266": {
+   "call": "hold",
+   "note": "Not drawn: every site is on one spot, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+  },
+  "10382456": {
+   "call": "hold",
+   "note": "Not drawn: every Chilkoot Trail camp shares a spot with another, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+  }
+ }
+}

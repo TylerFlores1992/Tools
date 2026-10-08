@@ -1,0 +1,388 @@
+{
+ "version": 1,
+ "wave": 33,
+ "by": "Claude (rollout northeast-api)",
+ "on": "2026-10-08",
+ "looks": {
+  "120890": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 1 m from the listing's own point, with a drawn road 25 m away."
+  },
+  "232469": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 23 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232922": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 211 m away."
+  },
+  "232924": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232928": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 49 m away."
+  },
+  "232935": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232938": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 81 m away."
+  },
+  "232939": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 482 m away."
+  },
+  "232940": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 212 m away."
+  },
+  "232941": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 149 m away."
+  },
+  "232942": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232943": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232944": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232945": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 196 m away."
+  },
+  "232946": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 149 m away."
+  },
+  "232947": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232948": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 87 m away."
+  },
+  "232950": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232951": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 53 m from the listing's own point, with a drawn road 150 m away."
+  },
+  "232953": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 130 m from the listing's own point, with a drawn road 194 m away."
+  },
+  "232959": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 22 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232963": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232968": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232972": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 23 m away."
+  },
+  "232974": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232975": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232978": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232983": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232987": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 2 m from the listing's own point, with a drawn road 140 m away."
+  },
+  "232988": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 104 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232989": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232991": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 2 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232994": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232995": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "232998": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 5 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233000": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233001": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 2 m away."
+  },
+  "233002": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 12 m away."
+  },
+  "233004": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 40 m away."
+  },
+  "233005": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233006": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 12 m away."
+  },
+  "233007": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 5 m away."
+  },
+  "233009": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 8 m away."
+  },
+  "233010": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 2 m away."
+  },
+  "233013": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 7 m away."
+  },
+  "233014": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 14 m away."
+  },
+  "233016": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233018": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 3 m away."
+  },
+  "233019": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 96 m away."
+  },
+  "233020": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 4 m away."
+  },
+  "233021": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 42 m away."
+  },
+  "233022": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 81 m away."
+  },
+  "233023": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 6 m away."
+  },
+  "233024": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 228 m from the listing's own point, with a drawn trail 22 m away."
+  },
+  "233025": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233026": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 10 m away."
+  },
+  "233027": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 239 m away."
+  },
+  "233028": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 2 m away."
+  },
+  "233029": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 10 m away."
+  },
+  "233031": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233037": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 58 m from the listing's own point, with a drawn road 664 m away."
+  },
+  "233038": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 185 m from the listing's own point, with a drawn trail 174 m away."
+  },
+  "233039": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233040": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 157 m away."
+  },
+  "233041": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 215 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233045": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 133 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233046": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233047": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233048": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 159 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233049": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233050": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 136 m from the listing's own point, with a drawn road 149 m away."
+  },
+  "233051": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 217 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233052": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 94 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233053": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 300 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233055": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 521 m away."
+  },
+  "233057": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 49 m away."
+  },
+  "233058": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 98 m away."
+  },
+  "233059": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233062": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233064": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 231 m away."
+  },
+  "233065": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 415 m away."
+  },
+  "233068": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 133 m away."
+  },
+  "233070": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233076": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233078": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "233079": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 276 m away."
+  },
+  "233082": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 187 m away."
+  },
+  "233105": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 44 m from the listing's own point, with a drawn road 157 m away."
+  },
+  "233171": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 92 m from the listing's own point, with a drawn road 232 m away."
+  },
+  "233179": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 18 m from the listing's own point, with a drawn road 20 m away."
+  },
+  "233401": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 102 m away."
+  },
+  "234721": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 16 m from the listing's own point, with a drawn road 2 m away."
+  },
+  "251714": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 7 m from the listing's own point, with a drawn trail 1 m away."
+  },
+  "259345": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+  },
+  "10300370": {
+   "call": "unsure",
+   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 256 m from the listing's own point, with a drawn road 79 m away."
+  }
+ }
+}

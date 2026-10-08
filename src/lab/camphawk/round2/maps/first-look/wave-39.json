@@ -1,0 +1,100 @@
+{
+ "version": 1,
+ "wave": 39,
+ "by": "Claude (rollout northeast-api)",
+ "on": "2026-10-08",
+ "looks": {
+  "234237": {
+   "call": "unsure",
+   "note": "Full canopy in autumn leaf: the pin sits in a faint gap in the trees, but no roof or clearing shows, and no road or trail is drawn in the zoomed frame."
+  },
+  "234238": {
+   "call": "usable",
+   "note": "The pin sits on the cabin's roof, which shows in a small opening in the spruce; no drawn road or trail reaches it (an old track shows 150 m northwest)."
+  },
+  "234241": {
+   "call": "usable",
+   "note": "The cabin shows in a clearing 25 m northeast of the pin, beside the highway; traced its gravel driveway from the highway (checked over the photo). The pin sits in the trees west of the cabin, close enough to find it but not on it."
+  },
+  "234476": {
+   "call": "usable",
+   "note": "The pin sits at the edge of a mown clearing in the forest that is plainly the group site; no drawn road reaches it in the zoomed frame."
+  },
+  "234681": {
+   "call": "unsure",
+   "note": "The pin sits 3 m from the drawn road, by a small gravel pull-off 20 m south; under the canopy no cabin roof shows for certain."
+  },
+  "261322": {
+   "call": "good",
+   "note": "The pin sits on the house, and the drawn farm lane passes 25 m southwest with a walk up to the door."
+  },
+  "10004657": {
+   "call": "good",
+   "note": "The pin sits on the house; traced its paved drive from the bend in the drawn road (checked over the photo)."
+  },
+  "10004661": {
+   "call": "hold",
+   "note": "The pin sits on a bare sandy patch in the woods 20 m north of the drawn road, with no building on it; the nearest houses are 50 m east and 100 m west, so the photo can't say which is the beach house."
+  },
+  "10004663": {
+   "call": "good",
+   "note": "The pin sits on the house roof, and the drawn sand lane runs past it 15 m east, with the drive between them."
+  },
+  "10004667": {
+   "call": "good",
+   "note": "The pin sits on the house roof, beside its drive off the drawn sand lane."
+  },
+  "10045243": {
+   "call": "good",
+   "note": "The pin sits on the long motel building beside the drawn highway, with its parking lot between them."
+  },
+  "10045245": {
+   "call": "good",
+   "note": "The pin sits on the long motel building beside the drawn highway, with its parking lot between them."
+  },
+  "10045247": {
+   "call": "good",
+   "note": "The pin sits on the long motel building beside the drawn highway, with its parking lot between them."
+  },
+  "10149034": {
+   "call": "good",
+   "note": "The pin sits on the house roof, 10 m from the drawn sand lane, among the houses of the dune community."
+  },
+  "10165350": {
+   "call": "unsure",
+   "note": "A boat-in site: the pin sits under full canopy 20 m in from the sandy shore, with small clearings along the beach to the northeast; nothing at the pin itself shows, and no road comes near (boat access)."
+  },
+  "10165365": {
+   "call": "unsure",
+   "note": "A boat-in site: the pin sits under full canopy 35 m from a cove; no clearing shows and no road or trail is drawn within 700 m (boat access)."
+  },
+  "10165370": {
+   "call": "unsure",
+   "note": "A boat-in site: the pin sits under full canopy 60 m in from the shore; no clearing shows at the pin (boat access)."
+  },
+  "10165465": {
+   "call": "unsure",
+   "note": "The pin sits under full canopy about 10 m west of the drawn trail that leaves the trailhead parking; a small clearing shows 30 m east of it, but the sites themselves don't show."
+  },
+  "10165475": {
+   "call": "unsure",
+   "note": "A boat-in site: the pin sits under full canopy 100 m in from the shore; no clearing shows at the pin (boat access)."
+  },
+  "10165540": {
+   "call": "unsure",
+   "note": "A boat-in site: the pin sits under full canopy 15 m in from the shore, with a small opening on the beach just north; nothing at the pin shows (boat access)."
+  },
+  "10168556": {
+   "call": "hold",
+   "note": "The pin sits on open dune grass with no building; the nearest roof is 35 m northwest by the drawn sand track, which may be the cottage, so the point is off."
+  },
+  "10290014": {
+   "call": "good",
+   "note": "The pin sits on the farmhouse; traced the dirt farm lane from where the drawn road stops past the house to the outbuildings (checked over the photo)."
+  },
+  "10357061": {
+   "call": "good",
+   "note": "The pin sits on the farmhouse; traced the gravel drive from the drawn road's end down past the house's fence (checked over the photo)."
+  }
+ }
+}
