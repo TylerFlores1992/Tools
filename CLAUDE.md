@@ -24,6 +24,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 | New look, redesign, mockups, "make it high-end" (process + taste) | skill `design-direction` |
 | Accessibility / UI review before merge | skill `ui-audit` |
 | The hero film (terrain, wolf, encode) | skill `hero-film` · `studio/film/` |
+| Campground site maps: "complete the maps" (plan, rules, loop) | skill `campground-maps` · `docs/design/campground-maps-playbook.md` |
 | The approved brief, sitemap, design spec | `docs/BRIEF.md` |
 | Lessons carried over from CampHawk, and why | `docs/CAMPHAWK-LESSONS.md` |
 | Vercel, domain, CI setup | `docs/SETUP.md` |

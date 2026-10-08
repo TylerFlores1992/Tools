@@ -58,6 +58,19 @@ To put one on the map, add it here and rebuild that campground (command above).
   "points": [{ "type": "Restroom", "at": [lon, lat] }], "replace": false, "note": "what was left out and why" }
 ```
 
+**A session traces from a gridded photo instead of clicking** (both write the same file):
+
+```sh
+# The photo with a metre grid, the map's roads (traced ones cyan) and sites; zoom with a box and a 5 m grid
+node studio/campground-maps/aerial-grid.mjs public/private/camphawk/maps/ridb-<id>.json /tmp/g.png
+node studio/campground-maps/aerial-grid.mjs public/private/camphawk/maps/ridb-<id>.json /tmp/z.png 100 40 260 160 5 1400
+# Roads read off the grid in map metres → traces/ridb-<id>.json (spec format in the script's header)
+node studio/campground-maps/trace-from-grid.mjs public/private/camphawk/maps/ridb-<id>.json spec.json
+```
+
+The whole procedure (when to trace, when to replace, naming, checking over the photo) is in
+`docs/design/campground-maps-playbook.md` §5.
+
 - **Roads add to the source's.** A traced road is a campground road (thin) unless `through`.
 - **`replace: true` makes the trace the map's only roads**, for a source that has the roads but in
   the wrong places (Lost Creek). Trace every road then, and mark the through roads.

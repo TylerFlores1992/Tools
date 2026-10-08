@@ -36,8 +36,11 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Campground site maps (2026-10-07, PR #19, merged)
-**Start here for maps:** `docs/design/campground-maps.md` (research, measurements, time estimate)
-and `studio/campground-maps/README.md` (how to build one).
+**Start here for maps:** `docs/design/campground-maps-playbook.md` (the plan to finish every
+Recreation.gov and ReserveCalifornia map: rules, tooling to build, the wave loop, testing, doc
+updates, owner decisions; the `campground-maps` skill loads it on "complete the maps"). Then
+`docs/design/campground-maps.md` (research, measurements, time estimate) and
+`studio/campground-maps/README.md` (how to build one).
 
 **Live in the lab (PR #19 merged 2026-10-07):**
 - **Upper Pines** has a real site map: `/private/camphawk/golden-hour/campground`. It is built

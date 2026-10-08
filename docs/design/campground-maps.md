@@ -5,6 +5,9 @@
 "not drawn yet" state, `?booking=first-come` the map without availability). Build tooling:
 `studio/campground-maps/`.*
 
+**To finish the maps, follow `docs/design/campground-maps-playbook.md`** (the plan, rules, wave loop,
+testing and doc updates). This file is the research and the record of what was found.
+
 ## The short answer (updated 2026-10-07, afternoon)
 
 **Both providers can be drawn from real survey data. Recreation.gov's is open now, and
@@ -286,7 +289,7 @@ The lab draws it as SVG with HTML labels, so type stays readable at every size.
 | Database | Supabase (connected) or CampHawk's existing Postgres | Free tier |
 | Symbols | NPS map symbols | Public domain |
 | Design | Our design skills; Inkscape for symbol drawing | Figma's free tier is 3 files; Felt's free plan bans business use |
-| Skills | `design-direction`, `camphawk-design` (binds the look), `ui-audit`; write a new `campground-maps` skill once the pipeline settles | — |
+| Skills | `design-direction`, `camphawk-design` (binds the look), `ui-audit`; the `campground-maps` skill (written 2026-10-08; loads the playbook) | — |
 | MCP | OSM/Overpass MCP servers exist (MIT), but they hit the public Overpass servers, which discourage production use and were unreachable from this container. Use Geofabrik extracts | — |
 
 ## The mockup: what it shows

@@ -1,0 +1,465 @@
+# Finishing the campground maps: the playbook
+
+*Written 2026-10-08, after the 50-campground sample, pick-by-fit roads and the tracing tool.
+Lab only (tylerflores.dev's CampHawk lab); camphawk.app is a separate repository and a separate
+step (§9).*
+
+**This file is the plan for drawing every Recreation.gov and ReserveCalifornia campground map the
+way the work was done on 2026-10-07: measured, checked against the ground, honest about what's
+missing, reviewed by a person.** A session given "complete the maps" (the `campground-maps` skill
+loads this) should be able to do the next step from here alone.
+
+- **The research and history are in `docs/design/campground-maps.md`.** Read its "short answer"
+  and the last three sections before starting. This file says what to do. That one says why, and
+  what was found.
+- **The builders and their commands are in `studio/campground-maps/README.md`.**
+- **Where the last session stopped is in `docs/NEXT-SESSION.md`**, under "Campground site maps".
+
+---
+
+## 1. Where it stands (2026-10-08)
+
+| | Recreation.gov | ReserveCalifornia |
+|---|---|---|
+| Site points | RIDB, CC BY 4.0, open now | California State Parks' layer, **waiting on permission** |
+| Campgrounds to draw | 2,196 with two or more sites (+1,016 single units, §5) | 341 RC areas in CampHawk's catalog |
+| Built so far | Upper Pines (live), a 50-campground sample (lab review page) | Jedediah Smith, local only |
+| Measured result | 45 of 50 (90%; 79–96%) can go live after one look | 87% of sites match a State Parks point |
+| Blocked by | nothing (owner's go-ahead per wave) | State Parks' answer (records request due ~2026-10-17) |
+
+**What is built and tested:**
+- **`build.mjs`** draws a Recreation.gov map: RIDB sites; roads picked by fit from four sources
+  (`roads.mjs`); restrooms, water and parking; lakes and rivers; traces; and the automatic check
+  (`qa.mjs`).
+- **`build-sample.mjs`** builds a list of campgrounds and writes the review manifest. It can also
+  rebuild only the ids given.
+- **`build-csp.mjs`** draws an RC map from State Parks' points and RC's unit list (`match.mjs`). It
+  does not yet have pick-by-fit, traces or the QA manifest (§6.2).
+- **Traces:**
+  - `trace.mjs` checks a trace file;
+  - `traces/` holds 13 traced sample maps;
+  - `trace-from-grid.mjs` writes a trace file from grid metres;
+  - `aerial-grid.mjs` draws the photo with a metre grid, for a session to trace from;
+  - `aerial-check.mjs` draws maps over the photo for a first look.
+- **The review page** (`/private/camphawk/golden-hour/admin/site-maps`) has:
+  - a queue of the sample;
+  - each map's checks, the aerial check and the tracing tool;
+  - the road-source fits;
+  - Approve / Needs roads / Keep hidden.
+
+**Not built yet (the rollout needs these first, §4):**
+- OpenStreetMap from bulk extracts;
+- a population list and waves;
+- the review page at 2,196 maps;
+- decisions that survive outside one browser.
+
+---
+
+## 2. The rules, every time (non-negotiable)
+
+**Honesty**
+- **A wrong map is worse than no map.** Someone drives to the wrong loop. When in doubt, the
+  campground shows "We haven't drawn a map of X yet".
+- **Say what was measured and what was estimated.** Give a sample's share with its 95% interval
+  (`wilson()` in `src/lab/camphawk/round2/maps/sample.ts`). Never write a number nobody counted.
+- **Thresholds are fixed before the results are seen.** If one changes after a measurement (as
+  pick-by-fit's margin did), say so in the code comment and the design doc.
+- **Say what you didn't check:** under canopy, not on a real phone, review time not measured, and
+  so on. "Can't tell" is a valid first-look call.
+- **Unknown never rounds to a verdict.** A site with no point is listed, never guessed. A number
+  recorded twice is left off and reported (Jedediah Smith's 56).
+- **Trace only what you can see on the photo.** Each trace file's `note` says what was left out
+  and why.
+
+**Data and licenses**
+- **Recreation.gov:** RIDB only (CC BY 4.0; credit it). **Never** recreation.gov's `/api/camps`:
+  robots.txt disallows it and the terms ban scraping.
+- **OpenStreetMap is ODbL.** Every map that uses any OSM layer carries "© OpenStreetMap
+  contributors" (the build does this). A road name taken from OSM counts as OSM data.
+- **Federal GIS** (Park Service, Forest Service, USGS, Census TIGER) and **USDA NAIP photos** are
+  public domain. Tracing from NAIP is our own work.
+- **Never trace from Google, Esri or Bing imagery.** Their terms forbid it.
+- **California State Parks' campsite data stays out of this public repository and every deploy
+  until they approve** (`public/lab-local/` is git-ignored). After approval, follow their terms
+  exactly (§6.1).
+- **RC's map pictures and their pixel positions are never used for a map.** They are a private
+  yardstick only (§6.3): never committed, never published.
+- **`campsite-finder` (camphawk.app) is not changed from this repository.** Bringing maps into
+  CampHawk is its own step (§9), gated on the owner.
+
+**Design** (the camper's map, the review page, any new screen)
+- **CampHawk's look binds it** (`camphawk-design` skill, `ch-*` tokens only).
+  - Green = an open site.
+  - Ochre = yours (traces).
+  - Blue = the hand-off to a provider, so **water is never blue**.
+  - Red = you must act.
+- **Never colour alone.** The owner is red-green colour-blind, so every state has a shape and a
+  word (`StatusMark`, tick pins, squares on traced roads).
+- **Camper map rules, all already built and tested:**
+  - Open sites are green tick pins with numbers.
+  - A site number sits beside its own dot, only where every other dot is at least 6 px farther.
+  - Service symbols are outlines.
+  - Find a site; zoom draws the map at least 1,600 px wide.
+  - Distances are called straight lines.
+  - The credits line names each layer's source.
+- **Copy:** sentence case, US spelling (`src/lib/us-spelling.test.mts` checks identifiers too),
+  plain words, no internals shown to campers.
+
+**Engineering** (CLAUDE.md's standing rules apply)
+- **Work on a branch, open a PR, merge.** Never push to `main`.
+- **`npm run verify` before every push.**
+- **Commit before experimenting**; revert by edit, never `git checkout -- <file>`.
+- **Mutation-test every new guard:** break the thing, see the test fail, and confirm the break
+  applied (a mutation that no-ops proves nothing). The harness that did this is in §7.
+- **Never read an exit code through a pipe:** `cmd > log 2>&1; echo $?`, then read the log.
+- **In a session container, network commands need `NODE_USE_ENV_PROXY=1`.** Never disable TLS or
+  unset the proxy.
+
+---
+
+## 3. Before you start (every session)
+
+1. **Orient.** `git fetch origin main`, read `docs/NEXT-SESSION.md`, then this file's §1 and
+   §10. Branch from `origin/main`.
+2. **State Parks' answer.**
+   - Search the owner's Gmail (connector) for `from:parks.ca.gov` and
+     `subject:(Public Records OR campsite)` since 2026-10-07.
+   - **Read; never reply** without the owner.
+   - If an answer came, go to §6.1 and tell the owner what it says, word for word where terms are
+     involved.
+3. **The RIDB export** (248 MB, not committed): download
+   `https://ridb.recreation.gov/downloads/RIDBFullExport_V1_CSV.zip` into the scratchpad and
+   unzip it. A rollout uses the newest export and records its date (`source.ridbExport`,
+   `drawn.export`).
+4. **The network.**
+   - `download.geofabrik.de` and Overpass were unreachable from session containers on 2026-10-07
+     and 2026-10-08 (proxy answers 000). §4.1 needs Geofabrik.
+   - If it's still blocked, ask the owner to add `download.geofabrik.de` under the environment's
+     Network access → Allowed domains (cloud environment menu → Edit;
+     https://code.claude.com/docs/en/cloud-environments#network-access).
+   - Then install `osmium-tool` (apt).
+5. **The cache.** `studio/campground-maps/.cache/` (git-ignored) keeps every answer, so a rebuild
+   doesn't hit free services again. A failed answer is never cached.
+
+---
+
+## 4. Recreation.gov: build the rollout tooling first
+
+Each item is code with tests, reviewed like everything else. Do them in this order. Each is about
+a session or less.
+
+### 4.1 OpenStreetMap from extracts, not the API
+- **Why:** OSM's API is for editing. Fifty small reads was within its usage policy; 2,196 is bulk
+  use. `osm.mjs` must read OSM features from a state extract.
+- **How:**
+  - Download `north-america/us/<state>-latest.osm.pbf` from Geofabrik.
+  - `osmium tags-filter` it to the tags `osmLayers()` reads: `highway`, `amenity`, `tourism`,
+    `natural=water`, `waterway`, `landuse=reservoir`, `building`.
+  - `osmium extract -b <bbox>` per campground (or one pass per state), exported as OSM XML, so
+    `parseOsm()` and `osmLayers()` stay unchanged.
+  - Record the extract's date in the map (`sources.osmExtract`).
+- **Test:** the same campground built from the API and from the extract gives the same layers
+  (allowing for edits between the two dates). Check this on 5 of the sample before switching.
+- **Keep the API path** for a single rebuild. The build logs which path it used.
+
+### 4.2 The population and waves (`population.mjs`)
+- **The rule** is `sample.mjs`'s: RIDB facility type Campground, reservable and enabled; only
+  overnight non-staff sites; at least 90% of them with a point. On the 2026-10-06 export that's
+  3,212 campgrounds; 1,016 single units go to §5.
+- **Write** `specs/ridb-all.json`, with every multi-site campground and its id, name, agency,
+  state, rec area and site counts, from the newest export. Record the export date and the counts.
+  If the counts move from 2,196 / 1,016, say by how much.
+- **Waves of about 100**, stratified by agency like the sample, so each wave's pass rate is a
+  fresh estimate. **Order the waves by demand if the owner provides it:** CampHawk's watch counts
+  per campground (from campsite-finder's database, read-only, with the owner's OK). Otherwise
+  order by agency, then state. Write `specs/wave-NN.json` in `sample.mjs`'s format, so
+  `build-sample.mjs` reads it.
+- **The 50 already built are wave 0**; don't rebuild them unless the builder changed.
+
+### 4.3 Building waves
+- **Generalize `build-sample.mjs`** to take a spec file (`build-wave.mjs specs/wave-NN.json`).
+  - Write `public/private/camphawk/maps/ridb-<id>.json` and a manifest per wave
+    (`src/lab/camphawk/round2/maps/waves/wave-NN.json`).
+  - Keep: three at a time, the `[id…]` partial rebuild, failures recorded and the run carried on.
+- **Storage, measured:** a map averages 10 KB (largest 46 KB; about 11 KB gzipped for Twin Peaks'
+  47 KB). All 2,196 come to about 22 MB, which is fine in the lab repository.
+  - **Commit the maps of each wave.**
+  - CampHawk would store them in Supabase Storage or R2, not in git (§9).
+- **USGS hydrography times out for hours some days.** The build already falls back to OSM water
+  and records it (`sources.water`). Rebuild those maps' water later if it matters.
+
+### 4.4 The review page at scale
+- **The queue must page and filter:** by wave, verdict, first look, agency and state, "has traces",
+  "decided / not decided". Each wave's manifest is fetched when chosen, never bundled whole.
+  Keep the deep links (`?id=`, `?show=`, `?tool=trace`) and add `?wave=`.
+- **Decisions must survive outside one browser.** Today Approve / Needs roads / Keep hidden are
+  saved in localStorage only.
+  - Add "Download decisions" (like the trace file), giving `studio/campground-maps/decisions/wave-NN.json`:
+    `{ id, decision, by, on, note }`.
+  - The session commits it, and the build reads it: approved maps are published; hidden ones
+    show "not drawn yet".
+  - The page shows a committed decision as decided.
+- **Test it like the tracing tool:**
+  - unit tests;
+  - an e2e check (filters, a decision downloaded and validated);
+  - mutation round;
+  - screenshots at 390 and 1440 with the real photo;
+  - `ui-audit`;
+  - a critic agent until 8/10 or better.
+
+### 4.5 First-look notes per wave
+- `sample-review.ts` holds the sample's first looks. For waves, use one JSON per wave
+  (`studio/campground-maps/first-look/wave-NN.json`: `{ id, call, note }`), read by the page.
+- **Calls:**
+  - `good`: sites on pads, roads on roads;
+  - `usable`: sites right, some lanes missing;
+  - `hold`: not usable as drawn;
+  - `unsure`: the photo can't settle it.
+
+---
+
+## 5. Recreation.gov: the wave loop (repeat until done)
+
+**For each wave of about 100:**
+
+1. **Build** it (§4.3). Note the failures and why. Retry them once; then list them.
+2. **Run the automatic check** (built in): the verdicts, and the manifest's summary with its
+   interval.
+3. **First look, every map, over the photo.**
+   - `node studio/campground-maps/aerial-check.mjs <dir> public/private/camphawk/maps/ridb-<id>.json …`,
+     then **read each PNG**.
+   - Write the call and one sentence of what you saw, in the first-look file (§4.5).
+   - Judge:
+     - Do the sites sit on visible pads?
+     - Do the drawn roads follow real roads?
+     - Is any loop or lane missing?
+     - Is it one campground?
+   - Under canopy, the call is `unsure` unless the roads and sites agree with what *is* visible.
+4. **Check every change of road source over the photo.** The build records each source's fit
+   (`sources.roadPick`). A changed source is better until the photo says otherwise.
+5. **Trace what's missing and visible** (the `hold` and `usable` maps with missing lanes):
+   - `node studio/campground-maps/aerial-grid.mjs <map.json> <out.png>` for the whole frame (20 m
+     grid). Then zoom on each gap with a box and a 5 m grid:
+     `aerial-grid.mjs <map.json> <out.png> x0 y0 x1 y1 5 1400`.
+   - Write the roads in grid metres, down the middle of the road, one point at each bend, and
+     joined to the road they leave. Use `trace-from-grid.mjs <map.json> <spec.json>` (the format
+     is in its header). The owner can use the review page's tracing tool instead; both write the
+     same file.
+   - Mark a through road `"through": true`.
+   - Use `"replace": true` only when a source has the roads but draws them consistently in the
+     wrong places (Lost Creek: up to 20 m off). Then trace every road, through roads too.
+   - **Name a road only from a public designation you can state the source of** (a state route
+     number). Never from an OSM name, unless the map credits OSM.
+   - **Restrooms and water taps:** only when the photo shows it beyond doubt. A small building is
+     not proof of a restroom. Leave them to the owner.
+   - Rebuild the map: `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir> <id>…`
+     (or `build-wave.mjs` once it exists).
+   - **Check every trace over the photo after the rebuild** (`aerial-grid.mjs` again; traced roads
+     are cyan). Move any trace more than about 3 m off the visible road, and rebuild.
+   - Update the first-look call and note to say what was traced and what is still missing.
+6. **Don't trace these; list them instead:**
+   - full canopy with no visible lanes (Yellowbottom, Hearts Content);
+   - spurs too short or faint to place;
+   - listings that aren't one campground (§5.2).
+7. **Owner review.** Tell the owner the wave is ready, with its numbers: ready on its own, usable
+   after a look, needs traces approved, can't go live. They decide on the page and download the
+   decisions file (§4.4). Commit it.
+8. **Record the wave in the docs** (§8): its numbers, the running totals with intervals, what the
+   first look found, the time it took, and anything new.
+9. **Measure review time.** Note how long the session's first look and tracing took per map, and
+   ask the owner how long their review took. **This number is the open question in every
+   estimate.**
+
+**Stop and ask the owner** when:
+- a wave's pass rate falls outside the sample's interval (50–76% on their own);
+- a new failure mode shows up;
+- a source's terms or availability change.
+
+### 5.1 Single-unit campgrounds (1,016)
+A cabin, fire lookout or guard station has nothing to tell apart. It needs a location map, not a
+site map: one pin on a small area map with the access road, and the unit's facts.
+- **Design it first** with `design-direction`'s gates, then build, test and review it like the site
+  map (critic rounds, `ui-audit`).
+- **Owner's call on the look.**
+- RIDB's facility pin can be kilometres off (Dimond O: about 4 km), so use the unit's own campsite
+  point.
+
+### 5.2 Listings that aren't one campground
+Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart) and Pioneer Trail
+(three group sites 770 m apart):
+- **Detect them** with the check's spread and outlier rules.
+- **Proposed:** one map per cluster (sites within about 300 m of each other), titled by its loop or
+  area, or, for dispersed areas, a list of areas with a location each.
+- Design and build it like §5.1. **Owner's call.**
+
+### 5.3 Restroom and water text (optional, owner's call)
+- **Where it comes from:**
+  - The Forest Service publishes text per site in `EDW_RecInfraRecreationSites_02` layer 0:
+    `restroom_availability` ("Vault toilet(s)") and `water_availability`.
+  - It publishes **no locations**.
+  - Lookup by `nrrs_id` returned nothing for three sample campgrounds (2026-10-07), so **first
+    measure** how to match a RIDB facility to a Forest Service site (name, distance) and how often
+    it works.
+- **Where it shows:** if built, on the camper's page as "Vault toilets; drinking water from faucets
+  (locations not mapped)", only where the map has none.
+
+---
+
+## 6. ReserveCalifornia: once State Parks answers
+
+### 6.1 Read the answer, then decide with the owner
+- **Permission granted:**
+  - Record the exact terms (attribution wording, any limits) in the design doc.
+  - Credit State Parks exactly as asked.
+- **The records request delivers the data:**
+  - Records released under the Public Records Act can't be tied to a license (*County of Santa
+    Clara*, 2009). Still, record what was delivered, its date, and any cover-letter conditions.
+  - **Not legal advice**: tell the owner, and let them decide whether to use it.
+- **Refused or no answer:**
+  - RC campgrounds keep "not drawn yet".
+  - The fallback (option 2/3 in the design doc) is hand work from the aerial photo, about 30–90
+    minutes a campground, with approximate site positions labelled as such. Most-watched first,
+    and only on the owner's go-ahead.
+- **Once cleared**, lift the local-only rule in one commit:
+  - remove `/public/lab-local/` from `.gitignore`;
+  - move built maps from `public/lab-local/` to `public/private/camphawk/maps/csp-<key>.json`;
+  - drop `LOCAL_MAPS` in `src/lab/camphawk/round2/maps/index.ts`;
+  - update the CLAUDE.md router line, the README section, and `docs/NEXT-SESSION.md`'s hard rule.
+
+### 6.2 Bring `build-csp.mjs` up to `build.mjs`
+- **Share the code, don't copy it:**
+  - pick-by-fit roads (`roads.mjs`; add State Parks' own roads layer as a candidate after
+    checking its terms);
+  - traces (`trace.mjs`, keyed `csp-<key>`);
+  - restrooms and water per kind;
+  - `qa.mjs`, plus its own check: the share of RC's units matched to a State Parks point
+    (`match.mjs`);
+  - credits naming every source;
+  - a manifest the review page reads.
+- **The spec** (`specs/<key>.json`) names the State Parks unit number, the campground name pattern,
+  and RC's facility ids with their loop names (format in `build-csp.mjs`'s header).
+  - Generate specs for all 341 RC areas from CampHawk's catalog of RC facilities. The facility ids
+    and loop names come from RC's own `/fd/facilities` and `search/grid`, as `build-csp.mjs` reads
+    them.
+  - The coverage figures (150 automatic / 48 review / 17 manual / 126 no points) came from a
+    one-off script. **Rewrite it as `csp-coverage.mjs`** and re-measure before trusting them.
+- **Areas whose site numbers repeat across camps** (Humboldt Redwoods: Hidden Springs, Burlington,
+  Albee Creek) need a per-area spec with the `campgroundLike` pattern, like Jedediah Smith's.
+- **The review page** gets a provider switch (Recreation.gov / ReserveCalifornia), with the same
+  checks, first look, tracing and decisions.
+
+### 6.3 The private yardstick (RC's own map positions)
+- For each RC area, fit the best scale, rotation and shift from RC's map-picture unit positions to
+  State Parks' points. Measure what's left over.
+- **Where they agree closely** (Doheny 5 m, Carpinteria 7 m), it confirms the matching. **Where RC's
+  drawing is schematic** (Elk Prairie 30 m), the photo decides, and the photo said State Parks was
+  right.
+- **Use it only to flag** maps for a closer look. **Never commit** the positions, never draw from
+  them, and never publish the comparison per site.
+
+### 6.4 The RC loop
+- Same as §5: build, check, first look, trace, owner review, docs.
+- **Expect:** about 150 areas automatic, 48 to review, 17 by hand, 126 without State Parks points.
+  The last stay "not drawn yet" unless the owner chooses hand work.
+- **Report the data faults found back to State Parks** (Jedediah Smith's two 56s and no 57), on the
+  owner's say-so.
+
+---
+
+## 7. Testing and checking (every change)
+
+- **Pure logic is in `studio/` and `src/lab/…/maps/`, with tests:**
+  - `scripts/campground-maps-*.test.mts` (QA, roads, traces, matching);
+  - `src/lab/camphawk/round2/maps/*.test.mts` (layout, traces, sample).
+  - A new rule gets a test built from the real case that prompted it (Twin Peaks, Lost Creek,
+    Jedediah Smith's 56).
+- **Mutation-test every new guard.**
+  - Pure code: list mutants as `{name, file, from, to}`, apply each by exact string replacement,
+    run the tests, and restore by writing the original back. A mutant whose `from` matches zero or
+    two times is reported "did not apply".
+  - Browser checks: the same, plus `npm run build` and `E2E_ONLY="<name part>" npm run e2e` for
+    each mutant.
+  - Commit before a mutation run. **Never edit `src/` while one runs:** it builds from the working
+    tree, and a mutant is on disk at the time.
+  - Record the score (e.g. "8 of 8 killed"); fix any survivor with a test, and say so.
+- **Browser checks** (`scripts/e2e.mts`):
+  - Stub the NAIP photo with a 1×1 PNG so they need no network.
+  - Click relative to the photo (`locator.click({ position })`), never with raw page coordinates:
+    the photo is taller than the window.
+  - Check positions, not only that something happened.
+- **Screenshots, looked at:**
+  - Use real photos (fetch in Node, serve through `page.route`), signed in, at 390 and 1440.
+  - Crop tall pages to read them.
+  - Full-page shots put sticky and fixed elements in odd places; that's not a bug.
+  - Check overlap, clipping, colour-alone states and touch targets.
+- **Reviews before merge:**
+  - `ui-audit` for any UI;
+  - a separate critic agent (`Agent`, general-purpose) for anything a person will use, given the
+    brief, the house rules and the screenshots;
+  - fix its must-fixes, then send round 2.
+- **`npm run verify`** (typecheck, lint, all tests, build) before every push. Then `npm run e2e`.
+  After a merge, `npm run smoke -- https://tylerflores.dev`.
+
+---
+
+## 8. Keeping the docs current (as you go, not at the end)
+
+| When | Update |
+|---|---|
+| A wave is built and looked at | `docs/design/campground-maps.md`: a results table per wave plus running totals with intervals; `docs/NEXT-SESSION.md`'s map section |
+| A builder or rule changes | the file's header comment (why, with the case), `studio/campground-maps/README.md`, the design doc |
+| A number changes (population, coverage, pass rate) | every place that quotes it. `grep -rn "<old number>" docs studio src` |
+| A finding contradicts an earlier one | strike the old line (`~~old~~ **corrected:** …`) rather than deleting it, so nobody re-derives it |
+| State Parks or the owner decides something | the design doc's RC section, `docs/NEXT-SESSION.md`, this file's §1 and §10 |
+| Session end | `docs/NEXT-SESSION.md` (done / next / blocked); the CLAUDE.md router if a pointer moved; this playbook if a process changed |
+
+- **Write plainly:** short sentences, the finding first, numbers with their source and date.
+- **Mark estimates as estimates.**
+
+---
+
+## 9. Bringing maps into camphawk.app (separate repo, gated)
+
+**Not done from this repository.** It's gated on Apple accepting the current app build and on the
+owner's go-ahead. When it starts, in campsite-finder, the design doc's estimate section is the
+plan:
+- a migration for site coordinates, spur sizes and loop (`new-migration` skill; the RIDB sync
+  already reads the coordinates and drops them);
+- the builder as a weekly job, with output in Supabase Storage or R2;
+- the review page in CampHawk's admin;
+- the site map ported to the campground page with real per-site availability;
+- tests, `web-design-guidelines` and CampHawk's critic process.
+
+Also fix the docs claim there that providers don't publish site coordinates (RIDB does, for 84%
+of bookable sites).
+
+---
+
+## 10. Open owner decisions
+
+1. **Approve the sample's 23 held maps** on the review page: 12 only need their traces approved.
+2. **Allow `download.geofabrik.de`** in the environment's network settings (§3.4).
+3. **Wave order:** by CampHawk demand (needs a read of watch counts) or by agency and state.
+4. **Single-unit location maps (§5.1)** and **split listings (§5.2):** build them, and how they
+   should look.
+5. **Restroom and water text from the Forest Service (§5.3):** build it or not.
+6. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
+   edits.
+7. **State Parks:** what to do with their answer (§6.1). If they refuse, whether to hand-draw the
+   most-watched RC campgrounds.
+
+## 11. Known gaps (as of 2026-10-08)
+
+- **Review time per map has never been measured.** Every rollout estimate depends on it.
+- **The tracing tool on a real phone:** at 2× and 4× zoom, the sticky road bar may cover the bottom
+  strip of the photo. Scrolling the page clears it. Not checked on a device.
+- **The camper's map:**
+  - the frame isn't fitted tightly (Upper Pines has about 30% river and trail with no sites);
+  - USGS rivers are stair-stepped, and roads show facets when zoomed;
+  - unzoomed on a phone, few numbers fit (Find a site reaches all).
+- **Pick-by-fit's margin** (5 m or a quarter of the best) was set after seeing the sample. Watch it
+  in wave 1, and re-set it only with a stated reason.
+- **Census TIGER roads can be rough** (Udall Park's shore road runs a few metres off). The fit rule
+  takes them only when clearly better, and the photo check catches the rest.
+- **Two maps where a source loop coincides exactly with the site points** (Dennis Cove) can't be
+  judged from the photo.
