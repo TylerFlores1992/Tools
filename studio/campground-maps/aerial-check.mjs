@@ -37,6 +37,14 @@ export function areaFrames(map, px, s, esc) {
   }).join("");
 }
 
+/** A first-come campground (map.firstCome): OpenStreetMap's outline, which the first-come map draws
+    as the campground, in white with a dark edge, so a first look can judge it over the photo. */
+export function firstComeOutline(map, path) {
+  if (!map.firstCome || !map.evidence?.outline) return "";
+  const d = path(map.evidence.outline);
+  return `<path d="${d}" fill="none" stroke="#000" stroke-width="5" stroke-opacity="0.6"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="8 5"/>`;
+}
+
 for (const file of files) {
   const map = JSON.parse(readFileSync(file, "utf8"));
   if (!map.bbox) { console.log(`${file}: no bbox (rebuild it)`); continue; }
@@ -61,6 +69,7 @@ for (const file of files) {
     ${map.sites.filter((x) => x.at).map((x) => { const [a, b] = px(x.at); return `<circle cx="${a}" cy="${b}" r="4" fill="#ff2fd0" stroke="#fff" stroke-width="1.5"/><text x="${Number(a) + 6}" y="${Number(b) + 4}" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" stroke="#000" stroke-width="2.5" paint-order="stroke">${esc(x.name)}</text>`; }).join("")}
     ${map.pois.map((p) => { const [a, b] = px(p.at); return `<rect x="${Number(a) - 5}" y="${Number(b) - 5}" width="10" height="10" fill="#00e5ff" stroke="#000"/>`; }).join("")}
     ${areaFrames(map, px, s, esc)}
+    ${firstComeOutline(map, path)}
     <rect x="0" y="0" width="${W}" height="26" fill="#000" fill-opacity="0.6"/>
     <text x="8" y="18" font-family="sans-serif" font-size="14" fill="#fff">${esc(map.name)} · ${esc(map.facilityId)} · ${esc(map.qa?.verdict ?? "")} · roads ${esc(map.sources?.roads ?? "")} · ${Math.round(f.w)}×${Math.round(f.h)} m</text>
   </svg>`;

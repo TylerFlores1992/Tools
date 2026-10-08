@@ -86,7 +86,7 @@
   },
   "233141": {
    "call": "hold",
-   "note": "The Census roads miss the campground's lanes: the lane past 140 to 150 runs west of the drawn road, the sites west of the loop (152 to 163) sit on a lane 30 to 50 m outside it, and the south road past 164 to 166 isn't drawn; the drawn loop crosses the open meadow."
+   "note": "The Census roads miss the campground's lanes: the lane past 140 to 150 runs west of the drawn road, the sites west of the loop (152 to 163) sit on a lane 30 to 50 m outside it, and the south road past 164 to 166 isn't drawn. Zoomed for a full retrace, those lanes show only in gaps between the conifers, so the roads can't be replaced from the photo."
   },
   "233144": {
    "call": "usable",
@@ -166,7 +166,7 @@
   },
   "233850": {
    "call": "hold",
-   "note": "No campground road is drawn: the lanes past 001 to 008 in the north and 010 to 017 in the south-west show between the trees, but only the county roads are drawn, so every site sits 30 to 100 m from a line."
+   "note": "No campground road is drawn: only the county roads are, so every site sits 30 to 100 m from a line. Zoomed for tracing, the lanes past 001 to 008 and 010 to 017 show only as scraps of pad between the trees, under full canopy, so nothing could be traced."
   },
   "233983": {
    "call": "usable",
@@ -318,7 +318,7 @@
   },
   "10159225": {
    "call": "usable",
-   "note": "The loop and the shore lane follow the visible pavement, and 3 to 7 and 11 sit beside them. 8 to 10 sit by the south lane along the shore, which shows but isn't drawn, and 1 and 2 sit in the grass 20 to 40 m off the roads."
+   "note": "The loop and the shore road follow the visible pavement, and 3 to 7 and 11 sit beside them; the shore road is drawn along the pavement's east edge, about 5 m off its middle. Now traced: the lane along the south shore past 9 and 10, the spur to 8 and the drive to 1. 2 sits in the trees east of the road with no lane."
   },
   "10159237": {
    "call": "usable",
@@ -330,7 +330,7 @@
   },
   "10177518": {
    "call": "hold",
-   "note": "Only the loop and the main road are drawn: 11 to 17 sit on the open grass along the shore 60 to 100 m from any drawn road, with no lane to them, and the photo shows them in an empty field; 1 to 6 sit by the boat ramp lanes, which aren't drawn."
+   "note": "Now traced: the gravel teardrop by 10 and 11, the lane past 5 and 6 and the boat-ramp road. Still held: 11 to 17 sit on the open grass along the shore 60 to 100 m from any road with no lane, and 7 to 9 and 1 to 4 sit off the roads under the trees, so most sites have no drawn road."
   },
   "232720": {
    "call": "hold",
@@ -346,7 +346,7 @@
   },
   "254084": {
    "call": "usable",
-   "note": "The west loop, the middle lane and the south road follow the gravel under the trees, and 019 to 024, 031 to 038 and 014, 015 sit near them. 025 to 028 sit 20 m west of the west loop, and 001, 002, 009, 012 and 013 sit on lanes in the open south-east area that show plainly but aren't drawn."
+   "note": "The west loop, the middle lane and the south road follow the gravel under the trees, and 019 to 024, 031 to 038 and 014, 015 sit near them. Now traced in the open south-east area: the diagonal lane past 009 with its branch to the main road, the lane to 013 and the spur to 001. Still missing: the lanes to 025 to 028, 20 m west of the west loop under the trees."
   },
   "272094": {
    "call": "unsure",

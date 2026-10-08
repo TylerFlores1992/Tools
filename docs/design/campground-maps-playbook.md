@@ -624,7 +624,8 @@ of bookable sites).
 2b. **"Whole campground as one Standard site" (130 listings):** these are first-come "Scan and
    Pay" campgrounds, not units. **Owner, 2026-10-08: design a whole-campground map.** Two
    directions are built as lab comps (`docs/design/campground-maps-first-come.md`); the critic and
-   I recommend A. **Waits on the owner's pick**, then the build records them as their own kind.
+   I recommend A. **The owner picked A (2026-10-08), and it's built in**: the `firstcome` kind,
+   `checkFirstCome`, and the child brief's step 3b for the first look.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.

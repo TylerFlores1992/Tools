@@ -100,8 +100,25 @@ the owner picked, and it holds up on a phone.
   for coarse tiles.
 - A's facts column ends above the map's bottom at 1440.
 
+## Picked and built (2026-10-08)
+**The owner picked A** ("Go with A, build it in"). Built into the rollout:
+- **The build:** `viewOf` gives one site named "Standard" its own kind, `firstcome`. The build
+  records what RIDB says about it in the map as `firstCome` (first-come.mjs `factsFromLoaded`).
+- **The check:** `qa.mjs` `checkFirstCome`. It is ready when an OpenStreetMap outline holds the
+  listed point or lies within 250 m and the listing isn't marked closed. No outline, an outline
+  out of reach, a closed listing or a trace waits for a person.
+- **The page:** `CamperMap` shows these as direction A. The review page labels them "first-come
+  campground".
+- **The decisions:** one passes only when its first look judged it as a first-come map (`"as":
+  "firstcome"` on the look, `decide-wave.mjs`). A look that judged it as a unit is held.
+- **Reviewing them:** `aerial-check.mjs` draws the outline dashed white, and the child brief's
+  step 3b sets the calls.
+- **The 130 are rebuilt as first-come maps:** 81 pass the automatic check and 49 wait for a person.
+  - 47 have no OpenStreetMap outline within 250 m.
+  - 2 are marked closed.
+  - 36 carry a site count from their description.
+  - Their first look as first-come maps is next. It will be recorded in `docs/design/campground-maps.md`.
+
 ## Not settled
-- Whether the build should record "first-come" for these listings, so the check and the review
-  page treat them as their own kind (not a unit). It waits for the owner's pick.
-- 42 have no OpenStreetMap outline. For those the map is a pin "About here", which is honest but
+- 47 have no OpenStreetMap outline within 250 m (42 have none at all). For those the map is a pin "About here", which is honest but
   thin. Tracing their outline from the photo is possible where it shows.

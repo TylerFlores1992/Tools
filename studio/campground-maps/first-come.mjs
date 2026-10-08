@@ -65,12 +65,25 @@ const AMENITY = [
   [/^BOAT RAMP$/i, "Boat ramp"],
 ];
 
+/** A listing is first-come when its one bookable site is the "Standard" placeholder (rows are its
+    bookable overnight campsites). Same rule as the lab's isFirstCome (maps/first-come.ts). */
+export const isFirstComeSites = (names) => names.length === 1 && /^standard$/i.test(names[0].trim());
+
 /** The facts for one first-come listing from the RIDB tables. */
 export function factsFor(id, { facilities, campsites, attributes }) {
   const fac = facilities.find((f) => f.FacilityID === id);
   if (!fac) throw new Error(`${id}: not in RIDB Facilities`);
   const site = campsites.find((c) => c.FacilityID === id && c.CampsiteName.trim().toLowerCase() === "standard");
   const attrs = site ? attributes.filter((a) => a.EntityID === site.CampsiteID) : [];
+  return factsFrom(id, fac, attrs);
+}
+
+/** The same facts from the build's loaded RIDB (build.mjs loadRidb: attributes as a name → value map). */
+export function factsFromLoaded(id, fac, attrMap = {}) {
+  return factsFrom(id, fac, Object.entries(attrMap).map(([AttributeName, AttributeValue]) => ({ AttributeName, AttributeValue })));
+}
+
+function factsFrom(id, fac, attrs) {
   const attr = (name) => attrs.find((a) => a.AttributeName.toLowerCase() === name.toLowerCase())?.AttributeValue ?? null;
   const num = (v) => (v != null && /^\d+$/.test(v) ? Number(v) : null);
   const amenities = [...new Set(attrs.map((a) => AMENITY.find(([re]) => re.test(a.AttributeName.trim()))?.[1]).filter(Boolean))];

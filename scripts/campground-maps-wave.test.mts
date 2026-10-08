@@ -57,6 +57,10 @@ const calls = callFiles.flatMap((f) => JSON.parse(readFileSync(f, "utf8")).listi
 test("one unit is a place; a listing spread over 1.5 km is areas unless a call keeps it one map; a call splits one that fits", async () => {
   const { viewOf } = await import("../studio/campground-maps/build.mjs");
   assert.equal(viewOf([{ name: "CABIN", at: [0, 0] }]).kind, "unit");
+  // One site named "Standard" is a first-come campground, not a unit (the owner's pick, 2026-10-08).
+  assert.equal(viewOf([{ name: "Standard", at: [0, 0] }]).kind, "firstcome");
+  assert.equal(viewOf([{ name: " standard ", at: [0, 0] }]).kind, "firstcome");
+  assert.equal(viewOf([{ name: "Standard 2", at: [0, 0] }]).kind, "unit");
   const diamond = mapOf("231980").sites; // 3.5 km of shore
   assert.equal(viewOf(diamond).kind, "areas");
   assert.equal(viewOf(diamond, { split: false }).kind, "one");
@@ -198,6 +202,10 @@ test("the final check's decisions: good and usable pass, hold and unsure are hel
   const w = decideWave({ wave: 9, manifest, looks, wholeCampgrounds: ["a"], checked: 4, on: "2026-10-08" });
   assert.equal(w.decisions[0].decision, "hidden");
   assert.match(w.decisions[0].note, /Standard/);
+  // Looked at as a first-come map (the owner's pick, 2026-10-08): its call decides, both ways.
+  const fc = decideWave({ wave: 9, manifest, looks: { ...looks, a: { call: "good", as: "firstcome" }, c: { call: "hold", as: "firstcome" } }, wholeCampgrounds: ["a", "c"], checked: 4, on: "2026-10-08" });
+  assert.equal(fc.decisions[0].decision, "approved");
+  assert.equal(fc.decisions[2].decision, "hidden");
   assert.throws(() => decideWave({ wave: 9, manifest, looks: { a: { call: "good" } }, checked: 1, on: "2026-10-08" }), /no first look for b/);
   assert.throws(() => decideWave({ wave: 9, manifest, looks, hold: ["zz"], checked: 1, on: "2026-10-08" }), /not in the wave: zz/);
 });

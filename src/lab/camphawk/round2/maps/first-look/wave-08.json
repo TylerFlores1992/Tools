@@ -334,7 +334,7 @@
   },
   "251894": {
    "call": "hold",
-   "note": "The drawn loop doesn't follow the visible lanes: the gravel loop round 001 to 005 and 007 by the shore, the lanes west past 010, 011, 013 to 015 and the south turnaround show plainly and aren't drawn, while the drawn loop cuts across the middle."
+   "note": "The drawn loop doesn't follow the visible lanes: the gravel lane along the shore past 005 and 007, the lane round 004 and the lanes west past 010, 011, 013 to 015 show, while the drawn loop cuts across the middle. Zoomed for a replace trace, the middle is an open gravel area where those lanes meet and can't be told apart to 3 m, so it wasn't retraced."
   },
   "252036": {
    "call": "good",
@@ -350,7 +350,7 @@
   },
   "266141": {
    "call": "hold",
-   "note": "Only the lane through the middle is drawn. The campground's west loop (past 005, 006, 010, 013 to 017) and the lanes east (002, 004, 007) show through the pines and aren't drawn, and those sites sit 20 to 60 m from the drawn lane."
+   "note": "Only the lane through the middle is drawn. The west loop (past 005, 006, 010, 013 to 017) and the lanes east (002, 004, 007) show only as grey fragments between the pine shadows; zoomed, they can't be followed to 3 m, so nothing was traced, and those sites sit 20 to 60 m from the drawn lane."
   },
   "267070": {
    "call": "usable",

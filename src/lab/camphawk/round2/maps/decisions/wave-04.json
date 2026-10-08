@@ -344,7 +344,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
   },
   {
    "id": "233884",
@@ -404,10 +404,10 @@
   },
   {
    "id": "234115",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "234117",

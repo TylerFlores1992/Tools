@@ -3,6 +3,7 @@
 // metres on a local north-up plane; `frame` is the box the map shows.
 import upperPines from "./ridb-232447.json" with { type: "json" };
 import type { TraceFile } from "./trace";
+import type { FirstComeFacts } from "./first-come";
 
 import type { Split } from "./areas";
 export type MapSite = {
@@ -71,6 +72,9 @@ export type SiteMapData = {
       viewOf). Absent for one campground, one unit, or a map built before areas. Who called it split,
       when a person did. */
   split?: Exclude<Split, { kind: "one" }> & { by?: string; on?: string };
+  /** A first-come campground booked as one "Standard" site: what RIDB says about it
+      (studio/campground-maps/first-come.mjs). Maps built since 2026-10-08. */
+  firstCome?: FirstComeFacts;
 };
 
 /** Lab campground id → its drawn map. A campground missing here has no map yet. */

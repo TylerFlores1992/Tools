@@ -40,14 +40,23 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 **Late night, 2026-10-08: the fix-after list, started (owner: "start with the 60 trace
 candidates; find a public-domain photo source for Alaska and Hawaii; design a whole campground map
 for the Standard ones").**
-- **Trace candidates (63 maps):** two children, `wip/maps-trace-a` (28, the south) and
-  `wip/maps-trace-b` (35, midwest, west and northeast). Rebuilt with `OSM_FROM=auto` (no extract).
-  Integrate as before: merge, final check over the photo, `decide-wave --pass/--hold`.
-- **Alaska and Hawaii (219 maps):** one child, `wip/maps-akhi-imagery`. It researches public-domain
-  sources, wires the chosen one in beside NAIP, and gives every map a first look.
-- **First-come campgrounds (130 "Standard" listings):** designed. Two directions are on the layouts
-  page, with two critique rounds (A 7, B 6.5; A recommended). `docs/design/campground-maps-first-come.md`.
-  **Waits on the owner's pick.**
+- **Trace candidates (63 maps): done.** Two children traced them from NAIP (`wip/maps-trace-a`, 28
+  in the south; `wip/maps-trace-b`, 35 in the midwest, west and northeast). The final check over the
+  photo passed **23** that were held (13 and 10). 40 stay held, mostly lanes under full canopy.
+  Rollout totals are now 1,409 passed and 1,552 held. Results are in the design doc's "Fix after"
+  section.
+- **Alaska and Hawaii (219 maps):** the child finished (`wip/maps-akhi-imagery`), not yet
+  integrated.
+  - **Alaska:** the Forest Service Alaska Region's CC0 orthophotos via IIPP (202 of 217).
+  - **Hawaii:** NAIP 2021 via IIPP (both maps).
+  - 15 Alaska maps have no public-domain photo.
+  - New first looks for all 219: good 16, usable 17, hold 69, unsure 117.
+  - Next: merge, final check, decisions.
+- **First-come campgrounds (130 "Standard" listings): the owner picked A ("Go with A, build it
+  in").** Built in: the `firstcome` kind, `checkFirstCome`, the camper page, and decide-wave's
+  `"as": "firstcome"` rule. All 130 are rebuilt: 81 ready, 49 for a person (47 have no outline in
+  reach, 2 are closed). **Next: their first look as first-come maps** (brief step 3b), then the
+  decisions. Until then they stay hidden under their old unit calls.
 
 **Night, 2026-10-08: the parallel rollout is done: all 12 batch groups merged (PRs #32 to #40).**
 - **2,961 maps built in waves 3 to 39; 1,386 passed the final check and 1,575 are held to fix
