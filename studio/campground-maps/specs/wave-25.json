@@ -1,0 +1,293 @@
+{
+  "drawn": {
+    "wave": 25,
+    "count": 30,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "api",
+    "osm": "api",
+    "order": "Rollout of everything left, by region (Alaska, Hawaii and anywhere no extract covers (OpenStreetMap API)), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10156151",
+      "name": "Joe T. Fallini Recreation Site",
+      "agency": "Bureau of Land Management",
+      "state": "ID",
+      "recArea": "",
+      "overnightSites": 26,
+      "placed": 25
+    },
+    {
+      "id": "10191011",
+      "name": "Marion Creek Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "Dalton Highway",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "10276314",
+      "name": "Arctic Circle Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "Dalton Highway",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "10322643",
+      "name": "Galbraith Lake Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "Dalton Highway",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "10325233",
+      "name": "Cripple Creek Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "White Mountains National Recreation Area",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "10325252",
+      "name": "Mount Prindle Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "White Mountains National Recreation Area",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "10325266",
+      "name": "Ophir Creek Campground",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "White Mountains National Recreation Area",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "252494",
+      "name": "White Mountains National Recreation Area - Alaska Cabins",
+      "agency": "Bureau of Land Management",
+      "state": "AK",
+      "recArea": "White Mountains National Recreation Area",
+      "overnightSites": 15,
+      "placed": 14
+    },
+    {
+      "id": "10296828",
+      "name": "Hidden Lake Campground",
+      "agency": "Fish and Wildlife Service",
+      "state": "AK",
+      "recArea": "Kenai National Wildlife Refuge",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "233317",
+      "name": "KENAI NATIONAL WILDLIFE REFUGE CABINS",
+      "agency": "Fish and Wildlife Service",
+      "state": "AK",
+      "recArea": "Kenai National Wildlife Refuge",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "234629",
+      "name": "Kodiak National Wildlife Refuge Cabins",
+      "agency": "Fish and Wildlife Service",
+      "state": "AK",
+      "recArea": "Kodiak National Wildlife Refuge",
+      "overnightSites": 10,
+      "placed": 9
+    },
+    {
+      "id": "10300372",
+      "name": "Spencer Glacier Whistle Stop Group Campground",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "232141",
+      "name": "SIGNAL CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "232324",
+      "name": "WILLIWAW CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "232330",
+      "name": "LAST CHANCE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "232352",
+      "name": "PTARMIGAN CREEK",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "232353",
+      "name": "COOPER CREEK SOUTH",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 21,
+      "placed": 20
+    },
+    {
+      "id": "232360",
+      "name": "EAGLES NEST CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "233909",
+      "name": "QUARTZ CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 44,
+      "placed": 44
+    },
+    {
+      "id": "233974",
+      "name": "HARRIS RIVER CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "233994",
+      "name": "Starrigavan Campground and Day Use",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 34,
+      "placed": 33
+    },
+    {
+      "id": "234108",
+      "name": "TENDERFOOT CREEK",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 36,
+      "placed": 35
+    },
+    {
+      "id": "234110",
+      "name": "PORCUPINE (AK)",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 34,
+      "placed": 34
+    },
+    {
+      "id": "234112",
+      "name": "GRANITE CREEK",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "234504",
+      "name": "MENDENHALL CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 68,
+      "placed": 68
+    },
+    {
+      "id": "251356",
+      "name": "AUK VILLAGE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "10119505",
+      "name": "Haleakalā National Park (Wilderness Tent Permit)",
+      "agency": "National Park Service",
+      "state": "HI",
+      "recArea": "Haleakalā National Park",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10382456",
+      "name": "Chilkoot Trail Camping Permits",
+      "agency": "National Park Service",
+      "state": "AK",
+      "recArea": "Klondike Gold Rush National Historical Park",
+      "overnightSites": 55,
+      "placed": 55
+    },
+    {
+      "id": "234783",
+      "name": "Haleakalā National Park (Cabin Permits)",
+      "agency": "National Park Service",
+      "state": "HI",
+      "recArea": "Haleakalā National Park",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "251861",
+      "name": "Kenai Fjords National Park Cabins",
+      "agency": "National Park Service",
+      "state": "AK",
+      "recArea": "Kenai Fjords National Park",
+      "overnightSites": 2,
+      "placed": 2
+    }
+  ]
+}

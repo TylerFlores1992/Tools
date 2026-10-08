@@ -50,6 +50,25 @@ test("loops that are separate places stay whole loops (Lost Lake, Strawberry Bay
   }
 });
 
+test("a loop joins the area before it only when the two touch: Lost Lake's H sites, 1 km down the lake, are their own area", () => {
+  const s = splitAreas(load("251434").sites);
+  if (s.kind !== "areas") return assert.fail(s.kind);
+  assert.deepEqual(s.areas.map((a) => a.name), ["Loops A–C", "Loops D and F", "Loop H"]);
+  // A gap wide enough to reach them joins them again.
+  const wide = splitAreas(load("251434").sites, { gap: 2000 });
+  assert.ok(wide.kind === "areas" && wide.areas.some((a) => a.sites.some((n) => n.startsWith("H")) && a.sites.some((n) => n.startsWith("F"))));
+});
+
+test("a tighter gap or a smaller area parts clusters the defaults put in one area (owner, 2026-10-08)", () => {
+  const n = (id: string, opts: { gap?: number; maxSpan?: number }) => { const s = splitAreas(load(id).sites, { oneMap: 0, ...opts }); return s.kind === "areas" ? s.areas.length : 0; };
+  assert.equal(n("232715", {}), 2); // Sweetwater
+  assert.equal(n("232715", { gap: 150 }), 3);
+  assert.equal(n("233539", {}), 2); // Lithia Springs
+  assert.equal(n("233539", { gap: 80 }), 3);
+  assert.equal(n("233613", { gap: 120 }), 4); // South Sandusky
+  assert.equal(n("232567", { maxSpan: 400 }), 6); // Dam Site
+});
+
 test("dispersed sites along a river are a list, not ten tiny maps (Au Sable, 101 sites over 35 km)", () => {
   assert.equal(splitAreas(load("234130").sites).kind, "dispersed");
 });

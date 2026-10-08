@@ -1,0 +1,842 @@
+{
+  "drawn": {
+    "wave": 17,
+    "count": 91,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-south",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-south), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10011396",
+      "name": "Wolf Ford Horse Camp",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "10145521",
+      "name": "Woods Ferry Campground (SC)",
+      "agency": "Forest Service",
+      "state": "SC",
+      "recArea": "Francis Marion and Sumter National Forests",
+      "overnightSites": 17,
+      "placed": 16
+    },
+    {
+      "id": "10159159",
+      "name": "Turkey Fork Recreation Area",
+      "agency": "Forest Service",
+      "state": "MS",
+      "recArea": "National Forests in Mississippi",
+      "overnightSites": 21,
+      "placed": 20
+    },
+    {
+      "id": "232007",
+      "name": "STUART RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "WV",
+      "recArea": "Monongahela National Forest",
+      "overnightSites": 28,
+      "placed": 27
+    },
+    {
+      "id": "232009",
+      "name": "LAKE SHERWOOD",
+      "agency": "Forest Service",
+      "state": "WV",
+      "recArea": "Monongahela National Forest",
+      "overnightSites": 106,
+      "placed": 106
+    },
+    {
+      "id": "232161",
+      "name": "MORRIS HILL CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 55,
+      "placed": 55
+    },
+    {
+      "id": "232255",
+      "name": "CHOCTAW LAKE",
+      "agency": "Forest Service",
+      "state": "MS",
+      "recArea": "National Forests in Mississippi",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "232256",
+      "name": "DAVIS LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MS",
+      "recArea": "National Forests in Mississippi",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "232258",
+      "name": "GROVE",
+      "agency": "Forest Service",
+      "state": "KY",
+      "recArea": "Daniel Boone National Forest",
+      "overnightSites": 54,
+      "placed": 54
+    },
+    {
+      "id": "232384",
+      "name": "BEARTREE",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 45,
+      "placed": 43
+    },
+    {
+      "id": "233375",
+      "name": "CHEWALLA LAKE RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "MS",
+      "recArea": "National Forests in Mississippi",
+      "overnightSites": 36,
+      "placed": 36
+    },
+    {
+      "id": "233834",
+      "name": "COVE LAKE RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "AR",
+      "recArea": "Ozark-St. Francis National Forests",
+      "overnightSites": 36,
+      "placed": 36
+    },
+    {
+      "id": "234469",
+      "name": "Lake Winfield Scott Recreation Area",
+      "agency": "Forest Service",
+      "state": "GA",
+      "recArea": "Chattahoochee-Oconee National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "234479",
+      "name": "WHETSTONE HORSE CAMP",
+      "agency": "Forest Service",
+      "state": "SC",
+      "recArea": "Francis Marion and Sumter National Forests",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "234574",
+      "name": "RACCOON BRANCH CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "234583",
+      "name": "CHEOAH POINT CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "251757",
+      "name": "BACKBONE ROCK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "TN",
+      "recArea": "Cherokee National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "251904",
+      "name": "CAMEL LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10004358",
+      "name": "Station Camp Campground",
+      "agency": "National Park Service",
+      "state": "TN",
+      "recArea": "Big South Fork National River & Recreation Area",
+      "overnightSites": 24,
+      "placed": 23
+    },
+    {
+      "id": "232468",
+      "name": "MAPLE SPRINGS",
+      "agency": "National Park Service",
+      "state": "KY",
+      "recArea": "Mammoth Cave National Park",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "233324",
+      "name": "Rocky Knob Campground",
+      "agency": "National Park Service",
+      "state": "NC",
+      "recArea": "Blue Ridge Parkway",
+      "overnightSites": 106,
+      "placed": 106
+    },
+    {
+      "id": "233369",
+      "name": "Doughton Park Campground",
+      "agency": "National Park Service",
+      "state": "NC",
+      "recArea": "Blue Ridge Parkway",
+      "overnightSites": 122,
+      "placed": 120
+    },
+    {
+      "id": "234013",
+      "name": "Chisos Basin Group Campground (Big Bend, TX)",
+      "agency": "National Park Service",
+      "state": "TX",
+      "recArea": "Big Bend National Park",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "234036",
+      "name": "Linville Falls Campground",
+      "agency": "National Park Service",
+      "state": "NC",
+      "recArea": "Blue Ridge Parkway",
+      "overnightSites": 64,
+      "placed": 64
+    },
+    {
+      "id": "234717",
+      "name": "TURKEY RUN RIDGE GROUP",
+      "agency": "National Park Service",
+      "state": "VA",
+      "recArea": "Prince William Forest Park",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "246890",
+      "name": "Burns Lake Campground",
+      "agency": "National Park Service",
+      "state": "FL",
+      "recArea": "Big Cypress National Preserve",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "251534",
+      "name": "Otter Creek Campground",
+      "agency": "National Park Service",
+      "state": "NC",
+      "recArea": "Blue Ridge Parkway",
+      "overnightSites": 68,
+      "placed": 68
+    },
+    {
+      "id": "251544",
+      "name": "Marsden Tract Group Campsite",
+      "agency": "National Park Service",
+      "state": "MD",
+      "recArea": "Chesapeake & Ohio Canal National Historical Park",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "252967",
+      "name": "Spring Gap Campground",
+      "agency": "National Park Service",
+      "state": "",
+      "recArea": "Chesapeake & Ohio Canal National Historical Park",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "252968",
+      "name": "Fifteen Mile Creek Campsite",
+      "agency": "National Park Service",
+      "state": "MD",
+      "recArea": "Chesapeake & Ohio Canal National Historical Park",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "252971",
+      "name": "Paw Paw Tunnel Campsite",
+      "agency": "National Park Service",
+      "state": "MD",
+      "recArea": "Chesapeake & Ohio Canal National Historical Park",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "259170",
+      "name": "Chopawamsic Backcountry Camping Permits",
+      "agency": "National Park Service",
+      "state": "VA",
+      "recArea": "Prince William Forest Park",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "10035081",
+      "name": "Cowlington Point",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Arkansas River - Robert S. Kerr Pool",
+      "overnightSites": 37,
+      "placed": 36
+    },
+    {
+      "id": "10035281",
+      "name": "Short Mountain Cove",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Arkansas River - Robert S. Kerr Pool",
+      "overnightSites": 41,
+      "placed": 41
+    },
+    {
+      "id": "10039071",
+      "name": "Wildwood (OK)",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Fort Gibson Lake",
+      "overnightSites": 31,
+      "placed": 31
+    },
+    {
+      "id": "10046288",
+      "name": "Pat's Bluff",
+      "agency": "US Army Corps of Engineers",
+      "state": "MS",
+      "recArea": "Sardis Lake",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10049434",
+      "name": "Clear Creek - Ozark Lake (AR)",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Ozark Lake",
+      "overnightSites": 38,
+      "placed": 38
+    },
+    {
+      "id": "10052170",
+      "name": "Tom Merrill Recreation Area",
+      "agency": "US Army Corps of Engineers",
+      "state": "LA",
+      "recArea": "Bayou Bodcau Reservoir",
+      "overnightSites": 20,
+      "placed": 19
+    },
+    {
+      "id": "10052638",
+      "name": "Redbud Bay",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Oologah Lake",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "10053729",
+      "name": "Little Fir",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Lake Ouachita",
+      "overnightSites": 29,
+      "placed": 29
+    },
+    {
+      "id": "10053759",
+      "name": "Hurricane Landing",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Sardis Lake",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "10053793",
+      "name": "Pat Mayse East",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Pat Mayse Lake",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "10058090",
+      "name": "Self Creek",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Lake Greeson",
+      "overnightSites": 72,
+      "placed": 72
+    },
+    {
+      "id": "10058234",
+      "name": "Dam Area",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Lake Greeson",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "10064530",
+      "name": "Panther Bay Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Norfork Lake",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "10082227",
+      "name": "McFadden Cove",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Kaw Lake",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10124956",
+      "name": "Cherokee (Arkansas River)",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Arkansas River - Rockefeller Lake",
+      "overnightSites": 31,
+      "placed": 31
+    },
+    {
+      "id": "10128465",
+      "name": "Center Hill Lake Primitive Camping Areas",
+      "agency": "US Army Corps of Engineers",
+      "state": "TN",
+      "recArea": "Center Hill Lake",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "10130532",
+      "name": "North Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Canyon Lake",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "10158169",
+      "name": "Sandy Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Kaw Lake",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "159090",
+      "name": "MILL RUN RECREATION AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Youghiogheny River Lake",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "232522",
+      "name": "BELLAH MINE",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Dequeen Lake",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "232524",
+      "name": "BIG COON CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Gillham Lake",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "232537",
+      "name": "BUMPUS MILLS",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Barkley Lake",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "232543",
+      "name": "CARTER COVE",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Nimrod Lake",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "232548",
+      "name": "CHILATCHEE CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "AL",
+      "recArea": "Alabama River Lakes",
+      "overnightSites": 52,
+      "placed": 52
+    },
+    {
+      "id": "232563",
+      "name": "CUMBERLAND POINT CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Lake Cumberland",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "232566",
+      "name": "BUCKHORN CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Buckhorn Lake",
+      "overnightSites": 34,
+      "placed": 33
+    },
+    {
+      "id": "232587",
+      "name": "FISHING CREEK CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Lake Cumberland",
+      "overnightSites": 46,
+      "placed": 46
+    },
+    {
+      "id": "232588",
+      "name": "FLATROCK (TEXAS)",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Hords Creek Lake",
+      "overnightSites": 48,
+      "placed": 48
+    },
+    {
+      "id": "232649",
+      "name": "NARROWS (AR)",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Greers Ferry Lake",
+      "overnightSites": 57,
+      "placed": 57
+    },
+    {
+      "id": "232652",
+      "name": "Oak Grove (AR)",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Dequeen Lake",
+      "overnightSites": 36,
+      "placed": 36
+    },
+    {
+      "id": "232668",
+      "name": "PETERSBURG",
+      "agency": "US Army Corps of Engineers",
+      "state": "GA",
+      "recArea": "J. Strom Thurmond Lake",
+      "overnightSites": 90,
+      "placed": 90
+    },
+    {
+      "id": "232671",
+      "name": "PINE RIDGE",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Dequeen Lake",
+      "overnightSites": 37,
+      "placed": 37
+    },
+    {
+      "id": "232676",
+      "name": "PLOWMAN CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Whitney Lake",
+      "overnightSites": 44,
+      "placed": 44
+    },
+    {
+      "id": "232682",
+      "name": "QUARRY COVE",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Nimrod Lake",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "232690",
+      "name": "RIVER ROAD",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Nimrod Lake",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "232714",
+      "name": "SUNLIGHT BAY",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Nimrod Lake",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "232723",
+      "name": "TUCKER HOLLOW PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Bull Shoals Lake",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "232733",
+      "name": "WAITSBORO CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Lake Cumberland",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "232744",
+      "name": "WILBUR D. MILLS",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Arkansas River - Wilbur D. Mills Pool",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "232750",
+      "name": "WOLF CREEK (Navarro Mills Lake)",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Navarro Mills Lake",
+      "overnightSites": 73,
+      "placed": 73
+    },
+    {
+      "id": "233277",
+      "name": "STARKEY CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Beaver Lake",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "233279",
+      "name": "WAR EAGLE CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Beaver Lake",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "233423",
+      "name": "BEAR CREEK COVE",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Kaw Lake",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "233442",
+      "name": "BUFFALO PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "VA",
+      "recArea": "John H. Kerr Dam and Reservoir",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "233444",
+      "name": "BUNCOMBE CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Lake Texoma",
+      "overnightSites": 54,
+      "placed": 53
+    },
+    {
+      "id": "233460",
+      "name": "CLEAR CREEK (MS)",
+      "agency": "US Army Corps of Engineers",
+      "state": "MS",
+      "recArea": "Sardis Lake",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "233479",
+      "name": "LADYBIRD LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Eufaula Lake",
+      "overnightSites": 57,
+      "placed": 57
+    },
+    {
+      "id": "233495",
+      "name": "ELK CREEK LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Tenkiller Ferry Lake",
+      "overnightSites": 41,
+      "placed": 41
+    },
+    {
+      "id": "233502",
+      "name": "GENTRY CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Eufaula Lake",
+      "overnightSites": 37,
+      "placed": 37
+    },
+    {
+      "id": "233530",
+      "name": "KIOWA PARK I",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Waurika Lake",
+      "overnightSites": 166,
+      "placed": 166
+    },
+    {
+      "id": "233540",
+      "name": "LITTLE RIVER PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Pine Creek Lake",
+      "overnightSites": 90,
+      "placed": 90
+    },
+    {
+      "id": "233564",
+      "name": "NORTH GRAYSPORT",
+      "agency": "US Army Corps of Engineers",
+      "state": "MS",
+      "recArea": "Grenada Lake",
+      "overnightSites": 50,
+      "placed": 50
+    },
+    {
+      "id": "233591",
+      "name": "POST OAK PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Copan Lake",
+      "overnightSites": 20,
+      "placed": 19
+    },
+    {
+      "id": "233619",
+      "name": "SANDY COVE",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Canton Lake",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "233632",
+      "name": "SNAKE CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Tenkiller Ferry Lake",
+      "overnightSites": 109,
+      "placed": 109
+    },
+    {
+      "id": "233669",
+      "name": "WATER VALLEY LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "MS",
+      "recArea": "Enid Lake",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "234643",
+      "name": "TEJAS PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Georgetown Lake",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "234727",
+      "name": "FALL CREEK CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "KY",
+      "recArea": "Lake Cumberland",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "250013",
+      "name": "WHITE CLIFFS PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Millwood Lake",
+      "overnightSites": 25,
+      "placed": 25
+    }
+  ]
+}

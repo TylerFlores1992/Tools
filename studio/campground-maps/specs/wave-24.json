@@ -1,0 +1,383 @@
+{
+  "drawn": {
+    "wave": 24,
+    "count": 40,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-northeast",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-northeast), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10040547",
+      "name": "Grout Pond Campground",
+      "agency": "Forest Service",
+      "state": "VT",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "10300159",
+      "name": "Hancock Campground (NH)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 54,
+      "placed": 54
+    },
+    {
+      "id": "232005",
+      "name": "LOLETA RECREATION",
+      "agency": "Forest Service",
+      "state": "PA",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 40,
+      "placed": 40
+    },
+    {
+      "id": "232126",
+      "name": "TRACY RIDGE",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 55,
+      "placed": 55
+    },
+    {
+      "id": "232128",
+      "name": "TWIN LAKES (PA)",
+      "agency": "Forest Service",
+      "state": "PA",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 50,
+      "placed": 46
+    },
+    {
+      "id": "232140",
+      "name": "SUGARLOAF 2 CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "232174",
+      "name": "BASIN CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "232175",
+      "name": "COLD RIVER",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "232176",
+      "name": "HASTINGS CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "ME",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "232177",
+      "name": "SUGARLOAF 1 CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "232178",
+      "name": "CAMPTON CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 55,
+      "placed": 55
+    },
+    {
+      "id": "232179",
+      "name": "WATERVILLE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "232308",
+      "name": "OSCEOLA VISTA CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "232393",
+      "name": "HAPGOOD POND",
+      "agency": "Forest Service",
+      "state": "VT",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "232394",
+      "name": "BARNES FIELD CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "239417",
+      "name": "Big Rock",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "246520",
+      "name": "Silver Lake Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "251609",
+      "name": "CHITTENDEN BROOK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "VT",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "256347",
+      "name": "MOOSALAMOO CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "VT",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "261792",
+      "name": "KELLY PINES CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "270967",
+      "name": "Wildwood",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "273778",
+      "name": "RUSSELL POND CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 65,
+      "placed": 65
+    },
+    {
+      "id": "234674",
+      "name": "SEAWALL CAMPGROUND",
+      "agency": "National Park Service",
+      "state": "",
+      "recArea": "Acadia National Park",
+      "overnightSites": 178,
+      "placed": 178
+    },
+    {
+      "id": "234714",
+      "name": "CAMP GATEWAY - SANDY HOOK",
+      "agency": "National Park Service",
+      "state": "NJ",
+      "recArea": "Gateway National Recreation Area",
+      "overnightSites": 18,
+      "placed": 17
+    },
+    {
+      "id": "234715",
+      "name": "CAMP GATEWAY - STATEN ISLAND",
+      "agency": "National Park Service",
+      "state": "NY",
+      "recArea": "Gateway National Recreation Area",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "251575",
+      "name": "Alosa Campsites",
+      "agency": "National Park Service",
+      "state": "PA",
+      "recArea": "Delaware Water Gap National Recreation Area",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "251833",
+      "name": "Schoodic Woods Campground",
+      "agency": "National Park Service",
+      "state": "ME",
+      "recArea": "Acadia National Park",
+      "overnightSites": 90,
+      "placed": 90
+    },
+    {
+      "id": "264293",
+      "name": "DUCK HARBOR CAMPGROUND",
+      "agency": "National Park Service",
+      "state": "ME",
+      "recArea": "Acadia National Park",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "274471",
+      "name": "Valley View Group Campground",
+      "agency": "National Park Service",
+      "state": "",
+      "recArea": "Delaware Water Gap National Recreation Area",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "10122722",
+      "name": "East Branch Campground",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "East Branch Clarion River Lake",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "233476",
+      "name": "West Thompson Lake Campground",
+      "agency": "US Army Corps of Engineers",
+      "state": "CT",
+      "recArea": "West Thompson Lake",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "233519",
+      "name": "INDIAN HOLLOW",
+      "agency": "US Army Corps of Engineers",
+      "state": "MA",
+      "recArea": "Knightville Dam",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "233573",
+      "name": "TIONESTA REC. AREA CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Tionesta Lake",
+      "overnightSites": 124,
+      "placed": 124
+    },
+    {
+      "id": "233644",
+      "name": "SUSQUEHANNOCK",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Raystown Lake",
+      "overnightSites": 64,
+      "placed": 62
+    },
+    {
+      "id": "233652",
+      "name": "TOMPKINS",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Cowanesque Lake",
+      "overnightSites": 119,
+      "placed": 118
+    },
+    {
+      "id": "233676",
+      "name": "Winhall Brook Camping Area",
+      "agency": "US Army Corps of Engineers",
+      "state": "VT",
+      "recArea": "Ball Mountain Lake",
+      "overnightSites": 111,
+      "placed": 111
+    },
+    {
+      "id": "251946",
+      "name": "OUTFLOW RECREATION AREA (PA)",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Tionesta Lake",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "251963",
+      "name": "NANCY'S BOAT TO SHORE CAMPGROUND (PA)",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Raystown Lake",
+      "overnightSites": 50,
+      "placed": 50
+    },
+    {
+      "id": "255204",
+      "name": "Crooked Creek Lake",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Crooked Creek Lake",
+      "overnightSites": 45,
+      "placed": 45
+    },
+    {
+      "id": "272174",
+      "name": "BUSH RECREATION AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "PA",
+      "recArea": "Loyalhanna Lake",
+      "overnightSites": 43,
+      "placed": 43
+    }
+  ]
+}

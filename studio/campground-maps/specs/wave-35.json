@@ -1,0 +1,500 @@
+{
+  "drawn": {
+    "wave": 35,
+    "count": 53,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-west/colorado",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west/colorado), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10165115",
+      "name": "Angel of Shavano",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165130",
+      "name": "Belle of Colorado",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165240",
+      "name": "Cottonwood Lake - PSICC (Co)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165255",
+      "name": "Deer Creek Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165270",
+      "name": "Dexter",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165280",
+      "name": "Elbert Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165295",
+      "name": "Flat Rocks Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165330",
+      "name": "Halfmoon East",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165335",
+      "name": "Halfmoon West",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165390",
+      "name": "Kenosha East",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165440",
+      "name": "Matchless",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165455",
+      "name": "Middle Mountain",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165646",
+      "name": "Snowslide",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165661",
+      "name": "South Mineral",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165686",
+      "name": "Tabor",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165716",
+      "name": "Twin Peaks (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "118992",
+      "name": "MATTERHORN CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231865",
+      "name": "ANGEL OF SHAVANO GROUP",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231872",
+      "name": "PIKE COMMUNITY",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231873",
+      "name": "RED ROCKS GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232345",
+      "name": "CAMP HALE EAST FORK GROUP",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233213",
+      "name": "Moose Manor Cabin",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233216",
+      "name": "Black Bear Cabin at Mesa Lakes (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233232",
+      "name": "STONE CELLAR GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233289",
+      "name": "JACKSON GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233318",
+      "name": "BLANCO RIVER GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233731",
+      "name": "STUB CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233804",
+      "name": "PONDEROSA GROUP - LAKE ISABEL",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233805",
+      "name": "SPRUCE GROUP - LAKE ISABEL",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233808",
+      "name": "ROBERTS CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233812",
+      "name": "LAKE ISABEL CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233868",
+      "name": "BASSAM GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233927",
+      "name": "PINEY GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233932",
+      "name": "MINGUS RANCH",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233941",
+      "name": "WILLOW CREEK GROUP",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233979",
+      "name": "GRIZZLY CREEK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234129",
+      "name": "CRESCENT MINING CAMP",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234197",
+      "name": "Seedhouse Group Site - Medicine-Bow Routt NF (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234211",
+      "name": "South Fork Group Site - Arapaho NF (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234246",
+      "name": "SEEDHOUSE GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234255",
+      "name": "ELWOOD CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234483",
+      "name": "CARNERO GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234487",
+      "name": "BREWERY CREEK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234660",
+      "name": "UPPER CROSSING GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234667",
+      "name": "SILESCA CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234706",
+      "name": "PLATORO CABIN 2",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234707",
+      "name": "PLATORO CABIN 1",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234710",
+      "name": "ALDER GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234792",
+      "name": "Mestaa’ėhehe Mountain Fire Lookout",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "247595",
+      "name": "OFF COW CAMP CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "247596",
+      "name": "FITTON GUARD STATION CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234056",
+      "name": "RED CREEK GROUP SITE",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Curecanti National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234057",
+      "name": "EAST ELK CREEK GROUP CAMPSITE",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Curecanti National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

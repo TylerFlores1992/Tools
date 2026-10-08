@@ -1,0 +1,815 @@
+{
+  "drawn": {
+    "wave": 27,
+    "count": 88,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-west",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10040589",
+      "name": "Nevada Creek Cabin",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10103111",
+      "name": "Meadow Peak Lookout (MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Kootenai National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10122832",
+      "name": "Sollers Cabin (AZ)",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10132085",
+      "name": "Tyee Lookout",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Okanogan-Wenatchee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10156120",
+      "name": "Lost Horse Cabin",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10322605",
+      "name": "Scurvy Mountain Lookout",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Nez Perce-Clearwater National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "118991",
+      "name": "SHEEP MOUNTAIN FIRE LOOKOUT",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Bighorn National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232292",
+      "name": "BOILING SPRINGS CABIN",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233104",
+      "name": "VAN VLECK BUNKHOUSE",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Eldorado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233177",
+      "name": "HALF MOON RANCH",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233208",
+      "name": "JOHNSON CREEK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233226",
+      "name": "ROCK BLUFF GROUP SITE",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233240",
+      "name": "DOUBLE ARROW LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233242",
+      "name": "HULL CABIN",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Kaibab National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233249",
+      "name": "SUNSHINE GUARD STATION",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Malheur National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233256",
+      "name": "CAMP 4 GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233296",
+      "name": "BLACK MOUNTAIN LOOKOUT",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Plumas National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233337",
+      "name": "HOGBACK HOMESTEAD",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233348",
+      "name": "REDFISH CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Sawtooth National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233887",
+      "name": "SYCAMORE CABIN",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Prescott National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234125",
+      "name": "FALL MOUNTAIN LOOKOUT CABIN",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Malheur National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234126",
+      "name": "TEANAWAY GUARD STATION",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Okanogan-Wenatchee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234138",
+      "name": "TAMARACK CABIN",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umatilla National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234155",
+      "name": "BALD KNOB LOOKOUT",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234159",
+      "name": "SNOW CAMP LOOKOUT",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234173",
+      "name": "INDIAN RIDGE LOOKOUT",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234175",
+      "name": "BOX CANYON GUARD STATION CABIN",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234179",
+      "name": "WHISKY CAMP GUARD STATION",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234185",
+      "name": "DRAKE PEAK LOOKOUT",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Fremont-Winema National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234268",
+      "name": "CUB RIVER GUARD STATION",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234269",
+      "name": "WENATCHEE GUARD STATION",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Umatilla National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234271",
+      "name": "CLEARWATER LOOKOUT CABIN",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Umatilla National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234293",
+      "name": "GRIZZLY RIDGE YURT",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Ashley National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234305",
+      "name": "WARM RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234322",
+      "name": "WALL CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234327",
+      "name": "WINDY PASS CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234335",
+      "name": "FOX CREEK CABIN (MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234340",
+      "name": "CHALLENGE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Flathead National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234341",
+      "name": "HORNET LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Flathead National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234350",
+      "name": "TWIN LAKES CABIN (MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234356",
+      "name": "HELLS CANYON GUARD STATION",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234358",
+      "name": "DIAMOND BUTTE LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234359",
+      "name": "WHITETAIL CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234360",
+      "name": "MISSION LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Flathead National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234364",
+      "name": "BLACK BUTTE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234368",
+      "name": "CABIN CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234377",
+      "name": "RACETRACK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234383",
+      "name": "MCGUIRE MTN. LOOKOUT RENTAL",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Kootenai National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234386",
+      "name": "SHORTY PEAK LOOKOUT",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Idaho Panhandle National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234390",
+      "name": "UP UP LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234391",
+      "name": "HORSE PRAIRIE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234392",
+      "name": "BLOODY DICK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234397",
+      "name": "HIGH RYE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234404",
+      "name": "POST CREEK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234405",
+      "name": "FOREST GLEN GUARD STATION",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234409",
+      "name": "CALF CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234410",
+      "name": "WEST BOULDER CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234413",
+      "name": "WEST BRIDGER CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234414",
+      "name": "FOURMILE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234418",
+      "name": "WEST FORK CABIN (W OF CHOTEAU)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234419",
+      "name": "SAVENAC WEST COTTAGE",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234422",
+      "name": "CRYSTAL LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234423",
+      "name": "COUGAR PEAK LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234425",
+      "name": "DRY WOLF CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234427",
+      "name": "JUDITH GUARD STATION",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234428",
+      "name": "MONUMENT PEAK LOOKOUT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234429",
+      "name": "DEER RIDGE LOOKOUT",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Idaho Panhandle National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234433",
+      "name": "SEX PEAK. LOOKOUT RENTAL",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Kootenai National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234436",
+      "name": "LITTLE MT. HOFFMAN LOOKOUT",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234447",
+      "name": "ARID PEAK LOOKOUT",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Idaho Panhandle National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234461",
+      "name": "SUMMIT GUARD STATION BUNKHOUSE",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umatilla National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234506",
+      "name": "MONTURE GUARD STATION CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234568",
+      "name": "EAGLE GUARD STATION",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234600",
+      "name": "PINE MOUNTAIN LOOKOUT",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Mendocino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234609",
+      "name": "MALAD SUMMIT GUARD STATION",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234659",
+      "name": "CRANDALL CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234661",
+      "name": "FALL RIVER GUARD STATION",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234680",
+      "name": "APACHE MAID CABIN",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coconino National Forest Recreation",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234682",
+      "name": "TUCANNON GUARD STATION",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Umatilla National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250019",
+      "name": "PORTAL BUNKHOUSE",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250027",
+      "name": "PORTAL CCC HOUSE",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250044",
+      "name": "RIVERSIDE CAMPGROUND (MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Flathead National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251546",
+      "name": "Acorn Woman Peak Lookout",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251565",
+      "name": "BLACKSMITH FORK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251905",
+      "name": "WHITETAIL YURT",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Kootenai National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "253500",
+      "name": "MILLER CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "264411",
+      "name": "Green River Lake Lodge",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Bridger-Teton National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251709",
+      "name": "Capitol Reef Group Campground",
+      "agency": "National Park Service",
+      "state": "UT",
+      "recArea": "Capitol Reef National Park",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

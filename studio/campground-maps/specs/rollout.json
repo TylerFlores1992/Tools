@@ -1,0 +1,16 @@
+{
+ "about": "The Recreation.gov rollout, split into batches a child session builds alone (owner, 2026-10-08: \"orchestrate the rest of rec.gov maps, each batch to a child\"). Each batch is waves of one OpenStreetMap extract region (or the OSM API), so a child downloads one extract. The orchestrating session merges each batch, makes the final check, and records pass or hold. Brief: docs/design/campground-maps-rollout-child.md.",
+ "batches": [
+  { "name": "west-a", "extract": "us-west", "waves": [3, 4, 5] },
+  { "name": "west-b", "extract": "us-west", "waves": [6, 7, 8] },
+  { "name": "west-c", "extract": "us-west", "waves": [9, 10, 11] },
+  { "name": "west-d", "extract": "us-west", "waves": [12, 13] },
+  { "name": "south-a", "extract": "us-south", "waves": [14, 15, 16] },
+  { "name": "south-b", "extract": "us-south", "waves": [17, 18, 37] },
+  { "name": "midwest", "extract": "us-midwest", "waves": [19, 20, 21, 38] },
+  { "name": "colorado", "extract": "us-west/colorado", "waves": [22, 23, 35, 36] },
+  { "name": "northeast-api", "extract": "us-northeast", "waves": [24, 39, 25, 33, 34] },
+  { "name": "west-units-a", "extract": "us-west", "waves": [26, 27, 28, 29] },
+  { "name": "west-units-b", "extract": "us-west", "waves": [30, 31, 32] }
+ ]
+}

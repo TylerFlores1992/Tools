@@ -1,0 +1,806 @@
+{
+  "drawn": {
+    "wave": 21,
+    "count": 87,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-midwest",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-midwest), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10039857",
+      "name": "Anvil Lake Campground",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "10191080",
+      "name": "Mabel Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "10191115",
+      "name": "Webster Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10296917",
+      "name": "Buzzard Roost Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "10296923",
+      "name": "Blackwell Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "10296952",
+      "name": "Hickory Ridge Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10296963",
+      "name": "Saddle Lake Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "10296977",
+      "name": "German Ridge Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "10296998",
+      "name": "Youngs Creek Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "10297013",
+      "name": "Shirley Creek Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Hoosier National Forest",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "232000",
+      "name": "ECHO LAKE (MINN)",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 22,
+      "placed": 20
+    },
+    {
+      "id": "232001",
+      "name": "FLOWING WELL CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "232134",
+      "name": "PFEIFFER LAKE",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "232149",
+      "name": "CLUBHOUSE LAKE",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 29,
+      "placed": 29
+    },
+    {
+      "id": "232151",
+      "name": "NORWAY BEACH LOOP",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 50,
+      "placed": 48
+    },
+    {
+      "id": "232189",
+      "name": "CADOTTE LAKE",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "232325",
+      "name": "COUNCIL BLUFF RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 41,
+      "placed": 41
+    },
+    {
+      "id": "232388",
+      "name": "IRON CREEK HORSE CAMP",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "232427",
+      "name": "IRON LAKE",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "233140",
+      "name": "CASS LAKE LOOP",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 12,
+      "placed": 11
+    },
+    {
+      "id": "233141",
+      "name": "WANAKI LOOP",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "233144",
+      "name": "Winnie Campground - USFS",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "233145",
+      "name": "Bimijiwan Recreation Area",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "233210",
+      "name": "Council Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "233211",
+      "name": "Cookson Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "233255",
+      "name": "ROLLWAYS CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "233342",
+      "name": "PETERSON BRIDGE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 31,
+      "placed": 31
+    },
+    {
+      "id": "233717",
+      "name": "BOWMAN BRIDGE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "233756",
+      "name": "MOOSE LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "233757",
+      "name": "Beaver Lake (Chequamegon-Nicolet NF, WI)",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "233758",
+      "name": "BLACK LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "233759",
+      "name": "EAST TWIN",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "233761",
+      "name": "DAY LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 38,
+      "placed": 38
+    },
+    {
+      "id": "233762",
+      "name": "SAILOR LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "233769",
+      "name": "GLEASONS LANDING",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "233773",
+      "name": "SMITH RAPIDS",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "233776",
+      "name": "SHERIDAN NORTH COVE GRP CG",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "233827",
+      "name": "CUT FOOT HORSE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "233848",
+      "name": "MOSOMO POINT",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "233849",
+      "name": "Pines Point Campground (MI)",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "233850",
+      "name": "WILLIAMS NARROWS",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "233983",
+      "name": "WATERCRESS",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "234083",
+      "name": "CARP RIVER CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "234093",
+      "name": "MINERAL LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "234095",
+      "name": "LAKE THREE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "234169",
+      "name": "MORGAN LAKE CAMPGROUND AND GROUP SITE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "234490",
+      "name": "MARKHAM SPRINGS",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "234620",
+      "name": "THREE LAKES",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "234662",
+      "name": "WIDEWATERS CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "234790",
+      "name": "GRAND ISLAND CABINS",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "240957",
+      "name": "McDougal Lake Campground",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "249579",
+      "name": "STOCKFARM BRIDGE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "251536",
+      "name": "ISLAND LAKE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "251568",
+      "name": "RICHARDSON LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "251845",
+      "name": "NICHOLS LAKE SOUTH CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "251942",
+      "name": "Bear Lake Campground (Chequamegon-Nicolet NF, WI)",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "255120",
+      "name": "Spectacle Lake Campground (Wisconsin)",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 34,
+      "placed": 34
+    },
+    {
+      "id": "255122",
+      "name": "Lost Lake Campground (WI)",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "255123",
+      "name": "LAUREL LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "255124",
+      "name": "Kentuck Lake Campground",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "273333",
+      "name": "Gooseneck Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "273334",
+      "name": "Chicago Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "273339",
+      "name": "Mowe Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "273342",
+      "name": "Triangle Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "273346",
+      "name": "East Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "273347",
+      "name": "Jackpine Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "273349",
+      "name": "Little Bass Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "273355",
+      "name": "Leg Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "273357",
+      "name": "Steuben Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "273361",
+      "name": "Swan Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "10386756",
+      "name": "Juniper Campground (ND)",
+      "agency": "National Park Service",
+      "state": "ND",
+      "recArea": "Theodore Roosevelt National Park",
+      "overnightSites": 46,
+      "placed": 46
+    },
+    {
+      "id": "232456",
+      "name": "South Manitou Group Campground",
+      "agency": "National Park Service",
+      "state": "MI",
+      "recArea": "Sleeping Bear Dunes National Lakeshore",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "232457",
+      "name": "D.H. Day Group Campground",
+      "agency": "National Park Service",
+      "state": "MI",
+      "recArea": "Sleeping Bear Dunes National Lakeshore",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "234442",
+      "name": "AKERS",
+      "agency": "National Park Service",
+      "state": "MO",
+      "recArea": "Ozark National Scenic Riverways",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "10058259",
+      "name": "School Creek Camground",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Milford Lake",
+      "overnightSites": 39,
+      "placed": 39
+    },
+    {
+      "id": "10058299",
+      "name": "Timber Creek Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Milford Lake",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "10064546",
+      "name": "River Run Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Bull Shoals Lake",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "10107342",
+      "name": "Timber Hill Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Big Hill Lake",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "10159225",
+      "name": "Kit Carson",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Council Grove Lake",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "10159237",
+      "name": "Neosho Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "",
+      "recArea": "Council Grove Lake",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "10177497",
+      "name": "French Creek",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Marion Reservoir",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "10177518",
+      "name": "Marion Cove",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Marion Reservoir",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "232720",
+      "name": "THEODOSIA PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Bull Shoals Lake",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "234676",
+      "name": "HAZELTON RECREATION AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Lake Oahe",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "250874",
+      "name": "Kanza View",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Council Grove Lake",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "254084",
+      "name": "Webb Creek Park",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Clearwater Lake",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "272094",
+      "name": "COTTONWOOD CAMPGROUND (IA)",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Coralville Lake",
+      "overnightSites": 11,
+      "placed": 11
+    }
+  ]
+}

@@ -1,0 +1,869 @@
+{
+  "drawn": {
+    "wave": 13,
+    "count": 94,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-west",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10158808",
+      "name": "Pelican Lake Campground",
+      "agency": "Bureau of Land Management",
+      "state": "UT",
+      "recArea": "Ouray Valley",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "10161359",
+      "name": "Bridge Hollow Campground",
+      "agency": "Bureau of Land Management",
+      "state": "UT",
+      "recArea": "Browns Park Recreation Area",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "10180083",
+      "name": "Holter Dam Campground",
+      "agency": "Bureau of Land Management",
+      "state": "MT",
+      "recArea": "Chain of Lakes",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "10191054",
+      "name": "Sixes River Campground OR",
+      "agency": "Bureau of Land Management",
+      "state": "",
+      "recArea": "Myrtlewood Field Office",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "255180",
+      "name": "Page Springs Campground",
+      "agency": "Bureau of Land Management",
+      "state": "OR",
+      "recArea": "Steens Mountain Cooperative Management & Protection Area",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "262702",
+      "name": "Millpond Recreation Site",
+      "agency": "Bureau of Land Management",
+      "state": "OR",
+      "recArea": "North Umpqua Wild and Scenic River ",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "272246",
+      "name": "INDIAN CREEK CAMPGROUND (CA)",
+      "agency": "Bureau of Land Management",
+      "state": "NV",
+      "recArea": "Indian Creek Recreation Area",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "273309",
+      "name": "Whittaker Creek Recreation Site",
+      "agency": "Bureau of Land Management",
+      "state": "OR",
+      "recArea": "Siuslaw River SRMA",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "274288",
+      "name": "CROSSROADS CAMPGROUND",
+      "agency": "Bureau of Land Management",
+      "state": "AZ",
+      "recArea": "Parker Strip Recreation Area",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "251911",
+      "name": "South Shore Group Campground",
+      "agency": "Bureau of Reclamation",
+      "state": "OR",
+      "recArea": "Haystack Reservoir",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "10046933",
+      "name": "Hobo Campground",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sequoia National Forest",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "10046989",
+      "name": "Bear River Campground (Uinta-Wasatch-Cache National Forest, UT)",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "10047913",
+      "name": "Hoop Lake Campground",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 44,
+      "placed": 43
+    },
+    {
+      "id": "10077501",
+      "name": "Panchuela",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Santa Fe National Forest",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "10110742",
+      "name": "Sundew Campground (CA)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Plumas National Forest",
+      "overnightSites": 21,
+      "placed": 20
+    },
+    {
+      "id": "10114392",
+      "name": "Mill Creek Campground (Plumas)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Plumas National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10165706",
+      "name": "Trail Bridge",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 34,
+      "placed": 34
+    },
+    {
+      "id": "10334099",
+      "name": "Yankee Meadow Campground",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Dixie National Forest",
+      "overnightSites": 29,
+      "placed": 29
+    },
+    {
+      "id": "10364846",
+      "name": "Beth Lake Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10364920",
+      "name": "Kerr Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "10364954",
+      "name": "Lost Lake Campground (WA)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 24,
+      "placed": 23
+    },
+    {
+      "id": "10364992",
+      "name": "Oriole Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10365011",
+      "name": "Salmon Meadows Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "10365026",
+      "name": "Sugarloaf Campground (WA)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "10373422",
+      "name": "Crawfish Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "10377487",
+      "name": "Ash Flat Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "10377492",
+      "name": "Boulder Creek Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "10377502",
+      "name": "Clearwater Falls Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 10,
+      "placed": 9
+    },
+    {
+      "id": "10377515",
+      "name": "Devil's Flat Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "10377519",
+      "name": "Dumont Creek Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "10377523",
+      "name": "Hemlock Lake Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "10377551",
+      "name": "Lake In The Woods Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 12,
+      "placed": 11
+    },
+    {
+      "id": "10377563",
+      "name": "South Umpqua Falls Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "10377584",
+      "name": "Steamboat Falls Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 10,
+      "placed": 9
+    },
+    {
+      "id": "10377594",
+      "name": "Three C Rock Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "10377600",
+      "name": "Threehorn Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "10405307",
+      "name": "Crescent Lake (Colville National Forest)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 3,
+      "placed": 3
+    },
+    {
+      "id": "10405311",
+      "name": "Davis Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "10405323",
+      "name": "Pierre Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10405359",
+      "name": "Sherman Overlook",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Colville National Forest",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "10406480",
+      "name": "Stevens Pass Mountain Resort RV Lot",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Mt. Baker-Snoqualmie National Forest",
+      "overnightSites": 57,
+      "placed": 57
+    },
+    {
+      "id": "231921",
+      "name": "MACKINAW",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Fishlake National Forest",
+      "overnightSites": 67,
+      "placed": 62
+    },
+    {
+      "id": "231948",
+      "name": "BOULDER OAKS EQST",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Cleveland National Forest",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "232040",
+      "name": "EASLEY CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Sawtooth National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "232043",
+      "name": "Excelsior Group Camp",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Mt. Baker-Snoqualmie National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "232047",
+      "name": "FRENCH MEADOWS",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Tahoe National Forest",
+      "overnightSites": 61,
+      "placed": 61
+    },
+    {
+      "id": "232055",
+      "name": "GUINAVAH",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 42,
+      "placed": 42
+    },
+    {
+      "id": "232218",
+      "name": "SHAFER BUTTE",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "232227",
+      "name": "BLACKHAWK",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 38,
+      "placed": 38
+    },
+    {
+      "id": "232309",
+      "name": "BIG TRINITY CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "232371",
+      "name": "YUBA PASS CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Tahoe National Forest",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "232398",
+      "name": "AGNEW HORSE CAMP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Inyo National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "232803",
+      "name": "JACKASS MEADOW",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "232804",
+      "name": "MONO CREEK",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "232811",
+      "name": "CATAVEE",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "232814",
+      "name": "KINNIKINNICK",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 27,
+      "placed": 25
+    },
+    {
+      "id": "232817",
+      "name": "MAMMOTH POOL",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 34,
+      "placed": 32
+    },
+    {
+      "id": "232823",
+      "name": "HOLEY MEADOW",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sequoia National Forest",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "232839",
+      "name": "FISH CREEK (OR)",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "232842",
+      "name": "LOCKABY",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 29,
+      "placed": 29
+    },
+    {
+      "id": "232843",
+      "name": "ARMSTRONG",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "232846",
+      "name": "SUNSTRIP",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "232847",
+      "name": "ROARING RIVER",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "232851",
+      "name": "INDIAN HENRY",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Mt. Hood National Forest",
+      "overnightSites": 26,
+      "placed": 25
+    },
+    {
+      "id": "232879",
+      "name": "TEXAS FLATS",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 4,
+      "placed": 4
+    },
+    {
+      "id": "232909",
+      "name": "CRANE VALLEY",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "233218",
+      "name": "FIR COVE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Six Rivers National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "233325",
+      "name": "Grouse Valley Cabins",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sequoia National Forest",
+      "overnightSites": 2,
+      "placed": 2
+    },
+    {
+      "id": "233327",
+      "name": "HOPEWELL LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Carson National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "233340",
+      "name": "DELTA",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 38,
+      "placed": 38
+    },
+    {
+      "id": "233787",
+      "name": "Little Fawn Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "233847",
+      "name": "MILL HOLLOW",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "234107",
+      "name": "UPPER COFFEE POT",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 15,
+      "placed": 14
+    },
+    {
+      "id": "234543",
+      "name": "RAMSHORN",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Tahoe National Forest",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "234545",
+      "name": "SIERRA",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Tahoe National Forest",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "234553",
+      "name": "LIGHTNING POINT GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Angeles National Forest",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "234650",
+      "name": "MAD RIVER CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Six Rivers National Forest",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "251357",
+      "name": "BOGUS CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "251940",
+      "name": "NORTH FORK CAMPGROUND (OR)",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 9,
+      "placed": 9
+    },
+    {
+      "id": "252035",
+      "name": "FOURBIT FORD CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 7,
+      "placed": 7
+    },
+    {
+      "id": "267076",
+      "name": "MONTY CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "267077",
+      "name": "RESERVOIR CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 24,
+      "placed": 23
+    },
+    {
+      "id": "267558",
+      "name": "NORTH DAVIS CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "273758",
+      "name": "FIELD TRACT CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NM",
+      "recArea": "Santa Fe National Forest",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "10004932",
+      "name": "Gorge Lake Campground",
+      "agency": "National Park Service",
+      "state": "WA",
+      "recArea": "North Cascades National Park",
+      "overnightSites": 8,
+      "placed": 8
+    },
+    {
+      "id": "10044761",
+      "name": "Moraine Campground (CA)",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Sequoia & Kings Canyon National Parks",
+      "overnightSites": 117,
+      "placed": 117
+    },
+    {
+      "id": "10190967",
+      "name": "Santa Cruz Island Prisoners Harbor",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Channel Islands National Park",
+      "overnightSites": 6,
+      "placed": 6
+    },
+    {
+      "id": "232460",
+      "name": "Dorst Creek Campground-Sequoia and Kings Canyon National Park",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Sequoia & Kings Canyon National Parks",
+      "overnightSites": 204,
+      "placed": 202
+    },
+    {
+      "id": "232465",
+      "name": "OHANAPECOSH CAMPGROUND",
+      "agency": "National Park Service",
+      "state": "WA",
+      "recArea": "Mount Rainier National Park",
+      "overnightSites": 154,
+      "placed": 154
+    },
+    {
+      "id": "249982",
+      "name": "BUCKEYE FLAT CAMPGROUND",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Sequoia & Kings Canyon National Parks",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "272266",
+      "name": "SOUTH CAMPGROUND (UT)",
+      "agency": "National Park Service",
+      "state": "UT",
+      "recArea": "Zion National Park",
+      "overnightSites": 124,
+      "placed": 123
+    },
+    {
+      "id": "10327316",
+      "name": "Wildcat Recreation Area Campground",
+      "agency": "US Army Corps of Engineers",
+      "state": "CA",
+      "recArea": "Eastman Lake",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "233437",
+      "name": "BUSHAY RECREATION AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "CA",
+      "recArea": "Mendocino Lake",
+      "overnightSites": 43,
+      "placed": 43
+    },
+    {
+      "id": "270421",
+      "name": "DEER FLAT BOAT IN CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "CA",
+      "recArea": "New Hogan Lake",
+      "overnightSites": 30,
+      "placed": 30
+    }
+  ]
+}

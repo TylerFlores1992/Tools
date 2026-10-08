@@ -1,0 +1,815 @@
+{
+  "drawn": {
+    "wave": 31,
+    "count": 88,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-west",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10048189",
+      "name": "Cottonwood Campground - SLRD",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165535",
+      "name": "Piety Island",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10171272",
+      "name": "Quigley Group Use",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10176099",
+      "name": "Burgdorf Guard Station",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Payette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "118994",
+      "name": "GENTRY GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Apache-Sitgreaves National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231845",
+      "name": "Hidden Valley Group Site",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231949",
+      "name": "Crestline Group Campground",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Cleveland National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231955",
+      "name": "OBSIDIAN FLAT",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Inyo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231964",
+      "name": "Big Pine Equestrian Group Campground",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231965",
+      "name": "BLUFF MESA GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231966",
+      "name": "BOULDER GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232020",
+      "name": "BLACK MOUNTAIN (SAN BERNARDINO)",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232041",
+      "name": "EASTSIDE",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232100",
+      "name": "SKYLINE",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232111",
+      "name": "TERRACES CAMPGROUND - PICNIC AREA",
+      "agency": "Forest Service",
+      "state": "NV",
+      "recArea": "Humboldt-Toiyabe National Forest Headquarters",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232208",
+      "name": "TURNEY GULCH GROUP",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Prescott National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232302",
+      "name": "RED FIR",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Eldorado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232351",
+      "name": "GREEN SPOT EQUESTRIAN GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232362",
+      "name": "STONEY GROUP SHASTA-TRINITY",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232397",
+      "name": "UPPER NARROWS",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Uinta-Wasatch-Cache National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232401",
+      "name": "ELK CREEK CABINS",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232407",
+      "name": "MINERAL SPRINGS GROUP",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Okanogan-Wenatchee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232763",
+      "name": "MOORE CREEK",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232764",
+      "name": "NELSON POINT",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232765",
+      "name": "Pine Point (Shasta Lake, CA)",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232786",
+      "name": "FRENCH GULCH",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sequoia National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232797",
+      "name": "Atkisson Group camp",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Gifford Pinchot National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232808",
+      "name": "BADGER FLATS GROUP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Sierra National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233096",
+      "name": "HIRZ BAY GROUP 1",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233097",
+      "name": "HIRZ BAY GROUP 2",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233113",
+      "name": "WINDY GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Deschutes National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233161",
+      "name": "MASTERSON GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Mendocino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233166",
+      "name": "LIZ CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Nez Perce-Clearwater National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233202",
+      "name": "LAKE INEZ POINT 6 (GROUP CAMP SITE)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233224",
+      "name": "REEF TOWNSITE GROUP AREA",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233233",
+      "name": "TREASURE PARK - EAST",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233234",
+      "name": "TREASURE PARK - NORTH",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233290",
+      "name": "DAVIS CANYON CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233399",
+      "name": "STOCKTON PASS",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Coronado National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233737",
+      "name": "MOOSE CREEK GROUP SITE",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Custer Gallatin National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233820",
+      "name": "CLARK CREEK ORGANIZATION CAMP",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Willamette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233825",
+      "name": "BIG SPRINGS WARMING HUT",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233838",
+      "name": "PINE ISLAND GROUP AREA",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Bighorn National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233943",
+      "name": "RATTLESNAKE",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233945",
+      "name": "JACK CREEK GUARD STATION",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233948",
+      "name": "BRUSH CREEK WORK CENTER BARRACK",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233960",
+      "name": "GRAHAM CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233996",
+      "name": "JARVIES BOAT IN GROUP",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Ashley National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233999",
+      "name": "Pine Flats Group Campground",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Okanogan-Wenatchee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234000",
+      "name": "TENT PEG GROUP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "San Bernardino National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234034",
+      "name": "BUCK PARK CABIN",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Payette National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234148",
+      "name": "Deer Flat Group Site (Horseshoe Bend Campground)",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Umpqua National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234203",
+      "name": "Beaver Sulphur Group Campground",
+      "agency": "Forest Service",
+      "state": "OR",
+      "recArea": "Rogue River-Siskiyou National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234215",
+      "name": "SUIATTLE GUARD STATION",
+      "agency": "Forest Service",
+      "state": "WA",
+      "recArea": "Mt. Baker-Snoqualmie National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234234",
+      "name": "Rock Creek Group (UT)",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Ashley National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234245",
+      "name": "GOOSEBERRY ADMIN SITE CABINS",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Fishlake National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234260",
+      "name": "JOHNSON GUARD STATION",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234275",
+      "name": "BONANZA CCC GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Salmon-Challis National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234312",
+      "name": "LORISTICA GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Salmon-Challis National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234319",
+      "name": "Bear Creek Bunkhouse (Beaverhead-Deerlodge National Forest, MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234344",
+      "name": "CARTER MEADOWS HORSE GROUP",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Klamath National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234380",
+      "name": "STEEL CREEK GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234398",
+      "name": "FLEECER STATION",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Beaverhead-Deerlodge National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234412",
+      "name": "SAVENAC BUNKHOUSE",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Lolo National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234443",
+      "name": "FISH CREEK GROUP USE",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Nez Perce-Clearwater National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234446",
+      "name": "South Fork Group Site 5 - Nez Perce NF (ID)",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Nez Perce-Clearwater National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234449",
+      "name": "KADING CABIN",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234452",
+      "name": "Aspen Grove Group Use Area (Helena-Lewis and Clark NF, MT)",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234466",
+      "name": "TIMBERLANE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Kootenai National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234519",
+      "name": "COTTONWOOD GROUP CAMPSITE",
+      "agency": "Forest Service",
+      "state": "WY",
+      "recArea": "Bridger-Teton National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234532",
+      "name": "JONES CORRAL GUARD STATION",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Dixie National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234576",
+      "name": "BIG SPRINGS GRP. AREA - ISLAND PARK",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234771",
+      "name": "Diamond Creek Guard Station",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Caribou-Targhee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250004",
+      "name": "CRYSTAL LAKE GROUP CAMPSITE",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Helena-Lewis and Clark National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250047",
+      "name": "Cold Springs Campground - Boise NF (ID)",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Boise National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251579",
+      "name": "SUMMIT SPRINGS GUARD STATION",
+      "agency": "Forest Service",
+      "state": "UT",
+      "recArea": "Ashley National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251710",
+      "name": "OWL CREEK CORRAL",
+      "agency": "Forest Service",
+      "state": "MT",
+      "recArea": "Flathead National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251825",
+      "name": "JUMPUP CABIN",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Kaibab National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251847",
+      "name": "TWIN CREEK CAMPGROUND GROUP CAMPING SITE",
+      "agency": "Forest Service",
+      "state": "ID",
+      "recArea": "Salmon-Challis National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "272095",
+      "name": "KELLNER GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "AZ",
+      "recArea": "Tonto National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273375",
+      "name": "GREGORY CREEK GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273376",
+      "name": "EAST WEAVER GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273378",
+      "name": "HIRZ CABIN",
+      "agency": "Forest Service",
+      "state": "CA",
+      "recArea": "Shasta-Trinity National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233356",
+      "name": "BUTTE LAKE STOCK CORRAL",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Lassen Volcanic National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233358",
+      "name": "SUMMIT LAKE STOCK CORRAL",
+      "agency": "National Park Service",
+      "state": "CA",
+      "recArea": "Lassen Volcanic National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234065",
+      "name": "EVANS GROUP CAMP",
+      "agency": "National Park Service",
+      "state": "WA",
+      "recArea": "Lake Roosevelt National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10253029",
+      "name": "Perch Point 1 & 2",
+      "agency": "US Army Corps of Engineers",
+      "state": "MT",
+      "recArea": "Fort Peck Project",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10253032",
+      "name": "Boomtown Shelter",
+      "agency": "US Army Corps of Engineers",
+      "state": "MT",
+      "recArea": "Fort Peck Project",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

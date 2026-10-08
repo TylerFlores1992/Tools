@@ -14,7 +14,9 @@
    "split": true,
    "by": "First look (Claude), checked against the aerial photo",
    "on": "2026-10-08",
-   "note": "Nine lettered areas spread over 1.2 km of forest."
+   "note": "Nine lettered areas spread over 1.2 km of forest.",
+   "maxSpan": 400,
+   "tighter": "Its lettered rows run on through the forest without a gap; areas of at most 400 m keep each a readable size. (Owner asked for tighter areas, 2026-10-08.)"
   },
   {
    "id": "232607",
@@ -126,7 +128,9 @@
    "split": true,
    "by": "First look (Claude), checked against the aerial photo",
    "on": "2026-10-08",
-   "note": "A split listing: four clusters over 1.4 km of lake shore, each drawn too small and the east cluster's numbers overlap."
+   "note": "A split listing: four clusters over 1.4 km of lake shore, each drawn too small and the east cluster's numbers overlap.",
+   "gap": 150,
+   "tighter": "At the default 200 m gap two of its lake clusters were one area; at 150 m they part. (Owner asked for tighter areas, 2026-10-08.)"
   },
   {
    "id": "233496",
@@ -140,7 +144,9 @@
    "split": true,
    "by": "First look (Claude), checked against the aerial photo",
    "on": "2026-10-08",
-   "note": "A split listing: four areas on separate fingers of the lake over 1 km, each drawn too small."
+   "note": "A split listing: four areas on separate fingers of the lake over 1 km, each drawn too small.",
+   "gap": 80,
+   "tighter": "Two fingers of the lake sit 80 to 100 m apart across the water; at 80 m they part. (Owner asked for tighter areas, 2026-10-08.)"
   },
   {
    "id": "233597",
@@ -161,7 +167,9 @@
    "split": true,
    "by": "First look (Claude), checked against the aerial photo",
    "on": "2026-10-08",
-   "note": "A split listing: five areas over 1.1 km, each on its own lane off the main road."
+   "note": "A split listing: five areas over 1.1 km, each on its own lane off the main road.",
+   "gap": 120,
+   "tighter": "Its loops sit 120 to 200 m apart; at 120 m each is an area. (Owner asked for tighter areas, 2026-10-08.)"
   },
   {
    "id": "233627",

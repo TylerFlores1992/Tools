@@ -1,0 +1,230 @@
+{
+  "drawn": {
+    "wave": 39,
+    "count": 23,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-northeast",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-northeast), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10165350",
+      "name": "Handsome Lake Boat Access Campground",
+      "agency": "Forest Service",
+      "state": "PA",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165365",
+      "name": "Hooks Brook Boat Access Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165370",
+      "name": "Hopewell Boat Access Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165465",
+      "name": "Minister Creek Campground and Trailhead",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165475",
+      "name": "Morrison Boat Access Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165540",
+      "name": "Pine Grove Boat Access Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234237",
+      "name": "BLACK MOUNTAIN CABIN",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234238",
+      "name": "DOUBLEHEAD CABIN",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234241",
+      "name": "RADEKE CABIN",
+      "agency": "Forest Service",
+      "state": "NH",
+      "recArea": "White Mountain National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234476",
+      "name": "POTOMAC GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "NY",
+      "recArea": "Green Mountain & Finger Lakes National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234681",
+      "name": "FARNSWORTH CABIN",
+      "agency": "Forest Service",
+      "state": "PA",
+      "recArea": "Allegheny National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10004657",
+      "name": "Bay View House",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10004661",
+      "name": "Le Count Beach  House",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10004663",
+      "name": "Ocean View House",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10004667",
+      "name": "Sunrise House",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10045243",
+      "name": "Highland Beach Suites, Unit 1",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10045245",
+      "name": "Highland Beach Suites, Unit 2",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10045247",
+      "name": "Highland Beach Suites, unit 3",
+      "agency": "National Park Service",
+      "state": "MA",
+      "recArea": "Cape Cod National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10149034",
+      "name": "The Bayberry Dunes House",
+      "agency": "National Park Service",
+      "state": "NY",
+      "recArea": "Fire Island National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10168556",
+      "name": "The Cottage at Sailors Haven",
+      "agency": "National Park Service",
+      "state": "NY",
+      "recArea": "Fire Island National Seashore",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10290014",
+      "name": "Slyder Farmhouse",
+      "agency": "National Park Service",
+      "state": "PA",
+      "recArea": "Gettysburg National Military Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10357061",
+      "name": "Historic Rose Farmhouse",
+      "agency": "National Park Service",
+      "state": "PA",
+      "recArea": "Gettysburg National Military Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "261322",
+      "name": "Historic Bushman House (Gettysburg)",
+      "agency": "National Park Service",
+      "state": "PA",
+      "recArea": "Gettysburg National Military Park",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

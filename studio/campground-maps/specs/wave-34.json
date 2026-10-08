@@ -1,0 +1,878 @@
+{
+  "drawn": {
+    "wave": 34,
+    "count": 95,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "api",
+    "osm": "api",
+    "order": "Rollout of everything left, by region (Alaska, Hawaii and anywhere no extract covers (OpenStreetMap API)), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10165215",
+      "name": "Childs Glacier Recreation Area and Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10341414",
+      "name": "Porcupine Cabin",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232919",
+      "name": "FLORENCE LAKE (EAST) CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232921",
+      "name": "HASSELBORG CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232923",
+      "name": "LITTLE SHAHEEN CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232925",
+      "name": "JIMS LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232926",
+      "name": "CHURCH BIGHT CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232927",
+      "name": "PYBUS BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232929",
+      "name": "YOUNG LAKE (NORTH) CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232930",
+      "name": "YOUNG LAKE (SOUTH) CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232931",
+      "name": "Black Bear Lake Cabin (Tongass National Forest, AK)",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232932",
+      "name": "JOSEPHINE LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232933",
+      "name": "KEGAN CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232934",
+      "name": "KEGAN COVE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232936",
+      "name": "TROLLERS COVE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232937",
+      "name": "GREENTOP CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232949",
+      "name": "ANCHOR PASS CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232952",
+      "name": "HECKMAN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232954",
+      "name": "HELM CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232955",
+      "name": "JORDAN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232956",
+      "name": "MCDONALD LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232957",
+      "name": "PATCHING LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232958",
+      "name": "PLENTY CUTTHROAT CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232960",
+      "name": "REFLECTION LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232961",
+      "name": "SOUTHEAST HECKMAN CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232962",
+      "name": "ALAVA BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232964",
+      "name": "TIEDEMAN SLOUGH CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232965",
+      "name": "BAKEWELL LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232966",
+      "name": "MARTIN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232967",
+      "name": "CHECATS LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232969",
+      "name": "ELLA NARROWS CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232970",
+      "name": "BEACH RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232971",
+      "name": "HUGH SMITH LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232973",
+      "name": "LOG JAM BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232976",
+      "name": "NELLIE MARTIN RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232977",
+      "name": "HUMPBACK LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232979",
+      "name": "MANZANITA LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232980",
+      "name": "MCKINLEY LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232981",
+      "name": "SOFTUK BAR CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232982",
+      "name": "PORT CHALMERS CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232984",
+      "name": "WILSON NARROWS CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232985",
+      "name": "POWER CREEK CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232986",
+      "name": "WILSON VIEW CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232990",
+      "name": "WINSTANLEY LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232992",
+      "name": "COGHILL LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232993",
+      "name": "SALT CHUCK EAST CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232996",
+      "name": "PETERSBURG LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232997",
+      "name": "KADAKE BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232999",
+      "name": "DEVILS ELBOW CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233003",
+      "name": "LOWER PARADISE LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Chugach National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233011",
+      "name": "BIG JOHN BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233012",
+      "name": "SWAN LAKE CABIN PETERSBURG",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233015",
+      "name": "TOWERS ARM CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233017",
+      "name": "KAH SHEETS LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233030",
+      "name": "PORTAGE BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233032",
+      "name": "GOULDING LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233033",
+      "name": "KOOK LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233034",
+      "name": "SITKOH LAKE (EAST) CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233035",
+      "name": "SITKOH LAKE (WEST) CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233036",
+      "name": "SULOIA LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233042",
+      "name": "AVOSS LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233043",
+      "name": "DAVIDOF LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233044",
+      "name": "PLOTNIKOF LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233054",
+      "name": "BARNES LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233056",
+      "name": "HONKER LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233060",
+      "name": "SALMON BAY LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233061",
+      "name": "SALMON LAKE CABIN THORNE BAY",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233063",
+      "name": "SHIPLEY BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233066",
+      "name": "KATHLEEN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233067",
+      "name": "SHAKES SLOUGH 1 CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233069",
+      "name": "TWIN LAKES CABIN (AK)",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233071",
+      "name": "MOUNT FLEMER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233072",
+      "name": "LITTLE DRY ISLAND CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233073",
+      "name": "GUT ISLAND 1 CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233074",
+      "name": "KOKNUK CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233075",
+      "name": "SERGIEF ISLAND CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233077",
+      "name": "VIRGINIA LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233080",
+      "name": "FROSTY BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233081",
+      "name": "MARTEN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233083",
+      "name": "ANAN LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233084",
+      "name": "EAGLE LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233085",
+      "name": "MALLARD SLOUGH CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233086",
+      "name": "GUT ISLAND 2 CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233087",
+      "name": "HARDING RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233088",
+      "name": "SITUK LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233089",
+      "name": "EAGLE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233090",
+      "name": "RAVEN CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233091",
+      "name": "Tanis Mesa Cabin",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233093",
+      "name": "ALSEK RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233094",
+      "name": "MIDDLE DANGEROUS RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233095",
+      "name": "ITALIO RIVER CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234671",
+      "name": "MIDDLE RIDGE CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "253458",
+      "name": "DEEP BAY CABIN",
+      "agency": "Forest Service",
+      "state": "AK",
+      "recArea": "Tongass National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10006208",
+      "name": "Joe Thompson Cabin",
+      "agency": "National Park Service",
+      "state": "AK",
+      "recArea": "Lake Clark National Park & Preserve",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10075403",
+      "name": "Esker Stream Cabin",
+      "agency": "National Park Service",
+      "state": "AK",
+      "recArea": "Wrangell - St Elias National Park & Preserve",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

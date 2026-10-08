@@ -1,0 +1,347 @@
+{
+  "drawn": {
+    "wave": 38,
+    "count": 36,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-midwest",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-midwest), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10192012",
+      "name": "Bobcat Lake Camp",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10192062",
+      "name": "Henry Lake Camp",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10192097",
+      "name": "Moosehead Lake Camp",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10192127",
+      "name": "Pomeroy Lake Camp",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10315092",
+      "name": "RED CLOUD (NE) NEBRASKA NF",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Nebraska National Forests and Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10315097",
+      "name": "ROBERTS TRACT (NE) NEBRASKA NF",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Nebraska National Forests and Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10315102",
+      "name": "SOLDIER CREEK (NE) NEBRASKA NF",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Nebraska National Forests and Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232062",
+      "name": "LAKE VESUVIUS RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "OH",
+      "recArea": "Wayne National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232359",
+      "name": "BEAR GULCH",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233207",
+      "name": "MARION LAKE GROUP SITE",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233212",
+      "name": "Ewing Point Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233765",
+      "name": "PICNIC POINT (WI)",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234235",
+      "name": "MCKEEVER CABIN",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234273",
+      "name": "SUMMIT RIDGE LOOKOUT CABIN",
+      "agency": "Forest Service",
+      "state": "SD",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234678",
+      "name": "HUNGERFORD EQUESTRIAN GROUP CAMPSITE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234679",
+      "name": "SOUTH BRANCH TRAIL CAMP GROUP SITE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234734",
+      "name": "TOM'S LAKE CABIN",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "265539",
+      "name": "CHIMNEY LOOP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273338",
+      "name": "Crooked Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273340",
+      "name": "Bass Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273341",
+      "name": "Bear Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273344",
+      "name": "Lake Nineteen Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273350",
+      "name": "Camp Cook Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273351",
+      "name": "Ironjaw Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273353",
+      "name": "Minerva Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273356",
+      "name": "Carr Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273363",
+      "name": "Clear Lake Campsite",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "273841",
+      "name": "FUCHS HOUSE",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10177496",
+      "name": "Dunbar Group Site",
+      "agency": "National Park Service",
+      "state": "",
+      "recArea": "Indiana Dunes National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10294670",
+      "name": "Cottonwood Group Site (ND)",
+      "agency": "National Park Service",
+      "state": "",
+      "recArea": "Theodore Roosevelt National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251161",
+      "name": "Roundup Group Horse Camp",
+      "agency": "National Park Service",
+      "state": "ND",
+      "recArea": "Theodore Roosevelt National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233475",
+      "name": "DALE MILLER YOUTH",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Rend Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233557",
+      "name": "JOHN C. BRISCOE GROUP USE",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Mark Twain Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233747",
+      "name": "BLOOMINGTON WEST",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Clinton Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233780",
+      "name": "LOTUS GROUP AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Carlyle Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233914",
+      "name": "SHAGBARK GROUP AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Rend Lake",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

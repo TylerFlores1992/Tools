@@ -13,6 +13,8 @@ const manifest = (n: number): ManifestEntry[] =>
   JSON.parse(readFileSync(join(import.meta.dirname, `../../../../../public/private/camphawk/maps/waves/wave-${String(n).padStart(2, "0")}.json`), "utf8")).entries;
 const idsOf = (wave: number) => wave === 0 ? sampleIds : new Set(manifest(wave).map((e) => e.id));
 const ofWave = (wave: number) => DECISION_FILES.find((f) => f.wave === wave)!.decisions;
+/** Held as one map, approved once shown as areas (owner, 2026-10-08): the split fixed them. */
+const APPROVED_AS_AREAS = new Set(["255303", "232136", "233523", "233563", "233626", "232446", "232472", "232511", "232546", "233496", "233611", "233627", "233695", "234557"]);
 
 test("every recorded decision is for a map in its wave and is well formed", () => {
   for (const f of DECISION_FILES) assert.deepEqual(decisionProblems(f, idsOf(f.wave)), [], `wave ${f.wave}`);
@@ -25,11 +27,11 @@ test("wave 0 decides every held sample map and nothing else (owner, 2026-10-08)"
   assert.deepEqual(decided, held);
 });
 
-test("the five maps that aren't usable stay hidden; the other 18 are approved", () => {
+test("the four maps that aren't usable stay hidden; the other 19 are approved (Medicine Lake as areas)", () => {
   const w0 = ofWave(0);
   const hidden = w0.filter((d) => d.decision === "hidden").map((d) => d.id).sort();
-  assert.deepEqual(hidden, ["10227416", "232293", "234628", "255303", "274721"]);
-  assert.equal(w0.filter((d) => d.decision === "approved").length, 18);
+  assert.deepEqual(hidden, ["10227416", "232293", "234628", "274721"]);
+  assert.equal(w0.filter((d) => d.decision === "approved").length, 19);
 });
 
 test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
@@ -38,8 +40,8 @@ test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usabl
   const needs = manifest(1).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
   assert.equal(needs.length, 56);
   assert.deepEqual([...w1.keys()].sort(), needs.map((e) => e.id).sort());
-  for (const e of needs) assert.equal(w1.get(e.id), ["good", "usable"].includes(looks[e.id].call) ? "approved" : "hidden", e.id);
-  assert.equal([...w1.values()].filter((d) => d === "approved").length, 31);
+  for (const e of needs) assert.equal(w1.get(e.id), ["good", "usable"].includes(looks[e.id].call) || APPROVED_AS_AREAS.has(e.id) ? "approved" : "hidden", e.id);
+  assert.equal([...w1.values()].filter((d) => d === "approved").length, 31 + 4);
 });
 
 test("wave 2 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
@@ -48,8 +50,8 @@ test("wave 2 (owner, 2026-10-08): every map that needs a decision has one; usabl
   const needs = manifest(2).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
   assert.equal(needs.length, 62);
   assert.deepEqual([...w2.keys()].sort(), needs.map((e) => e.id).sort());
-  for (const e of needs) assert.equal(w2.get(e.id), ["good", "usable"].includes(looks[e.id].call) ? "approved" : "hidden", e.id);
-  assert.equal([...w2.values()].filter((d) => d === "approved").length, 23);
+  for (const e of needs) assert.equal(w2.get(e.id), ["good", "usable"].includes(looks[e.id].call) || APPROVED_AS_AREAS.has(e.id) ? "approved" : "hidden", e.id);
+  assert.equal([...w2.values()].filter((d) => d === "approved").length, 23 + 9);
   // The two maps traced from the photo (Cochiti's west loop, Tule's north lanes) are approved.
   for (const id of ["233461", "233655"]) assert.equal(w2.get(id), "approved", id);
 });
@@ -99,4 +101,12 @@ test("the first offer for a held map follows what held it: spread or stacked →
   assert.equal(suggestedDecision([{ code: "dispersed" }, { code: "no-roads" }], "hold"), "hidden");
   assert.equal(suggestedDecision([{ code: "outlier" }, { code: "far-from-roads" }], "hold"), "hidden");
   for (const look of ["good", "usable", "unsure", undefined]) assert.equal(suggestedDecision([{ code: "spread" }], look), "approved");
+});
+
+test("every listing approved as areas is shown as areas", () => {
+  for (const id of APPROVED_AS_AREAS) {
+    assert.equal(RECORDED[id].decision, "approved", id);
+    const map = JSON.parse(readFileSync(join(import.meta.dirname, `../../../../../public/private/camphawk/maps/ridb-${id}.json`), "utf8"));
+    assert.equal(map.split?.kind, "areas", id);
+  }
 });

@@ -817,6 +817,23 @@ The owner had held all six.
   end", "Middle"). On a round lake that can read oddly (Bolar Mountain's "Middle" is south of its
   "West end").
 
+**The owner's calls (2026-10-08):** approve the 14 the split fixes, keep the other 13 hidden.
+Recorded in each wave's decisions file ("Approved as areas" / "Kept hidden as areas").
+
+**Tighter areas (owner, same day):**
+- **A loop now joins the area before it only when the two touch** (within the 200 m gap). Lost
+  Lake's two H sites, 1 km down the lake, are their own area now; no other listing's areas changed
+  (checked on all 250 maps).
+- **A split call can set the cut,** read off the photo: `gap` (metres between clusters) or
+  `maxSpan` (metres across one area):
+  - Sweetwater: gap 150 m, so 3 areas;
+  - Lithia Springs: gap 80 m, so 3;
+  - South Sandusky: gap 120 m, so 4;
+  - Dam Site: areas of at most 400 m, so 6 lettered areas.
+- On the photo, each area now holds one cluster for Lost Lake, Sweetwater, Lithia Springs and
+  South Sandusky. Dam Site's areas are right, but three of them still sit far from roads. All five
+  stay hidden until the owner looks again.
+
 **Single units:** the check and the location map are built. No wave has drawn one yet: the waves
 by demand pick from the multi-site population. A unit wave is next (playbook §10).
 

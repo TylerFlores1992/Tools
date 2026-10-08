@@ -37,7 +37,16 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
-**Evening, 2026-10-08 (PR pending): the look picked and built in.**
+**Late evening, 2026-10-08: the rest of Recreation.gov, in parallel (PR pending, then children).**
+- The 27 area listings decided (14 approved, 13 hidden). Tighter areas for the 5 coarse ones (a
+  loop joins only an area it touches; a split call can set `gap` or `maxSpan`).
+- **Everything left is planned** (`plan-rollout.mjs`): waves 3 to 39, in 11 batches of one OSM
+  region each (`specs/rollout.json`). Each batch goes to a child session
+  (`docs/design/campground-maps-rollout-child.md`); this session merges, makes the final check, and
+  records pass or hold (playbook §5.4). The fleet's state: `list_sessions` (tag
+  `maps-rollout-2026-10-08`) and each child's `wip/maps-<batch>` branch and `.handoff/` file.
+
+**Evening, 2026-10-08 (PR #30, merged): the look picked and built in.**
 - **Wave 2 decided:** pass A and B (23 approved), hold C and D (39). `maps/decisions/wave-02.json`.
 - **The owner picked split A and single A.** Built into the build, the check and the review page:
   - each listing is one unit, one map, areas or dispersed (`build.mjs` `viewOf`);
