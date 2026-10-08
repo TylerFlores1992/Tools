@@ -5,6 +5,7 @@
 //
 //   node studio/campground-maps/aerial-check.mjs <out-dir> <map.json>…
 //   AERIAL=usfs-r10-rgb node studio/campground-maps/aerial-check.mjs …   (another source, to compare)
+//   LIDAR=1 node studio/campground-maps/aerial-check.mjs …   (the lidar relief: the ground under canopy; lidar.mjs)
 //
 // The photo is asked for in Web Mercator for the map's own bbox, with the frame's proportions,
 // so it lines up with the map's local metres (the two projections differ by far less than a
@@ -13,6 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import sharp from "sharp";
 import { AERIAL, aerialSource, exportUrl, photoSize, sizeFor } from "../../src/lab/camphawk/round2/maps/aerial.ts";
+import { lidarPng } from "./lidar.mjs";
 
 const [outDir, ...files] = process.argv.slice(2);
 if (!outDir || !files.length) { console.error("usage: aerial-check.mjs <out-dir> <map.json>…"); process.exit(1); }
@@ -50,14 +52,16 @@ export function firstComeOutline(map, path) {
 for (const file of files) {
   const map = JSON.parse(readFileSync(file, "utf8"));
   if (!map.bbox) { console.log(`${file}: no bbox (rebuild it)`); continue; }
-  const ask = photoUrl(map);
-  if (!ask) { console.log(`${file}: no public-domain aerial photo covers this map (aerial.ts)`); continue; }
+  const { width: W, height: H } = photoSize(map.frame, 1000);
+  const ask = process.env.LIDAR ? { url: null, src: { key: "lidar" } } : photoUrl(map);
+  if (!ask) { console.log(`${file}: no public-domain aerial photo covers this map (aerial.ts); try LIDAR=1`); continue; }
   // The PNG is 1,000 px wide whatever size the photo is asked at (a fixed-scale source; sizeFor).
-  const { url, src } = ask, { width: W, height: H } = photoSize(map.frame, 1000);
+  const { url, src } = ask;
   // USGS sometimes answers 200 "image/jpeg" with a body that isn't one (2026-10-08, wave 1): a
   // photo counts only once it decodes. A map with no photo is reported and the run carries on.
   let photo;
-  for (let i = 0; i < 4 && !photo; i++) {
+  if (process.env.LIDAR) photo = await lidarPng(map.bbox, Math.max(0.5, map.frame.w / W)).then((l) => { src.key = `lidar ${l.source.key}`; return l.png; }, (e) => { console.log(`${file}: ${e.message}`); return null; });
+  for (let i = 0; i < 4 && !photo && url; i++) {
     if (i) await new Promise((r) => setTimeout(r, 3000 * i));
     const res = await fetch(url, { signal: AbortSignal.timeout(60000) }).catch(() => null);
     if (!res?.ok || !/image/.test(res.headers.get("content-type") ?? "")) continue;

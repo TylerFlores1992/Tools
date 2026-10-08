@@ -8,6 +8,8 @@ import { pct, type SiteMapData } from "../maps";
 import { cleanRoad, lengthM, moveSite, nearestSite, originalAt, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
 import { TracedMark } from "./AerialCheck";
 import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
+import { useLidar } from "./useLidar";
+import { LIDAR } from "../maps/lidar";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
 // water taps a person can see. The reviewer clicks along a road; the trace is kept in this browser
@@ -47,6 +49,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
 }) {
   const f = map.frame;
   const [tool, setTool] = useState<Tool>("road");
+  // What's under the tracing: the aerial photo, or the lidar relief where the photo shows only canopy.
+  const [ground, setGround] = useState<"photo" | "lidar">("photo");
+  // Whether anything was placed over the relief, so the file credits it.
+  const [usedLidar, setUsedLidar] = useState(false);
   const [activeAt, setActive] = useState<number | null>(null);
   const [zoom, setZoom] = useState<Zoom>(1);
   const [snapOn, setSnapOn] = useState(true);
@@ -89,9 +95,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   // Asked for in steps of 400px so a resize doesn't fetch a new photo every pixel; USGS serves up to 4000.
   const photoW = drawnW ? Math.min(4000, Math.ceil((drawnW * dpr) / 400) * 400) : 1400;
   const source = aerialSource(map);
-  const src = aerialUrl(map, f, photoW);
+  const lidar = useLidar(map.bbox, f.w, photoW, ground === "lidar");
+  const src = ground === "lidar" ? lidar.src : aerialUrl(map, f, photoW);
   const [photo, setPhoto] = useState<{ src: string; state: "ready" | "error" } | null>(null);
-  const photoState = photo?.src === src ? photo.state : "loading";
+  const photoState = ground === "lidar" ? (lidar.state === "ready" ? "ready" : lidar.state === "error" ? "error" : "loading") : photo?.src === src ? photo.state : "loading";
   const img = useRef<HTMLImageElement>(null);
   useEffect(() => { const el = img.current; if (el?.complete && el.src === src) setPhoto({ src, state: el.naturalWidth ? "ready" : "error" }); }, [src]);
 
@@ -125,6 +132,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   ];
 
   const add = (raw: XY) => {
+    if (ground === "lidar") setUsedLidar(true);
     if (tool === "site") {
       // First tap picks up the nearest site; the second puts it where the photo shows it.
       if (moving === null) {
@@ -265,7 +273,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const finished = draft.roads.filter((r) => r.coords.length > 1).length;
   const moves = draft.sites ?? [];
   const hasAny = finished > 0 || draft.points.length > 0 || moves.length > 0;
-  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10), "", source?.credit);
+  // The trace records what it was drawn over: the photo, and the lidar relief when it was used.
+  const tracedOver = [source?.credit, usedLidar && (lidar.source ?? LIDAR).credit].filter(Boolean).join("; ");
+  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10), "", tracedOver || undefined);
   const download = () => {
     const blob = new Blob([JSON.stringify(file(), null, 1) + "\n"], { type: "application/json" });
     const a = document.createElement("a");
@@ -310,6 +320,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
         <Segmented label="Draw">
           {TOOLS.map(({ t, label, Icon }) => <SegButton key={t} on={tool === t} onClick={() => pickTool(t)}><Icon aria-hidden="true" className="size-4" />{label}</SegButton>)}
+        </Segmented>
+        <Segmented label="Ground">
+          <SegButton on={ground === "photo"} onClick={() => setGround("photo")}>Photo</SegButton>
+          <SegButton on={ground === "lidar"} onClick={() => setGround("lidar")}>Lidar relief</SegButton>
         </Segmented>
         <Segmented label="Zoom">
           {ZOOMS.map((z) => <SegButton key={z} on={zoom === z} onClick={() => changeZoom(z)}>{z === 1 ? "Whole photo" : `${z}×`}</SegButton>)}
@@ -389,7 +403,8 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           })}
           {photoState !== "ready" && (
             <p role={photoState === "error" ? "alert" : "status"} className="pointer-events-none absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-              {!source ? NO_PHOTO : photoState === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
+              {ground === "lidar" ? (photoState === "error" ? "No lidar answered for this ground (or the service is busy; try again in a minute)." : "Loading the lidar relief…")
+                : !source ? NO_PHOTO : photoState === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
             </p>
           )}
         </div>

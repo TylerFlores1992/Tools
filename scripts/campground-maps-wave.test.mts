@@ -248,3 +248,12 @@ test("parking rows (BLM's Extra Vehicle at every site's spot) aren't campsites",
   assert.equal(bookable({ CampsiteType: "MANAGEMENT", TypeOfUse: "Overnight" }), false);
   assert.equal(bookable({ CampsiteType: "STANDARD NONELECTRIC", TypeOfUse: "Day" }), false);
 });
+
+test("the credits say what a trace was drawn over: aerial photos, lidar, or both", async () => {
+  const { tracedOver } = await import("../studio/campground-maps/build.mjs");
+  assert.equal(tracedOver("USDA NAIP via USGS The National Map (public domain)"), "aerial photos");
+  assert.equal(tracedOver(undefined), "aerial photos");
+  assert.equal(tracedOver("USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)"), "aerial photos and lidar elevation (USGS 3DEP)");
+  assert.equal(tracedOver("USGS 3D Elevation Program lidar (public domain)"), "lidar elevation (USGS 3DEP)");
+  assert.equal(tracedOver("U.S. Forest Service Alaska Region; Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)"), "aerial photos and lidar elevation (Oregon DOGAMI)");
+});

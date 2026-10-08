@@ -8,11 +8,14 @@
 //              "points": [{ "type": "Restroom" | "Water", "at": [x, y] }],
 //              "sites": [{ "name": "A09", "at": [x, y] }],   (a site moved to where the photo shows it)
 //              "replace": false, "note": "what was left out and why" }
+// Traced over the lidar relief (aerial-grid.mjs with LIDAR=1)? Run this with LIDAR=1 too, so the
+// file credits it.
 // Then rebuild the map (build-sample.mjs <ridb-dir> <id>) and check it with aerial-grid.mjs.
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { TRACES, traceProblems } from "./trace.mjs";
 import { aerialSource } from "../../src/lab/camphawk/round2/maps/aerial.ts";
+import { lidarSourcesFor } from "../../src/lab/camphawk/round2/maps/lidar.ts";
 
 const [file, specFile, by = "Claude (CampHawk session)"] = process.argv.slice(2);
 if (!file || !specFile) { console.error("usage: trace-from-grid.mjs <map.json> <spec.json> [by]"); process.exit(1); }
@@ -22,7 +25,8 @@ const f = map.frame, [w, s, e, n] = map.bbox;
 const deg = ([x, y]) => [Math.round((w + ((x - f.x) / f.w) * (e - w)) * 1e7) / 1e7, Math.round((n - ((y - f.y) / f.h) * (n - s)) * 1e7) / 1e7];
 const out = {
   version: 1, map: `ridb-${map.facilityId}`, traced: new Date().toISOString().slice(0, 10), by,
-  photo: aerialSource(map)?.credit ?? "none",
+  // LIDAR=1: traced over the lidar relief (aerial-grid.mjs LIDAR=1) as well as, or instead of, the photo.
+  photo: [aerialSource(map)?.credit, process.env.LIDAR && lidarSourcesFor(map.bbox)[0].credit].filter(Boolean).join("; ") || "none",
   roads: t.roads.map((r) => ({ coords: (Array.isArray(r) ? r : r.c).map(deg), ...(r.through ? { through: true } : {}), ...(r.name ? { name: r.name } : {}) })),
   points: (t.points ?? []).map((p) => ({ type: p.type, at: deg(p.at) })),
   ...(t.sites?.length ? { sites: t.sites.map((m) => ({ name: m.name, at: deg(m.at) })) } : {}),

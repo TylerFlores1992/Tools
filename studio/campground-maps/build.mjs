@@ -134,6 +134,15 @@ export function frameBoxOf(ridb, facilityId) {
   return { bboxArr, huge: Math.max(frame.w, frame.h) > MAX_FRAME_M };
 }
 
+/** What a trace was drawn over, for the credits, from its `photo`: "aerial photos", "lidar
+    elevation (USGS 3DEP)", or both. Public domain all; the trace file names each in full. */
+export function tracedOver(photo = "") {
+  const lidar = /3DEP|USGS 3D Elevation/i.test(photo) ? "USGS 3DEP" : /DOGAMI/i.test(photo) ? "Oregon DOGAMI" : "";
+  const both = /3DEP|USGS 3D Elevation/i.test(photo) && /DOGAMI/i.test(photo) ? "USGS 3DEP and Oregon DOGAMI" : lidar;
+  const photos = /NAIP|Forest Service|USDA|photo/i.test(photo.replace(/lidar[^;]*/gi, "")) || !both;
+  return [photos && "aerial photos", both && `lidar elevation (${both})`].filter(Boolean).join(" and ");
+}
+
 /** The outlines as the map keeps them: one path of every ring, and each ring's OpenStreetMap
     name in the same order (a ring the frame clips away drops out of both). */
 export function outlineEvidence(outlines, pathOf) {
@@ -305,10 +314,12 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   }
 
   // The credit line names each layer's source, so a reader can tell what came from where.
-  const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "US Census Bureau (TIGER)", usgs: "USGS", traced: "CampHawk, traced from USDA aerial photos" };
+  // What the traces were drawn over (the trace's `photo`): aerial photos, lidar relief, or both.
+  const over = tracedOver(trace?.photo);
+  const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "US Census Bureau (TIGER)", usgs: "USGS", traced: `CampHawk, traced from ${over}` };
   const poiSrc = [...new Set(pois.map((p) => p.src))];
   const roadCredit = replaced ? SRC.traced
-    : [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : "campground roads CampHawk traced from USDA aerial photos")].filter(Boolean).join(", and ");
+    : [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : `campground roads CampHawk traced from ${over}`)].filter(Boolean).join(", and ");
   const credit = [
     `Drawn by CampHawk. Sites: Recreation.gov (RIDB, CC BY 4.0)${moved ? `; ${moved === 1 ? "one" : moved} moved by CampHawk to where aerial photos show ${moved === 1 ? "it" : "them"}` : ""}.`,
     roadCredit && `Roads: ${roadCredit}.`,
