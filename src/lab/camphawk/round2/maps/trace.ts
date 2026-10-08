@@ -5,6 +5,7 @@
 // A map's local metres are linear in longitude and latitude (studio/campground-maps/geo.mjs), and
 // its bbox is its frame in degrees, so converting is a straight interpolation between the two.
 import type { MapPoi, MapRoad, SiteMapData } from ".";
+import { AERIAL } from "./aerial.ts";
 
 export type LonLat = [number, number];
 export type XY = [number, number];
@@ -30,7 +31,7 @@ export const cleanRoad = (r: TraceRoad): TraceRoad => ({ coords: r.coords, ...(r
 export type TraceDraft = { roads: TraceRoad[]; points: { type: TracePointType; at: LonLat }[]; replace?: boolean };
 
 export const TRACE_POINT_TYPES: TracePointType[] = ["Restroom", "Water"];
-export const PHOTO_CREDIT = "USDA NAIP via USGS The National Map (public domain)";
+export const PHOTO_CREDIT = AERIAL.naip.credit;
 export const EMPTY_DRAFT: TraceDraft = { roads: [], points: [] };
 
 type Framed = Pick<SiteMapData, "frame"> & { bbox: [number, number, number, number] };
@@ -104,13 +105,14 @@ export const draftOf = (map: SiteMapData): TraceDraft =>
     : EMPTY_DRAFT;
 
 /** The file to save as studio/campground-maps/traces/<map>.json. */
-export function traceFile(mapKey: string, draft: TraceDraft, by: string, today: string, note = ""): TraceFile {
+/** `photo` is the credit of the photo it was traced over (aerial.ts), NAIP's unless said. */
+export function traceFile(mapKey: string, draft: TraceDraft, by: string, today: string, note = "", photo = PHOTO_CREDIT): TraceFile {
   return {
     version: 1,
     map: mapKey,
     traced: today,
     by,
-    photo: PHOTO_CREDIT,
+    photo,
     roads: draft.roads.filter((r) => r.coords.length > 1).map(cleanRoad),
     points: draft.points.map((p) => ({ type: p.type, at: p.at })),
     ...(draft.replace ? { replace: true } : {}),
