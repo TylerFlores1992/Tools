@@ -157,8 +157,8 @@
    "note": "Full canopy: Group Site 1 sits by the drawn road, Group Site 2 50 m inside it, with no lane visible under the trees."
   },
   "232307": {
-   "call": "usable",
-   "note": "Snow on the photo. Site 002 sits at the building near the end of the east spur; 001 sits among the trees 30 m west of the road with no lane showing."
+   "call": "hold",
+   "note": "Snow on the photo. Site 002 sits at the building near the end of the east spur; 001 sits among the trees 30 m west of the road with no lane showing. Held under the clarified bar: one of the two sites has no road."
   },
   "232313": {
    "call": "usable",
@@ -225,12 +225,12 @@
    "note": "The loops follow the visible lanes under the pines, and most of Sites 1 to 23 sit beside them. 2, 12, 13 and 24 to 26 sit 20 to 50 m off any drawn road, and one site is named \"This site should be deleted\" (RIDB's own text), so it needs a person's look."
   },
   "233364": {
-   "call": "usable",
-   "note": "The loop follows the visible gravel through the pines (about 10 m south of it at the bottom bend), and Sites 001 to 024 and 030 to 041 sit beside it on spurs. Sites 021, 023 and 025 to 029 sit 20 to 60 m south of the loop toward the shore with no lane showing, likely walk-in sites."
+   "call": "hold",
+   "note": "The loop follows the visible gravel through the pines (about 10 m south of it at the bottom bend), and Sites 001 to 024 and 030 to 041 sit beside it on spurs. Sites 021, 023 and 025 to 029 sit 20 to 60 m south of the loop toward the shore with no lane showing, likely walk-in sites. Held under the clarified bar: the drawn loop runs 10 m off the visible one at the bottom bend."
   },
   "233685": {
-   "call": "usable",
-   "note": "The road and loop follow the visible dirt and Sites 01 to 06 sit along them. 08 to 11 sit 20 to 40 m north of the road among the junipers, and 07 at the trailers to the northeast, with no lane drawn."
+   "call": "hold",
+   "note": "The road and loop follow the visible dirt and Sites 01 to 06 sit along them. 08 to 11 sit 20 to 40 m north of the road among the junipers, and 07 at the trailers to the northeast, with no lane drawn. Held under the clarified bar: 5 of 11 sites have no drawn road."
   },
   "233728": {
    "call": "hold",
@@ -245,24 +245,24 @@
    "note": "The loop follows the visible gravel, and Sites 1 to 4, 6, 9, 11, 13, 15, 17 and 20 to 27 sit beside it. 5, 7, 8, 10, 12, 14, 16, 18, 19, 28 and 29 sit 15 to 40 m off it on spurs that only partly show."
   },
   "233793": {
-   "call": "usable",
-   "note": "The loops follow the visible lanes (snow on the photo), and Sites 001, 002, 008, 010, 014 and 015 sit beside them. 003 to 007, 013, 016 and 017 sit 20 to 40 m off the drawn roads among the firs, with no spurs visible."
+   "call": "hold",
+   "note": "The loops follow the visible lanes (snow on the photo), and Sites 001, 002, 008, 010, 014 and 015 sit beside them. 003 to 007, 013, 016 and 017 sit 20 to 40 m off the drawn roads among the firs, with no spurs visible. Held under the clarified bar: 10 of 14 sites have no drawn road."
   },
   "233798": {
-   "call": "usable",
-   "note": "Group Site B sits in the open sage 25 m east of the drawn road and A 45 m east among the trees; no lane to either shows."
+   "call": "hold",
+   "note": "Group Site B sits in the open sage 25 m east of the drawn road and A 45 m east among the trees; no lane to either shows. Held under the clarified bar: neither site has a drawn road."
   },
   "233916": {
-   "call": "usable",
-   "note": "The loop round the Alsea group site follows the visible gravel and the site sits on its lawn. Canal Creek Group sits 100 m south under full canopy with no road drawn or visible."
+   "call": "hold",
+   "note": "The loop round the Alsea group site follows the visible gravel and the site sits on its lawn. Canal Creek Group sits 100 m south under full canopy with no road drawn or visible. Held under the clarified bar: one of the two sites has no road."
   },
   "233953": {
    "call": "good",
    "note": "The two group loops follow the visible pavement, and Group Sites A and B sit at their shelters."
   },
   "234096": {
-   "call": "usable",
-   "note": "The road follows the visible lane along the river, and Sites 001, 003, 005, 006 and 007 sit beside it. 002, 004 and 008 sit 15 to 25 m east of it in the pines with no spur visible."
+   "call": "hold",
+   "note": "The road follows the visible lane along the river, and Sites 001, 003, 005, 006 and 007 sit beside it. 002, 004 and 008 sit 15 to 25 m east of it in the pines with no spur visible. Held under the clarified bar: 3 of 8 sites have no drawn road."
   },
   "234289": {
    "call": "hold",
@@ -317,8 +317,8 @@
    "note": "Census roads under the pines: the loops are plausible, but most of the 119 sites sit between them, 20 to 50 m from a drawn road (000s by the lake, 080 to 112 in the east), and the lanes to them don't show."
   },
   "251883": {
-   "call": "usable",
-   "note": "Under the firs only the access road was drawn; traced the three gravel lanes that show (past B002 to B004, past A003 toward B006, and up to A008). A004 to A007 and B007 still sit off any drawn road, with no lane visible."
+   "call": "hold",
+   "note": "Under the firs only the access road was drawn; traced the three gravel lanes that show (past B002 to B004, past A003 toward B006, and up to A008). A004 to A007 and B007 still sit off any drawn road, with no lane visible. Held under the clarified bar: 5 of 14 sites still have no drawn road after the traces."
   },
   "251884": {
    "call": "unsure",

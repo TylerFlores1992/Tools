@@ -8,7 +8,8 @@ resumed), MD5 ok, trimmed to 3.09 GB; OSM as of 2026-10-07T00:17:45Z. About 2 h 
 ## Wave 12 (us-west, multi)
 - Built 95, failed 0
 - Check: ready 61, review 29, not drawn 5 (after traces)
-- First look: good 23, usable 32, hold 16, unsure 24
+- First look: good 23, usable 23, hold 25, unsure 24 (8 usable calls moved to hold under the
+  orchestrator's clarified bar: 233364, 233793, 233798, 233916, 251883, 232307, 233685, 234096)
 - Traced: 10243267, 232335, 233154, 233537, 251883 (each checked over the photo after the rebuild;
   Lone Pine and Elks Flat traced a second time to bring them onto the road)
 - Split calls: 233154 (family loop and group area, 1.1 km apart). 10317439 and 272097 were shown
@@ -26,6 +27,9 @@ resumed), MD5 ok, trimmed to 3.09 GB; OSM as of 2026-10-07T00:17:45Z. About 2 h 
   - 234400: Forest Service lanes don't follow the visible dirt lanes.
   - 234546: Census roads under canopy, many sites 30 to 80 m off.
   - 238331: the three group sites sit on the highway itself.
+  - 233364: drawn loop 10 m off the visible one at the bottom bend.
+  - 233793, 233685, 234096, 251883: a third or more of the sites have no drawn road.
+  - 233798, 233916, 232307: one or both of two sites have no road.
 - Anything new: "Extra Vehicle" twin sites (a stacked-point failure mode with a clear fix);
   a RIDB site literally named "This site should be deleted" (233360). USGS water sometimes didn't
   answer and the build used OpenStreetMap's water instead (it says so in the log).
