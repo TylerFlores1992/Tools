@@ -173,8 +173,8 @@
    "note": "Two areas: the main loops (001 to 101), whose drawn lanes the sites line, and 102 to 117 along the road 1.4 km south. The lanes follow the tracks in the grass."
   },
   "233498": {
-   "call": "hold",
-   "note": "No campground road is drawn, only the highway: the loops past 001 to 025 and 026 to 056 show plainly on the photo, and every site sits on them."
+   "call": "usable",
+   "note": "No campground road was drawn; the outer lane of the west loop, the entry from the highway, the paved road across the middle and the east loop are now traced from the photo, and the sites sit beside them. The west loop's inner lanes (past 002 to 006 and 017 to 022) and the spurs to 045 to 049 are left out."
   },
   "233501": {
    "call": "usable",
@@ -345,8 +345,8 @@
    "note": "Two areas on either side of the dam. Zoomed, the Census loops run 10 to 20 m off the visible lanes: 1 to 20 sit on a lane south of the drawn loop that isn't drawn, 21 to 31 on the north loop's outer edge, and 43 to 47 sit by lanes the west loop misses."
   },
   "255134": {
-   "call": "hold",
-   "note": "Only the outer roads are drawn: none of the lanes past 01 to 22B on the east point or 23 to 72 and T01 to T12 in the west area is drawn, though they show plainly on the open ground."
+   "call": "usable",
+   "note": "Only the outer roads were drawn; the lanes of both areas are now traced from the photo (the loop and middle lane on the east point past 01 to 22B, the three long lanes in the west area past 23 to 72), and the sites sit beside them. The tent sites (T01 to T12) show no lane; 3 sites have no point."
   },
   "272084": {
    "call": "usable",
