@@ -21,8 +21,8 @@
    "note": "The Forest Service's loops follow the visible gravel and every site (001 to 044) sits on its pull-in beside them."
   },
   "231842": {
-   "call": "usable",
-   "note": "The loop past 01 to 10 follows the visible gravel and the sites sit beside it. 14, 15 and 17 sit on the lane that climbs north-west from the junction, which shows plainly but isn't drawn."
+   "call": "good",
+   "note": "The loop past 01 to 10 follows the visible gravel and the sites sit beside it. The lane that climbs north-west from the junction past 14, 15 and 17 and loops back down its east leg is now traced from the photo and follows the gravel; nothing visible is missing."
   },
   "231997": {
    "call": "unsure",
@@ -182,7 +182,7 @@
   },
   "10038827": {
    "call": "usable",
-   "note": "The entry road and the loop follow the visible pavement, and 9 to 21 sit beside them. 2 to 8 sit on the shore lane east of the loop, which shows on the photo but isn't drawn."
+   "note": "The entry road and the loop follow the visible pavement, and 9 to 21 sit beside them. 2 to 8 sit east of the loop toward the shore; zoomed, the lane to them runs under the trees and can't be placed, so it wasn't traced."
   },
   "10038964": {
    "call": "good",
@@ -190,7 +190,7 @@
   },
   "156340": {
    "call": "usable",
-   "note": "The two loops and the lanes follow the visible pavement, and E06 to E09 and E20 to E28 sit beside them. The riverside row (E10 to E19) sits on a lane along the riprap 20 to 30 m west of the drawn loop, which shows but isn't drawn."
+   "note": "The two loops and the lanes follow the visible pavement, and E06 to E09 and E20 to E28 sit beside them. The paved spur from the west leg to E13 is now traced; the rest of the riverside row (E14 to E19) sits 10 to 18 m west of the drawn leg under the trees along the riprap, where no lane shows."
   },
   "232521": {
    "call": "good",
@@ -218,15 +218,15 @@
   },
   "233419": {
    "call": "hold",
-   "note": "Only the entry and one lane up the middle are drawn. The lanes past 29 to 37 in the east, past 15 to 20 at the north end and past 01 to 06 show plainly but aren't drawn, so most sites sit 20 to 50 m from any line."
+   "note": "Now traced: the lane east of the junction past 29 and 35 to 37 and its teardrop turnaround by 34. Still held: the north end (15 to 24, 27, 28) is open dirt patches broken by trees with no lane line to follow, 01 to 03 sit under the trees west of the lot, and the drawn road south of the junction runs about 5 m east of the visible lane."
   },
   "233427": {
    "call": "usable",
-   "note": "The loop past 08 to 24 follows the visible lane and its sites sit beside it. The west lane past 01 to 07 and the east lane past 25 to 37 show plainly on the photo but aren't drawn."
+   "note": "The loop past 08 to 24 follows the visible lane and its sites sit beside it. Now traced from the photo: the west lane past 01 to 07, the spur past 37, and the gravel lane past 25 to 36 to the turnaround by 32; the east lanes are drawn unjoined, because where they meet the loop is under the trees. 26 to 31 sit in the trees between them."
   },
   "233438": {
-   "call": "hold",
-   "note": "The A loop and the B lane follow the visible pavement, but the Census lane to the F area runs straight through the trees, 40 to 80 m from the visible F lane that passes F01 to F04 and F07 to F10."
+   "call": "usable",
+   "note": "The Census roads are replaced by a trace from the photo: the road in, the A loop with its spurs to A14 and A15, the road south, the B loop round to B04 with the lane to B01, and the F lane to its lot and the curve past F06 and F07. The sites sit by the traced roads; the F lane's stretch past F03 is partly under trees, and the short pull-ins (A20 to A24, B06 to B08) aren't drawn."
   },
   "233450": {
    "call": "good",
@@ -318,7 +318,7 @@
   },
   "233832": {
    "call": "usable",
-   "note": "The road and the river crossing follow the visible pavement, and 016 to 022 sit by the north loop. The lane past 001 to 005, the lanes past 023 to 033 east of the loop and the lane past 006 to 009 show plainly but aren't drawn."
+   "note": "The road and the river crossing follow the visible pavement, and 016 to 022 sit by the north loop. Now traced: the lane past 001 to 005 with its small loop by 002 and 003, and the lane north of the loop past 021, 022, 032 and 033. Still missing: the spurs to 006 to 009 and the lanes past 023 to 030, under full canopy."
   },
   "233896": {
    "call": "usable",
@@ -326,7 +326,7 @@
   },
   "234647": {
    "call": "usable",
-   "note": "The road in and the B loop follow the visible gravel, and the B sites and A001 to A015 sit near them. The A point's shore lane, where A016 to A033 sit on gravel pads, shows plainly but isn't drawn; the drawn A loop cuts across the grass inside it."
+   "note": "The road in and the B loop follow the visible gravel, and the B sites and A001 to A015 sit near them. Zoomed, the A point's shore sites (A016 to A033) sit on the open gravel apron that the drawn west loop runs down, 9 to 15 m from it; there is no separate lane to trace. The loop's north-east side crosses under the trees."
   },
   "234677": {
    "call": "good",
