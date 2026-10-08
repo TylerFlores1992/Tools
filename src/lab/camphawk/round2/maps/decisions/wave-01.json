@@ -1,0 +1,399 @@
+{
+ "version": 1,
+ "wave": 1,
+ "source": "The owner, in chat, on the session first look (2026-10-08): approve groups A and B, keep groups C and D hidden.",
+ "decisions": [
+  {
+   "id": "232215",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232220",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232463",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232572",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232589",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "234633",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "250877",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "10040591",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "10300216",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "231862",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "231932",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232050",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232064",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232221",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232250",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232273",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232320",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232445",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232487",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232490",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232612",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232768",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232769",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232858",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232874",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "233483",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "233782",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "234032",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "234704",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "247661",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "258830",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Flagged by the check, fine on the photo (group B)."
+  },
+  {
+   "id": "232138",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Passed every check, but the first look held it or couldn’t tell (group C)."
+  },
+  {
+   "id": "232194",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Passed every check, but the first look held it or couldn’t tell (group C)."
+  },
+  {
+   "id": "233700",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Passed every check, but the first look held it or couldn’t tell (group C)."
+  },
+  {
+   "id": "234004",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Passed every check, but the first look held it or couldn’t tell (group C)."
+  },
+  {
+   "id": "231980",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232037",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232056",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232136",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232541",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232567",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232593",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232607",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232615",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232673",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232727",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232781",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232782",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "232815",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "233420",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "233523",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "233563",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "233626",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "233877",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "234130",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  },
+  {
+   "id": "251434",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+  }
+ ]
+}

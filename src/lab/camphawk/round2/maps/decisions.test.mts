@@ -1,12 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { DECISION_FILES, RECORDED, decisionProblems, decisionsFileFor, suggestedDecision, type DecisionFile } from "./decisions.ts";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SAMPLE } from "./sample.ts";
+import first01 from "./first-look/wave-01.json" with { type: "json" };
 
 const sampleIds = new Set(SAMPLE.entries.map((e) => e.id));
+type ManifestEntry = { id: string; verdict: string; reasons: { code: string }[] };
+const manifest = (n: number): ManifestEntry[] =>
+  JSON.parse(readFileSync(join(import.meta.dirname, `../../../../../public/private/camphawk/maps/waves/wave-${String(n).padStart(2, "0")}.json`), "utf8")).entries;
+const idsOf = (wave: number) => wave === 0 ? sampleIds : new Set(manifest(wave).map((e) => e.id));
+const ofWave = (wave: number) => DECISION_FILES.find((f) => f.wave === wave)!.decisions;
 
 test("every recorded decision is for a map in its wave and is well formed", () => {
-  for (const f of DECISION_FILES) assert.deepEqual(decisionProblems(f, sampleIds), [], `wave ${f.wave}`);
+  for (const f of DECISION_FILES) assert.deepEqual(decisionProblems(f, idsOf(f.wave)), [], `wave ${f.wave}`);
 });
 
 test("wave 0 decides every held sample map and nothing else (owner, 2026-10-08)", () => {
@@ -17,9 +25,24 @@ test("wave 0 decides every held sample map and nothing else (owner, 2026-10-08)"
 });
 
 test("the five maps that aren't usable stay hidden; the other 18 are approved", () => {
-  const hidden = Object.values(RECORDED).filter((d) => d.decision === "hidden").map((d) => d.id).sort();
+  const w0 = ofWave(0);
+  const hidden = w0.filter((d) => d.decision === "hidden").map((d) => d.id).sort();
   assert.deepEqual(hidden, ["10227416", "232293", "234628", "255303", "274721"]);
-  assert.equal(Object.values(RECORDED).filter((d) => d.decision === "approved").length, 18);
+  assert.equal(w0.filter((d) => d.decision === "approved").length, 18);
+});
+
+test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
+  const looks = first01.looks as Record<string, { call: string }>;
+  const w1 = new Map(ofWave(1).map((d) => [d.id, d.decision]));
+  const needs = manifest(1).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
+  assert.equal(needs.length, 56);
+  assert.deepEqual([...w1.keys()].sort(), needs.map((e) => e.id).sort());
+  for (const e of needs) assert.equal(w1.get(e.id), ["good", "usable"].includes(looks[e.id].call) ? "approved" : "hidden", e.id);
+  assert.equal([...w1.values()].filter((d) => d === "approved").length, 31);
+});
+
+test("RECORDED holds every wave's decisions, each map once", () => {
+  assert.equal(Object.keys(RECORDED).length, DECISION_FILES.reduce((n, f) => n + f.decisions.length, 0));
 });
 
 test("decisionProblems names each fault", () => {

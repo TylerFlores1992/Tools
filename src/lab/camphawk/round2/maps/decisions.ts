@@ -3,13 +3,14 @@
 // The review page's buttons still save in the browser first; the owner sends those calls and a
 // session commits them here. Checked by decisions.test.mts.
 import wave00 from "./decisions/wave-00.json" with { type: "json" };
+import wave01 from "./decisions/wave-01.json" with { type: "json" };
 
 export type Decision = "approved" | "roads" | "hidden";
 export const DECISIONS: Decision[] = ["approved", "roads", "hidden"];
 export type DecisionRecord = { id: string; decision: Decision; by: string; on: string; note: string };
 export type DecisionFile = { version: 1; wave: number; source: string; decisions: DecisionRecord[] };
 
-export const DECISION_FILES = [wave00 as DecisionFile];
+export const DECISION_FILES = [wave00 as DecisionFile, wave01 as DecisionFile];
 
 /** Every recorded decision by map id (a later wave's file wins). */
 export const RECORDED: Record<string, DecisionRecord> = Object.fromEntries(
