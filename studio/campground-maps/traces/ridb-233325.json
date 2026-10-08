@@ -1,0 +1,87 @@
+{
+ "version": 1,
+ "map": "ridb-233325",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.8100771,
+     36.3000368
+    ],
+    [
+     -118.8101662,
+     36.3001449
+    ],
+    [
+     -118.8102775,
+     36.300253
+    ],
+    [
+     -118.8104111,
+     36.30028
+    ],
+    [
+     -118.8105002,
+     36.300334
+    ],
+    [
+     -118.8105781,
+     36.3004421
+    ],
+    [
+     -118.8107562,
+     36.3004962
+    ],
+    [
+     -118.8109788,
+     36.3005322
+    ],
+    [
+     -118.8111013,
+     36.3005952
+    ],
+    [
+     -118.8112571,
+     36.3006673
+    ],
+    [
+     -118.8114575,
+     36.3007123
+    ],
+    [
+     -118.8117358,
+     36.3007213
+    ],
+    [
+     -118.8118471,
+     36.3006853
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -118.810489,
+     36.300298
+    ],
+    [
+     -118.8105113,
+     36.3001989
+    ],
+    [
+     -118.8105224,
+     36.3000818
+    ],
+    [
+     -118.8105335,
+     36.2999737
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel drive from the lane by the east buildings west to Hillside Cabin, and its branch south to Lakeside Cabin, traced from the photo. Where the lane meets the drawn county road is southeast of the frame and not traced; the dirt tracks across the field are left out."
+}

@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-10377519",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.8104986,
+     43.0363895
+    ],
+    [
+     -122.8104494,
+     43.0363445
+    ],
+    [
+     -122.8104003,
+     43.0362995
+    ],
+    [
+     -122.8103512,
+     43.0362725
+    ],
+    [
+     -122.8102776,
+     43.0362815
+    ],
+    [
+     -122.8102039,
+     43.0363175
+    ],
+    [
+     -122.8101793,
+     43.0363445
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The short dirt lane from the road to Sites 2 and 3 and the restroom, traced from the photo. The lane to Site 1 (west, under the trees) only partly shows and is left out."
+}
