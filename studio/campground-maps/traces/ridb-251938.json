@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-251938",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.4863876,
+     35.0764826
+    ],
+    [
+     -84.4866398,
+     35.0764375
+    ],
+    [
+     -84.486914,
+     35.0764375
+    ],
+    [
+     -84.4870785,
+     35.0765187
+    ],
+    [
+     -84.4871333,
+     35.0766269
+    ],
+    [
+     -84.4870565,
+     35.0767261
+    ],
+    [
+     -84.4868811,
+     35.0767712
+    ],
+    [
+     -84.4866946,
+     35.0767351
+    ],
+    [
+     -84.4865521,
+     35.076663
+    ],
+    [
+     -84.4863108,
+     35.0765818
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the west loop round the grass circle past 017 to 022 from the NAIP photo. Left out: the lane under the trees past 024 to 032, and the spurs past 009 to 012, too faint to place."
+}

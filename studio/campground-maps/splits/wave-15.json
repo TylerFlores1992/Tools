@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 15.",
+ "listings": [
+  {
+   "id": "232513",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Five places on separate fingers of the lake: 22 to 30, 31 to 36, 37 to 62, 63 to 84 and 85 to 96."
+  },
+  {
+   "id": "232557",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Three places round the bay: 43 to 66 in the north-west, 37 to 42 by the west shore, 01 to 36 on the east point."
+  }
+ ]
+}
