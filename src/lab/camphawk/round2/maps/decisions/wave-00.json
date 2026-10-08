@@ -1,0 +1,168 @@
+{
+ "version": 1,
+ "wave": 0,
+ "source": "The owner, in chat, on the session first look (2026-10-08): approve groups A and B, keep group C hidden.",
+ "decisions": [
+  {
+   "id": "233595",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "10064579",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "233314",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "10244162",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "10243253",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "234128",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "233411",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "233920",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "250035",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "273337",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232907",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "251437",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Traced roads approved (first-look group A)."
+  },
+  {
+   "id": "232471",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "252970",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "232298",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "234606",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "233130",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "255177",
+   "decision": "approved",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Approved as drawn (first-look group B)."
+  },
+  {
+   "id": "232293",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not one campground: three group sites 770 m apart (needs a map per site)."
+  },
+  {
+   "id": "234628",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Its lanes cannot be seen on the photo."
+  },
+  {
+   "id": "255303",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not one campground: several camps 2 km apart (needs a map per camp)."
+  },
+  {
+   "id": "274721",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "The loop is under the trees; it cannot be traced from the photo."
+  },
+  {
+   "id": "10227416",
+   "decision": "hidden",
+   "by": "Owner",
+   "on": "2026-10-08",
+   "note": "Not one campground: dispersed areas over 8 km (needs a map per area)."
+  }
+ ]
+}
