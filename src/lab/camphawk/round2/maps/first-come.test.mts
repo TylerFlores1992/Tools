@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { campgroundOutline, firstComeFrame, isFirstCome, polygonsOf, OUTLINE_REACH_M } from "./first-come.ts";
+import { campgroundOutline, firstComeFrame, isFirstCome, nameWords, pickOutline, polygonsOf, sameCampground, OUTLINE_REACH_M } from "./first-come.ts";
 import type { SiteMapData } from "./index.ts";
 
 const map = (outline: string, at: [number, number] = [0, 0], name = "Standard") =>
@@ -100,4 +100,58 @@ test("the outline's label sits on its top edge above its middle, not on a tip at
   const [x, y] = outlineLabelAt(ring);
   assert.ok(x > 150 && x < 250, `x ${x}`);
   assert.equal(y, -10);
+});
+
+test("a campground's name keeps only the words that tell it apart", () => {
+  assert.deepEqual(nameWords("Beaver Lake (CO)"), ["beaver", "lake"]);
+  assert.deepEqual(nameWords("Beaver Lake Camground"), ["beaver", "lake"]);
+  assert.deepEqual(nameWords("Devil’s Head Campground"), ["devils", "head"]);
+  assert.deepEqual(nameWords("Mt. Elbert Ck"), ["mount", "elbert", "creek"]);
+  assert.deepEqual(nameWords("Campground"), []);
+});
+
+test("two names are one campground's only when one's telling words are all in the other", () => {
+  assert.equal(sameCampground("Spruce Grove (CO)", "Spruce Grove Campground - Grand Valley RD"), true);
+  assert.equal(sameCampground("Mill Creek - Mendocino National Forest", "Mill Creek Campground"), true);
+  assert.equal(sameCampground("Beaver Lake (CO)", "Beaver Lake Camground"), true);
+  // The first look's cases (2026-10-08): each listing reached another campground's outline.
+  assert.equal(sameCampground("Davis Flat", "South Fork Campground"), false);
+  assert.equal(sameCampground("Big Creek (CO)", "Cottonwood Lake Campground"), false);
+  assert.equal(sameCampground("Kenosha East", "Kenosha Pass Campground"), false);
+  // A name with no telling words matches nothing.
+  assert.equal(sameCampground("Campground", "Campground"), false);
+  assert.equal(sameCampground("Elbert Creek", ""), false);
+});
+
+test("the pick takes this campground's outline (every ring of it), never another's", () => {
+  const sq = (x: number, y: number, w: number): [number, number][] => [[x, y], [x + w, y], [x + w, y + w], [x, y + w]];
+  // Two rings of one campground, plus a neighbour's ring nearer the point.
+  const rings = [
+    { ring: sq(-20, -20, 40), name: "Mill Creek Campground" },
+    { ring: sq(60, 0, 40), name: "Fouts Campground" },
+    { ring: sq(160, 0, 40), name: "Fouts Campground" },
+  ];
+  const { pick, other } = pickOutline([0, 0], rings, "Fouts");
+  assert.equal(pick?.name, "Fouts Campground");
+  assert.equal(pick?.rings.length, 2);
+  assert.deepEqual(pick?.ring, rings[1].ring);
+  assert.equal(pick?.pointOutsideM, 60);
+  assert.equal(other?.name, "Mill Creek Campground");
+  // An exact name beats one that only contains the listing's words.
+  const exact = pickOutline([0, 0], [{ ring: sq(10, 0, 20), name: "Upper Pines Campground" }, { ring: sq(80, 0, 20), name: "Pines Campground" }], "Pines");
+  assert.equal(exact.pick?.name, "Pines Campground");
+  // Beyond reach counts for nothing, named or not.
+  assert.equal(pickOutline([0, 0], [{ ring: sq(OUTLINE_REACH_M + 1, 0, 20), name: "Fouts Campground" }], "Fouts").pick, null);
+  // Only another campground's: no outline, and the check is told whose.
+  const none = pickOutline([0, 0], [rings[0]], "Fouts");
+  assert.equal(none.pick, null);
+  assert.equal(none.other?.name, "Mill Creek Campground");
+});
+
+test("the camper's map uses the build's outline names: no outline for a listing inside another campground's", () => {
+  const m = (names: string[], listing: string) => ({ ...map("M-50 -50L50 -50L50 50L-50 50Z"), evidence: { outline: "M-50 -50L50 -50L50 50L-50 50Z", outlineNames: names, pitches: [] }, firstCome: { name: listing } }) as unknown as SiteMapData;
+  assert.equal(campgroundOutline(m(["South Fork Campground"], "Davis Flat")), null);
+  assert.equal(campgroundOutline(m(["South Fork Campground"], "South Fork Campground - Mendocino National Forest"))?.name, "South Fork Campground");
+  // Maps built before names were kept: an unnamed outline, as before.
+  assert.equal(campgroundOutline(m([], "Davis Flat"))?.pointOutsideM, 0);
 });

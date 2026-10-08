@@ -209,3 +209,15 @@ test("the final check's decisions: good and usable pass, hold and unsure are hel
   assert.throws(() => decideWave({ wave: 9, manifest, looks: { a: { call: "good" } }, checked: 1, on: "2026-10-08" }), /no first look for b/);
   assert.throws(() => decideWave({ wave: 9, manifest, looks, hold: ["zz"], checked: 1, on: "2026-10-08" }), /not in the wave: zz/);
 });
+
+test("the build keeps each outline ring's OpenStreetMap name, in the path's order", async () => {
+  const { outlineEvidence } = await import("../studio/campground-maps/build.mjs");
+  // A stand-in for geo.mjs pathOf: a ring the frame clips away gives "".
+  const pathOf = (parts: number[][][]) => (parts[0][0][0] > 1000 ? "" : `M${parts[0].map((p) => p.join(" ")).join("L")}Z`);
+  const ev = outlineEvidence([
+    { name: "Fouts Campground", rings: [[[0, 0], [1, 0], [1, 1]], [[2000, 0], [2001, 0], [2001, 1]], [[5, 5], [6, 5], [6, 6]]] },
+    { name: "", rings: [[[9, 9], [10, 9], [10, 10]]] },
+  ], pathOf);
+  assert.deepEqual(ev.outlineNames, ["Fouts Campground", "Fouts Campground", ""]);
+  assert.equal(ev.outline, "M0 0L1 0L1 1ZM5 5L6 5L6 6ZM9 9L10 9L10 10Z");
+});

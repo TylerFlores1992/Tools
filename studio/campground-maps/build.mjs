@@ -109,6 +109,13 @@ export function frameBoxOf(ridb, facilityId) {
   return { bboxArr, huge: Math.max(frame.w, frame.h) > MAX_FRAME_M };
 }
 
+/** The outlines as the map keeps them: one path of every ring, and each ring's OpenStreetMap
+    name in the same order (a ring the frame clips away drops out of both). */
+export function outlineEvidence(outlines, pathOf) {
+  const kept = outlines.flatMap((o) => o.rings.map((r) => ({ d: pathOf([r], true), name: o.name ?? "" }))).filter((r) => r.d);
+  return { outline: kept.map((r) => r.d).join(""), outlineNames: kept.map((r) => r.name) };
+}
+
 /** Build one campground's map. Returns { map, qa }; throws if a source fails (never a silent gap). */
 export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const fac = ridb.facilities.get(facilityId);
@@ -240,6 +247,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     roadSource: (roadSource === "none" || replaced) && traced.length ? "traced" : roadSource,
     traced: { roads: traced.length, points: tracedPoints.length },
     outlineRings: (osm?.outlines ?? []).flatMap((o) => o.rings.map(toM)),
+    outlines: (osm?.outlines ?? []).flatMap((o) => o.rings.map((r) => ({ ring: toM(r), name: o.name ?? "" }))),
     pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })),
   };
   // One unit is a place (a location map and its own check); a listing of several places is shown,
@@ -250,7 +258,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   if (view.kind === "firstcome") {
     const standard = rows.find((r) => r.CampsiteName.trim().toLowerCase() === "standard");
     firstCome = factsFromLoaded(facilityId, fac ?? { FacilityName: meta.name ?? "", FacilityDescription: "" }, standard ? ridb.attrs?.get(standard.CampsiteID) : {});
-    qa = checkFirstCome({ site: checkInput.sites[0], outlineRings: checkInput.outlineRings, closed: firstCome.closed, traced: checkInput.traced });
+    qa = checkFirstCome({ site: checkInput.sites[0], outlines: checkInput.outlines, name: firstCome.name, closed: firstCome.closed, traced: checkInput.traced });
   } else if (view.kind === "unit") {
     const flat = Number(fac?.FacilityLatitude), flon = Number(fac?.FacilityLongitude);
     qa = checkUnit({ site: checkInput.sites[0], facilityAt: flat && flon ? xy([flon, flat]) : null, roadSegments: checkInput.roadSegments, trailSegments: segmentsOf(trails.map((t) => t.f), xy), roadSource: checkInput.roadSource, traced: checkInput.traced });
@@ -320,7 +328,8 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     ...(trace ? { trace } : {}),
     /** What the checks compared against, kept so a reviewer sees it on the aerial photo. */
     evidence: {
-      outline: (osm?.outlines ?? []).map((o) => pathOf(o.rings, true)).filter(Boolean).join(""),
+      // One ring per entry, so each ring keeps OpenStreetMap's name (first-come.ts pickOutline).
+      ...outlineEvidence(osm?.outlines ?? [], pathOf),
       pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })).filter((p) => inFrame(p.at)),
     },
     qa,

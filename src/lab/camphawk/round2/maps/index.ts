@@ -57,7 +57,7 @@ export type SiteMapData = {
   /** The trace built into this map (studio/campground-maps/traces/), for the tracing tool to edit. */
   trace?: TraceFile;
   /** What the automatic checks compared against (OpenStreetMap's outline and numbered pitches). */
-  evidence?: { outline: string; pitches: { ref: string; at: [number, number] }[] };
+  evidence?: { outline: string; /** OpenStreetMap's name for each ring of `outline`, in order ("" when it has none). */ outlineNames?: string[]; pitches: { ref: string; at: [number, number] }[] };
   labels: { text: string; kind: "road" | "trail" | "water"; at: [number, number]; angle: number }[];
   roads: MapRoad[];
   /** Only when a trace replaces the roads: the source's roads it replaced (the tracing tool shows them). */

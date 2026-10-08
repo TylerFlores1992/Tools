@@ -47,12 +47,12 @@ function FirstComeDrawing({ map, aspect, className }: { map: SiteMapData; aspect
           </pattern>
         </defs>
         {map.water.map((w, i) => <path key={i} d={w.d} fillRule="evenodd" className="fill-ch-map-water" />)}
-        {o && <path d={`M${o.ring.map((p) => p.join(" ")).join("L")}Z`} fill={`url(#fc-hatch-${map.facilityId})`} />}
+        {o && <path d={o.rings.map((ring) => `M${ring.map((p) => p.join(" ")).join("L")}Z`).join("")} fill={`url(#fc-hatch-${map.facilityId})`} />}
         {[...map.trails, ...map.roads.filter(isFootway)].map((t, i) => <path key={i} d={t.d} fill="none" className="stroke-ch-ink-2" strokeWidth={2.2 * s} strokeDasharray={`${8 * s} ${6 * s}`} strokeLinecap="round" />)}
         {map.roads.filter((r) => !isFootway(r)).map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-muted" strokeWidth={(r.cls === "Service" ? 7 : 10) * s} strokeLinecap="round" strokeLinejoin="round" />)}
         {map.roads.filter((r) => !isFootway(r)).map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-card" strokeWidth={(r.cls === "Service" ? 4.5 : 7) * s} strokeLinecap="round" strokeLinejoin="round" />)}
         {map.buildings.filter((b) => !/restroom/i.test(`${b.name} ${b.type}`)).map((b, i) => <path key={i} d={b.d} className="fill-ch-faint" />)}
-        {o && <path d={`M${o.ring.map((p) => p.join(" ")).join("L")}Z`} fill="none" className="stroke-ch-ink" strokeWidth={2.6 * s} strokeLinejoin="round" />}
+        {o && <path d={o.rings.map((ring) => `M${ring.map((p) => p.join(" ")).join("L")}Z`).join("")} fill="none" className="stroke-ch-ink" strokeWidth={2.6 * s} strokeLinejoin="round" />}
       </svg>
       {names.map((l) => (
         <span key={l.text} aria-hidden="true" style={{ ...pct(l.at), transform: `translate(-50%, -50%) rotate(${l.angle}deg)` }}
