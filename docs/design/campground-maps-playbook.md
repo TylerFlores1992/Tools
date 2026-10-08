@@ -23,8 +23,8 @@ loads this) should be able to do the next step from here alone.
 |---|---|---|
 | Site points | RIDB, CC BY 4.0, open now | California State Parks' layer, **waiting on permission** |
 | Campgrounds to draw | 2,196 with two or more sites (+1,016 single units, §5) | 341 RC areas in CampHawk's catalog |
-| Built so far | Upper Pines (live), a 50-campground sample (lab review page), **all 50 decided** (2026-10-08: 45 publishable, 5 hidden) | Jedediah Smith, local only |
-| Measured result | 45 of 50 (90%; 79–96%) can go live after one look | 87% of sites match a State Parks point |
+| Built so far | Upper Pines (live); the 50-campground sample, **all 50 decided** (45 publishable, 5 hidden); **wave 1, 100 by demand, built and looked at, waiting on the owner** (2026-10-08) | Jedediah Smith, local only |
+| Measured result | Sample: 45 of 50 (90%; 79–96%) usable after one look. Wave 1: 75 of 100 (66–82%), not a random draw | 87% of sites match a State Parks point |
 | Blocked by | nothing (owner's go-ahead per wave) | State Parks' answer (records request due ~2026-10-17) |
 
 **What is built and tested:**
@@ -48,12 +48,10 @@ loads this) should be able to do the next step from here alone.
   - the road-source fits;
   - Approve / Needs roads / Keep hidden.
 
-**Not built yet (the rollout needs these first, §4):**
-- OpenStreetMap from bulk extracts;
-- a population list and waves;
-- the review page at 2,196 maps;
-- a "Download decisions" button (decisions are recorded by hand for now: the owner sends their
-  calls and a session commits them, §4.4).
+**The rollout tooling (§4) is built (2026-10-08):** OpenStreetMap from regional extracts
+(`osm-extract.mjs`, `osm.mjs`), the population and waves (`population.mjs`), `build-wave.mjs`, and
+the review page at scale (waves, filters, Show more, Download decisions). Wave 1's results are in
+the design doc's "Wave 1".
 
 ---
 
@@ -196,7 +194,8 @@ a session or less.
       list a region's folder to see which.
     - **Fresh:** every file was dated 2026-10-07, a day old (`<region>.state.txt` gives the
       replication timestamp). Record it as `sources.osmExtract`.
-    - **Slow:** about 0.9 MB/s here (100 MB in 113 s), so the whole US is about 4 hours. Work one
+    - **Speed varies a lot:** 0.25 to about 30 MB/s on 2026-10-08 (`us-northeast`, 2.0 GB, took
+      about 40 minutes; an earlier probe read 0.9 MB/s). Work one
       region at a time: download it, `osmium tags-filter` it to the tags below (much smaller), and
       delete the raw file. The session's disk showed 27 GB free.
     - It's the same OpenStreetMap data as the API and Geofabrik (ODbL; credit as now).
@@ -216,6 +215,14 @@ a session or less.
 - **Test:** the same campground built from the API and from the extract gives the same layers
   (allowing for edits between the two dates). Check this on 5 of the sample before switching.
 - **Keep the API path** for a single rebuild. The build logs which path it used.
+- **Built 2026-10-08:** `node studio/campground-maps/osm-extract.mjs <region>` downloads (resumable,
+  MD5-checked), trims and keeps the region's published boundary (`.poly`). `osm.mjs` picks the
+  extracts whose boundary covers a box (`covers()`), merges two near a border, and cuts boxes in
+  one `osmium extract -c` pass per extract (102 boxes in 363 s; a single cut on a 3 GB file takes
+  about 70 s, so always batch). Each map records `sources.osmFrom` (regions and OSM date).
+  - **Measured:** 13 maps built both ways, 0 features differ (`osm-compare.mjs`).
+  - **Alaska and Hawaii aren't in the US extracts.** Use `OSM_FROM=api` (or `auto`) for those
+    few; `build-wave.mjs` is extracts-only and lists any box no extract covers as failed.
 
 ### 4.2 The population and waves (`population.mjs`)
 - **The rule** is `sample.mjs`'s: RIDB facility type Campground, reservable and enabled; only
@@ -231,15 +238,18 @@ a session or less.
   approved).** Measured that day, the demand signal is thin:
   - **23 Recreation.gov campgrounds have ever been watched** (147 watches, 14 people since
     2026-06-30), and the counts include the owner's own test watches.
-  - **18 of the 23 are in the 2,196.** Upper Pines is already built, so **17 are new**. 2 are single
-    units (§5.1); 3 are outside the population (Tail Race and Smith Springs list no overnight
-    sites; Kelty Meadow has points for 7 of 15).
+  - **18 of the 23 are in the 2,196.** Upper Pines is already built, so ~~**17 are new**~~
+    **corrected: 16 are new** (Upper Pines had been counted twice; wave 1 holds all 16). 2 are single
+    units (§5.1); 3 are outside the population (two list no overnight sites; one has points
+    for under 90% of its sites). Not named here: see the rule below.
   - **So wave 1 is those 17**, topped up to about 100 by the agency-stratified draw.
   - **After that, order by Recreation.gov's own reservation history** as the demand proxy, then
     agency and state. RIDB publishes it as `https://ridb.recreation.gov/downloads/reservations<year>.zip`
-    (`reservations2024.zip` answered 200, 505 MB, last modified 2025-04-22). **Not checked yet:**
-    its columns, its license (the RIDB export is CC BY 4.0; confirm this file is the same), and
-    whether a newer year exists. Count reservations per facility over the newest full year.
+    (`reservations2024.zip` answered 200, 505 MB, last modified 2025-04-22). **Checked
+    2026-10-08: `reservations2025.zip` exists (487 MB)** and has a `facilityid` column;
+    `reservations-count.py` counts overnight camping reservations per facility and keeps nothing
+    else (never a customer column). It sits on the same RIDB downloads page as the CC BY 4.0
+    export; only per-facility counts are used, and they are not committed.
   - **Re-read the watch counts before every wave**, so a campground somebody starts watching
     jumps the queue. The query (campsite-finder's Supabase, read-only):
     ```sql
@@ -259,7 +269,8 @@ a session or less.
 ### 4.3 Building waves
 - **Generalize `build-sample.mjs`** to take a spec file (`build-wave.mjs specs/wave-NN.json`).
   - Write `public/private/camphawk/maps/ridb-<id>.json` and a manifest per wave
-    (`src/lab/camphawk/round2/maps/waves/wave-NN.json`).
+    (**built:** `public/private/camphawk/maps/waves/wave-NN.json`, fetched by the page when the
+    wave is chosen; the index the page lists is `src/lab/camphawk/round2/maps/waves.json`).
   - Keep: three at a time, the `[id…]` partial rebuild, failures recorded and the run carried on.
 - **Storage, measured:** a map averages 10 KB (largest 46 KB; about 11 KB gzipped for Twin Peaks'
   47 KB). All 2,196 come to about 22 MB, which is fine in the lab repository.
@@ -278,9 +289,9 @@ a session or less.
   `decisions.test.mts` (every id is a map of that wave, no id twice, a known decision, a date).
   - The page shows a recorded decision for everyone, with "Recorded with the maps, <date>". A click
     on the page is kept in that browser on top of it; Undo reopens even a recorded one.
-  - **Still to build:** "Download decisions" (like the trace file), so the owner's clicks become
-    the file without retyping; until then the owner sends their calls in chat and a session
-    writes the file. Add the new wave's file to `DECISION_FILES`.
+  - **Built 2026-10-08:** "Download decisions" gives `decisions/wave-NN.json` from the owner's
+    clicks, validated (`decisionsFileFor`). Commit it and add it to `DECISION_FILES`. The owner can
+    still send calls in chat instead.
   - **Still to build:** the build reads it: approved maps are published; hidden ones show "not
     drawn yet".
 - **Test it like the tracing tool:**
@@ -293,7 +304,11 @@ a session or less.
 
 ### 4.5 First-look notes per wave
 - `sample-review.ts` holds the sample's first looks. For waves, use one JSON per wave
-  (`studio/campground-maps/first-look/wave-NN.json`: `{ id, call, note }`), read by the page.
+  (**built:** `src/lab/camphawk/round2/maps/first-look/wave-NN.json`,
+  `{ version, wave, by, on, looks: { <id>: { call, note } } }`, registered in `first-look/index.ts`
+  and checked by `waves.test.mts`).
+- The first offer on the page follows the look: a held map whose checks say spread out or stacked
+  offers "Keep it hidden"; any other hold offers "Needs roads added" (`suggestedDecision`).
 - **Calls:**
   - `good`: sites on pads, roads on roads;
   - `usable`: sites right, some lanes missing;
@@ -313,6 +328,11 @@ a session or less.
    - `node studio/campground-maps/aerial-check.mjs <dir> public/private/camphawk/maps/ridb-<id>.json …`,
      then **read each PNG**.
    - Write the call and one sentence of what you saw, in the first-look file (§4.5).
+   - **Zoom any frame wider than about 1 km** with `aerial-grid.mjs` and a box before calling
+     it. At that size the overview is too small to see lanes: wave 1's first call on Lodgepole was
+     wrong from the overview and right zoomed.
+   - **USGS sometimes sends a photo that won't decode;** `aerial-check.mjs` retries and then
+     says so. Run it again for those.
    - Judge:
      - Do the sites sit on visible pads?
      - Do the drawn roads follow real roads?
@@ -336,13 +356,14 @@ a session or less.
      number). Never from an OSM name, unless the map credits OSM.
    - **Restrooms and water taps:** only when the photo shows it beyond doubt. A small building is
      not proof of a restroom. Leave them to the owner.
-   - Rebuild the map: `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs <ridb-dir> <id>…`
-     (or `build-wave.mjs` once it exists).
+   - Rebuild the map: `NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-wave.mjs <ridb-dir> studio/campground-maps/specs/wave-NN.json <id>…`
+     (`build-sample.mjs` for wave 0).
    - **Check every trace over the photo after the rebuild** (`aerial-grid.mjs` again; traced roads
      are cyan). Move any trace more than about 3 m off the visible road, and rebuild.
    - Update the first-look call and note to say what was traced and what is still missing.
 6. **Don't trace these; list them instead:**
-   - full canopy with no visible lanes (Yellowbottom, Hearts Content);
+   - full canopy with no visible lanes (Yellowbottom, Hearts Content, Rancheria);
+   - footpaths to walk-in sites (Watchman's F loop): they aren't roads;
    - spurs too short or faint to place;
    - listings that aren't one campground (§5.2).
 7. **Owner review.** Tell the owner the wave is ready, with its numbers: ready on its own, usable
@@ -357,7 +378,8 @@ a session or less.
    estimate.**
 
 **Stop and ask the owner** when:
-- a wave's pass rate falls outside the sample's interval (50–76% on their own);
+- a wave's pass rate falls outside the sample's interval (50–76% on their own; 79–96% after a
+  look). **Wave 1 did (48% on their own, 75% after a look), so it waits on the owner.**
 - a new failure mode shows up;
 - a source's terms or availability change.
 
@@ -535,6 +557,9 @@ of bookable sites).
   still needs the owner's approval.
 
 **Still open:**
+0. **Wave 1 (2026-10-08):** the owner's decisions on its 100 maps, and whether wave 2 goes ahead
+   as planned given its lower rate (Army Corps parks 11 of 23 usable). See the design doc's
+   "Wave 1".
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. **Approve the look** of the single-unit and split-listing maps, when designed.
@@ -544,7 +569,7 @@ of bookable sites).
 5. **State Parks:** what to do with their answer (§6.1). If they refuse, whether to hand-draw the
    most-watched RC campgrounds.
 
-## 11. Known gaps (as of 2026-10-08)
+## 11. Known gaps (as of 2026-10-08, after wave 1)
 
 - **Review time per map has never been measured.** Every rollout estimate depends on it.
 - **The tracing tool on a real phone:** at 2× and 4× zoom, the sticky road bar may cover the bottom
@@ -553,8 +578,15 @@ of bookable sites).
   - the frame isn't fitted tightly (Upper Pines has about 30% river and trail with no sites);
   - USGS rivers are stair-stepped, and roads show facets when zoomed;
   - unzoomed on a phone, few numbers fit (Find a site reaches all).
-- **Pick-by-fit's margin** (5 m or a quarter of the best) was set after seeing the sample. Watch it
-  in wave 1, and re-set it only with a stated reason.
+- **Pick-by-fit's margin** (5 m or a quarter of the best) was set after seeing the sample. Wave 1
+  gave no reason to change it.
+- **The check reads the median distance to a road,** so it passes a map where a third of the sites
+  have no road (Cave Spring, wave 1). A per-loop or 75th-percentile check would catch it. Not
+  built; changing a threshold after seeing results must be said out loud.
+- **Split listings are now the second biggest failure** (10 of wave 1's 20 held). Their design
+  (§5.2) is next.
+- **Repeated site numbers** (La Wis Wis) and **wrong RIDB states** (Hardin Ridge listed in
+  Maine) are shown as published.
 - **Census TIGER roads can be rough** (Udall Park's shore road runs a few metres off). The fit rule
   takes them only when clearly better, and the photo check catches the rest.
 - **Two maps where a source loop coincides exactly with the site points** (Dennis Cove) can't be

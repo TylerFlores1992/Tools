@@ -16,8 +16,12 @@ const [outDir, ...files] = process.argv.slice(2);
 if (!outDir || !files.length) { console.error("usage: aerial-check.mjs <out-dir> <map.json>…"); process.exit(1); }
 mkdirSync(outDir, { recursive: true });
 
+// USGS serves at most 4,000 px a side and answers a bigger ask with a JSON error under an image
+// header (the same limit as src/lab/camphawk/round2/maps/naip.ts, which the review page uses).
 export function naipUrl(bbox, frame, width = 1000) {
-  const height = Math.round((width * frame.h) / frame.w);
+  const tall = (width * frame.h) / frame.w, scale = Math.min(1, 4000 / Math.max(width, tall));
+  width = Math.floor(width * scale);
+  const height = Math.floor(tall * scale);
   const q = new URLSearchParams({ bbox: bbox.join(","), bboxSR: "4326", imageSR: "3857", size: `${width},${height}`, format: "jpg", f: "image" });
   return { url: `${NAIP}?${q}`, width, height };
 }
@@ -26,12 +30,17 @@ for (const file of files) {
   const map = JSON.parse(readFileSync(file, "utf8"));
   if (!map.bbox) { console.log(`${file}: no bbox (rebuild it)`); continue; }
   const { url, width: W, height: H } = naipUrl(map.bbox, map.frame);
+  // USGS sometimes answers 200 "image/jpeg" with a body that isn't one (2026-10-08, wave 1): a
+  // photo counts only once it decodes. A map with no photo is reported and the run carries on.
   let photo;
-  for (let i = 0; i < 3 && !photo; i++) {
+  for (let i = 0; i < 4 && !photo; i++) {
+    if (i) await new Promise((r) => setTimeout(r, 3000 * i));
     const res = await fetch(url, { signal: AbortSignal.timeout(60000) }).catch(() => null);
-    if (res?.ok && /image/.test(res.headers.get("content-type") ?? "")) photo = Buffer.from(await res.arrayBuffer());
+    if (!res?.ok || !/image/.test(res.headers.get("content-type") ?? "")) continue;
+    const body = Buffer.from(await res.arrayBuffer());
+    if (await sharp(body).metadata().then(() => true, () => false)) photo = body;
   }
-  if (!photo) { console.log(`${file}: no aerial photo`); continue; }
+  if (!photo) { console.log(`${file}: no aerial photo (USGS didn't send one that decodes; run it again)`); continue; }
   const f = map.frame, s = W / f.w;
   const px = ([x, y]) => [((x - f.x) * s).toFixed(1), ((y - f.y) * s).toFixed(1)];
   const path = (d) => d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_m, x, y) => px([Number(x), Number(y)]).join(" "));

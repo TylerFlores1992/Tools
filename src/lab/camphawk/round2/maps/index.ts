@@ -48,6 +48,8 @@ export type SiteMapData = {
     roadPick?: { why: string; fits: Partial<Record<Exclude<RoadSourceKey, "none">, { medianM: number; p90M: number } | null>> };
     water: string;
     osm: boolean;
+    /** Where the OpenStreetMap layers were read: a regional extract (its date) or the live API (studio/campground-maps/osm.mjs). */
+    osmFrom?: { from: string; regions?: string[]; asOf?: string | null; on?: string };
     traced?: { roads: number; points: number; replace?: boolean; by?: string; on?: string; note?: string };
   };
   /** The trace built into this map (studio/campground-maps/traces/), for the tracing tool to edit. */
@@ -68,7 +70,9 @@ export type SiteMapData = {
 
 /** Lab campground id → its drawn map. A campground missing here has no map yet. */
 const MAPS: Record<string, SiteMapData> = {
-  "upper-pines": upperPines as SiteMapData,
+  // A JSON import widens tuples to number[] and unions to string, so TypeScript can't compare the
+  // full build (bbox, labels) with the map type; the build writes this shape (studio/campground-maps/build.mjs).
+  "upper-pines": upperPines as unknown as SiteMapData,
 };
 
 export const mapFor = (campgroundId: string): SiteMapData | null => MAPS[campgroundId] ?? null;

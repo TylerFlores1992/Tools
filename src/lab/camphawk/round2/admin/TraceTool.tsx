@@ -6,7 +6,8 @@ import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
 import { cleanRoad, lengthM, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
-import { TracedMark, naipUrl } from "./AerialCheck";
+import { TracedMark } from "./AerialCheck";
+import { naipUrl } from "../maps/naip";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
 // water taps a person can see. The reviewer clicks along a road; the trace is kept in this browser

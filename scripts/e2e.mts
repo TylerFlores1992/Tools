@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { traceProblems } from "../studio/campground-maps/trace.mjs";
+import { decisionProblems } from "../src/lab/camphawk/round2/maps/decisions.ts";
 
 const ROOT = join(import.meta.dirname, "..");
 const BASE = process.env.BASE_URL ?? "http://localhost:3110";
@@ -387,7 +388,8 @@ try {
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
     // The aerial photo is USGS's, live; here it's a stand-in so the check needs no network.
     await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
-    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps`;
+    // The sample (wave 0): the newest wave is the page's default, so ask for it.
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=0`;
     await p.goto(url);
     await signIn(p);
     await p.waitForURL(url);
@@ -401,7 +403,9 @@ try {
     await p.waitForURL(/show=review/);
     const cards = p.locator("main ul li h3 a");
     assert.equal(await cards.count(), count);
-    assert.equal(await p.locator("main ul li").filter({ hasText: "Needs a look" }).count(), count);
+    // Each card leads with its first look over the photo (shape and word), then the check.
+    assert.equal(await p.locator("main ul li").filter({ hasText: /^(Good|Usable, roads incomplete|Not usable as drawn|Can’t tell from the photo)/ }).count(), count);
+    assert.equal(await p.locator("main ul li").filter({ hasText: "Checks:" }).count(), count);
     // Open one: its checks, the aerial check (photo loaded, sites on top), and a decision.
     const name = (await cards.first().innerText()).trim();
     await cards.first().click();
@@ -428,6 +432,63 @@ try {
     await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Undo" }).click();
     await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve map" }).click();
     await p.getByRole("region", { name: "Your decision" }).getByText(/^Recorded with the maps, /).waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab site-map waves: the newest wave by default, filters in the URL, Show more, and decisions downloaded as a file the tests accept", async () => {
+    const manifest = JSON.parse(readFileSync(join(import.meta.dirname, "../public/private/camphawk/maps/waves/wave-01.json"), "utf8"));
+    const built = manifest.entries.filter((e: { error?: string }) => !e.error);
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    // No ?wave= opens the newest; its manifest is fetched, so wait for it.
+    await p.getByRole("heading", { level: 2, name: `The ${built.length} maps` }).waitFor();
+    assert.equal(await p.getByLabel("Wave").inputValue(), "1");
+    // 48 cards, then Show more reveals the rest.
+    const cards = p.locator("main ul li h3 a");
+    assert.equal(await cards.count(), Math.min(48, built.length));
+    if (built.length > 48) {
+      await p.getByRole("button", { name: /^Show \d+ more/ }).click();
+      assert.equal(await cards.count(), Math.min(96, built.length));
+    }
+    // Filter by agency: the URL keeps it, the count says how many, every card is that agency.
+    const agency = "Forest Service";
+    const want = built.filter((e: { agency: string }) => e.agency === agency).length;
+    await p.getByLabel("Agency").selectOption(agency);
+    await p.waitForURL(/agency=Forest\+Service/);
+    await p.getByText(`${want} of ${built.length} maps match.`).waitFor();
+    assert.equal(await p.locator("main ul li").filter({ hasText: "Forest Service" }).count(), Math.min(want, 48));
+    // A reload keeps the wave and the filter.
+    await p.reload();
+    await p.getByText(`${want} of ${built.length} maps match.`).waitFor();
+    assert.equal(await p.getByLabel("Agency").inputValue(), agency);
+    await p.getByRole("button", { name: "Clear the filter" }).click();
+    await p.getByText(`All ${built.length} maps.`).waitFor();
+    // Decide one map, then download the wave's decisions: the file is what decisions.test.mts accepts.
+    const first = (await cards.first().innerText()).trim();
+    await cards.first().click();
+    await p.getByRole("heading", { level: 1, name: first }).waitFor();
+    assert.match(p.url(), /wave=1&id=/);
+    const id = new URL(p.url()).searchParams.get("id");
+    const box = p.getByRole("complementary", { name: "Review" }).getByRole("region", { name: "Your decision" });
+    await box.getByRole("button", { name: "Keep it hidden" }).click();
+    await box.getByText("You kept it hidden").waitFor();
+    await p.getByRole("link", { name: "All maps" }).click();
+    await p.getByRole("heading", { level: 2, name: "Your decisions on this wave" }).waitFor();
+    const [dl] = await Promise.all([p.waitForEvent("download"), p.getByRole("button", { name: "Download decisions" }).click()]);
+    assert.equal(dl.suggestedFilename(), "wave-01.json");
+    const file = JSON.parse(readFileSync((await dl.path())!, "utf8"));
+    assert.ok(built.some((e: { id: string }) => e.id === id), `${id} is in wave 1`);
+    assert.equal(file.wave, 1);
+    assert.deepEqual(file.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]), [[id, "hidden"]]);
+    assert.deepEqual(decisionProblems(file, new Set(manifest.entries.map((e: { id: string }) => e.id))), []);
     assert.deepEqual(errors, []);
     await ctx.close();
   });
@@ -512,8 +573,8 @@ try {
     near(file.roads[0].coords[1], 0.5, 0.5);
     near(file.roads[0].coords[2], 0.7, 0.4);
     near(file.points[0].at, 0.45, 0.7);
-    // The queue says which maps have traces waiting in this browser.
-    await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps`);
+    // The queue says which maps have traces waiting in this browser (Dog Creek is in the sample).
+    await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=0`);
     await p.locator("main ul li").filter({ hasText: "Dog Creek" }).getByText("Your traces, not built yet").waitFor();
     assert.equal(await p.getByText("Your traces, not built yet").count(), 1);
     await p.goto(url);

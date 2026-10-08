@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { cx } from "@/components/cx";
 import { pct, type SiteMapData } from "../maps";
 import { segmentsOfPath } from "../maps/trace";
+import { naipUrl } from "../maps/naip";
 
 // A map laid over the aerial photo of the same ground, so a reviewer can see whether the sites sit
 // on real pads and the roads on real roads. The photo is USDA NAIP (public domain) from USGS The
@@ -11,15 +12,9 @@ import { segmentsOfPath } from "../maps/trace";
 // campground that lines up with the map's local metres to well under a pixel. Nothing from the
 // photo is ever drawn on a camper's map: it is evidence for the reviewer, not a layer.
 
-const NAIP = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage";
 
 const ROAD_WORD: Record<string, string> = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau" };
 
-export function naipUrl(bbox: [number, number, number, number], frame: { w: number; h: number }, width = 1400): string {
-  const height = Math.round((width * frame.h) / frame.w);
-  const q = new URLSearchParams({ bbox: bbox.join(","), bboxSR: "4326", imageSR: "3857", size: `${width},${height}`, format: "jpg", f: "image" });
-  return `${NAIP}?${q}`;
-}
 
 export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
   const [overlay, setOverlay] = useState(true);

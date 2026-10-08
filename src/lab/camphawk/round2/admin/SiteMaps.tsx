@@ -1,34 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, CircleCheck, Eye, EyeOff, PenLine, RotateCcw, Route } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CircleCheck, Download, Eye, EyeOff, PenLine, RotateCcw, Route } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { StatusMark } from "../../ui/StatusMark";
 import { SiteMap } from "../SiteMap";
 import type { SiteMapData } from "../maps";
 import { tidyCase } from "../maps/name";
-import { AGENCY_SHORT, REASON_LABEL, SAMPLE, VERDICT, reasonCounts, wilson, type Check as QaCheck, type SampleEntry, type Verdict } from "../maps/sample";
-import { FIRST_LOOK, FIRST_LOOK_WORD, type FirstLook } from "../maps/sample-review";
+import { AGENCY_SHORT, REASON_LABEL, VERDICT, reasonCounts, wilson, type Check as QaCheck, type Verdict } from "../maps/sample";
+import { FIRST_LOOK_WORD, type FirstLook } from "../maps/sample-review";
+import { LATEST_WAVE, LOOK_LEVEL, SAMPLE_WAVE, WAVES, loadWave, needsDecision, waveLabel, waveOf, type Looks, type Wave, type WaveEntry } from "../maps/waves";
 import { AdminFrame } from "./AdminFrame";
 import { MapThumb } from "./MapThumb";
 import { AerialCheck } from "./AerialCheck";
 import { TraceTool } from "./TraceTool";
 import { useSavedTraceIds, useTraceDraft } from "./useTraceDraft";
 import { withDraft } from "../maps/trace";
-import { RECORDED, type Decision } from "../maps/decisions";
+import { RECORDED, decisionsFileFor, suggestedDecision, type Decision } from "../maps/decisions";
 
 // Site maps: the queue where CampHawk's automatically drawn campground maps wait for a person
 // (a lab mock of a CampHawk admin section). The evidence is the interface: every verdict says
 // its reasons in words, every check shows its measurement against its limit, and every map can
-// be laid over the aerial photo of the same ground. Decisions recorded with the maps
-// (maps/decisions/) show for everyone; a click here is kept in this browser on top of them.
+// be laid over the aerial photo of the same ground. Maps come in waves (maps/waves.ts): the
+// random sample, then waves ordered by demand. Decisions recorded with the maps
+// (maps/decisions/) show for everyone; a click here is kept in this browser on top of them, and
+// "Download decisions" turns a wave's into the file a session records.
 
 const ORDER: Verdict[] = ["review", "not-drawn", "ready"];
 const FILTERS = [["all", "All"], ["review", "Needs a look"], ["not-drawn", "Can’t be drawn"], ["ready", "Ready"]] as const;
 type Filter = (typeof FILTERS)[number][0];
+/** How many cards show before "Show more": a wave is about 100. */
+const PAGE = 48;
+
 /* ---------- decisions: recorded with the maps, then this browser's clicks on top ---------- */
 
 const KEY = "lab-site-map-decisions";
@@ -73,47 +79,109 @@ function useDecisions(): [Record<string, Decision>, (id: string, d: Decision | n
 // The queue's order: maps that need a look first, and among them the ones a first look found fine
 // (a quick approval) ahead of the ones that need work.
 const LOOK_ORDER = ["good", "usable", "unsure", "hold"];
-const sorted = [...SAMPLE.entries].sort((a, b) =>
-  ORDER.indexOf(a.verdict) - ORDER.indexOf(b.verdict)
-  || LOOK_ORDER.indexOf(FIRST_LOOK[a.id]?.call ?? "hold") - LOOK_ORDER.indexOf(FIRST_LOOK[b.id]?.call ?? "hold")
+// First the maps that would go live unless someone decides (every check passed, the first look
+// held them or couldn't tell), then the rest that need a decision, then the rest; within each, by
+// verdict, then the first look, then name.
+const rank = (e: WaveEntry, looks: Looks | null) => !needsDecision(e, looks?.looks[e.id]?.call) ? 2 : e.verdict === "ready" ? 0 : 1;
+const sortEntries = (entries: WaveEntry[], looks: Looks | null) => [...entries].sort((a, b) =>
+  rank(a, looks) - rank(b, looks)
+  || ORDER.indexOf(a.verdict) - ORDER.indexOf(b.verdict)
+  || LOOK_ORDER.indexOf(looks?.looks[a.id]?.call ?? "hold") - LOOK_ORDER.indexOf(looks?.looks[b.id]?.call ?? "hold")
   || tidyCase(a.name).localeCompare(tidyCase(b.name)));
-const lookCount = (v: Verdict, call: FirstLook) => SAMPLE.entries.filter((e) => e.verdict === v && FIRST_LOOK[e.id]?.call === call).length;
 const fmt = (n: number) => n.toLocaleString("en-US");
 const dayOf = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** The wave a URL asks for: ?wave=, else the wave of ?id=, else the newest. */
+function waveFrom(raw: string | null, id: string | null): number {
+  const asked = raw !== null && /^\d+$/.test(raw) ? Number(raw) : null;
+  if (asked !== null && WAVES.some((w) => w.wave === asked)) return asked;
+  return (id ? waveOf(id) : null) ?? LATEST_WAVE;
+}
+
+function useWave(n: number): { wave: Wave | null; state: "loading" | "ready" | "error" } {
+  const [got, setGot] = useState<{ n: number; wave: Wave | null } | null>(null);
+  useEffect(() => {
+    if (n === 0) return;
+    let live = true;
+    loadWave(n).then((w) => w, () => null).then((w) => { if (live) setGot({ n, wave: w }); });
+    return () => { live = false; };
+  }, [n]);
+  if (n === 0) return { wave: SAMPLE_WAVE, state: "ready" };
+  if (!got || got.n !== n) return { wave: null, state: "loading" };
+  return got.wave ? { wave: got.wave, state: "ready" } : { wave: null, state: "error" };
+}
 
 export function SiteMaps() {
   const params = useSearchParams();
   const id = params.get("id");
-  const entry = id ? SAMPLE.entries.find((e) => e.id === id) ?? null : null;
+  const n = waveFrom(params.get("wave"), id);
   const home = usePathname() ?? "";
+  const { wave, state } = useWave(n);
   return (
     <AdminFrame page="Site maps (admin)" home={home}>
-      {id ? <Detail entry={entry} id={id} home={home} /> : <Queue home={home} />}
+      {wave ? (id ? <Detail wave={wave} id={id} home={home} /> : <Queue wave={wave} home={home} />)
+        : <p role={state === "error" ? "alert" : "status"} className="rounded-ch-card border border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">{state === "error" ? `${waveLabel(n)} didn’t load. Reload the page to try again.` : `Loading ${waveLabel(n).toLowerCase()}…`}</p>}
     </AdminFrame>
   );
 }
 
 /* ---------- the queue ---------- */
 
-function Queue({ home }: { home: string }) {
+const LOOK_FILTERS: [string, string][] = [["", "Any"], ["good", "Good"], ["usable", "Roads incomplete"], ["hold", "Not usable"], ["unsure", "Can’t tell"], ["none", "Not looked at yet"]];
+const DECIDED_FILTERS: [string, string][] = [["", "Any"], ["no", "Not decided"], ["yes", "Decided"]];
+const field = "min-h-11 w-full min-w-0 cursor-pointer rounded-ch-input border border-ch-line bg-ch-card px-3 text-[14px] text-ch-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green";
+
+function Queue({ wave, home }: { wave: Wave; home: string }) {
   const params = useSearchParams();
+  const n = wave.info.wave;
   const raw = params.get("show");
   const filter: Filter = FILTERS.some(([v]) => v === raw) ? (raw as Filter) : "all";
-  // The native History API syncs with useSearchParams (Next's SPA guide): the filter changes at
-  // once, with no server round trip, and a filter is not a new page.
-  const setFilter = (f: Filter) => window.history.replaceState(null, "", f === "all" ? home : `${home}?show=${f}`);
+  const look = params.get("look") ?? "", agency = params.get("agency") ?? "", state = params.get("state") ?? "", decidedF = params.get("decided") ?? "", tracedF = params.get("traced") === "1";
+  // The native History API syncs with useSearchParams (Next's SPA guide): a filter changes at
+  // once, with no server round trip, and a filter is not a new page. The wave stays in the URL.
+  const setParam = (changes: Record<string, string | null>) => {
+    const q = new URLSearchParams(params.toString());
+    q.delete("id");
+    q.set("wave", String(n));
+    for (const [k, v] of Object.entries(changes)) { if (v) q.set(k, v); else q.delete(k); }
+    window.history.replaceState(null, "", `${home}?${q}`);
+  };
   const [decisions] = useDecisions();
   const localTraces = useSavedTraceIds();
-  const { summary, population, entries } = SAMPLE;
-  const n = entries.length;
-  const [lo, hi] = wilson(summary.ready, n);
+  const { entries, population, looks, info, random } = wave;
+  const N = entries.length;
+  const summary = { ready: entries.filter((e) => e.verdict === "ready").length, review: entries.filter((e) => e.verdict === "review").length, notDrawn: entries.filter((e) => e.verdict === "not-drawn").length };
+  const [lo, hi] = wilson(summary.ready, N);
   const multi = population.multiSite.campgrounds;
-  const shown = sorted.filter((e) => filter === "all" || e.verdict === filter);
+  const sorted = useMemo(() => sortEntries(entries, looks), [entries, looks]);
+  const hasTraces = (e: WaveEntry) => e.reasons.some((r) => r.code === "traced") || localTraces.has(e.id);
+  const shown = sorted.filter((e) =>
+    (filter === "all" || e.verdict === filter)
+    && (!look || (look === "none" ? !looks?.looks[e.id] : looks?.looks[e.id]?.call === look))
+    && (!agency || e.agency === agency)
+    && (!state || e.state === state)
+    && (!tracedF || hasTraces(e))
+    && (!decidedF || (decidedF === "yes") === Boolean(decisions[e.id])));
+  const [limit, setLimit] = useState(PAGE);
+  const filterKey = [n, filter, look, agency, state, decidedF, tracedF].join("|");
+  const [lastKey, setLastKey] = useState(filterKey);
+  if (lastKey !== filterKey) { setLastKey(filterKey); setLimit(PAGE); }
   const reasons = reasonCounts(entries);
-  const notReady = n - summary.ready;
-  const decided = Object.keys(decisions).filter((k) => entries.some((e) => e.id === k && e.verdict !== "ready")).length;
+  const notReady = N - summary.ready;
+  const decidedHere = entries.filter((e) => decisions[e.id]).length;
+  const decided = entries.filter((e) => e.verdict !== "ready" && decisions[e.id]).length;
   // Maps held for nothing but their traced roads: one approval each.
   const onlyTraced = entries.filter((e) => e.verdict === "review" && e.reasons.every((r) => r.code === "traced")).length;
+  const agencies = [...new Set(entries.map((e) => e.agency))].sort();
+  const states = [...new Set(entries.map((e) => e.state).filter(Boolean))].sort();
+  const callCount = (call: FirstLook) => entries.filter((e) => looks?.looks[e.id]?.call === call).length;
+  const usable = callCount("good") + callCount("usable");
+  const toDecide = entries.filter((e) => needsDecision(e, looks?.looks[e.id]?.call));
+  const decidedOfThose = toDecide.filter((e) => decisions[e.id]).length;
+  const flaggedReady = toDecide.filter((e) => e.verdict === "ready").length;
+  const lookCount = (v: Verdict, call: FirstLook) => entries.filter((e) => e.verdict === v && looks?.looks[e.id]?.call === call).length;
+  const extraFilters = [look, agency, state, decidedF, tracedF ? "1" : ""].filter(Boolean).length;
 
   return (
     <>
@@ -121,21 +189,52 @@ function Queue({ home }: { home: string }) {
         <div className="min-w-0">
           <h1 className="text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">Site maps</h1>
           <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">
-            {n} Recreation.gov campgrounds, drawn at random from the {fmt(multi)} with two or more sites, built from public data and checked automatically. A map goes live on its own only when every check passes; the rest wait here for a person and the aerial photo, where roads no public source has can be traced.
+            {random
+              ? <>{N} Recreation.gov campgrounds, drawn at random from the {fmt(multi)} with two or more sites, built from public data and checked automatically.</>
+              : <>{N} Recreation.gov campgrounds picked by CampHawk demand: the ones its users watch, then the most-booked of each agency (Recreation.gov’s overnight reservations, fiscal 2025). Built from public data and checked automatically.</>}
+            {" "}A map goes live on its own only when every check passes; the rest wait here for a person and the aerial photo, where roads no public source has can be traced.
           </p>
         </div>
+        {WAVES.length > 1 && (
+          <label className="grid shrink-0 gap-1 text-[13px] font-bold text-ch-ink-2">
+            Wave
+            <select value={n} onChange={(ev) => { const q = new URLSearchParams({ wave: ev.target.value }); window.history.replaceState(null, "", `${home}?${q}`); }} className={cx(field, "sm:w-60")}>
+              {WAVES.map((w) => <option key={w.wave} value={w.wave}>{`${waveLabel(w.wave)}: ${w.count} campgrounds`}</option>)}
+            </select>
+          </label>
+        )}
       </div>
 
       {/* The headline, then the other two answers, then the campgrounds that need no map. */}
       <section aria-label="Results" className="grid grid-cols-2 gap-3 lg:grid-cols-[1.35fr_1fr_1fr_1.2fr]">
         <div className="col-span-2 rounded-ch-card bg-ch-forest p-5 text-ch-white shadow-ch-card lg:col-span-1">
-          <p className="flex items-center gap-1.5 text-[13.5px] font-bold text-ch-white/85"><CircleCheck aria-hidden="true" className="size-4" />Ready on their own</p>
-          <p className="mt-2 font-ch-display text-[40px] font-extrabold leading-none tabular-nums">{summary.ready}<span className="text-[22px] font-bold text-ch-white/80"> of {n}</span></p>
-          <p className="mt-2.5 text-[14px] font-bold leading-snug">{[`${lookCount("ready", "good")} good`, `${lookCount("ready", "usable")} with roads missing`, lookCount("ready", "unsure") && `${lookCount("ready", "unsure")} unclear`].filter(Boolean).join(" · ")}</p>
-          <p className="mt-1 text-[13px] leading-snug text-ch-white/80">On the aerial photo. Across all {fmt(multi)}: likely {lo}–{hi}%.</p>
+          {looks && !random ? (
+            <>
+              {/* A demand-ordered wave: what the photo says is the headline; the check is the detail. */}
+              <p className="flex items-center gap-1.5 text-[13.5px] font-bold text-ch-white/85"><CircleCheck aria-hidden="true" className="size-4" />Usable after one look</p>
+              <p className="mt-2 font-ch-display text-[40px] font-extrabold leading-none tabular-nums">{usable}<span className="text-[22px] font-bold text-ch-white/80"> of {N}</span></p>
+              <p className="mt-2.5 text-[14px] font-bold leading-snug">{[`${callCount("good")} good`, `${callCount("usable")} with roads missing`, `${callCount("hold")} not usable`, callCount("unsure") && `${callCount("unsure")} can’t tell`].filter(Boolean).join(" · ")}</p>
+              <p className="mt-1 text-[13px] leading-snug text-ch-white/80">On the aerial photo. {summary.ready} passed every check on their own. Picked by demand, not at random: these numbers describe this wave only.</p>
+            </>
+          ) : (
+            <>
+              <p className="flex items-center gap-1.5 text-[13.5px] font-bold text-ch-white/85"><CircleCheck aria-hidden="true" className="size-4" />Ready on their own</p>
+              <p className="mt-2 font-ch-display text-[40px] font-extrabold leading-none tabular-nums">{summary.ready}<span className="text-[22px] font-bold text-ch-white/80"> of {N}</span></p>
+              {looks && <p className="mt-2.5 text-[14px] font-bold leading-snug">{[`${lookCount("ready", "good")} good`, `${lookCount("ready", "usable")} with roads missing`, lookCount("ready", "unsure") && `${lookCount("ready", "unsure")} unclear`, lookCount("ready", "hold") && `${lookCount("ready", "hold")} not usable`].filter(Boolean).join(" · ")}</p>}
+              <p className="mt-1 text-[13px] leading-snug text-ch-white/80">
+                {random ? <>On the aerial photo. Across all {fmt(multi)}: likely {lo}–{hi}%.</> : <>Picked by demand, not at random: these numbers describe this wave only.</>}
+              </p>
+            </>
+          )}
         </div>
-        <Tile verdict="review" count={summary.review} n={n} note={[onlyTraced && `${onlyTraced} only need their traced roads approved.`, decided ? `${decided} decided so far.` : "Each waits for a person and the aerial photo."].filter(Boolean).join(" ")} />
-        <Tile verdict="not-drawn" count={summary.notDrawn} n={n} note="Shown as “not drawn yet” on the campground page" />
+        {looks ? (
+          <div className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5">
+            <StatusMark level="warn" label="To decide" className="text-[13.5px]" />
+            <p className="mt-2 font-ch-display text-[32px] font-extrabold leading-none tabular-nums text-ch-ink">{toDecide.length}<span className="text-[18px] font-bold text-ch-muted"> of {N}</span></p>
+            <p className="mt-2 text-[14px] leading-snug text-ch-ink-2">{[`${summary.review} the check held${flaggedReady ? `, and ${flaggedReady} the first look held though every check passed (listed first).` : "."}`, onlyTraced && `${onlyTraced} only need their traced roads approved.`, `${decidedOfThose} decided.`].filter(Boolean).join(" ")}</p>
+          </div>
+        ) : <Tile verdict="review" count={summary.review} n={N} note={[onlyTraced && `${onlyTraced} only need their traced roads approved.`, decided ? `${decided} decided so far.` : "Each waits for a person and the aerial photo."].filter(Boolean).join(" ")} />}
+        <Tile verdict="not-drawn" count={summary.notDrawn} n={N} note="Shown as “not drawn yet” on the campground page" />
         <div className="col-span-2 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:p-5 lg:col-span-1">
           <p className="text-[13.5px] font-bold text-ch-ink-2">No map needed</p>
           <p className="mt-2 font-ch-display text-[32px] font-extrabold leading-none tabular-nums text-ch-ink">{fmt(population.singleUnit.campgrounds)}</p>
@@ -144,14 +243,14 @@ function Queue({ home }: { home: string }) {
       </section>
 
       <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">The {n} maps</h2>
+        <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">The {N} maps</h2>
         <div role="group" aria-label="Show" className="flex flex-wrap gap-1.5">
           {FILTERS.map(([v, label]) => {
-            const count = v === "all" ? n : entries.filter((e) => e.verdict === v).length;
+            const count = v === "all" ? N : entries.filter((e) => e.verdict === v).length;
             if (!count && filter !== v) return null; // a filter that shows nothing isn't offered
             const on = filter === v;
             return (
-              <button key={v} type="button" aria-pressed={on} onClick={() => setFilter(v)}
+              <button key={v} type="button" aria-pressed={on} onClick={() => setParam({ show: v === "all" ? null : v })}
                 className={cx("inline-flex min-h-11 items-center gap-1.5 rounded-ch-chip border px-3.5 text-[13.5px] font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green", on ? "border-ch-ink bg-ch-ink text-ch-white" : "border-ch-line bg-ch-card text-ch-ink-2 hover:border-ch-muted")}>
                 {label}<span className={cx("tabular-nums", on ? "text-ch-white/80" : "text-ch-muted")}>{count}</span>
               </button>
@@ -160,17 +259,57 @@ function Queue({ home }: { home: string }) {
         </div>
       </div>
 
+      {/* Narrow the wave down; every choice is in the URL, so a filtered list can be sent as a link. */}
+      <div role="group" aria-label="Narrow the list" className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 rounded-ch-card border border-ch-line bg-ch-card p-3 shadow-ch-card sm:grid-cols-3 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
+        <Select label="First look" value={look} options={LOOK_FILTERS} onChange={(v) => setParam({ look: v })} />
+        <Select label="Agency" value={agency} options={[["", "Any"], ...agencies.map((a) => [a, AGENCY_SHORT[a] ?? a] as [string, string])]} onChange={(v) => setParam({ agency: v })} />
+        <Select label="State" value={state} options={[["", "Any"], ...states.map((s) => [s, s] as [string, string])]} onChange={(v) => setParam({ state: v })} />
+        <Select label="Decision" value={decidedF} options={DECIDED_FILTERS} onChange={(v) => setParam({ decided: v })} />
+        <label className="col-span-2 flex min-h-11 cursor-pointer items-center gap-2 text-[14px] font-bold text-ch-ink sm:col-span-1">
+          <input type="checkbox" checked={tracedF} onChange={(ev) => setParam({ traced: ev.target.checked ? "1" : null })} className="size-5 accent-ch-ink" />
+          With traced roads
+        </label>
+      </div>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[13.5px] text-ch-ink-2">
+        <p role="status">{shown.length === N ? `All ${N} maps.` : `${shown.length} of ${N} maps match.`}{looks ? ` ${decidedOfThose} of the ${toDecide.length} to decide are decided${decidedHere ? "; download them below the list when you’re done" : ""}.` : ""}</p>
+        {extraFilters > 0 && <button type="button" onClick={() => setParam({ look: null, agency: null, state: null, decided: null, traced: null })} className="inline-flex min-h-11 items-center font-bold text-ch-ink underline underline-offset-2">Clear {extraFilters === 1 ? "the filter" : `${extraFilters} filters`}</button>}
+      </div>
+
       {shown.length ? (
         <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
-          {shown.map((e) => <Card key={e.id} entry={e} home={home} decision={decisions[e.id]} traced={localTraces.has(e.id)} />)}
+          {shown.slice(0, limit).map((e) => <Card key={e.id} entry={e} wave={n} looks={looks} home={home} decision={decisions[e.id]} traced={localTraces.has(e.id)} />)}
         </ul>
       ) : (
-        <p className="mt-3 rounded-ch-card border border-dashed border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">No maps in this group.</p>
+        <p className="mt-3 rounded-ch-card border border-dashed border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">No maps match.</p>
+      )}
+      {shown.length > limit && (
+        <div className="mt-4 flex justify-center">
+          <button type="button" onClick={() => setLimit((l) => l + PAGE)} className={buttonClasses({ variant: "quiet", size: "sm" })}>Show {Math.min(PAGE, shown.length - limit)} more ({shown.length - limit} not shown)</button>
+        </div>
+      )}
+
+      <DownloadDecisions wave={n} ids={[...entries.map((e) => e.id), ...wave.failed.map((f) => f.id)]} decisions={decisions} count={decidedHere} />
+
+      {wave.failed.length > 0 && (
+        <section aria-labelledby="failed-h" className="mt-6 rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
+          <div className="border-b border-ch-line px-4 py-3 sm:px-5">
+            <h2 id="failed-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Didn’t build ({wave.failed.length})</h2>
+            <p className="text-[13.5px] text-ch-muted">A source didn’t answer. These show “not drawn yet” until a rebuild works.</p>
+          </div>
+          <ol className="divide-y divide-ch-line">
+            {wave.failed.map((f) => (
+              <li key={f.id} className="px-4 py-3 sm:px-5">
+                <p className="text-[14.5px] font-bold text-ch-ink">{tidyCase(f.name)} <span className="font-normal text-ch-muted">· {[AGENCY_SHORT[f.agency] ?? f.agency, f.state].filter(Boolean).join(" · ")}</span></p>
+                <p className="mt-0.5 break-words text-[13px] text-ch-ink-2">{f.error}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
       )}
 
       <h2 className="mt-10 font-ch-display text-[20px] font-bold text-ch-ink">How the check did</h2>
       <div className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:items-start">
-      <CrossCheck />
+      <CrossCheck entries={entries} looks={looks} />
       {notReady > 0 && (
         <section aria-labelledby="why-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
           <div className="border-b border-ch-line px-4 py-3 sm:px-5">
@@ -193,9 +332,48 @@ function Queue({ home }: { home: string }) {
       </div>
 
       <p className="mt-8 max-w-[80ch] text-[13px] leading-relaxed text-ch-ink-2">
-        Drawn {SAMPLE.built} from the {SAMPLE.drawn.export} (seed {SAMPLE.drawn.seed}, stratified by agency). The range is a 95% interval for {n} draws. Build: <code className="font-mono text-[12px]">studio/campground-maps/build-sample.mjs</code>.
+        {random
+          ? <>Drawn {info.built} from the {info.export} ({info.order.toLowerCase()}). The range is a 95% interval for {N} draws. Build: <code className="font-mono text-[12px]">studio/campground-maps/build-sample.mjs</code>.</>
+          : <>Built {info.built} from the {info.export}. Order: {info.order}. Build: <code className="font-mono text-[12px]">studio/campground-maps/build-wave.mjs</code>.</>}
       </p>
     </>
+  );
+}
+
+function Select({ label, value, options, onChange }: { label: string; value: string; options: [string, string][]; onChange: (v: string) => void }) {
+  return (
+    <label className="grid min-w-0 gap-1 text-[13px] font-bold text-ch-ink-2">
+      {label}
+      <select value={value} onChange={(ev) => onChange(ev.target.value)} className={field}>
+        {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    </label>
+  );
+}
+
+/** Saves this wave's decisions as the file a session records with the maps (maps/decisions/). */
+function DownloadDecisions({ wave, ids, decisions, count }: { wave: number; ids: string[]; decisions: Record<string, Decision>; count: number }) {
+  const [problems, setProblems] = useState<string[]>([]);
+  if (!count) return null;
+  const save = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const { file, problems: p } = decisionsFileFor(wave, ids, decisions, today);
+    setProblems(p);
+    if (p.length) return;
+    const url = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1) + "\n"], { type: "application/json" }));
+    const a = Object.assign(document.createElement("a"), { href: url, download: `wave-${pad2(wave)}.json` });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  return (
+    <section aria-labelledby="dl-h" className="mt-6 flex flex-col gap-3 rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card sm:flex-row sm:items-center sm:justify-between sm:p-5">
+      <div className="min-w-0">
+        <h2 id="dl-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Your decisions on this wave</h2>
+        <p className="text-[14px] leading-snug text-ch-ink-2">{count} decided. Save them as a file and send it to the session, which records them with the maps.</p>
+        {problems.length > 0 && <p role="alert" className="mt-1 text-[13.5px] font-bold text-ch-alert-deep">The file wasn’t saved: {problems.join("; ")}.</p>}
+      </div>
+      <button type="button" onClick={save} className={buttonClasses({ variant: "ink", size: "sm", className: "shrink-0" })}><Download aria-hidden="true" className="size-4" />Download decisions</button>
+    </section>
   );
 }
 
@@ -204,14 +382,24 @@ const LOOK_HEAD: Record<FirstLook, string> = { good: "Good", usable: "Roads inco
 
 /** The automatic verdicts against a first look over the aerial photo: where the check was right,
     too strict (held a good map), or too loose (passed a map that isn't usable). */
-function CrossCheck() {
+function CrossCheck({ entries, looks }: { entries: WaveEntry[]; looks: Looks | null }) {
+  if (!looks) {
+    return (
+      <section aria-labelledby="cross-h" className="rounded-ch-card border border-ch-line bg-ch-card px-4 py-3 shadow-ch-card sm:px-5">
+        <h3 id="cross-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Did the check get it right?</h3>
+        <p className="mt-1 text-[14px] text-ch-ink-2">Nobody has looked at this wave over the aerial photo yet, so there’s nothing to compare the check with.</p>
+      </section>
+    );
+  }
+  const call = (id: string) => looks.looks[id]?.call;
   const rows = (["ready", "review"] as Verdict[]).map((v) => {
-    const es = SAMPLE.entries.filter((e) => e.verdict === v);
-    return { v, n: es.length, counts: LOOKS.map((l) => es.filter((e) => FIRST_LOOK[e.id]?.call === l).length) };
+    const es = entries.filter((e) => e.verdict === v);
+    return { v, n: es.length, counts: LOOKS.map((l) => es.filter((e) => call(e.id) === l).length) };
   });
   const passedBad = rows[0].counts[2];
+  const passedUnsure = rows[0].counts[3];
   // Held maps a first look found usable: some only because roads were traced from the photo.
-  const held = SAMPLE.entries.filter((e) => e.verdict === "review" && ["good", "usable"].includes(FIRST_LOOK[e.id]?.call ?? ""));
+  const held = entries.filter((e) => e.verdict === "review" && ["good", "usable"].includes(call(e.id) ?? ""));
   const heldTraced = held.filter((e) => e.reasons.some((r) => r.code === "traced")).length;
   return (
     <section aria-labelledby="cross-h" className="rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card">
@@ -238,7 +426,7 @@ function CrossCheck() {
         </table>
       </div>
       <p className="border-t border-ch-line px-4 py-3 text-[14px] leading-snug text-ch-ink-2 sm:px-5">
-        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {held.length} of the {rows[1].n} it held are usable on the photo{heldTraced ? `, ${heldTraced} of them with roads traced from it` : ""}, which makes <strong className="font-bold text-ch-ink">{rows[0].n - passedBad + held.length} of {SAMPLE.entries.length} ready to go live after one look</strong>.
+        {passedBad === 0 ? "No map it passed looked unusable." : `${passedBad} map${passedBad === 1 ? "" : "s"} it passed looked unusable.`} {rows[0].counts[1]} of the {rows[0].n} it passed are missing some roads. {held.length} of the {rows[1].n} it held are usable on the photo{heldTraced ? `, ${heldTraced} of them with roads traced from it` : ""}, which makes <strong className="font-bold text-ch-ink">{rows[0].n - passedBad + held.length} of {entries.length} ready to go live after one look</strong>{passedUnsure ? `, counting the ${passedUnsure} it passed that the photo can’t settle` : ""}.
       </p>
     </section>
   );
@@ -255,9 +443,10 @@ function Tile({ verdict, count, n, note }: { verdict: Verdict; count: number; n:
   );
 }
 
-function Card({ entry: e, home, decision, traced }: { entry: SampleEntry; home: string; decision?: Decision; traced?: boolean }) {
+function Card({ entry: e, wave, looks, home, decision, traced }: { entry: WaveEntry; wave: number; looks: Looks | null; home: string; decision?: Decision; traced?: boolean }) {
   const v = VERDICT[e.verdict];
   const name = tidyCase(e.name);
+  const look = looks?.looks[e.id];
   return (
     <li className="group relative flex overflow-hidden rounded-ch-card border border-ch-line bg-ch-card shadow-ch-card transition-colors focus-within:border-ch-ink hover:border-ch-muted sm:flex-col">
       {/* The box keeps its shape whatever the campground's (square in a phone's row, 4:3 on a
@@ -266,16 +455,16 @@ function Card({ entry: e, home, decision, traced }: { entry: SampleEntry; home: 
         <div className="absolute inset-1.5 sm:inset-2"><MapThumb id={e.id} thumb={e.thumb} label={`${name}: ${e.metrics.placed} sites`} /></div>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 p-3 sm:gap-1.5 sm:p-4">
-        <StatusMark level={v.level} label={v.word} className="text-[13px]" />
+        {look ? <StatusMark level={LOOK_LEVEL[look.call]} label={FIRST_LOOK_WORD[look.call]} className="whitespace-normal text-[13px]" /> : <StatusMark level={v.level} label={v.word} className="text-[13px]" />}
         <h3 className="font-ch-display text-[17px] font-bold leading-snug text-ch-ink">
-          <Link href={`${home}?id=${e.id}`} className="after:absolute after:inset-0 focus-visible:outline-none group-focus-within:underline">{name}</Link>
+          <Link href={`${home}?wave=${wave}&id=${e.id}`} className="after:absolute after:inset-0 focus-visible:outline-none group-focus-within:underline">{name}</Link>
         </h3>
         <p className="text-[13.5px] text-ch-muted">{[AGENCY_SHORT[e.agency] ?? e.agency, e.state, `${e.metrics.sites} sites`].filter(Boolean).join(" · ")}</p>
-        {e.reasons.length === 0 && <p className="text-[13.5px] leading-snug text-ch-ink-2">All {e.checks.length} checks passed.</p>}
-        {e.reasons.length > 0 && (
-          <p className="text-[13.5px] leading-snug text-ch-ink-2">{e.reasons[0].text}{e.reasons.length > 1 ? `, and ${e.reasons.length - 1} more reason${e.reasons.length > 2 ? "s" : ""}` : ""}.</p>
-        )}
-        {FIRST_LOOK[e.id] && <p className="mt-auto pt-1 text-[13px] text-ch-muted">First look: <span className="font-bold text-ch-ink-2">{FIRST_LOOK_WORD[FIRST_LOOK[e.id].call]}</span></p>}
+        {look && <p className="line-clamp-3 text-[13.5px] leading-snug text-ch-ink-2">{look.note}</p>}
+        <p className={cx("text-[13px] leading-snug", look ? "mt-auto pt-1 text-ch-muted" : "text-ch-ink-2")}>
+          {look && <span className="font-bold text-ch-ink-2">Checks: </span>}
+          {e.reasons.length === 0 ? `${look ? "all" : "All"} ${e.checks.length} ${look ? "passed" : "checks passed"}.` : `${e.reasons[0].text}${e.reasons.length > 1 ? `, and ${e.reasons.length - 1} more reason${e.reasons.length > 2 ? "s" : ""}` : ""}.`}
+        </p>
         {decision && <DecisionNote decision={decision} />}
         {traced && <p className="flex items-center gap-1.5 text-[13px] font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-4" />Your traces, not built yet</p>}
       </div>
@@ -314,7 +503,7 @@ function useMap(id: string): { map: SiteMapData | null; state: "loading" | "read
   return got.map ? { map: got.map, state: "ready" } : { map: null, state: "error" };
 }
 
-function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; home: string }) {
+function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
   const [decisions, decide] = useDecisions();
   const { map, state } = useMap(id);
   const [draft, setDraft, changed, discard] = useTraceDraft(id, map);
@@ -323,19 +512,25 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
   const [tool, setTool] = useState<"check" | "trace">(params.get("tool") === "trace" ? "trace" : "check");
   // What campers would see with the reviewer's traces in place (the same map until they trace).
   const shown = map?.bbox ? withDraft(map, draft) : map;
-  const back = <Link href={home} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink-2 underline-offset-2 hover:underline"><ArrowLeft aria-hidden="true" className="size-4" />All maps</Link>;
-  if (!entry) return <>{back}<p className="mt-4 text-[15px] text-ch-ink-2">There’s no map “{id}” in this sample.</p></>;
+  const n = wave.info.wave;
+  const sorted = useMemo(() => sortEntries(wave.entries, wave.looks), [wave]);
+  const back = <Link href={`${home}?wave=${n}`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink-2 underline-offset-2 hover:underline"><ArrowLeft aria-hidden="true" className="size-4" />All maps</Link>;
+  const entry = wave.entries.find((e) => e.id === id) ?? null;
+  const failed = wave.failed.find((f) => f.id === id);
+  if (failed) return <>{back}<h1 className="mt-2 font-ch-display text-ch-title font-bold text-ch-ink">{tidyCase(failed.name)}</h1><p className="mt-2 text-[15px] text-ch-ink-2">This map didn’t build: {failed.error}</p></>;
+  if (!entry) return <>{back}<p className="mt-4 text-[15px] text-ch-ink-2">There’s no map “{id}” in {n === 0 ? "the sample" : `wave ${n}`}.</p></>;
 
   const v = VERDICT[entry.verdict];
   const name = tidyCase(entry.name);
   const decision = decisions[entry.id];
   const at = sorted.findIndex((e) => e.id === entry.id);
-  const nextEntry = [...sorted.slice(at + 1), ...sorted.slice(0, at)].find((e) => e.verdict !== "ready" && !decisions[e.id]);
-  const nextHref = nextEntry ? `${home}?id=${nextEntry.id}` : null;
-  const look = FIRST_LOOK[entry.id];
+  const nextEntry = [...sorted.slice(at + 1), ...sorted.slice(0, at)].find((e) => needsDecision(e, wave.looks?.looks[e.id]?.call) && !decisions[e.id]);
+  const nextHref = nextEntry ? `${home}?wave=${n}&id=${nextEntry.id}` : null;
+  const look = wave.looks?.looks[entry.id];
+  const lookNote = look && wave.looks ? <FirstLookNote look={look} by={wave.looks.by} on={wave.looks.on} /> : null;
   // "Trace the missing roads" opens the tool and brings the photo into view.
   const openTrace = () => { setTool("trace"); requestAnimationFrame(() => document.getElementById("aerial-h")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" })); };
-  const decisionBox = <DecisionBox entry={entry} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} traceChanged={changed} />;
+  const decisionBox = <DecisionBox entry={entry} look={look?.call} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} traceChanged={changed} />;
 
   return (
     <>
@@ -350,17 +545,18 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
       <div className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <StatusMark level={v.level} label={v.word} className="text-[14px]" />
+            {look ? <StatusMark level={LOOK_LEVEL[look.call]} label={`First look: ${FIRST_LOOK_WORD[look.call]}`} className="whitespace-normal text-[14px]" /> : <StatusMark level={v.level} label={v.word} className="text-[14px]" />}
             {changed && <span className="inline-flex items-center gap-1 text-[13.5px] font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-4" />your traces aren’t built yet</span>}
           </p>
           <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">{name}</h1>
-          <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, `${entry.metrics.sites} sites`].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, `${entry.metrics.sites} sites`, waveLabel(n)].filter(Boolean).join(" · ")}</p>
+          {look && <p className="mt-2 flex flex-wrap items-center gap-x-2 text-[14px] text-ch-ink-2"><span className="font-bold">The automatic check:</span><StatusMark level={v.level} label={entry.verdict === "ready" ? `all ${entry.checks.length} passed` : v.word} className="text-[14px]" /></p>}
           {entry.reasons.length > 0 && (
             <ul className="mt-3 grid list-disc gap-1 pl-5 text-[15px] text-ch-ink marker:text-ch-muted">
               {entry.reasons.map((r) => <li key={r.code}>{r.text}</li>)}
             </ul>
           )}
-          {look && <div className="mt-4 lg:hidden"><FirstLookNote id={entry.id} /></div>}
+          {lookNote && <div className="mt-4 lg:hidden">{lookNote}</div>}
 
           <Panel id="aerial-h" title="Against the aerial photo" className="mt-5">
             {state === "ready" && map && shown ? (
@@ -397,7 +593,7 @@ function Detail({ entry, id, home }: { entry: SampleEntry | null; id: string; ho
         </div>
 
         <aside aria-label="Review" className="hidden gap-4 lg:sticky lg:top-6 lg:grid">
-          {look && <FirstLookNote id={entry.id} />}
+          {lookNote}
           <FailingChecks checks={entry.checks} />
           {decisionBox}
         </aside>
@@ -425,30 +621,29 @@ function FailingChecks({ checks }: { checks: QaCheck[] }) {
   );
 }
 
-function FirstLookNote({ id }: { id: string }) {
-  const look = FIRST_LOOK[id];
+function FirstLookNote({ look, by, on }: { look: { call: FirstLook; note: string }; by: string; on: string }) {
   return (
     <div className="rounded-ch-card bg-ch-shell px-4 py-3.5">
       <p className="text-[13px] font-bold text-ch-ink-2">First look over the aerial photo</p>
-      <p className="mt-1 text-[15px] leading-snug text-ch-ink"><strong className="font-bold">{FIRST_LOOK_WORD[look.call]}.</strong> {look.note}</p>
-      <p className="mt-1.5 text-[13px] leading-snug text-ch-ink-2">By the session that built the sample, Oct 7, 2026. One look; your decision is separate.</p>
+      <p className="mt-1 text-[15px] leading-snug text-ch-ink"><span className="sr-only">{FIRST_LOOK_WORD[look.call]}. </span>{look.note}</p>
+      <p className="mt-1.5 text-[13px] leading-snug text-ch-ink-2">By {by}, {dayOf(on)}. One look; your decision is separate.</p>
     </div>
   );
 }
 
 /** What a reviewer does with a map. The firm (ink) button follows the evidence: approve when the
     first look found nothing wrong, otherwise the outcome the first look points to. */
-function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged }: { entry: SampleEntry; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null; onTrace?: () => void; traceChanged?: boolean }) {
+function DecisionBox({ entry, look, decision, decide, nextHref, onTrace, traceChanged }: { entry: WaveEntry; look?: FirstLook; decision?: Decision; decide: (id: string, d: Decision | null) => void; nextHref: string | null; onTrace?: () => void; traceChanged?: boolean }) {
   const traced = entry.reasons.some((r) => r.code === "traced");
-  const look = FIRST_LOOK[entry.id]?.call;
-  const roadsMissing = entry.reasons.some((r) => r.code === "far-from-roads" || r.code === "no-roads");
-  const primary: Decision = look === "hold" ? (roadsMissing && !entry.reasons.some((r) => r.code === "spread") ? "roads" : "hidden") : "approved";
+  const primary = suggestedDecision(entry.reasons, look);
   const OPTIONS: { d: Decision; label: string; Icon: typeof Check; show: boolean }[] = [
     { d: "approved", label: "Approve map", Icon: Check, show: entry.verdict !== "not-drawn" },
-    { d: "roads", label: "Needs roads added", Icon: Route, show: entry.verdict !== "ready" },
+    { d: "roads", label: "Needs roads added", Icon: Route, show: entry.verdict !== "not-drawn" },
     { d: "hidden", label: "Keep it hidden", Icon: EyeOff, show: true },
   ];
-  const shown = OPTIONS.filter((o) => o.show).sort((a, b) => Number(b.d === primary) - Number(a.d === primary));
+  // A fixed order on every map, so a hundred decisions don't become a hundred mis-clicks; the
+  // suggestion is filled and says so.
+  const shown = OPTIONS.filter((o) => o.show);
   return (
     <section aria-label="Your decision" className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card">
       {traceChanged && !decision && (
@@ -466,9 +661,9 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
         <p className="text-[14.5px] leading-snug text-ch-ink-2">Approving now approves the map without your traces.</p>
       ) : (
         <p className="text-[14.5px] leading-snug text-ch-ink-2">
-          {entry.verdict === "ready" ? "Every check passed, so this map would go live on its own. You can still hold it back."
-            : primary === "roads" ? "The first look found campground roads missing. Send it for roads, or approve it if the photo says otherwise."
-            : primary === "hidden" ? "The first look found this isn’t one campground’s map. Keep it hidden, or approve it if the photo says otherwise."
+          {primary === "roads" ? "The first look found it not usable as drawn: its note says what’s missing. Send it for roads, or approve it if the photo says otherwise."
+            : primary === "hidden" ? "The first look found this listing spread out or its sites stacked, so it isn’t one campground’s map yet. Keep it hidden, or approve it if the photo says otherwise."
+            : entry.verdict === "ready" ? "Every check passed, so this map would go live on its own. You can still hold it back."
             : traced ? "Some of its roads were traced from this photo (ochre on the photo). Approve the map if they follow real roads and the sites sit on real pads."
             : "Compare the sites with the aerial photo. Approve the map if they sit on real pads along real roads."}
         </p>
@@ -481,7 +676,7 @@ function DecisionBox({ entry, decision, decide, nextHref, onTrace, traceChanged 
             <button type="button" onClick={() => decide(entry.id, null)} className={buttonClasses({ variant: "quiet", size: "sm", fullWidth: true })}><RotateCcw aria-hidden="true" className="size-4" />Undo</button>
           </>
         ) : shown.map(({ d, label, Icon }) => (
-          <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary && !traceChanged ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{d === "approved" && traceChanged ? "Approve without my traces" : label}</button>
+          <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary && !traceChanged ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{d === "approved" && traceChanged ? "Approve without my traces" : label}{d === primary && !traceChanged && <span className="text-[12px] font-normal">· Suggested</span>}</button>
         ))}
       </div>
       <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: a decision made here is saved in this browser until it’s recorded with the maps.</p>
@@ -569,22 +764,22 @@ function Checks({ checks: raw }: { checks: QaCheck[] }) {
   );
 }
 
-const ROAD_SOURCE: Record<SampleEntry["sources"]["roads"], string> = {
+const ROAD_SOURCE: Record<WaveEntry["sources"]["roads"], string> = {
   nps: "National Park Service GIS",
   osm: "OpenStreetMap",
   usfs: "Forest Service system roads",
   tiger: "US Census Bureau TIGER roads",
   none: "None: no source had roads here",
 };
-const SOURCE_WORD: Partial<Record<SampleEntry["sources"]["roads"], string>> = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau" };
-const SOURCE_SHORT: Record<Exclude<SampleEntry["sources"]["roads"], "none">, string> = { nps: "Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "Census TIGER" };
-const WATER_SOURCE: Record<SampleEntry["sources"]["water"], string> = {
+const SOURCE_WORD: Partial<Record<WaveEntry["sources"]["roads"], string>> = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau" };
+const SOURCE_SHORT: Record<Exclude<WaveEntry["sources"]["roads"], "none">, string> = { nps: "Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "Census TIGER" };
+const WATER_SOURCE: Record<WaveEntry["sources"]["water"], string> = {
   usgs: "USGS hydrography",
   osm: "OpenStreetMap (USGS didn’t answer)",
   none: "Not fetched",
 };
 
-function Sources({ entry, map }: { entry: SampleEntry; map: SiteMapData | null }) {
+function Sources({ entry, map }: { entry: WaveEntry; map: SiteMapData | null }) {
   const pick = map?.sources?.roadPick;
   const traced = map?.sources?.traced;
   const rows: [string, ReactNode][] = [

@@ -2,10 +2,21 @@
 // campground's own outline and its numbered pitches. ODbL: every map that uses it credits
 // "© OpenStreetMap contributors" (README.md).
 //
-// One call to the OSM API's /map for a small box (a campground frame is well under its 0.25
-// square-degree limit). Fine for building a handful of maps; a rollout reads a Geofabrik extract
-// instead (docs/design/campground-maps.md), because the API is for editing, not bulk reads.
+// Two ways to read it, the same data either way:
+// - From a regional extract (osm-extract.mjs trims one per region into .cache/osm/). A rollout
+//   reads this way: OSM's API is for editing, and 2,196 maps is bulk use. `osmium extract` cuts
+//   the campground's box out of every trimmed file whose data box overlaps it (two near a region
+//   border), and the answers are merged.
+// - From the OSM API's /map for the box, when no extract covers it. Fine for a single rebuild.
+// osmSource() picks; the build records which (`sources.osmFrom`).
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { getText } from "./geo.mjs";
+
+const OSM_DIR = join(import.meta.dirname, ".cache", "osm");
+const CUT_DIR = join(import.meta.dirname, ".cache", "osm-cut");
 
 const UA = { "User-Agent": "CampHawk-lab-map-builder/1.0 (+https://tylerflores.dev)" };
 const tagsOf = (s) => Object.fromEntries([...(s ?? "").matchAll(/<tag k="([^"]*)" v="([^"]*)"/g)].map((t) => [unxml(t[1]), unxml(t[2])]));
@@ -71,10 +82,137 @@ export function osmLayers({ nodes, ways, relations }) {
   return { roads, trails, pois, lots, buildings, water, waterRelations, waterways, outlines, pitches };
 }
 
-/** Fetch and parse OSM for a [w, s, e, n] box (cached by getText). */
-export async function fetchOsm(bboxArr) {
-  const xml = await getText(`https://api.openstreetmap.org/api/0.6/map?bbox=${bboxArr.map((v) => v.toFixed(6)).join(",")}`, UA);
-  return parseOsm(xml);
+/** The trimmed extracts on disk: { file, region, osmTimestamp, box: [w, s, e, n], rings? }.
+    `rings` is the extract's published boundary (its .poly), when it was downloaded. */
+export function extracts(dir = OSM_DIR) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => JSON.parse(readFileSync(join(dir, f), "utf8")))
+    .filter((x) => x.box && x.file && existsSync(join(dir, x.file)))
+    .map((x) => ({ ...x, file: join(dir, x.file), ...(x.poly && existsSync(join(dir, x.poly)) ? { rings: parsePoly(readFileSync(join(dir, x.poly), "utf8")) } : {}) }));
+}
+
+/**
+ * An Osmosis .poly boundary: { outer: [ring…], holes: [ring…] }, rings of [lon, lat]. Sections
+ * whose name starts with "!" are holes.
+ */
+export function parsePoly(text) {
+  const out = { outer: [], holes: [] };
+  const lines = text.split(/\r?\n/).map((l) => l.trim());
+  let cur = null, hole = false;
+  for (const l of lines.slice(1)) {
+    if (!l) continue;
+    if (l === "END") { if (cur) { (hole ? out.holes : out.outer).push(cur); cur = null; } continue; }
+    const nums = l.split(/\s+/).map(Number);
+    if (nums.length === 2 && nums.every(Number.isFinite) && cur) { cur.push(nums); continue; }
+    cur = []; hole = l.startsWith("!");
+  }
+  return out;
+}
+
+const inRing = ([x, y], ring) => {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+};
+const inPoly = (p, poly) => poly.outer.some((r) => inRing(p, r)) && !poly.holes.some((r) => inRing(p, r));
+const boxesOverlap = (a, b) => a[0] <= b[2] && b[0] <= a[2] && a[1] <= b[3] && b[1] <= a[3];
+
+/**
+ * Does an extract cover any of a [w, s, e, n] box? By its boundary when known (a corner or the
+ * middle of the box inside it, or a boundary corner inside the box), else by its data box. A
+ * campground box is a few km across, so this finds both extracts at a region border.
+ */
+export function covers(x, b) {
+  if (!x.rings) return boxesOverlap(x.box, b);
+  const pts = [[b[0], b[1]], [b[0], b[3]], [b[2], b[1]], [b[2], b[3]], [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2]];
+  if (pts.some((p) => inPoly(p, x.rings))) return true;
+  return x.rings.outer.some((r) => r.some(([lon, lat]) => lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3]));
+}
+
+/**
+ * Where to read OSM for a [w, s, e, n] box: every extract whose data box overlaps it, or the API
+ * when none does. `mode` "extract" refuses the API (a wave is read one way), "api" forces the API.
+ */
+export function osmSource(bboxArr, mode = "auto", list = extracts()) {
+  if (mode === "api") return { from: "api" };
+  const files = list.filter((x) => covers(x, bboxArr));
+  if (files.length) return { from: "extract", files, regions: files.map((f) => f.region), asOf: files.map((f) => f.osmTimestamp).sort()[0] ?? null };
+  if (mode === "extract") throw new Error(`no OSM extract covers ${bboxArr.map((v) => v.toFixed(3)).join(",")} (run osm-extract.mjs for its region)`);
+  return { from: "api" };
+}
+
+/** Parsed OSM documents merged into one (two extracts overlap near a region border). A way
+    complete in either copy is kept complete; a relation is kept once. */
+export function mergeOsm(docs) {
+  const nodes = new Map(), ways = new Map(), rel = new Map();
+  for (const d of docs) {
+    for (const [k, v] of d.nodes) nodes.set(k, v);
+    for (const [k, v] of d.ways) { const had = ways.get(k); if (!had || (!had.complete && v.complete)) ways.set(k, v); }
+    for (const r of d.relations) if (!rel.has(r.id)) rel.set(r.id, r);
+  }
+  return { nodes, ways, relations: [...rel.values()] };
+}
+
+const cutFile = (key) => join(CUT_DIR, createHash("sha1").update(key).digest("hex") + ".osm");
+const cutKey = (x, box) => `${x.file}|${x.osmTimestamp}|${box}`;
+const boxKey = (bboxArr) => bboxArr.map((v) => v.toFixed(6)).join(",");
+
+/**
+ * Cuts many boxes in one pass over each extract (`osmium extract -c`), into the same cache
+ * fetchOsm() reads. One cut reads the whole extract (about 70 s for the 3 GB us-west), so a wave
+ * cuts all its campgrounds at once: one pass per extract instead of one per campground.
+ * Returns { cut, uncovered }: boxes cut now (cached ones are skipped), and boxes no extract
+ * covers (left for the build, which fails them in "extract" mode or reads the API in "auto").
+ */
+export function prefetchOsm(boxes, mode = "auto", list = extracts(), batch = 100) {
+  const todo = new Map();
+  let uncovered = 0;
+  for (const bboxArr of boxes) {
+    const src = osmSource(bboxArr, mode === "api" ? "api" : "auto", list);
+    if (src.from !== "extract") { if (mode !== "api") uncovered++; continue; }
+    for (const x of src.files) {
+      const key = cutKey(x, boxKey(bboxArr));
+      if (existsSync(cutFile(key))) continue;
+      (todo.get(x.file) ?? todo.set(x.file, { x, boxes: [] }).get(x.file)).boxes.push(bboxArr);
+    }
+  }
+  let n = 0;
+  mkdirSync(CUT_DIR, { recursive: true });
+  for (const { x, boxes: bs } of todo.values()) {
+    for (let i = 0; i < bs.length; i += batch) {
+      const part = bs.slice(i, i + batch);
+      const config = { directory: CUT_DIR, extracts: part.map((b) => ({ output: cutFile(cutKey(x, boxKey(b))).split("/").pop(), output_format: "osm", bbox: b })) };
+      const cfg = join(CUT_DIR, `batch-${process.pid}.json`);
+      writeFileSync(cfg, JSON.stringify(config));
+      execFileSync("osmium", ["extract", "-c", cfg, "-s", "complete_ways", "--overwrite", x.file], { stdio: ["ignore", "ignore", "inherit"] });
+      n += part.length;
+    }
+  }
+  return { cut: n, uncovered };
+}
+
+function osmiumXml(args, key) {
+  const file = cutFile(key);
+  if (existsSync(file)) return readFileSync(file, "utf8");
+  // A wave cuts every box first (prefetchOsm); a cut here reads a whole extract, so say so.
+  if (args[0] === "extract") console.warn(`  OSM: cutting ${args[2]} alone (not prefetched; about a minute)`);
+  const xml = execFileSync("osmium", [...args, "-f", "osm", "-o", "-"], { maxBuffer: 1 << 30 }).toString();
+  mkdirSync(CUT_DIR, { recursive: true });
+  writeFileSync(file, xml);
+  return xml;
+}
+
+/** OSM for a [w, s, e, n] box, from the source osmSource() picked (cached either way). */
+export async function fetchOsm(bboxArr, source = { from: "api" }) {
+  const box = boxKey(bboxArr);
+  if (source.from === "extract") {
+    // complete_ways: a road that leaves the box keeps all its nodes, as the API's /map answers.
+    return mergeOsm(source.files.map((x) => parseOsm(osmiumXml(["extract", "-b", box, "-s", "complete_ways", x.file], cutKey(x, box)))));
+  }
+  return parseOsm(await getText(`https://api.openstreetmap.org/api/0.6/map?bbox=${box}`, UA));
 }
 
 /**
@@ -106,8 +244,10 @@ export function assembleRings(ways) {
 }
 
 /** A water multipolygon's rings, outer and inner (islands), fetched whole. */
-export async function fetchWaterRelation(id) {
-  const full = parseOsm(await getText(`https://api.openstreetmap.org/api/0.6/relation/${id}/full`, UA));
+export async function fetchWaterRelation(id, source = { from: "api" }) {
+  const full = source.from === "extract"
+    ? mergeOsm(source.files.map((x) => parseOsm(osmiumXml(["getid", "-r", x.file, `r${id}`], `${x.file}|${x.osmTimestamp}|r${id}`))))
+    : parseOsm(await getText(`https://api.openstreetmap.org/api/0.6/relation/${id}/full`, UA));
   const rel = full.relations.find((r) => r.id === id);
   if (!rel) return [];
   const members = rel.members.filter((m) => m.type === "way").map((m) => full.ways.get(m.ref)).filter((w) => w && w.complete);
