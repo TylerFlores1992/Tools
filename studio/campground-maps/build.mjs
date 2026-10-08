@@ -242,6 +242,8 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   if (view.kind === "unit") {
     const flat = Number(fac?.FacilityLatitude), flon = Number(fac?.FacilityLongitude);
     qa = checkUnit({ site: checkInput.sites[0], facilityAt: flat && flon ? xy([flon, flat]) : null, roadSegments: checkInput.roadSegments, trailSegments: segmentsOf(trails.map((t) => t.f), xy), roadSource: checkInput.roadSource, traced: checkInput.traced });
+  } else if (qa.verdict === "not-drawn") {
+    // Can't be drawn at all (sites stacked on one spot): no areas to show either.
   } else if (view.kind === "areas") {
     split = { ...view, ...(call ? { by: call.by, on: call.on } : {}) };
     qa = checkAreas(qa, view.areas, checkInput);

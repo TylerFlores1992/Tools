@@ -86,3 +86,28 @@ test("a map the owner approved as one map is never split by the rule", () => {
     if (m.split) assert.ok(calls.some((c) => c.id === id && c.split), `${id}: approved as one map, now ${m.split.kind}`);
   }
 });
+
+test("a manifest entry carries each area's check when the listing is shown as areas, and nothing when it isn't", () => {
+  const areas = [{ name: "Loop A", verdict: "ready", reasons: [] }, { name: "Loop B", verdict: "review", reasons: [{ code: "far-from-roads", text: "x" }] }];
+  const qa = { verdict: "review", reasons: [{ code: "areas", text: "Shown as 2 areas" }], checks: [], metrics: {}, areas };
+  assert.deepEqual(entryOf({ id: "1", state: "CA", recArea: "" }, MAP, qa).areas, areas);
+  assert.ok(!("areas" in entryOf({ id: "1", state: "CA", recArea: "" }, MAP, { ...qa, areas: undefined })));
+});
+
+test("every committed map shown as areas says so in its wave's manifest, with each area's check in the map's order", () => {
+  const manifests = [
+    JSON.parse(readFileSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/sample-manifest.json"), "utf8")),
+    ...readdirSync(join(MAPS, "waves")).map((f) => JSON.parse(readFileSync(join(MAPS, "waves", f), "utf8"))),
+  ];
+  let n = 0;
+  for (const m of manifests) for (const e of m.entries) {
+    let map; try { map = mapOf(e.id); } catch { continue; }
+    if (map.split?.kind === "areas") {
+      n++;
+      assert.equal(e.reasons[0]?.code, "areas", e.id);
+      assert.deepEqual(e.areas?.map((a: { name: string }) => a.name), map.split.areas.map((a: { name: string }) => a.name), e.id);
+    } else assert.ok(!e.areas && !e.reasons.some((r: { code: string }) => r.code === "areas"), e.id);
+    if (map.split?.kind === "dispersed") assert.equal(e.reasons[0]?.code, "dispersed", e.id);
+  }
+  assert.ok(n >= 25, `${n} listings shown as areas`);
+});
