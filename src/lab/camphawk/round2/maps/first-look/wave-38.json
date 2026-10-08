@@ -1,0 +1,152 @@
+{
+ "version": 1,
+ "wave": 38,
+ "by": "Claude (rollout midwest)",
+ "on": "2026-10-08",
+ "looks": {
+  "10192012": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the forest 30 m north of the drawn lane, where no clearing shows. The lane and the lake loop follow the visible tracks."
+  },
+  "10192062": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in unbroken forest 50 m north of the drawn loop, with no clearing or building visible."
+  },
+  "10192097": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits on OpenStreetMap's lane through the forest by the lake, but no clearing or building shows there."
+  },
+  "10192127": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the middle of the drawn loop on the point, with no clearing or building visible."
+  },
+  "10315092": {
+   "call": "good",
+   "note": "The pin sits in a small clearing 10 m east of the campground lane, among its pull-outs, and the drawn lane reaches it from the highway."
+  },
+  "10315097": {
+   "call": "good",
+   "note": "The pin sits inside the fenced, tree-planted compound with its corral and building, and the drawn track passes its gate."
+  },
+  "10315102": {
+   "call": "hold",
+   "note": "The pin sits on an open, scrubby hillside with no road, track or clearing drawn or visible within 150 m: nothing there marks the unit."
+  },
+  "232062": {
+   "call": "good",
+   "note": "The pin sits on the clearing with a small building at the end of the drawn lane west of the parking lot. The listing's own point is 1.7 km away, but the photo shows the group site here."
+  },
+  "232359": {
+   "call": "good",
+   "note": "The pin sits by the clearings and parked vehicles at the end of the drawn road up the gulch, which follows the visible track."
+  },
+  "233207": {
+   "call": "good",
+   "note": "The pin sits on the open group field, and the drawn spur reaches it from the campground road."
+  },
+  "233212": {
+   "call": "unsure",
+   "note": "The pin sits on a long grassy opening in the forest with no road or track drawn or visible to it, and the listing's own point is 4.2 km away; nothing on the photo shows it is the campsite."
+  },
+  "233765": {
+   "call": "good",
+   "note": "The pin sits at the edge of the open gravel clearing on the point, and the drawn lane reaches the clearing."
+  },
+  "234235": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in unbroken forest between two lakes, with no clearing or roof visible and the nearest drawn road 150 m south-east."
+  },
+  "234273": {
+   "call": "good",
+   "note": "The pin sits by the small building in the clearing beside the drawn forest road at the junction, which follows the visible track."
+  },
+  "234678": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the forest 10 m from the drawn spur off the road, but no clearing shows, and the listing's own point is 1.7 km away."
+  },
+  "234679": {
+   "call": "good",
+   "note": "The pin sits in the open clearing inside the drawn loop, which follows the visible gravel; the clearing has fire rings and pads."
+  },
+  "234734": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in forest by the lake 25 m north of where the drawn track ends, with no roof or clearing visible."
+  },
+  "265539": {
+   "call": "usable",
+   "note": "The pin sits on a small clearing 15 m south of the drawn turnaround loop, which follows the visible gravel; no spur to the pin is drawn."
+  },
+  "273338": {
+   "call": "good",
+   "note": "The pin sits by the small clearing on the lakeshore where the drawn forest track ends."
+  },
+  "273340": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the forest by the lakeshore 20 m east of the drawn loop, with no clearing showing, and the listing's own point is 2.6 km away."
+  },
+  "273341": {
+   "call": "good",
+   "note": "The pin sits by the clearing on the lakeshore just north of the drawn forest road, which reaches it."
+  },
+  "273344": {
+   "call": "usable",
+   "note": "The pin sits on the lakeshore 25 m south of a small clearing that is likely the campsite, under the trees; no road or trail is drawn to it, so it is reached by water or on foot."
+  },
+  "273350": {
+   "call": "good",
+   "note": "The pin sits in the open clearing among the pads, between the drawn lanes, which follow the visible tracks."
+  },
+  "273351": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the forest 40 m east of the drawn track, toward the lake, where no clearing shows."
+  },
+  "273353": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits on the drawn track 25 m from the lakeshore, with no clearing visible; the drawn track itself doesn't show through the trees."
+  },
+  "273356": {
+   "call": "usable",
+   "note": "The pin sits in the forest 15 m east of the clearing where the drawn track ends by the lake, which is likely the campsite; the pin itself is on no clearing."
+  },
+  "273363": {
+   "call": "good",
+   "note": "The pin sits by the sandy clearing at the lakeshore where the drawn spur ends."
+  },
+  "273841": {
+   "call": "usable",
+   "note": "The pin sits on the building beside the pond, which is plainly the house, but the drawn road ends 30 m short of it; a short track along the pond's edge shows but isn't drawn."
+  },
+  "10177496": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits in the forest between two drawn roads, 60 m from each, by a faint opening that may be the group site; no lane to it shows."
+  },
+  "10294670": {
+   "call": "good",
+   "note": "The pin sits on the open ground at the north edge of the campground, beside the drawn loop and the tracks that lead to it."
+  },
+  "251161": {
+   "call": "good",
+   "note": "The pin sits at the horse camp's loop with its trailers, corrals and building, and the drawn loop and road reach it."
+  },
+  "233475": {
+   "call": "good",
+   "note": "The pin sits on the open lawn with the shelter at the end of the drawn road on the point, which reaches its parking circle."
+  },
+  "233557": {
+   "call": "good",
+   "note": "The pin sits at the west edge of the group camp's parking lot, with tent pads along it in the trees, and the drawn lanes reach the lot."
+  },
+  "233747": {
+   "call": "good",
+   "note": "The pin sits by the group shelter and parking at the end of the drawn spur off the campground road."
+  },
+  "233780": {
+   "call": "hold",
+   "note": "The pin sits in unbroken forest between a road and a sewage lagoon, with no clearing or shelter, and the listing's own point is 685 m away; nothing here could be the group area."
+  },
+  "233914": {
+   "call": "unsure",
+   "note": "Under full canopy: the pin sits inside the drawn loop in the forest, with no clearing showing, and the listing's own point is 3.3 km away."
+  }
+ }
+}
