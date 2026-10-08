@@ -25,8 +25,11 @@ export type Split =
 
 /** Sites closer than this belong to the same area (m). */
 export const AREA_GAP_M = 200;
-/** A listing that fits in this (m) stays one map: the automatic check's "how far the sites spread"
-    limit (qa.mjs), so a map that passes it is never split. */
+/** A listing that fits in this (m) stays one map unless a person says it's several places
+    (`opts.oneMap: 0`). Measured on waves 1 and 2 (2026-10-08, after the first looks): no span
+    separates split listings from big campgrounds. At 1.5 km it catches 14 of the 29 the photo
+    called split and splits 2 of the usable maps; at 1.2 km 19 and 6; at 800 m 27 and 27. So the
+    automatic default stays conservative and a person's "split listing" call turns it on. */
 export const ONE_MAP_SPAN_M = 1500;
 /** An area wider or taller than this is cut again (m): about what a phone shows readably. */
 export const AREA_MAX_SPAN_M = 1000;
@@ -98,7 +101,8 @@ export function areaName(names: string[]): string {
     }
     return `Loops ${parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}`}`;
   }
-  const numbered = sorted.filter((n) => /\d/.test(n));
+  const plain = sorted.filter((n) => /^\d+$/.test(n));
+  const numbered = plain.length ? plain : sorted.filter((n) => /\d/.test(n));
   const ends = numbered.length ? [numbered[0], numbered.at(-1)!] : [sorted[0], sorted.at(-1)!];
   return ends[0] === ends[1] ? `Site ${ends[0]}` : `Sites ${ends[0]}–${ends[1]}`;
 }
@@ -126,11 +130,11 @@ function overlapShare(groups: Pt[][]): number {
 }
 
 /** Split a listing's placed sites into readable areas, or say it's one area, or dispersed. */
-export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: number } = {}): Split {
+export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: number; oneMap?: number } = {}): Split {
   const ps = sites.filter((s): s is MapSite & { at: [number, number] } => s.at !== null).map((s) => ({ name: s.name, at: s.at }));
   if (ps.length < 2) return { kind: "one" };
   const maxSpan = opts.maxSpan ?? AREA_MAX_SPAN_M;
-  if (span(ps) <= ONE_MAP_SPAN_M) return { kind: "one" };
+  if (span(ps) <= (opts.oneMap ?? ONE_MAP_SPAN_M)) return { kind: "one" };
   // Sites named by loop ("A001", "F12"): whole loops are the pieces, never cut, merged in letter
   // order while they still fit (Diamond Lake). Otherwise, groups by the gaps between sites.
   const letters = new Set(ps.map((p) => prefix(p.name)));
@@ -177,6 +181,15 @@ function toAreas(pieces: Pt[][], placed: number, axis?: 0 | 1): Split {
     // Cut by position, areas run in order along the listing (north to south, or west to east) and
     // say where they are, since one loop's sites may be in two of them.
     .sort((a, b) => (axis === undefined ? byNumber(a.sites[0], b.sites[0]) : a.center[axis] - b.center[axis]));
+  // Ranges that interleave ("Sites 003–060" beside "Sites 042–214") would send a camper to the wrong
+  // area: name those by where they are instead, like a cut along the shore.
+  const range = (a: Area) => { const n = a.sites.filter((x) => /^\d+$/.test(x)).map(Number); return n.length ? [Math.min(...n), Math.max(...n)] : null; };
+  const interleave = areas.some((a, i) => areas.some((b, j) => { if (i >= j) return false; const ra = range(a), rb = range(b); return !!ra && !!rb && ra[0] <= rb[1] && rb[0] <= ra[1]; }));
+  if (interleave && axis === undefined) {
+    const xs = areas.map((a) => a.center[0]), ys = areas.map((a) => a.center[1]);
+    axis = Math.max(...xs) - Math.min(...xs) >= Math.max(...ys) - Math.min(...ys) ? 0 : 1;
+    areas.sort((a, b) => a.center[axis!] - b.center[axis!]);
+  }
   if (axis !== undefined) {
     const ends = axis === 1 ? ["North end", "South end"] : ["West end", "East end"];
     areas.forEach((a, i) => { a.name = `${i === 0 ? ends[0] : i === areas.length - 1 ? ends[1] : `Middle ${areas.length > 3 ? i : ""}`.trim()}: ${a.name.replace(/^Loops? /, "loops ").replace(/^Sites? /, "sites ")}`; });

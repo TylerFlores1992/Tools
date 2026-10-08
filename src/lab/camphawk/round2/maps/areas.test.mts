@@ -111,3 +111,27 @@ test("areas don't sit on top of each other: no area's sites fall inside another'
     assert.ok(crossings / total < 0.05, `${id}: ${crossings} of ${total} sites sit inside another area's outline`);
   }
 });
+
+test("a listing under 1.5 km stays one map unless a person marks it split (Lithia Springs, ~1 km, four fingers of a lake)", () => {
+  const sites = load("233539").sites;
+  assert.equal(splitAreas(sites).kind, "one");
+  const s = splitAreas(sites, { oneMap: 0 });
+  assert.equal(s.kind, "areas");
+  if (s.kind === "areas") assert.ok(s.areas.length >= 2);
+});
+
+test("a handful of pairs of sites far apart is dispersed, not ten two-site maps", () => {
+  const sites = Array.from({ length: 10 }, (_, i) => [0, 1].map((k) => ({ name: String(i * 2 + k + 1).padStart(3, "0"), type: "STANDARD", accessible: false, at: [i * 2000 + k * 20, 0] as [number, number] }))).flat();
+  assert.equal(splitAreas(sites).kind, "dispersed");
+});
+
+test("area names never give overlapping site ranges (Gros Ventre, Colter Bay, Lodgepole when split)", () => {
+  for (const id of ["247661", "258830", "232461"]) {
+    const s = splitAreas(load(id).sites, { oneMap: 0 });
+    if (s.kind !== "areas") continue;
+    const ranges = s.areas.map((a) => /^Sites (\d+)–(\d+)$/.exec(a.name)).filter(Boolean).map((m) => [Number(m![1]), Number(m![2])]);
+    for (let i = 0; i < ranges.length; i++) for (let j = i + 1; j < ranges.length; j++)
+      assert.ok(ranges[i][1] < ranges[j][0] || ranges[j][1] < ranges[i][0], `${id}: ${s.areas.map((a) => a.name).join(" | ")}`);
+  }
+  assert.equal(areaName(["001", "045", "ANDB2"]), "Sites 001–045");
+});
