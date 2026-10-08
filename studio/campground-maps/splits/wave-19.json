@@ -1,0 +1,67 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 19.",
+ "listings": [
+  {
+   "id": "232604",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Four places on both sides of the river: the K row, the A and B loops, the C loop and the D spur, over a kilometer."
+  },
+  {
+   "id": "233465",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Five arms of the lake over 1.5 km, each with its own lane and sites."
+  },
+  {
+   "id": "233468",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Four points of the lake over 1.5 km, each with its own lanes.",
+   "gap": 100
+  },
+  {
+   "id": "233553",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Four clusters over 1.2 km of lake: the A point, the O point, the H loop and the M and B loops.",
+   "gap": 80
+  },
+  {
+   "id": "233559",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Four fingers of the lake over 1.2 km, each with its own lane."
+  },
+  {
+   "id": "233631",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The B, L, W and S points and two group camps, spread over 1.5 km of lake.",
+   "gap": 120
+  },
+  {
+   "id": "233651",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The north cluster (079 to 098) sits 1 km from the point and south loops.",
+   "gap": 100
+  },
+  {
+   "id": "233659",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The A, B, C, K, D and E areas, spread over 1.4 km of shore.",
+   "gap": 120
+  }
+ ]
+}
