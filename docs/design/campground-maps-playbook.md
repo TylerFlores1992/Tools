@@ -41,7 +41,8 @@ loads this) should be able to do the next step from here alone.
   - `trace-from-grid.mjs` writes a trace file from grid metres;
   - `aerial-grid.mjs` draws the photo with a metre grid, for a session to trace from;
   - `aerial-check.mjs` draws maps over the photo for a first look.
-- **The review page** (`/private/camphawk/golden-hour/admin/site-maps`) has:
+- **The review page** (`/private/camphawk/golden-hour/admin/site-maps`, live in the lab since PR #22,
+  2026-10-08, production smoke 29/29) has:
   - a queue of the sample;
   - each map's checks, the aerial check and the tracing tool;
   - the road-source fits;
