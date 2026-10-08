@@ -42,7 +42,7 @@ function useWidth<T extends HTMLElement>() {
   return [ref, w] as const;
 }
 
-export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSelect, note }: {
+export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSelect, note, heading = "Site map", headingId = "site-map-h", findElsewhere, findOnMount }: {
   map: SiteMapData;
   name: string;
   provider: string;
@@ -53,6 +53,14 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
   onSelect: (id: string) => void;
   /** Says why no sites are marked (first come, an unread month…). */
   note?: string;
+  /** The card's title: "Site map", or an area's name when a listing is split into areas. */
+  heading?: string;
+  headingId?: string;
+  /** A split listing: a site that isn't on this area's map may be in another. Returns true when the
+      caller showed it there (so no "there's no site" message here). */
+  findElsewhere?: (query: string) => boolean;
+  /** Run Find a site for this number once, as the map appears (after a switch of area). */
+  findOnMount?: string;
 }) {
   const f = map.frame;
   const open = new Set(openIds);
@@ -60,7 +68,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
   const openSites = placed.filter((s) => open.has(s.name));
   const selected = openSites.find((s) => s.name === selectedId) ?? null;
   const [found, setFound] = useState<Placed | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(findOnMount ?? "");
   const [findMsg, setFindMsg] = useState("");
   const [zoomed, setZoomed] = useState(false);
   const [viewport, vw] = useWidth<HTMLDivElement>();
@@ -134,11 +142,12 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     // Phones: the details (and Book) are below the map; bring them up.
     if (!wide) requestAnimationFrame(() => details.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
   };
-  const find = () => {
-    const s = findSite(map, query);
+  const find = (q = query) => {
+    const s = findSite(map, q);
+    if ((!s || !s.at) && q.trim() && findElsewhere?.(q.trim())) return;
     if (!s || !s.at) {
       setFound(null);
-      setFindMsg(query.trim() ? `There’s no site “${query.trim()}” at ${name}.` : "Type a site number.");
+      setFindMsg(q.trim() ? `There’s no site “${q.trim()}” at ${name}.` : "Type a site number.");
       return;
     }
     const p = s as Placed;
@@ -149,11 +158,17 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     }
     if (zoom > 1) requestAnimationFrame(() => center(p.at));
   };
+  // After a split listing switches area for a found site, find it here once. The area's map is a
+  // fresh mount (keyed), so this runs once per switch, not on every render.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (findOnMount) find(findOnMount);
+  }, [findOnMount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section aria-labelledby="site-map-h" className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-3 shadow-ch-card sm:mt-5 sm:p-6">
+    <section aria-labelledby={headingId} className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-3 shadow-ch-card sm:mt-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 px-1 sm:px-0">
-        <h2 id="site-map-h" className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-ink">Site map</h2>
+        <h2 id={headingId} className="font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-ink">{heading}</h2>
         <p aria-live="polite" className="text-[15px] text-ch-ink-2">
           {note ?? (picked
             ? openSites.length ? <><strong className="font-bold text-ch-ink">{openSites.length} open</strong> on {dayLabel(picked)}{openSites.length === 1 ? "" : ". Tap one for its details"}.</> : `Nothing open on ${dayLabel(picked)}.`
@@ -162,8 +177,8 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
       </div>
 
       <form role="search" aria-label="Find a site on the map" onSubmit={(e) => { e.preventDefault(); find(); }} className="mt-3 flex flex-wrap items-center gap-2 px-1 sm:px-0">
-        <label htmlFor="site-find" className="text-[14px] font-bold text-ch-ink">Find a site</label>
-        <input id="site-find" inputMode="numeric" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="e.g. 157"
+        <label htmlFor={`${headingId}-find`} className="text-[14px] font-bold text-ch-ink">Find a site</label>
+        <input id={`${headingId}-find`} inputMode="numeric" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="e.g. 157"
           className="min-h-11 w-28 rounded-ch-input border border-ch-muted bg-ch-paper px-3 text-[16px] font-semibold tabular-nums text-ch-ink placeholder:font-normal placeholder:text-ch-muted focus-visible:border-ch-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green" />
         <button type="submit" className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-3" })}><Search aria-hidden="true" className="size-3.5" />Find</button>
         <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((z) => !z)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-3 sm:ml-auto" })}>

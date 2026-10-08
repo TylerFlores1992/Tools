@@ -37,7 +37,18 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
-**Wave 1 (2026-10-08, this branch, PR pending):** the rollout tooling is built (OpenStreetMap from
+**Same day, later (PR pending):**
+- **Wave 1 decided:** the owner approved A and B (31) and hid C and D (25). Recorded in
+  `maps/decisions/wave-01.json`.
+- **Wave 2:** 100 by reservations, built and looked at. **61 usable (51–70%)**; 36 held, 19 of
+  them split listings. 2 traced. Waits on the owner's decisions (design doc, "Wave 2").
+- **Split listings and single units are designed** as lab comps at
+  `/private/camphawk/golden-hour/admin/site-maps/layouts`, with the contract, critique and
+  measurements in `docs/design/campground-maps-areas.md`.
+  - Recommended: A (one area at a time) and A (map with terrain and facts).
+  - Not built into the waves yet: the owner picks first.
+
+**Wave 1 (2026-10-08, PR #28, merged):** the rollout tooling is built (OpenStreetMap from
 regional extracts, `population.mjs`, `build-wave.mjs`, the review page at scale with Download
 decisions). Wave 1 is 100 campgrounds by demand (the 16 watched, then the most-reserved of each
 agency).

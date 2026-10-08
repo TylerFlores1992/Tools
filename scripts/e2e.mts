@@ -436,8 +436,47 @@ try {
     await ctx.close();
   });
 
+  await check("lab site-map layouts: a split listing switches area by number, list and Find a site; a single unit shows where it is", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1280, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    await p.route(/nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps/layouts?split=pick&s=233626&unit=card&u=234334`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    await p.getByRole("heading", { level: 2, name: /^Area 1: / }).waitFor();
+    // The list and the overview's numbers pick the same area, said by aria-pressed, not colour.
+    const list = p.getByRole("group", { name: "Areas" });
+    await list.getByRole("button").nth(2).click();
+    await p.getByRole("heading", { level: 2, name: /^Area 3: / }).waitFor();
+    assert.equal(await list.getByRole("button").nth(2).getAttribute("aria-pressed"), "true");
+    await p.getByRole("button", { name: /^Area 2: / }).click();
+    await p.getByRole("heading", { level: 2, name: /^Area 2: / }).waitFor();
+    await p.getByRole("navigation", { name: "Areas" }).getByRole("button", { name: "Area 3" }).click();
+    await p.getByRole("heading", { level: 2, name: /^Area 3: / }).waitFor();
+    // Find a site that's in another area: the page switches to it and rings it there.
+    const area1 = (await p.getByRole("heading", { level: 2, name: /^Area 3: / }).innerText());
+    assert.ok(area1);
+    await p.getByRole("textbox", { name: "Find a site" }).fill("001");
+    await p.getByRole("button", { name: "Find", exact: true }).click();
+    await p.getByRole("heading", { level: 2, name: /^Area 1: / }).waitFor();
+    await p.getByText("Site 001 is ringed on the map.").waitFor();
+    // The single unit: what it is, the nearest trail and road, and where.
+    const unit = p.getByRole("region", { name: "Where it is" });
+    await unit.getByText("What it is").waitFor();
+    await unit.getByText("Nearest road on the map").waitFor();
+    await unit.getByRole("link", { name: /Open in a maps app/ }).waitFor();
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= 1280));
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab site-map waves: the newest wave by default, filters in the URL, Show more, and decisions downloaded as a file the tests accept", async () => {
-    const manifest = JSON.parse(readFileSync(join(import.meta.dirname, "../public/private/camphawk/maps/waves/wave-01.json"), "utf8"));
+    // The newest wave is the default; read which it is rather than assume one.
+    const newest = Math.max(...JSON.parse(readFileSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/waves.json"), "utf8")).waves.map((w: { wave: number }) => w.wave));
+    const nn = String(newest).padStart(2, "0");
+    const manifest = JSON.parse(readFileSync(join(import.meta.dirname, `../public/private/camphawk/maps/waves/wave-${nn}.json`), "utf8"));
     const built = manifest.entries.filter((e: { error?: string }) => !e.error);
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
     const errors: string[] = [];
@@ -450,7 +489,7 @@ try {
     await p.waitForURL(url);
     // No ?wave= opens the newest; its manifest is fetched, so wait for it.
     await p.getByRole("heading", { level: 2, name: `The ${built.length} maps` }).waitFor();
-    assert.equal(await p.getByLabel("Wave").inputValue(), "1");
+    assert.equal(await p.getByLabel("Wave").inputValue(), String(newest));
     // 48 cards, then Show more reveals the rest.
     const cards = p.locator("main ul li h3 a");
     assert.equal(await cards.count(), Math.min(48, built.length));
@@ -475,7 +514,7 @@ try {
     const first = (await cards.first().innerText()).trim();
     await cards.first().click();
     await p.getByRole("heading", { level: 1, name: first }).waitFor();
-    assert.match(p.url(), /wave=1&id=/);
+    assert.match(p.url(), new RegExp(`wave=${newest}&id=`));
     const id = new URL(p.url()).searchParams.get("id");
     const box = p.getByRole("complementary", { name: "Review" }).getByRole("region", { name: "Your decision" });
     await box.getByRole("button", { name: "Keep it hidden" }).click();
@@ -483,10 +522,10 @@ try {
     await p.getByRole("link", { name: "All maps" }).click();
     await p.getByRole("heading", { level: 2, name: "Your decisions on this wave" }).waitFor();
     const [dl] = await Promise.all([p.waitForEvent("download"), p.getByRole("button", { name: "Download decisions" }).click()]);
-    assert.equal(dl.suggestedFilename(), "wave-01.json");
+    assert.equal(dl.suggestedFilename(), `wave-${nn}.json`);
     const file = JSON.parse(readFileSync((await dl.path())!, "utf8"));
-    assert.ok(built.some((e: { id: string }) => e.id === id), `${id} is in wave 1`);
-    assert.equal(file.wave, 1);
+    assert.ok(built.some((e: { id: string }) => e.id === id), `${id} is in wave ${newest}`);
+    assert.equal(file.wave, newest);
     assert.deepEqual(file.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]), [[id, "hidden"]]);
     assert.deepEqual(decisionProblems(file, new Set(manifest.entries.map((e: { id: string }) => e.id))), []);
     assert.deepEqual(errors, []);

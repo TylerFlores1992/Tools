@@ -58,6 +58,12 @@ export function loadRidb(ridbDir, ids) {
   return { facilities, sites, attrs };
 }
 
+/** A single unit (one cabin, lookout, guard station or group site) gets a location map: this much
+    ground around it (m), so the road in, the water and the trailheads near it show. A campground's
+    sites are framed tightly (geo.mjs's 55 m). Playbook §5.1. */
+export const SINGLE_UNIT_PAD_M = 700;
+export const padFor = (placedSites) => (placedSites === 1 ? SINGLE_UNIT_PAD_M : undefined);
+
 /** Bookable overnight sites: staff (management) and day-use sites are never drawn. */
 export const bookable = (r) => r.CampsiteType !== "MANAGEMENT" && r.TypeOfUse === "Overnight";
 
@@ -69,7 +75,7 @@ const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).f
 export function frameBoxOf(ridb, facilityId) {
   const placed = (ridb.sites.get(facilityId) ?? []).filter(bookable).filter((r) => Number(r.CampsiteLatitude) && Number(r.CampsiteLongitude));
   if (!placed.length) return null;
-  const { frame, bboxArr } = makeGeo(placed.map((r) => [Number(r.CampsiteLongitude), Number(r.CampsiteLatitude)]));
+  const { frame, bboxArr } = makeGeo(placed.map((r) => [Number(r.CampsiteLongitude), Number(r.CampsiteLatitude)]), padFor(placed.length));
   return { bboxArr, huge: Math.max(frame.w, frame.h) > MAX_FRAME_M };
 }
 
@@ -82,7 +88,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const placed = sites.filter((s) => s.lat && s.lon);
   if (!placed.length) throw new Error(`facility ${facilityId} has no site points`);
 
-  const geo = makeGeo(placed.map((s) => [s.lon, s.lat]));
+  const geo = makeGeo(placed.map((s) => [s.lon, s.lat]), padFor(placed.length));
   const { xy, frame, bbox, bboxArr, inFrame, pathOf, labelFor, spaced } = geo;
   const huge = Math.max(frame.w, frame.h) > MAX_FRAME_M;
   const none = [];

@@ -23,8 +23,8 @@ loads this) should be able to do the next step from here alone.
 |---|---|---|
 | Site points | RIDB, CC BY 4.0, open now | California State Parks' layer, **waiting on permission** |
 | Campgrounds to draw | 2,196 with two or more sites (+1,016 single units, §5) | 341 RC areas in CampHawk's catalog |
-| Built so far | Upper Pines (live); the 50-campground sample, **all 50 decided** (45 publishable, 5 hidden); **wave 1, 100 by demand, built and looked at, waiting on the owner** (2026-10-08) | Jedediah Smith, local only |
-| Measured result | Sample: 45 of 50 (90%; 79–96%) usable after one look. Wave 1: 75 of 100 (66–82%), not a random draw | 87% of sites match a State Parks point |
+| Built so far | Upper Pines (live); the 50-campground sample, **all 50 decided** (45 publishable, 5 hidden); **wave 1 (100 by demand) decided** (31 approved, 25 hidden); **wave 2 (100) built and looked at, waiting on the owner**; split-listing and single-unit maps designed as lab comps (2026-10-08) | Jedediah Smith, local only |
+| Measured result | Usable after one look: sample 45 of 50 (90%; 79–96%); wave 1 75 of 100 (66–82%); wave 2 61 of 100 (51–70%); waves 1–2 are by demand, not random | 87% of sites match a State Parks point |
 | Blocked by | nothing (owner's go-ahead per wave) | State Parks' answer (records request due ~2026-10-17) |
 
 **What is built and tested:**
@@ -365,7 +365,8 @@ a session or less.
    - full canopy with no visible lanes (Yellowbottom, Hearts Content, Rancheria);
    - footpaths to walk-in sites (Watchman's F loop): they aren't roads;
    - spurs too short or faint to place;
-   - listings that aren't one campground (§5.2).
+   - listings that aren't one campground (§5.2): say "split listing" in the first-look note (the
+     review page and the area design read it).
 7. **Owner review.** Tell the owner the wave is ready, with its numbers: ready on its own, usable
    after a look, needs traces approved, can't go live. Give them a short list grouped like
    wave 0's (A: traces to approve, B: fine but flagged, C: keep hidden), each with its review-page
@@ -379,7 +380,8 @@ a session or less.
 
 **Stop and ask the owner** when:
 - a wave's pass rate falls outside the sample's interval (50–76% on their own; 79–96% after a
-  look). **Wave 1 did (48% on their own, 75% after a look), so it waits on the owner.**
+  look). **Wave 1 did (48% on their own, 75% after a look); the owner decided it and said go on.
+  Wave 2 is lower again (61 after a look), mostly split listings (19 of 36 held).**
 - a new failure mode shows up;
 - a source's terms or availability change.
 
@@ -401,6 +403,10 @@ Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart)
   area, or, for dispersed areas, a list of areas with a location each.
 - Design and build it like §5.1. **Owner's decision (2026-10-08): yes, after wave 1.** The look
   is still theirs to approve.
+- **Designed 2026-10-08 (lab comps, not built into waves yet):** `docs/design/campground-maps-areas.md`
+  has the contract, the area rule (`maps/areas.ts`, tested on real listings), two directions for
+  each kind, and two critique rounds. Split listings were 10 of wave 1's 20 held maps and 19 of
+  wave 2's 36. Single units (§5.1) get a location map with terrain in the same comps.
 
 ### 5.3 Restroom and water text (optional, owner's call)
 - **Where it comes from:**
@@ -557,9 +563,12 @@ of bookable sites).
   still needs the owner's approval.
 
 **Still open:**
-0. **Wave 1 (2026-10-08):** the owner's decisions on its 100 maps, and whether wave 2 goes ahead
-   as planned given its lower rate (Army Corps parks 11 of 23 usable). See the design doc's
-   "Wave 1".
+0. ~~**Wave 1:** the owner's decisions.~~ **Done 2026-10-08:** A and B approved, C and D hidden;
+   go on to wave 2.
+0a. **Wave 2 (2026-10-08):** the owner's decisions on its 62 maps that need one (design doc, "Wave 2").
+0b. **Pick the look** for split listings and single units (`docs/design/campground-maps-areas.md`;
+   the session and the critic both recommend A and A). Then the build records areas and the
+   review page shows them (that doc's "Not settled").
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. **Approve the look** of the single-unit and split-listing maps, when designed.
