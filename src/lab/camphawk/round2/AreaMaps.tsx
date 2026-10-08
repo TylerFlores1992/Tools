@@ -34,10 +34,13 @@ const fmtMi = (m: number) => { const mi = m / 1609.34; return mi < 0.1 ? `${Math
 
 /** The listing's whole frame, drawn small: water, roads, a dot per site, each area outlined. */
 function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; areas: Area[]; current: number | null; onPick?: (i: number) => void; linkTo?: (i: number) => string }) {
-  const f = map.frame;
+  // Never thinner than 1:2, so a listing strung along a shore still has room for its numbers.
+  const g = map.frame, f = { ...g };
+  if (f.w < f.h / 2) { f.x -= (f.h / 2 - f.w) / 2; f.w = f.h / 2; }
+  if (f.h < f.w / 2) { f.y -= (f.w / 2 - f.h) / 2; f.h = f.w / 2; }
   const s = Math.max(f.w, f.h) / 600; // stroke scale: about 1px at 600px across
   return (
-    <div className="relative mx-auto w-full overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}`, maxWidth: `min(100%, calc(320px * ${(f.w / f.h).toFixed(3)}))` }}>
+    <div className="relative mx-auto w-full overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}`, maxWidth: `min(100%, calc(380px * ${(f.w / f.h).toFixed(3)}))` }}>
       <svg viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full" aria-hidden="true">
         {map.water.map((w, i) => <path key={i} d={w.d} fillRule="evenodd" className="fill-ch-map-water" />)}
         {map.roads.map((r, i) => <path key={i} d={r.d} fill="none" className="stroke-ch-muted" strokeWidth={2.2 * s} strokeLinecap="round" strokeLinejoin="round" />)}
@@ -48,8 +51,9 @@ function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; a
         ))}
       </svg>
       {areas.map((a, i) => {
-        const left = `${((a.frame.x - f.x) / f.w) * 100}%`, top = `${((a.frame.y - f.y) / f.h) * 100}%`;
-        const badge = cx("absolute grid size-7 -translate-x-1/3 -translate-y-1/3 place-items-center rounded-full border-2 border-ch-ink text-[13px] font-extrabold tabular-nums shadow-ch-card", i === current ? "bg-ch-ink text-ch-white" : "bg-ch-card text-ch-ink");
+        // Each number at its area's middle, where it can't be read as belonging to the next area.
+        const left = `${((a.center[0] - f.x) / f.w) * 100}%`, top = `${((a.center[1] - f.y) / f.h) * 100}%`;
+        const badge = cx("absolute grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-ch-ink text-[13px] font-extrabold tabular-nums shadow-ch-card", i === current ? "bg-ch-ink text-ch-white" : "bg-ch-card text-ch-ink");
         const label = `Area ${i + 1}: ${a.name}`;
         return onPick
           ? <button key={i} type="button" aria-label={label} aria-pressed={i === current} onClick={() => onPick(i)} style={{ left, top }} className={cx(badge, "cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-green")}><span aria-hidden="true">{i + 1}</span></button>
@@ -58,15 +62,6 @@ function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; a
       })}
     </div>
   );
-}
-
-/** Straight-line distance between two areas' nearest sites. */
-function apart(map: SiteMapData, a: Area, b: Area): number {
-  const pa = map.sites.filter((s) => s.at && a.sites.includes(s.name)).map((s) => s.at!);
-  const pb = map.sites.filter((s) => s.at && b.sites.includes(s.name)).map((s) => s.at!);
-  let best = Infinity;
-  for (const p of pa) for (const q of pb) best = Math.min(best, Math.hypot(p[0] - q[0], p[1] - q[1]));
-  return best;
 }
 
 /** A listing's site map, split into areas when it's several places (else the ordinary map). */
@@ -81,7 +76,7 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
   const { areas } = split;
   const open = new Set(p.openIds);
   const openIn = (a: Area) => a.sites.filter((s) => open.has(s)).length;
-  const sentence = `${p.map.sites.length} sites in ${areas.length} areas, up to ${fmtMi(Math.max(...areas.slice(1).map((a, i) => apart(p.map, areas[i], a))))} apart. The numbers on the overview match the areas below.`;
+  const sentence = `${p.map.sites.length} sites in ${areas.length} areas, spread over ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h) - 110)}. The numbers on the overview match the areas below.`;
   // Find a site that's in another area: switch to it, then find it there.
   const findElsewhere = (q: string) => {
     const i = areas.findIndex((a) => a.sites.some((s) => s.toLowerCase() === q.toLowerCase() || s.replace(/^0+/, "") === q.replace(/^0+/, "")));
@@ -171,11 +166,26 @@ const latLon = (map: SiteMapData, [x, y]: [number, number]): [number, number] | 
   return [n - ((y - f.y) / f.h) * (n - s), w + ((x - f.x) / f.w) * (e - w)];
 };
 
-function UnitDrawing({ map, label, className }: { map: SiteMapData; label: string; className?: string }) {
-  const f = map.frame, site = map.sites.find((s) => s.at);
+/** USGS 3DEP shaded relief (public domain) under a frame of the map, asked for live like the aerial
+    photo; at most 2,000 px a side. Null when the map has no bbox. */
+export function reliefUrl(map: SiteMapData, frame = map.frame, width = 1400): string | null {
+  if (!map.bbox) return null;
+  const nw = latLon(map, [frame.x, frame.y]), se = latLon(map, [frame.x + frame.w, frame.y + frame.h]);
+  if (!nw || !se) return null;
+  const w = Math.min(width, 2000), h = Math.min(2000, Math.round((w * frame.h) / frame.w));
+  const q = new URLSearchParams({ bbox: [nw[1], se[0], se[1], nw[0]].join(","), bboxSR: "4326", imageSR: "3857", size: `${w},${h}`, format: "png", renderingRule: JSON.stringify({ rasterFunction: "Hillshade Gray" }), f: "image" });
+  return `https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?${q}`;
+}
+
+function UnitDrawing({ map, frame, label, terrain, className }: { map: SiteMapData; frame?: SiteMapData["frame"]; label: string; terrain?: boolean; className?: string }) {
+  const f = frame ?? map.frame, site = map.sites.find((s) => s.at);
   const s = Math.max(f.w, f.h) / 700;
+  const relief = terrain ? reliefUrl(map, f) : null;
   return (
-    <div className={cx("relative overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell", className)} style={{ aspectRatio: `${f.w} / ${f.h}` }}>
+    <div className={cx("relative isolate overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell", className)} style={{ aspectRatio: `${f.w} / ${f.h}` }}>
+      {/* The ground's shape, multiplied onto the paper so hills read without a colour of their own. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
+      {relief && <img src={relief} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover opacity-60 mix-blend-multiply" />}
       <svg viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full" role="img" aria-label={`Map of the ground around ${label}: roads, trails and water within ${fmtMi(f.w / 2)}.`}>
         {map.water.map((w, i) => <path key={i} d={w.d} fillRule="evenodd" className="fill-ch-map-water" />)}
         {map.trails.map((t, i) => <path key={i} d={t.d} fill="none" className="stroke-ch-muted" strokeWidth={1.6 * s} strokeDasharray={`${6 * s} ${5 * s}`} strokeLinecap="round" />)}
@@ -218,7 +228,7 @@ export function UnitMap({ map, name, provider, layout }: { map: SiteMapData; nam
       </Fact>}
     </dl>
   );
-  const credit = <p className="mt-4 px-1 text-[13px] leading-relaxed text-ch-muted sm:px-0">{map.credits ?? `Drawn by CampHawk from ${provider}’s published location (RIDB, CC BY 4.0).`} Roads and trails are for finding it, not directions: check the access before you go.</p>;
+  const credit = <p className="mt-4 px-1 text-[13px] leading-relaxed text-ch-muted sm:px-0">{map.credits ?? `Drawn by CampHawk from ${provider}’s published location (RIDB, CC BY 4.0).`}{layout === "wide" ? " Terrain: USGS 3D Elevation Program (public domain)." : ""} Roads and trails are for finding it, not directions: check the access before you go.</p>;
   return (
     <section aria-labelledby="unit-map-h" className="mt-4 rounded-ch-card border border-ch-line bg-ch-card p-3 shadow-ch-card sm:mt-5 sm:p-6">
       <div className="px-1 sm:px-0">
@@ -232,7 +242,7 @@ export function UnitMap({ map, name, provider, layout }: { map: SiteMapData; nam
         </div>
       ) : (
         <div className="relative mt-3">
-          <UnitDrawing map={{ ...map, frame: { x: map.frame.x, y: map.frame.y + map.frame.h * 0.2, w: map.frame.w, h: map.frame.h * 0.6 } }} label={kind} className="w-full" />
+          <UnitDrawing map={map} frame={{ x: map.frame.x, y: map.frame.y + map.frame.h * 0.2, w: map.frame.w, h: map.frame.h * 0.6 }} label={kind} terrain className="w-full" />
           <div className="mt-3 rounded-ch-input border border-ch-line bg-ch-card p-4 md:absolute md:left-3 md:top-3 md:mt-0 md:w-[320px] md:shadow-ch-card">{facts}</div>
         </div>
       )}
