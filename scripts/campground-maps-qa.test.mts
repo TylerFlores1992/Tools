@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { RULES, checkMap, inRing, sameNumber, toSegments } from "../studio/campground-maps/qa.mjs";
+import { RULES, UNIT_RULES, checkAreas, checkDispersed, checkMap, checkUnit, inRing, sameNumber, toSegments } from "../studio/campground-maps/qa.mjs";
 
 // A tidy loop campground in local metres: 20 sites in two rows either side of an east-west
 // road, 12 m off it, 15 m apart. Every check passes on it; each test breaks one thing.
@@ -143,4 +143,109 @@ test("anything traced from the aerial photo waits for a person, however well the
   // Traced roads alone are roads: no "No roads to draw".
   const only = run(good(), { roadSource: "traced", traced: { roads: 1, points: 0 } });
   assert.deepEqual(only.reasons.map((x) => x.code), ["traced"]);
+});
+
+// --- Split listings: two tidy loops 3 km apart, each along its own road. ---
+const twoAreas = () => {
+  const west = good();
+  const east = good().map((s, i) => ({ name: String(101 + i), at: [3000 + s.at![0], s.at![1]] as At }));
+  return { sites: [...west, ...east], roads: [...road, [[3000, 0], [3300, 0]]] as [[number, number], [number, number]][] };
+};
+const areasOf = (sites: { name: string; at: At }[]) => [
+  { name: "Sites 001–020", sites: sites.slice(0, 20).map((s) => s.name), frame: { x: -40, y: -80, w: 240, h: 160 } },
+  { name: "Sites 101–120", sites: sites.slice(20).map((s) => s.name), frame: { x: 2960, y: -80, w: 240, h: 160 } },
+];
+
+test("a split listing is checked area by area: the spread goes, and a person checks the split", () => {
+  const { sites, roads } = twoAreas();
+  const input = { sites, roadSegments: roads, roadSource: "osm" };
+  const whole = checkMap(input);
+  assert.ok(whole.reasons.some((r) => r.code === "spread"));
+  const r = checkAreas(whole, areasOf(sites), input);
+  assert.equal(r.verdict, "review");
+  assert.deepEqual(r.reasons.map((x) => x.code), ["areas"]);
+  assert.match(r.reasons[0].text, /2 areas/);
+  assert.deepEqual(r.areas!.map((a) => a.verdict), ["ready", "ready"]);
+  assert.equal(r.metrics.areas, 2);
+  assert.equal(r.checks.find((c) => c.code === "spread")!.result, "review");
+  assert.match(r.checks.find((c) => c.code === "spread")!.value, /2 areas/);
+});
+
+test("an area's own problem is named with the area; the listing's are kept once", () => {
+  const { sites, roads } = twoAreas();
+  // The east area's road is gone (sites 3 km from the west road), and one west site has no point.
+  sites[3] = { ...sites[3], at: null };
+  const input = { sites, roadSegments: [roads[0]], roadSource: "osm" };
+  const r = checkAreas(checkMap(input), areasOf(sites), input);
+  assert.deepEqual(r.reasons.map((x) => x.code), ["areas", "unplaced", "far-from-roads"]);
+  assert.match(r.reasons[2].text, /^Sites 101–120: Sites sit far from the roads/);
+  assert.deepEqual(r.areas!.map((a) => a.verdict), ["ready", "review"]);
+});
+
+test("an area is judged only by the OpenStreetMap outlines that reach it", () => {
+  const { sites, roads } = twoAreas();
+  const westRing: [number, number][] = [[-30, -30], [200, -30], [200, 30], [-30, 30]];
+  const input = { sites, roadSegments: roads, roadSource: "osm", outlineRings: [westRing] };
+  // As one listing, half the sites are outside the only outline.
+  assert.ok(checkMap(input).reasons.some((r) => r.code === "outline"));
+  const r = checkAreas(checkMap(input), areasOf(sites), input);
+  assert.ok(!r.reasons.some((x) => x.code === "outline"), JSON.stringify(r.reasons));
+});
+
+test("a listing that can't be drawn stays not drawn, split or not", () => {
+  const sites = good().map((s) => ({ ...s, at: [5, 5] as At }));
+  const input = { sites, roadSegments: road, roadSource: "osm" };
+  const whole = checkMap(input);
+  assert.equal(checkAreas(whole, areasOf(sites), input).verdict, "not-drawn");
+  assert.equal(checkDispersed(whole, 30).verdict, "not-drawn");
+});
+
+test("a dispersed listing is held and says why, instead of the spread", () => {
+  const { sites, roads } = twoAreas();
+  const whole = checkMap({ sites, roadSegments: roads, roadSource: "osm" });
+  const r = checkDispersed(whole, 30);
+  assert.equal(r.verdict, "review");
+  assert.equal(r.reasons[0].code, "dispersed");
+  assert.match(r.reasons[0].text, /^30 groups/);
+  assert.ok(!r.reasons.some((x) => x.code === "spread"));
+});
+
+// --- Single units ---
+const unit = (over: Partial<Parameters<typeof checkUnit>[0]> = {}) => checkUnit({ site: { name: "LOOKOUT", at: [0, 0] }, facilityAt: [40, 30], roadSegments: [[[-700, 200], [700, 200]]], trailSegments: [], roadSource: "usfs", ...over });
+
+test("a single unit near its listing's point with a road on the map is ready, with its distances", () => {
+  const r = unit();
+  assert.equal(r.verdict, "ready");
+  assert.deepEqual(r.reasons, []);
+  assert.equal(r.metrics.kind, "unit");
+  assert.equal(r.metrics.facilityM, 50);
+  assert.equal(r.metrics.roadM, 200);
+  assert.equal(r.metrics.trailM, null);
+  assert.ok(r.checks.every((c) => c.result === "pass" || c.result === "none"));
+});
+
+test("a unit far from its listing's own point needs a look; the limit is the rule's", () => {
+  assert.equal(unit({ facilityAt: [UNIT_RULES.facilityAgreeM, 0] }).verdict, "ready");
+  const r = unit({ facilityAt: [UNIT_RULES.facilityAgreeM + 1, 0] });
+  assert.deepEqual(r.reasons.map((x) => x.code), ["facility-point"]);
+  assert.match(unit({ facilityAt: [2400, 0] }).reasons[0].text, /2\.4 km/);
+  // No listing point: nothing to compare, not a fault.
+  assert.equal(unit({ facilityAt: null }).verdict, "ready");
+});
+
+test("a unit reached only by trail is fine; one with no road or trail on the map needs a look", () => {
+  const far: [[number, number], [number, number]][] = [[[-700, UNIT_RULES.accessM + 1], [700, UNIT_RULES.accessM + 1]]];
+  const near: [[number, number], [number, number]][] = [[[-700, UNIT_RULES.accessM], [700, UNIT_RULES.accessM]]];
+  assert.equal(unit({ roadSegments: near }).verdict, "ready");
+  assert.equal(unit({ roadSegments: far, trailSegments: [[[0, -50], [0, -400]]] }).verdict, "ready");
+  const r = unit({ roadSegments: far, trailSegments: far });
+  assert.deepEqual(r.reasons.map((x) => x.code), ["no-access"]);
+  assert.equal(r.checks.find((c) => c.code === "no-access")!.result, "review");
+  assert.deepEqual(unit({ roadSegments: [], trailSegments: [] }).reasons.map((x) => x.code), ["no-access"]);
+});
+
+test("a unit with no point can't be drawn; one with traced roads waits for a person", () => {
+  assert.equal(unit({ site: { name: "CABIN", at: null } }).verdict, "not-drawn");
+  const r = unit({ traced: { roads: 1, points: 0 } });
+  assert.deepEqual(r.reasons.map((x) => x.code), ["traced"]);
 });
