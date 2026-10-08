@@ -1,0 +1,67 @@
+{
+ "version": 1,
+ "map": "ridb-232153",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.1075432,
+     38.8815626
+    ],
+    [
+     -107.1075202,
+     38.8814906
+    ],
+    [
+     -107.1075202,
+     38.8814005
+    ],
+    [
+     -107.1075317,
+     38.8813104
+    ],
+    [
+     -107.1075432,
+     38.8812203
+    ],
+    [
+     -107.1075547,
+     38.8811302
+    ],
+    [
+     -107.1075663,
+     38.8810401
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.1080043,
+     38.8814005
+    ],
+    [
+     -107.1079582,
+     38.8813104
+    ],
+    [
+     -107.1079121,
+     38.8812203
+    ],
+    [
+     -107.107866,
+     38.8811482
+    ],
+    [
+     -107.1078199,
+     38.8810761
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the two gravel lanes south from the loop road into the middle, past sites 015 and 018, plain on the photo. Left out: where they run on south under the trees, and spurs to single pads (004)."
+}

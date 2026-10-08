@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234686",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.4613628,
+     39.1373096
+    ],
+    [
+     -105.4612067,
+     39.1372853
+    ],
+    [
+     -105.4610332,
+     39.1372493
+    ],
+    [
+     -105.4608712,
+     39.1371952
+    ],
+    [
+     -105.4607555,
+     39.1371412
+    ],
+    [
+     -105.4606861,
+     39.1370871
+    ],
+    [
+     -105.4606283,
+     39.1370421
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane east from the restroom past sites 003, 004 and 007 to the creek, plain on the photo. Left out: sites 005 to 010 across the creek, reached by a narrow crossing that looks like a footbridge."
+}

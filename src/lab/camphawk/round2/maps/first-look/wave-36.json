@@ -1,0 +1,220 @@
+{
+ "version": 1,
+ "wave": 36,
+ "by": "Claude (rollout colorado)",
+ "on": "2026-10-08",
+ "looks": {
+  "118993": {
+   "call": "good",
+   "note": "The pin sits on the cabin's roof in its clearing, and the drawn road passes 10 m east of it."
+  },
+  "234664": {
+   "call": "hold",
+   "note": "The pin sits on open scrub with no building or clearing, and the nearest drawn road is 110 m away; the listing's own point is 490 m off, so neither is plainly the cabin."
+  },
+  "234666": {
+   "call": "good",
+   "note": "The pin sits on the drive among the cabin buildings, and the drawn road from the south ends 20 m from it."
+  },
+  "234683": {
+   "call": "hold",
+   "note": "The pin sits among scattered piñon with no building or clearing; the only building in the frame is 110 m south-east, and no road reaches either."
+  },
+  "10165110": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance off the highway, not on a pad."
+  },
+  "10165120": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+  },
+  "10165140": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road fork at the campground entrance, not on a pad."
+  },
+  "10165145": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the open meadow, not on a pad."
+  },
+  "10165175": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on open hillside among the pines, 230 m from any drawn road and on no pad; the only roads drawn are far off and the visible tracks aren't drawn."
+  },
+  "10165190": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the open ground at the campground entrance beside the lane, not on a pad."
+  },
+  "10165210": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+  },
+  "10165230": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the spur where the campground lane leaves the highway, not on a pad."
+  },
+  "10165235": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the paved trailhead lot at the pass, not on a pad."
+  },
+  "10165245": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+  },
+  "10165250": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction above the lake lot, not on a pad."
+  },
+  "10165260": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road climbing into the campground, not on a pad."
+  },
+  "10165265": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+  },
+  "10165290": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits at the end of a drawn lane on the hillside, not on a pad; the campground's lots show 100 m south-west and aren't drawn."
+  },
+  "10165300": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction off the valley road, not on a pad."
+  },
+  "10165310": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+  },
+  "10165315": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance off the valley road, not on a pad."
+  },
+  "10165325": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+  },
+  "10165340": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+  },
+  "10165345": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction by the campground's gravel area, not on a pad."
+  },
+  "10165355": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+  },
+  "10165400": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside the campground loop, on no pad or road."
+  },
+  "10165405": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground road itself, not on a pad."
+  },
+  "10165410": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction among the campground's lanes, not on a pad."
+  },
+  "10165425": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the open park, not on a pad."
+  },
+  "10165445": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the foot of the campground loop, not on a pad."
+  },
+  "10165450": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground spur leaves the road, not on a pad."
+  },
+  "10165460": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside a small loop by the reservoir, not on a pad."
+  },
+  "10165480": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+  },
+  "10165500": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the paved turn-off from the highway, not on a pad."
+  },
+  "10165505": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside the campground loop by the reservoir, not on a pad."
+  },
+  "10165545": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground road at the edge of the forest, not on a pad."
+  },
+  "10165550": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+  },
+  "10165555": {
+   "call": "hold",
+   "note": "The listing is a whole tent campground booked as one site, and its point sits on the junction where the lane to the riverside lot leaves the highway, not on a pad."
+  },
+  "10165571": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+  },
+  "10165576": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a junction of dirt roads on the open prairie, not on a pad."
+  },
+  "10165616": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction at the entrance to the campground loop, not on a pad."
+  },
+  "10165641": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+  },
+  "10165651": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground lane by a small clearing, not on a pad."
+  },
+  "10165666": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+  },
+  "10165676": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the highway, not on a pad."
+  },
+  "10165681": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a pull-off beside the highway, not on a pad; the campground loop is 100 m west."
+  },
+  "10165701": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside a campground loop, on no pad or road."
+  },
+  "10165711": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground lane just off the highway, not on a pad."
+  },
+  "10165726": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+  },
+  "10165731": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+  },
+  "10165736": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+  },
+  "10165746": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction of the valley road and the campground road, not on a pad; the campground's own lanes east of the road aren't drawn."
+  },
+  "10165751": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction below the campground, not on a pad."
+  }
+ }
+}

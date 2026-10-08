@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-233289",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.5236745,
+     38.2130476
+    ],
+    [
+     -107.523526,
+     38.2131107
+    ],
+    [
+     -107.5233662,
+     38.2131918
+    ],
+    [
+     -107.5232292,
+     38.2132728
+    ],
+    [
+     -107.5232177,
+     38.2133629
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the driveway from the highway up to the guard station, plain on the photo. Left out: nothing else visible."
+}

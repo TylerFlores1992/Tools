@@ -1,0 +1,220 @@
+{
+ "version": 1,
+ "wave": 35,
+ "by": "Claude (rollout colorado)",
+ "on": "2026-10-08",
+ "looks": {
+  "118992": {
+   "call": "good",
+   "note": "The pin sits on the cabin's roof beside the gravel lot, and the drawn road from the highway runs into the lot 20 m from it."
+  },
+  "231865": {
+   "call": "good",
+   "note": "The pin sits in the group site's clearing by its shelter and tables, and the drawn spur off the campground road ends 25 m east of it."
+  },
+  "231872": {
+   "call": "good",
+   "note": "The pin sits on the paved loop of the group site's parking area, and the drawn road reaches the loop's north end; the loop itself isn't drawn. The listing's own point is 490 m off, in the meadow, and the photo agrees with the unit's point."
+  },
+  "231873": {
+   "call": "good",
+   "note": "The pin sits in the open clearing of the group site, and the drawn road runs through the clearing."
+  },
+  "232345": {
+   "call": "good",
+   "note": "The pin sits beside the group site's shelter in the clearing, and the drawn road passes 10 m south of it. The listing's own point is 330 m off; the photo agrees with the unit's point."
+  },
+  "233213": {
+   "call": "good",
+   "note": "The pin sits at the end of the drawn lane, beside the cabin in the forest clearing at Mesa Lakes."
+  },
+  "233216": {
+   "call": "good",
+   "note": "The pin sits on a cabin roof among the Mesa Lakes cabins, and the drawn lane passes 30 m north of it. The listing's own point is 1.5 km off; the photo agrees with the unit's point."
+  },
+  "233232": {
+   "call": "good",
+   "note": "The pin sits on the guard station's roof in the open meadow; the track from the drawn road to its yard showed and wasn't drawn. Traced that track from the photo."
+  },
+  "233289": {
+   "call": "good",
+   "note": "The pin sits at the guard station's door in a small clearing by the highway; the driveway up from the highway showed and wasn't drawn. Traced that driveway from the photo."
+  },
+  "233318": {
+   "call": "good",
+   "note": "The pin sits in the group site's open clearing above the river, and the drawn loop runs round the clearing."
+  },
+  "233731": {
+   "call": "good",
+   "note": "The pin sits beside the cabin, and the drawn drive from the road passes 20 m east of it."
+  },
+  "233804": {
+   "call": "hold",
+   "note": "The pin sits in unbroken forest with no clearing or building within 100 m, and the nearest drawn road is 116 m away."
+  },
+  "233805": {
+   "call": "hold",
+   "note": "The pin sits in unbroken forest with no clearing or building within 100 m, and the nearest drawn road is 150 m away."
+  },
+  "233808": {
+   "call": "good",
+   "note": "The pin sits on the cabin's roof, and the drawn drive from the road ends 25 m south-west of it at a parking spot. The listing's own point is 760 m off; the photo agrees with the unit's point."
+  },
+  "233812": {
+   "call": "good",
+   "note": "The pin sits on the cabin among the Lake Isabel buildings, and a drawn lane ends 10 m from it."
+  },
+  "233868": {
+   "call": "usable",
+   "note": "The pin sits among the guard station's buildings in a small clearing, but no drawn road reaches it: the dirt track that serves it runs north out of the frame, and the drawn road is 170 m south-west across open ground."
+  },
+  "233927": {
+   "call": "hold",
+   "note": "The pin sits in the forest 30 m south of a small blue-roofed building beside the drawn road; the building may be the guard station, but the pin itself is on nothing."
+  },
+  "233932": {
+   "call": "hold",
+   "note": "The pin sits in a small grassy clearing in unbroken forest with no building, and the nearest drawn road is 190 m away; nothing on the photo is plainly a ranch."
+  },
+  "233941": {
+   "call": "hold",
+   "note": "The pin sits on open scrub 15 m from the campground road, not on any pad or clearing that is plainly a group tent area."
+  },
+  "233979": {
+   "call": "hold",
+   "note": "The pin sits on open sagebrush flat with no building, 25 m from a drawn track; the listing's own point is 1.5 km off, so neither point is plainly the guard station."
+  },
+  "234056": {
+   "call": "unsure",
+   "note": "The pin sits under the dense trees along the creek, 15 m east of where the drawn road ends at a small clearing; the canopy hides whether the group site is there. The listing's own point is 880 m off."
+  },
+  "234057": {
+   "call": "unsure",
+   "note": "The pin sits under the cottonwoods by the creek, 30 m north of where the drawn spur ends at a gravel clearing; a small structure may show under the trees, but the canopy hides it."
+  },
+  "234129": {
+   "call": "hold",
+   "note": "The pin (cabins 1 and 2) sits in unbroken forest 60 m from the drawn road, with no building or clearing showing."
+  },
+  "234197": {
+   "call": "usable",
+   "note": "The pin sits on the open, worn ground below the parking loop, a plausible group camp, but the drawn loop ends 70 m north and the tracks down to the pin aren't drawn. The listing's own point is 2.9 km off; the photo agrees with the unit's point."
+  },
+  "234211": {
+   "call": "hold",
+   "note": "The pin sits in dense forest 40 m south of the drawn road, while the open group area with its lanes lies just north-east; the pin isn't on it."
+  },
+  "234246": {
+   "call": "good",
+   "note": "The pin sits beside the guard station's building in its yard, and the drawn drive from the meadow ends at the yard 15 m away."
+  },
+  "234255": {
+   "call": "good",
+   "note": "The pin sits in the cabin's clearing beside its two buildings, and the drawn lane ends in the clearing 15 m away."
+  },
+  "234483": {
+   "call": "good",
+   "note": "The pin sits on the guard station's building in the meadow, and the drawn road ends at its yard 20 m south."
+  },
+  "234487": {
+   "call": "good",
+   "note": "The pin sits on the guard station's building in its clearing, and the drawn loop runs round it."
+  },
+  "234660": {
+   "call": "good",
+   "note": "The pin sits on the guard station's roof, and the drawn road from the south ends beside it."
+  },
+  "234667": {
+   "call": "good",
+   "note": "The pin sits on the cabin's roof, and the drawn drive from the highway passes 15 m west of it."
+  },
+  "234706": {
+   "call": "hold",
+   "note": "The pin sits on open grass beside the road through Platoro, with no building under it; cabins 1 and 2 share this exact point, so neither cabin is placed."
+  },
+  "234707": {
+   "call": "hold",
+   "note": "The pin sits on open grass beside the road through Platoro, with no building under it; cabins 1 and 2 share this exact point, so neither cabin is placed."
+  },
+  "234710": {
+   "call": "good",
+   "note": "The pin sits among the guard station's buildings under the cottonwoods, and the drawn road passes 25 m east of it."
+  },
+  "234792": {
+   "call": "good",
+   "note": "The pin sits beside the lookout on the summit clearing, and the drawn switchback road ends in a loop round it."
+  },
+  "247595": {
+   "call": "usable",
+   "note": "The pin sits between the two cabins of the cow camp in the open meadow, but no road is drawn: the dirt track that serves it shows 50 m east and runs out of the frame."
+  },
+  "247596": {
+   "call": "usable",
+   "note": "The pin sits on the guard station cabin in the meadow, but no road is drawn: the dirt track past it shows 10 m north and runs out of the frame both ways."
+  },
+  "10165115": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point is the listing's own point, on the road junction at the entrance; no site or pad is marked, so a location map would mislead."
+  },
+  "10165130": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the entrance, not on a pad; the campground's loop is 60 m south-west."
+  },
+  "10165240": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the entrance, not on a pad."
+  },
+  "10165255": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the top of the loop, not on a pad."
+  },
+  "10165270": {
+   "call": "hold",
+   "note": "The listing is a whole day-use-style area booked as one \"Standard\" site, and its point sits in the middle of a big gravel lot by the reservoir, not on a pad."
+  },
+  "10165280": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction in the forest; the parking area is 120 m east."
+  },
+  "10165295": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road through the forest, not on a pad; the campground's spurs show either side."
+  },
+  "10165330": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the entrance, not on a pad."
+  },
+  "10165335": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the entrance, not on a pad."
+  },
+  "10165390": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road up the campground, not on a pad."
+  },
+  "10165440": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction in the trees above the lake lots, not on a pad."
+  },
+  "10165455": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction among the lakeside sites, not on a pad."
+  },
+  "10165646": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction between the loops, not on a pad."
+  },
+  "10165661": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees beside the middle loop, not on a pad."
+  },
+  "10165686": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the entrance to the lakeside lots, not on a pad."
+  },
+  "10165716": {
+   "call": "hold",
+   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits at the entrance off the highway, not on a pad."
+  }
+ }
+}
