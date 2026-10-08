@@ -17,4 +17,22 @@ Setup (2026-10-08): network fine (every map host answers; Geofabrik still resets
   - 269838 Heybrook Lookout: pin on a highway pull-out (the trailhead), not the lookout.
 - Anything new: the unit pin (the campsite point) is sometimes off and the listing's own point right (Kentucky Camp, Fivemile Butte, Clear Lake), the reverse of Dimond O. Five other listing points 0.4 to 3.4 km off were on nothing, and their pins on the unit. Unsure is mostly canopy (cabins under firs). Some pins sit on the drawn road beside the cabin (Camp Four and Half, 30 m) or on a trailhead (Heybrook).
 
-STATUS: started (wave 27 next)
+## Wave 27 (us-west, units)
+- Built 88, failed 0 (22 min)
+- Check: ready 77, review 11, not drawn 0
+- First look: good 55, usable 9, hold 9, unsure 15
+- Traced: 234391 (Horse Prairie Cabin: the gravel drive from the Census road; moved once to sit within 3 m), 264411 (Green River Lake Lodge: the gravel lane from the campground road past the lodge). Both checked over the photo.
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 234268 Cub River Guard Station: pin on an open grassy slope, nothing that could be the station.
+  - 234293 Grizzly Ridge Yurt: pin in forest; the yurt plainly shows 80 m northeast at the end of the drawn loop.
+  - 234359 Whitetail Cabin: pin on bare badlands; the listing's own point (10 km west) is on a building at a road end.
+  - 234383 McGuire Mtn. Lookout: pin in unbroken forest, 500 m from any road; the listing's own point shows no lookout either.
+  - 234404 Post Creek Guard Station: pin in burned forest, no building, 120 m from the road.
+  - 234405 Forest Glen Guard Station: pin on a bare gravel flat by the highway; a building 30 m west may be it.
+  - 234429 Deer Ridge Lookout: pin in unbroken forest; the listing's own point (2.7 km) is on a building in a ridge-top clearing.
+  - 234609 Malad Summit Guard Station: pin in an empty field between houses; nothing plainly the station.
+  - 234661 Fall River Guard Station: pin in unbroken forest; a green-roofed building 130 m west at a lane's end is likely it.
+- Anything new: a winter (snow) photo at Windy Pass (234327). The same two failure modes as wave 26: the unit pin is off while the listing point is right (Whitetail, Deer Ridge), or the pin is 80 to 130 m off a building that plainly shows (Grizzly Ridge, Fall River). USGS photo requests were slow (one zoom failed twice before loading).
+
+STATUS: started (wave 28 next)

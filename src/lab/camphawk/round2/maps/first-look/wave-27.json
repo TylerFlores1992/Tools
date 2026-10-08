@@ -1,0 +1,360 @@
+{
+ "version": 1,
+ "wave": 27,
+ "by": "Claude (rollout west-units-a)",
+ "on": "2026-10-08",
+ "looks": {
+  "10040589": {
+   "call": "good",
+   "note": "The pin is on the cabin in a small clearing, and the drawn road ends at the yard beside it."
+  },
+  "10103111": {
+   "call": "usable",
+   "note": "The pin is on the lookout on the bare summit. The drawn Census road zigzags up the slope up to 30 m east of the visible road, which comes in from the southwest."
+  },
+  "10122832": {
+   "call": "usable",
+   "note": "The cabin is the building 40 m east of the pin; the drawn road stops 40 m south of it, and a visible lane runs the rest of the way."
+  },
+  "10132085": {
+   "call": "unsure",
+   "note": "The pin is at the end of the drawn road on the open slope, and no lookout building shows plainly at it."
+  },
+  "10156120": {
+   "call": "good",
+   "note": "The pin is on the cabin's green roof in the trees, and a drawn Census line passes 20 m north; the visible lane to the yard comes in from the drawn road to the west."
+  },
+  "10322605": {
+   "call": "good",
+   "note": "No road is drawn, but the pin is beside the lookout on the open ridge top, and a drawn trail passes 20 m away."
+  },
+  "118991": {
+   "call": "unsure",
+   "note": "The pin sits on the drawn road across the open summit meadow, and no lookout building shows at it or nearby in the zoom."
+  },
+  "232292": {
+   "call": "good",
+   "note": "The pin is on the cabin among its buildings in the clearing by the creek, and the drawn road ends at the yard 25 m south."
+  },
+  "233104": {
+   "call": "good",
+   "note": "The pin is beside the bunkhouse's small buildings at the meadow's edge, and the drawn road runs past it. The listing's own point, 870 m south, is in unbroken forest."
+  },
+  "233177": {
+   "call": "good",
+   "note": "The pin is on the ranch house, and a drawn lane comes within 40 m; the drive circling the house shows but isn't drawn."
+  },
+  "233208": {
+   "call": "good",
+   "note": "The pin is in the guard station's yard between its two buildings in the meadow, and the drawn spur off the valley road ends 15 m away. The listing's own point, 535 m northeast, is in unbroken forest."
+  },
+  "233226": {
+   "call": "good",
+   "note": "The pin is on the group site's gravel loop in the open juniper, and the drawn loop and spur off the road follow it."
+  },
+  "233240": {
+   "call": "good",
+   "note": "The pin is on the lookout's small building on the open slope, and the drawn road loops round to it."
+  },
+  "233242": {
+   "call": "good",
+   "note": "The pin is beside the cabin's small buildings in the open pines, where the drawn Census roads meet."
+  },
+  "233249": {
+   "call": "good",
+   "note": "The pin is on the guard station's cabin just above the highway, and the drawn side road passes 30 m east with its visible drive to the yard."
+  },
+  "233256": {
+   "call": "unsure",
+   "note": "The pin is in open pine forest 70 m past where the drawn Forest Service spur ends, and no group-site clearing or pad shows plainly at it."
+  },
+  "233296": {
+   "call": "good",
+   "note": "The pin is on the lookout on the open summit, and the drawn road ends at it."
+  },
+  "233337": {
+   "call": "good",
+   "note": "The pin is on the homestead's house at the foot of the hill, and the drawn lane from the river road passes right beside it."
+  },
+  "233348": {
+   "call": "usable",
+   "note": "The pin is on a dark-roofed cabin in the trees above the lakeshore, but the drawn road is 40 m south and the lanes up to it that show among the trees aren't drawn."
+  },
+  "233887": {
+   "call": "good",
+   "note": "The pin is on the cabin by the creek's trees, and the drawn loop off the ranch road comes within 30 m."
+  },
+  "234125": {
+   "call": "good",
+   "note": "The pin is on the lookout cabin among its outbuildings in the clearing, and the drawn spur off the road ends at it."
+  },
+  "234126": {
+   "call": "unsure",
+   "note": "The pin is in shadowed conifer forest beside the drawn Census road, and only a faint light patch shows where a building might be."
+  },
+  "234138": {
+   "call": "good",
+   "note": "The pin is on the cabin in the open pines, and the drawn road up through the clearing passes beside it."
+  },
+  "234155": {
+   "call": "good",
+   "note": "The pin is beside the lookout's white building in the forest clearing, and the drawn road ends at it. The listing's own point, 970 m east, is in unbroken forest."
+  },
+  "234159": {
+   "call": "good",
+   "note": "The pin is on the lookout at the end of the drawn road on the open ridge."
+  },
+  "234173": {
+   "call": "good",
+   "note": "The pin is on the lookout's site at the end of the drawn spur, in a gravel clearing with buildings beside it."
+  },
+  "234175": {
+   "call": "unsure",
+   "note": "Full canopy: the pin is in dense forest 15 m east of a drawn Forest Service road that doesn't show on the photo, and no cabin shows."
+  },
+  "234179": {
+   "call": "unsure",
+   "note": "Full canopy: the pin is in dense forest at the end of a drawn lane, and no building shows."
+  },
+  "234185": {
+   "call": "good",
+   "note": "The pin is beside the lookout cabin and its outbuildings on the open ridge, and the drawn road ends at them."
+  },
+  "234268": {
+   "call": "hold",
+   "note": "The pin is on an open grassy slope with no building, above the canyon road. Nothing in the zoom is plainly the guard station."
+  },
+  "234269": {
+   "call": "good",
+   "note": "The pin is on the guard station's building in the clearing, and the drawn loop drive off the road passes 15 m north of it."
+  },
+  "234271": {
+   "call": "good",
+   "note": "The pin is on the lookout cabin among its outbuildings on the open ridge, and the drawn road passes right beside it."
+  },
+  "234293": {
+   "call": "hold",
+   "note": "The pin is in unbroken forest. The yurt, a round structure, plainly shows 80 m northeast at the end of the drawn loop, so the pin misses it."
+  },
+  "234305": {
+   "call": "good",
+   "note": "The pin is on the cabin across the river from the parking area, and the drawn road ends at the lot 25 m west; the other two buildings by the lot are likely its neighbors."
+  },
+  "234322": {
+   "call": "good",
+   "note": "The pin is on the cabin among the ranch buildings in the aspens, and the drawn road ends 30 m from it."
+  },
+  "234327": {
+   "call": "usable",
+   "note": "The photo is a winter one: the pin is beside a small structure in the snow among scattered trees. No road is drawn and the nearest drawn trail is 340 m off; the tracks in the snow aren't traced."
+  },
+  "234335": {
+   "call": "unsure",
+   "note": "Full canopy: the pin is in unbroken dark forest with no building or clearing, and the nearest drawn road is 640 m away (a drawn trail is 90 m off)."
+  },
+  "234340": {
+   "call": "good",
+   "note": "The pin is in a small clearing beside the cabin, 15 m east of where the drawn spur off the highway ends."
+  },
+  "234341": {
+   "call": "good",
+   "note": "No road reaches it, but the pin is on the lookout at the top of the open ridge, with a drawn trail passing 4 m away."
+  },
+  "234350": {
+   "call": "unsure",
+   "note": "The pin is under the trees at the lakeshore, 10 m from where the drawn lane ends, and no cabin shows plainly."
+  },
+  "234356": {
+   "call": "good",
+   "note": "The pin is beside the guard station's buildings at the meadow's edge, and the drawn drive off the valley road runs to them."
+  },
+  "234358": {
+   "call": "good",
+   "note": "The pin is on the lookout on the open butte, and the drawn road climbs to within 35 m of it along the visible track."
+  },
+  "234359": {
+   "call": "hold",
+   "note": "The pin is on bare badland slopes with no building and the nearest drawn road 580 m off. The listing's own point, 10 km west, is at the end of a gravel road in grassland with a small building, so the photo agrees with the listing, not the pin."
+  },
+  "234360": {
+   "call": "good",
+   "note": "The pin is beside the lookout's building in its small clearing, at the drawn loop that ends the road up the hill."
+  },
+  "234364": {
+   "call": "good",
+   "note": "The pin is on the cabin in its fenced yard in the open meadow, and the drawn spur off the road reaches it."
+  },
+  "234368": {
+   "call": "unsure",
+   "note": "The pin is on an open grassy slope at the forest edge, with no building plainly at it, and the nearest drawn road is 240 m off (a drawn trail is 12 m off)."
+  },
+  "234377": {
+   "call": "unsure",
+   "note": "The pin is under burned and standing forest 15 m past the end of a short drawn spur off the road, and no cabin shows plainly."
+  },
+  "234383": {
+   "call": "hold",
+   "note": "The pin is in unbroken forest on a slope with no lookout or clearing, and the nearest drawn road is 500 m off. The listing's own point, 860 m northwest, is on an open, partly snow-covered ridge with no lookout plainly shown either."
+  },
+  "234386": {
+   "call": "good",
+   "note": "No road is drawn, but the pin is at the top of the open summit clearing, where the lookout's site shows, with a drawn trail 40 m off."
+  },
+  "234390": {
+   "call": "good",
+   "note": "The pin is on the lookout's white building at the edge of the clearing, and a drawn spur off the loop road ends 25 m north of it."
+  },
+  "234391": {
+   "call": "good",
+   "note": "The pin is on the cabin in the open grassland. The drawn Census line passed 55 m south across open ground, so the gravel drive from it to the cabin, plain on the photo, is traced."
+  },
+  "234392": {
+   "call": "good",
+   "note": "The pin is on the cabin at the forest edge, and the drawn road passes right beside it."
+  },
+  "234397": {
+   "call": "good",
+   "note": "The pin is on the cabin at the meadow's edge, and the drawn spur off the Census road comes within 30 m of it."
+  },
+  "234404": {
+   "call": "hold",
+   "note": "The pin is in open, burned pine forest with no building or clearing, and the nearest drawn road is 120 m off. Nothing in the zoom is plainly the guard station."
+  },
+  "234405": {
+   "call": "hold",
+   "note": "The pin is on a bare gravel flat beside the highway, with no building. A building 30 m to the west, across the creek, may be the station. The listing's own point, 1.3 km southeast, is in burned forest."
+  },
+  "234409": {
+   "call": "good",
+   "note": "The pin is on the cabin and its outbuildings at the end of the drawn gravel loop off the road."
+  },
+  "234410": {
+   "call": "unsure",
+   "note": "The pin is on a small building under the trees between two drawn Census lanes, but several cabins sit nearby and none is plainly this one; the drawn lanes run up to 20 m off the visible ones."
+  },
+  "234413": {
+   "call": "good",
+   "note": "The pin is on the cabin's white roof, with the drawn road 40 m north and the visible drive in from it. The listing's own point, 400 m west, is on a meadow track with nothing on it."
+  },
+  "234414": {
+   "call": "good",
+   "note": "The pin is on the cabin in its clearing, and the drawn drive off the valley road ends at it."
+  },
+  "234418": {
+   "call": "good",
+   "note": "The pin is on the cabin beside the gravel yard at the end of the drawn road up the valley."
+  },
+  "234419": {
+   "call": "good",
+   "note": "The pin is on one of the cottages inside the drawn loop at the old nursery site, and the loop passes 15 m from it."
+  },
+  "234422": {
+   "call": "good",
+   "note": "The pin is on the cabin at the south end of the clearing, and the drawn road from the campground loops ends beside it."
+  },
+  "234423": {
+   "call": "unsure",
+   "note": "The pin is on the open summit inside the drawn switchback, but no lookout structure shows plainly at it; the drawn Census switchbacks run up to 15 m off the visible track."
+  },
+  "234425": {
+   "call": "usable",
+   "note": "The pin is at the forest edge where a short visible drive meets the drawn Forest Service road, and a small building may show there, but the drawn road runs through the trees 20 to 30 m east of the visible gravel road along the meadow."
+  },
+  "234427": {
+   "call": "good",
+   "note": "The pin is on the guard station's main building among its outbuildings, and the drawn road through the yard passes beside it."
+  },
+  "234428": {
+   "call": "good",
+   "note": "The pin is on the lookout's small building on the open ridge, and the drawn road along the ridge passes 15 m north."
+  },
+  "234429": {
+   "call": "hold",
+   "note": "The pin is in unbroken forest on a slope with no lookout, and the nearest drawn road is 230 m off. The listing's own point, 2.7 km away, is on a small white building in a ridge-top clearing, so the photo agrees with the listing, not the pin."
+  },
+  "234433": {
+   "call": "good",
+   "note": "The pin is beside the lookout on the open, bare summit, and the drawn road ends 20 m west of it."
+  },
+  "234436": {
+   "call": "good",
+   "note": "The pin is on the lookout's building on the summit's bare top, inside the small drawn loop that ends the road up the mountain."
+  },
+  "234447": {
+   "call": "usable",
+   "note": "The pin is on the lookout in the small summit clearing, but no road or trail is drawn within 700 m. A cleared line runs west from it through the forest, which may be its access, but it can't be followed through the trees."
+  },
+  "234461": {
+   "call": "unsure",
+   "note": "The pin is in the open meadow 30 m west of the drawn loop, where nothing stands. The station's buildings are scattered around it (one 60 m north, a red-roofed one 110 m southeast), and none is plainly the bunkhouse."
+  },
+  "234506": {
+   "call": "good",
+   "note": "The pin is on the cabin beside the station's yard, and the drawn road up the meadow passes 30 m west."
+  },
+  "234568": {
+   "call": "usable",
+   "note": "The pin is in open grass among the station's small buildings, one of them 15 m west. The drawn road passes 50 m north, and the visible track from it down to the buildings isn't drawn."
+  },
+  "234600": {
+   "call": "usable",
+   "note": "The pin is in a small bare clearing among the pines, where a dark structure shows, at the end of a drawn spur that stops 40 m east of it; the summit has no plain lookout tower in the photo."
+  },
+  "234609": {
+   "call": "hold",
+   "note": "The pin is in an empty field between private-looking houses with no building on it, and the drawn roads are 80 m off. The listing's own point, 600 m west, is beside a building at the end of a drawn lane in the trees. Nothing here is plainly the guard station."
+  },
+  "234659": {
+   "call": "good",
+   "note": "The pin is beside the cabin and its outbuildings at the creek, between two drawn roads that pass within 20 m."
+  },
+  "234661": {
+   "call": "hold",
+   "note": "The pin is in unbroken forest with no building, 64 m from any drawn road. A green-roofed building 130 m west, where a drawn lane ends, is likely the guard station."
+  },
+  "234680": {
+   "call": "good",
+   "note": "The pin is on the cabin in its clearing among the junipers, and the drawn road ends at it."
+  },
+  "234682": {
+   "call": "usable",
+   "note": "The pin is under the trees 10 m south of one of the station's buildings, and a drawn lane comes within 30 m. The station's several buildings are spread over 60 m, so which one is the unit isn't plain."
+  },
+  "250019": {
+   "call": "good",
+   "note": "The pin is on the bunkhouse just west of the canyon road, and the drawn drive behind it passes beside it."
+  },
+  "250027": {
+   "call": "good",
+   "note": "The pin is on the house's metal roof, and the drawn lane passes 15 m north of it."
+  },
+  "250044": {
+   "call": "good",
+   "note": "The pin is on the group site's cluster of tents and trailers by the lakeshore, inside the drawn loop off the campground road."
+  },
+  "251546": {
+   "call": "good",
+   "note": "The pin is on the lookout's white building at the summit's forest edge, and the drawn road switchbacks up to it."
+  },
+  "251565": {
+   "call": "good",
+   "note": "The pin is on the guard station's buildings in the yard by the canyon road, and the drawn drive off the road reaches it."
+  },
+  "251905": {
+   "call": "unsure",
+   "note": "Full canopy: the pin is in larch and fir forest between the drawn river road and a drawn lane 20 m north, and no yurt shows through the trees."
+  },
+  "253500": {
+   "call": "good",
+   "note": "The pin is beside the cabin's white roof at the forest edge, with a short visible pull-in to the drawn road 25 m north."
+  },
+  "264411": {
+   "call": "good",
+   "note": "The pin is on the lodge above the lakeshore. The drawn campground road passed 75 m west, so the gravel lane from it past the lodge, plain in the open, is traced."
+  },
+  "251709": {
+   "call": "unsure",
+   "note": "The pin is under the cottonwoods beside the dirt clearing where the drawn park road ends 35 m northeast, and the group site's pads can't be seen through the trees."
+  }
+ }
+}

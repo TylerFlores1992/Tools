@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-264411",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.8593556,
+     43.3125471
+    ],
+    [
+     -109.859294,
+     43.3124661
+    ],
+    [
+     -109.85922,
+     43.312394
+    ],
+    [
+     -109.8591338,
+     43.312322
+    ],
+    [
+     -109.8590228,
+     43.312268
+    ],
+    [
+     -109.8588749,
+     43.312232
+    ],
+    [
+     -109.8587147,
+     43.3122185
+    ],
+    [
+     -109.8585421,
+     43.312223
+    ],
+    [
+     -109.8584065,
+     43.31225
+    ],
+    [
+     -109.8582833,
+     43.312286
+    ],
+    [
+     -109.85816,
+     43.312331
+    ],
+    [
+     -109.8580491,
+     43.312367
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane from the campground road past the lodge, plain in the open, as far as the lodge. Left out: where it goes on east past the frame of the zoom, and the lodge's parking pad."
+}
