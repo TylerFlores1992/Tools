@@ -5,10 +5,14 @@
 import wave00 from "./decisions/wave-00.json" with { type: "json" };
 import wave01 from "./decisions/wave-01.json" with { type: "json" };
 import wave02 from "./decisions/wave-02.json" with { type: "json" };
+import wave22 from "./decisions/wave-22.json" with { type: "json" };
+import wave23 from "./decisions/wave-23.json" with { type: "json" };
 import wave24 from "./decisions/wave-24.json" with { type: "json" };
 import wave25 from "./decisions/wave-25.json" with { type: "json" };
 import wave33 from "./decisions/wave-33.json" with { type: "json" };
 import wave34 from "./decisions/wave-34.json" with { type: "json" };
+import wave35 from "./decisions/wave-35.json" with { type: "json" };
+import wave36 from "./decisions/wave-36.json" with { type: "json" };
 import wave39 from "./decisions/wave-39.json" with { type: "json" };
 
 export type Decision = "approved" | "roads" | "hidden";
@@ -16,7 +20,7 @@ export const DECISIONS: Decision[] = ["approved", "roads", "hidden"];
 export type DecisionRecord = { id: string; decision: Decision; by: string; on: string; note: string };
 export type DecisionFile = { version: 1; wave: number; source: string; decisions: DecisionRecord[] };
 
-export const DECISION_FILES = [wave00 as DecisionFile, wave01 as DecisionFile, wave02 as DecisionFile, wave24 as DecisionFile, wave25 as DecisionFile, wave33 as DecisionFile, wave34 as DecisionFile, wave39 as DecisionFile];
+export const DECISION_FILES = [wave00 as DecisionFile, wave01 as DecisionFile, wave02 as DecisionFile, wave22 as DecisionFile, wave23 as DecisionFile, wave24 as DecisionFile, wave25 as DecisionFile, wave33 as DecisionFile, wave34 as DecisionFile, wave35 as DecisionFile, wave36 as DecisionFile, wave39 as DecisionFile];
 
 /** Every recorded decision by map id (a later wave's file wins). */
 export const RECORDED: Record<string, DecisionRecord> = Object.fromEntries(

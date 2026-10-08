@@ -845,6 +845,7 @@ in here.
 | Batch | Waves | Maps | Passed | Held | Final check |
 |---|---|---|---|---|---|
 | northeast-api | 24, 39, 25, 33, 34 | 283 | 37 | 246 | 18 looked at over the photo (all 5 traces, all 3 splits, 10 sampled): agreed with all 18 |
+| colorado | 22, 23, 35, 36 | 232 | 131 | 101 | 30 looked at (all 8 traces, all 5 splits, 17 sampled): agreed with all 30 |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -864,6 +865,24 @@ in here.
     or the owner's call to pass on the map alone.
   - Four Alaska listings can't be drawn (every site on one spot). Joe T. Fallini (Nevada) spans
     4,974 km: its listing's points are wrong.
+
+**colorado (2026-10-08):**
+- **Waves 22 and 23 (Colorado, multi):** 126 built. First look: 59 good, 45 usable, 17 hold,
+  5 unsure.
+  - 6 traced. 5 split calls kept; 1 dropped because the area rules couldn't honour it.
+  - **Census (TIGER) roads often come out as angular outlines that follow nothing**, as do a few
+    OSM ones.
+  - **A single RIDB point hundreds of km from the rest** (231864: 260 km; 232364: 870 km) makes the
+    build show the listing as areas over a useless frame. Both held. The outlier rule should drop
+    such a point; not built.
+- **Waves 35 and 36 (Colorado, single units):** 106 built. First look: 23 good, 4 usable,
+  77 hold, 2 unsure.
+  - **New failure mode: 65 of the 106 "single units" are whole campgrounds booked as one
+    "Standard" site** (Pike–San Isabel and San Juan). Their point is a placeholder on an entrance
+    road or a junction, never on a pad.
+  - The unit check passes them, so only the photo catches them. All held.
+  - They need a population rule (one site named "Standard" is a campground, not a unit) and the
+    campground's own map, or a "whole campground" design.
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
