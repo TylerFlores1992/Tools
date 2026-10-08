@@ -6,7 +6,7 @@
  "looks": {
   "10060948": {
    "call": "hold",
-   "note": "Only the highway is drawn. The campground's paved lanes show plainly through the firs, and Sites 001 to 010 sit on their spurs, but where they meet the highway is hidden under trees, so they weren't traced."
+   "note": "Only the highway is drawn. Zoomed, the paved lanes show only in pieces (the lane past 005 and 006, the loop by 008 and 009, the ends of the lanes to 001, 007 and 010); where they join each other and the highway is under the firs, so a trace would leave unconnected islands, and none was made."
   },
   "261804": {
    "call": "good",
@@ -126,7 +126,7 @@
   },
   "232311": {
    "call": "usable",
-   "note": "Census roads: the lane past 013 to 018 and the road follow the visible gravel. The north loop that 001 to 008 sit around shows plainly and isn't drawn (the road is drawn 20 m west of it), and 009 to 012 sit 30 to 60 m off the road in the meadow to the north."
+   "note": "Census roads: the lane past 013 to 018 and the road follow the visible gravel. The north loop that 001 to 008 sit around shows, but zoomed it breaks into gravel patches between long tree shadows with no continuous line to place to 3 m, so it wasn't traced; the drawn road runs 20 m west of it. 009 to 012 sit 30 to 60 m off the road in the meadow to the north."
   },
   "232321": {
    "call": "unsure",
@@ -206,7 +206,7 @@
   },
   "233835": {
    "call": "usable",
-   "note": "The road up the meadow follows the visible gravel, and 002, 004 to 006, 008, 009, 011, 014, 018, 020 to 022, 024, 026, 027 and 029 to 032 sit by it. 003, 007, 010, 012, 013, 016, 017, 019, 023, 025 and 028 sit 20 to 40 m out on the angled spurs into the trees, which show plainly and aren't drawn."
+   "note": "The road up the meadow follows the visible gravel, and most sites sit by it. Now traced: the angled spurs to 010, 013 and 017 off the west side, the lane past 019 toward the south, and the spurs to 023 and 025 off the east side. Still missing: the spurs to 003, 007, 012, 016 and 028, too faint or short to place; those sites sit 20 to 40 m out."
   },
   "233864": {
    "call": "unsure",
@@ -326,7 +326,7 @@
   },
   "251567": {
    "call": "hold",
-   "note": "Only the road along the lake is drawn. Zoomed, 006 to 018 sit across an open gravel flat under scattered pines 30 to 120 m from it, with no lane clear enough to trace."
+   "note": "Only the road along the lake is drawn. Looked at again for tracing: 006 to 018 sit across an open gravel flat under scattered pines 30 to 120 m from the road, with no lane line on the flat, so nothing could be traced."
   },
   "251583": {
    "call": "unsure",

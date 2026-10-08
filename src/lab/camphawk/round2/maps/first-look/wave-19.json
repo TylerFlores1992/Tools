@@ -58,7 +58,7 @@
   },
   "251160": {
    "call": "usable",
-   "note": "The Park Service's two loops follow the visible lanes, and the sites on them fit. Inside the loops, 001 to 016, 043 and the south row (055 to 065) sit on the dirt lanes that cross the grass, which aren't drawn."
+   "note": "The Park Service's two loops follow the visible lanes, and the sites on them fit. Inside the loops, 001 to 016, 043 and the south row (055 to 065) sit beside narrow dirt tracks across the grass; zoomed, these radiate from a small building like paths and are too faint and narrow to place, so they weren't traced."
   },
   "251865": {
    "call": "hold",
@@ -82,7 +82,7 @@
   },
   "232540": {
    "call": "hold",
-   "note": "The perimeter road and the lane past 35 to 48 fit, but the whole west block (49 to 75) has no road drawn, where several lanes show plainly between the trees, and the south loop's lanes past 07 to 27 are only partly drawn."
+   "note": "Now traced: the paved lane past 37 to 48 (the source's line ran about 10 m east of it, across the pads, and still does) and the paved lanes in the south-east past 15 to 24. Still held: the whole west block (49 to 75) shows only as pad clearings under the trees with no lane line to follow, so over a third of the sites have no road, and the lanes past 07 to 13 aren't drawn."
   },
   "232542": {
    "call": "usable",
@@ -114,7 +114,7 @@
   },
   "233425": {
    "call": "hold",
-   "note": "The whole C area (C001 to C114) has no road drawn, though its gravel lanes show plainly through the trees; only the highway past it is drawn. The B row (B002 to B008) sits on its lane."
+   "note": "The whole C area (C001 to C114) has no road drawn; only the highway past it is. Zoomed for tracing, its gravel lanes are a dense web between the trees, with many short pull-ins and partly hidden joins, too big to retrace reliably from the gridded photo in this pass; it needs the tracing tool. The B row (B002 to B008) sits on its lane."
   },
   "233432": {
    "call": "usable",
@@ -130,7 +130,7 @@
   },
   "233441": {
    "call": "hold",
-   "note": "No roads are drawn, though every lane of the A, B and C loops shows plainly on the open point, and A029 is placed 8 km south-east on the far shore, which stretches Loop A's area over 8 km. Zoomed, the other sites sit on the visible pads."
+   "note": "No roads are drawn, though every lane of the A, B and C loops shows plainly on the open point, and A029 is placed 8 km south-east on the far shore, which stretches Loop A's area over 8 km. Not traced in this pass: the stray A029 point holds the map whatever is traced, so the lanes are left for after the point is fixed; zoomed, the other sites sit on the visible pads."
   },
   "233449": {
    "call": "good",
@@ -153,8 +153,8 @@
    "note": "Only the entry road and two small loops are drawn. The north block (11 to 27), the west row (35 to 47) and the riverside P sites sit on gravel lanes that show between the trees but aren't drawn, so most sites are far from any road."
   },
   "233468": {
-   "call": "hold",
-   "note": "Split into six areas, one per point, which follow the clusters well. But only the entry roads are drawn: the lanes past every site on the four points show plainly and none is drawn."
+   "call": "usable",
+   "note": "Split into six areas, one per point, which follow the clusters well. The source's roads (farm tracks in the field) are replaced by a trace from the photo of every road on the points: the west loop and its lanes, the lane past 049 to 058, the road past 038 to 048, the loop round 001 to 037 with its lanes past 005 to 029, the loop and oval past 095 to 117, the lane past 118 to 130, and the two stems past 131 to 165. Every site sits by a traced road; only the short pull-ins and the lane through the trees to 068 are left out."
   },
   "233471": {
    "call": "hold",
@@ -217,8 +217,8 @@
    "note": "The Census roads follow the main lanes, and most sites sit on pull-ins beside them. The short lanes between the drawn ones (past 017 to 023, 029 to 033, 056 to 061 and 076 to 082) show through the trees but aren't drawn, and the west row (001 to 012, 116 to 122) sits 20 to 40 m off any line."
   },
   "233547": {
-   "call": "hold",
-   "note": "Three areas along the shore. Zoomed on 001 to 057, the drawn road cuts across the grass 30 to 60 m from the visible pavement, and none of the lanes to the sites (001 to 022, 023 to 042, 043 to 057) is drawn, though they show plainly."
+   "call": "usable",
+   "note": "Three areas along the shore. The source's roads, 30 to 60 m off the pavement, are replaced by a trace from the photo: the dam road, the two lanes past 001 to 022, the lane and loop past 023 to 033, the lake road and the lane past 043 to 050, the loops past 058 to 084, and the access road, shore lane and oval past 085 to 105. The sites sit by the traced roads; the short pull-ins and the pull-through lanes beside 043 to 047 are left out."
   },
   "233551": {
    "call": "usable",
@@ -342,7 +342,7 @@
   },
   "233786": {
    "call": "hold",
-   "note": "Two areas on either side of the dam. Zoomed, the Census loops run 10 to 20 m off the visible lanes: 1 to 20 sit on a lane south of the drawn loop that isn't drawn, 21 to 31 on the north loop's outer edge, and 43 to 47 sit by lanes the west loop misses."
+   "note": "Two areas on either side of the dam. Zoomed, the Census loops run 10 to 20 m off the visible lanes: 1 to 20 sit on a lane south of the drawn loop, 21 to 31 on the north loop's outer edge, and 43 to 47 by lanes the west loop misses. Not retraced: the north loop and the lanes past 33 to 47 run under the trees, so the roads can't be replaced from the photo."
   },
   "255134": {
    "call": "usable",

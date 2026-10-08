@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-156340",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout trace-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -91.5288085,
+     41.7200435
+    ],
+    [
+     -91.5287664,
+     41.720021
+    ],
+    [
+     -91.5287304,
+     41.719985
+    ],
+    [
+     -91.5287003,
+     41.7199399
+    ],
+    [
+     -91.5286859,
+     41.7199039
+    ],
+    [
+     -91.5286607,
+     41.7198814
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved spur from the west leg to E13. The riverside row (E14 to E19) sits under the trees along the riprap with no lane showing, so nothing was traced there."
+}
