@@ -24,13 +24,23 @@ the area split: `src/lab/camphawk/round2/maps/areas.ts` (tested in `areas.test.m
   the useful thing.
 
 ## How areas are found (`splitAreas`, not a design choice)
-- **Fits in 1.5 km** (the check's spread limit): one map, as today.
-- **Sites named by loop** ("A001", "F12"): whole loops, merged in letter order while they fit in 1 km.
-  A loop is never cut in two.
+- **Fits in 1.5 km:** one map, as today, **unless a person marks it a split listing** (`oneMap: 0`).
+  - Measured on waves 1 and 2 after the first looks: no span separates split listings from big
+    campgrounds.
+  - At 1.5 km it catches 14 of the 29 the photo called split and splits 2 of the usable maps; at
+    1.2 km, 19 and 6; at 800 m, 27 and 27.
+  - So the automatic default is conservative, and the first look's call (or the owner's) turns
+    the split on. This threshold was set after seeing results, and says so.
+- **Sites named by loop** ("A001", "F12"): whole loops in order along the listing, merged while
+  they fit in 1 km.
+  - If those areas still overlap on the ground (Diamond Lake's G, H and K loops are parallel rows
+    ~1.5 km long), the listing is cut by position instead and the areas are named by where they
+    are: "North end: loops A, B and D–F", "Middle 1…", "South end…".
 - **Otherwise:** groups by 200 m gaps; a group wider than 1 km is cut at its widest gap.
 - **Many small groups** (more than 12, or under 4 sites each on average): dispersed, a list rather than
   areas (Au Sable).
-- **Names come from the sites:** "Loop A", "Loops B–F", "Sites 001–043".
+- **Names come from the sites:** "Loop A", "Loops B–F", "Sites 001–043". Ranges that would
+  interleave ("Sites 003–060" beside "Sites 042–214") are named by position instead.
 
 ## Split listings: two directions
 **A · One area at a time.**
@@ -84,3 +94,31 @@ the area split: `src/lab/camphawk/round2/maps/areas.ts` (tested in `areas.test.m
   whole listing.
 - **Single units' check:** today every one reads "every site is on one spot" (not drawn). They need
   their own check: a point, and a road or trail within reach.
+
+## Critique (two rounds, a separate critic agent) and the recommendation
+| Direction | Round 1 | Round 2 |
+|---|---|---|
+| Split A · one area at a time | 6 | 7 |
+| Split B · every area in order | 4.5 | 4.5 |
+| Single A · map and facts side by side | 5.5 | 7 |
+| Single B · wide map, facts on it | 6.5 | 6.5 |
+
+**Recommended: split A, and single A** (with the terrain relief that started in B). The critic picked
+the same two.
+
+**What round 1 changed:**
+- outlines that hug each area's sites instead of boxes;
+- numbers outside the outlines, on leaders, with 44 px targets;
+- previous and next area buttons;
+- the unplaced sites counted;
+- on unit maps: north and scale, a pin whose tip is the point, the nearest trail and the nearest
+  road separately, lighter roads, and terrain.
+
+**What round 2 changed:** Diamond Lake cut by position, so no area overlaps another (tested), and
+the site count is the sites on the areas' maps.
+
+**Still open after two rounds (the ceiling):**
+- The relief is soft at some lookouts (USGS's 1/3 arc-second is the finest it serves there).
+- The gap between the overview and the list at 1440.
+- No inset showing the current area on the area map.
+- Au Sable (dispersed) has no river drawn.

@@ -704,9 +704,56 @@ Every map was looked at over the aerial photo; wide frames were zoomed on a grid
 - **The review page offered "Keep it hidden — not one campground" for maps held over missing
   roads.** The first offer now follows what held the map (`suggestedDecision`).
 
+**The owner decided wave 1 the same day:** groups A and B approved (31), C and D hidden (25),
+recorded in `maps/decisions/wave-01.json`.
+
+## Wave 2: the next 100 by reservations (2026-10-08)
+
+Built from the same export. **Nobody new is watched** (the 23 Recreation.gov campgrounds watched on
+CampHawk are the same as for wave 1), so all 100 are the most-reserved of each agency: Forest Service
+60, Army Corps 25, Park Service 12, BLM 3. Like wave 1, they were picked by demand, not at random.
+
+- **Built:** 100, no failures. Russian River (Alaska) was read from the OSM API, since no extract
+  covers Alaska.
+- **Roads by fit:** OpenStreetMap 72, Forest Service 12, Park Service 8, Census 7, none 1.
+
+| The check said | Good | Usable, roads incomplete | Not usable as drawn | Can't tell |
+|---|---|---|---|---|
+| Ready (51) | 20 | 18 | 12 | 1 |
+| Needs a look (48) | 10 | 15 | 21 | 2 |
+| Can't be drawn (1) | 0 | 0 | 1 | 0 |
+
+- **Usable after one look: 61 of 100 (51–70%).** Lower than wave 1 (75) and the sample (90).
+- **By agency:**
+  - Forest Service: 40 of 60;
+  - Park Service: 9 of 12;
+  - BLM: 3 of 3;
+  - **Army Corps: 9 of 25 (20–55%)**, again the weak group.
+- **The check passed 13 maps the photo doesn't support** (wave 1: 4). Most are Army Corps lake
+  campgrounds of 1.0–1.5 km whose areas sit on separate points of a lake. They fit the check's
+  1.5 km spread limit, and the numbers still overlap.
+- **Why 36 are held:**
+  - **19 are split listings** (several areas apart). This is the biggest single reason, so the
+    area design (below) matters most.
+  - The rest are missing roads under canopy.
+  - One, Clear Springs (TX), has a single site that RIDB places 2,300 km away, in California.
+    The other 100 sites are in one place; a build rule to drop such a point is not written yet.
+- **Traced:** Cochiti's west loop and Tule's north lanes, both checked over the photo.
+  - Manzanita and John F Kennedy were zoomed: no lane shows.
+  - Still worth a person's trace: Bakers Hole, Barton Flats, Seneca Shadows, French Camp,
+    North Campground (UT), Eastbank, Axtel.
+- **New:**
+  - Russian River (AK) has no NAIP photo (NAIP doesn't cover Alaska), so the call is "can't tell".
+  - Camp 4 (Yosemite) is walk-in, so it has no campground roads by design.
+
+### Split listings and single units: designed (lab comps)
+Contract, critique and measurements: `docs/design/campground-maps-areas.md`. Comps:
+`/private/camphawk/golden-hour/admin/site-maps/layouts`.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
-| Wave 1 (demand) | 100 | 75 | 0 (waiting) |
-| **Total** | **150 of 2,196** | **120** | **50** |
+| Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
+| Wave 2 (demand) | 100 | 61 | 0 (waiting) |
+| **Total** | **250 of 2,196** | **181** | **106** |
