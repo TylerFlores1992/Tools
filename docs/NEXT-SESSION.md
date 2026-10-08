@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-07, night (campground site maps: roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps; 45 of 50 can go live after one look, up from 38). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -35,7 +35,7 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
-## Campground site maps (2026-10-07, PR #19, merged)
+## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 **Start here for maps:** `docs/design/campground-maps-playbook.md` (the plan to finish every
 Recreation.gov and ReserveCalifornia map: rules, tooling to build, the wave loop, testing, doc
 updates, owner decisions; the `campground-maps` skill loads it on "complete the maps"). Then
