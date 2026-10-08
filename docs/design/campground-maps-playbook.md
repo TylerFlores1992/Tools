@@ -23,7 +23,7 @@ loads this) should be able to do the next step from here alone.
 |---|---|---|
 | Site points | RIDB, CC BY 4.0, open now | California State Parks' layer, **waiting on permission** |
 | Campgrounds to draw | 2,196 with two or more sites (+1,016 single units, §5) | 341 RC areas in CampHawk's catalog |
-| Built so far | Upper Pines (live); the 50-campground sample, **all 50 decided** (45 publishable, 5 hidden); **wave 1 (100 by demand) decided** (31 approved, 25 hidden); **wave 2 (100) built and looked at, waiting on the owner**; split-listing and single-unit maps designed as lab comps (2026-10-08) | Jedediah Smith, local only |
+| Built so far | Upper Pines (live); the 50-campground sample, **all 50 decided** (45 publishable, 5 hidden); **wave 1 (100 by demand) decided** (31 approved, 25 hidden); **wave 2 (100) decided** (23 approved, 39 hidden); **split listings shown and checked as areas, single units checked as places** (the owner's pick of the look, 2026-10-08; 27 listings rebuilt as areas, waiting on the owner) | Jedediah Smith, local only |
 | Measured result | Usable after one look: sample 45 of 50 (90%; 79–96%); wave 1 75 of 100 (66–82%); wave 2 61 of 100 (51–70%); waves 1–2 are by demand, not random | 87% of sites match a State Parks point |
 | Blocked by | nothing (owner's go-ahead per wave) | State Parks' answer (records request due ~2026-10-17) |
 
@@ -52,6 +52,21 @@ loads this) should be able to do the next step from here alone.
 (`osm-extract.mjs`, `osm.mjs`), the population and waves (`population.mjs`), `build-wave.mjs`, and
 the review page at scale (waves, filters, Show more, Download decisions). Wave 1's results are in
 the design doc's "Wave 1".
+
+**Areas and units are built in (2026-10-08, owner's pick: split A, single A):**
+- The build decides how a camper sees each listing (`build.mjs` `viewOf`):
+  - one unit → its location map;
+  - a listing spread over 1.5 km, or one a reviewer called split → areas;
+  - too many small groups → dispersed (held);
+  - anything else → one map.
+- **`splits.json`** holds a reviewer's calls either way, each with who, when and why. `split: true`
+  shows a listing as areas even inside 1.5 km; `split: false` keeps it one map (the two the owner
+  approved as one map, Strawberry Bay and Gros Ventre, are kept that way: a test fails if an
+  approved map is split by the rule).
+- **The check runs on each area** (`qa.mjs` `checkAreas`), and **every split waits for a person**
+  (reason `areas`), since a rule drew it. Units get their own check (`checkUnit`).
+- The map records its areas (`split`) and the wave's manifest each area's check; the review page
+  shows campers' view (`CamperMap`) and each area's checks.
 
 ---
 
@@ -365,8 +380,13 @@ a session or less.
    - full canopy with no visible lanes (Yellowbottom, Hearts Content, Rancheria);
    - footpaths to walk-in sites (Watchman's F loop): they aren't roads;
    - spurs too short or faint to place;
-   - listings that aren't one campground (§5.2): say "split listing" in the first-look note (the
-     review page and the area design read it).
+   - listings that aren't one campground (§5.2): say "split listing" in the first-look note, **add
+     the listing to `studio/campground-maps/splits.json`** (`split: true`, who, when, the note's
+     first sentence) and rebuild it. The test fails if the area rules can't honour the call
+     (Axtel, Moutardier: their loops fit in one area, so no call was added).
+   - **After the rebuild, look at the areas' overview** on the review page (or screenshot each
+     listing's `section[aria-labelledby="areas-h"]`): do the outlines follow the real clusters?
+     Note coarse areas (several clusters in one) and position-named ones.
 7. **Owner review.** Tell the owner the wave is ready, with its numbers: ready on its own, usable
    after a look, needs traces approved, can't go live. Give them a short list grouped like
    wave 0's (A: traces to approve, B: fine but flagged, C: keep hidden), each with its review-page
@@ -390,8 +410,11 @@ A cabin, fire lookout or guard station has nothing to tell apart. It needs a loc
 site map: one pin on a small area map with the access road, and the unit's facts.
 - **Design it first** with `design-direction`'s gates, then build, test and review it like the site
   map (critic rounds, `ui-audit`).
-- **Owner's decision (2026-10-08): yes, design it after wave 1.** The look is still theirs to
-  approve.
+- **Owner's decision (2026-10-08): yes, design it after wave 1. Look picked the same day: map and
+  facts side by side, with terrain** (`UnitMap`, card). Built into the build and its check
+  (`checkUnit`: the unit's point within 300 m of the listing's own, and a road or trail within
+  700 m on the map; rules fixed before any unit wave). **No unit wave has been built yet:** waves by
+  demand have drawn none (the population puts single units apart). Next: plan a unit wave.
 - RIDB's facility pin can be kilometres off (Dimond O: about 4 km), so use the unit's own campsite
   point.
 
@@ -403,7 +426,7 @@ Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart)
   area, or, for dispersed areas, a list of areas with a location each.
 - Design and build it like §5.1. **Owner's decision (2026-10-08): yes, after wave 1.** The look
   is still theirs to approve.
-- **Designed 2026-10-08 (lab comps, not built into waves yet):** `docs/design/campground-maps-areas.md`
+- **Built into the waves 2026-10-08** (see §1). **Designed the same day:** `docs/design/campground-maps-areas.md`
   has the contract, the area rule (`maps/areas.ts`, tested on real listings), two directions for
   each kind, and two critique rounds. Split listings were 10 of wave 1's 20 held maps and 19 of
   wave 2's 36. Single units (§5.1) get a location map with terrain in the same comps.
@@ -565,13 +588,15 @@ of bookable sites).
 **Still open:**
 0. ~~**Wave 1:** the owner's decisions.~~ **Done 2026-10-08:** A and B approved, C and D hidden;
    go on to wave 2.
-0a. **Wave 2 (2026-10-08):** the owner's decisions on its 62 maps that need one (design doc, "Wave 2").
-0b. **Pick the look** for split listings and single units (`docs/design/campground-maps-areas.md`;
-   the session and the critic both recommend A and A). Then the build records areas and the
-   review page shows them (that doc's "Not settled").
+0a. ~~**Wave 2:** the owner's decisions.~~ **Done 2026-10-08:** A and B approved (23), C and D
+   hidden (39).
+0b. ~~**Pick the look.**~~ **Done 2026-10-08: split A and single A**, built into the waves (§1).
+0c. **The 27 listings now shown as areas** (design doc, "Areas built in"): the owner's calls. All
+   were hidden or held as one map.
+0d. **A unit wave** (§5.1): plan and build one, by demand.
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
-2. **Approve the look** of the single-unit and split-listing maps, when designed.
+2. ~~**Approve the look** of the single-unit and split-listing maps.~~ **Done** (0b).
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.
@@ -592,8 +617,10 @@ of bookable sites).
 - **The check reads the median distance to a road,** so it passes a map where a third of the sites
   have no road (Cave Spring, wave 1). A per-loop or 75th-percentile check would catch it. Not
   built; changing a threshold after seeing results must be said out loud.
-- **Split listings are now the second biggest failure** (10 of wave 1's 20 held). Their design
-  (§5.2) is next.
+- **Split listings are shown as areas now** (§5.2). Areas are cut at 1 km, so a listing whose
+  clusters sit close together can get one coarse area holding several (Lithia Springs, Sweetwater,
+  South Sandusky, Dam Site, Lost Lake). Diamond Lake's outlines still touch; Hardin Ridge's eight
+  areas are named by position because its site ranges interleave.
 - **Repeated site numbers** (La Wis Wis) and **wrong RIDB states** (Hardin Ridge listed in
   Maine) are shown as published.
 - **Census TIGER roads can be rough** (Udall Park's shore road runs a few metres off). The fit rule

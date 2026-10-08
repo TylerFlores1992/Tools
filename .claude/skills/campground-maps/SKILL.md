@@ -42,7 +42,7 @@ Then, for context: `docs/NEXT-SESSION.md` ("Campground site maps"), `docs/design
 
 ## The loop, in one line
 Build a wave → automatic check → first look over the photo, every map → trace what's visible and
-missing → rebuild → check traces over the photo → owner review → record the numbers in the docs.
+missing, and mark split listings in `studio/campground-maps/splits.json` → rebuild → check traces over the photo → owner review → record the numbers in the docs.
 Stop and ask the owner when a wave falls outside the sample's interval or a new failure shows up.
 
 ## Commands

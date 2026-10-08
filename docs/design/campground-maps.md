@@ -750,10 +750,82 @@ CampHawk are the same as for wave 1), so all 100 are the most-reserved of each a
 Contract, critique and measurements: `docs/design/campground-maps-areas.md`. Comps:
 `/private/camphawk/golden-hour/admin/site-maps/layouts`.
 
+**The owner's calls (2026-10-08):** pass A and B (23 approved: 2 traced, 21 flagged but fine on the
+photo), hold C and D (39 hidden). Recorded in `maps/decisions/wave-02.json`.
+
+## Areas built in: split listings and single units (2026-10-08)
+**The owner picked split A (overview, then one area at a time) and single A (map and facts side by
+side, with terrain).** Built into the build, the check and the review page (playbook §1, §5.1,
+§5.2).
+
+**Which listings are areas** (`build.mjs` `viewOf`, `splits.json`):
+- **27 listings rebuilt as areas:**
+  - 21 called split by the first look (waves 1 and 2);
+  - 6 spread over 1.5 km, or called split and over it anyway;
+  - 1 from the sample (Medicine Lake).
+- 2 are dispersed and stay held: Au Sable (73 groups) and Rabbit Valley (14).
+- 3 are kept as one map by a call:
+  - Strawberry Bay and Gros Ventre, which the owner approved as one map;
+  - Clear Springs, whose spread is a stray point 2,300 km away. The fix there is dropping the
+    point, which is not written yet.
+- Not added:
+  - Axtel and Moutardier were called "partly" split, but their loops fit in one 1 km area, so a
+    call would change nothing.
+  - Clear Creek can't be drawn at all (26% of its sites share a spot), so it records no areas.
+
+**The check, per area:** every split waits for a person (`areas`). In waves 1 and 2, wave 2's
+summary went from 51 to 45 "ready": six maps that passed every check as one map now wait as areas.
+The owner had held all six.
+
+**The first look over the areas' overviews** (every listing, screenshotted):
+- **Found and fixed:** an area at the listing's edge lost its outline and number to the frame
+  (Medicine Lake, Hardin Ridge, Airport Park, Bolar Mountain, Ives Run). The overview now makes
+  room for both.
+- **Split fixes it (14):** the areas follow the real clusters, and the hold was the split alone (or
+  an area check the photo already answered).
+  - Medicine Lake 255303 (sample)
+  - Dinkey Creek 232136
+  - Ives Run 233523
+  - North Bend Park 233563
+  - Seven Points 233626
+  - Wawona 232446
+  - Indian Cove 232472
+  - Airport Park 232511
+  - Cedar Ridge 232546
+  - Forrest W. Bo Wood 233496
+  - South Marcum 233611
+  - Shenango 233627
+  - Outlet (Melvern) 233695
+  - Bolar Mountain 234557
+- **Split right, but an area still lacks roads or is flagged (6):**
+  - Holiday 232607: the south-west cluster has no roads.
+  - Bloomington East 233700: internal lanes.
+  - Willow Bay 232127: the east cluster's lanes; its 052–102 area sits a median 47 m from roads.
+  - Pine Valley 232244: the D loop's lane.
+  - Ray Behrens 233597: the south area's lanes.
+  - Assateague 232507: the oceanside area sits a median 33 m from roads, and none of its sites
+    are inside OpenStreetMap's outline.
+- **The split itself isn't right yet (7):**
+  - **Coarse:** one area holds several clusters, because areas are cut at 1 km and these
+    clusters sit closer than that. Dam Site 232567 (also lanes missing), Sweetwater 232715,
+    Lithia Springs 233539, South Sandusky 233613, and Lost Lake 251434 (the F row and two H sites
+    1 km apart in one area).
+  - **Diamond Lake 231980:** five areas cut by position; the outlines still touch.
+  - **Hardin Ridge 232056:** eight areas named by position because its site ranges interleave,
+    one of them a 2-site area, and five areas sit far from roads.
+- **Naming:** an area named by position says where along the listing's long axis it is ("West
+  end", "Middle"). On a round lake that can read oddly (Bolar Mountain's "Middle" is south of its
+  "West end").
+
+**Single units:** the check and the location map are built. No wave has drawn one yet: the waves
+by demand pick from the multi-site population. A unit wave is next (playbook §10).
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
-| Wave 2 (demand) | 100 | 61 | 0 (waiting) |
-| **Total** | **250 of 2,196** | **181** | **106** |
+| Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
+| **Total** | **250 of 2,196** | **181** | **168** |
+
+Of the hidden, 27 are now shown as areas and wait on the owner again (above).

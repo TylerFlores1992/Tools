@@ -37,7 +37,24 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
-**Same day, later (PR pending):**
+**Evening, 2026-10-08 (PR pending): the look picked and built in.**
+- **Wave 2 decided:** pass A and B (23 approved), hold C and D (39). `maps/decisions/wave-02.json`.
+- **The owner picked split A and single A.** Built into the build, the check and the review page:
+  - each listing is one unit, one map, areas or dispersed (`build.mjs` `viewOf`);
+  - a reviewer's calls either way are in `studio/campground-maps/splits.json`;
+  - every area is checked, every split waits for a person, units have their own check;
+  - the review page and the lab campground page show campers' view (`CamperMap`).
+- **27 listings rebuilt as areas** and looked at:
+  - 14: the split fixes them;
+  - 6: still missing roads;
+  - 7: the split isn't right yet (coarse, Diamond Lake, Hardin Ridge).
+  - Grouped in the design doc's "Areas built in". **They wait on the owner.**
+- **Next:** the owner's calls on the 27; a unit wave (none built yet); a tighter cut for coarse
+  areas; the 7 trace candidates from wave 2.
+- **#29 never deployed to production** (no Vercel deployment for `93513c1`). This PR's merge
+  deploys main with both: check the production deployment's sha after merging.
+
+**Same day, later (PR #29, merged):**
 - **Wave 1 decided:** the owner approved A and B (31) and hid C and D (25). Recorded in
   `maps/decisions/wave-01.json`.
 - **Wave 2:** 100 by reservations, built and looked at. **61 usable (51–70%)**; 36 held, 19 of
