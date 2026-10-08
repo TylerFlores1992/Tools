@@ -198,7 +198,7 @@
   },
   "233869": {
    "call": "hold",
-   "note": "No road is drawn at all. In Loop A and Loop B the sites (A001 to A026, B027 to B061) sit on visible pads along plainly visible lanes, so the map needs every road traced before it can be used."
+   "note": "Now traced on the open ground: Loop A's lane from the north-east to A001, the lane past A011 and A012 to the south loop past A016 to A018, the north loop's west side past A007 to A010 with the lane to A009, and Loop B's stem past B039 to B054 with the loop past B056 and B057 to B061; they follow the visible lanes. Still held: A002 to A006, A019 to A026 and B027 to B038 sit under the cottonwoods with no lane showing (about a third of the sites), and the group sites, 2 to 4 km east, have no road."
   },
   "233884": {
    "call": "usable",
@@ -233,8 +233,8 @@
    "note": "The drawn roads only loosely follow the dirt tracks on the open peninsula. Sites 017, 018 and 020 to 022 on the north point, 012, 026 and 027 by the entrance, and 015 have no road, and the tracks that reach them are faint and branching."
   },
   "234115": {
-   "call": "hold",
-   "note": "On the south peninsula the drawn west road runs 8 to 10 m west of the visible gravel road, and the two inner roads past 011 to 016 are not drawn. On the north side, 025 to 032 sit off visible lanes beyond the drawn triangle."
+   "call": "usable",
+   "note": "The source's roads are replaced by a full trace from the photo: the south peninsula's loop with its two inner lanes past 011 to 016 (the source's west road ran 8 to 10 m off the gravel), the road north to the open area by 019 to 022, and on the north side the entrance, the loop past 033 to 038, the lane north to 029 to 032 and the lane west past 026 to 028. Still without a drawn lane: 001 and 002 at the peninsula's tip, 023 and 024 on the open ground, and 039 by the highway, which isn't drawn."
   },
   "234117": {
    "call": "usable",
