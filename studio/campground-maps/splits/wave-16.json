@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 16.",
+ "listings": [
+  {
+   "id": "10001451",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Tent sites 03 to 26 along the river meadow in the west, and horse sites 27 to 39 by the road 700 m east."
+  },
+  {
+   "id": "232560",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "The point (08 to 69) and sites 01 to 07 across the marina 600 m south."
+  }
+ ]
+}
