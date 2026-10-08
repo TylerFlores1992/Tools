@@ -11,8 +11,7 @@ reset the connection (not needed here).
 ## Wave 19 (us-midwest, multi)
 - Built 87, failed 0. Two failed the first run and built on the retry: 233173 (an `osmium getid`
   of relation r4039486 failed once) and 234044 (a timeout).
-- Check: ready 41, review 44, not drawn 2 (before split calls and traces; the split rebuilds
-  turn some ready maps into review)
+- Check: ready 39, review 46, not drawn 2 (after the split calls and traces; 41 ready before)
 - First look: good 22, usable 40, hold 18, unsure 7
 - Traced: 233498 (Fishermans Corner: no campground road was drawn), 255134 (Left Tailrace: only
   the outer roads were drawn)
