@@ -46,3 +46,27 @@ Network: every map host answered; Geofabrik resets the connection, as the playbo
   - 234684: only the road above is drawn; no site has a road.
 - Anything new: Census (TIGER) roads often come out as angular outlines that don't follow anything
   (10317346, 232155, 233880); OpenStreetMap does the same in a few (10165435, 10168487).
+
+## Wave 35 (Colorado, units)
+- Built 53, failed 0
+- Check: ready 45, review 8, not drawn 0 (the 8 reviews: the listing's own point 330 m to 2.9 km from the unit's)
+- First look: good 21, usable 4, hold 26, unsure 2
+- Traced: 233232, 233289 (short drives to guard stations; checked over the photo after the rebuild)
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 10165115, 10165130, 10165240, 10165255, 10165270, 10165280, 10165295, 10165330, 10165335,
+    10165390, 10165440, 10165455, 10165646, 10165661, 10165686, 10165716 (16, every Pike–San Isabel /
+    San Juan "Standard" listing): **a whole campground booked as one site**, its point a placeholder on
+    the entrance road or a junction, not on a pad. A unit location map would mislead; these need the
+    campground's own map, or a "whole campground" design. New failure mode.
+  - 233804, 233805 (Lake Isabel's Ponderosa and Spruce group sites): pin in unbroken forest, 120 to 150 m from any road.
+  - 233927: pin in forest 30 m from the small building that may be the guard station.
+  - 233932: pin on a grassy clearing in forest, no building, 190 m from a road.
+  - 233941: pin on open scrub, not on anything plainly a group tent area.
+  - 233979: pin on open sagebrush, no building; the listing's own point is 1.5 km off.
+  - 234129: pin in unbroken forest, no building or clearing.
+  - 234211: pin in dense forest 40 m from the open group area it belongs to.
+  - 234706, 234707 (Platoro cabins 1 and 2): both share one point on open grass in the village, on no building.
+- Anything new: the "whole campground as one Standard site" listings above (16 of 53, about a third
+  of the wave). The unit check passes them (point = listing point, road within 700 m), so only the
+  photo catches them.
