@@ -58,3 +58,31 @@ reset the connection (not needed here).
   `replace` for the F lane), 233832, 234647 (the A shore lane), 156340, 10038827, 231842.
 - Many Forest Service campgrounds in Minnesota, Michigan and Wisconsin are under full canopy:
   14 `unsure`.
+
+## Wave 21 (us-midwest, multi)
+- Built 87, failed 0. One failed the first run and built on the retry: 232720 (`osmium getid`
+  of relation r6265485 failed once, the same relation as 232521 in wave 20).
+- Check: ready 60, review 26, not drawn 1 (after the split call and traces; 61 ready before)
+- First look: good 12, usable 34, hold 20, unsure 21
+- Traced: 234093 (Mineral Lake: the loop shows as a gap in the canopy), 10159237 (Neosho Park:
+  the lanes off the loop)
+- Split calls: 10058259
+- Held, and why:
+  - 233210: not drawn (every site on one spot), rightly.
+  - 232325: several parts reuse numbers 001 to 007; rows 50 to 150 m from any road.
+  - 233141: the Census roads miss the lanes (a `replace` trace candidate; the meadow is open).
+  - 233342: most sites 40 to 100 m from any road under full forest.
+  - 233769: no road to any site under full forest.
+  - 233850: no campground road drawn; the lanes show between the trees.
+  - 234790: two cabins 4 km apart on Grand Island: two single units, not a site map.
+  - 255120: the drawn loop doesn't match the sites under canopy.
+  - 255123: two clusters across a marsh, the south one with no road.
+  - 273333, 273334, 273342, 273346, 273347, 273355, 273357, 273361, 232456: dispersed lake or
+    island sites, 300 m to 4 km apart: dispersed-area design.
+  - 10177518: 11 to 17 sit in an open field 60 to 100 m from any road; the ramp lanes not drawn.
+  - 232720: the A sites are placed out in the lake, 50 to 150 m off shore (RIDB points wrong).
+- Anything new: 10064546 (River Run Park): the NAIP photo was taken in a flood; the park is under
+  water, so `unsure`. Many small Forest Service lake campgrounds in this wave are under full
+  canopy (21 `unsure`).
+- Trace candidates not done: 233850, 233141 (needs `replace`), 254084 (open south-east lanes),
+  10159225 (the south shore lane), 10177518 (ramp lanes).
