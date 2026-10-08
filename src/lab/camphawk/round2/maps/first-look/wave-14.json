@@ -97,16 +97,16 @@
    "note": "The loops and every pull-in follow the visible lanes in the grass, and the sites in loops A to K sit at their ends."
   },
   "10049272": {
-   "call": "usable",
-   "note": "The outer loops follow the visible roads and most sites sit beside them. Sites inside the loops (38 to 50, 12 to 14, 59 to 62) sit on short dirt lanes that show under the oaks and aren't drawn."
+   "call": "hold",
+   "note": "The outer loops follow the visible roads and most sites sit beside them. Sites inside the loops (38 to 50, 12 to 14, 59 to 62) sit on short dirt lanes that show under the oaks and aren't drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232555": {
    "call": "hold",
    "note": "Only the park road to the entrance is drawn; the 106 sites across the peninsula's fingers have no road at all, and under the pines no lane shows well enough to trace."
   },
   "232539": {
-   "call": "usable",
-   "note": "The sites sit on visible pads under bare trees, and the drawn loops follow the lanes roughly, but in places (past 41 to 43, and the north lane past 03 to 07) the drawn road runs 10 to 20 m off the visible pavement."
+   "call": "hold",
+   "note": "The sites sit on visible pads under bare trees, and the drawn loops follow the lanes roughly, but in places (past 41 to 43, and the north lane past 03 to 07) the drawn road runs 10 to 20 m off the visible pavement. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232565": {
    "call": "good",
@@ -121,8 +121,8 @@
    "note": "The loops follow the visible roads round the coves, and sites 01 to 41 and 44 to 49 sit on pads beside them. The lanes to 42 and 43 on the point (under trees) and to 52 to 54 in the north aren't drawn."
   },
   "232564": {
-   "call": "usable",
-   "note": "The road along the river and the loop at its west end follow the visible pavement, and sites 01 to 62 line them. The row up the hill (63 to 79) sits off any drawn road, on lanes that show only in part through the trees."
+   "call": "hold",
+   "note": "The road along the river and the loop at its west end follow the visible pavement, and sites 01 to 62 line them. The row up the hill (63 to 79) sits off any drawn road, on lanes that show only in part through the trees. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232574": {
    "call": "hold",
@@ -149,12 +149,12 @@
    "note": "Shown as five areas, one per finger of the lake, and the outlines follow the real clusters. But in every area the sites sit 30 to 45 m from the drawn Census roads, and under the pines the photo can't show where the lanes really run."
   },
   "232601": {
-   "call": "usable",
-   "note": "The lane along the shore past 01 to 31 and the loop past 33 to 43 follow the visible pavement, and the sites sit beside them. Sites 44 to 61 sit in the trees south of the boat-ramp lot; zoomed, no lane shows among them."
+   "call": "hold",
+   "note": "The lane along the shore past 01 to 31 and the loop past 33 to 43 follow the visible pavement, and the sites sit beside them. Sites 44 to 61 sit in the trees south of the boat-ramp lot; zoomed, no lane shows among them. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232618": {
-   "call": "usable",
-   "note": "Shown as three areas along the shore, and they follow the real clusters. Zoomed on the west area, the main roads follow the visible pavement within a few metres, but the lanes between T021 and T039 and the loop by T001 show and aren't drawn."
+   "call": "hold",
+   "note": "Shown as three areas along the shore, and they follow the real clusters. Zoomed on the west area, the main roads follow the visible pavement within a few metres, but the lanes between T021 and T039 and the loop by T001 show and aren't drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232623": {
    "call": "hold",
@@ -165,8 +165,8 @@
    "note": "Shown as five areas round the bay, and each outline holds one real cluster. The loops follow the visible pavement, and the sites sit on pads beside them."
   },
   "232595": {
-   "call": "usable",
-   "note": "The loops follow what shows of the lanes under the trees, and sites 01 to 51 sit beside them. In the north, 52 to 59 and 70 to 77 sit 20 to 30 m off the drawn loop, where the canopy hides whether a lane runs past them."
+   "call": "hold",
+   "note": "The loops follow what shows of the lanes under the trees, and sites 01 to 51 sit beside them. In the north, 52 to 59 and 70 to 77 sit 20 to 30 m off the drawn loop, where the canopy hides whether a lane runs past them. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232630": {
    "call": "good",
@@ -209,8 +209,8 @@
    "note": "Only one road through the middle is drawn. The pull-in lanes that each row of sites sits on (001 to 070, 117 to 176) show as dirt gaps in the canopy but aren't drawn, so most sites sit 100 m from any drawn road."
   },
   "232679": {
-   "call": "usable",
-   "note": "The road up the point and its two loops follow the visible lanes, and sites 027 to 055 sit beside them. Sites 056 to 062 at the tip and 004 to 008 south of the east lane sit under trees with no lane drawn."
+   "call": "hold",
+   "note": "The road up the point and its two loops follow the visible lanes, and sites 027 to 055 sit beside them. Sites 056 to 062 at the tip and 004 to 008 south of the east lane sit under trees with no lane drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232680": {
    "call": "usable",
@@ -237,8 +237,8 @@
    "note": "The shore loop and the lanes on the south and north-east points follow the visible pavement, and sites 08 to 79 sit beside them. Sites 03 to 07 on the west shore and 01 to 02 by the entrance sit 20 to 40 m off the drawn road with no lane drawn."
   },
   "232721": {
-   "call": "usable",
-   "note": "Loops B, C and D follow the visible pavement and their sites sit beside them. Loop A, north of the highway, has only the shore road drawn; A09 to A15 sit along a second lane under the trees that isn't drawn."
+   "call": "hold",
+   "note": "Loops B, C and D follow the visible pavement and their sites sit beside them. Loop A, north of the highway, has only the shore road drawn; A09 to A15 sit along a second lane under the trees that isn't drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "232725": {
    "call": "usable",
@@ -273,8 +273,8 @@
    "note": "The loops and lanes follow the visible pavement, and sites 001 to 110 sit on pads beside them. T01 to T07 on the east point (likely walk-in tent sites) have no road or path drawn."
   },
   "233424": {
-   "call": "usable",
-   "note": "The shore roads past W01 to W32, C17 to C32 and E01 to E18 follow the visible pavement, and those sites sit beside them. In the middle, C33 to C55 sit along lanes under the trees that aren't drawn."
+   "call": "hold",
+   "note": "The shore roads past W01 to W32, C17 to C32 and E01 to E18 follow the visible pavement, and those sites sit beside them. In the middle, C33 to C55 sit along lanes under the trees that aren't drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233426": {
    "call": "usable",
@@ -293,16 +293,16 @@
    "note": "The loops follow the visible pavement and sites 013 to 047 sit beside them. Traced the shore lane past 001 to 012 from the photo."
   },
   "233507": {
-   "call": "usable",
-   "note": "The main loop and the east loop follow the visible roads, and sites 07 to 83 sit beside them. Sites 01 to 05 at the west end and 25 to 34 on the south lane sit beside lanes that show and aren't drawn; two sites have no point."
+   "call": "hold",
+   "note": "The main loop and the east loop follow the visible roads, and sites 07 to 83 sit beside them. Sites 01 to 05 at the west end and 25 to 34 on the south lane sit beside lanes that show and aren't drawn; two sites have no point. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233513": {
-   "call": "usable",
-   "note": "The loops follow the visible pavement, and sites 001 to 098 sit on pads beside them. In the north-east, 099 to 110 and 113 to 125 sit 20 to 40 m off the drawn lanes under the trees."
+   "call": "hold",
+   "note": "The loops follow the visible pavement, and sites 001 to 098 sit on pads beside them. In the north-east, 099 to 110 and 113 to 125 sit 20 to 40 m off the drawn lanes under the trees. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233531": {
-   "call": "usable",
-   "note": "Split listing, now three areas (with a 150 m gap): 080 to 104 in the west, 035 to 079 in the middle and 001 to 034 on the east point, each following a real cluster with its lanes drawn. The lanes past 045 to 048, 053 to 069 and 088 to 092 aren't drawn."
+   "call": "hold",
+   "note": "Split listing, now three areas (with a 150 m gap): 080 to 104 in the west, 035 to 079 in the middle and 001 to 034 on the east point, each following a real cluster with its lanes drawn. The lanes past 045 to 048, 053 to 069 and 088 to 092 aren't drawn. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233570": {
    "call": "good",
@@ -341,28 +341,28 @@
    "note": "The lanes on each finger of the lake follow what shows through the trees, and sites 01 to 77 sit beside them."
   },
   "233716": {
-   "call": "usable",
-   "note": "The lanes on the fingers (W01 to W27) and the west loops follow the visible dirt lanes, and those sites sit beside them. W12 to W14 and W47 to W58 sit 20 to 40 m off the drawn lanes on the open ground, where faint tracks show."
+   "call": "hold",
+   "note": "The lanes on the fingers (W01 to W27) and the west loops follow the visible dirt lanes, and those sites sit beside them. W12 to W14 and W47 to W58 sit 20 to 40 m off the drawn lanes on the open ground, where faint tracks show. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233661": {
    "call": "good",
    "note": "The loop on the west island and the lanes on the east one follow the visible pavement, and sites 01 to 30 sit on pads beside them; the boat sites line the east shore, a few sharing a spot."
   },
   "234181": {
-   "call": "usable",
-   "note": "The loops round 105 to 124, 62 to 66 and 41 to 61, and the east loop past 9 to 32, follow the visible roads. The middle block (67 to 104) and A to G have only the outer roads drawn, and their inner lanes, faint on the grass, aren't."
+   "call": "hold",
+   "note": "The loops round 105 to 124, 62 to 66 and 41 to 61, and the east loop past 9 to 32, follow the visible roads. The middle block (67 to 104) and A to G have only the outer roads drawn, and their inner lanes, faint on the grass, aren't. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "234651": {
    "call": "hold",
    "note": "On the island the drawn roads cut across the lawns while the real loops show plainly beside them, and the ring road past 013 to 018 and 026 to 032 isn't drawn. The east shore (002 to 012) is fine. A full replace trace from the photo would fix it."
   },
   "233125": {
-   "call": "usable",
-   "note": "The east road past 001 to 004 and the north road past 023 to 030 follow the visible pavement. Traced the gravel spine past 013 to 022 and the lane past 005 to 009; the short branches to 010 to 012, 014, 015, 017 and 019 are left out (too fuzzy to place)."
+   "call": "hold",
+   "note": "The east road past 001 to 004 and the north road past 023 to 030 follow the visible pavement. Traced the gravel spine past 013 to 022 and the lane past 005 to 009; the short branches to 010 to 012, 014, 015, 017 and 019 are left out (too fuzzy to place). Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   },
   "233473": {
-   "call": "usable",
-   "note": "Only the highway was drawn. Traced the entrance road, the road past 69 and 70 and the loop on the point past 38 to 48. The lanes on the east point (01 to 21) and the middle point (23 to 37) and past 49 to 59 show only in pieces through the trees and are left out, so those sites still sit off any drawn road."
+   "call": "hold",
+   "note": "Only the highway was drawn. Traced the entrance road, the road past 69 and 70 and the loop on the point past 38 to 48. The lanes on the east point (01 to 21) and the middle point (23 to 37) and past 49 to 59 show only in pieces through the trees and are left out, so those sites still sit off any drawn road. Held under the 1-in-7 bar: too many sites without a drawn road, or a drawn road off the lane."
   }
  }
 }
