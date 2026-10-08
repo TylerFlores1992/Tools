@@ -83,8 +83,9 @@ test("every split call is well formed, for a built map, and holds: split is area
 test("a map the owner approved as one map is never split by the rule", () => {
   const approved = new Set(readdirSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/decisions"))
     .flatMap((f) => JSON.parse(readFileSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/decisions", f), "utf8")).decisions)
-    // Approved as areas is the owner approving the split itself (2026-10-08).
-    .filter((d: { decision: string; note: string }) => d.decision === "approved" && !/as areas/i.test(d.note)).map((d: { id: string }) => d.id));
+    // The owner's approvals only: approved as areas is the owner approving the split itself
+    // (2026-10-08), and the rollout's final check judges each map as built, areas included.
+    .filter((d: { decision: string; note: string; by: string }) => d.decision === "approved" && d.by === "Owner" && !/as areas/i.test(d.note)).map((d: { id: string }) => d.id));
   for (const id of approved) {
     let m; try { m = mapOf(id); } catch { continue; }
     if (m.split) assert.ok(calls.some((c) => c.id === id && c.split), `${id}: approved as one map, now ${m.split.kind}`);
