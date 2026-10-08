@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { entryOf, thumb, updateIndex } from "../studio/campground-maps/build-wave.mjs";
@@ -50,7 +50,9 @@ test("the wave index keeps one row per wave, in order, and replaces a rebuilt wa
 // --- How a camper sees a listing, and the reviewers' split calls (splits.json) ---
 const MAPS = join(import.meta.dirname, "../public/private/camphawk/maps");
 const mapOf = (id: string) => JSON.parse(readFileSync(join(MAPS, `ridb-${id}.json`), "utf8"));
-const calls = JSON.parse(readFileSync(join(import.meta.dirname, "../studio/campground-maps/splits.json"), "utf8")).listings as { id: string; split: boolean; by: string; on: string; note: string }[];
+const SPLITS_DIR = join(import.meta.dirname, "../studio/campground-maps/splits");
+const callFiles = [join(import.meta.dirname, "../studio/campground-maps/splits.json"), ...(existsSync(SPLITS_DIR) ? readdirSync(SPLITS_DIR).filter((f) => f.endsWith(".json")).map((f) => join(SPLITS_DIR, f)) : [])];
+const calls = callFiles.flatMap((f) => JSON.parse(readFileSync(f, "utf8")).listings) as { id: string; split: boolean; by: string; on: string; note: string }[];
 
 test("one unit is a place; a listing spread over 1.5 km is areas unless a call keeps it one map; a call splits one that fits", async () => {
   const { viewOf } = await import("../studio/campground-maps/build.mjs");
@@ -112,4 +114,26 @@ test("every committed map shown as areas says so in its wave's manifest, with ea
     if (map.split?.kind === "dispersed") assert.equal(e.reasons[0]?.code, "dispersed", e.id);
   }
   assert.ok(n >= 25, `${n} listings shown as areas`);
+});
+
+test("split calls are read from splits.json and every file in splits/, so parallel waves never share a file", async () => {
+  const { splitCalls } = await import("../studio/campground-maps/build.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "splits-"));
+  const main = join(dir, "splits.json"), sub = join(dir, "splits");
+  writeFileSync(main, JSON.stringify({ version: 1, listings: [{ id: "1", split: true }] }));
+  const { mkdirSync } = await import("node:fs");
+  mkdirSync(sub);
+  writeFileSync(join(sub, "wave-09.json"), JSON.stringify({ version: 1, listings: [{ id: "2", split: false }] }));
+  const got = splitCalls(main, sub);
+  assert.deepEqual([...got.keys()].sort(), ["1", "2"]);
+  assert.equal(splitCalls(main, join(dir, "none")).size, 1);
+});
+
+test("the lab's wave list and import lists match the files present (run studio/campground-maps/lab-index.mjs after merging waves)", async () => {
+  const { outputs, withImports } = await import("../studio/campground-maps/lab-index.mjs");
+  for (const [file, text] of outputs()) assert.equal(readFileSync(file, "utf8"), text, `${file} is out of date: run node studio/campground-maps/lab-index.mjs`);
+  // A new wave's file adds its import and its place in the list, in order.
+  const src = 'import type { X } from "./x";\nimport wave01 from "./wave-01.json" with { type: "json" };\nexport const L: T[] = [wave01 as T];\n';
+  assert.equal(withImports(src, [1, 3], { from: "", list: { name: "export const L: T[] =", type: "T" } }),
+    'import type { X } from "./x";\nimport wave01 from "./wave-01.json" with { type: "json" };\nimport wave03 from "./wave-03.json" with { type: "json" };\nexport const L: T[] = [wave01 as T, wave03 as T];\n');
 });

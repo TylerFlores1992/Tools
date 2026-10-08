@@ -19,7 +19,7 @@
 //     else OpenStreetMap's;
 //   lakes and rivers: USGS hydrography, else OpenStreetMap's.
 // Then what a person traced from the aerial photo, where no source has it (trace.mjs), on top.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { csvObjects } from "./ridb.mjs";
 import { NHD, arcgis, kept, lines, makeGeo, rings } from "./geo.mjs";
@@ -69,9 +69,11 @@ export const SINGLE_UNIT_PAD_M = 700;
  * (one the owner approved as a single map stays one). A call, not a measurement; each entry says
  * who made it and why.
  */
-export function splitCalls(file = join(import.meta.dirname, "splits.json")) {
-  if (!existsSync(file)) return new Map();
-  return new Map(JSON.parse(readFileSync(file, "utf8")).listings.map((l) => [l.id, l]));
+export function splitCalls(file = join(import.meta.dirname, "splits.json"), dir = join(import.meta.dirname, "splits")) {
+  // splits.json, plus one file a wave in splits/ (a rollout child writes its wave's calls there,
+  // so parallel waves never edit one file). Same shape: { version, about, listings: [...] }.
+  const files = [file, ...(existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).sort().map((f) => join(dir, f)) : [])].filter((f) => existsSync(f));
+  return new Map(files.flatMap((f) => JSON.parse(readFileSync(f, "utf8")).listings.map((l) => [l.id, l])));
 }
 const SPLIT_CALLS = splitCalls();
 
