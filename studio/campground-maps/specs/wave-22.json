@@ -1,0 +1,590 @@
+{
+  "drawn": {
+    "wave": 22,
+    "count": 63,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-west/colorado",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west/colorado), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10040569",
+      "name": "Little Mattie Campground",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "10122661",
+      "name": "Blue River Campground (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "231849",
+      "name": "Aspen Glade (Rio Grande National Forest, CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "231852",
+      "name": "MOUNTAIN PARK",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "231853",
+      "name": "CHAMBERS LAKE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 50,
+      "placed": 50
+    },
+    {
+      "id": "231855",
+      "name": "WEST LAKE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 35,
+      "placed": 34
+    },
+    {
+      "id": "231857",
+      "name": "ECHO LAKE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "231864",
+      "name": "BIG CREEK LAKES CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Medicine Bow-Routt NFs & Thunder Basin NG",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "231866",
+      "name": "CASCADE (COLORADO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "231869",
+      "name": "MOUNT PRINCETON",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "231870",
+      "name": "OHAVER LAKE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "231871",
+      "name": "MEADOW RIDGE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "231874",
+      "name": "THUNDER RIDGE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "231877",
+      "name": "LONE ROCK CAMPGROUND (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "232044",
+      "name": "FATHER DYER",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 23,
+      "placed": 23
+    },
+    {
+      "id": "232066",
+      "name": "LA VISTA CAMPGROUND - LAKE ISABEL",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "232067",
+      "name": "LAKEVIEW CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 51,
+      "placed": 51
+    },
+    {
+      "id": "232146",
+      "name": "MCPHEE RECREATION COMPLEX",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 51,
+      "placed": 51
+    },
+    {
+      "id": "232154",
+      "name": "Lakeview Gunnison",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 48,
+      "placed": 48
+    },
+    {
+      "id": "232158",
+      "name": "Bogan Flats Campground and Group",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 36,
+      "placed": 36
+    },
+    {
+      "id": "232160",
+      "name": "MOLLIE B_WHITE RIVER",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "232252",
+      "name": "Big Meadows Reservoir Campground (South Central CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 47,
+      "placed": 47
+    },
+    {
+      "id": "232274",
+      "name": "CAMP HALE MEMORIAL",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "232275",
+      "name": "AMPHITHEATER (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "232280",
+      "name": "KELLY DAHL",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "232281",
+      "name": "OLIVE RIDGE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 53,
+      "placed": 53
+    },
+    {
+      "id": "232294",
+      "name": "SILVER DOLLAR",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 38,
+      "placed": 38
+    },
+    {
+      "id": "232301",
+      "name": "Lodgepole (Jefferson Lake, Fairplay Colorado)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "232306",
+      "name": "GUANELLA PASS",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "232329",
+      "name": "REDSTONE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 31,
+      "placed": 30
+    },
+    {
+      "id": "232338",
+      "name": "THIRTY MILE",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Rio Grande National Forest",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "232339",
+      "name": "South Meadows - Pike San Isabel NF (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 63,
+      "placed": 63
+    },
+    {
+      "id": "232364",
+      "name": "LOWRY CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "232368",
+      "name": "PEACEFUL VALLEY",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "232369",
+      "name": "CAMP DICK",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "232381",
+      "name": "COLUMBINE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 46,
+      "placed": 46
+    },
+    {
+      "id": "232385",
+      "name": "MAY QUEEN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 13,
+      "placed": 13
+    },
+    {
+      "id": "233137",
+      "name": "BELLAIRE LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "233189",
+      "name": "JUMBO CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 26,
+      "placed": 25
+    },
+    {
+      "id": "233281",
+      "name": "Pine Point (Vallecito Reservoir, CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "233387",
+      "name": "ISLAND LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 32,
+      "placed": 31
+    },
+    {
+      "id": "233710",
+      "name": "ASPEN (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "233711",
+      "name": "BLUE MOUNTAIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "233718",
+      "name": "SPRINGER GULCH",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "233720",
+      "name": "RIVERSIDE (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "233721",
+      "name": "SPILLWAY CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "233723",
+      "name": "JEFFERSON CREEK",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "233724",
+      "name": "HORSESHOE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "233902",
+      "name": "MATTERHORN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "234105",
+      "name": "ALVARADO CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 50,
+      "placed": 50
+    },
+    {
+      "id": "234510",
+      "name": "NARROWS (CO)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "234512",
+      "name": "ANSEL WATROUS",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Arapaho & Roosevelt National Forests Pawnee NG",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "234596",
+      "name": "COW CREEK SOUTH",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 43,
+      "placed": 43
+    },
+    {
+      "id": "234648",
+      "name": "VALLECITO CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 79,
+      "placed": 78
+    },
+    {
+      "id": "234686",
+      "name": "SPRUCE GROVE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "234776",
+      "name": "LITTLE MAUD CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "234794",
+      "name": "GORE CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 25,
+      "placed": 24
+    },
+    {
+      "id": "234795",
+      "name": "SHEPHERDS RIM CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "White River National Forest",
+      "overnightSites": 15,
+      "placed": 15
+    },
+    {
+      "id": "251844",
+      "name": "WILLIAMS CREEK CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 60,
+      "placed": 60
+    },
+    {
+      "id": "232462",
+      "name": "Rocky Mountain National Park Glacier Basin Campground",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Rocky Mountain National Park",
+      "overnightSites": 149,
+      "placed": 149
+    },
+    {
+      "id": "233187",
+      "name": "Rocky Mountain National Park Aspenglen Campground",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Rocky Mountain National Park",
+      "overnightSites": 49,
+      "placed": 47
+    },
+    {
+      "id": "234052",
+      "name": "Black Canyon Of The Gunnison South Rim Campground",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Black Canyon Of The Gunnison National Park",
+      "overnightSites": 84,
+      "placed": 84
+    },
+    {
+      "id": "260552",
+      "name": "Rocky Mountain National Park Timber Creek Campground",
+      "agency": "National Park Service",
+      "state": "CO",
+      "recArea": "Rocky Mountain National Park",
+      "overnightSites": 80,
+      "placed": 80
+    }
+  ]
+}

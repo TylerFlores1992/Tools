@@ -1,0 +1,392 @@
+{
+  "drawn": {
+    "wave": 37,
+    "count": 41,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-south",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-south), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10145639",
+      "name": "Poulous Loop Group Campground (SC)",
+      "agency": "Forest Service",
+      "state": "SC",
+      "recArea": "Francis Marion and Sumter National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "119040",
+      "name": "BOLEY FIELD GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231992",
+      "name": "COVE CREEK UPPER GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "231994",
+      "name": "KUYKENDALL GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232216",
+      "name": "MCNABB CREEK GROUP",
+      "agency": "Forest Service",
+      "state": "TN",
+      "recArea": "Cherokee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232424",
+      "name": "MIDDLE MOUNTAIN CABINS",
+      "agency": "Forest Service",
+      "state": "WV",
+      "recArea": "Monongahela National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233108",
+      "name": "COVE CREEK LOWER GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233109",
+      "name": "WHITE PINE SOUTH GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233122",
+      "name": "BUCK LAKE GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233139",
+      "name": "CAVE MOUNTAIN LAKE GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233164",
+      "name": "HOPPER CREEK GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233975",
+      "name": "BALSAM LAKE LODGE",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233990",
+      "name": "GATEWOOD GROUP",
+      "agency": "Forest Service",
+      "state": "WV",
+      "recArea": "Monongahela National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234109",
+      "name": "OLD VIRGINIA GROUP HORSE CAMP",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234256",
+      "name": "BLUE SPRINGS GAP CABIN",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234258",
+      "name": "STONY FORK CABIN",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234259",
+      "name": "SUNRISE CABIN",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234313",
+      "name": "Swan Cabin Group Camp",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234450",
+      "name": "CASSIDY BRIDGE PRIMITIVE CAMP",
+      "agency": "Forest Service",
+      "state": "SC",
+      "recArea": "Francis Marion and Sumter National Forests",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234514",
+      "name": "LAKE SHORE GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234516",
+      "name": "MILL DAM GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234584",
+      "name": "CHEOAH POINT CABIN 1",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234585",
+      "name": "CHEOAH POINT CABIN 2",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234597",
+      "name": "RIVER FOREST GROUP SITE",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234599",
+      "name": "DOE LAKE GROUP SITE",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234657",
+      "name": "LAKE DORR CABIN",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234743",
+      "name": "WASH CREEK HORSE CAMP",
+      "agency": "Forest Service",
+      "state": "NC",
+      "recArea": "National Forests in North Carolina",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "250024",
+      "name": "CHILHOWEE GROUP CAMP",
+      "agency": "Forest Service",
+      "state": "TN",
+      "recArea": "Cherokee National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251820",
+      "name": "BOAT GUNNEL GROUP CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "KY",
+      "recArea": "Daniel Boone National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251902",
+      "name": "CRAIG CREEK RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "VA",
+      "recArea": "George Washington & Jefferson National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251903",
+      "name": "GROUP LANDING",
+      "agency": "Forest Service",
+      "state": "FL",
+      "recArea": "National Forests in Florida",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10182617",
+      "name": "San Pedro Group Campground",
+      "agency": "National Park Service",
+      "state": "TX",
+      "recArea": "Amistad National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10182619",
+      "name": "Rock Quarry Group Campground",
+      "agency": "National Park Service",
+      "state": "TX",
+      "recArea": "Amistad National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10182621",
+      "name": "277 North Group Campground",
+      "agency": "National Park Service",
+      "state": "TX",
+      "recArea": "Amistad National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "232437",
+      "name": "BIG CREEK GROUP CAMP",
+      "agency": "National Park Service",
+      "state": "NC",
+      "recArea": "Great Smoky Mountains National Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234051",
+      "name": "Rock Creek Group Camp (Chickasaw)",
+      "agency": "National Park Service",
+      "state": "OK",
+      "recArea": "Chickasaw National Recreation Area",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "251264",
+      "name": "CAMP ROUND MEADOW",
+      "agency": "National Park Service",
+      "state": "MD",
+      "recArea": "Catoctin Mountain Park",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10159068",
+      "name": "Oak Bower Group Use Area",
+      "agency": "US Army Corps of Engineers",
+      "state": "AR",
+      "recArea": "Degray Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233383",
+      "name": "FRIENDSHIP PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Granger Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "233497",
+      "name": "FAIRVIEW",
+      "agency": "US Army Corps of Engineers",
+      "state": "OK",
+      "recArea": "Canton Lake",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234533",
+      "name": "LAKELAND PAVILION",
+      "agency": "US Army Corps of Engineers",
+      "state": "TX",
+      "recArea": "Lavon Lake",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

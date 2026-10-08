@@ -72,7 +72,7 @@ test("every split call is well formed, for a built map, and holds: split is area
   for (const c of calls) {
     assert.ok(built.has(c.id), `${c.id}: no map built`);
     assert.equal(typeof c.split, "boolean", c.id);
-    for (const k of ["gap", "maxSpan"] as const) if (k in c) assert.ok(c.split && Number.isFinite((c as Record<string, unknown>)[k]) && ((c as Record<string, number>)[k]) > 0, `${c.id}: ${k}`);
+    for (const k of ["gap", "maxSpan"] as const) if (k in c) assert.ok(c.split && Number.isFinite((c as Record<string, unknown>)[k]) && ((c as unknown as Record<string, number>)[k]) > 0, `${c.id}: ${k}`);
     assert.ok(c.by.trim() && c.note.trim() && /^\d{4}-\d{2}-\d{2}$/.test(c.on), c.id);
     // A split call the area rules can't honour (Axtel: its loops fit in one area) would read as done.
     const kind = viewOf(mapOf(c.id).sites, c).kind;
@@ -136,4 +136,46 @@ test("the lab's wave list and import lists match the files present (run studio/c
   const src = 'import type { X } from "./x";\nimport wave01 from "./wave-01.json" with { type: "json" };\nexport const L: T[] = [wave01 as T];\n';
   assert.equal(withImports(src, [1, 3], { from: "", list: { name: "export const L: T[] =", type: "T" } }),
     'import type { X } from "./x";\nimport wave01 from "./wave-01.json" with { type: "json" };\nimport wave03 from "./wave-03.json" with { type: "json" };\nexport const L: T[] = [wave01 as T, wave03 as T];\n');
+});
+
+test("the rollout plan: near-equal waves within a region, most-reserved first, multi-site before units, and no campground twice", async () => {
+  const { chunk, planRollout, regionOf } = await import("../studio/campground-maps/plan-rollout.mjs");
+  assert.deepEqual(chunk([1, 2, 3, 4, 5], 2).map((c: number[]) => c.length), [2, 1, 2]);
+  assert.deepEqual(chunk([], 100), []);
+  const square = (x0: number, y0: number) => ({ outer: [[[x0, y0], [x0 + 10, y0], [x0 + 10, y0 + 10], [x0, y0 + 10]]], holes: [] });
+  const list = [{ region: "west", rings: square(0, 0) }, { region: "east", rings: square(20, 0) }];
+  assert.equal(regionOf([5, 5], list), "west");
+  assert.equal(regionOf([25, 5], list), "east");
+  assert.equal(regionOf([-50, 60], list), "api");
+  const c = (id: string) => ({ id, name: id, agency: "Forest Service", state: "", recArea: "" });
+  const at: Record<string, [number, number]> = { a: [1, 1], b: [2, 2], c: [3, 3], d: [21, 1], u: [4, 4], x: [9, 9] };
+  const waves = planRollout({ multi: ["a", "b", "c", "d", "x"].map(c), singles: [c("u")], done: new Set(["x"]), pointOf: (id: string) => at[id], list, reservations: new Map([["b", 50], ["c", 9]]), size: 2 });
+  assert.deepEqual(waves.map((w: { region: string; kind: string; picked: { id: string }[] }) => [w.kind, w.region, w.picked.map((p) => p.id)]), [
+    ["multi", "west", ["b", "c"]], ["multi", "west", ["a"]], ["multi", "east", ["d"]], ["units", "west", ["u"]],
+  ]);
+});
+
+test("the planned waves share no campground with each other or with an earlier wave", () => {
+  const SPECS = join(import.meta.dirname, "../studio/campground-maps/specs");
+  const seen = new Map<string, string>();
+  for (const f of readdirSync(SPECS).filter((f) => /^(wave-\d+|ridb-sample)\.json$/.test(f))) {
+    for (const p of JSON.parse(readFileSync(join(SPECS, f), "utf8")).picked) {
+      assert.ok(!seen.has(p.id), `${p.id} in ${seen.get(p.id)} and ${f}`);
+      seen.set(p.id, f);
+      assert.ok(!("why" in p) && !("reservations" in p), `${f}: ${p.id} says why it was picked`);
+    }
+  }
+});
+
+test("the rollout's batches cover every planned wave once, each from one extract", () => {
+  const SPECS = join(import.meta.dirname, "../studio/campground-maps/specs");
+  const { batches } = JSON.parse(readFileSync(join(SPECS, "rollout.json"), "utf8")) as { batches: { name: string; extract: string; waves: number[] }[] };
+  const planned = readdirSync(SPECS).map((f) => f.match(/^wave-(\d+)\.json$/)?.[1]).filter(Boolean).map(Number).filter((n) => JSON.parse(readFileSync(join(SPECS, `wave-${String(n).padStart(2, "0")}.json`), "utf8")).drawn.region);
+  const inBatches = batches.flatMap((b) => b.waves);
+  assert.equal(new Set(inBatches).size, inBatches.length, "a wave in two batches");
+  assert.deepEqual([...inBatches].sort((a, b) => a - b), planned.sort((a, b) => a - b));
+  for (const b of batches) for (const n of b.waves) {
+    const r = JSON.parse(readFileSync(join(SPECS, `wave-${String(n).padStart(2, "0")}.json`), "utf8")).drawn.region;
+    assert.ok(r === b.extract || r === "api", `${b.name}: wave ${n} is ${r}, not ${b.extract}`);
+  }
 });

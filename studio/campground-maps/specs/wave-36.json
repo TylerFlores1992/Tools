@@ -1,0 +1,500 @@
+{
+  "drawn": {
+    "wave": 36,
+    "count": 53,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "units",
+    "region": "us-west/colorado",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west/colorado), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations); single units (a location map each)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10165110",
+      "name": "Almont",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165120",
+      "name": "Beaver Lake (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165140",
+      "name": "Big Cimarron",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165145",
+      "name": "Big Creek (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165175",
+      "name": "Bootleg",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165190",
+      "name": "Burro Bridge",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165210",
+      "name": "Cement Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165230",
+      "name": "Cold Spring (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165235",
+      "name": "Cordova Pass",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165245",
+      "name": "Cottonwood Lake (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165250",
+      "name": "Crag Crest",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165260",
+      "name": "Deer Lakes (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165265",
+      "name": "Devils Head Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165290",
+      "name": "Erickson Springs",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165300",
+      "name": "Fourmile",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165310",
+      "name": "Goose Creek Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165315",
+      "name": "Gothic",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165325",
+      "name": "Green Mountain Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165340",
+      "name": "Hall Valley",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165345",
+      "name": "Handcart",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165355",
+      "name": "Hayden Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165400",
+      "name": "Kroeger",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165405",
+      "name": "Lake Creek (Co)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165410",
+      "name": "Little Bear",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165425",
+      "name": "Lost Park",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165445",
+      "name": "Meridian Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165450",
+      "name": "Michigan Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165460",
+      "name": "Miller Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165480",
+      "name": "Mosca",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165500",
+      "name": "North Bank (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165505",
+      "name": "North Fork Campground (Salida, CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165545",
+      "name": "Pine River",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165550",
+      "name": "Pitkin",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165555",
+      "name": "Platte River",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165571",
+      "name": "Quartz",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165576",
+      "name": "Rivers End",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165616",
+      "name": "Selkirk",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165641",
+      "name": "Snowblind",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165651",
+      "name": "Soap Creek",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165666",
+      "name": "Spring Creek (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165676",
+      "name": "Spruce Grove (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165681",
+      "name": "Sunshine",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165701",
+      "name": "Transfer Park Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "San Juan National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165711",
+      "name": "Twin Eagle",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165726",
+      "name": "Ward Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165731",
+      "name": "Weir and Johnson",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165736",
+      "name": "Weston Pass",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165746",
+      "name": "Williams Creek (CO)",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "10165751",
+      "name": "Woods Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "118993",
+      "name": "LONE CONE CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234664",
+      "name": "Aspen Leaf Cabin (Uncompahgre National Forest, Co)",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234666",
+      "name": "OAK CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Grand Mesa, Uncompahgre and Gunnison National Forest",
+      "overnightSites": 1,
+      "placed": 1
+    },
+    {
+      "id": "234683",
+      "name": "DAWSON CABIN",
+      "agency": "Forest Service",
+      "state": "CO",
+      "recArea": "Pike and San Isabel National Forests & Cimarron and Comanche National Grasslands",
+      "overnightSites": 1,
+      "placed": 1
+    }
+  ]
+}

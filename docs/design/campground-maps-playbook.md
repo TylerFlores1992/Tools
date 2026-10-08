@@ -431,6 +431,25 @@ Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart)
   each kind, and two critique rounds. Split listings were 10 of wave 1's 20 held maps and 19 of
   wave 2's 36. Single units (§5.1) get a location map with terrain in the same comps.
 
+### 5.4 The parallel rollout (2026-10-08, owner: "each batch to a child")
+Everything left (1,945 multi-site campgrounds and 1,016 single units) is planned in one go by
+`plan-rollout.mjs` as waves 3 to 39: by OpenStreetMap extract region, most-reserved first, then
+single units. `specs/rollout.json` groups them into 11 batches of one region each, so a child
+downloads one extract.
+- **A child** works from `docs/design/campground-maps-rollout-child.md`: build, first look, split
+  calls (`splits/wave-NN.json`), traces, and a handoff. It records no decisions and changes only
+  its own waves' files, on its own branch.
+- **The orchestrating session** merges each batch, runs `node studio/campground-maps/lab-index.mjs`
+  (the wave list and the first-look and decisions imports), makes **the final check**, and records
+  pass (approved) or hold (hidden) in `decisions/wave-NN.json`: the owner's delegation. Held maps
+  are fixed after.
+- **The final check:**
+  - every traced map and every split listing over the photo;
+  - a random sample of the rest, against the child's calls;
+  - the child's handoff read against its files.
+  If the sample disagrees with the child on more than a few maps, the whole wave is looked at
+  again.
+
 ### 5.3 Restroom and water text (optional, owner's call)
 - **Where it comes from:**
   - The Forest Service publishes text per site in `EDW_RecInfraRecreationSites_02` layer 0:
@@ -591,9 +610,9 @@ of bookable sites).
 0a. ~~**Wave 2:** the owner's decisions.~~ **Done 2026-10-08:** A and B approved (23), C and D
    hidden (39).
 0b. ~~**Pick the look.**~~ **Done 2026-10-08: split A and single A**, built into the waves (§1).
-0c. **The 27 listings now shown as areas** (design doc, "Areas built in"): the owner's calls. All
-   were hidden or held as one map.
-0d. **A unit wave** (§5.1): plan and build one, by demand.
+0c. ~~**The 27 listings now shown as areas.**~~ **Done 2026-10-08:** 14 approved, 13 hidden;
+   tighter areas built for the 5 coarse ones (still hidden).
+0d. ~~**A unit wave.**~~ **Planned 2026-10-08** with the rest (§5.4): waves 26 to 39.
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. ~~**Approve the look** of the single-unit and split-listing maps.~~ **Done** (0b).

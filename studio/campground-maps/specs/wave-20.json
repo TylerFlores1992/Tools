@@ -1,0 +1,797 @@
+{
+  "drawn": {
+    "wave": 20,
+    "count": 86,
+    "export": "RIDB full export, 2026-10-07",
+    "kind": "multi",
+    "region": "us-midwest",
+    "osm": "extract",
+    "order": "Rollout of everything left, by region (OpenStreetMap extract us-midwest), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
+    "planned": "2026-10-08"
+  },
+  "population": {
+    "campgrounds": 3212,
+    "singleUnit": {
+      "campgrounds": 1016
+    },
+    "multiSite": {
+      "campgrounds": 2196
+    }
+  },
+  "picked": [
+    {
+      "id": "10047120",
+      "name": "Lake Ottawa Campground",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Ottawa National Forest",
+      "overnightSites": 31,
+      "placed": 31
+    },
+    {
+      "id": "231837",
+      "name": "Bismark Lake",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 21,
+      "placed": 20
+    },
+    {
+      "id": "231838",
+      "name": "COMANCHE PARK",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 20,
+      "placed": 19
+    },
+    {
+      "id": "231839",
+      "name": "DUTCHMAN",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 34,
+      "placed": 33
+    },
+    {
+      "id": "231842",
+      "name": "WHITETAIL",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "231997",
+      "name": "DEER LAKE",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 30,
+      "placed": 28
+    },
+    {
+      "id": "231998",
+      "name": "ONEGUME",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 47,
+      "placed": 47
+    },
+    {
+      "id": "231999",
+      "name": "STONY POINT",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 43,
+      "placed": 42
+    },
+    {
+      "id": "232002",
+      "name": "Little Bay de Noc",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 38,
+      "placed": 37
+    },
+    {
+      "id": "232150",
+      "name": "CHIPPEWA LOOP",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 45,
+      "placed": 44
+    },
+    {
+      "id": "232318",
+      "name": "CAMP SEVEN LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 39,
+      "placed": 38
+    },
+    {
+      "id": "232365",
+      "name": "ROUBAIX LAKE",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 30,
+      "placed": 29
+    },
+    {
+      "id": "232389",
+      "name": "LEITH RUN",
+      "agency": "Forest Service",
+      "state": "OH",
+      "recArea": "Wayne National Forest",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "232391",
+      "name": "RED BLUFF CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 60,
+      "placed": 60
+    },
+    {
+      "id": "232419",
+      "name": "SUTTON BLUFF RECREATION AREA",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "232429",
+      "name": "FLOUR LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 37,
+      "placed": 37
+    },
+    {
+      "id": "233134",
+      "name": "SOUTH PIKE BAY",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Chippewa National Forest",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "233135",
+      "name": "COBB RIDGE",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 45,
+      "placed": 45
+    },
+    {
+      "id": "233165",
+      "name": "EAST BEARSKIN LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "233172",
+      "name": "Au Train Lake Campground",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "233174",
+      "name": "Pete’s Lake Campground",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 48,
+      "placed": 47
+    },
+    {
+      "id": "233253",
+      "name": "MONUMENT CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "233715",
+      "name": "SAND LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Huron-Manistee National Forests",
+      "overnightSites": 44,
+      "placed": 44
+    },
+    {
+      "id": "233760",
+      "name": "NAMEKAGON",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 34,
+      "placed": 34
+    },
+    {
+      "id": "233774",
+      "name": "FRANKLIN LAKE",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 76,
+      "placed": 76
+    },
+    {
+      "id": "233840",
+      "name": "FENSKE LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 16,
+      "placed": 16
+    },
+    {
+      "id": "233841",
+      "name": "BIRCH LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 32,
+      "placed": 32
+    },
+    {
+      "id": "233843",
+      "name": "SOUTH KAWISHIWI RIVER",
+      "agency": "Forest Service",
+      "state": "MN",
+      "recArea": "Superior National Forest",
+      "overnightSites": 31,
+      "placed": 31
+    },
+    {
+      "id": "233921",
+      "name": "Grizzly Bear Campground",
+      "agency": "Forest Service",
+      "state": "",
+      "recArea": "Black Hills National Forest",
+      "overnightSites": 18,
+      "placed": 18
+    },
+    {
+      "id": "234080",
+      "name": "BREVOORT LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 71,
+      "placed": 69
+    },
+    {
+      "id": "234081",
+      "name": "LAKE MICHIGAN AT ST. IGNACE",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "234120",
+      "name": "BESSEY RECREATION COMPLEX",
+      "agency": "Forest Service",
+      "state": "NE",
+      "recArea": "Nebraska National Forests and Grasslands",
+      "overnightSites": 47,
+      "placed": 47
+    },
+    {
+      "id": "234167",
+      "name": "LOST LAKE CABINS",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 11,
+      "placed": 11
+    },
+    {
+      "id": "234613",
+      "name": "Bay View (Hiawatha National Forest, MI)",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "251274",
+      "name": "BOOT LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "251547",
+      "name": "LOGGERS LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "MO",
+      "recArea": "Mark Twain National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "251939",
+      "name": "LAURA LAKE CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 41,
+      "placed": 41
+    },
+    {
+      "id": "255121",
+      "name": "LUNA WHITE DEER CAMPGROUND",
+      "agency": "Forest Service",
+      "state": "WI",
+      "recArea": "Chequamegon-Nicolet NF",
+      "overnightSites": 37,
+      "placed": 37
+    },
+    {
+      "id": "273358",
+      "name": "Lyman Lake Campsites",
+      "agency": "Forest Service",
+      "state": "MI",
+      "recArea": "Hiawatha National Forest",
+      "overnightSites": 10,
+      "placed": 10
+    },
+    {
+      "id": "10177495",
+      "name": "Central Avenue Walk-in Sites",
+      "agency": "National Park Service",
+      "state": "IN",
+      "recArea": "Indiana Dunes National Park",
+      "overnightSites": 5,
+      "placed": 5
+    },
+    {
+      "id": "234441",
+      "name": "TWO RIVERS",
+      "agency": "National Park Service",
+      "state": "MO",
+      "recArea": "Ozark National Scenic Riverways",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "10001419",
+      "name": "Cold Brook Campground",
+      "agency": "US Army Corps of Engineers",
+      "state": "SD",
+      "recArea": "Cold Brook Lake",
+      "overnightSites": 12,
+      "placed": 12
+    },
+    {
+      "id": "10001432",
+      "name": "Cottonwood Springs Campground",
+      "agency": "US Army Corps of Engineers",
+      "state": "SD",
+      "recArea": "Cottonwood Springs Lake",
+      "overnightSites": 17,
+      "placed": 17
+    },
+    {
+      "id": "10038712",
+      "name": "Card Creek",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Elk City Lake",
+      "overnightSites": 19,
+      "placed": 19
+    },
+    {
+      "id": "10038827",
+      "name": "Ivans",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Lake Red Rock",
+      "overnightSites": 20,
+      "placed": 20
+    },
+    {
+      "id": "10038964",
+      "name": "Outlet Channel",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Elk City Lake",
+      "overnightSites": 14,
+      "placed": 14
+    },
+    {
+      "id": "156340",
+      "name": "TAILWATER EAST CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Coralville Lake",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "232521",
+      "name": "BEAVER CREEK (MO)",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Bull Shoals Lake",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "232530",
+      "name": "BLUFF VIEW(CLEARWATER LAKE)",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Clearwater Lake",
+      "overnightSites": 58,
+      "placed": 57
+    },
+    {
+      "id": "232581",
+      "name": "EAGLE ROCK",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Table Rock Lake",
+      "overnightSites": 50,
+      "placed": 50
+    },
+    {
+      "id": "232732",
+      "name": "VIOLA",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Table Rock Lake",
+      "overnightSites": 51,
+      "placed": 51
+    },
+    {
+      "id": "233286",
+      "name": "WEST ASHTABULA CROSSING",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Ashtabula Lake",
+      "overnightSites": 30,
+      "placed": 30
+    },
+    {
+      "id": "233418",
+      "name": "ARROW ROCK",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Melvern Lake",
+      "overnightSites": 33,
+      "placed": 33
+    },
+    {
+      "id": "233419",
+      "name": "EAST ASHTABULA CROSSING",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Ashtabula Lake",
+      "overnightSites": 36,
+      "placed": 36
+    },
+    {
+      "id": "233427",
+      "name": "BLANDING LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Mississippi River - Pools 11-22",
+      "overnightSites": 37,
+      "placed": 37
+    },
+    {
+      "id": "233438",
+      "name": "BUCK CREEK (RATHBUN LAKE)",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Rathbun Lake",
+      "overnightSites": 42,
+      "placed": 42
+    },
+    {
+      "id": "233450",
+      "name": "CARBOLYN PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Pomona Lake",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "233459",
+      "name": "CLARKS FERRY",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Mississippi River - Pools 11-22",
+      "overnightSites": 42,
+      "placed": 42
+    },
+    {
+      "id": "233462",
+      "name": "COEUR D'ALENE",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Melvern Lake",
+      "overnightSites": 48,
+      "placed": 48
+    },
+    {
+      "id": "233481",
+      "name": "DAM SITE",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "John Redmond Reservoir",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "233533",
+      "name": "Winnie Dam Campground - USACE",
+      "agency": "US Army Corps of Engineers",
+      "state": "MN",
+      "recArea": "Mississippi River Headwaters - Winnibigosh Lake",
+      "overnightSites": 22,
+      "placed": 22
+    },
+    {
+      "id": "233538",
+      "name": "LIGHTFOOT LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Pomme De Terre Lake",
+      "overnightSites": 35,
+      "placed": 35
+    },
+    {
+      "id": "233541",
+      "name": "LONE POINT",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Lake Shelbyville",
+      "overnightSites": 61,
+      "placed": 61
+    },
+    {
+      "id": "233550",
+      "name": "MEL RIEMAN REC",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Ashtabula Lake",
+      "overnightSites": 27,
+      "placed": 27
+    },
+    {
+      "id": "233566",
+      "name": "OLD TOWN",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Perry Lake",
+      "overnightSites": 38,
+      "placed": 36
+    },
+    {
+      "id": "233567",
+      "name": "OPOSSUM CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "IL",
+      "recArea": "Lake Shelbyville",
+      "overnightSites": 64,
+      "placed": 63
+    },
+    {
+      "id": "233574",
+      "name": "OUTLET (POMONA LAKE)",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Pomona Lake",
+      "overnightSites": 28,
+      "placed": 28
+    },
+    {
+      "id": "233575",
+      "name": "OUTLET PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Pomme De Terre Lake",
+      "overnightSites": 21,
+      "placed": 21
+    },
+    {
+      "id": "233593",
+      "name": "PRAIRIE RIDGE (RATHBUN LAKE)",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Rathbun Lake",
+      "overnightSites": 55,
+      "placed": 55
+    },
+    {
+      "id": "233599",
+      "name": "RICHEY COVE",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Council Grove Lake",
+      "overnightSites": 39,
+      "placed": 39
+    },
+    {
+      "id": "233602",
+      "name": "RIVERSIDE EAST",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "John Redmond Reservoir",
+      "overnightSites": 41,
+      "placed": 41
+    },
+    {
+      "id": "233603",
+      "name": "RIVERSIDE WEST",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "John Redmond Reservoir",
+      "overnightSites": 25,
+      "placed": 25
+    },
+    {
+      "id": "233639",
+      "name": "STOCKDALE",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Tuttle Creek Lake",
+      "overnightSites": 12,
+      "placed": 11
+    },
+    {
+      "id": "233677",
+      "name": "WOLF CREEK (KS)",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Pomona Lake",
+      "overnightSites": 56,
+      "placed": 56
+    },
+    {
+      "id": "233680",
+      "name": "THIBAUT POINT",
+      "agency": "US Army Corps of Engineers",
+      "state": "MO",
+      "recArea": "Harry S. Truman Lake",
+      "overnightSites": 46,
+      "placed": 46
+    },
+    {
+      "id": "233696",
+      "name": "CHERRYVALE PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Big Hill Lake",
+      "overnightSites": 24,
+      "placed": 23
+    },
+    {
+      "id": "233813",
+      "name": "EGGERTS LANDING",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Ashtabula Lake",
+      "overnightSites": 40,
+      "placed": 40
+    },
+    {
+      "id": "233831",
+      "name": "WHITEHALL BAY",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Fall River Lake",
+      "overnightSites": 30,
+      "placed": 28
+    },
+    {
+      "id": "233832",
+      "name": "DAMSITE - FALL RIVER LAKE",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Fall River Lake",
+      "overnightSites": 33,
+      "placed": 32
+    },
+    {
+      "id": "233896",
+      "name": "SYLVAN PARK",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Wilson Lake",
+      "overnightSites": 26,
+      "placed": 26
+    },
+    {
+      "id": "234647",
+      "name": "FARNUM CREEK",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Milford Lake",
+      "overnightSites": 51,
+      "placed": 51
+    },
+    {
+      "id": "234677",
+      "name": "BEAVER CREEK RECREATION AREA",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Lake Oahe",
+      "overnightSites": 61,
+      "placed": 61
+    },
+    {
+      "id": "250850",
+      "name": "Rockhaven Park Campground and Equestrian Area",
+      "agency": "US Army Corps of Engineers",
+      "state": "KS",
+      "recArea": "Clinton Lake",
+      "overnightSites": 24,
+      "placed": 24
+    },
+    {
+      "id": "251948",
+      "name": "WOLF CREEK CAMPGROUND (ND)",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Sakakawea Lake",
+      "overnightSites": 67,
+      "placed": 67
+    },
+    {
+      "id": "251950",
+      "name": "EAST TOTTEN TRAIL CAMPGROUND (ND)",
+      "agency": "US Army Corps of Engineers",
+      "state": "ND",
+      "recArea": "Sakakawea Lake",
+      "overnightSites": 40,
+      "placed": 40
+    },
+    {
+      "id": "272091",
+      "name": "LINDER POINT CAMPGROUND",
+      "agency": "US Army Corps of Engineers",
+      "state": "IA",
+      "recArea": "Coralville Lake",
+      "overnightSites": 14,
+      "placed": 14
+    }
+  ]
+}

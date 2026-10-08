@@ -125,7 +125,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   if (!Number.isInteger(n) || n < 1) { console.error(`${specArg} isn't a wave spec (no drawn.wave); the sample is built by build-sample.mjs`); process.exit(1); }
   // Extracts only, unless OSM_FROM=auto: Alaska and Hawaii have no OSM France extract (2026-10-08),
   // and their few campgrounds read the API (each map records which; osm.mjs).
-  const manifest = await buildWave({ ridbDir, specFile, manifestFile: join(WAVES, `wave-${String(n).padStart(2, "0")}.json`), only, osm: process.env.OSM_FROM ?? "extract" });
+  // A wave planned for Alaska or Hawaii (plan-rollout.mjs, drawn.osm "api") reads the OSM API.
+  const spec = JSON.parse(readFileSync(specFile, "utf8"));
+  const manifest = await buildWave({ ridbDir, specFile, manifestFile: join(WAVES, `wave-${String(n).padStart(2, "0")}.json`), only, osm: process.env.OSM_FROM ?? (spec.drawn?.osm === "api" ? "auto" : "extract") });
   // A rollout child sets MAPS_NO_INDEX=1: waves.json is regenerated from the manifests when its
   // branch is merged (lab-index.mjs), so parallel waves never edit it.
   if (!process.env.MAPS_NO_INDEX) updateIndex(manifest);
