@@ -3,7 +3,9 @@
 # down) is left as set: the hole and gap fills of steps 1-2 closed the tagline's A and B counters in round 5.
 #  1. above the type, shirt voids inside the art under 1.5 mm2, and shirt gaps under 0.6 mm between inks,
 #     take the ink around them (the three-ink joins showed about 200 pinholes of shirt);
-#  2. above the type, any knockout narrower than 1 mm closes (the hawk's eye and brow cuts were 0.24-0.36 mm);
+#  (2. was: any knockout under 1 mm closes. Round 8's technician measured it turning 30,000 px of one-ink shirt
+#     into ink, erasing hatching, ridge lines and the fire's heart; step 1b's 0.6 mm already closes what can't
+#     hold, such as the hawk's old 0.24-0.36 mm eye and brow cuts.)
 #  3. every ink is opened by a true 0.2 mm disc (2.36 px; round 6 rounded it to 2 px and left 0.34 mm necks),
 #     so no part of it is thinner than 0.4 mm; what that removes goes to the nearest remaining ink or the shirt;
 #  4. above the type, ink pieces under 2 mm2 or narrower than 0.8 mm at their widest go (they lift off DTF
@@ -38,9 +40,6 @@ for rnd in range(8):
     # 1b. thin shirt gaps between inks: what a 0.3 mm closing of all ink fills in
     closed = nd.binary_closing(np.pad(inkm, 20), disk(0.3 * MM))[20:-20, 20:-20]
     holes |= closed & ~inkm & art
-    # 2. above the type: knockouts under 1 mm close
-    closed1 = nd.binary_closing(np.pad(inkm, 30), disk(0.5 * MM))[30:-30, 30:-30]
-    holes |= closed1 & ~inkm & art
     # where strokes nearly touch, the fill makes a bridge thinner than 0.4 mm that step 3 then removes, and the
     # passes cycle; when a pass refills exactly what the last one did, those bridges are thickened to 0.5 mm
     if last is not None and np.array_equal(holes, last):
@@ -67,4 +66,20 @@ for rnd in range(8):
         if bad.any(): lab[np.r_[False, bad][l]] = -2; give_nearest(lab, lab == -2, [-1] + [j for j in inks if j != k])
         print(f"  ink {k}: {int(bad.sum())} small or narrow pieces dropped")
     if not changed: break
+# last openings, so the passes end with nothing under 0.4 mm (round 8 ended on a fill and left 39 px); repeated,
+# since what one ink loses goes to its neighbor and can leave that one a sliver
+# since what one ink loses goes to its neighbor and can leave that one a sliver. Where two inks keep handing a
+# sliver back and forth, the pixels at the art's edge go to the shirt (trimmed off) and the rest, all inside
+# the art where inks meet, stay
+prev = None
+for rnd in range(6):
+    tot = 0; cycling = prev is not None
+    for k in inks:
+        m = lab == k; lost = m & ~nd.binary_opening(np.pad(m, 10), disk(0.2 * MM))[10:-10, 10:-10]
+        if cycling: lost &= nd.binary_dilation(lab == -1, iterations=3)
+        if lost.any(): lab[lost] = -2; give_nearest(lab, lab == -2, [-1] if cycling else [-1] + [j for j in inks if j != k])
+        tot += int(lost.sum())
+    print(f"  final opening {rnd + 1}: {tot} px" + (" (edge only)" if cycling else ""))
+    if not tot or cycling: break
+    prev = tot
 np.save(sys.argv[3], lab.astype(np.int8))

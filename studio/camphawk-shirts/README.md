@@ -228,3 +228,30 @@ Print, from the round 7 technician:
   crosshairs and a label: ink, hex, print order (mist, moss, forest) and RIGHT READING.
 - `all-inks.svg` is stacked as it prints, mist then moss then forest, each from its trapped film: no butted
   edges, so no hairline seams.
+Scores: art director 6 (one ink) / 7 (three inks); technician 8.
+
+## Round 9 (2026-10-08)
+Art, from the round 8 art director: the fire 25% larger, tongues nearer 100/70/50%; two uneven feather cuts
+in the hawk's trailing edge (three read as a comb) and a 1.7 mm eye (1.5 mm filled in on three inks); each
+lake row's right reach mirrors its left; on one ink the lane is half-thickness slivers, so bare shirt is the
+light; a swell and three notches in the shoreline; the one-ink snow-patch hatching as about half as many,
+longer cuts (`hatch5.py`). Tried and dropped: a dark bank of brush behind the fire (it read as a lump).
+Print, from the round 8 technician:
+- Films are black (the mist film in its own color was nearly clear); the ink and hex are in each label.
+- The 1 mm knockout rule is gone: it turned 30,000 px of one-ink shirt into ink (hatching, ridge lines, the
+  fire's heart). The 0.6 mm gap fill already closes what can't hold.
+- Film knockout fills stay 0.3 mm off bare shirt, like the traps. Lane gaps 1.8-2.4 mm (round caps took 0.5).
+- The prep ends with openings until stable; where two inks trade a sliver, edge pixels go to the shirt. What
+  remains under 0.4 mm is 27 px of forest in 14 spots, each at most 8 px, where inks meet inside the art.
+
+## Production spec (both shirts)
+- **One ink (natural shirt): DTF or screen.** DTF is the plan: the widest solid is under 0.9 in, so the film
+  stays soft. Press per the transfer maker; re-press 5 s under parchment after the peel.
+- **Three inks (sage shirt): screen print.** As DTF it is one 22 in2 film with a solid core about 3.8 in
+  across: a stiff, warm patch. If it must be DTF, ask the shop for a soft-hand film and expect the stiffness.
+- **Screen order:** mist, flash, mist (print-flash-print, or a choked underbase; mist is light on a mid-green
+  shirt), then moss, then forest. Traps are built into the films (lighter inks spread under darker ones).
+  Films: `kit/still-water_back_{1-forest,2-moss,3-mist}.svg`, black, each with three registration crosshairs
+  and its ink, hex and print order. Mesh: about 156 for the mist, 200-230 for moss and forest.
+- **Ask for a strike-off.** The tagline's A counters are 0.85 mm and its tightest letter gaps 0.68 mm: fine
+  for DTF; with plastisol keep the deposit thin.

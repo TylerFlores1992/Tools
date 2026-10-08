@@ -61,7 +61,8 @@ for (const [v, ink, out, inks] of jobs) {
   const [fw, fh] = size.film, all = [];
   for (let k = 0; k < inks.length; k++) {
     const [name, hx] = inks[k];
-    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-film${k + 1}.png`, fw, fh)}"/>`, fw, fh));
+    // films are black (a mist-colored film is nearly clear); the ink and its hex are in the label
+    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="#000" fill-rule="evenodd" d="${await trace(`out5/final/${out}-film${k + 1}.png`, fw, fh)}"/>`, fw, fh));
     all.unshift(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-sep${k + 1}.png`)}"/>`);
   }
   writeFileSync(`kit/${out}_all-inks.svg`, svg(all.join("")));

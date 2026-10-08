@@ -117,11 +117,11 @@ function water(withGlow) {
       if (side < 0) reach = CX - far;
     }
     // the fire's light: the row carries on through the lane broken into short cut strokes, 3.5-6 mm with
-    // 1.2-1.8 mm between (mist on three inks, forest on one); the shirt between them is the glitter. These are
+    // 1.8-2.4 mm between (mist on three inks, forest on one); the shirt between them is the glitter. These are
     // drawn outside the wobble, which turned strokes this short into blobs
     for (let sx = a + (0.3 + rg() * 0.8) * MM; sx < b - 3 * MM;) {
       const l = Math.min((3.5 + rg() * 2.5) * MM, b - sx);
-      glow += dash(sx, sx + l, y, withGlow ? Math.max(1.3 * MM, t * 0.7) : Math.max(1.0 * MM, t * 0.5), rg); sx += l + (1.2 + rg() * 0.6) * MM; }
+      glow += dash(sx, sx + l, y, withGlow ? Math.max(1.3 * MM, t * 0.7) : Math.max(1.0 * MM, t * 0.5), rg); sx += l + (1.8 + rg() * 0.6) * MM; }   // the round caps eat about 0.5 mm of each gap
     y += t + (2.0 + 2.6 * p) * MM * (0.75 + r() * 0.5);               // uneven row spacing
   }
   return { ink, glow, end: y };

@@ -52,7 +52,7 @@ for k in range(len(inks)):
     pin = np.r_[False, hs < 0.5 * MM * MM][hl] & darker  # film pinholes over a darker ink
     # knockouts under thin dark detail (the forest gouges in the moss) left 0.3 mm hairlines on the film that a
     # screen can't hold: under darker ink, any knockout narrower than 1 mm closes, so the light ink runs under it
-    pin |= nd.binary_closing(np.pad(s, 12), disk(0.5 * MM))[12:-12, 12:-12] & ~s & darker
+    pin |= nd.binary_closing(np.pad(s, 12), disk(0.5 * MM))[12:-12, 12:-12] & ~s & darker & inside   # 0.3 mm off shirt
     s |= pin
     sep = np.where(s, 0, 255).astype(np.uint8)
     Image.fromarray(sep).save(f"out5/final/{name}-sep{k + 1}.png", dpi=(300, 300)); films.append(film(sep, k))
