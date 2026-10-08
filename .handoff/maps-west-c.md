@@ -18,7 +18,7 @@ follow the visible one, sites are misplaced or stacked, or about a third or more
 no drawn road at all. (The first message's "1 in 7" bar was withdrawn.)
 
 ## Wave 09 (us-west: OR, WA, ID, UT, WY, CA, MT, NV, AZ; multi)
-- Built 94, failed 0 (build 18:52-19:34Z)
+- Built 94, failed 0 (build 18:52-19:33Z; first look and traces 19:34-19:59Z)
 - Check: ready 60, review 33, not drawn 1 (after traces; 63/30/1 as first built)
 - First look: good 24, usable 32, hold 22, unsure 16
 - Traced: 233568 (Orland Buttes: every paved loop, only the entry road was drawn), 273822 (Navajo Lake: lanes north of the highway), 232347 (Bald Mountain: five spurs), 233822 (Greens Lake: middle lane to 017). Each checked over the photo after the rebuild (within about 3 m).
@@ -49,7 +49,7 @@ no drawn road at all. (The first message's "1 in 7" bar was withdrawn.)
 - Anything new: three winter (snow) NAIP frames in Utah (232104, 232139, 233824): lanes show, pads don't. Used a small script to measure each site's distance to the nearest drawn road (`dist.mjs`, scratchpad only), so the notes give measured distances rather than eyeballed ones.
 
 ## Wave 10 (us-west: UT, OR, CA, ID, WA, WY, MT, NV, AZ; multi)
-- Built 94, failed 0 (build 19:35-20:20Z, alongside wave 9's first look)
+- Built 94, failed 0 (build 19:35-19:59Z, alongside wave 9's first look; first look and trace 20:00-20:18Z)
 - Check: ready 66, review 27, not drawn 1
 - First look: good 19, usable 33, hold 30, unsure 12
 - Traced: 267074 (Three Creeks Meadow: the gravel loop in the meadow past 003 to 007; checked over the photo, within about 3 m)
