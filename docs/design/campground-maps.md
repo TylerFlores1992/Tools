@@ -846,6 +846,8 @@ in here.
 |---|---|---|---|---|---|
 | northeast-api | 24, 39, 25, 33, 34 | 283 | 37 | 246 | 18 looked at over the photo (all 5 traces, all 3 splits, 10 sampled): agreed with all 18 |
 | colorado | 22, 23, 35, 36 | 232 | 131 | 101 | 30 looked at (all 8 traces, all 5 splits, 17 sampled): agreed with all 30 |
+| west-a | 3, 4, 5 | 283 | 176 | 107 | 31 looked at (all 13 traces, all 6 splits, 12 sampled): agreed with all 31 |
+| west-units-b | 30, 31, 32 | 266 | 132 | 134 | 19 looked at (all 7 traces, 12 sampled): agreed with 17; held 2 the child passed (whole campgrounds booked as one "Standard" site) |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -883,6 +885,22 @@ in here.
   - The unit check passes them, so only the photo catches them. All held.
   - They need a population rule (one site named "Standard" is a campground, not a unit) and the
     campground's own map, or a "whole campground" design.
+
+**west-a (2026-10-08, California, Nevada, Utah, Arizona, Oregon):** 283 built. First look: 82 good,
+94 usable, 58 hold, 49 unsure.
+- 13 traced, including Needles (Canyonlands), where every road was retraced because the source
+  ran 10 to 20 m off. 6 split calls, each area holding one cluster on the photo.
+- New: OSM's bubble-shaped loops (Lassen: Manzanita, Summit, Butte) are a recurring hold.
+  Salmon Creek's site 033 sits 25 km away at a highway pull-off.
+- Tall frames fail `aerial-grid.mjs` at the default 1,600 px width (USGS's 4,000 px limit); a
+  1,200 px box works.
+
+**west-units-b (2026-10-08, western single units):** 266 built. 7 traced (guard station drives,
+group-site lanes).
+- **Wave 32 is mostly not units:** 50 of its 89 listings are whole campgrounds with one
+  "Standard" site.
+- The child passed two of them. **The final check now holds every listing whose one site is named
+  "Standard"** (`decide-wave.mjs`, tested), so the rule doesn't depend on each child's call.
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |

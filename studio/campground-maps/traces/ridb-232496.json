@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232496",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -116.8703608,
+     36.4632613
+    ],
+    [
+     -116.8702158,
+     36.4632343
+    ],
+    [
+     -116.8700484,
+     36.4631892
+    ],
+    [
+     -116.8699034,
+     36.4630991
+    ],
+    [
+     -116.869803,
+     36.463009
+    ],
+    [
+     -116.8697137,
+     36.4629189
+    ],
+    [
+     -116.8696245,
+     36.4628288
+    ],
+    [
+     -116.8695464,
+     36.4627386
+    ],
+    [
+     -116.8694794,
+     36.4627026
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved diagonal lane that runs from the west entry road past Sites 148 and 146 to the loop by Site 065. Left out the faint lane beside 142 and 143 and the open ground of the west tent area (116 to 135), where no lane shows."
+}

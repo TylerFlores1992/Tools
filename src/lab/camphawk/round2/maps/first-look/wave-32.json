@@ -1,0 +1,364 @@
+{
+ "version": 1,
+ "wave": 32,
+ "by": "Claude (rollout west-units-b)",
+ "on": "2026-10-08",
+ "looks": {
+  "118990": {
+   "call": "hold",
+   "note": "The pin sits in open sagebrush between two drawn roads with nothing at it; the station's buildings are 110 m south on the drawn lane."
+  },
+  "231968": {
+   "call": "unsure",
+   "note": "The pin sits on open ground among junipers inside a bend of the drawn road, 11 m from it, with no pad or clearing that marks the group camp; the listing's own point is 86 km away (a bad listing point)."
+  },
+  "232030": {
+   "call": "usable",
+   "note": "The pin is on the open camp area 15 m south of the group campground's building, beside the drawn loop; nothing drawn reaches the pin itself. The listing's own point is 5.6 km away."
+  },
+  "232057": {
+   "call": "usable",
+   "note": "The pin is beside the drawn road through the equestrian camp, in the open between its lanes; nothing at the pin itself marks the group site among the camp's spurs."
+  },
+  "232348": {
+   "call": "hold",
+   "note": "The pin sits in the trees of the island inside the paved lakeside parking loop, with no building at it; nothing there could be the chalet."
+  },
+  "232790": {
+   "call": "hold",
+   "note": "The pin sits on an open hillside above a housing tract, 130 m from any drawn road, with nothing at it that could be a campground; the listing's own point is 640 m away."
+  },
+  "233126": {
+   "call": "hold",
+   "note": "The pin sits in forest on a slope 130 m from the nearest drawn road, with no building, tower or clearing at it."
+  },
+  "233183": {
+   "call": "hold",
+   "note": "The pin sits on open grass at the edge of an oak wood, 37 m from the drawn road, with nothing at it; the campground's loops and buildings are 200 m southeast."
+  },
+  "233357": {
+   "call": "usable",
+   "note": "The pin sits in open pines 20 m west of a few small structures and vehicles, 35 m south of the drawn loop; no corral is plain at the pin, and nothing drawn reaches it."
+  },
+  "233381": {
+   "call": "good",
+   "note": "The pin is on the bare clearing of the group camp at the end of the drawn spur below the ranch buildings."
+  },
+  "233398": {
+   "call": "usable",
+   "note": "The pin is on the drawn spur north of the meadow road under canopy, where only the spur's line shows; nothing at the pin marks the group site, but the spur reaches it."
+  },
+  "233982": {
+   "call": "usable",
+   "note": "The pin is in the meadow 20 m southeast of the guard station's red-roofed building at the forest edge; the drawn spur ends 40 m west of the building, and the short way to it doesn't show plainly enough to trace."
+  },
+  "233988": {
+   "call": "hold",
+   "note": "The pin sits in unbroken forest across the river from the road, 180 m from any drawn road, with no clearing at it."
+  },
+  "234144": {
+   "call": "unsure",
+   "note": "The pin is on a small opening on the drawn road in the forest; no building shows at it or nearby, so the photo can't confirm the guard station."
+  },
+  "234157": {
+   "call": "hold",
+   "note": "The pin sits in unbroken forest 55 m from the road; the cabin plainly shows 70 m south, on the drawn trail at the meadow's edge."
+  },
+  "234160": {
+   "call": "hold",
+   "note": "The pin sits in a burned stand of standing dead trees 315 m from the nearest drawn road, with no cabin or clearing at it."
+  },
+  "234161": {
+   "call": "hold",
+   "note": "The pin sits on a brushy slope 300 m below the drawn road, with no tower or building at it; the lookout is likely on the summit by the road's end."
+  },
+  "234170": {
+   "call": "good",
+   "note": "The pin is on the cabin in its clearing on the butte, where the drawn spur off the loop ends."
+  },
+  "234224": {
+   "call": "unsure",
+   "note": "The pin sits under oaks and pines 30 m east of the drawn road; a roof may show under the trees beside it, but the photo can't confirm the cabin, and the listing's own point is 490 m away."
+  },
+  "234281": {
+   "call": "good",
+   "note": "The pin is beside the lookout on the bare summit, and the drawn trail from the road reaches it."
+  },
+  "234292": {
+   "call": "good",
+   "note": "The pin is on the lookout on the bare ridge, where the drawn trails meet; the drawn road stops 30 m short, on the ridge's west side."
+  },
+  "234321": {
+   "call": "unsure",
+   "note": "The pin is at the end of the drawn track down the meadow, in the shadow of the forest edge; no cabin shows clearly in the shade, so the photo can't confirm it."
+  },
+  "234326": {
+   "call": "unsure",
+   "note": "The pin is at the end of the drawn track in a snow-covered meadow beside a band of trees; the snow hides any cabin, so the photo can't confirm it."
+  },
+  "234395": {
+   "call": "good",
+   "note": "The pin is beside the lookout building on the bare summit, inside the drawn loop at the road's end."
+  },
+  "234408": {
+   "call": "good",
+   "note": "The pin is on the cabin on the butte top, where the drawn road ends in its bare turnaround."
+  },
+  "234435": {
+   "call": "usable",
+   "note": "The pin is on the bare clearing beside a small building on the ridge, 40 m from the drawn road; the dirt loop from the road round the clearing to the building shows but isn't drawn, and the drawn road runs about 10 m west of the visible one. The listing's own point is 580 m away."
+  },
+  "234444": {
+   "call": "good",
+   "note": "The pin is on the cabin's roof in its small clearing, and the drawn trail passes beside it (it is reached by trail; no road is near)."
+  },
+  "234482": {
+   "call": "unsure",
+   "note": "The pin sits on an open rocky slope 20 m from the end of a drawn trail; no cabin shows plainly at it."
+  },
+  "234601": {
+   "call": "good",
+   "note": "The pin is on a building among the structures and parked vehicles in the clearing, inside the drawn loop at the road's end; the drawn loop runs a little off the visible lane around the rocks."
+  },
+  "234631": {
+   "call": "usable",
+   "note": "The pin sits in the station's pasture 12 m north of its gravel drive, which wasn't drawn and was traced from the road to the yard; the guard station's buildings are 85 m southwest of the pin, so the pin is near but not on the station."
+  },
+  "252037": {
+   "call": "good",
+   "note": "The pin is on the lookout on the bare summit, where the drawn road ends in its loop."
+  },
+  "262759": {
+   "call": "usable",
+   "note": "The pin is on the small shelter in a clearing in the logged stand, at the end of a plain dirt lane 150 m long that isn't drawn; the lane fades into the trees 25 m short of the drawn road, so it wasn't traced. The drawn road west of it runs a few metres off the visible gravel road."
+  },
+  "10038994": {
+   "call": "unsure",
+   "note": "The pin is inside the drawn loop under full canopy; neither the loop nor a clearing shows, and the listing's own point is about 1,690 km away (a bad listing point)."
+  },
+  "10116515": {
+   "call": "good",
+   "note": "The pin is on the guard station's roof in its bare yard, where the drawn road ends."
+  },
+  "10116518": {
+   "call": "hold",
+   "note": "The pin sits in open forest 47 m west of the drawn road with no building at it; nothing at or near it is plainly the guard station, and the campground's loops lie 150 m east."
+  },
+  "10165105": {
+   "call": "hold",
+   "note": "The listing has one generic \"Standard\" site placed at the listing's own point, and it sits in unbroken forest 130 m from any road; no campground shows within the zoom."
+  },
+  "10165155": {
+   "call": "hold",
+   "note": "The pin is at the listing's own point, in unbroken forest 20 m off the drawn road; the dirt loop with its clearing 120 m northwest is the likely group site."
+  },
+  "10165165": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits at the listing's own point on the road junction; the campground, with its drawn restrooms, is 250 m east by the lake, so the pin isn't the campground."
+  },
+  "10165200": {
+   "call": "unsure",
+   "note": "The listing's one generic \"Standard\" site sits at the listing's own point in an open meadow between the two drawn roads, with no pads at it; the meadow may be the campground, but a restroom is drawn 300 m south."
+  },
+  "10165205": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits at the listing's own point beside a group of houses and sheds; the campground's loop and restroom are 300 m southwest."
+  },
+  "10165220": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point: it sits among the drawn loops of the lakeside campground, in open pines between the lanes, so it marks the campground but no site."
+  },
+  "10165285": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point: it sits among the drawn loops of the lakeside campground under open pines, so it marks the campground but no site. The listing's own point is 97 km from the other RIDB point the check uses."
+  },
+  "10165305": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in unbroken forest 390 m from the only drawn road; no campground shows within the frame."
+  },
+  "10165320": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point: it sits in open pines 50 m east of the drawn campground loop, so it marks the area but no site."
+  },
+  "10165360": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the drawn road into the small campground off the highway, where the loop shows; it marks the campground but no site."
+  },
+  "10165375": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in unbroken forest 100 m from any drawn road; the small loop with its restroom 130 m west is the likely campground."
+  },
+  "10165385": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in forest 18 m below the drawn road, with nothing at it; the campground's loop and restroom are 350 m west."
+  },
+  "10165430": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in unbroken forest across the drawn road from the river; the campground's drawn loop is 120 m northwest."
+  },
+  "10165470": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the drawn lane through the riverside campground, between its loops; it marks the campground but no site."
+  },
+  "10165485": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in open pines 50 m east of the drawn campground loop; it marks the area but no site."
+  },
+  "10165490": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point inside the drawn lakeside loop; it marks the campground but no site."
+  },
+  "10165495": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in an open meadow beside the creek road, with nothing at it; the campground's loop is 330 m north."
+  },
+  "10165510": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point at the end of a gravel spur off the drawn loop in the lakeside campground; it marks the campground but no site."
+  },
+  "10165530": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point beside the drawn lanes of the lakeside campground; it marks the campground but no site."
+  },
+  "10165581": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits on the highway at the river's edge, with nothing at it; the campground's loops and restrooms are 100 m and more southwest."
+  },
+  "10165591": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the drawn loop under canopy by the falls; it marks the campground but no site."
+  },
+  "10165596": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in the middle of the river; the campground's loops are on the bank 50 m and more west."
+  },
+  "10165606": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in the middle of the lake; the road and trailhead are 80 m and more south and west."
+  },
+  "10165626": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits on a wooded slope 27 m below the drawn lane, with nothing at it."
+  },
+  "10165631": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the bare trailhead lot at the end of the drawn road; it marks the place but no site."
+  },
+  "10165636": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the gravel lot at the lakeshore loop, which the drawn roads follow; it marks the campground but no site."
+  },
+  "10165656": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in forest on a drawn trail 60 m east of the campground's loop, with nothing at it."
+  },
+  "10165721": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits on a gravel bar at the river's edge; the campground's drawn loop is 80 m northwest across the trees."
+  },
+  "10165741": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in the middle of the small drawn loop by the river, beside its restroom; it marks the campground but no site."
+  },
+  "10191065": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in an open meadow east of the highway, with nothing at it; the campground's lane is 150 m west across the highway."
+  },
+  "10191075": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits on an open, rocky slope 120 m above the lake road, with nothing at it; the campground's loops are 100 m and more southeast."
+  },
+  "10191090": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in a meadow east of the highway, with nothing at it; the campground's small loop is 50 m west across the highway."
+  },
+  "10191095": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in the small campground beside the highway, between its drawn loop and lanes; it marks the campground but no site."
+  },
+  "10191100": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits on an open hillside 80 m east of the road, with nothing at it; the campground's gravel lot and lane are 70 m southwest beside the creek."
+  },
+  "10191105": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in the treed campground; the drawn Census roads there (a narrow triangle) don't follow the visible dirt lanes, which run west of it, so it marks the campground but the roads within are wrong."
+  },
+  "10191110": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point inside the drawn loop, whose lanes and spurs show; it marks the campground but no site."
+  },
+  "10192037": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point inside the drawn loop among the pines; it marks the campground but no site."
+  },
+  "10192067": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in open desert scrub at the end of a drawn Census lane that crosses ground where no lane shows; the campground's visible loop and clearing are 120 m west."
+  },
+  "10192122": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in the middle of the drawn campground loop among the pinyons; it marks the campground but no site."
+  },
+  "10215854": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point beside a small building on the edge of the campground flat, 10 m from the drawn road; the campground's own lanes in the flat aren't drawn."
+  },
+  "10215884": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the riverside flat 20 m south of the drawn loop; the campground's dirt lanes south and west of the loop aren't drawn."
+  },
+  "10215904": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in mesquite scrub 66 m from the drawn road, with nothing at it."
+  },
+  "10215919": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point in the mesquite 20 m north of the drawn road along the river, near a shelter and parking on the road; it marks the place but no site."
+  },
+  "10221637": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in the trees on the creek bank east of the road, with nothing at it; the campground's loops are 70 m and more south."
+  },
+  "10221647": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in open scrub between the creek and the road, with nothing at it; the campground's loops are across the creek, 80 m and more west."
+  },
+  "10221657": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in the trees across the creek from the campground, with nothing at it; the campground's loop and restroom are 50 m west."
+  },
+  "10221662": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the open flat by the road, 20 m from the campground's drawn loop and restroom; it marks the campground but no site."
+  },
+  "10221667": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in burned forest 60 m east of a small compound of trailers and buildings on the drawn loop, with nothing at it."
+  },
+  "10221672": {
+   "call": "usable",
+   "note": "A whole campground listed with one generic \"Standard\" site, placed at the listing's own point on the small drawn loop at the east end of the campground flat by the river; it marks the campground but no site."
+  },
+  "10221677": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits in open grass east of the creek, with nothing at it; the campground's loops are across the creek, 60 m and more west."
+  },
+  "10293118": {
+   "call": "good",
+   "note": "The pin is on the ranger office building beside the drawn road, which passes 10 m east."
+  },
+  "10314707": {
+   "call": "hold",
+   "note": "The listing's one generic \"Standard\" site sits under full canopy 120 m from any drawn road, with nothing at it; the listing has no point of its own, and no campground shows near it."
+  },
+  "10327336": {
+   "call": "usable",
+   "note": "The pin is on the small shelter at the east edge of the big bare clearing of the equestrian area; the drawn spur stops at the clearing's north edge, 55 m from the shelter."
+  },
+  "10386715": {
+   "call": "good",
+   "note": "The pin is in the open stock yard east of the station's buildings, 20 m from the drawn road that passes it."
+  }
+ }
+}

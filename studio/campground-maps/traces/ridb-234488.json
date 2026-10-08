@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-234488",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -112.1182279,
+     35.9364192
+    ],
+    [
+     -112.1181725,
+     35.9365724
+    ],
+    [
+     -112.1180173,
+     35.9366355
+    ],
+    [
+     -112.11784,
+     35.9366535
+    ],
+    [
+     -112.117707,
+     35.9366986
+    ],
+    [
+     -112.1175629,
+     35.9367346
+    ],
+    [
+     -112.1173413,
+     35.9367436
+    ],
+    [
+     -112.1171196,
+     35.9367346
+    ],
+    [
+     -112.1169756,
+     35.9367166
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the visible paved lane on the north side of loop B, from the drawn road at B36 past B34 and B32 to the drawn road at B31. The drawn B36 to B33 segment runs about 8 m south of the pavement; left as is. Short spurs to single pads left out."
+}

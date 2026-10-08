@@ -15,15 +15,20 @@ const nn = (n) => String(n).padStart(2, "0");
 
 /**
  * The decisions file for one wave. Every built map in the manifest gets one decision.
- * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], checked: number, on: string, by?: string }} opts
+ * `wholeCampgrounds` are listings whose one bookable site is named "Standard": a whole campground
+ * booked as one site, its point a placeholder (colorado batch, 2026-10-08: 65 of 106 "units").
+ * A unit location map of one misleads, so each is held, whatever the first look said.
+ * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], wholeCampgrounds?: string[], checked: number, on: string, by?: string }} opts
  */
-export function decideWave({ wave, manifest, looks, hold = [], pass = [], checked, on, by = "Claude (final check, owner's delegation)" }) {
+export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeCampgrounds = [], checked, on, by = "Claude (final check, owner's delegation)" }) {
   const decisions = manifest.entries.filter((e) => !e.error).map((e) => {
     const call = looks[e.id]?.call;
     if (!call) throw new Error(`wave ${wave}: no first look for ${e.id}`);
-    const override = hold.includes(e.id) ? "hidden" : pass.includes(e.id) ? "approved" : null;
+    const whole = wholeCampgrounds.includes(e.id);
+    const override = hold.includes(e.id) || whole ? "hidden" : pass.includes(e.id) ? "approved" : null;
     const decision = override ?? (call === "good" || call === "usable" ? "approved" : "hidden");
-    const note = override
+    const note = whole ? `Held: a whole campground booked as one "Standard" site, not a unit (first look ${call}).`
+      : override
       ? `Final check overrode the first look (${call}): ${decision === "approved" ? "passed" : "held"}.`
       : decision === "approved" ? `Passed: first look ${call}.` : `Held to fix after: first look ${call}.`;
     return { id: e.id, decision, by, on, note };
@@ -44,7 +49,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const manifest = JSON.parse(readFileSync(join(import.meta.dirname, `../../public/private/camphawk/maps/waves/wave-${nn(wave)}.json`), "utf8"));
   const looks = JSON.parse(readFileSync(join(LAB, `first-look/wave-${nn(wave)}.json`), "utf8")).looks;
   const list = (s) => (s ? s.split(",").filter(Boolean) : []);
-  const file = decideWave({ wave, manifest, looks, hold: list(args.hold), pass: list(args.pass), checked: Number(args.checked), on: args.on ?? new Date().toISOString().slice(0, 10) });
+  const MAPS = join(import.meta.dirname, "../../public/private/camphawk/maps");
+  const wholeCampgrounds = manifest.entries.filter((e) => !e.error).filter((e) => {
+    const sites = JSON.parse(readFileSync(join(MAPS, `ridb-${e.id}.json`), "utf8")).sites;
+    return sites.length === 1 && /^standard$/i.test(sites[0].name.trim());
+  }).map((e) => e.id);
+  const file = decideWave({ wave, manifest, looks, hold: list(args.hold), pass: list(args.pass), wholeCampgrounds, checked: Number(args.checked), on: args.on ?? new Date().toISOString().slice(0, 10) });
   writeFileSync(join(LAB, `decisions/wave-${nn(wave)}.json`), JSON.stringify(file, null, 1) + "\n");
   const n = (d) => file.decisions.filter((x) => x.decision === d).length;
   console.log(`wave ${wave}: ${n("approved")} approved, ${n("hidden")} hidden`);
