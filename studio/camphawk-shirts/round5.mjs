@@ -124,7 +124,10 @@ function water(withGlow) {
       glow += dash(sx, sx + l, y, Math.max(1.3 * MM, t * 0.7), rg); sx += l + (1.8 + rg() * 0.6) * MM; }   // the round caps eat about 0.5 mm of each gap
     // one ink: the lane stays open shirt with two short ticks per row (slivers all the way across read as a
     // dotted line, round 9 review)
-    else for (const f of [0.22 + rg() * 0.12, 0.62 + rg() * 0.12]) { const sx = a + (b - a) * f; glow += dash(sx, sx + 3.6 * MM, y, 1.15 * MM, rg); }
+    // spaced from each other, not by fractions of the lane (in the narrow bottom row they overlapped into one
+    // mark with a 0.25 mm waist, round 10 review)
+    else { const L = 3.6 * MM, gap = (2.2 + rg() * 0.8) * MM, x1 = (a + b) / 2 - L - gap / 2 + (rg() - 0.5) * 2 * MM;
+      glow += dash(x1, x1 + L, y, 1.15 * MM, rg) + dash(x1 + L + gap, x1 + 2 * L + gap, y, 1.15 * MM, rg); }
     y += t + (2.0 + 2.6 * p) * MM * (0.75 + r() * 0.5);               // uneven row spacing
   }
   return { ink, glow, end: y };
