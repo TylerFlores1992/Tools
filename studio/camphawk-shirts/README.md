@@ -254,21 +254,31 @@ wordmark. The round 9 technician (9) said ready, sending the PNGs as masters: th
 PNGs (`kit/*_film{k}-{ink}.png`), and `hatch5.py` sets its own print floor (marks 2.5 mm2 and 0.9 mm wide or
 more, cuts filled under 2.5 mm2) so the kit prep no longer picks which hatch marks survive.
 
+## The decision (2026-10-08): print the pick, not the polish
+Shown the pick beside round 10, the owner chose the pick: "the before vercel I believe is far better; the
+hawk, tent and fire in the new one look terrible." So `kit/` holds **round 4 no. 7 exactly as picked**
+(`ref/pick-no7/`, the renders `final4.mjs` made), built by `node pickkit.mjs`: only the print-safety rules of
+rounds 5-10 are applied (`prep5.py` through `finish5.py ... keep`: tips under 0.4 mm trimmed, hairline gaps
+and specks closed, about 0.2-0.35% of the ink; the type left as set), plus 1-bit screen films with marks
+and SVGs traced from them. The canvas stays 11.5 x 8.33 in as picked. Rounds 5-10 (`round5.mjs`,
+`final5.mjs`, `polish5.py`, `hatch5.py`) stay in the repo as history; their last kit is in git (commit c6d428e).
+The as-picked files, untouched, were emailed to the owner (kit page https://claude.ai/artifact/BYjkHu1DDX9ZnHRGSWpCdD).
+
 ## Production spec (both shirts)
-- **Print size:** 10.13 x 8.38 in, centred, the top about 3 in below the collar. Chest: 3.75 x 2.06 in, left.
+- **Print size:** the files are 11.5 x 8.33 in; the art inside is about 10.1 x 7.6 in (one ink) and
+  10.0 x 7.5 in (three inks), centred, its top about 3 in below the collar. Chest: 3.75 x 2.06 in, left.
 - **Master files:** the PNGs. DTF prints `kit/*_back_300dpi.png`; a screen shop burns from the 1-bit films
   `kit/*_film{k}-{ink}.png` (300 dpi, black, each with three registration crosshairs and its ink, hex and
-  print order). The SVGs are traced from them for convenience: they add a few hundred px of sub-0.4 mm tips
-  the PNGs don't have, so the PNGs win any disagreement.
-- **One ink (natural shirt): DTF or screen.** DTF is the plan: 16.3 in2 of film, the widest solid 0.76 in,
-  so it stays soft. Heat press (a household iron is not enough): about 300-325 F, 10-15 s, medium-firm
-  pressure, peel as the transfer maker says (hot or cold), then re-press 5 s under parchment. Use their
-  numbers if they differ.
-- **Three inks (sage shirt): screen print.** As DTF it is 26.6 in2 of film with a solid core 3.8 in across:
-  a stiff, warm patch. If it must be DTF, ask for a soft-hand film and expect the stiffness.
-- **Screen order and ink:** plastisol (or the shop's soft-hand blend), cured at about 320 F through the
-  dryer. Mist, flash, mist (print-flash-print, or a choked underbase; mist is light on a mid-green shirt; keep
-  the deposit thin), then moss, then forest. Traps are built into the films. Mesh: about 156 for mist,
-  200-230 for moss and forest.
-- **Approve a strike-off first.** The tagline's A counters are 0.85 mm across (its letter gaps are at least
-  1.45 mm): fine for DTF; with plastisol keep the forest deposit thin.
+  print order). The SVGs are traced from them for convenience; the PNGs win any disagreement.
+- **One ink (natural shirt): DTF or screen.** DTF is the plan: 19.8 in2 of film, the widest solid about
+  1 in, so it stays soft. Heat press (a household iron is not enough): about 300-325 F, 10-15 s,
+  medium-firm pressure, peel as the transfer maker says (hot or cold), then re-press 5 s under parchment.
+  Use their numbers if they differ.
+- **Three inks (sage shirt): screen print.** As DTF it is 27.2 in2 of film with a solid core about 3.8 in
+  across: a stiff, warm patch. If it must be DTF, ask for a soft-hand film and expect the stiffness.
+- **Screen order and ink:** plastisol (or the shop's soft-hand blend), cured at about 320 F. Mist, flash,
+  mist (print-flash-print, or a choked underbase; mist is light on a mid-green shirt; keep the deposit
+  thin), then moss, then forest. Traps are built into the films. Mesh: about 156 for mist, 200-230 for
+  moss and forest.
+- **Approve a strike-off first.** The condensed tagline has tight letter gaps (some under 0.6 mm) and small
+  counters: fine for DTF; with plastisol keep the forest deposit thin and check it on the proof.

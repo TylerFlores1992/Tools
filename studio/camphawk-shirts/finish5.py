@@ -9,7 +9,7 @@
 #    masters (round 9: the traced SVGs bring back a few hundred px of sub-0.4 mm tips the PNGs don't have);
 #  - one untrapped mask per ink (out5/final/{name}-ink{k}.png) that the all-inks SVG is traced from (round 6
 #    traced the trapped films, so the spread light inks painted over forest edges).
-# args: name inks(comma name:hex, darkest first) typeTop
+# args: name inks(comma name:hex, darkest first) typeTop [keep]   (keep: no trim, the canvas stays as rendered)
 import sys, subprocess, json
 import numpy as np
 from PIL import Image
@@ -22,6 +22,7 @@ subprocess.run(["python3", "prep5.py", f"out5/final/{name}-labels.npy", str(top)
 lab = np.load(f"out5/final/{name}-prep.npy").astype(np.int16)
 ys, xs = np.nonzero(lab >= 0); m = int(round(3 * MM))
 y0, y1, x0, x1 = max(ys.min() - m, 0), min(ys.max() + m + 1, lab.shape[0]), max(xs.min() - m, 0), min(xs.max() + m + 1, lab.shape[1])
+if sys.argv[4:] == ["keep"]: y0, y1, x0, x1 = 0, lab.shape[0], 0, lab.shape[1]
 lab = lab[y0:y1, x0:x1]
 hexrgb = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
 out = np.zeros(lab.shape + (4,), np.uint8)

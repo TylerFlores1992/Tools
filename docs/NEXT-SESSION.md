@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-08, night (CampHawk shirts: the owner's pick, round 4 no. 7, polished over rounds 5-10 to a print technician's 9 and "ready", PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -156,24 +156,25 @@ in the design doc):
 site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync drops them.
 
 ## Waiting on the owner
-0. **CampHawk shirts: the back polished and print-ready; owner to order** (2026-10-08, PR #24).
-   - **The design.** The owner's pick from round 4, no. 7 "Short reflection" (no mirrored peak: the wife
-     said it read as a diamond), polished in rounds 5-10 with a fresh art director and print technician
-     scoring every round. Final scores: technician 9 ("ready for a 20-shirt run, PNGs as masters"); art
-     director 6.5 (one ink) / 7 (three inks), "print it after three fixes", all three done in round 10
-     (see below for its confirming check). What caps the art score is the owner's to change: the familiar
-     peak-over-lake concept, the Josefin lockup, and whether to add a light distress texture.
-   - **The files.** `studio/camphawk-shirts/kit/`: 300 dpi PNGs (the masters), 1-bit screen films per ink
-     with registration marks, traced SVGs. Back 10.13 x 8.38 in. Built by `polish5.py` → `hatch5.py` →
-     `node final5.mjs` (design in `round5.mjs`; print rules in `prep5.py`/`finish5.py`). Rounds and the
-     production spec (press settings, screen order, meshes, strike-off) are in the shirt README.
-     Kit page: https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM.
+0. **CampHawk shirts: print the pick (round 4 no. 7); owner to order** (2026-10-08, PR #24 open).
+   - **Decision.** The owner picked no. 7 "Short reflection" (no mirrored peak: the wife said it read as a
+     diamond). Rounds 5-10 then polished it with fresh art-director and print-technician scores each round
+     (final: 8 / 8.5 and 9), but shown side by side the owner chose the **pick as it was**: "the hawk, tent
+     and fire in the new one look terrible." Don't reopen the polish unless the owner asks.
+   - **The files.** `studio/camphawk-shirts/kit/`: the pick from `ref/pick-no7/`, rebuilt by
+     `node studio/camphawk-shirts/pickkit.mjs` with only the print-safety rules (`prep5.py` via
+     `finish5.py ... keep`, about 0.3% of the ink). PNGs are the masters (11.5 x 8.33 in canvas, art about
+     10.1 x 7.6 in); 1-bit screen films per ink with registration marks; traced SVGs. Chest prints unchanged.
+     The production spec (placement, DTF press settings, screen order, meshes, strike-off) is the last
+     section of the shirt README.
+   - **Pages.** Kit page (the pick, with films): https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM.
+     Emailed to the owner 2026-10-08: the as-picked files untouched, https://claude.ai/artifact/BYjkHu1DDX9ZnHRGSWpCdD.
    - **The plan.** Giveaway (one ink, natural): DTF transfers pressed at home, about $9 a shirt. Owners
-     (three inks, sage): a screen shop (as DTF it is a stiff 26.6 in2 patch).
-   - **Next steps, waiting on the owner:** how many shirts of each version and the heat press size, then
-     build the DTF gang sheet from `kit/*_300dpi.png`; merge PR #24.
-   - Vercel image credit used: $0.62 of the owner's $0.75. The two Flux Kontext edits weren't usable as
-     flat-ink art, so the polish was done in code.
+     (three inks, sage): a screen shop (as DTF it is a stiff 27 in2 patch).
+   - **Next, waiting on the owner:** how many of each shirt and the heat press size, then build the DTF
+     gang sheet from `kit/*_300dpi.png`; merge PR #24 on the owner's word.
+   - Vercel image credit used: $0.62 of the owner's $0.75. Both Flux Kontext edits of the peak were
+     unusable (one near-identical, one painterly), so nothing from the image model is in the files.
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
