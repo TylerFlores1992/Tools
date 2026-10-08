@@ -145,10 +145,14 @@ export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: num
     const axis = Math.max(...xs) - Math.min(...xs) >= Math.max(...ys) - Math.min(...ys) ? 0 : 1;
     const mean = (g: Pt[]) => g.reduce((t, p) => t + p.at[axis], 0) / g.length;
     const loops = [...letters as Set<string>].sort().map((l) => ps.filter((p) => prefix(p.name) === l)).sort((a, b) => mean(a) - mean(b));
+    // A loop joins the area before it only if the two touch (within the gap): Lost Lake's F row and
+    // its two H sites 1 km away fit in 1 km together, but they are two places (first look, 2026-10-08).
+    const gap = opts.gap ?? AREA_GAP_M;
+    const touches = (a: Pt[], b: Pt[]) => a.some((p) => b.some((q) => Math.hypot(p.at[0] - q.at[0], p.at[1] - q.at[1]) <= gap));
     const merged: Pt[][] = [];
     for (const loop of loops) {
       const last = merged.at(-1);
-      if (last && span([...last, ...loop]) <= maxSpan) last.push(...loop); else merged.push([...loop]);
+      if (last && span([...last, ...loop]) <= maxSpan && touches(last, loop)) last.push(...loop); else merged.push([...loop]);
     }
     // Loops that are parallel rows along one shore (Diamond Lake's G, H and K each run ~1.5 km
     // side by side) overlap whatever the grouping: then cut by position instead, below.

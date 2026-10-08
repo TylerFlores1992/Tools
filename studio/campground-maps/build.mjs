@@ -81,7 +81,9 @@ const SPLIT_CALLS = splitCalls();
  */
 export function viewOf(sites, call) {
   if (sites.length === 1) return { kind: "unit" };
-  return splitAreas(sites, call ? { oneMap: call.split ? 0 : Infinity } : {});
+  // A split call may also set how tight the areas are, read off the photo: `gap` (m between areas)
+  // or `maxSpan` (m across one area), when the defaults put several clusters in one area.
+  return splitAreas(sites, call ? { oneMap: call.split ? 0 : Infinity, ...(call.gap ? { gap: call.gap } : {}), ...(call.maxSpan ? { maxSpan: call.maxSpan } : {}) } : {});
 }
 
 export const padFor = (placedSites) => (placedSites === 1 ? SINGLE_UNIT_PAD_M : undefined);

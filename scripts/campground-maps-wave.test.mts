@@ -70,6 +70,7 @@ test("every split call is well formed, for a built map, and holds: split is area
   for (const c of calls) {
     assert.ok(built.has(c.id), `${c.id}: no map built`);
     assert.equal(typeof c.split, "boolean", c.id);
+    for (const k of ["gap", "maxSpan"] as const) if (k in c) assert.ok(c.split && Number.isFinite((c as Record<string, unknown>)[k]) && ((c as Record<string, number>)[k]) > 0, `${c.id}: ${k}`);
     assert.ok(c.by.trim() && c.note.trim() && /^\d{4}-\d{2}-\d{2}$/.test(c.on), c.id);
     // A split call the area rules can't honour (Axtel: its loops fit in one area) would read as done.
     const kind = viewOf(mapOf(c.id).sites, c).kind;
