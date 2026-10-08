@@ -73,7 +73,7 @@ export const sameNumber = (a, b) => {
  * @param {{ name: string, at: [number, number] | null }[]} input.sites  every bookable overnight site
  * @param {[[number, number], [number, number]][]} input.roadSegments   drawn roads, in metres
  * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "tiger" | "traced" | "none"
- * @param {{ roads: number, points: number }} [input.traced]  what was traced from the aerial photo
+ * @param {{ roads: number, points: number, sites?: number }} [input.traced]  what was traced from the aerial photo
  * @param {[number, number][][]} [input.outlineRings]  OSM campground outlines, in metres
  * @param {{ ref: string, at: [number, number] }[]} [input.pitches]  OSM numbered pitches, in metres
  */
@@ -102,7 +102,7 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
     roads: { source: roadSource, medianM: r1(median(road)), p90M: r1(quantile(road, 0.9)) },
     outline: inside === null ? null : { insideShare: Math.round((inside / pts.length) * 100) / 100 },
     pitches: pitchPairs.length ? { matched: pitchPairs.length, medianM: r1(median(pitchPairs)) } : null,
-    traced: { roads: traced.roads, points: traced.points },
+    traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 },
   };
 
   const notDrawn = [];
@@ -130,7 +130,7 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
 const pct = (v) => `${Math.round(v * 100)}%`;
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 /** "2 roads and 1 point", or "" when nothing was traced. */
-const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points")].filter(Boolean).join(" and ");
+const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points"), t.sites && plural(t.sites, "site position", "site positions")].filter(Boolean).join(" and ");
 /**
  * Every check as a reviewer reads it: what was measured, the limit, and the result ("pass",
  * "review", "fail", or "none" when there was nothing to check against). The lab's review page
@@ -237,7 +237,7 @@ export const UNIT_RULES = {
  * @param {[[number, number], [number, number]][]} input.roadSegments
  * @param {[[number, number], [number, number]][]} input.trailSegments
  * @param {string} input.roadSource
- * @param {{ roads: number, points: number }} [input.traced]
+ * @param {{ roads: number, points: number, sites?: number }} [input.traced]
  */
 export function checkUnit({ site, facilityAt, roadSegments, trailSegments, roadSource, traced = { roads: 0, points: 0 } }) {
   const at = site.at;
@@ -245,7 +245,7 @@ export function checkUnit({ site, facilityAt, roadSegments, trailSegments, roadS
   const facilityM = at && facilityAt ? r0(Math.hypot(at[0] - facilityAt[0], at[1] - facilityAt[1])) : null;
   const roadM = at && roadSegments.length ? r0(toSegments(at, roadSegments)) : null;
   const trailM = at && trailSegments.length ? r0(toSegments(at, trailSegments)) : null;
-  const m = { kind: "unit", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], facilityM, roadM, trailM, roads: { source: roadSource }, traced: { roads: traced.roads, points: traced.points } };
+  const m = { kind: "unit", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], facilityM, roadM, trailM, roads: { source: roadSource }, traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 } };
   if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The unit has no point" }], metrics: m, checks: unitChecks(m) };
   const reach = (d) => d !== null && d <= UNIT_RULES.accessM;
   const review = [];
@@ -287,7 +287,7 @@ export function checkFirstCome({ site, outlines = [], name = "", closed = false,
   // an unnamed one, never one named for another campground.
   const { pick, other } = at ? pickOutline(at, outlines, name, FIRST_COME_RULES.outlineReachM) : { pick: null, other: null };
   const outlineM = pick ? Math.round(pick.pointOutsideM) : null;
-  const m = { kind: "firstcome", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], outlineM, outlineName: pick?.name ?? null, otherName: !pick && other ? other.name : null, closed, traced: { roads: traced.roads, points: traced.points } };
+  const m = { kind: "firstcome", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], outlineM, outlineName: pick?.name ?? null, otherName: !pick && other ? other.name : null, closed, traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 } };
   if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The listing has no point" }], metrics: m, checks: firstComeChecks(m) };
   const review = [];
   if (!pick && other) review.push({ code: "outline-other-name", text: `OpenStreetMap’s campground outline here is “${other.name}”, not this campground` });

@@ -12,6 +12,9 @@ export type MapSite = {
   type: string;
   /** Null when the provider publishes no point for this site. */
   at: [number, number] | null;
+  /** Where the provider put it, when a person moved it to what the aerial photo shows (a trace's
+      `sites`, studio/campground-maps/trace.mjs). Null when the provider had no point. */
+  movedFrom?: [number, number] | null;
   /** Unit vector pointing away from the nearest campground road: where the number goes. */
   out?: [number, number];
   accessible: boolean;

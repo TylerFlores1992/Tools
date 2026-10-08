@@ -303,3 +303,12 @@ test("a first-come campground never takes an outline named for another campgroun
   assert.deepEqual(fc("Davis Flat", [ring(sq(-50, -50, 100), "South Fork Campground"), ring(sq(100, 0, 50))]).reasons.map((r) => r.code), ["outline-other-name"]);
   assert.equal(fc("Davis Flat", [ring(sq(-50, -50, 100)), ring(sq(100, 0, 50), "South Fork Campground")]).verdict, "ready");
 });
+
+test("a moved site sends any map to a person, and says so", () => {
+  const r = checkUnit({ site: { name: "A09", at: [0, 0] }, facilityAt: [0, 0], roadSegments: [[[0, 5], [10, 5]]], trailSegments: [], roadSource: "osm", traced: { roads: 0, points: 0, sites: 1 } });
+  assert.equal(r.verdict, "review");
+  assert.deepEqual(r.reasons.map((x) => x.code), ["traced"]);
+  assert.match(r.reasons[0].text, /1 site position traced/);
+  assert.equal(r.metrics.traced.sites, 1);
+  assert.match(checkFirstCome({ site: { name: "Standard", at: [0, 0] }, traced: { roads: 2, points: 0, sites: 2 } }).reasons.at(-1)!.text, /2 roads and 2 site positions/);
+});

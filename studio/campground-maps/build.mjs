@@ -28,7 +28,7 @@ import { checkAreas, checkDispersed, checkFirstCome, checkMap, checkUnit } from 
 import { factsFromLoaded, isFirstComeSites } from "./first-come.mjs";
 import { splitAreas } from "../../src/lab/camphawk/round2/maps/areas.ts";
 import { pickRoadSource, roadFit } from "./roads.mjs";
-import { readTrace } from "./trace.mjs";
+import { applySiteMoves, readTrace } from "./trace.mjs";
 import { poiKind } from "./pois.mjs";
 
 const NPS = "https://mapservices.nps.gov/arcgis/rest/services/NationalDatasets";
@@ -103,9 +103,11 @@ const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).f
     be one campground (MAX_FRAME_M): the same frame buildRidbMap() fits, so a wave can cut all its
     OpenStreetMap boxes in one pass first (osm.mjs prefetchOsm). Null when no site has a point. */
 export function frameBoxOf(ridb, facilityId) {
-  const placed = (ridb.sites.get(facilityId) ?? []).filter(bookable).filter((r) => Number(r.CampsiteLatitude) && Number(r.CampsiteLongitude));
+  // Sites a person moved count where they were moved to (trace.mjs), as in buildRidbMap().
+  const sites = applySiteMoves((ridb.sites.get(facilityId) ?? []).filter(bookable).map((r) => ({ name: r.CampsiteName.trim(), lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites);
+  const placed = sites.filter((s) => s.lat && s.lon);
   if (!placed.length) return null;
-  const { frame, bboxArr } = makeGeo(placed.map((r) => [Number(r.CampsiteLongitude), Number(r.CampsiteLatitude)]), padFor(placed.length));
+  const { frame, bboxArr } = makeGeo(placed.map((s) => [s.lon, s.lat]), padFor(placed.length));
   return { bboxArr, huge: Math.max(frame.w, frame.h) > MAX_FRAME_M };
 }
 
@@ -121,7 +123,10 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const fac = ridb.facilities.get(facilityId);
   const rows = (ridb.sites.get(facilityId) ?? []).filter(bookable);
   if (!rows.length) throw new Error(`no bookable overnight campsites for facility ${facilityId}`);
-  const sites = rows.map((r) => ({ ridbId: r.CampsiteID, name: r.CampsiteName.trim(), type: r.CampsiteType, accessible: r.CampsiteAccessible === "true", lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 }));
+  // Sites a person moved to where the aerial photo shows them (a trace's `sites`), before the map is
+  // framed: a stray point's frame would be kilometres wide.
+  const sites = applySiteMoves(rows.map((r) => ({ ridbId: r.CampsiteID, name: r.CampsiteName.trim(), type: r.CampsiteType, accessible: r.CampsiteAccessible === "true", lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites);
+  const moved = sites.filter((s) => s.movedFrom !== undefined).length;
   const placed = sites.filter((s) => s.lat && s.lon);
   if (!placed.length) throw new Error(`facility ${facilityId} has no site points`);
 
@@ -224,6 +229,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
         name: s.name,
         type: s.type,
         at,
+        ...(s.movedFrom !== undefined ? { movedFrom: s.movedFrom ? xy(s.movedFrom) : null } : {}),
         out: at ? awayFromRoad(at) : undefined,
         accessible: s.accessible || a.Accessibility === "Y",
         maxVehicleFt: num("Max Vehicle Length"),
@@ -245,7 +251,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     sites: outSites.map((s) => ({ name: s.name, at: s.at })),
     roadSegments: segmentsOf(roads.map((r) => r.f), xy),
     roadSource: (roadSource === "none" || replaced) && traced.length ? "traced" : roadSource,
-    traced: { roads: traced.length, points: tracedPoints.length },
+    traced: { roads: traced.length, points: tracedPoints.length, sites: moved },
     outlineRings: (osm?.outlines ?? []).flatMap((o) => o.rings.map(toM)),
     outlines: (osm?.outlines ?? []).flatMap((o) => o.rings.map((r) => ({ ring: toM(r), name: o.name ?? "" }))),
     pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })),
@@ -278,7 +284,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const roadCredit = replaced ? SRC.traced
     : [roadSource !== "none" && SRC[roadSource], traced.length && (roadSource === "none" ? SRC.traced : "campground roads CampHawk traced from USDA aerial photos")].filter(Boolean).join(", and ");
   const credit = [
-    "Drawn by CampHawk. Sites: Recreation.gov (RIDB, CC BY 4.0).",
+    `Drawn by CampHawk. Sites: Recreation.gov (RIDB, CC BY 4.0)${moved ? `; ${moved === 1 ? "one" : moved} moved by CampHawk to where aerial photos show ${moved === 1 ? "it" : "them"}` : ""}.`,
     roadCredit && `Roads: ${roadCredit}.`,
     poiSrc.length && `Restrooms and water: ${poiSrc.map((k) => SRC[k]).join(" and ")}.`,
     (waterParts.length || flowlines.length) && `Lakes and rivers: ${SRC[waterSource]}.`,

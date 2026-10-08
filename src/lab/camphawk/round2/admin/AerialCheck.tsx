@@ -82,6 +82,11 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
             })}
             {/* Thin hollow rings, so the pad under each site stays visible: 11px across, 7px on a phone,
                 where a big campground's rings would otherwise cover the pads they mark. */}
+            {/* A site a person moved: a dashed line from where Recreation.gov puts it, and a dashed ring there. */}
+            {perPx > 0 && placed.filter((s) => s.movedFrom).map((s) => <g key={`mv${s.name}`}>
+              <line x1={s.movedFrom![0]} y1={s.movedFrom![1]} x2={s.at[0]} y2={s.at[1]} className="stroke-ch-white" strokeWidth={2} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
+              <circle cx={s.movedFrom![0]} cy={s.movedFrom![1]} r={ring * perPx} fill="none" className="stroke-ch-white" strokeWidth={1.5} strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />
+            </g>)}
             {perPx > 0 && placed.map((s) => <circle key={`k${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-ink" strokeOpacity={0.75} strokeWidth={2.75} vectorEffect="non-scaling-stroke" />)}
             {perPx > 0 && placed.map((s) => <circle key={`w${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-white" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />)}
           </svg>
@@ -94,6 +99,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
       <ul aria-label="What’s drawn on the photo" className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
         <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[10px] rounded-full border-2 border-ch-white shadow-[0_0_0_1.5px_var(--color-ch-ink)]" />Sites, where Recreation.gov places them</li>
         {map.roads.some((r) => !r.traced) && <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {ROAD_WORD[map.sources?.roads ?? "none"] ?? "the map’s sources"}</li>}
+        {placed.some((s) => s.movedFrom) && <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-ch-ink" />Sites moved to where the photo shows them, from the dashed ring</li>}
         {map.roads.some((r) => r.traced) && <li className="flex items-center gap-2"><TracedMark />Roads traced from this photo, a square at each end</li>}
         {map.evidence?.outline && <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-[3px] border-dashed border-ch-ink" />OpenStreetMap’s campground outline</li>}
         {source && <li className="text-ch-muted">Photo: {source.short}</li>}

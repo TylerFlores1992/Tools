@@ -8,6 +8,7 @@
 //     "photo": "USDA NAIP via USGS The National Map (public domain)",   (aerial.ts's credit for the map)
 //     "roads":  [{ "coords": [[lon, lat], …], "through": true?, "name": "…"? }],
 //     "points": [{ "type": "Restroom" | "Water", "at": [lon, lat] }],
+//     "sites":  [{ "name": "A09", "at": [lon, lat] }]?,
 //     "replace": true?, "note": "…" }
 //
 // Coordinates are degrees (WGS84), so a trace survives a rebuild that moves the frame. The photo
@@ -17,6 +18,11 @@
 // "through": true. With "replace": true the trace replaces the source's roads entirely, for a map
 // whose roads a source has but draws in the wrong places (Lost Creek's are up to 20 m off the
 // visible dirt roads); the person then traces every road the map should show, through roads too.
+//
+// A traced site moves one of the listing's sites (by its name) to where the photo shows it: a
+// cabin whose pin sits on the lake 60 m from the cabin, or a stray point kilometres from its loop.
+// The build moves it before framing the map, keeps where the listing had it (`movedFrom`), and
+// the check sends the map to a person, as for any trace.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -42,10 +48,12 @@ export function traceProblems(trace, mapKey, bbox) {
   if (!Array.isArray(trace.roads)) out.push("roads must be a list");
   if (!Array.isArray(trace.points)) out.push("points must be a list");
   if (trace.replace !== undefined && typeof trace.replace !== "boolean") out.push("replace must be true or false");
+  if (trace.sites !== undefined && !Array.isArray(trace.sites)) out.push("sites must be a list");
   if (out.length) return out;
-  const [w, s, e, n] = bbox;
+  // With no bbox (read before the map is framed, to move its sites) nothing is checked for place.
+  const [w, s, e, n] = bbox ?? [-180, -90, 180, 90];
   const dx = (e - w) * SLACK, dy = (n - s) * SLACK;
-  const near = ([lon, lat]) => lon >= w - dx && lon <= e + dx && lat >= s - dy && lat <= n + dy;
+  const near = ([lon, lat]) => !bbox || (lon >= w - dx && lon <= e + dx && lat >= s - dy && lat <= n + dy);
   trace.roads.forEach((r, i) => {
     if (!Array.isArray(r?.coords) || r.coords.length < 2) out.push(`road ${i + 1} needs at least two points`);
     else if (!r.coords.every(isPair)) out.push(`road ${i + 1} has a point that isn't [lon, lat]`);
@@ -58,8 +66,31 @@ export function traceProblems(trace, mapKey, bbox) {
     if (!isPair(p?.at)) out.push(`point ${i + 1} isn't at [lon, lat]`);
     else if (!near(p.at)) out.push(`point ${i + 1} is far outside the map`);
   });
+  const seen = new Set();
+  (trace.sites ?? []).forEach((m, i) => {
+    if (typeof m?.name !== "string" || !m.name.trim() || m.name.length > 80) out.push(`site ${i + 1} needs the listing's name for it`);
+    else if (seen.has(m.name)) out.push(`site ${m.name} is moved twice`);
+    else seen.add(m.name);
+    if (!isPair(m?.at)) out.push(`site ${i + 1} isn't at [lon, lat]`);
+    else if (!near(m.at)) out.push(`site ${i + 1} is far outside the map`);
+  });
   if (trace.replace === true && !trace.roads.length) out.push("a trace that replaces the roads needs at least one road");
   return out;
+}
+
+/**
+ * The listing's sites with a trace's moves applied: each moved site gets the traced position and
+ * keeps where the listing had it (`movedFrom`, [lon, lat], null when it had none). Throws when a
+ * move names a site the listing doesn't have: a move that silently fails to apply is a pin that
+ * silently stays on the lake.
+ */
+export function applySiteMoves(sites, moves = []) {
+  const byName = new Map(moves.map((m) => [m.name.trim(), m.at]));
+  for (const name of byName.keys()) if (!sites.some((s) => s.name === name)) throw new Error(`the trace moves site ${JSON.stringify(name)}, which the listing doesn't have`);
+  return sites.map((s) => {
+    const to = byName.get(s.name);
+    return to ? { ...s, lon: to[0], lat: to[1], movedFrom: s.lat && s.lon ? [s.lon, s.lat] : null } : s;
+  });
 }
 
 /** The trace for a map, or null when nobody has traced it. Throws on a broken file: a trace that

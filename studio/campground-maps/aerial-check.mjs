@@ -74,6 +74,7 @@ for (const file of files) {
   const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
     ${map.roads.map((r) => `<path d="${path(r.d)}" fill="none" stroke="#ffd400" stroke-width="2" stroke-opacity="0.85"/>`).join("")}
+    ${map.sites.filter((x) => x.at && x.movedFrom).map((x) => { const [a, b] = px(x.movedFrom), [c, d] = px(x.at); return `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/><circle cx="${a}" cy="${b}" r="4" fill="none" stroke="#ff2fd0" stroke-width="1.5" stroke-dasharray="2 2"/>`; }).join("")}
     ${map.sites.filter((x) => x.at).map((x) => { const [a, b] = px(x.at); return `<circle cx="${a}" cy="${b}" r="4" fill="#ff2fd0" stroke="#fff" stroke-width="1.5"/><text x="${Number(a) + 6}" y="${Number(b) + 4}" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" stroke="#000" stroke-width="2.5" paint-order="stroke">${esc(x.name)}</text>`; }).join("")}
     ${map.pois.map((p) => { const [a, b] = px(p.at); return `<rect x="${Number(a) - 5}" y="${Number(b) - 5}" width="10" height="10" fill="#00e5ff" stroke="#000"/>`; }).join("")}
     ${areaFrames(map, px, s, esc)}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mapFor, type SiteMapData } from "./index.ts";
-import { cleanRoad, draftOf, lengthM, sameDraft, segmentsOfPath, snap, toDeg, toXY, traceFile, withDraft, type TraceDraft } from "./trace.ts";
+import { cleanRoad, draftOf, lengthM, moveSite, nearestSite, originalAt, sameDraft, segmentsOfPath, snap, toDeg, toXY, traceFile, withDraft, type TraceDraft } from "./trace.ts";
 import { makeGeo } from "../../../../../studio/campground-maps/geo.mjs";
 import { traceProblems } from "../../../../../studio/campground-maps/trace.mjs";
 
@@ -116,4 +116,37 @@ test("a road's name is drawn and written; an empty name or a through road that's
   // So switching a setting off and on again is no change from the built trace.
   const built = draftOf({ ...map, trace: file });
   assert.ok(sameDraft(built, { roads: [cleanRoad({ coords: [a, b], name: "WY 70", through: false }), { coords: [a, b] }], points: [] }));
+});
+
+test("moving a site: the draft puts it where the photo shows it, and the file keeps the move", () => {
+  const map = framed();
+  map.sites = [{ name: "A09", type: "CABIN NONELECTRIC", at: [0, 0], accessible: false }, { name: "A10", type: "CABIN NONELECTRIC", at: [100, 0], accessible: false }];
+  // Picking up: the site nearest the tap, within reach; nothing farther.
+  assert.equal(nearestSite(map, [3, 4], 10), "A09");
+  assert.equal(nearestSite(map, [50, 0], 10), null);
+  const to = toDeg(map, [40, 30]);
+  let draft = moveSite({ roads: [], points: [] }, "A09", to);
+  // Moving it again replaces the move.
+  draft = moveSite(draft, "A09", toDeg(map, [30, 40]));
+  assert.equal(draft.sites!.length, 1);
+  const out = withDraft(map, draft);
+  const a09 = out.sites.find((x) => x.name === "A09")!;
+  assert.ok(Math.hypot(a09.at![0] - 30, a09.at![1] - 40) < 0.02);
+  assert.deepEqual(a09.movedFrom, [0, 0]);
+  assert.deepEqual(out.sites.find((x) => x.name === "A10"), map.sites[1], "a site not moved stays as it was");
+  // The file writes the move, the build accepts it, and the built map hands it back.
+  const file = traceFile("ridb-232447", draft, "Lab reviewer", "2026-10-08");
+  assert.deepEqual(file.sites, draft.sites);
+  assert.deepEqual(traceProblems(file, "ridb-232447", map.bbox), []);
+  const built = { ...out, trace: file };
+  assert.deepEqual(draftOf(built).sites, draft.sites);
+  // Taking the move back out of the draft puts the built map's site back where the listing had it.
+  const back = withDraft(built, { roads: [], points: [] }).sites.find((x) => x.name === "A09")!;
+  assert.deepEqual(back.at, [0, 0]);
+  assert.equal("movedFrom" in back, false);
+  // Picking up a moved site works from where the listing put it, and originalAt says where that is.
+  assert.equal(nearestSite(built, [1, 1], 10), "A09");
+  assert.deepEqual(originalAt(a09), [0, 0]);
+  // A file with no moves writes no sites key.
+  assert.equal("sites" in traceFile("ridb-232447", { roads: [], points: [] }, "x", "2026-10-08"), false);
 });
