@@ -54,7 +54,9 @@ export async function extractRegion(region) {
   const osmTimestamp = state.match(/timestamp=([0-9T:\\-]+Z)/)?.[1]?.replace(/\\/g, "") ?? null;
   const md5 = curl(["--max-time", "60", `${url}.md5`]).toString().trim().split(/\s+/)[0];
   console.log(`${region}: downloading ${url} (OSM as of ${osmTimestamp})`);
-  curl(["-C", "-", "--max-time", "21600", "-o", raw, url]);
+  // A stalled connection aborts after 60 s under 20 kB/s, and the retry resumes the file
+  // (the west-c rollout child sat 2 hours on a stall at 106 MB without this).
+  curl(["-C", "-", "--max-time", "21600", "--speed-limit", "20000", "--speed-time", "60", "-o", raw, url]);
   const got = await md5Of(raw);
   if (got !== md5) { rmSync(raw); throw new Error(`${region}: MD5 ${got} isn't the published ${md5}; deleted, run again`); }
   const rawBytes = statSync(raw).size;

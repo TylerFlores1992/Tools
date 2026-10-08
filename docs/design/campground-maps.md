@@ -854,6 +854,7 @@ in here.
 | midwest | 19, 20, 21, 38 | 296 | 146 | 150 | 36 looked at (all 7 traces, all 17 splits, 12 sampled), then every `usable` note re-read: 47 of 112 usable held |
 | south-a | 14, 15, 16 | 271 | 109 | 162 | 24 passing maps looked at over the photo (traced and split maps that pass, 9 sampled): agreed with all 24; the child called waves 15 and 16 under the corrected `usable` bar and re-called wave 14 |
 | west-d | 12, 13 | 189 | 80 | 109 | 19 passing maps looked at over the photo (passing traces and splits, 10 sampled): agreed with all 19; the child called under the corrected `usable` bar |
+| west-c | 9, 10, 11 | 282 | 148 | 134 | 21 passing maps looked at over the photo (passing traces, 15 sampled): agreed with 20, held Silver Creek (232187, an angular ring through the trees) |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -1002,12 +1003,30 @@ First look: 50 good, 59 usable, 127 hold, 35 unsure.
   loop (Lockaby, Bogus Creek, Clearwater Falls).
 - One RIDB site is literally named "This site should be deleted" (233360).
 
+**west-c (2026-10-08, us-west extract, multi-site):** 282 built. First look: 58 good, 91 usable,
+97 hold, 36 unsure.
+- 6 traced, no split calls.
+- The child measured each site's distance to the nearest drawn road, so its notes give metres,
+  not estimates.
+- **Forest Service loops drawn as coarse polygons through the trees** are the commonest fault
+  (234008, 234103, 234738, 234772, 267078, 267081 and more).
+- New:
+  - **Site points on the lane centrelines** rather than at the ramadas (Schoolhouse 249291).
+  - **Group sites evenly spaced on the road line itself** (Bear River Group 234172).
+  - **Paddock fence lines drawn as roads** (Black Rock 234723).
+  - **One listing's points span four states** (Horse Campground 233729).
+  - Three Utah frames are winter photos.
+- **`osm-extract.mjs`'s download now aborts a stall** (`--speed-limit 20000 --speed-time 60`) so
+  the retry takes over; west-c sat two hours on a stalled download without it. In a local test,
+  curl dropped the stalled connection and the finished file matched byte for byte.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| **Total** | **250 of 2,196** | **181** | **168** |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,386 passed, 1,575 held to fix after) |
+| **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).
