@@ -49,3 +49,14 @@ every map host answered; tylerflores.dev timed out and Geofabrik reset (not need
   with what the map itself shows in each note. These need another public-domain photo source, or the
   owner's call to pass them on the map alone. Six listings are cabin or permit lists spread over 6 to
   142 km (dispersed, no roads).
+
+## Wave 33 (Alaska, OSM API, units)
+- Built 95, failed 0
+- Check: ready 53, review 42 (all 42: no drawn road or trail within 700 m, likely fly-in or boat-in cabins), not drawn 0
+- First look: good 0, usable 0, hold 0, unsure 95
+- Traced: none (no photo)
+- Split calls: none
+- Held: none
+- Anything new: every unit is in Alaska and USGS's NAIP returns black for all 95 (zoomed on each pin;
+  measured, not just eyeballed: 87 to 88% black pixels, the rest the grid). Each note states the build's
+  own facts instead (distance from the listing's point, nearest drawn road or trail).
