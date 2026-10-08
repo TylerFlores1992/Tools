@@ -37,13 +37,13 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
-**Night, 2026-10-08: the parallel rollout, 10 of 12 batch groups merged (PRs #32 to #38).**
-- **2,490 maps built in waves 3 to 39 so far; 1,158 passed the final check and 1,332 are held to
+**Night, 2026-10-08: the parallel rollout, 11 of 12 batch groups merged (PRs #32 to #39).**
+- **2,679 maps built in waves 3 to 39 so far; 1,238 passed the final check and 1,441 are held to
   fix after.** Per-batch numbers and notes are in the design doc's "The parallel rollout" table.
   Production smoke after #38: every check passes (curl, with retries for this sandbox's TLS
   resets; Node's fetch to tylerflores.dev is reset here, so `npm run smoke` fails before the
   first answer).
-- **Still running: west-c (waves 9 to 11) and west-d (12, 13).** Integrate each with the same
+- **Still running: west-c (waves 9 to 11).** Integrate each with the same
   loop: lane check, merge, `lab-index`, final check, `decide-wave`, doc row, verify, PR, merge.
 - **One `usable` bar for every batch**, from the owner's wave 1 and 2 approvals. Sites and drawn
   roads right with some spurs or lanes missing pass. Held instead:
