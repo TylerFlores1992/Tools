@@ -42,9 +42,9 @@ Every trace was checked over the NAIP photo after the rebuild and moved where it
 - 272174: still held, the south-east lanes are blurred and broken under the budding trees, joins unseen.
 
 ## Totals
-- Traced: 19 maps (5 of them replace traces: 233468, 233547, 233438, 234115; plus the others adding roads). Replace: 233468, 233547, 233438, 234115.
-- Not traced: 16 (canopy, open ground with no lanes, fragments, or too dense for the grid).
-- Calls now: good 1 (231842), usable 16, hold 18. Moved from hold to usable: 233468, 233547, 233438, 234115.
+- Traced: 16 maps, 4 of them replace traces (233468, 233547, 233438, 234115).
+- Not traced: 19 (canopy, open ground with no lanes, fragments, or too dense for the grid).
+- Calls now: good 1 (231842), usable 15, hold 19. Moved from hold to usable: 233468, 233547, 233438, 234115.
 - 233547, 233438 and 233141 were named for replace traces: 233547 and 233438 done; 233141 can't be (lanes under conifers).
 
 ## Anything new
