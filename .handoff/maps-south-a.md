@@ -69,6 +69,6 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
   - 233658: no roads; site 25 placed 14 km away
   - 233678: north arm's road 5 to 15 m off the gravel lane
 - Anything new: the hold share is higher than wave 14 (31 of 91). Most of the extra holds are not canopy: OSM in eastern Oklahoma and Arkansas often has the park road but not the campground lanes, or has them drawn off the pavement. Fourteen of the holds (232665, 232684, 232662, 233650, 232609, 232747, 233457, 233508, 234478, 232698, 232704, 233590, 232634, 233678) have lanes plainly visible in the open and could be traced (several need a replace trace). I didn't trace them all in this batch, to leave time for wave 16. A third listing (233658) has one site placed 14 km off.
-- Time: build 17:47 to about 19:15; first look done 20:05.
+- Time: build 17:46 to 18:21 (with rebuilds); first look done 18:34.
 
 STATUS: started
