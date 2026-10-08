@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 22.",
+ "listings": [
+  {
+   "id": "232158",
+   "split": true,
+   "by": "First look (Claude, rollout colorado)",
+   "on": "2026-10-08",
+   "note": "The campground by the river and its group site, 800 m down the valley at the end of its own lane."
+  },
+  {
+   "id": "232146",
+   "split": true,
+   "by": "First look (Claude, rollout colorado)",
+   "on": "2026-10-08",
+   "note": "The two loops on the north bench and the three group sites by their own loop 700 m south, across the canyon."
+  },
+  {
+   "id": "232329",
+   "split": true,
+   "by": "First look (Claude, rollout colorado)",
+   "on": "2026-10-08",
+   "note": "Two loops 500 m apart up the access road, with forest between."
+  }
+ ]
+}
