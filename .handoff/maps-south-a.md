@@ -126,7 +126,7 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
   - 233500: The drawn lanes cut across the lawns between the rows while the real gravel lanes run elsewhere: the lane past 03 to 16 runs east of the drawn one, 18 to 24 sit off the drawn diagonal, and the loop past 25 to 35 is drawn outside its visible track.
   - 233511: about a third of the sites have no drawn road
   - 233515: No roads to draw, and under full canopy no lane shows: 49 sites spread across a wooded point with nothing to reach them by.
-  - 233529: Shown as four areas round the park's points, and they follow the real clusters
+  - 233529: four areas right, but about a third of the sites (Q-08 to Q-13 and the like) have no drawn road
   - 233584: a whole row has no drawn road
   - 233579: drawn roads off the visible lanes
   - 233630: over a third of the sites have no drawn road
@@ -149,6 +149,6 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
 ## Totals
 - Waves 14, 15, 16: 271 maps built, 0 failed in the end (4 osmium relation failures, all built on retry).
 - First look: good 50, usable 59, hold 127, unsure 35.
-- Traced 10 maps; 21 split calls.
+- Traced 10 maps; 20 split calls (3, 8, 9).
 
 STATUS: complete
