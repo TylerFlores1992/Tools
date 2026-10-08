@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232143",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.7767206,
+     34.8436205
+    ],
+    [
+     -111.7767862,
+     34.8435033
+    ],
+    [
+     -111.7768846,
+     34.843359
+    ],
+    [
+     -111.776983,
+     34.8432147
+    ],
+    [
+     -111.7770705,
+     34.8430975
+    ],
+    [
+     -111.777158,
+     34.8429893
+    ],
+    [
+     -111.7772564,
+     34.8429081
+    ],
+    [
+     -111.7773767,
+     34.842863
+    ],
+    [
+     -111.7774861,
+     34.842836
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved lane past Sites 2 and 3 to the turnaround by Site 1. Left out: where its north end meets the dirt road (it fades under the trees), and the turnaround's full outline."
+}
