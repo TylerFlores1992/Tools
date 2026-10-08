@@ -113,8 +113,12 @@ the owner picked, and it holds up on a phone.
   "firstcome"` on the look, `decide-wave.mjs`). A look that judged it as a unit is held.
 - **Reviewing them:** `aerial-check.mjs` draws the outline dashed white, and the child brief's
   step 3b sets the calls.
-- The 130 are rebuilt as first-come maps. Their first look is in `docs/design/campground-maps.md`.
+- **The 130 are rebuilt as first-come maps:** 81 pass the automatic check and 49 wait for a person.
+  - 47 have no OpenStreetMap outline within 250 m.
+  - 2 are marked closed.
+  - 36 carry a site count from their description.
+  - Their first look as first-come maps is next. It will be recorded in `docs/design/campground-maps.md`.
 
 ## Not settled
-- 42 have no OpenStreetMap outline. For those the map is a pin "About here", which is honest but
+- 47 have no OpenStreetMap outline within 250 m (42 have none at all). For those the map is a pin "About here", which is honest but
   thin. Tracing their outline from the photo is possible where it shows.

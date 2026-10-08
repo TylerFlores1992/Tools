@@ -1,5 +1,6 @@
 "use client";
 
+import { isFirstCome } from "../maps/first-come";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -597,7 +598,7 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
 
           <div className="mt-6">
             <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">What campers would see</h2>
-            <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : shown?.sites.length === 1 ? "One unit: the campground page shows where it is." : shown?.split?.kind === "areas" ? `The campground page shows this listing as ${shown.split.areas.length} areas, one at a time.` : "The campground page’s site map, drawn from this data."}</p>
+            <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : shown && isFirstCome(shown) ? "A first-come campground: the campground page shows its area and how to get a site." : shown?.sites.length === 1 ? "One unit: the campground page shows where it is." : shown?.split?.kind === "areas" ? `The campground page shows this listing as ${shown.split.areas.length} areas, one at a time.` : "The campground page’s site map, drawn from this data."}</p>
             {state === "ready" && shown ? (
               <CamperMap map={shown} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
             ) : <div className="mt-3"><Pending state={state} /></div>}
