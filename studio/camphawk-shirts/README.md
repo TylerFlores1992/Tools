@@ -160,3 +160,16 @@ both shirts: the peak, camp and hawk stand on five rows of broken lake lines, th
 - Still open: the Vercel image polish the owner planned, and the DTF gang sheet once the shirt counts and the
   heat press size are known (the shorter back fits more to a 22 in sheet).
 
+
+## Round 5 (2026-10-08): the pick, polished to the reviewers' notes
+Baseline scores for the pick: 6/10 from an apparel art director, 6/10 from a print technician. Round 5:
+- `polish5.py` cleans the three-ink peak (208 shirt specks filled, the old camp removed); `hatch5.py` builds the
+  one-ink peak from the same drawing, the moss areas cut as gouge strokes.
+- `round5.mjs`: a bigger A-frame tent with a lit door and the fire on the peak's axis, on a shoreline; water
+  rows that open with depth inside an oval, with light lanes (mist on the three-ink shirt); the hawk facing the
+  camp; the airy wordmark and a two-line tagline.
+- `final5.mjs` + `finish5.py` + `prep5.py`: the kit, with the technician's print rules (voids and sub-1 mm
+  cuts filled, nothing thinner than 0.4 mm, no specks, trapped screen separations, trimmed to the art plus
+  3 mm, PNGs tagged 300 dpi). The back is now 10.22 x 8.47 in.
+- Vercel image polish: two Flux Kontext edits (`edit.mjs`, $0.08) were not usable (one near-identical, one
+  painterly with paper grain that can't print as flat ink). Image credit used: $0.62 of the owner's $0.75.
