@@ -1,6 +1,5 @@
 # Batch colorado
 
-STATUS: started
 
 Setup: RIDB export of 2026-10-07 (files dated 2026-10-07 18:45). OSM extract us-west/colorado from
 download.openstreetmap.fr, OSM as of 2026-10-07T00:09:35Z (0.41 GB, trimmed to 0.29 GB, about 12 min).
@@ -70,3 +69,37 @@ Network: every map host answered; Geofabrik resets the connection, as the playbo
 - Anything new: the "whole campground as one Standard site" listings above (16 of 53, about a third
   of the wave). The unit check passes them (point = listing point, road within 700 m), so only the
   photo catches them.
+
+## Wave 36 (Colorado, units)
+- Built 53, failed 0
+- Check: ready 52, review 1 (234664: the listing's own point 490 m from the unit's), not drawn 0
+- First look: good 2, usable 0, hold 51, unsure 0
+- Traced: none (no undrawn road to a real unit)
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 49 listings, every id 10165110 to 10165751 in this wave: **a whole campground booked as one
+    "Standard" site** (the same failure mode as wave 35), its point a placeholder on the entrance
+    road, a junction or inside a loop, never on a pad. The check calls them ready (the point is the
+    listing's own point, and a road is close), so only the photo shows the problem. Each note says
+    where the point sits.
+  - 234664 (Aspen Leaf Cabin): pin on open scrub, no building; the listing's point is 490 m off.
+  - 234683 (Dawson Cabin): pin among piñon, no building; the only building is 110 m away, no road.
+- Anything new: with wave 35, **65 of the 106 "single units" in this batch are whole campgrounds
+  (first-come or group-booked as one "Standard" site)**, not cabins. They likely belong with the
+  multi-site campgrounds (built from OSM/USFS loops, with no site points) or under a "whole
+  campground" design; a unit location map of them misleads. Worth a population rule: type
+  STANDARD NONELECTRIC / TENT ONLY, site name "Standard", one site → not a unit.
+
+## Summary for the orchestrator
+- All four waves built (232 maps, 0 failures), looked at over the photo, and traced where the
+  photo showed what's missing: 8 maps traced (232066, 232252, 232339, 234686, 232153, 273348,
+  233232, 233289), 5 split calls kept (232146, 232158, 232329, 10165180, 233811), 1 dropped (234724).
+- Tests: only the index-sync test fails, as expected before `lab-index.mjs`.
+- Times (from the commits): setup 16:10–16:25 (extract 12 min); wave 22 build 16:25–16:34,
+  first look to 17:03; wave 23 first look 17:03–17:17 (built during wave 22's look);
+  wave 35 17:17–17:26; wave 36 17:26–17:35.
+- Note for the final check: images stopped loading for part of wave 22's first look; I redid every
+  wave-22 call from its photo once they loaded again, and re-checked each trace over the photo.
+  Many wave-23 calls were made from the overview frame without a zoom (frames under 1 km).
+
+STATUS: complete
