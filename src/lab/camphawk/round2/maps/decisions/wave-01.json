@@ -239,7 +239,7 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Passed every check, but the first look held it or couldn’t tell (group C)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): an area still lacks roads or is flagged."
   },
   {
    "id": "234004",
@@ -253,7 +253,7 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): the split isn’t right yet."
   },
   {
    "id": "232037",
@@ -267,14 +267,14 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): the split isn’t right yet."
   },
   {
    "id": "232136",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Approved as areas (owner, 2026-10-08): the split fixes it."
   },
   {
    "id": "232541",
@@ -288,7 +288,7 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): the split isn’t right yet."
   },
   {
    "id": "232593",
@@ -302,7 +302,7 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): an area still lacks roads or is flagged."
   },
   {
    "id": "232615",
@@ -355,24 +355,24 @@
   },
   {
    "id": "233523",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Approved as areas (owner, 2026-10-08): the split fixes it."
   },
   {
    "id": "233563",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Approved as areas (owner, 2026-10-08): the split fixes it."
   },
   {
    "id": "233626",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Approved as areas (owner, 2026-10-08): the split fixes it."
   },
   {
    "id": "233877",
@@ -393,7 +393,7 @@
    "decision": "hidden",
    "by": "Owner",
    "on": "2026-10-08",
-   "note": "Not usable as drawn, or the photo can’t tell (group D)."
+   "note": "Kept hidden as areas (owner, 2026-10-08): the split isn’t right yet."
   }
  ]
 }
