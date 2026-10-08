@@ -4,8 +4,9 @@
 #    (moss and mist 4 px = 0.34 mm under forest, mist 3 px = 0.25 mm under moss, as discs of radius n + 0.5 so
 #    the reach is whole pixels; round 7's true 0.3 mm disc reached only 3 px), never within 0.3 mm of bare
 #    shirt; pinholes in a separation over a darker ink are filled; tagged 300 dpi;
-#  - the screen films (out5/final/{name}-film{k}.png): each separation on a 0.5 in margin with three identical
-#    registration crosshairs and a label (ink, hex, print order, right reading);
+#  - the screen films (kit/{name}_film{k}-{ink}.png, 1-bit): each separation on a 0.5 in margin with three
+#    identical registration crosshairs and a label (ink, hex, print order, right reading). These PNGs are the
+#    masters (round 9: the traced SVGs bring back a few hundred px of sub-0.4 mm tips the PNGs don't have);
 #  - one untrapped mask per ink (out5/final/{name}-ink{k}.png) that the all-inks SVG is traced from (round 6
 #    traced the trapped films, so the spread light inks painted over forest edges).
 # args: name inks(comma name:hex, darkest first) typeTop
@@ -38,7 +39,9 @@ def film(sep, k):
         d.ellipse([cx - 32, cy - 32, cx + 32, cy + 32], outline=0, width=7); d.line([cx - 60, cy, cx + 60, cy], fill=0, width=7); d.line([cx, cy - 60, cx, cy + 60], fill=0, width=7)
     order = len(inks) - k                                  # lightest first: mist, moss, forest
     d.text((m, h + m + 40), f"{name}  |  film {k + 1} of {len(inks)}: {names[k]} {inks[k]}  |  print {order} of {len(inks)}  |  RIGHT READING", font=FONT, fill=0)
-    im.save(f"out5/final/{name}-film{k + 1}.png", dpi=(300, 300)); return im.size
+    im.save(f"out5/final/{name}-film{k + 1}.png", dpi=(300, 300))
+    im.convert("1").save(f"kit/{name}_film{k + 1}-{names[k]}.png", dpi=(300, 300))   # the master film: 1-bit, 300 dpi
+    return im.size
 inside = nd.distance_transform_edt(lab != -1) > 0.3 * MM      # at least 0.3 mm from bare shirt
 reach = lambda mm: int(np.ceil(mm * MM - 1e-9)) + 0.5            # whole pixels: 0.3 mm -> 4 px, 0.25 mm -> 3 px
 seps, films = [], []

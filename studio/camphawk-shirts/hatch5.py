@@ -58,10 +58,14 @@ Image.fromarray(out3).save("out5/peak-three.png")
 g1, strokes = gouges(3.8 * MM, 1.35, 0.0)
 ink = Image.fromarray((((lab == 0) | g1) * 255).astype(np.uint8)).resize((W * S, H * S), Image.NEAREST)
 inkm = np.asarray(ink.resize((W, H), Image.BOX)) >= 128
-# print floor: drop ink specks under 1 mm2 and fill shirt holes under 1 mm2
-l2, n2 = nd.label(inkm); sz = nd.sum(inkm, l2, range(1, n2 + 1)); inkm &= np.r_[False, sz >= MM * MM][l2]
+# print floor, set here above the kit prep's own (2 mm2, 0.8 mm) so no later rule picks which marks survive
+# (round 9's technician found the prep deleting 4 hatch dashes and filling 3 cuts): ink marks under 2.5 mm2 or
+# under 0.9 mm at their widest go, and shirt cuts under 2.5 mm2 fill
+l2, n2 = nd.label(inkm); idx = range(1, n2 + 1); sz = nd.sum(inkm, l2, idx)
+wide = 2 * nd.maximum(nd.distance_transform_edt(np.pad(inkm, 1))[1:-1, 1:-1], l2, idx)
+inkm &= np.r_[False, (sz >= 2.5 * MM * MM) & (wide >= 0.9 * MM)][l2]
 inside = nd.binary_fill_holes(lab >= 0)
-h3, n3 = nd.label(~inkm & inside & (lab != 2)); sz3 = nd.sum(h3 > 0, h3, range(1, n3 + 1)); inkm |= np.r_[False, sz3 < MM * MM][h3]
+h3, n3 = nd.label(~inkm & inside & (lab != 2)); sz3 = nd.sum(h3 > 0, h3, range(1, n3 + 1)); inkm |= np.r_[False, sz3 < 2.5 * MM * MM][h3]
 out = np.zeros((H, W, 4), np.uint8); out[inkm] = FOREST + (255,)
 Image.fromarray(out).save("out5/peak-one.png")
 print("moss areas", n, "one-ink strokes", strokes, "three-ink gouges", c3)

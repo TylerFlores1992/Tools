@@ -244,14 +244,31 @@ Print, from the round 8 technician:
 - The prep ends with openings until stable; where two inks trade a sliver, edge pixels go to the shirt. What
   remains under 0.4 mm is 27 px of forest in 14 spots, each at most 8 px, where inks meet inside the art.
 
+## Round 10 (2026-10-08)
+The round 9 art director (6.5 / 7) said print it after three fixes, all done: the fire is carved like the
+tent (solid ink, a light inner tongue: mist, or bare shirt on one ink) at 80% of the tent's height, not
+outlined; the right-face snow stripe ends in a point (round 6's box cut had left a ruler-flat edge); the
+cut-back snowfield tongue ends in knife points. Also: water rows 1.45-1.9 mm, the right reach near but not a
+mirror of the left; the one-ink lane open shirt with two ticks a row; an almond eye; 0.55 in above the
+wordmark. The round 9 technician (9) said ready, sending the PNGs as masters: the kit now has 1-bit film
+PNGs (`kit/*_film{k}-{ink}.png`), and `hatch5.py` sets its own print floor (marks 2.5 mm2 and 0.9 mm wide or
+more, cuts filled under 2.5 mm2) so the kit prep no longer picks which hatch marks survive.
+
 ## Production spec (both shirts)
-- **One ink (natural shirt): DTF or screen.** DTF is the plan: the widest solid is under 0.9 in, so the film
-  stays soft. Press per the transfer maker; re-press 5 s under parchment after the peel.
-- **Three inks (sage shirt): screen print.** As DTF it is one 22 in2 film with a solid core about 3.8 in
-  across: a stiff, warm patch. If it must be DTF, ask the shop for a soft-hand film and expect the stiffness.
-- **Screen order:** mist, flash, mist (print-flash-print, or a choked underbase; mist is light on a mid-green
-  shirt), then moss, then forest. Traps are built into the films (lighter inks spread under darker ones).
-  Films: `kit/still-water_back_{1-forest,2-moss,3-mist}.svg`, black, each with three registration crosshairs
-  and its ink, hex and print order. Mesh: about 156 for the mist, 200-230 for moss and forest.
-- **Ask for a strike-off.** The tagline's A counters are 0.85 mm and its tightest letter gaps 0.68 mm: fine
-  for DTF; with plastisol keep the deposit thin.
+- **Print size:** 10.13 x 8.38 in, centred, the top about 3 in below the collar. Chest: 3.75 x 2.06 in, left.
+- **Master files:** the PNGs. DTF prints `kit/*_back_300dpi.png`; a screen shop burns from the 1-bit films
+  `kit/*_film{k}-{ink}.png` (300 dpi, black, each with three registration crosshairs and its ink, hex and
+  print order). The SVGs are traced from them for convenience: they add a few hundred px of sub-0.4 mm tips
+  the PNGs don't have, so the PNGs win any disagreement.
+- **One ink (natural shirt): DTF or screen.** DTF is the plan: 16.3 in2 of film, the widest solid 0.76 in,
+  so it stays soft. Heat press (a household iron is not enough): about 300-325 F, 10-15 s, medium-firm
+  pressure, peel as the transfer maker says (hot or cold), then re-press 5 s under parchment. Use their
+  numbers if they differ.
+- **Three inks (sage shirt): screen print.** As DTF it is 26.6 in2 of film with a solid core 3.8 in across:
+  a stiff, warm patch. If it must be DTF, ask for a soft-hand film and expect the stiffness.
+- **Screen order and ink:** plastisol (or the shop's soft-hand blend), cured at about 320 F through the
+  dryer. Mist, flash, mist (print-flash-print, or a choked underbase; mist is light on a mid-green shirt; keep
+  the deposit thin), then moss, then forest. Traps are built into the films. Mesh: about 156 for mist,
+  200-230 for moss and forest.
+- **Approve a strike-off first.** The tagline's A counters are 0.85 mm across (its letter gaps are at least
+  1.45 mm): fine for DTF; with plastisol keep the forest deposit thin.
