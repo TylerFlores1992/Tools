@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233822",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-c)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.5370111,
+     40.8727639
+    ],
+    [
+     -109.5370586,
+     40.8728387
+    ],
+    [
+     -109.5370823,
+     40.8728747
+    ],
+    [
+     -109.5371357,
+     40.8729828
+    ],
+    [
+     -109.5371713,
+     40.8730908
+    ],
+    [
+     -109.5372188,
+     40.8731809
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The north half of the middle lane, from the south road to 017. Past 017 to 018 and 019 it goes under the pines and can't be placed; GROUP's lane doesn't show."
+}
