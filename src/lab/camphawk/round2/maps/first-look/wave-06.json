@@ -258,7 +258,7 @@
   },
   "233895": {
    "call": "usable",
-   "note": "The lake road and the south loops follow the visible roads, and 001 to 016 sit by them. The north-shore sites (020 to 030) sit on a lane between the road and the lake that shows on the photo and isn't drawn; the group sites sit by lanes west of the road."
+   "note": "The lake road and the south loops follow the visible roads, and 001 to 016 sit by them. Zoomed, the north-shore sites (020 to 030) sit 10 to 40 m south of the road on short spurs that show only in gaps through the pines, so they weren't traced; the group sites sit by lanes west of the road."
   },
   "233980": {
    "call": "good",
@@ -334,7 +334,7 @@
   },
   "251616": {
    "call": "hold",
-   "note": "Only the highway is drawn. The campground's lanes show plainly on the photo (the loop past 18 to 26 and the lane along the river past 08 to 17), and the sites sit on them."
+   "note": "Only the highway is drawn. The campground's loop past 20 to 26 and the gravel along the river past 08 to 17 show plainly and the sites sit on them, but where they join the highway is hidden under trees, so they weren't traced."
   },
   "256344": {
    "call": "usable",
@@ -350,7 +350,7 @@
   },
   "272092": {
    "call": "hold",
-   "note": "Only the road along the south shore is drawn. The campground's lanes into the peninsula (past 010 to 026) and toward 003 to 009 show on the photo and aren't drawn, so most sites sit 50 to 150 m from any drawn road."
+   "note": "Only the road along the south shore is drawn, and the campground's lanes into the peninsula (past 010 to 026) run under trees, showing only as faint tracks; most sites sit 50 to 150 m from any drawn road. Not traced: the lanes can't be placed from the photo."
   },
   "272096": {
    "call": "usable",
