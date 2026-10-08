@@ -1,6 +1,5 @@
 # Batch northeast-api
 
-STATUS: started
 
 Setup: RIDB full export dated 2026-10-07 (same as the specs). OpenStreetMap extract us-northeast from
 download.openstreetmap.fr, OSM as of 2026-10-07T00:00:40Z (1.99 GB raw, 1.53 GB trimmed). Network:
@@ -60,3 +59,31 @@ every map host answered; tylerflores.dev timed out and Geofabrik reset (not need
 - Anything new: every unit is in Alaska and USGS's NAIP returns black for all 95 (zoomed on each pin;
   measured, not just eyeballed: 87 to 88% black pixels, the rest the grid). Each note states the build's
   own facts instead (distance from the listing's point, nearest drawn road or trail).
+
+## Wave 34 (Alaska, OSM API, units)
+- Built 95, failed 0
+- Check: ready 36, review 59 (54 with no drawn road or trail within 700 m; 11 whose unit point is over 300 m from the listing's own point), not drawn 0
+- First look: good 0, usable 0, hold 0, unsure 95
+- Traced: none (no photo)
+- Split calls: none
+- Held: none
+- Anything new: as wave 33, USGS's NAIP is black for all 95 (zoomed on each pin and measured). One
+  listing has no state in RIDB (10165215 Childs Glacier, Chugach NF); its box is in Alaska. The 11 far
+  points can't be judged without a photo, so they are unsure, not held; each note gives the distance.
+
+## For the orchestrator
+- Every map in all five waves has a first-look entry; the only failing test is the index-sync one
+  (lab-index.mjs on merge).
+- 220 of this batch's 283 maps (waves 25, 33 and 34) are in Alaska or Hawaii, where USGS NAIP returns an
+  all-black image, so their calls are unsure. They need another public-domain photo source or the
+  owner's call; the playbook's rules (trace only from NAIP) leave nothing more a child can do.
+- Traces to check over the photo: 234714 (wave 24); 234241, 10004657, 10290014, 10357061 (wave 39).
+- Split listings to check: 232128, 233644 (gap 150), 233652 (wave 24).
+
+## Time
+Setup 10 min (the us-northeast extract downloaded and trimmed in about 5). Wave 24: about 1 h with the
+first look, splits and traces. Wave 39: about 25 min. Wave 25: about 15 min (built in the background
+during wave 24). Waves 33 and 34: about 35 min each to build over the OSM API (run in the background),
+then about 5 min each to zoom and note, since no photo answered.
+
+STATUS: complete
