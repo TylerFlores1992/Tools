@@ -62,27 +62,33 @@
   },
   "10165350": {
    "call": "unsure",
-   "note": "A boat-in site: the pin sits under full canopy 20 m in from the sandy shore, with small clearings along the beach to the northeast; nothing at the pin itself shows, and no road comes near (boat access)."
+   "note": "The outline is a strip of forested shoreline on the reservoir with no road, and the point is inside it. Dense leaf canopy hides any sites, so the photo can't confirm the boat-in campground.",
+   "as": "firstcome"
   },
   "10165365": {
    "call": "unsure",
-   "note": "A boat-in site: the pin sits under full canopy 35 m from a cove; no clearing shows and no road or trail is drawn within 700 m (boat access)."
+   "note": "The outline holds a wooded point beside a cove of the reservoir with no road, and the point is inside it. Dense leaf canopy hides any sites, so the photo can't confirm the boat-in campground.",
+   "as": "firstcome"
   },
   "10165370": {
    "call": "unsure",
-   "note": "A boat-in site: the pin sits under full canopy 60 m in from the shore; no clearing shows at the pin (boat access)."
+   "note": "The outline is a strip of forested shoreline on the reservoir with no road, and the point is inside it. Dense leaf canopy hides any sites, so the photo can't confirm the boat-in campground.",
+   "as": "firstcome"
   },
   "10165465": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy about 10 m west of the drawn trail that leaves the trailhead parking; a small clearing shows 30 m east of it, but the sites themselves don't show."
+   "call": "usable",
+   "note": "The outline holds a short spur road with a small structure under the trees just north of the trailhead parking lot, and the point is inside it. The canopy hides the pads.",
+   "as": "firstcome"
   },
   "10165475": {
    "call": "unsure",
-   "note": "A boat-in site: the pin sits under full canopy 100 m in from the shore; no clearing shows at the pin (boat access)."
+   "note": "There's no outline, and the pin is in dense leaf canopy near the reservoir shore with no road, as a boat-in campground would be. The trees hide any sites, so the photo can't confirm or rule it out.",
+   "as": "firstcome"
   },
   "10165540": {
    "call": "unsure",
-   "note": "A boat-in site: the pin sits under full canopy 15 m in from the shore, with a small opening on the beach just north; nothing at the pin shows (boat access)."
+   "note": "The nearest outline is about 800 m away, and the pin is in dense leaf canopy just above the reservoir shore with no road, as a boat-in campground would be. The trees hide any sites, so the photo can't confirm or rule it out.",
+   "as": "firstcome"
   },
   "10168556": {
    "call": "hold",

@@ -117,7 +117,23 @@ the owner picked, and it holds up on a phone.
   - 47 have no OpenStreetMap outline within 250 m.
   - 2 are marked closed.
   - 36 carry a site count from their description.
-  - Their first look as first-come maps is next. It will be recorded in `docs/design/campground-maps.md`.
+  - **Their first look as first-come maps** (a separate reader, 2026-10-08): 43 good, 45 usable,
+    34 hold, 8 unsure.
+  - **The final check passed 86 and held 44.** Grandjean and Hayden Creek have no outline, and the
+    photo doesn't plainly show a campground by the pin, so they're held too.
+
+## What the first look found (not yet fixed)
+- **One OpenStreetMap outline can serve two listings.** Davis Flat and South Fork both reach South
+  Fork's ring. The 250 m reach takes the nearest ring whatever its name. Checking the outline's
+  name against the listing's would catch it, and also Big Creek (outlined as "Cottonwood Lake
+  Campground") and North Bank. Those listings are held.
+- **A campground split into several small outlines** (Gothic: "GC 1-3" and "GC 4-8", 450 m apart).
+  The map draws only one of them. Held.
+- **No-outline pins between two campgrounds** (Lower and Upper O'Brien, 400 m apart). Held.
+- **Points in water** (Piety Island, Scott Lake) and pins on a trailhead pull-out can't be told
+  from a real campground by the 100 m rule alone.
+- **"Point by the entrance" can sit 80–90 m outside the outline** (Angel of Shavano, Rivers End,
+  Pitkin): the point is where the campground road leaves the main road. They passed as good.
 
 ## Not settled
 - 47 have no OpenStreetMap outline within 250 m (42 have none at all). For those the map is a pin "About here", which is honest but

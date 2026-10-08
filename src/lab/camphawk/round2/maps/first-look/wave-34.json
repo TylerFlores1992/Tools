@@ -377,8 +377,9 @@
    "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here), so the pin can't be checked. On the map: the pin is No listing point from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "10165215": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 10 m away."
+   "call": "good",
+   "note": "The NAIP photo the check uses doesn't cover Alaska, so this was judged on the review grid's other public-domain photo. The outline follows the loop road with pads and trailers under the trees, and the point is inside it near where the road comes in.",
+   "as": "firstcome"
   },
   "10341414": {
    "call": "unsure",

@@ -21,200 +21,249 @@
    "note": "The pin sits among scattered piñon with no building or clearing; the only building in the frame is 110 m south-east, and no road reaches either."
   },
   "10165110": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance off the highway, not on a pad."
+   "call": "good",
+   "note": "The outline follows the strip between the highway and the river with its small loop and dirt spurs, and the point is inside it at the loop.",
+   "as": "firstcome"
   },
   "10165120": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a loop and the road toward the pond, plus a lot of forest along the river. The point is about 5 m outside it where the campground road leaves the highway.",
+   "as": "firstcome"
   },
   "10165140": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road fork at the campground entrance, not on a pad."
+   "call": "good",
+   "note": "The outline follows the spur road with pads under the trees between the river and the road, and the point is at its north tip where the spur begins.",
+   "as": "firstcome"
   },
   "10165145": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the open meadow, not on a pad."
+   "note": "The photo shows one campground, loops with pads on the lake's south shore, and the point is about 30 m south of it at a road junction. But OpenStreetMap names that outline Cottonwood Lake Campground, not Big Creek, so the map may be showing a different campground.",
+   "as": "firstcome"
   },
   "10165175": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on open hillside among the pines, 230 m from any drawn road and on no pad; the only roads drawn are far off and the visible tracks aren't drawn."
+   "note": "There's no outline, and the pin is in open pine scrub crossed by dirt tracks, with a few houses about 80 m north. Nothing near it shows campground loops or pads.",
+   "as": "firstcome"
   },
   "10165190": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the open ground at the campground entrance beside the lane, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is among short dirt spurs with clearings and pull-ins off the main road, which reads as the campground.",
+   "as": "firstcome"
   },
   "10165210": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+   "call": "good",
+   "note": "The outline follows the campground's loops with pads, and the point is about 20 m north of it where the campground road leaves the main road.",
+   "as": "firstcome"
   },
   "10165230": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the spur where the campground lane leaves the highway, not on a pad."
+   "call": "good",
+   "note": "The outline follows a spur with pads beside the road, and the point is inside it at the east end where the spur begins.",
+   "as": "firstcome"
   },
   "10165235": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the paved trailhead lot at the pass, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a small meadow with a dirt track beside the pass's paved parking lot, which fits a three-site campground but shows no clear pads. The point is at the lot's edge, just outside it.",
+   "as": "firstcome"
   },
   "10165245": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+   "note": "There's no outline, and the pin is at a road junction in forest east of a lake. No pads, loop or campers show near it.",
+   "as": "firstcome"
   },
   "10165250": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction above the lake lot, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a patch of forest with a road and a few clearings and vehicles, though the trees hide most pads. The point is about 10 m outside it, where its road meets the lakeside road.",
+   "as": "firstcome"
   },
   "10165260": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road climbing into the campground, not on a pad."
+   "call": "good",
+   "note": "The outline follows the winding campground road with clearings and pads, and the point is about 20 m outside it on the road in.",
+   "as": "firstcome"
   },
   "10165265": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+   "call": "good",
+   "note": "The outline holds the campground's two loops with pads under the trees, and the point is about 30 m west of it at the junction where the campground road leaves the main road.",
+   "as": "firstcome"
   },
   "10165290": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits at the end of a drawn lane on the hillside, not on a pad; the campground's lots show 100 m south-west and aren't drawn."
+   "call": "good",
+   "note": "The outline follows the spur road along the creek with pads under the trees, and the point is inside it at the west end where the road comes in.",
+   "as": "firstcome"
   },
   "10165300": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction off the valley road, not on a pad."
+   "call": "good",
+   "note": "The outline follows a loop with pads above the road, and the point is just outside it at the loop's entrance on the main road.",
+   "as": "firstcome"
   },
   "10165310": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+   "call": "usable",
+   "note": "The outline follows a spur loop with pads, and the point is inside it at the corner where the spur leaves the road. Another loop with pads about 80 m north is left outside the outline.",
+   "as": "firstcome"
   },
   "10165315": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance off the valley road, not on a pad."
+   "note": "OpenStreetMap outlines this campground as two small clusters about 450 m apart, and the map takes only the southern one, a small patch in the trees about 100 m from the point. The point is by a small road loop at the main road, so the map would show only part of the campground.",
+   "as": "firstcome"
   },
   "10165325": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+   "note": "There's no outline, and the pin is at a junction of dirt roads in forest. No pads or campers show near it.",
+   "as": "firstcome"
   },
   "10165340": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the campground entrance, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a meadow with a small loop road and a few vehicles and trailers. The point is about 50 m north of it, at the junction where the road to it leaves the main road.",
+   "as": "firstcome"
   },
   "10165345": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction by the campground's gravel area, not on a pad."
+   "note": "The nearest outline is over 300 m away. The pin is at a small pull-out on the road with a couple of vehicles and one structure, which doesn't plainly show a campground.",
+   "as": "firstcome"
   },
   "10165355": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is on a road with pull-ins and a parked vehicle under the trees, ending in a small loop with a structure about 100 m west, which reads as a small campground.",
+   "as": "firstcome"
   },
   "10165400": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside the campground loop, on no pad or road."
+   "call": "usable",
+   "note": "There's no outline. The pin is inside a small loop road with pads off the main road, which reads as the campground.",
+   "as": "firstcome"
   },
   "10165405": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground road itself, not on a pad."
+   "note": "There's no outline, and the pin is on a dirt spur among scattered trees. A couple of vehicles about 100 m northwest aren't enough to show a campground.",
+   "as": "firstcome"
   },
   "10165410": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a road junction among the campground's lanes, not on a pad."
+   "call": "good",
+   "note": "The outline follows the lakeshore strip with its loops and pads, and the point is inside it.",
+   "as": "firstcome"
   },
   "10165425": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the open park, not on a pad."
+   "call": "good",
+   "note": "The outline follows the campground's loops and spurs with pads, and the point is at its west tip where the road comes in.",
+   "as": "firstcome"
   },
   "10165445": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction at the foot of the campground loop, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is at the junction where a loop with pads and parked trailers leaves the road, just south of the loop.",
+   "as": "firstcome"
   },
   "10165450": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground spur leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline holds the end loop with pads and the spur road to it, and the point is about 10 m outside its northwest tip, where the spur leaves the main road.",
+   "as": "firstcome"
   },
   "10165460": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside a small loop by the reservoir, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is among small road loops with pads and campers beside a gravel lot near the reservoir, which plainly reads as a campground.",
+   "as": "firstcome"
   },
   "10165480": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline holds the loop with pads in the trees above the reservoir, and the point is about 10 m outside it on the main road at the loop's entrance.",
+   "as": "firstcome"
   },
   "10165500": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the paved turn-off from the highway, not on a pad."
+   "note": "The nearest outline is a strip between the highway and the river that OpenStreetMap names Granite Tent Campground, about 110 m from the point across the highway. The map would show a different campground.",
+   "as": "firstcome"
   },
   "10165505": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside the campground loop by the reservoir, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is inside a road loop under the trees by the reservoir, with a few clearings along it, which reads as the campground loop.",
+   "as": "firstcome"
   },
   "10165545": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground road at the edge of the forest, not on a pad."
+   "call": "usable",
+   "note": "The outline holds the loop with pads and parked trailers, plus a large stretch of forest to the west. The point is inside it on the road in.",
+   "as": "firstcome"
   },
   "10165550": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a long loop with pads and campers in the trees south of the road. The point is about 90 m northwest of it on the main road, beside a building near the spur that leads in.",
+   "as": "firstcome"
   },
   "10165555": {
    "call": "hold",
-   "note": "The listing is a whole tent campground booked as one site, and its point sits on the junction where the lane to the riverside lot leaves the highway, not on a pad."
+   "note": "There's no outline. The pin is on the highway beside a dirt strip with parked vehicles along the river, which could be parking for walk-in sites but doesn't plainly show a campground.",
+   "as": "firstcome"
   },
   "10165571": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline follows the campground's loops with pads, and the point is at its west edge where the road comes in.",
+   "as": "firstcome"
   },
   "10165576": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a junction of dirt roads on the open prairie, not on a pad."
+   "call": "good",
+   "note": "The outline follows the gravel loops and spurs by the river, and the point is about 80 m east of it where the campground road leaves the highway.",
+   "as": "firstcome"
   },
   "10165616": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction at the entrance to the campground loop, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is at the junction where a loop with pads and a parked vehicle leaves the road, so it sits at a campground's entrance.",
+   "as": "firstcome"
   },
   "10165641": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline holds the campground's loops with pads and campers, and the point is about 10 m outside it where the campground road meets the main road.",
+   "as": "firstcome"
   },
   "10165651": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground lane by a small clearing, not on a pad."
+   "call": "good",
+   "note": "The outline holds the loop with pads and campers beside the creek, and the point is inside it at the south end on the road in.",
+   "as": "firstcome"
   },
   "10165666": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline holds the loop and spur with pads, and the point is about 10 m outside it where the spur leaves the road.",
+   "as": "firstcome"
   },
   "10165676": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground lane leaves the highway, not on a pad."
+   "call": "usable",
+   "note": "The outline holds a loop road through dense trees, where only a few clearings show. The point is about 95 m north of it on the highway, where the road to it turns off.",
+   "as": "firstcome"
   },
   "10165681": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on a pull-off beside the highway, not on a pad; the campground loop is 100 m west."
+   "call": "usable",
+   "note": "The outline holds the campground's loop with pads and campers. The point is about 40 m east of it, at a pull-out on the highway.",
+   "as": "firstcome"
   },
   "10165701": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits in the trees inside a campground loop, on no pad or road."
+   "call": "good",
+   "note": "The outline holds the campground's loops with pads, and the point is inside it.",
+   "as": "firstcome"
   },
   "10165711": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the campground lane just off the highway, not on a pad."
+   "call": "usable",
+   "note": "There's no outline. The pin is where a road leaves the highway toward spurs with pads and parked vehicles along the river, so it sits at a campground's entrance.",
+   "as": "firstcome"
   },
   "10165726": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+   "call": "usable",
+   "note": "The outline is a long strip along the lakeshore road that holds pads at its southwest end and a loop at its northeast end, with a stretch of plain road between. The point is about 10 m outside its northeast end on the road.",
+   "as": "firstcome"
   },
   "10165731": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction where the campground loop leaves the road, not on a pad."
+   "call": "good",
+   "note": "The outline holds the loop with pads and campers on the neck between the two lakes, and the point is inside it.",
+   "as": "firstcome"
   },
   "10165736": {
    "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction in the forest, not on a pad."
+   "note": "There's no outline. The pin is at a junction on a dirt spur through the trees, and the only loop in view is about 250 m northwest, so nothing within reach plainly shows a campground.",
+   "as": "firstcome"
   },
   "10165746": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the junction of the valley road and the campground road, not on a pad; the campground's own lanes east of the road aren't drawn."
+   "call": "good",
+   "note": "The outline holds the loop with pads and trailers, and the point is about 55 m east of it where the campground road leaves the main road.",
+   "as": "firstcome"
   },
   "10165751": {
-   "call": "hold",
-   "note": "The listing is a whole campground booked as one \"Standard\" site, and its point sits on the road junction below the campground, not on a pad."
+   "call": "good",
+   "note": "The outline follows the campground's loops with pads, and the point is about 20 m outside it at the junction where the road comes in.",
+   "as": "firstcome"
   }
  }
 }
