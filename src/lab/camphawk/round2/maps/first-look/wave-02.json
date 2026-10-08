@@ -242,7 +242,7 @@
   },
   "234287": {
    "call": "hold",
-   "note": "No campground road is drawn, only the highway. The sites sit around a visible dirt loop and parking area north of it, which a trace could add."
+   "note": "No campground road is drawn, only the highway and a track beside it. Zoomed at 5 m, the sites sit around two open clearings north of the highway, and the lanes to the north sites (13 to 19) don't show under the trees, so nothing was traced."
   },
   "234557": {
    "call": "hold",
@@ -322,7 +322,7 @@
   },
   "232613": {
    "call": "hold",
-   "note": "The A row along the river and the long D row (D01 to D25) have no road drawn, though a lane shows along the D row in the open. The B and C sites are partly drawn. A trace of the D lane and the A lane would make it usable."
+   "note": "The A row along the river and the long D row (D01 to D25) have no road drawn. Zoomed, the D row is under full canopy and no lane shows, so nothing was traced. The B and C sites are partly drawn."
   },
   "232656": {
    "call": "usable",
@@ -349,8 +349,8 @@
    "note": "The Census loops follow the main lanes, and many sites sit on the visible spurs off them (the spurs aren't drawn). The east row (005 to 013, 025 to 028) sits 20 to 40 m out on spurs that show."
   },
   "233461": {
-   "call": "hold",
-   "note": "The west loop (01 to 34) has no road at all, though its lanes show plainly in the open desert; the east loops are drawn. A trace of the west loop would make it usable."
+   "call": "usable",
+   "note": "The west loop had no road, though its lanes show plainly in the open desert. Its outer lane is now traced from the photo (checked over it, within a few meters); the inner lane through 05 to 08 and the spurs aren't. Waits for the traced roads to be approved."
   },
   "233472": {
    "call": "hold",
@@ -393,8 +393,8 @@
    "note": "OpenStreetMap draws every lane of every loop, they follow the visible pavement, and the sites line them. A large campground: Find a site and zoom reach the dense middle."
   },
   "233655": {
-   "call": "hold",
-   "note": "The south loops are drawn and fit, but the north half (001 to 050) has no road at all, though its lanes show plainly in the open. A trace of the north lanes would make it usable."
+   "call": "usable",
+   "note": "The north half had no road. Its three main lanes are now traced from the photo (checked over it); the short lanes to the outer sites (042 to 049, 001 to 015) aren't. Waits for the traced roads to be approved."
   },
   "233688": {
    "call": "good",
