@@ -124,3 +124,161 @@ DTF details:
 - **Files:** the transfers print from `kit/*_300dpi.png`.
 - **Still to build:** the gang-sheet layout, once the owner gives the shirt counts and the press size.
 
+
+## Round 4 (2026-10-07): Still Water without the diamond
+The owner's wife: the peak mirrored in the lake makes the whole back print read as a diamond. Round 4 keeps
+the approved peak, camp and hawk and changes only what sits below the shore. Seven layouts, all free:
+Arch window, Panorama, Round badge (the reviewer's top three: 8, 7.5, 7), then Lake plate, Shoreline, Waterline
+banner, Short reflection. Review page: https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j
+
+- `python3 prep4.py` cuts both camp renders (`kit/*_back_300dpi.png`) at the shore, drops the hawk and writes
+  the silhouette masks to `out4/`.
+- `node round4.mjs [id]` draws each layout (one ink on natural, three inks on sage, a drawn tee, and a
+  transparent render) into `out4/`. `python3 composite.py ref/flux-blank-natural.jpg out4/<id>-alpha.png
+  out4/<id>-photo.jpg 520 290 330` puts one on the shirt photo. `sheet4.py` makes contact sheets.
+- Water is drawn, never mirrored: tapering dashes in rows that thin out and spread apart, a column of light
+  under the fire and the tent door, and every field square-edged so the outline can't point downward.
+- Research behind the layouts: frames that cut the water off (arch, circle with a low horizon, panorama),
+  a banner on the waterline, or water as broken dashes stopping at about a third of the peak's height.
+- Mockups use the 300 dpi raster peak. The pick still needs: vector print files (trace as `campkit.mjs`
+  does), `printcheck.py` at 300 dpi, then the Vercel image polish the owner planned.
+- Reviewer notes not taken: "hatch gaps under 1 mm" (it measured downscaled previews; the print files
+  were cleaned to 1 mm and over), "scale the tent and fire 1.4×" (the owner approved their size).
+- `sheet4-share.mjs` makes the one numbered image of all seven for sharing (`round4-options.jpg`; needs `out4/old-diamond.png`, the old back on natural).
+
+## The pick (2026-10-08): no. 7, Short reflection
+The owner picked round 4's no. 7, "Short reflection" (`round4.mjs` id `dashes`). It is now the back print for
+both shirts: the peak, camp and hawk stand on five rows of broken lake lines, then the wordmark. The print is
+11.5 x 8.33 in (it was 11.5 x 13 in as the diamond). The chest prints are unchanged.
+- `python3 prep4.py` (the peak without its reflection, from the old diamond renders kept in
+  `ref/still-water*_diamond_300dpi.png`), then `node final4.mjs`. It renders at 300 dpi, snaps every pixel to
+  an ink, and traces one SVG per ink into `kit/`, plus the 300 dpi PNGs.
+- Print check: only the pointed tips of the lake dashes and letter and tree corners are flagged; every gap
+  between dashes is well over 1 mm. The peak and camp are the art that passed before.
+- `campkit.mjs` (the diamond kit) now writes to `out2/kit-diamond/`, so it can never overwrite the kit.
+- Kit page (mockups, a zip of all 12 files, order spec, the DTF plan): https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM
+- Still open: the Vercel image polish the owner planned, and the DTF gang sheet once the shirt counts and the
+  heat press size are known (the shorter back fits more to a 22 in sheet).
+
+
+## Round 5 (2026-10-08): the pick, polished to the reviewers' notes
+Baseline scores for the pick: 6/10 from an apparel art director, 6/10 from a print technician. Round 5:
+- `polish5.py` cleans the three-ink peak (208 shirt specks filled, the old camp removed); `hatch5.py` builds the
+  one-ink peak from the same drawing, the moss areas cut as gouge strokes.
+- `round5.mjs`: a bigger A-frame tent with a lit door and the fire on the peak's axis, on a shoreline; water
+  rows that open with depth inside an oval, with light lanes (mist on the three-ink shirt); the hawk facing the
+  camp; the airy wordmark and a two-line tagline.
+- `final5.mjs` + `finish5.py` + `prep5.py`: the kit, with the technician's print rules (voids and sub-1 mm
+  cuts filled, nothing thinner than 0.4 mm, no specks, trapped screen separations, trimmed to the art plus
+  3 mm, PNGs tagged 300 dpi). The back is now 10.22 x 8.47 in.
+- Vercel image polish: two Flux Kontext edits (`edit.mjs`, $0.08) were not usable (one near-identical, one
+  painterly with paper grain that can't print as flat ink). Image credit used: $0.62 of the owner's $0.75.
+
+## Round 6 (2026-10-08)
+Round 5 scored 7 (art director) and 8 (technician). Round 6: forest gouges carved into the three-ink moss; the
+straight snow-band end recut on a diagonal (`polish5.py`); hand-cut water strokes (blunt entry, tapered exit)
+over a shallower lake; a three-tongue flame with a lit core; pines stepping down beside the camp; a light cut
+down the tent's shaded side; the hawk at 1.8 in with feather cuts; the tagline in weight 600.
+Scores: art director 6, technician 7. Both found the drawn parts (camp, water, hawk) read as smooth vector
+next to the hand-cut peak, and the print prep had real faults (below).
+
+## Round 7 (2026-10-08): one hand, and the print prep fixed
+Art (`round5.mjs`):
+- One hand-cut wobble (an SVG displacement, about 0.015 in) on everything drawn in code: camp, shore, water, hawk.
+- The flame is three uneven tongues growing out of the logs (round 6's read as a crown, floating). The meadow
+  tufts are gone (they read as bollards); the rock is cleared about 2 mm round the tent and fire.
+- One light lane, under the fire (the tent gives no light): bare shirt on one ink, mist strokes on three.
+  Strokes shorten toward the edges, rows are unevenly spaced, and both shirts get the same strokes.
+- The hawk sits higher, clear of the ridge; its feather cuts are gouges driven in from the trailing edge (closed
+  cuts read as windows), with a 1.5 mm eye. Cuts are knockouts on both shirts.
+- Tagline 86 px (caps about 5.3 mm), tracked so line 1 is as wide as the wordmark (7 in), 0.27 in below it.
+Print prep (`prep5.py`, `finish5.py`, `final5.mjs`), each from a measured technician finding:
+- The type is left as set (the round 5 fills closed the tagline's A and B counters; now 0.9 mm and open).
+- True-radius discs everywhere: the 0.2 mm opening (round 6 rounded it to 2 px and left 0.34 mm necks) and the
+  traps (0.3 mm under forest, 0.25 mm mist under moss; round 6's was 0.17 mm).
+- Above the type, ink pieces under 2 mm2 or under 0.8 mm at their widest go (they lift off DTF film).
+- The rules run three times, since thinning opens pinholes and filling makes necks.
+- Film pinholes over a darker ink are filled; films tagged 300 dpi.
+- `all-inks.svg` is traced from the untrapped shapes (round 6 traced the trapped films, so the spread light
+  inks painted over 9.7% of the forest).
+- Tracing at 3x (softened) with alphaMax 0.8: 5k px off the PNG instead of 14-17k, and half the sub-0.4 mm tips.
+The back is now 10.26 x 8.22 in. Ink: one-ink 16.4 in2; three-ink 15.6 / 4.0 / 7.9 in2 (films, with traps).
+Scores: art director 6 (one ink) / 7 (three inks); technician 8.
+
+## Round 8 (2026-10-08)
+Art, from the round 7 art director:
+- The fire is the brightest thing in the camp: a light flame (mist, or bare shirt on one ink) keylined 1.2 mm
+  in forest, three tongues at about 100/70/50%, a dark heart, behind two round-ended logs crossed at about 25
+  degrees (the ember wedge that made them one bar is gone).
+- The lake is laid out from the light lane outward, so it is even about the fire's axis; strokes thicken from
+  1.45 mm to 2.75 mm toward the viewer; the lane carries the rows on as short broken strokes (mist, or forest
+  on one ink), drawn outside the wobble that turned them into blobs.
+- The tent has a second light cut. The hawk's near wing, a stub that read as a second beak, is the far wing's
+  shape (with fingers) turned and mirrored onto the near shoulder at 72%.
+- The lower-left snowfield's four forest tongues no longer repeat: one cut back, one broken, one drawn out
+  (`polish5.py`, the cut ends rounded like a gouge's).
+- Tagline: 640 from the variable Josefin Sans (`fonts.sh`), stems about 1.0 mm with the A counters 0.85 mm open
+  (700 closed them to 0.7); 0.35 in under the wordmark, lines at 1.4x.
+Print, from the round 7 technician:
+- Traps in whole pixels (4 px = 0.34 mm under forest, 3 px = 0.25 mm mist under moss), never within 0.3 mm of
+  bare shirt; knockouts under 1 mm beneath darker ink close on the films (no hairlines a screen can't hold).
+- The prep repeats until stable; strokes that nearly touch and cycled between filled and thinned are bridged
+  at 0.5 mm.
+- Screen films (`out5/final/*-film*.png`, traced into the kit's per-ink SVGs) carry three registration
+  crosshairs and a label: ink, hex, print order (mist, moss, forest) and RIGHT READING.
+- `all-inks.svg` is stacked as it prints, mist then moss then forest, each from its trapped film: no butted
+  edges, so no hairline seams.
+Scores: art director 6 (one ink) / 7 (three inks); technician 8.
+
+## Round 9 (2026-10-08)
+Art, from the round 8 art director: the fire 25% larger, tongues nearer 100/70/50%; two uneven feather cuts
+in the hawk's trailing edge (three read as a comb) and a 1.7 mm eye (1.5 mm filled in on three inks); each
+lake row's right reach mirrors its left; on one ink the lane is half-thickness slivers, so bare shirt is the
+light; a swell and three notches in the shoreline; the one-ink snow-patch hatching as about half as many,
+longer cuts (`hatch5.py`). Tried and dropped: a dark bank of brush behind the fire (it read as a lump).
+Print, from the round 8 technician:
+- Films are black (the mist film in its own color was nearly clear); the ink and hex are in each label.
+- The 1 mm knockout rule is gone: it turned 30,000 px of one-ink shirt into ink (hatching, ridge lines, the
+  fire's heart). The 0.6 mm gap fill already closes what can't hold.
+- Film knockout fills stay 0.3 mm off bare shirt, like the traps. Lane gaps 1.8-2.4 mm (round caps took 0.5).
+- The prep ends with openings until stable; where two inks trade a sliver, edge pixels go to the shirt. What
+  remains under 0.4 mm is 27 px of forest in 14 spots, each at most 8 px, where inks meet inside the art.
+
+## Round 10 (2026-10-08)
+The round 9 art director (6.5 / 7) said print it after three fixes, all done: the fire is carved like the
+tent (solid ink, a light inner tongue: mist, or bare shirt on one ink) at 80% of the tent's height, not
+outlined; the right-face snow stripe ends in a point (round 6's box cut had left a ruler-flat edge); the
+cut-back snowfield tongue ends in knife points. Also: water rows 1.45-1.9 mm, the right reach near but not a
+mirror of the left; the one-ink lane open shirt with two ticks a row; an almond eye; 0.55 in above the
+wordmark. The round 9 technician (9) said ready, sending the PNGs as masters: the kit now has 1-bit film
+PNGs (`kit/*_film{k}-{ink}.png`), and `hatch5.py` sets its own print floor (marks 2.5 mm2 and 0.9 mm wide or
+more, cuts filled under 2.5 mm2) so the kit prep no longer picks which hatch marks survive.
+
+## The decision (2026-10-08): print the pick, not the polish
+Shown the pick beside round 10, the owner chose the pick: "the before vercel I believe is far better; the
+hawk, tent and fire in the new one look terrible." So `kit/` holds **round 4 no. 7 exactly as picked**
+(`ref/pick-no7/`, the renders `final4.mjs` made), built by `node pickkit.mjs`: only the print-safety rules of
+rounds 5-10 are applied (`prep5.py` through `finish5.py ... keep`: tips under 0.4 mm trimmed, hairline gaps
+and specks closed, about 0.2-0.35% of the ink; the type left as set), plus 1-bit screen films with marks
+and SVGs traced from them. The canvas stays 11.5 x 8.33 in as picked. Rounds 5-10 (`round5.mjs`,
+`final5.mjs`, `polish5.py`, `hatch5.py`) stay in the repo as history; their last kit is in git (commit c6d428e).
+The as-picked files, untouched, were emailed to the owner (kit page https://claude.ai/artifact/BYjkHu1DDX9ZnHRGSWpCdD).
+
+## Production spec (both shirts)
+- **Print size:** the files are 11.5 x 8.33 in; the art inside is about 10.1 x 7.6 in (one ink) and
+  10.0 x 7.5 in (three inks), centred, its top about 3 in below the collar. Chest: 3.75 x 2.06 in, left.
+- **Master files:** the PNGs. DTF prints `kit/*_back_300dpi.png`; a screen shop burns from the 1-bit films
+  `kit/*_film{k}-{ink}.png` (300 dpi, black, each with three registration crosshairs and its ink, hex and
+  print order). The SVGs are traced from them for convenience; the PNGs win any disagreement.
+- **One ink (natural shirt): DTF or screen.** DTF is the plan: 19.8 in2 of film, the widest solid about
+  1 in, so it stays soft. Heat press (a household iron is not enough): about 300-325 F, 10-15 s,
+  medium-firm pressure, peel as the transfer maker says (hot or cold), then re-press 5 s under parchment.
+  Use their numbers if they differ.
+- **Three inks (sage shirt): screen print.** As DTF it is 27.2 in2 of film with a solid core about 3.8 in
+  across: a stiff, warm patch. If it must be DTF, ask for a soft-hand film and expect the stiffness.
+- **Screen order and ink:** plastisol (or the shop's soft-hand blend), cured at about 320 F. Mist, flash,
+  mist (print-flash-print, or a choked underbase; mist is light on a mid-green shirt; keep the deposit
+  thin), then moss, then forest. Traps are built into the films. Mesh: about 156 for mist, 200-230 for
+  moss and forest.
+- **Approve a strike-off first.** The condensed tagline has tight letter gaps (some under 0.6 mm) and small
+  counters: fine for DTF; with plastisol keep the forest deposit thin and check it on the proof.
