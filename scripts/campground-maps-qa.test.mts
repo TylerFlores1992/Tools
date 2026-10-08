@@ -185,7 +185,9 @@ test("an area's own problem is named with the area; the listing's are kept once"
 test("an area is judged only by the OpenStreetMap outlines that reach it", () => {
   const { sites, roads } = twoAreas();
   const westRing: [number, number][] = [[-30, -30], [200, -30], [200, 30], [-30, 30]];
-  const input = { sites, roadSegments: roads, roadSource: "osm", outlineRings: [westRing] };
+  // A third outline 2 km beyond the east area reaches neither area.
+  const beyond: [number, number][] = [[5000, -30], [5200, -30], [5200, 30], [5000, 30]];
+  const input = { sites, roadSegments: roads, roadSource: "osm", outlineRings: [westRing, beyond] };
   // As one listing, half the sites are outside the only outline.
   assert.ok(checkMap(input).reasons.some((r) => r.code === "outline"));
   const r = checkAreas(checkMap(input), areasOf(sites), input);
@@ -228,6 +230,7 @@ test("a unit far from its listing's own point needs a look; the limit is the rul
   assert.equal(unit({ facilityAt: [UNIT_RULES.facilityAgreeM, 0] }).verdict, "ready");
   const r = unit({ facilityAt: [UNIT_RULES.facilityAgreeM + 1, 0] });
   assert.deepEqual(r.reasons.map((x) => x.code), ["facility-point"]);
+  assert.equal(r.checks.find((c) => c.code === "facility-point")!.result, "review");
   assert.match(unit({ facilityAt: [2400, 0] }).reasons[0].text, /2\.4 km/);
   // No listing point: nothing to compare, not a fault.
   assert.equal(unit({ facilityAt: null }).verdict, "ready");
