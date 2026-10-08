@@ -173,3 +173,33 @@ Baseline scores for the pick: 6/10 from an apparel art director, 6/10 from a pri
   3 mm, PNGs tagged 300 dpi). The back is now 10.22 x 8.47 in.
 - Vercel image polish: two Flux Kontext edits (`edit.mjs`, $0.08) were not usable (one near-identical, one
   painterly with paper grain that can't print as flat ink). Image credit used: $0.62 of the owner's $0.75.
+
+## Round 6 (2026-10-08)
+Round 5 scored 7 (art director) and 8 (technician). Round 6: forest gouges carved into the three-ink moss; the
+straight snow-band end recut on a diagonal (`polish5.py`); hand-cut water strokes (blunt entry, tapered exit)
+over a shallower lake; a three-tongue flame with a lit core; pines stepping down beside the camp; a light cut
+down the tent's shaded side; the hawk at 1.8 in with feather cuts; the tagline in weight 600.
+Scores: art director 6, technician 7. Both found the drawn parts (camp, water, hawk) read as smooth vector
+next to the hand-cut peak, and the print prep had real faults (below).
+
+## Round 7 (2026-10-08): one hand, and the print prep fixed
+Art (`round5.mjs`):
+- One hand-cut wobble (an SVG displacement, about 0.015 in) on everything drawn in code: camp, shore, water, hawk.
+- The flame is three uneven tongues growing out of the logs (round 6's read as a crown, floating). The meadow
+  tufts are gone (they read as bollards); the rock is cleared about 2 mm round the tent and fire.
+- One light lane, under the fire (the tent gives no light): bare shirt on one ink, mist strokes on three.
+  Strokes shorten toward the edges, rows are unevenly spaced, and both shirts get the same strokes.
+- The hawk sits higher, clear of the ridge; its feather cuts are gouges driven in from the trailing edge (closed
+  cuts read as windows), with a 1.5 mm eye. Cuts are knockouts on both shirts.
+- Tagline 86 px (caps about 5.3 mm), tracked so line 1 is as wide as the wordmark (7 in), 0.27 in below it.
+Print prep (`prep5.py`, `finish5.py`, `final5.mjs`), each from a measured technician finding:
+- The type is left as set (the round 5 fills closed the tagline's A and B counters; now 0.9 mm and open).
+- True-radius discs everywhere: the 0.2 mm opening (round 6 rounded it to 2 px and left 0.34 mm necks) and the
+  traps (0.3 mm under forest, 0.25 mm mist under moss; round 6's was 0.17 mm).
+- Above the type, ink pieces under 2 mm2 or under 0.8 mm at their widest go (they lift off DTF film).
+- The rules run three times, since thinning opens pinholes and filling makes necks.
+- Film pinholes over a darker ink are filled; films tagged 300 dpi.
+- `all-inks.svg` is traced from the untrapped shapes (round 6 traced the trapped films, so the spread light
+  inks painted over 9.7% of the forest).
+- Tracing at 3x (softened) with alphaMax 0.8: 5k px off the PNG instead of 14-17k, and half the sub-0.4 mm tips.
+The back is now 10.26 x 8.22 in. Ink: one-ink 16.4 in2; three-ink 15.6 / 4.0 / 7.9 in2 (films, with traps).

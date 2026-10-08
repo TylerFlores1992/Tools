@@ -9,6 +9,10 @@ import { FONTS } from "./lib.mjs";
 import { design } from "./round5.mjs";
 
 const W = 3450;
+// potrace on the film upsampled 3x and softened, alphaMax 0.8, optTolerance 0.2: measured in round 7 against
+// tracing at 1x (any alphaMax), this follows the PNG 3x closer (5k px off, not 14-17k) and brings back about
+// half the sub-0.4 mm tips (574 px, none over 16 px) instead of sharpening rounded tips into points
+const UP = 3, TRACE = { turdSize: 8 * UP * UP, optTolerance: 0.2, threshold: 128, alphaMax: 0.8 };
 // a minimal .npy writer (int8, C order) for the label array
 const npy = (arr, h, w) => { let hd = `{'descr': '|i1', 'fortran_order': False, 'shape': (${h}, ${w}), }`; hd += " ".repeat(63 - ((10 + hd.length) % 64)) + "\n";
   const pre = Buffer.from([0x93, 0x4e, 0x55, 0x4d, 0x50, 0x59, 1, 0]), len = Buffer.alloc(2); len.writeUInt16LE(hd.length);
@@ -43,13 +47,15 @@ for (const [v, ink, out, inks] of jobs) {
   writeFileSync(`out5/final/${out}-labels.npy`, npy(labels, info.height, info.width));
   execFileSync("python3", ["-W", "ignore", "finish5.py", out, inks.map(([, hx]) => hx).join(","), String(typeTop)], { stdio: "inherit" });
   const size = JSON.parse(readFileSync(`out5/final/${out}-size.json`, "utf8"));
-  const svg = (body) => `<svg xmlns="http://www.w3.org/2000/svg" width="${(size.w / 300).toFixed(3)}in" height="${(size.h / 300).toFixed(3)}in" viewBox="0 0 ${size.w} ${size.h}">${body}</svg>`;
+  const svg = (body) => `<svg xmlns="http://www.w3.org/2000/svg" width="${(size.w / 300).toFixed(3)}in" height="${(size.h / 300).toFixed(3)}in" viewBox="0 0 ${size.w * UP} ${size.h * UP}">${body}</svg>`;
+  // each film is traced from its trapped separation; the all-inks file from the untrapped shapes, which butt
+  const trace = async (file) => { const big = await sharp(file).resize(size.w * UP, size.h * UP, { kernel: "cubic" }).blur(0.6 * UP).png().toBuffer();
+    return new Promise((res, rej) => potrace.trace(big, TRACE, (e, s) => e ? rej(e) : res(s.match(/ d="([^"]+)"/)?.[1] ?? ""))); };
   const all = [];
   for (let k = 0; k < inks.length; k++) {
-    const [name, hx] = inks[k], file = `out5/final/${out}-sep${k + 1}.png`;
-    const d = await new Promise((res, rej) => potrace.trace(file, { turdSize: 8, optTolerance: 0.3, threshold: 128 }, (e, s) => e ? rej(e) : res(s.match(/ d="([^"]+)"/)?.[1] ?? "")));
-    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${d}"/>`));
-    all.push(`<path fill="${hx}" fill-rule="evenodd" d="${d}"/>`);
+    const [name, hx] = inks[k];
+    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-sep${k + 1}.png`)}"/>`));
+    if (inks.length > 1) all.push(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-ink${k + 1}.png`)}"/>`);
   }
   if (inks.length > 1) writeFileSync(`kit/${out}_all-inks.svg`, svg(all.join("")));
 }
