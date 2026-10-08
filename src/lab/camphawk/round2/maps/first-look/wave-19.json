@@ -114,7 +114,7 @@
   },
   "233425": {
    "call": "hold",
-   "note": "The whole C area (C001 to C114) has no road drawn, though its gravel lanes show plainly through the trees; only the highway past it is drawn. The B row (B002 to B008) sits on its lane."
+   "note": "The whole C area (C001 to C114) has no road drawn; only the highway past it is. Zoomed for tracing, its gravel lanes are a dense web between the trees, with many short pull-ins and partly hidden joins, too big to retrace reliably from the gridded photo in this pass; it needs the tracing tool. The B row (B002 to B008) sits on its lane."
   },
   "233432": {
    "call": "usable",
@@ -130,7 +130,7 @@
   },
   "233441": {
    "call": "hold",
-   "note": "No roads are drawn, though every lane of the A, B and C loops shows plainly on the open point, and A029 is placed 8 km south-east on the far shore, which stretches Loop A's area over 8 km. Zoomed, the other sites sit on the visible pads."
+   "note": "No roads are drawn, though every lane of the A, B and C loops shows plainly on the open point, and A029 is placed 8 km south-east on the far shore, which stretches Loop A's area over 8 km. Not traced in this pass: the stray A029 point holds the map whatever is traced, so the lanes are left for after the point is fixed; zoomed, the other sites sit on the visible pads."
   },
   "233449": {
    "call": "good",
