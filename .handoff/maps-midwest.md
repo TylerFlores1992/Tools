@@ -38,3 +38,23 @@ reset the connection (not needed here).
   232540, 251160, 233547 (needs `replace`), 233786.
 - Anything new: the build's first run left two failures that a plain retry fixed. USGS water often
   doesn't answer and the build falls back to OSM's water.
+
+## Wave 20 (us-midwest, multi)
+- Built 86, failed 0. Four failed the first run and built on the retry: 234613 and 232521
+  (`osmium getid` of a relation failed once), 10038827 and 232732 (timeouts).
+- Check: ready 47, review 39, not drawn 0 (after the split calls and traces; 49 ready before)
+- First look: good 28, usable 38, hold 6, unsure 14
+- Traced: 233896 (Sylvan Park: no campground lane was drawn), 233813 (Eggerts Landing: three
+  lanes through the woods), 232732 (Viola: the middle lane past 39 to 53)
+- Split calls: 232002, 232391, 233774, 234080, 233481, 233602, 234677 (gap 100), 251948 (gap 100)
+- Held, and why:
+  - 231999: only the outer loop drawn; inner lanes and the shore row missing, partly visible.
+  - 273358: ten boat-in or walk-in sites scattered round a lake: dispersed-area design.
+  - 233419: only the entry and one lane drawn; the east, north and south lanes are plain.
+  - 233438: the Census lane to the F area runs 40 to 80 m from the visible F lane.
+  - 233533: no campground road drawn and the lanes don't show under the canopy.
+  - 233680: the A sites (A01 to A30) have no road; the shore lane shows only in part.
+- Trace candidates not done (lanes plain on the photo): 233419, 233427, 233438 (needs
+  `replace` for the F lane), 233832, 234647 (the A shore lane), 156340, 10038827, 231842.
+- Many Forest Service campgrounds in Minnesota, Michigan and Wisconsin are under full canopy:
+  14 `unsure`.

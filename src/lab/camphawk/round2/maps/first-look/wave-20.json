@@ -205,8 +205,8 @@
    "note": "OpenStreetMap draws every loop and lane on both sides of the highway, and the sites sit on their pads beside them."
   },
   "232732": {
-   "call": "hold",
-   "note": "The lane down the middle past 40 to 53, the loops past 23 to 31 and the shore lane past 01 to 09 show plainly on the photo, but none is drawn; only the point loop and a straight line east of the sites are."
+   "call": "usable",
+   "note": "The paved lane down the middle past 39 to 53 and the lane past 23 and 24 weren't drawn; they are now traced from the photo, and those sites sit beside them. The lanes past 25 to 31 and 01 to 05 are faint under the trees and still missing, and the straight line drawn east of the sites doesn't show."
   },
   "233286": {
    "call": "good",
@@ -309,8 +309,8 @@
    "note": "The road down the ridge and the north loop follow the visible pavement, and 21, 26 to 29 and 01 to 03 sit by them. Under the trees, 04, 06, 18, 20, 22 to 25 and G-1 sit 20 to 60 m off the drawn road, on spurs that show only as clearings."
   },
   "233813": {
-   "call": "hold",
-   "note": "Only the entry road and the south loop are drawn. The three gravel lanes through the woods past 009 to 031 show plainly on the photo but none is drawn, so most sites sit 20 to 80 m from any line."
+   "call": "usable",
+   "note": "The three gravel lanes through the woods (past 009 to 018, 023 to 028 and 020 to 022) weren't drawn; they are now traced from the photo where they show between the trees, and the sites sit beside them. 033 to 038 along the parking edge and 001 to 008 east of the road sit by the drawn roads."
   },
   "233831": {
    "call": "usable",
@@ -321,8 +321,8 @@
    "note": "The road and the river crossing follow the visible pavement, and 016 to 022 sit by the north loop. The lane past 001 to 005, the lanes past 023 to 033 east of the loop and the lane past 006 to 009 show plainly but aren't drawn."
   },
   "233896": {
-   "call": "hold",
-   "note": "None of the campground's lanes is drawn, only the highway and the county road: every lane (past 01 to 25 and GS2) shows plainly on the open ground."
+   "call": "usable",
+   "note": "None of the campground's lanes was drawn; the west spine and its side lanes (past 17 to 25), the east lane round to the north (past 01 to 09) and the lanes past 06 to 08 are now traced from the photo, and those sites sit beside them. The short lanes past 02, 04, 12 and 13 and the north lanes past 14 and 20 are left out, partly under trees."
   },
   "234647": {
    "call": "usable",
