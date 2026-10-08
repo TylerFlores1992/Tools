@@ -53,7 +53,7 @@ export function traceProblems(trace, mapKey, bbox) {
   // With no bbox (read before the map is framed, to move its sites) nothing is checked for place.
   const [w, s, e, n] = bbox ?? [-180, -90, 180, 90];
   const dx = (e - w) * SLACK, dy = (n - s) * SLACK;
-  const near = ([lon, lat]) => !bbox || (lon >= w - dx && lon <= e + dx && lat >= s - dy && lat <= n + dy);
+  const near = ([lon, lat]) => lon >= w - dx && lon <= e + dx && lat >= s - dy && lat <= n + dy;
   trace.roads.forEach((r, i) => {
     if (!Array.isArray(r?.coords) || r.coords.length < 2) out.push(`road ${i + 1} needs at least two points`);
     else if (!r.coords.every(isPair)) out.push(`road ${i + 1} has a point that isn't [lon, lat]`);
