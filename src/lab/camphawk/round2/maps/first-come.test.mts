@@ -59,14 +59,36 @@ test("the comps' examples are first-come listings with facts from RIDB", () => {
   }
 });
 
-test("a campground's restrooms are the ones by its outline (or its point), not the next campground's", async () => {
+test("a campground's restrooms: inside its area, else nearby; with no area, only nearby", async () => {
   const { campgroundRestrooms } = await import("./first-come.ts");
   const m = { ...map("M-50 -50L50 -50L50 50L-50 50Z"), pois: [
     { name: "", type: "Restroom", at: [0, 0] }, { name: "", type: "Restroom", at: [190, 0] },
     { name: "", type: "Restroom", at: [400, 0] }, { name: "", type: "Water", at: [0, 10] }] } as unknown as SiteMapData;
-  assert.deepEqual(campgroundRestrooms(m).map((p) => p.at[0]), [0, 190]);
-  const bare = { ...map("", [0, 0]), pois: m.pois } as unknown as SiteMapData;
-  assert.deepEqual(campgroundRestrooms(bare).map((p) => p.at[0]), [0, 190]);
+  const r = campgroundRestrooms(m);
+  assert.deepEqual(r.inside.map((p) => p.at[0]), [0]);
+  assert.deepEqual(r.nearby.map((p) => p.at[0]), [190], "a trailhead toilet 140 m out is nearby, not the campground's");
+  const bare = campgroundRestrooms({ ...map("", [0, 0]), pois: m.pois } as unknown as SiteMapData);
+  assert.deepEqual(bare.inside, [], "with no outline, nothing can be said to be inside");
+  assert.deepEqual(bare.nearby.map((p) => p.at[0]), [0, 190]);
+});
+
+test("map names that would run off the frame or overlap another are left off", async () => {
+  const { fittedLabels } = await import("./first-come.ts");
+  const f = { x: 0, y: 0, w: 340, h: 340 }; // 1 map unit = 1 px at the phone width
+  const L = (text: string, x: number, y: number, angle = 0) => ({ text, at: [x, y] as [number, number], angle });
+  const kept = fittedLabels([L("Halfmoon Road", 170, 100), L("Elbert Creek", 175, 104), L("Continental Divide Trail and Colorado Trail", 300, 200), L("Wall Creek", 170, 300, 90)], f);
+  assert.deepEqual(kept.map((l) => l.text), ["Halfmoon Road", "Wall Creek"]);
+  // A reserved box (the outline's label) keeps a name off it.
+  assert.deepEqual(fittedLabels([L("Halfmoon Road", 170, 100)], f, [{ x0: 150, y0: 90, x1: 190, y1: 110 }]), []);
+});
+
+test("the scale bar is a round length that never takes more than 22% of the map", async () => {
+  const { fittedScaleBar } = await import("./first-come.ts");
+  for (const w of [300, 640, 1000, 2400, 5000]) {
+    const b = fittedScaleBar(w);
+    assert.ok(b.metres <= w * 0.22 + 1e-9, `${w}: ${b.metres}`);
+  }
+  assert.equal(fittedScaleBar(640).ft, 300);
 });
 
 test("the outline's label sits on its top edge above its middle, not on a tip at one end", async () => {
