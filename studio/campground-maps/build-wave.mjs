@@ -48,7 +48,7 @@ export function thumb(map) {
   };
 }
 
-export const entryOf = (p, map, qa) => ({ id: p.id, name: map.name, agency: map.agency, state: p.state, recArea: p.recArea, verdict: qa.verdict, reasons: qa.reasons, checks: qa.checks, metrics: qa.metrics, sources: map.sources, layers: { roads: map.roads.length, trails: map.trails.length, water: map.water.length, buildings: map.buildings.length, pois: map.pois.length }, thumb: thumb(map) });
+export const entryOf = (p, map, qa) => ({ id: p.id, name: map.name, agency: map.agency, state: p.state, recArea: p.recArea, verdict: qa.verdict, reasons: qa.reasons, checks: qa.checks, metrics: qa.metrics, ...(qa.areas ? { areas: qa.areas } : {}), sources: map.sources, layers: { roads: map.roads.length, trails: map.trails.length, water: map.water.length, buildings: map.buildings.length, pois: map.pois.length }, thumb: thumb(map) });
 
 /**
  * Build a spec's campgrounds into maps and a manifest. `osm` is "extract" for a wave (no API

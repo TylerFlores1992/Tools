@@ -1,0 +1,209 @@
+{
+ "version": 1,
+ "about": "Recreation.gov listings a reviewer called split or not split, which override the automatic rule (split when the sites spread over 1.5 km: areas.ts ONE_MAP_SPAN_M). split: true shows and checks the listing area by area even when it fits in 1.5 km; split: false keeps it one map. The split calls come from the first look over the aerial photo (waves 1 and 2): the holds whose note calls the listing split, or partly split. Not 232103 (one canyon campground strung along 1.6 km: its problem is an undrawn lane), and not Axtel (233408) or Moutardier (233556): called split, but the area rules give one area (their loops fit in 1 km together), so a call would change nothing.",
+ "listings": [
+  {
+   "id": "232136",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Three clusters spread over 2 km with a kilometer of forest between them, so each is drawn too small."
+  },
+  {
+   "id": "232567",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Nine lettered areas spread over 1.2 km of forest."
+  },
+  {
+   "id": "232607",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: a cluster of 63 sites in the south-west and a string of sites along 2.4 km of shore, so the frame is mostly a neighborhood of houses."
+  },
+  {
+   "id": "233523",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: the main campground, a cluster 1.8 km east along the shore and group sites 1.2 km south-west, so each part is drawn too small."
+  },
+  {
+   "id": "233563",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: the sites spread over five peninsulas across 3 km of lake, so each loop is drawn too small to read."
+  },
+  {
+   "id": "233626",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: six clusters of sites around 2 km of lake shore, so the whole-campground map draws each cluster far too small, and 11 sites have no point."
+  },
+  {
+   "id": "233700",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Four areas spread over 1.4 km of farmland, with 300 sites packed so tightly that the numbers overlap at this size."
+  },
+  {
+   "id": "234130",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Not one campground: dispersed river sites spread over 35 km of the Au Sable, with no roads."
+  },
+  {
+   "id": "251434",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: the A to D loops, a row F001 to F006 with no road, and two sites (H004, H005) 1.5 km down the lake, so the frame is mostly empty forest and the loops are drawn too small to read."
+  },
+  {
+   "id": "231990",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "The check can't draw it (a quarter of the sites share a spot), and the photo agrees: the north point's sites sit in neat rows off the drawn loops, as if placed on a grid rather than on pads."
+  },
+  {
+   "id": "232127",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing over 1.8 km of shore: a west string (067 to 102), a middle cluster (052 to 064) and an east cluster (001 to 050), each drawn too small to read."
+  },
+  {
+   "id": "232244",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: the E, Y and D loops in the north-west and the C loop 1.5 km south-east, so each is drawn too small."
+  },
+  {
+   "id": "232446",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Three clusters strung 1.3 km along the river, so each loop is drawn too small to read; its numbers overlap."
+  },
+  {
+   "id": "232472",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "Loops strung 1.4 km along the foot of the rocks, so each is drawn too small and its numbers overlap."
+  },
+  {
+   "id": "232507",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing over 2 km: the bayside loops (A to C) in the north-west and the oceanside sites (001 to 104) along the dunes, plus group and horse camps."
+  },
+  {
+   "id": "232511",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: four clusters on separate points of the lake over 1.9 km, each drawn too small to read."
+  },
+  {
+   "id": "232546",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: three clusters over 2 km of lake shore (S, 41 to 68, 01 to 40), each drawn too small."
+  },
+  {
+   "id": "232715",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: four clusters over 1.4 km of lake shore, each drawn too small and the east cluster's numbers overlap."
+  },
+  {
+   "id": "233496",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing over 1.1 km: four areas on separate points of the lake, each drawn too small and the north-east cluster's numbers overlap."
+  },
+  {
+   "id": "233539",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: four areas on separate fingers of the lake over 1 km, each drawn too small."
+  },
+  {
+   "id": "233597",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: three areas on separate ridges over 1.8 km."
+  },
+  {
+   "id": "233611",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: six loops spread over 1.2 km of lake shore and the tent row (T-01 to T-14) on its own point, each drawn small with numbers crowding."
+  },
+  {
+   "id": "233613",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: five areas over 1.1 km, each on its own lane off the main road."
+  },
+  {
+   "id": "233627",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: three areas over 1.4 km on both sides of the reservoir arm."
+  },
+  {
+   "id": "233695",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: four areas around a 1.1 km lake (the west loops, the south shore, the north-east point and 113 to 150), each drawn small with the west loops' numbers overlapping."
+  },
+  {
+   "id": "234557",
+   "split": true,
+   "by": "First look (Claude), checked against the aerial photo",
+   "on": "2026-10-08",
+   "note": "A split listing: four clusters around a 1.8 km lake, each drawn too small to read."
+  },
+  {
+   "id": "231932",
+   "split": false,
+   "by": "Owner (approved as one map, wave 1)",
+   "on": "2026-10-08",
+   "note": "Strawberry Bay spans over 1.5 km, so the rule would split it; the owner approved it as one map."
+  },
+  {
+   "id": "247661",
+   "split": false,
+   "by": "Owner (approved as one map, wave 1)",
+   "on": "2026-10-08",
+   "note": "Gros Ventre spans over 1.5 km, so the rule would split it; the owner approved it as one map."
+  },
+  {
+   "id": "232553",
+   "split": false,
+   "by": "Claude (first look)",
+   "on": "2026-10-08",
+   "note": "Clear Springs spans 2,300 km only because RIDB puts one site in California; the fix is dropping that point, not an area for it."
+  }
+ ]
+}

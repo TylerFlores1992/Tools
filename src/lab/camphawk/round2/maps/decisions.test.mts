@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { SAMPLE } from "./sample.ts";
 import first01 from "./first-look/wave-01.json" with { type: "json" };
+import first02 from "./first-look/wave-02.json" with { type: "json" };
 
 const sampleIds = new Set(SAMPLE.entries.map((e) => e.id));
 type ManifestEntry = { id: string; verdict: string; reasons: { code: string }[] };
@@ -39,6 +40,18 @@ test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usabl
   assert.deepEqual([...w1.keys()].sort(), needs.map((e) => e.id).sort());
   for (const e of needs) assert.equal(w1.get(e.id), ["good", "usable"].includes(looks[e.id].call) ? "approved" : "hidden", e.id);
   assert.equal([...w1.values()].filter((d) => d === "approved").length, 31);
+});
+
+test("wave 2 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
+  const looks = first02.looks as Record<string, { call: string }>;
+  const w2 = new Map(ofWave(2).map((d) => [d.id, d.decision]));
+  const needs = manifest(2).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
+  assert.equal(needs.length, 62);
+  assert.deepEqual([...w2.keys()].sort(), needs.map((e) => e.id).sort());
+  for (const e of needs) assert.equal(w2.get(e.id), ["good", "usable"].includes(looks[e.id].call) ? "approved" : "hidden", e.id);
+  assert.equal([...w2.values()].filter((d) => d === "approved").length, 23);
+  // The two maps traced from the photo (Cochiti's west loop, Tule's north lanes) are approved.
+  for (const id of ["233461", "233655"]) assert.equal(w2.get(id), "approved", id);
 });
 
 test("RECORDED holds every wave's decisions, each map once", () => {
@@ -83,6 +96,7 @@ test("the first offer for a held map follows what held it: spread or stacked →
   assert.equal(suggestedDecision([{ code: "far-from-roads" }, { code: "traced" }], "hold"), "roads");
   assert.equal(suggestedDecision([{ code: "unplaced" }, { code: "spread" }], "hold"), "hidden");
   assert.equal(suggestedDecision([{ code: "stacked" }], "hold"), "hidden");
+  assert.equal(suggestedDecision([{ code: "dispersed" }, { code: "no-roads" }], "hold"), "hidden");
   assert.equal(suggestedDecision([{ code: "outlier" }, { code: "far-from-roads" }], "hold"), "hidden");
   for (const look of ["good", "usable", "unsure", undefined]) assert.equal(suggestedDecision([{ code: "spread" }], look), "approved");
 });

@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { cx } from "@/components/cx";
 import { SiteMap } from "./SiteMap";
 import { scaleBar, type SiteMapData } from "./maps";
 import { segmentsOfPath } from "./maps/trace";
-import { areaMap, outline, splitAreas, unplacedSites, type Area } from "./maps/areas";
+import { areaMap, outline, unplacedSites, type Area, type Split } from "./maps/areas";
 
 // Two kinds of Recreation.gov listing that one site map can't show (wave 1, 2026-10-08):
 // - a SPLIT listing, several areas kilometres apart (Seven Points, Diamond Lake): an overview of the
@@ -37,14 +37,19 @@ const fmtMi = (m: number) => { const mi = m / 1609.34; return mi < 0.1 ? `${Math
     sits just outside its outline, on the side away from the listing's middle, so it never covers a
     site; a tap target is 44px around a 28px badge. */
 function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; areas: Area[]; current: number | null; onPick?: (i: number) => void; linkTo?: (i: number) => string }) {
-  // Never thinner than 1:2, so a listing strung along a shore still has room for its numbers.
-  const g = map.frame, f = { ...g };
-  if (f.w < f.h / 2) { f.x -= (f.h / 2 - f.w) / 2; f.w = f.h / 2; }
-  if (f.h < f.w / 2) { f.y -= (f.w / 2 - f.h) / 2; f.h = f.w / 2; }
-  const s = Math.max(f.w, f.h) / 600; // stroke scale: about 1px at 600px across
+  const g = map.frame;
+  const s = Math.max(g.w, g.h) / 600; // stroke scale: about 1px at 600px across
   const pad = 14 * s;
   const mid: [number, number] = [g.x + g.w / 2, g.y + g.h / 2];
   const rings = areas.map((a) => outline(map, a, pad));
+  // The map's own frame has only a narrow margin, so an area at its edge would lose its outline and
+  // number (Medicine Lake, Hardin Ridge: first look, 2026-10-08). Room for every outline and a badge.
+  const room = 40 * s, xs = rings.flat().map((q) => q[0]), ys = rings.flat().map((q) => q[1]);
+  const x0 = Math.min(g.x, Math.min(...xs) - room), y0 = Math.min(g.y, Math.min(...ys) - room);
+  const f = { x: x0, y: y0, w: Math.max(g.x + g.w, Math.max(...xs) + room) - x0, h: Math.max(g.y + g.h, Math.max(...ys) + room) - y0 };
+  // Never thinner than 1:2, so a listing strung along a shore still has room for its numbers.
+  if (f.w < f.h / 2) { f.x -= (f.h / 2 - f.w) / 2; f.w = f.h / 2; }
+  if (f.h < f.w / 2) { f.y -= (f.w / 2 - f.h) / 2; f.h = f.w / 2; }
   // The badge: from the area's middle, out past its outline away from the listing's middle.
   const badgeAt = (a: Area, ring: [number, number][]): [number, number] => {
     let dx = a.center[0] - mid[0], dy = a.center[1] - mid[1];
@@ -89,9 +94,18 @@ function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; a
 
 /** A listing's site map, split into areas when it's several places (else the ordinary map). */
 export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
-  const split = useMemo(() => splitAreas(p.map.sites), [p.map]);
+  // The split the build recorded (and checked). Never worked out here: a listing a person kept as
+  // one map (Strawberry Bay, approved as one) must not be split by the page.
+  const split: Split = p.map.split ?? { kind: "one" };
   const [current, setCurrent] = useState(0);
   const [findNext, setFindNext] = useState<{ q: string; n: number } | null>(null);
+  // A site picked outside the map (the day panel's Map button) switches to its area.
+  const [seen, setSeen] = useState(p.selectedId);
+  if (p.selectedId !== seen) {
+    setSeen(p.selectedId);
+    const i = split.kind === "areas" && p.selectedId ? split.areas.findIndex((a) => a.sites.includes(p.selectedId!)) : -1;
+    if (i >= 0 && i !== current) setCurrent(i);
+  }
   if (split.kind === "one") return <SiteMap {...p} />;
   if (split.kind === "dispersed") {
     return <SiteMap {...p} note={`${p.map.sites.length} sites spread along ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h))}, not one campground. Find a site to see where it is.`} />;
@@ -106,7 +120,7 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
   const findElsewhere = (q: string) => {
     const i = areas.findIndex((a) => a.sites.some((s) => s.toLowerCase() === q.toLowerCase() || s.replace(/^0+/, "") === q.replace(/^0+/, "")));
     if (i < 0) return false;
-    if (layout === "pick") { setCurrent(i); setFindNext({ q, n: Date.now() }); }
+    if (layout === "pick") { setCurrent(i); setFindNext((f) => ({ q, n: (f?.n ?? 0) + 1 })); }
     else document.getElementById(`area-${i}`)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     return true;
   };
@@ -168,6 +182,16 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
       ))}
     </>
   );
+}
+
+/**
+ * What a camper sees for a listing, in the look the owner picked (2026-10-08): one unit → where it
+ * is (map and facts side by side, with terrain); several places → the overview, then one area at a
+ * time; anything else → the site map.
+ */
+export function CamperMap(p: Props) {
+  if (p.map.sites.length === 1) return <UnitMap map={p.map} name={p.name} provider={p.provider} layout="card" />;
+  return <AreaMaps layout="pick" {...p} />;
 }
 
 // ---- Single units ----

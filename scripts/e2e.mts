@@ -8,7 +8,7 @@ import { chromium } from "playwright-core";
 import { spawn, type ChildProcess } from "node:child_process";
 import { LOOKS } from "../src/lab/camphawk/looks.ts";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { traceProblems } from "../studio/campground-maps/trace.mjs";
 import { decisionProblems } from "../src/lab/camphawk/round2/maps/decisions.ts";
@@ -472,6 +472,30 @@ try {
     await ctx.close();
   });
 
+  await check("lab site-map review: a split listing shows campers its areas and each area's checks; one kept as one map stays one", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1280, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=1&id=233626`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    // Seven Points: recorded as areas by the build, shown one area at a time, and checked per area.
+    await p.getByRole("heading", { level: 2, name: /^Area 1: / }).waitFor();
+    const areas = await p.getByRole("group", { name: "Areas" }).getByRole("button").count();
+    assert.ok(areas >= 2, `${areas} areas`);
+    const checks = p.getByRole("region", { name: new RegExp(`^Each area’s checks \\(${areas} areas\\)$`) });
+    assert.equal(await checks.getByRole("listitem").count(), areas);
+    // Strawberry Bay spreads over 1.5 km, but the owner approved it as one map: no areas.
+    const one = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=1&id=231932`;
+    await p.goto(one);
+    await p.getByRole("heading", { level: 2, name: "Site map" }).waitFor();
+    assert.equal(await p.getByRole("group", { name: "Areas" }).count(), 0);
+    assert.equal(await p.getByRole("region", { name: /^Each area’s checks/ }).count(), 0);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab site-map waves: the newest wave by default, filters in the URL, Show more, and decisions downloaded as a file the tests accept", async () => {
     // The newest wave is the default; read which it is rather than assume one.
     const newest = Math.max(...JSON.parse(readFileSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/waves.json"), "utf8")).waves.map((w: { wave: number }) => w.wave));
@@ -489,7 +513,7 @@ try {
     await p.waitForURL(url);
     // No ?wave= opens the newest; its manifest is fetched, so wait for it.
     await p.getByRole("heading", { level: 2, name: `The ${built.length} maps` }).waitFor();
-    assert.equal(await p.getByLabel("Wave").inputValue(), String(newest));
+    assert.equal(await p.getByRole("combobox", { name: "Wave" }).inputValue(), String(newest));
     // 48 cards, then Show more reveals the rest.
     const cards = p.locator("main ul li h3 a");
     assert.equal(await cards.count(), Math.min(48, built.length));
@@ -510,12 +534,18 @@ try {
     assert.equal(await p.getByLabel("Agency").inputValue(), agency);
     await p.getByRole("button", { name: "Clear the filter" }).click();
     await p.getByText(`All ${built.length} maps.`).waitFor();
-    // Decide one map, then download the wave's decisions: the file is what decisions.test.mts accepts.
+    // A card opens its map.
     const first = (await cards.first().innerText()).trim();
     await cards.first().click();
     await p.getByRole("heading", { level: 1, name: first }).waitFor();
     assert.match(p.url(), new RegExp(`wave=${newest}&id=`));
-    const id = new URL(p.url()).searchParams.get("id");
+    // Decide a map with no recorded decision, then download the wave's decisions: the file keeps
+    // every recorded one, adds this, and is what decisions.test.mts accepts.
+    const recordedFile = join(import.meta.dirname, `../src/lab/camphawk/round2/maps/decisions/wave-${nn}.json`);
+    const recorded: { id: string; decision: string }[] = existsSync(recordedFile) ? JSON.parse(readFileSync(recordedFile, "utf8")).decisions : [];
+    const id = built.map((e: { id: string }) => e.id).find((x: string) => !recorded.some((d) => d.id === x))!;
+    assert.ok(id, `every map in wave ${newest} is decided`);
+    await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=${newest}&id=${id}`);
     const box = p.getByRole("complementary", { name: "Review" }).getByRole("region", { name: "Your decision" });
     await box.getByRole("button", { name: "Keep it hidden" }).click();
     await box.getByText("You kept it hidden").waitFor();
@@ -526,7 +556,10 @@ try {
     const file = JSON.parse(readFileSync((await dl.path())!, "utf8"));
     assert.ok(built.some((e: { id: string }) => e.id === id), `${id} is in wave ${newest}`);
     assert.equal(file.wave, newest);
-    assert.deepEqual(file.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]), [[id, "hidden"]]);
+    const got = new Map(file.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]));
+    assert.equal(got.get(id), "hidden");
+    assert.equal(got.size, recorded.length + 1);
+    for (const d of recorded) assert.equal(got.get(d.id), d.decision, d.id);
     assert.deepEqual(decisionProblems(file, new Set(manifest.entries.map((e: { id: string }) => e.id))), []);
     assert.deepEqual(errors, []);
     await ctx.close();

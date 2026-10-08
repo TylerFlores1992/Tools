@@ -19,12 +19,13 @@
 //     else OpenStreetMap's;
 //   lakes and rivers: USGS hydrography, else OpenStreetMap's.
 // Then what a person traced from the aerial photo, where no source has it (trace.mjs), on top.
-import { writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { csvObjects } from "./ridb.mjs";
 import { NHD, arcgis, kept, lines, makeGeo, rings } from "./geo.mjs";
 import { fetchOsm, fetchWaterRelation, osmLayers, osmSource } from "./osm.mjs";
-import { checkMap } from "./qa.mjs";
+import { checkAreas, checkDispersed, checkMap, checkUnit } from "./qa.mjs";
+import { splitAreas } from "../../src/lab/camphawk/round2/maps/areas.ts";
 import { pickRoadSource, roadFit } from "./roads.mjs";
 import { readTrace } from "./trace.mjs";
 import { poiKind } from "./pois.mjs";
@@ -62,6 +63,27 @@ export function loadRidb(ridbDir, ids) {
     ground around it (m), so the road in, the water and the trailheads near it show. A campground's
     sites are framed tightly (geo.mjs's 55 m). Playbook §5.1. */
 export const SINGLE_UNIT_PAD_M = 700;
+/**
+ * Listings a reviewer called split or not split (splits.json), overriding the automatic rule
+ * (areas.ts ONE_MAP_SPAN_M, 1.5 km): split → areas even when the sites fit; not split → one map
+ * (one the owner approved as a single map stays one). A call, not a measurement; each entry says
+ * who made it and why.
+ */
+export function splitCalls(file = join(import.meta.dirname, "splits.json")) {
+  if (!existsSync(file)) return new Map();
+  return new Map(JSON.parse(readFileSync(file, "utf8")).listings.map((l) => [l.id, l]));
+}
+const SPLIT_CALLS = splitCalls();
+
+/**
+ * How a camper sees a listing: one unit (a location map), one campground map, areas, or dispersed.
+ * A reviewer's call overrides the 1.5 km rule either way.
+ */
+export function viewOf(sites, call) {
+  if (sites.length === 1) return { kind: "unit" };
+  return splitAreas(sites, call ? { oneMap: call.split ? 0 : Infinity } : {});
+}
+
 export const padFor = (placedSites) => (placedSites === 1 ? SINGLE_UNIT_PAD_M : undefined);
 
 /** Bookable overnight sites: staff (management) and day-use sites are never drawn. */
@@ -204,14 +226,31 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
 
   // --- Automatic check ---
   const toM = (ring) => ring.map(xy);
-  const qa = checkMap({
+  const checkInput = {
     sites: outSites.map((s) => ({ name: s.name, at: s.at })),
     roadSegments: segmentsOf(roads.map((r) => r.f), xy),
     roadSource: (roadSource === "none" || replaced) && traced.length ? "traced" : roadSource,
     traced: { roads: traced.length, points: tracedPoints.length },
     outlineRings: (osm?.outlines ?? []).flatMap((o) => o.rings.map(toM)),
     pitches: (osm?.pitches ?? []).map((p) => ({ ref: p.ref, at: xy(p.at) })),
-  });
+  };
+  // One unit is a place (a location map and its own check); a listing of several places is shown,
+  // and checked, area by area (areas.ts, qa.mjs). Anything else is one campground map.
+  let qa = checkMap(checkInput), split = null;
+  const call = meta.split ?? SPLIT_CALLS.get(facilityId);
+  const view = viewOf(outSites, call);
+  if (view.kind === "unit") {
+    const flat = Number(fac?.FacilityLatitude), flon = Number(fac?.FacilityLongitude);
+    qa = checkUnit({ site: checkInput.sites[0], facilityAt: flat && flon ? xy([flon, flat]) : null, roadSegments: checkInput.roadSegments, trailSegments: segmentsOf(trails.map((t) => t.f), xy), roadSource: checkInput.roadSource, traced: checkInput.traced });
+  } else if (qa.verdict === "not-drawn") {
+    // Can't be drawn at all (sites stacked on one spot): no areas to show either.
+  } else if (view.kind === "areas") {
+    split = { ...view, ...(call ? { by: call.by, on: call.on } : {}) };
+    qa = checkAreas(qa, view.areas, checkInput);
+  } else if (view.kind === "dispersed") {
+    split = view;
+    qa = checkDispersed(qa, view.groups);
+  }
 
   // The credit line names each layer's source, so a reader can tell what came from where.
   const SRC = { nps: "National Park Service", osm: "OpenStreetMap", usfs: "Forest Service", tiger: "US Census Bureau (TIGER)", usgs: "USGS", traced: "CampHawk, traced from USDA aerial photos" };
@@ -261,6 +300,8 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     buildings: kept(buildings.map((b) => ({ name: b.name, type: b.type, d: pathOf(b.parts, true) }))),
     pois: pois.map((p) => ({ name: p.name, type: p.type, at: p.at, ...(p.src === "traced" ? { traced: true } : {}) })),
     sites: outSites,
+    /** How a camper sees it: several areas (areas.ts), or dispersed; absent for one campground or one unit. */
+    ...(split ? { split } : {}),
     /** The trace built in (studio/campground-maps/traces/), so the lab's tracing tool edits it whole. */
     ...(trace ? { trace } : {}),
     /** What the checks compared against, kept so a reviewer sees it on the aerial photo. */

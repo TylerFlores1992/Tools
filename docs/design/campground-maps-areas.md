@@ -86,14 +86,21 @@ the area split: `src/lab/camphawk/round2/maps/areas.ts` (tested in `areas.test.m
 - State is never colour alone: the selected area is a solid outline, a filled number and
   `aria-pressed`; other areas are dashed.
 
-## Not settled (after the owner picks)
+## Picked and built (2026-10-08)
+**The owner picked split A and single A.** Both are built into the waves: the build records each
+listing's areas (`split`), the check runs on every area, units get their own check, and the review
+page and the lab campground page show campers' view (`CamperMap`). The page never works a split out
+for itself; it shows the one the build recorded, so a listing kept as one map stays one. Results
+and the first look over the areas: `docs/design/campground-maps.md`, "Areas built in".
+
+## Not settled
 - **Dispersed listings** (Au Sable): the build skips roads and water over 5 km, so the comp shows dots
   with no river. A river-and-access-points overview needs its own build path.
-- **Building it into the rollout:** `build-wave.mjs` should record the areas (and the single-unit
-  frame) so the review page shows campers' view, and the checks should judge each area, not the
-  whole listing.
-- **Single units' check:** today every one reads "every site is on one spot" (not drawn). They need
-  their own check: a point, and a road or trail within reach.
+- ~~**Building it into the rollout.**~~ **Done 2026-10-08.**
+- ~~**Single units' check.**~~ **Done 2026-10-08** (`qa.mjs` `checkUnit`); no unit wave built yet.
+- **Coarse areas:** areas are cut at 1 km, so clusters closer than that share one (Lithia Springs,
+  Sweetwater, South Sandusky, Dam Site, Lost Lake). A tighter cut for listings a person called
+  split is the likely fix; not built.
 
 ## Critique (two rounds, a separate critic agent) and the recommendation
 | Direction | Round 1 | Round 2 |

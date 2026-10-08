@@ -15,7 +15,7 @@ import { canWatch, ROUTES, watchCtaLabel } from "./gates";
 import { campgroundFor } from "./campground-lookup";
 import type { SiteMapData } from "./maps";
 import { useSiteMap } from "./maps/useSiteMap";
-import { SiteMap } from "./SiteMap";
+import { CamperMap } from "./AreaMaps";
 import { useUrlParam, useUrlState, useVisitor, withVisitor } from "./labState";
 import {
   FIRST_COME_BADGE, FIRST_COME_WHY, FIRST_MONTH, LAST_MONTH, TODAY, siteLine, type Month, type Site,
@@ -92,7 +92,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
   const picked = selected && selected.startsWith(month) ? selected : null;
   const pickedSites = picked ? (data.open[picked] ?? []).map((id) => sites[id]) : [];
   const shift = (by: number) => { setMonth(shiftMonth(month, by)); setSelected(null); setSite(null); };
-  const showOnMap = (siteId: string) => { setSite(siteId); document.getElementById("site-map-h")?.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const showOnMap = (siteId: string) => { setSite(siteId); (document.getElementById("site-map-h") ?? document.getElementById("area-map-h"))?.scrollIntoView({ behavior: "smooth", block: "start" }); };
   const summary = data.error ? "Availability unavailable"
     : data.unknown ? "Couldn’t check this month"
     : data.closed ? "Not open for booking this month"
@@ -232,7 +232,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
       </aside>
     </div>
     {map ? (
-      <SiteMap map={map} name={name} provider={provider} picked={picked} openIds={picked ? data.open[picked] ?? [] : []} selectedId={site} onSelect={setSite}
+      <CamperMap map={map} name={name} provider={provider} picked={picked} openIds={picked ? data.open[picked] ?? [] : []} selectedId={site} onSelect={setSite}
         note={unread ? "We couldn’t check which sites are open this month, so none are marked." : undefined} />
     ) : mapLoading ? (
       <div role="status" className="mt-4 h-[320px] animate-pulse rounded-ch-card border border-ch-line bg-ch-card motion-reduce:animate-none sm:mt-5"><span className="sr-only">Loading the site map…</span></div>
@@ -402,7 +402,7 @@ export function Campground() {
                 <p className="mt-2 max-w-[62ch] text-[16px] leading-relaxed text-ch-ink-2">{FIRST_COME_WHY}</p>
               </div>
               {/* First come still has sites worth finding: the map shows where, never which are free. */}
-              {siteMap ? <SiteMap map={siteMap} name={name} provider={provider} picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="Sites aren’t reserved here, so the map shows where they are, not which are free." />
+              {siteMap ? <CamperMap map={siteMap} name={name} provider={provider} picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="Sites aren’t reserved here, so the map shows where they are, not which are free." />
                 : <NoMap name={name} provider={provider} pending={mapPending} />}
             </>
           )}

@@ -4,13 +4,14 @@
 // session commits them here. Checked by decisions.test.mts.
 import wave00 from "./decisions/wave-00.json" with { type: "json" };
 import wave01 from "./decisions/wave-01.json" with { type: "json" };
+import wave02 from "./decisions/wave-02.json" with { type: "json" };
 
 export type Decision = "approved" | "roads" | "hidden";
 export const DECISIONS: Decision[] = ["approved", "roads", "hidden"];
 export type DecisionRecord = { id: string; decision: Decision; by: string; on: string; note: string };
 export type DecisionFile = { version: 1; wave: number; source: string; decisions: DecisionRecord[] };
 
-export const DECISION_FILES = [wave00 as DecisionFile, wave01 as DecisionFile];
+export const DECISION_FILES = [wave00 as DecisionFile, wave01 as DecisionFile, wave02 as DecisionFile];
 
 /** Every recorded decision by map id (a later wave's file wins). */
 export const RECORDED: Record<string, DecisionRecord> = Object.fromEntries(
@@ -51,7 +52,7 @@ export function decisionsFileFor(wave: number, ids: string[], shown: Record<stri
 
 /** Codes that mean the listing isn't one campground's map (spread over kilometers, sites stacked on
     one spot, or far from all the others): a person keeps it hidden until it can be split. */
-const NOT_ONE_MAP = new Set(["spread", "stacked", "outlier"]);
+const NOT_ONE_MAP = new Set(["spread", "stacked", "outlier", "dispersed"]);
 
 /**
  * The decision the review page offers first for a map the first look held. A hold whose checks

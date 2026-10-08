@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, Check, CircleCheck, Download, Eye, EyeOff, PenLi
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { StatusMark } from "../../ui/StatusMark";
-import { SiteMap } from "../SiteMap";
+import { CamperMap } from "../AreaMaps";
 import type { SiteMapData } from "../maps";
 import { tidyCase } from "../maps/name";
 import { AGENCY_SHORT, REASON_LABEL, VERDICT, reasonCounts, wilson, type Check as QaCheck, type Verdict } from "../maps/sample";
@@ -578,12 +578,25 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
           <Panel id="checks-h" title="The automatic checks" className="mt-4" pad={false}>
             <Checks checks={entry.checks} />
           </Panel>
+          {entry.areas && (
+            <Panel id="area-checks-h" title={`Each area’s checks (${entry.areas.length} areas)`} className="mt-4">
+              <p className="text-[14px] text-ch-ink-2">The same checks on each area’s own map. A split is drawn by a rule, so a person checks it even when every area passes.</p>
+              <ol className="mt-3 grid gap-2.5">
+                {entry.areas.map((a, i) => (
+                  <li key={i} className="grid gap-0.5">
+                    <span className="flex flex-wrap items-center gap-x-3 gap-y-1"><span className="text-[15px] font-bold text-ch-ink">{i + 1}. {a.name}</span><StatusMark level={VERDICT[a.verdict].level} label={a.verdict === "ready" ? "Passes" : VERDICT[a.verdict].word} className="text-[13px]" /></span>
+                    {a.reasons.length > 0 && <span className="text-[14px] text-ch-ink-2">{a.reasons.map((r) => r.text).join("; ")}</span>}
+                  </li>
+                ))}
+              </ol>
+            </Panel>
+          )}
 
           <div className="mt-6">
             <h2 className="font-ch-display text-[20px] font-bold text-ch-ink">What campers would see</h2>
-            <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : "The campground page’s site map, drawn from this data."}</p>
+            <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : shown?.sites.length === 1 ? "One unit: the campground page shows where it is." : shown?.split?.kind === "areas" ? `The campground page shows this listing as ${shown.split.areas.length} areas, one at a time.` : "The campground page’s site map, drawn from this data."}</p>
             {state === "ready" && shown ? (
-              <SiteMap map={shown} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
+              <CamperMap map={shown} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
             ) : <div className="mt-3"><Pending state={state} /></div>}
           </div>
 

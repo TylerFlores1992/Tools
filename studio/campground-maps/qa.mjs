@@ -153,3 +153,116 @@ function checkList(m, roadSource) {
     { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
   ];
 }
+
+// --- Split listings: the same check on each area (2026-10-08) ---
+//
+// A listing split into areas (src/lab/camphawk/round2/maps/areas.ts) is shown to a camper one
+// area at a time, so each area is checked as its own map: its sites, the listing's roads, and
+// only the OpenStreetMap outlines that reach the area (a separate area has its own outline or
+// none, and another area's outline says nothing about it). The listing's own "spread" no longer
+// applies; whether the listing's sites have points, share spots, or were traced still does.
+//
+// A split is drawn by a rule, not by the provider, so a person checks every split listing before
+// it goes live ("areas"), however well each area fits. Dispersed listings (many small groups)
+// aren't drawn as areas yet: they stay held ("dispersed").
+
+/** Reasons that are about the whole listing, not one area. */
+const LISTING_CODES = new Set(["unplaced", "stacked", "traced"]);
+
+/**
+ * @param {ReturnType<typeof checkMap>} whole  checkMap on the whole listing
+ * @param {{ name: string, sites: string[], frame: {x:number,y:number,w:number,h:number} }[]} areas
+ * @param {Parameters<typeof checkMap>[0]} input  what the whole listing was checked with
+ * @returns {Omit<ReturnType<typeof checkMap>, "metrics"> & { metrics: ReturnType<typeof checkMap>["metrics"] & { areas?: number }, areas?: { name: string, verdict: string, reasons: { code: string, text: string }[] }[] }}
+ */
+export function checkAreas(whole, areas, input) {
+  if (whole.verdict === "not-drawn") return whole;
+  const perArea = areas.map((a) => {
+    const keep = new Set(a.sites);
+    const f = a.frame;
+    const touches = (ring) => ring.some(([x, y]) => x >= f.x && x <= f.x + f.w && y >= f.y && y <= f.y + f.h);
+    const qa = checkMap({
+      ...input,
+      sites: input.sites.filter((s) => s.at && keep.has(s.name)),
+      outlineRings: (input.outlineRings ?? []).filter(touches),
+      traced: { roads: 0, points: 0 },
+    });
+    return { name: a.name, verdict: qa.verdict, reasons: qa.reasons.filter((r) => !LISTING_CODES.has(r.code)) };
+  });
+  const reasons = [
+    { code: "areas", text: `Shown as ${areas.length} areas: a person checks the split` },
+    ...whole.reasons.filter((r) => LISTING_CODES.has(r.code)),
+    ...perArea.flatMap((a) => a.reasons.map((r) => ({ code: r.code, text: `${a.name}: ${r.text}` }))),
+  ];
+  const widest = Math.max(...areas.map((a) => Math.max(a.frame.w, a.frame.h)));
+  const checks = whole.checks.map((c) => c.code !== "spread" ? c : {
+    code: "spread", label: "How far the sites spread", value: `${(whole.metrics.spanM / 1000).toFixed(1)} km, shown as ${areas.length} areas (widest ${Math.round(widest)} m)`,
+    limit: `Up to ${RULES.spanReviewM / 1000} km, or areas`, result: "review",
+  });
+  return { verdict: "review", reasons, metrics: { ...whole.metrics, areas: areas.length }, checks, areas: perArea };
+}
+
+/**
+ * A listing too scattered to draw as areas: held, and said so.
+ * @param {ReturnType<typeof checkMap>} whole
+ * @param {number} groups
+ */
+export function checkDispersed(whole, groups) {
+  if (whole.verdict === "not-drawn") return whole;
+  return { ...whole, verdict: "review", reasons: [{ code: "dispersed", text: `${groups} groups of sites: dispersed camping, not drawn as areas yet` }, ...whole.reasons.filter((r) => r.code !== "spread")], metrics: { ...whole.metrics, dispersed: groups } };
+}
+
+// --- Single units: a place, not a site to pick (2026-10-08) ---
+//
+// A listing with one bookable unit (a cabin, lookout, guard station or group site) gets a location
+// map (1.4 km across, build.mjs SINGLE_UNIT_PAD_M) with the unit's pin, the nearest road and trail,
+// and its coordinates. There is nothing to tell apart, so the multi-site checks (stacking, spread,
+// distance from roads for every site) don't apply. What can be wrong is the point itself, and
+// whether the map shows any way to it. Fixed on 2026-10-08, before any single unit was built for a
+// wave (the five built for the design comps were not checked against these numbers):
+export const UNIT_RULES = {
+  /** RIDB gives the listing its own point too. A unit farther than this from it needs a look
+      (the same distance as a campground's outlier). */
+  facilityAgreeM: 300,
+  /** Half the location map's width: a road or trail within this is on the map. */
+  accessM: 700,
+};
+
+/**
+ * @param {object} input
+ * @param {{ name: string, at: [number, number] | null }} input.site
+ * @param {[number, number] | null} input.facilityAt  the listing's own RIDB point, in the map's metres
+ * @param {[[number, number], [number, number]][]} input.roadSegments
+ * @param {[[number, number], [number, number]][]} input.trailSegments
+ * @param {string} input.roadSource
+ * @param {{ roads: number, points: number }} [input.traced]
+ */
+export function checkUnit({ site, facilityAt, roadSegments, trailSegments, roadSource, traced = { roads: 0, points: 0 } }) {
+  const at = site.at;
+  const r0 = (v) => (v === null || !Number.isFinite(v) ? null : Math.round(v));
+  const facilityM = at && facilityAt ? r0(Math.hypot(at[0] - facilityAt[0], at[1] - facilityAt[1])) : null;
+  const roadM = at && roadSegments.length ? r0(toSegments(at, roadSegments)) : null;
+  const trailM = at && trailSegments.length ? r0(toSegments(at, trailSegments)) : null;
+  const m = { kind: "unit", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], facilityM, roadM, trailM, roads: { source: roadSource }, traced: { roads: traced.roads, points: traced.points } };
+  if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The unit has no point" }], metrics: m, checks: unitChecks(m) };
+  const reach = (d) => d !== null && d <= UNIT_RULES.accessM;
+  const review = [];
+  if (facilityM !== null && facilityM > UNIT_RULES.facilityAgreeM) review.push({ code: "facility-point", text: `The listing’s own point is ${facilityM >= 1000 ? `${(facilityM / 1000).toFixed(1)} km` : `${facilityM} m`} from the unit’s` });
+  if (!reach(roadM) && !reach(trailM)) review.push({ code: "no-access", text: `No road or trail on the map within ${UNIT_RULES.accessM} m` });
+  const tracedText = tracedWords(m.traced);
+  if (tracedText) review.push({ code: "traced", text: `${tracedText} traced from the aerial photo` });
+  return { verdict: review.length ? "review" : "ready", reasons: review, metrics: m, checks: unitChecks(m) };
+}
+
+function unitChecks(m) {
+  const dist = (d) => (d === null ? "None on the map" : d >= 1000 ? `${(d / 1000).toFixed(1)} km` : `${d} m`);
+  const reach = (d) => d !== null && d <= UNIT_RULES.accessM;
+  return [
+    { code: "unplaced", label: "The unit has a point", value: m.placed ? "Yes" : "No", limit: "Yes", result: m.placed ? "pass" : "fail" },
+    m.facilityM === null
+      ? { code: "facility-point", label: "Agrees with the listing’s own point", value: "No listing point", limit: `Within ${UNIT_RULES.facilityAgreeM} m`, result: "none" }
+      : { code: "facility-point", label: "Agrees with the listing’s own point", value: dist(m.facilityM), limit: `Within ${UNIT_RULES.facilityAgreeM} m`, result: m.facilityM > UNIT_RULES.facilityAgreeM ? "review" : "pass" },
+    { code: "no-access", label: "A road or trail on the map", value: `Road: ${dist(m.roadM)}; trail: ${dist(m.trailM)}`, limit: `One within ${UNIT_RULES.accessM} m`, result: !m.placed ? "none" : reach(m.roadM) || reach(m.trailM) ? "pass" : "review" },
+    { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
+  ];
+}
