@@ -11,6 +11,8 @@ test("a first-come listing is one site named Standard, nothing else", () => {
   assert.equal(isFirstCome(map("")), true);
   assert.equal(isFirstCome(map("", [0, 0], " standard ")), true);
   assert.equal(isFirstCome(map("", [0, 0], "001")), false);
+  assert.equal(isFirstCome(map("", [0, 0], "Standard 2")), false);
+  assert.equal(isFirstCome(map("", [0, 0], "Nonstandard")), false);
   assert.equal(isFirstCome({ ...map(""), sites: [map("").sites[0], map("").sites[0]] } as SiteMapData), false);
 });
 
@@ -84,7 +86,7 @@ test("map names that would run off the frame or overlap another are left off", a
 
 test("the scale bar is a round length that never takes more than 22% of the map", async () => {
   const { fittedScaleBar } = await import("./first-come.ts");
-  for (const w of [300, 640, 1000, 2400, 5000]) {
+  for (let w = 150; w <= 9000; w += 10) {
     const b = fittedScaleBar(w);
     assert.ok(b.metres <= w * 0.22 + 1e-9, `${w}: ${b.metres}`);
   }

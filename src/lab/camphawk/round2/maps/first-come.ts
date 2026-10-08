@@ -108,12 +108,12 @@ export function outlineLabelAt(ring: Pt[]): Pt {
   return [cx, top[1]];
 }
 
-/** A scale bar that fits: the round length nearest a sixth of the frame, never over 22% of it. */
+/** A scale bar that fits: the round length nearest a sixth of the frame (a fifth ran to a quarter
+    of a wide map: critic round 1). Its steps are close enough that it never passes 22% (tested). */
 export function fittedScaleBar(frameW: number): { ft: number; metres: number } {
   const steps = [25, 50, 100, 200, 250, 300, 500, 1000, 1320, 2640, 5280];
-  const max = frameW * 0.22 * 3.28084, target = (frameW / 6) * 3.28084;
-  const ok = steps.filter((ft) => ft <= max);
-  const ft = (ok.length ? ok : [steps[0]]).reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
+  const target = (frameW / 6) * 3.28084;
+  const ft = steps.reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
   return { ft, metres: ft / 3.28084 };
 }
 

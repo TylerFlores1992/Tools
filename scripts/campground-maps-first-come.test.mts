@@ -22,7 +22,7 @@ test("a description's flags: first come, Scan and Pay, and a closure notice", ()
 test("a listing's facts come from its Standard site's attributes, and the CSV reader handles quoted fields", () => {
   const csv = (rows: string[][]) => rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\r\n");
   const facilities = parseCsv("﻿" + csv([["FacilityID", "FacilityName", "FacilityDescription"], ["10165105", "Alder Springs", "<p>first-come, first-served, with \"14 sites\",\nby the creek. Scan and Pay.</p>"]]));
-  const campsites = parseCsv(csv([["CampsiteID", "FacilityID", "CampsiteName"], ["10165106", "10165105", "Standard"], ["10165107", "10165105", "ScanPay 2"]]));
+  const campsites = parseCsv(csv([["CampsiteID", "FacilityID", "CampsiteName"], ["10165107", "10165105", "ScanPay 2"], ["10165106", "10165105", "Standard"]]));
   const attributes = parseCsv(csv([["EntityID", "AttributeName", "AttributeValue"], ["10165106", "Max Num of People", "8"], ["10165106", "Site Access", "Drive-In"], ["10165106", "ACCESSIBLE VAULT TOILETS", "Accessible Vault Toilets"], ["10165106", "NON-POTABLE WATER", "Non-Potable Water"], ["10165107", "Max Num of People", "99"]]));
   const f = factsFor("10165105", { facilities, campsites, attributes });
   assert.equal(f.name, "Alder Springs");
