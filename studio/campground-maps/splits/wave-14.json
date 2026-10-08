@@ -21,7 +21,8 @@
    "split": true,
    "by": "First look (Claude, rollout south-a)",
    "on": "2026-10-08",
-   "note": "Three places on separate fingers of the lake: 080 to 104 in the west, 037 to 079 in the middle, 001 to 034 on the east point."
+   "note": "Three places on separate fingers of the lake: 080 to 104 in the west, 035 to 079 in the middle, 001 to 034 on the east point (gap 150 m to part the west two).",
+   "gap": 150
   }
  ]
 }

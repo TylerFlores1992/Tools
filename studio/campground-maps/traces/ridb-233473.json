@@ -40,42 +40,6 @@
   {
    "coords": [
     [
-     -93.3514761,
-     34.5417598
-    ],
-    [
-     -93.3515415,
-     34.5419221
-    ],
-    [
-     -93.3515742,
-     34.5421204
-    ],
-    [
-     -93.3515415,
-     34.5423007
-    ],
-    [
-     -93.3515415,
-     34.5425171
-    ],
-    [
-     -93.3516505,
-     34.5426794
-    ],
-    [
-     -93.3517049,
-     34.5428417
-    ],
-    [
-     -93.3517158,
-     34.543004
-    ]
-   ]
-  },
-  {
-   "coords": [
-    [
      -93.3571308,
      34.5431122
     ],
@@ -151,5 +115,5 @@
   }
  ],
  "points": [],
- "note": "Traced from the NAIP photo: the entrance road, the lane up the east point to site 12, the road from the group site east past 69 and 70, and the loop on the point past 38 to 48. Left out: the lanes on the middle point (23 to 37) and past 49 to 59, which show only in pieces through the trees, and the stretch of the main road between x -140 and 150 under the canopy."
+ "note": "Traced from the NAIP photo: the entrance road, the road from the group site east past 69 and 70, and the loop on the point past 38 to 48. Left out: the lane up the east point past 01 to 21 (its middle can't be placed within 3 m under the trees), the lanes on the middle point (23 to 37) and past 49 to 59, which show only in pieces, and the main road between x -140 and 150 under the canopy."
 }
