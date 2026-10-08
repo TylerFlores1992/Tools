@@ -11,10 +11,10 @@
   osm-extract.mjs, which checked the MD5 and trimmed. Suggest adding `--speed-limit/--speed-time`
   to its curl (not changed here: code is out of a child's scope).
 
-## Bar for `usable` (message from the orchestrating session, 19:23Z)
-Applied to every wave here: `usable` only when at most about 1 site in 7 has no drawn road within
-about 20 m and every drawn road sits on a visible one; otherwise `hold`. (The message said the brief
-on main was updated; at 19:25Z origin/main didn't carry it yet. It is stricter than the brief, so
-applied.)
+## Bar for `usable` (messages from the orchestrating session, 19:23Z, corrected 19:28Z)
+Applied here, per the correction: `usable` when the sites and drawn roads are right with some spurs
+or lanes missing (sites 20–40 m out on undrawn spurs still count). `hold` when a drawn road doesn't
+follow the visible one, sites are misplaced or stacked, or about a third or more of the sites have
+no drawn road at all. (The first message's "1 in 7" bar was withdrawn.)
 
 STATUS: started
