@@ -200,7 +200,16 @@
   --color-ch-alert-deep: #8C3524;
   --color-ch-alert-hover: #C7503A;
   --color-ch-forest: #24382A;
+  /* CampHawk's admin sidebar: hover and current-item fills on forest, and the border of an
+     alert-soft panel (campsite-finder globals.css). */
+  --color-ch-forest-2: #2F4736;
+  --color-ch-forest-3: #3A5643;
+  --color-ch-alert-line: #E7BFB4;
   --color-ch-white: #FFFFFF;
+  /* Lab additions, not in CampHawk yet: the site map's water and its label (water-ink 5.5:1 on
+     water). Water is never blue: in CampHawk blue means the hand-off to a provider. */
+  --color-ch-map-water: #BFD6D1;
+  --color-ch-map-water-ink: #2F5550;
 
   --text-ch-hero: 34px;
   --text-ch-title: 26px;
@@ -480,6 +489,9 @@ html:has(.gh) { background: var(--color-ch-forest); }
 .gh-pin[data-selected="true"] {
   scale: 1.35; box-shadow: 0 0 0 2.5px var(--color-ch-ink), 0 3px 8px rgb(22 41 31 / 0.4); z-index: 2;
 }
+
+/* Site map type: a ground-coloured halo, so numbers and names read over site dots and roads. */
+.gh-map-halo { text-shadow: 0 0 2px var(--color-ch-shell), 0 0 2px var(--color-ch-shell), 0 0 3px var(--color-ch-shell); }
 
 /* The alert card settles once, a beat after the photo. It is readable from the first frame:
    only its position and shadow move, never its opacity (a slow device never shows a blank). */

@@ -45,3 +45,7 @@ next-env.d.ts
 /studio/film/frames/
 /studio/camphawk-round2/out/
 /studio/*/node_modules/
+
+# State Parks campsite data, pending their permission: built locally, never committed
+/public/lab-local/
+/studio/campground-maps/.cache/

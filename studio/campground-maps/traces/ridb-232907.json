@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-232907",
+ "traced": "2026-10-07",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.2370119,
+     39.4858114
+    ],
+    [
+     -120.2371724,
+     39.4857988
+    ],
+    [
+     -120.2373328,
+     39.4857925
+    ],
+    [
+     -120.2374282,
+     39.4858114
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.2370375,
+     39.4858123
+    ],
+    [
+     -120.2370433,
+     39.4859204
+    ],
+    [
+     -120.2370898,
+     39.4860015
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane west to the lot at site 13 and the lane to site 14. The loop past sites 001-012 is under the trees."
+}

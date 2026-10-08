@@ -24,6 +24,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 | New look, redesign, mockups, "make it high-end" (process + taste) | skill `design-direction` |
 | Accessibility / UI review before merge | skill `ui-audit` |
 | The hero film (terrain, wolf, encode) | skill `hero-film` · `studio/film/` |
+| Campground site maps: "complete the maps" (plan, rules, loop) | skill `campground-maps` · `docs/design/campground-maps-playbook.md` |
 | The approved brief, sitemap, design spec | `docs/BRIEF.md` |
 | Lessons carried over from CampHawk, and why | `docs/CAMPHAWK-LESSONS.md` |
 | Vercel, domain, CI setup | `docs/SETUP.md` |
@@ -59,6 +60,12 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   rest, framed by `LabPage`/`BareFrame`; switches in the URL via `labState.ts`, gates and routes
   in `gates.ts`; CampHawk's controls in `lab/camphawk/ui/`). CampHawk's own design skill binds them; art from
   `studio/camphawk-round2/` (AI Gateway, free credit only)
+- Campground site maps (lab): drawn from public data, `studio/campground-maps/` → `round2/maps/`;
+  roads from the source the sites fit (`roads.mjs`), plus what a person traced from the photo
+  (`studio/campground-maps/traces/`, downloaded from the review page's tracing tool);
+  plan, research and the 50-campground Rec.gov sample in `docs/design/campground-maps.md`; its
+  review queue (admin mock) is `/private/camphawk/golden-hour/admin/site-maps` (`round2/admin/`). **State Parks' campsite
+  data is local-only (`public/lab-local/`, git-ignored) until they approve: never commit it**
 - `public/media/hero/<hash>/` rendered film + posters, cached immutable (`src/lib/hero-media.ts`)
 
 ## End of every session

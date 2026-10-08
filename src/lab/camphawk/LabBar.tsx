@@ -23,7 +23,9 @@ export function radioKeys<T>(values: readonly T[], current: T, set: (v: T) => vo
   };
 }
 
-export function LabBar({ page, visitor, onVisitor, children }: { page: string; visitor: Visitor; onVisitor: (v: Visitor) => void; children?: ReactNode }) {
+/** `visitor` and `onVisitor` are left out on a page with no visitors to pretend to be (an admin
+    screen): the "View as" switch is then not shown. */
+export function LabBar({ page, visitor, onVisitor, children }: { page: string; visitor?: Visitor; onVisitor?: (v: Visitor) => void; children?: ReactNode }) {
   return (
     // A landmark of its own, so the lab's switches aren't loose content beside the page's.
     <aside aria-label="Lab controls" className="bg-ch-forest text-ch-white">
@@ -38,7 +40,7 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
           <span aria-current="page">{page}</span>
         </nav>
         {children && <div className="flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto">{children}</div>}
-        <div role="radiogroup" aria-label="Pretend to be" onKeyDown={radioKeys(VISITORS.map((x) => x.value), visitor, onVisitor)} className="flex w-full flex-wrap items-center justify-between gap-1 rounded-[22px] bg-ch-white/10 p-0.5 sm:w-auto sm:rounded-ch-chip">
+        {visitor && onVisitor && <div role="radiogroup" aria-label="Pretend to be" onKeyDown={radioKeys(VISITORS.map((x) => x.value), visitor, onVisitor)} className="flex w-full flex-wrap items-center justify-between gap-1 rounded-[22px] bg-ch-white/10 p-0.5 sm:w-auto sm:rounded-ch-chip">
           <span className="hidden px-2 sm:inline">View as</span>
           {VISITORS.map((v) => {
             const on = v.value === visitor;
@@ -57,7 +59,7 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
               </button>
             );
           })}
-        </div>
+        </div>}
       </div>
     </aside>
   );

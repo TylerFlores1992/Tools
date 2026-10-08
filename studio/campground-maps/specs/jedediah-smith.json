@@ -1,0 +1,6 @@
+{ "key": "jedediah-smith", "unit": 102, "campgroundLike": "Jed%",
+  "facilities": [
+    { "id": 517, "loop": "Main Loop" },
+    { "id": 791, "loop": "Outer Loop" },
+    { "id": 903, "loop": "Cabins" }
+  ] }
