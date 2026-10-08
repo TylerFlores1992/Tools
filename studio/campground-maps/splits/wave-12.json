@@ -1,0 +1,4 @@
+{ "version": 1, "about": "Split calls from the first look of wave 12.",
+  "listings": [
+    { "id": "233154", "split": true, "by": "First look (Claude, rollout west-d)", "on": "2026-10-08", "note": "The family sites (C001 to C011) and the group area are two separate places 1.1 km apart on either side of the highway." }
+  ] }

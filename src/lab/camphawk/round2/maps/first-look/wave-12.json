@@ -1,0 +1,388 @@
+{
+ "version": 1,
+ "wave": 12,
+ "by": "Claude (rollout west-d)",
+ "on": "2026-10-08",
+ "looks": {
+  "10206584": {
+   "call": "hold",
+   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\" at the same spot). Sites 1 to 9 line the drawn forest road under scattered pines, so the points look right; it needs the duplicates dropped, not traces."
+  },
+  "10206603": {
+   "call": "hold",
+   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The paved loop is drawn and Sites 1 to 4 sit on its pads by the river; Tent Sites 5 and 6 sit on the open ground to the west."
+  },
+  "10206616": {
+   "call": "hold",
+   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The gravel loop is drawn on the visible road and Sites 1 to 9 sit beside it."
+  },
+  "10206646": {
+   "call": "hold",
+   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The loops by the river are drawn on the visible gravel and Sites 1 to 8 sit beside them."
+  },
+  "10214768": {
+   "call": "good",
+   "note": "The loop round the rocks follows the visible dirt road and Sites 1 to 9 sit in the bays along it. Site 10 is on a bare patch just north of the access road."
+  },
+  "10282557": {
+   "call": "good",
+   "note": "The lower loop follows the visible road under the pinyon and Sites 1 to 12 sit on pads off it; the upper spur reaches Group Sites 1 and 2."
+  },
+  "10283358": {
+   "call": "good",
+   "note": "The two loops follow the visible dirt lanes and Sites 01 to 10 sit on cleared pads beside them; the group site is by the shelter to the east."
+  },
+  "10283414": {
+   "call": "good",
+   "note": "The lane along the wash is drawn on the visible track, and Sites 01 to 12 sit in a row on the open flat beside it, as the photo shows them."
+  },
+  "10317439": {
+   "call": "hold",
+   "note": "Split listing, shown as 4 areas spread over 31 km of the John Day River (Service Creek, Muleshoe, Lone Pine, Big Bend). No source draws a road in any of them, so each area is a few pins with nothing to reach them by."
+  },
+  "233153": {
+   "call": "hold",
+   "note": "Sites C001 to C010 and the group area sit under full canopy 40 to 90 m east of the only drawn road, on a lane that doesn't show through the firs. Nothing reaches them on the map, and there's nothing visible to trace."
+  },
+  "233154": {
+   "call": "hold",
+   "note": "Split listing: the family sites and the group area are two places 1.1 km apart, now two areas. In Loop C only the highway was drawn; traced its loops from the photo (main loop, ring round C001, spurs to C008, C010 and C011, the lane past C007), and C003 to C006 still sit under the firs. The group area is the problem: its pin sits on a burned slope with no camp, and the drawn road there cuts straight across the slope instead of following the visible curving road."
+  },
+  "10040022": {
+   "call": "unsure",
+   "note": "A boat-in campground with no roads, as expected; Sites 1 to 10 sit in the trees above the cove, where the canopy hides any pads."
+  },
+  "10049273": {
+   "call": "good",
+   "note": "The main loop and the two group-site loops follow the visible lanes through the pinyon, and Sites 37 to 59 and Groupsites A and B sit on clearings beside them."
+  },
+  "10114312": {
+   "call": "good",
+   "note": "The long loop between the river and the highway follows the visible pavement, and Sites 001 to 014 sit on pads along its spurs."
+  },
+  "10114366": {
+   "call": "unsure",
+   "note": "Under the pines the Forest Service loop roughly follows the brown lanes, but its entrance runs 10 m west of the visible one from the highway. Sites 001 to 003 sit east of the loop with no road drawn to them, and one site has no point."
+  },
+  "10243267": {
+   "call": "usable",
+   "note": "The road follows the visible gravel (up to 6 m south of it in the middle) and the sites sit on pull-outs beside it. Traced the spurs to 009, 012 and 006 and the loop north of the road past 005; the faint tracks to 007, 010 and 011 aren't drawn."
+  },
+  "10243294": {
+   "call": "good",
+   "note": "The loop follows the visible gravel through the trees and Sites 001 to 011 sit on pads off it."
+  },
+  "121040": {
+   "call": "good",
+   "note": "The lane off the highway reaches the open flat where Groups 1 and 2 park; Group 3 is at the edge of the trees on the same flat."
+  },
+  "231886": {
+   "call": "usable",
+   "note": "The loop follows the visible dirt lanes and Sites 003 to 015 sit along it. Sites 001 and 002 sit south of the loop among the pines with no lane drawn, and none shows clearly."
+  },
+  "231891": {
+   "call": "usable",
+   "note": "The three loops roughly follow the lanes that show between the ponderosas, and most sites sit beside them. Sites 001, 003 and 004 south of the south loop and 020 and 021 west of the middle one sit off any drawn road."
+  },
+  "231893": {
+   "call": "usable",
+   "note": "The road ends at the paved lot, and the two group sites (both numbered 001) sit on their cleared pads across the meadow. The dirt tracks from the lot to them show and aren't drawn; they look like walking paths."
+  },
+  "231909": {
+   "call": "unsure",
+   "note": "Site B sits on the drawn road. Site A sits 20 m east of it in dark scrub where the photo is too blurred to show a pad or lane."
+  },
+  "231942": {
+   "call": "good",
+   "note": "The loops follow the visible pavement, and Group Sites A and C sit inside their loops, B at the end of its spur."
+  },
+  "231947": {
+   "call": "good",
+   "note": "The road follows the visible pavement, and Sites 1S and 1L sit at the lot and the pull-off beside it. 1Y sits on the clearing just past the end of the road."
+  },
+  "231953": {
+   "call": "unsure",
+   "note": "Full canopy: Sites 001 and 002 sit at the drawn road through the firs, but no pad or lane shows under the trees."
+  },
+  "231957": {
+   "call": "unsure",
+   "note": "Full canopy: Sites 001 to 004 sit 40 to 60 m east of the only drawn road, among trailers glimpsed through the pines; no lane to them shows clearly enough to trace."
+  },
+  "231961": {
+   "call": "good",
+   "note": "The loops follow the visible pavement and dirt lanes among the oaks, and Sites 03 to 27 sit on the pads beside them."
+  },
+  "232068": {
+   "call": "hold",
+   "note": "The check doesn't draw it: both sites are on one spot, beside the building at the end of the drawn road. It looks like a group lodge, not two sites."
+  },
+  "232070": {
+   "call": "usable",
+   "note": "The loops follow the visible lanes through the pines, and Sites 005 to 072 and the Rubicon, Chipmunk and Equestrian group sites sit beside them. Sites 073 to 077 sit 20 to 40 m east of the east loop with no lane drawn to them."
+  },
+  "232092": {
+   "call": "good",
+   "note": "The two loops and the road between them follow the visible lanes, and Sites 006 to 015 sit on the open ground beside them."
+  },
+  "232191": {
+   "call": "usable",
+   "note": "The road and the east loop follow the red dirt lanes through the junipers, and Sites 01 to 04 and GS1 sit on the bare ground by the loop, 019, 020 and GSB at the west end of the road. Short dirt spurs (northeast of the loop, round the clearing at the west end) show and aren't drawn."
+  },
+  "232226": {
+   "call": "unsure",
+   "note": "Site B sits on the lawn by the building off the drawn loop. Sites A and C sit in deep shadow under the firs, 40 to 60 m from any drawn road, where no lane shows."
+  },
+  "232229": {
+   "call": "usable",
+   "note": "The road and the lane past Sites 001 to 014 follow what shows through the trees, and the family sites line it. Group Sites A to D sit 30 to 60 m off the drawn lanes under the canopy, with no lane to them visible."
+  },
+  "232232": {
+   "call": "unsure",
+   "note": "Under the pines the Forest Service loop is plausible but its lanes barely show. Sites 011 and 013 south of the loop and Group Sites A to C east of it sit off any drawn road."
+  },
+  "232246": {
+   "call": "hold",
+   "note": "Zoomed: Sites 001 to 019 sit under the pines in the southeast corner, many 30 to 50 m from any drawn road (005, 007, 010, 012, 013, 015), with no lanes showing. Site 053 is 600 m north and the group site 1.3 km west, and the loops between them carry no sites at all, so the frame shows a fraction of a big campground."
+  },
+  "232264": {
+   "call": "unsure",
+   "note": "Full canopy: Site 001 sits on the drawn road and 002 15 m from it, but no pad shows under the trees."
+  },
+  "232266": {
+   "call": "usable",
+   "note": "The loop follows the visible dirt lane through the open pines and Sites A and B sit beside it. Site C sits in a clearing 30 m north of the loop, at the end of a dirt lane that shows and isn't drawn."
+  },
+  "232290": {
+   "call": "unsure",
+   "note": "Full canopy: Group Site 1 sits by the drawn road, Group Site 2 50 m inside it, with no lane visible under the trees."
+  },
+  "232307": {
+   "call": "usable",
+   "note": "Snow on the photo. Site 002 sits at the building near the end of the east spur; 001 sits among the trees 30 m west of the road with no lane showing."
+  },
+  "232313": {
+   "call": "usable",
+   "note": "The loops follow the visible gravel by the river, and Sites 002, 004, 008 to 011, 014 and 015 sit beside them. 003, 005 to 007, 012 and 013 sit inside the east loop on small gravel lanes round the trees that aren't drawn."
+  },
+  "232328": {
+   "call": "unsure",
+   "note": "Leafless canopy hides the lanes: the three drawn lanes are plausible, but Sites 003, 020 and 022 sit between them and 006, 008, 010 and 011 south of the loop, off any drawn road."
+  },
+  "232334": {
+   "call": "good",
+   "note": "The loops and the pull-in spurs follow the visible gravel, and Sites 001 to 008 sit at the ends of their spurs."
+  },
+  "232335": {
+   "call": "usable",
+   "note": "Group Site 001 sits at the group building by the drawn road. Traced the gravel lane south toward 002 as far as it shows; its last 25 m to 002 (by a small building) go under the trees."
+  },
+  "232361": {
+   "call": "unsure",
+   "note": "Full canopy: the two group sites (both numbered 001) sit 15 to 30 m from the drawn roads, and nothing shows under the pines."
+  },
+  "232375": {
+   "call": "unsure",
+   "note": "Full canopy: Group Site B sits at the Forest Service road, A 30 m west of it in the firs, and nothing shows under the trees."
+  },
+  "232382": {
+   "call": "good",
+   "note": "The two loops follow the visible gravel, and Group Sites A and B sit on the open ground beside them."
+  },
+  "232771": {
+   "call": "usable",
+   "note": "The two lanes follow what shows through the pines, and Sites 01 to 18 sit between them; 06, 08, 12 and 15 are 15 to 30 m from the nearest drawn lane with no spur visible."
+  },
+  "232794": {
+   "call": "usable",
+   "note": "The loops follow the visible dirt lanes among the oaks and Sites 001 to 074 sit on pads along them. Four sites have no point, and a few short spurs (by 032 and 008) show and aren't drawn."
+  },
+  "232844": {
+   "call": "usable",
+   "note": "Zoomed: the road follows the dirt lane above the river where it shows, and Sites 004 to 014 sit beside it. 001 and 003 sit 20 to 30 m south of it under the firs, with no lane visible."
+  },
+  "232845": {
+   "call": "usable",
+   "note": "The loop follows the visible dirt lanes in the clearing and most of Sites 001 to 017 sit beside it. 007, 009 and 011 sit inside the loop by a lane that shows and isn't drawn."
+  },
+  "232916": {
+   "call": "good",
+   "note": "The lanes follow the visible gravel among the pines. Group Site 1 sits on the open ground by the west lanes, Group Site 2 on the open ground south of the east lane."
+  },
+  "233148": {
+   "call": "usable",
+   "note": "The loop round the restroom follows the visible gravel, and Sites 001 and 004 sit beside it. 002 sits at the end of a dirt track south of the lot that isn't drawn, and 003 is 70 m east in the pines with no lane showing."
+  },
+  "233214": {
+   "call": "good",
+   "note": "The roads follow the visible tracks (snow on the photo). Group Sites 001 to 003 sit in the meadow beside the north road and 004 by the south loop."
+  },
+  "233292": {
+   "call": "good",
+   "note": "The loop follows the visible gravel above the river and Sites 01 to 11 sit on the open ground round it; the group area is by the shelter to the east."
+  },
+  "233360": {
+   "call": "usable",
+   "note": "The loops follow the visible lanes under the pines, and most of Sites 1 to 23 sit beside them. 2, 12, 13 and 24 to 26 sit 20 to 50 m off any drawn road, and one site is named \"This site should be deleted\" (RIDB's own text), so it needs a person's look."
+  },
+  "233364": {
+   "call": "usable",
+   "note": "The loop follows the visible gravel through the pines (about 10 m south of it at the bottom bend), and Sites 001 to 024 and 030 to 041 sit beside it on spurs. Sites 021, 023 and 025 to 029 sit 20 to 60 m south of the loop toward the shore with no lane showing, likely walk-in sites."
+  },
+  "233685": {
+   "call": "usable",
+   "note": "The road and loop follow the visible dirt and Sites 01 to 06 sit along them. 08 to 11 sit 20 to 40 m north of the road among the junipers, and 07 at the trailers to the northeast, with no lane drawn."
+  },
+  "233728": {
+   "call": "hold",
+   "note": "Under the pines only the outer loop and a through road are drawn. Sites 05 to 13 inside the loop and 23 to 36 south and east of it sit 30 to 80 m from any drawn road, and their lanes don't show through the canopy."
+  },
+  "233732": {
+   "call": "hold",
+   "note": "Sites 002 to 005 sit under the pines 100 to 200 m from the only drawn loop, with no lanes visible, and 001 sits out in the meadow by a building."
+  },
+  "233755": {
+   "call": "usable",
+   "note": "The loop follows the visible gravel, and Sites 1 to 4, 6, 9, 11, 13, 15, 17 and 20 to 27 sit beside it. 5, 7, 8, 10, 12, 14, 16, 18, 19, 28 and 29 sit 15 to 40 m off it on spurs that only partly show."
+  },
+  "233793": {
+   "call": "usable",
+   "note": "The loops follow the visible lanes (snow on the photo), and Sites 001, 002, 008, 010, 014 and 015 sit beside them. 003 to 007, 013, 016 and 017 sit 20 to 40 m off the drawn roads among the firs, with no spurs visible."
+  },
+  "233798": {
+   "call": "usable",
+   "note": "Group Site B sits in the open sage 25 m east of the drawn road and A 45 m east among the trees; no lane to either shows."
+  },
+  "233916": {
+   "call": "usable",
+   "note": "The loop round the Alsea group site follows the visible gravel and the site sits on its lawn. Canal Creek Group sits 100 m south under full canopy with no road drawn or visible."
+  },
+  "233953": {
+   "call": "good",
+   "note": "The two group loops follow the visible pavement, and Group Sites A and B sit at their shelters."
+  },
+  "234096": {
+   "call": "usable",
+   "note": "The road follows the visible lane along the river, and Sites 001, 003, 005, 006 and 007 sit beside it. 002, 004 and 008 sit 15 to 25 m east of it in the pines with no spur visible."
+  },
+  "234289": {
+   "call": "hold",
+   "note": "The loop follows the visible lane, with trailers parked along it, but Group Sites A and B sit 70 to 100 m outside it, among the pines on either side, where nothing shows. The points don't match the camp on the photo."
+  },
+  "234400": {
+   "call": "hold",
+   "note": "The Forest Service lanes only loosely follow the dirt lanes that show (by 002 to 007 they cross open ground), and Sites 008 to 011 and 112 sit off any drawn road. It would need the lanes traced again, not added to."
+  },
+  "234460": {
+   "call": "hold",
+   "note": "The paved loops follow the visible pavement, but Group Sites 001 to 003 sit 60 to 120 m outside them on open hillside, on nothing that looks like a pad."
+  },
+  "234530": {
+   "call": "unsure",
+   "note": "The loop follows the visible dirt lane through the chaparral, but Sites 002, 003, 005, 006 and 008 sit 30 to 60 m outside it, and 001 and 004 inside it, among a web of faint tracks. The photo doesn't show which pads they are."
+  },
+  "234546": {
+   "call": "hold",
+   "note": "Census roads: the loop is plausible under the firs, but the diagonal road through it doesn't show, and Sites 010, 015 to 018, 020 and 025 to 027 sit 30 to 80 m from any drawn road under full canopy."
+  },
+  "234589": {
+   "call": "unsure",
+   "note": "Lincoln sits by the clearing near the river, south of the drawn loop; Victory sits under the canopy 20 m from the drawn road. Neither pad shows clearly."
+  },
+  "234594": {
+   "call": "usable",
+   "note": "The loop follows the visible dirt road along the river and Sites 002 to 007, 009, 010, 012, 013 and the host sit beside it. 005, 008, 011 and 014 sit at the ends of short spurs that show and aren't drawn."
+  },
+  "234608": {
+   "call": "unsure",
+   "note": "Full canopy of oaks: the drawn loops are plausible, but no lane or pad shows, and Sites 003, 007, 011, 016, 024 and 025 sit 20 to 40 m from any drawn road."
+  },
+  "234720": {
+   "call": "unsure",
+   "note": "Under the firs the Forest Service loop doesn't match the lanes that show inside it, and Group Sites A and B sit 20 to 30 m outside it. The photo can't settle where the camps are."
+  },
+  "234728": {
+   "call": "unsure",
+   "note": "Under the pines: Sites 04, 06, 11, 14 and 17 sit by the drawn loop, but 02, 03, 05, 07 to 10, 12, 13, 15, 16 and 18 sit 15 to 50 m off it, with only glimpses of the lanes; one site has no point."
+  },
+  "238331": {
+   "call": "hold",
+   "note": "Group Sites 1 to 3 sit on the highway itself; the camp is presumably in the trees on one side or the other, but the points don't say which."
+  },
+  "250043": {
+   "call": "good",
+   "note": "Cabin West and Cabin East sit on their two cabins inside the station's fences, and the drawn road passes their gates."
+  },
+  "251445": {
+   "call": "unsure",
+   "note": "Census roads under the pines: the loops are plausible, but most of the 119 sites sit between them, 20 to 50 m from a drawn road (000s by the lake, 080 to 112 in the east), and the lanes to them don't show."
+  },
+  "251883": {
+   "call": "usable",
+   "note": "Under the firs only the access road was drawn; traced the three gravel lanes that show (past B002 to B004, past A003 toward B006, and up to A008). A004 to A007 and B007 still sit off any drawn road, with no lane visible."
+  },
+  "251884": {
+   "call": "unsure",
+   "note": "Full canopy: Sites 03 to 06 sit on the drawn road and 09 to 12 inside the drawn loop, but 01, 02, 07 and 08 sit 15 to 30 m off it, and no lane shows under the firs."
+  },
+  "251981": {
+   "call": "unsure",
+   "note": "Under the firs the Forest Service loops are plausible and most sites line them, but 008, 011, 014, 016, 019, 020, 022, 025, 027 and 031 sit 15 to 30 m off them, and no lane shows to check either."
+  },
+  "254094": {
+   "call": "unsure",
+   "note": "Under the pines the loop is plausible, but Sites 03 to 05, 08, 09, 12 to 17, 34, 36, 40, 43, 45, 48 and 50 sit 20 to 60 m inside it, on lanes that only glimmer through the trees and aren't drawn."
+  },
+  "256348": {
+   "call": "usable",
+   "note": "The east lane follows the visible dirt road along the river and Sites 001 to 006 sit beside it. The lanes to 007 and 008 at the south end show and aren't drawn."
+  },
+  "260558": {
+   "call": "usable",
+   "note": "The loop follows the visible gravel along the lake. Site 03 sits beside a branch lane west of the loop that shows and isn't drawn, and 12 at the end of the visible spur south of it; many more pull-outs show than the two listed sites."
+  },
+  "267072": {
+   "call": "usable",
+   "note": "The loop follows the visible gravel through the pines, but Sites 001 to 011 sit 20 to 40 m outside it, at pull-ins on short spurs that partly show and aren't drawn."
+  },
+  "272097": {
+   "call": "hold",
+   "note": "Split listing, shown as 2 areas 3 km apart along the highway. In area 1, Sites 001 to 013 sit in the pines with no road drawn into them (only a lane past Brushfire 2 at the top), and the Equestrian Group sits alone at a lot in area 2."
+  },
+  "10124953": {
+   "call": "good",
+   "note": "Upper and Lower Site sit on the corral pads beside the stock area, and the drawn lane reaches them from the road."
+  },
+  "10332661": {
+   "call": "good",
+   "note": "The two loops follow the visible sand roads, and the Group Site and Equestrian Site sit inside their loops."
+  },
+  "10334752": {
+   "call": "good",
+   "note": "The Park Service loops follow the visible pavement, and Sites A1 to A12, B1 to B31 and the group site sit on the pads along them."
+  },
+  "232509": {
+   "call": "unsure",
+   "note": "Full canopy: Group Sites 1 and 2 sit beside the drawn Park Service lanes, but nothing shows under the firs."
+  },
+  "234066": {
+   "call": "usable",
+   "note": "The lane follows the visible gravel through the trees; Group Sites A and B sit 8 to 10 m east of it on the edge of the canopy, where the pads don't show clearly."
+  },
+  "234524": {
+   "call": "unsure",
+   "note": "Group Site A sits on the open shore by the lake, B under the firs 20 m from the drawn road; no lane to either shows."
+  },
+  "234753": {
+   "call": "good",
+   "note": "The loops follow the visible dirt roads among the pines, and Group Sites A to D and G1 to G12 sit on the clearings beside them."
+  },
+  "10029012": {
+   "call": "unsure",
+   "note": "No source draws a road. Sites 01 to 10 and the walk-in group site sit under the oaks above the river, where no pads or lanes show."
+  },
+  "233537": {
+   "call": "usable",
+   "note": "Zoomed: the loops follow the visible pavement, and Sites 001 to 096 sit at the ends of short paved pull-ins off them (the pull-ins aren't drawn). Traced the paved lane south from the loop by 017. Group Sites D, E and L sit 300 to 500 m east across the main road, away from everything; a person should check them."
+  }
+ }
+}

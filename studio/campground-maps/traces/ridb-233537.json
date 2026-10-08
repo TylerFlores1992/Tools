@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-233537",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -123.0600887,
+     38.7173106
+    ],
+    [
+     -123.0601002,
+     38.7171484
+    ],
+    [
+     -123.0601117,
+     38.7169683
+    ],
+    [
+     -123.0601002,
+     38.7167881
+    ],
+    [
+     -123.0600887,
+     38.716608
+    ],
+    [
+     -123.0600657,
+     38.7164278
+    ],
+    [
+     -123.0600312,
+     38.7162476
+    ],
+    [
+     -123.0599737,
+     38.7161035
+    ],
+    [
+     -123.0598817,
+     38.7159954
+    ],
+    [
+     -123.0597667,
+     38.7159234
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved lane from the loop by 017 south toward the pool, traced from the photo. Left out: the many short paved pull-in spurs to the sites (each 10 to 25 m; the sites sit at their ends beside the drawn loops), and the lanes round the pool, which go under the oaks."
+}
