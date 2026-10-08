@@ -157,7 +157,10 @@ loads this) should be able to do the next step from here alone.
      defaults ticked). The change applied to the running session at once. Every other host above
      then got `403`, tylerflores.dev included, so the builds and the smoke test stopped working.
      **A Custom list is the whole allowlist; it doesn't add to Full.**
-   - **The fix (owner, in the environment settings):** either set Network access back to **Full**
+   - **Fixed the same night: the owner set it back to Full**, and every host above except
+     Geofabrik answered again (ridb, the USGS photos, tylerflores.dev: 200). If a later session
+     finds 403s, the setting has changed again.
+   - **The fix, if it ever recurs (owner, in the environment settings):** either set Network access back to **Full**
      (what worked all of 2026-10-07/08), or keep **Custom** and list every host above, one per line,
      with "Also include default list of common package managers" ticked. Where: claude.ai/code or
      the Desktop app (the docs don't list the mobile app; a phone's browser on claude.ai/code
@@ -184,15 +187,27 @@ a session or less.
 - **Why:** OSM's API is for editing. Fifty small reads was within its usage policy; 2,196 is bulk
   use. `osm.mjs` must read OSM features from a state extract.
 - **How:**
-  - Download a state extract (`.osm.pbf`). **First find a source that answers from a session**
-    (Geofabrik `north-america/us/<state>-latest.osm.pbf` resets the connection here, §3.4). Try, and
-    record which answered and when:
-    - Geofabrik again (the reset may be temporary);
-    - OpenStreetMap France's extracts (`download.openstreetmap.fr/extracts/north-america/us/`);
-    - BBBike's extract service (custom boxes; check its usage limits);
-    - the OSM planet on AWS Open Data (`osm-pds`, the whole planet in ORC; heavy, last resort).
-    Each new host needs allowing unless the environment is on Full (§3.4). All are ODbL, the same
-    data as the API.
+  - Download the extracts from **OpenStreetMap France** (measured 2026-10-08 on Full; Geofabrik
+    still resets the connection there, so it's not the policy):
+    - `https://download.openstreetmap.fr/extracts/north-america/<region>-latest.osm.pbf`, regions
+      `us-west` (3.8 GB), `us-south` (4.6 GB), `us-midwest` (2.8 GB), `us-northeast` (2.0 GB):
+      13.1 GB for the US. Some states are split out too (`us-west/colorado` 413 MB,
+      `us-west/california` 1.5 GB; also Florida, Georgia, Texas, Virginia, Illinois, Michigan);
+      list a region's folder to see which.
+    - **Fresh:** every file was dated 2026-10-07, a day old (`<region>.state.txt` gives the
+      replication timestamp). Record it as `sources.osmExtract`.
+    - **Slow:** about 0.9 MB/s here (100 MB in 113 s), so the whole US is about 4 hours. Work one
+      region at a time: download it, `osmium tags-filter` it to the tags below (much smaller), and
+      delete the raw file. The session's disk showed 27 GB free.
+    - It's the same OpenStreetMap data as the API and Geofabrik (ODbL; credit as now).
+    - **Other options, not needed unless this stops answering:** Geofabrik again (it may come back);
+      Overture Maps' transportation layer (OSM-derived roads as cloud GeoParquet, read by box with
+      DuckDB; untested, and its layers differ from `osmLayers()`); BBBike's extract service (answers,
+      but queues each custom box, so not for thousands); the planet file (`planet.openstreetmap.org`,
+      about 80 GB; last resort).
+    - **Not an option:** downloading through the owner's Chrome. The file would land on their
+      computer, with no good way to move gigabytes here.
+  - Install `osmium-tool` (apt, or the `osmium` Python package from PyPI) before the first region.
   - `osmium tags-filter` it to the tags `osmLayers()` reads: `highway`, `amenity`, `tourism`,
     `natural=water`, `waterway`, `landuse=reservoir`, `building`.
   - `osmium extract -b <bbox>` per campground (or one pass per state), exported as OSM XML, so
@@ -520,9 +535,8 @@ of bookable sites).
   still needs the owner's approval.
 
 **Still open:**
-1. **Network access back to Full, or Custom with every host in §3.4.** On 2026-10-08 it was set to
-   Custom with only `download.geofabrik.de`, which blocked every other map source and the site's
-   own smoke test.
+1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
+   host, §3.4).
 2. **Approve the look** of the single-unit and split-listing maps, when designed.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
