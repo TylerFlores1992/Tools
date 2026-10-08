@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-231845",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.4315447,
+     41.2322794
+    ],
+    [
+     -105.4317236,
+     41.2323514
+    ],
+    [
+     -105.4318906,
+     41.2324955
+    ],
+    [
+     -105.4321291,
+     41.2326576
+    ],
+    [
+     -105.4326062,
+     41.2329817
+    ],
+    [
+     -105.4330833,
+     41.2332879
+    ],
+    [
+     -105.4335604,
+     41.233549
+    ],
+    [
+     -105.4339659,
+     41.233549
+    ],
+    [
+     -105.4342164,
+     41.233522
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt road from the drawn forest road northwest up to the bare pad of the group site."
+}

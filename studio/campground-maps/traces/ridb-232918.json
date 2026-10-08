@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-232918",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.7339663,
+     32.968002
+    ],
+    [
+     -105.7340198,
+     32.9680831
+    ],
+    [
+     -105.7340412,
+     32.9681913
+    ],
+    [
+     -105.7340305,
+     32.9683266
+    ],
+    [
+     -105.7339984,
+     32.9684348
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved lane round the west side of the island, from the drawn road up to the pavilion. The east side of the loop and the pull-through spurs to the northeast are left as the source draws them."
+}

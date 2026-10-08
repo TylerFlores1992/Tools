@@ -1,0 +1,56 @@
+{
+ "version": 1,
+ "map": "ridb-232401",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.4105049,
+     44.4220348
+    ],
+    [
+     -115.4086338,
+     44.4216749
+    ],
+    [
+     -115.4072777,
+     44.4211889
+    ],
+    [
+     -115.4061978,
+     44.420649
+    ],
+    [
+     -115.405482,
+     44.4203521
+    ],
+    [
+     -115.4047662,
+     44.4198392
+    ],
+    [
+     -115.4040505,
+     44.4194522
+    ],
+    [
+     -115.4033347,
+     44.4192812
+    ],
+    [
+     -115.4023302,
+     44.4190293
+    ],
+    [
+     -115.4004591,
+     44.4189033
+    ]
+   ],
+   "through": true
+  }
+ ],
+ "points": [],
+ "note": "The gravel road through the station, between x -400 and 400 m, which the sources don't draw; the drawn lanes of the cabin loop join it. Beyond 400 m either side it is left out (outside the view checked)."
+}

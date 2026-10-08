@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234631",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.3772926,
+     42.653991
+    ],
+    [
+     -122.3776341,
+     42.653919
+    ],
+    [
+     -122.377939,
+     42.653892
+    ],
+    [
+     -122.3783659,
+     42.653865
+    ],
+    [
+     -122.3786708,
+     42.653838
+    ],
+    [
+     -122.3789147,
+     42.65382
+    ],
+    [
+     -122.379,
+     42.65373
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel drive from the drawn road west into the station's yard, to its buildings. The tracks in the pasture are left out."
+}

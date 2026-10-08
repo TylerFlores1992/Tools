@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-10176099",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.9139973,
+     45.268504
+    ],
+    [
+     -115.9135641,
+     45.268486
+    ],
+    [
+     -115.9131691,
+     45.268495
+    ],
+    [
+     -115.9128505,
+     45.268513
+    ],
+    [
+     -115.912825,
+     45.268594
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel drive from the drawn road east to the ranger house. The lane south past the cabins is left out (it isn't the way to the station)."
+}
