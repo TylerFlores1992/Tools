@@ -42,4 +42,31 @@ Waves 3, 4, 5 (us-west, multi). Branch wip/maps-west-a.
 - How the look was done: four helper agents each read every overview PNG of about 24 maps and zoomed the wide frames; I checked every trace and split myself. One helper's images stopped loading partway (a per-agent image limit), so the 13 maps it couldn't see were judged again from scratch by two fresh helpers; no call rests on an unseen photo. I moved Little Crater (251537) from usable to hold and Needles (251535) and Mirror Lake (233730) to usable rather than good after tracing.
 - Time: about 55 minutes (build 12, first look and traces the rest).
 
+## Wave 04 (us-west, multi)
+- Built 95, failed 0
+- Check: ready 54, review 40, not drawn 1 (250036 Green River float-in: dispersed), after traces; first build was ready 58, review 36
+- First look: good 24, usable 34, hold 17, unsure 20
+- Traced: 10085599 (Baker Dam: the lane north to 2 and 3; now good), 233182 (Sandy Flat), 233283 (Pyramid Lake Los Alamos: the group sites' road), 234488 (Tusayan Montane: loop B's north lane), 234578 (Lagoon: the north lane; I moved it 3 m south onto the pavement and dropped a drafted lane past 13A that I couldn't place under the trees), 234722 (Demotte). Every trace checked over a 5 m zoom after the rebuild.
+- Split calls: none (Hyatt Lake 250031 is already four areas, each one cluster; Diamond 233869 five areas, each one cluster).
+- Held, and why (17):
+  - 250031 Hyatt Lake Recreation Area: Middle 2 (29 to 45) has no road; its lane shows only in pieces under the pines (already four areas, one cluster each).
+  - 121390 NASON CREEK CAMPGROUND: under canopy, many sites well away from any drawn road.
+  - 231954 WRIGHTS LAKE: in the south area 041 to 054 sit 20 to 50 m east of the drawn loop, along an undrawn lane with parked campers.
+  - 231962 MCGILL CAMPGROUND AND GROUP CAMPGROUND: sites sit on the road line, and many pairs or triples share one spot.
+  - 232039 DUCK CREEK: many visible gravel lanes missing; dozens of sites 20 to 60 m off (too many for a few traces).
+  - 232878 Forks Campground (Sierra): only the east half of the loop is drawn; 003 to 016 have no road.
+  - 233117 CERRO ALTO CAMPGROUND: no road drawn at all; no lane shows under oak and chaparral.
+  - 233869 DIAMOND: no road drawn at all; loops A and B have plainly visible lanes and pads, so it is a good candidate for the tracing tool (every road traced).
+  - 234009 PHILIPSBURG BAY CAMPGROUND: drawn roads are straight-sided outlines 10 to 15 m off the lanes in places.
+  - 234114 BOCA CAMPGROUND: drawn roads only loosely follow the dirt tracks; several sites have no road.
+  - 234115 BOCA REST CAMPGROUND: drawn roads 4 to 10 m off the visible gravel; two inner roads missing (a full retrace with the tracing tool).
+  - 234711 Crescent Lake Campground: 017 to 033 have no road, under firs.
+  - 234756 CHERRY VALLEY: drawn roads are rough straight lines 10 m+ off the lanes; many sites 20 to 40 m off.
+  - 250036 GREEN RIVER FLOAT-IN CAMPSITES: float-in camps along 7 km of canyon, no roads; the build already treats it as dispersed.
+  - 251365 FALLS CREEK CAMPGROUND: 023 to 031 and 009 to 012 have no road, under dense canopy.
+  - 251580 CULTUS LAKE CAMPGROUND: 001 to 016 sit 30 to 80 m into the forest with no lane; the lakeshore row 20 to 30 m off.
+  - 10044710 Atwell Mill Campground: only the through road drawn; sites 30 to 60 m off it in the forest.
+- Anything new: nothing new. Tracing-tool candidates: Diamond (233869, no roads but plain lanes) and Boca Rest (234115, a full retrace). The USGS water service timed out often, which made the build slow (about 80 minutes); it fell back to OSM water.
+- Time: about 85 minutes (build about 80 of it, overlapping wave 3's look).
+
 STATUS: started

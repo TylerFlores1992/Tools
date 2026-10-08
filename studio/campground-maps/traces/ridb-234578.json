@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-234578",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -124.1424064,
+     43.8803369
+    ],
+    [
+     -124.1423442,
+     43.8803729
+    ],
+    [
+     -124.1422447,
+     43.8804089
+    ],
+    [
+     -124.1420953,
+     43.8804269
+    ],
+    [
+     -124.1419336,
+     43.8804269
+    ],
+    [
+     -124.1418092,
+     43.8804089
+    ],
+    [
+     -124.1417221,
+     43.8803819
+    ],
+    [
+     -124.1416847,
+     43.8803639
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved lane on the north side of the loop past 016 to 018, joined to the drawn loop at both ends. Left out the lane south past 13A and 13B (under trees, not placeable to 3 m) and the lanes to the west-side sites."
+}
