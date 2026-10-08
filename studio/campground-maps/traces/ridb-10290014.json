@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-10290014",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout northeast-api)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -77.2471375,
+     39.7891263
+    ],
+    [
+     -77.2469741,
+     39.7890902
+    ],
+    [
+     -77.246834,
+     39.7890632
+    ],
+    [
+     -77.246764,
+     39.7889911
+    ],
+    [
+     -77.2466939,
+     39.7889011
+    ],
+    [
+     -77.2466005,
+     39.788793
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt farm lane from where the drawn road stops, past the farmhouse to the outbuildings. The track on south past the barns left out (faint)."
+}

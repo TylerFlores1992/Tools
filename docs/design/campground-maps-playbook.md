@@ -616,6 +616,9 @@ of bookable sites).
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. ~~**Approve the look** of the single-unit and split-listing maps.~~ **Done** (0b).
+2a. **Alaska and Hawaii (230 maps held, 2026-10-08):** USGS's NAIP returns all black there, so no
+   first look is possible. Options: another public-domain photo source (to research: USGS's other
+   imagery services, Alaska's state imagery, NOAA), or pass those maps on the automatic check alone.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.

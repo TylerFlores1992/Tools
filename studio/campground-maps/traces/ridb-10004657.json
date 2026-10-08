@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-10004657",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout northeast-api)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -70.0752843,
+     41.9579499
+    ],
+    [
+     -70.0752843,
+     41.958058
+    ],
+    [
+     -70.0752361,
+     41.95813
+    ],
+    [
+     -70.0751396,
+     41.958202
+    ],
+    [
+     -70.0749949,
+     41.958238
+    ],
+    [
+     -70.0748501,
+     41.95822
+    ],
+    [
+     -70.0748019,
+     41.958166
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved drive from the road's bend up to the house. Footpaths in the grass left out."
+}

@@ -543,10 +543,14 @@ try {
     // every recorded one, adds this, and is what decisions.test.mts accepts.
     const recordedFile = join(import.meta.dirname, `../src/lab/camphawk/round2/maps/decisions/wave-${nn}.json`);
     const recorded: { id: string; decision: string }[] = existsSync(recordedFile) ? JSON.parse(readFileSync(recordedFile, "utf8")).decisions : [];
-    const id = built.map((e: { id: string }) => e.id).find((x: string) => !recorded.some((d) => d.id === x))!;
-    assert.ok(id, `every map in wave ${newest} is decided`);
+    // A map not already hidden (undecided, or approved): keeping it hidden is then a change.
+    const id = built.map((e: { id: string }) => e.id).find((x: string) => recorded.find((d) => d.id === x)?.decision !== "hidden")!;
+    assert.ok(id, `every map in wave ${newest} is already hidden`);
+    const wasRecorded = recorded.some((d) => d.id === id);
     await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=${newest}&id=${id}`);
     const box = p.getByRole("complementary", { name: "Review" }).getByRole("region", { name: "Your decision" });
+    // A decision recorded with the maps is reopened with Undo first.
+    if (wasRecorded) await box.getByRole("button", { name: "Undo" }).click();
     await box.getByRole("button", { name: "Keep it hidden" }).click();
     await box.getByText("You kept it hidden").waitFor();
     await p.getByRole("link", { name: "All maps" }).click();
@@ -558,8 +562,8 @@ try {
     assert.equal(file.wave, newest);
     const got = new Map(file.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]));
     assert.equal(got.get(id), "hidden");
-    assert.equal(got.size, recorded.length + 1);
-    for (const d of recorded) assert.equal(got.get(d.id), d.decision, d.id);
+    assert.equal(got.size, recorded.length + (wasRecorded ? 0 : 1));
+    for (const d of recorded) if (d.id !== id) assert.equal(got.get(d.id), d.decision, d.id);
     assert.deepEqual(decisionProblems(file, new Set(manifest.entries.map((e: { id: string }) => e.id))), []);
     assert.deepEqual(errors, []);
     await ctx.close();

@@ -1,0 +1,9 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 24.",
+ "listings": [
+  { "id": "232128", "split": true, "by": "First look (Claude, rollout northeast-api)", "on": "2026-10-08", "note": "Two loops 800 m apart on either side of the lake (001 to 024 west, 025 to 051 northeast), with the group sites between." },
+  { "id": "233644", "split": true, "by": "First look (Claude, rollout northeast-api)", "on": "2026-10-08", "note": "Three clusters strung along a peninsula over 1.2 km: 01 to 08 at the north end, 09 to 18 in the middle, 19 to 64 at the south end.", "gap": 150 },
+  { "id": "233652", "split": true, "by": "First look (Claude, rollout northeast-api)", "on": "2026-10-08", "note": "Four places over 1.5 km: the lettered sites A to X on the west, 69 to 86 beside them, 01 to 55 on the point, and P01 to P16 across the bay to the northeast." }
+ ]
+}
