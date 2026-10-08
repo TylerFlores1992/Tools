@@ -1,6 +1,6 @@
 # Batch midwest
 
-STATUS: started
+(STATUS: started, 2026-10-08 16:10 UTC)
 
 Setup: RIDB export of 2026-10-07 (same as the specs). OSM extract us-midwest from
 openstreetmap.fr, OSM as of 2026-10-07T00:18:43Z (2.79 GB raw, 2.25 GB trimmed; about 75 min
@@ -86,3 +86,28 @@ reset the connection (not needed here).
   canopy (21 `unsure`).
 - Trace candidates not done: 233850, 233141 (needs `replace`), 254084 (open south-east lanes),
   10159225 (the south shore lane), 10177518 (ramp lanes).
+
+## Wave 38 (us-midwest, units)
+- Built 36, failed 0
+- Check: ready 29, review 7, not drawn 0
+- First look: good 17, usable 4, hold 2, unsure 13
+- Traced: none (no undrawn road to a unit was plainly visible)
+- Split calls: none (single units)
+- Held, and why:
+  - 10315102 (Soldier Creek, Nebraska NF): the pin is on an open scrubby hillside with no road,
+    track or clearing within 150 m.
+  - 233780 (Lotus Group Area): the pin is in unbroken forest beside a sewage lagoon; the
+    listing's own point is 685 m away.
+- Notes: 232062 (Lake Vesuvius) is called `good` although the listing's point is 1.7 km away:
+  the photo shows the group site's clearing and building at the unit's point. 13 `unsure` are
+  forest lake campsites and cabins under full canopy (Bobcat, Henry, Moosehead, Pomeroy,
+  McKeever, Tom's Lake, Ironjaw, Minerva, Bass Lake and others).
+
+## Timing
+- Setup: about 80 min (the OSM extract download was most of it).
+- Wave 19: build about 20 min; first look, splits and traces about 35 min.
+- Wave 20: build about 30 min (ran during wave 19's look); look, splits, traces about 25 min.
+- Wave 21: build about 30 min (ran during wave 20's look); look, split, traces about 25 min.
+- Wave 38: build about 25 min; look about 15 min.
+
+STATUS: complete
