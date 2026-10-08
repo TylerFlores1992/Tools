@@ -326,7 +326,8 @@ a session or less.
   offers "Keep it hidden"; any other hold offers "Needs roads added" (`suggestedDecision`).
 - **Calls:**
   - `good`: sites on pads, roads on roads;
-  - `usable`: sites right, some lanes missing;
+  - `usable`: sites right, a few lanes missing: at most about 1 site in 7 without a drawn road
+    within about 20 m, and every drawn road on a visible one (more is `hold`);
   - `hold`: not usable as drawn;
   - `unsure`: the photo can't settle it.
 

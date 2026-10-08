@@ -4,7 +4,7 @@
 // first look: `good` and `usable` pass (approved), `hold` and `unsure` are held (hidden), and the
 // final check's own calls override the first look for the ids it names.
 //
-//   node studio/campground-maps/decide-wave.mjs <wave> --checked=<n> [--hold=id,id] [--pass=id,id] [--on=YYYY-MM-DD]
+//   node studio/campground-maps/decide-wave.mjs <wave> --checked=<n> [--hold=id,id] [--pass=id,id] [--why=reason] [--on=YYYY-MM-DD]
 //
 // --checked is how many maps the final check looked at over the photo (it goes into the source line).
 import { readFileSync, writeFileSync } from "node:fs";
@@ -18,9 +18,9 @@ const nn = (n) => String(n).padStart(2, "0");
  * `wholeCampgrounds` are listings whose one bookable site is named "Standard": a whole campground
  * booked as one site, its point a placeholder (colorado batch, 2026-10-08: 65 of 106 "units").
  * A unit location map of one misleads, so each is held, whatever the first look said.
- * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], wholeCampgrounds?: string[], checked: number, on: string, by?: string }} opts
+ * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], wholeCampgrounds?: string[], checked: number, on: string, by?: string, why?: string }} opts
  */
-export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeCampgrounds = [], checked, on, by = "Claude (final check, owner's delegation)" }) {
+export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeCampgrounds = [], checked, on, by = "Claude (final check, owner's delegation)", why }) {
   const decisions = manifest.entries.filter((e) => !e.error).map((e) => {
     const call = looks[e.id]?.call;
     if (!call) throw new Error(`wave ${wave}: no first look for ${e.id}`);
@@ -29,7 +29,7 @@ export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeC
     const decision = override ?? (call === "good" || call === "usable" ? "approved" : "hidden");
     const note = whole ? `Held: a whole campground booked as one "Standard" site, not a unit (first look ${call}).`
       : override
-      ? `Final check overrode the first look (${call}): ${decision === "approved" ? "passed" : "held"}.`
+      ? `Final check overrode the first look (${call}): ${decision === "approved" ? "passed" : "held"}${why ? `, ${why}` : ""}.`
       : decision === "approved" ? `Passed: first look ${call}.` : `Held to fix after: first look ${call}.`;
     return { id: e.id, decision, by, on, note };
   });
@@ -45,7 +45,7 @@ export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeC
 if (import.meta.url === `file://${process.argv[1]}`) {
   const wave = Number(process.argv[2]);
   const args = Object.fromEntries(process.argv.slice(3).map((a) => a.replace(/^--/, "").split("=")));
-  if (!wave || !args.checked) { console.error("usage: decide-wave.mjs <wave> --checked=<n> [--hold=id,id] [--pass=id,id] [--on=YYYY-MM-DD]"); process.exit(1); }
+  if (!wave || !args.checked) { console.error("usage: decide-wave.mjs <wave> --checked=<n> [--hold=id,id] [--pass=id,id] [--why=reason] [--on=YYYY-MM-DD]"); process.exit(1); }
   const manifest = JSON.parse(readFileSync(join(import.meta.dirname, `../../public/private/camphawk/maps/waves/wave-${nn(wave)}.json`), "utf8"));
   const looks = JSON.parse(readFileSync(join(LAB, `first-look/wave-${nn(wave)}.json`), "utf8")).looks;
   const list = (s) => (s ? s.split(",").filter(Boolean) : []);
@@ -54,7 +54,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const sites = JSON.parse(readFileSync(join(MAPS, `ridb-${e.id}.json`), "utf8")).sites;
     return sites.length === 1 && /^standard$/i.test(sites[0].name.trim());
   }).map((e) => e.id);
-  const file = decideWave({ wave, manifest, looks, hold: list(args.hold), pass: list(args.pass), wholeCampgrounds, checked: Number(args.checked), on: args.on ?? new Date().toISOString().slice(0, 10) });
+  const file = decideWave({ wave, manifest, looks, hold: list(args.hold), pass: list(args.pass), wholeCampgrounds, checked: Number(args.checked), why: args.why, on: args.on ?? new Date().toISOString().slice(0, 10) });
   writeFileSync(join(LAB, `decisions/wave-${nn(wave)}.json`), JSON.stringify(file, null, 1) + "\n");
   const n = (d) => file.decisions.filter((x) => x.decision === d).length;
   console.log(`wave ${wave}: ${n("approved")} approved, ${n("hidden")} hidden`);
