@@ -118,6 +118,13 @@ test("two names are one campground's only when one's telling words are all in th
   assert.equal(sameCampground("Davis Flat", "South Fork Campground"), false);
   assert.equal(sameCampground("Big Creek (CO)", "Cottonwood Lake Campground"), false);
   assert.equal(sameCampground("Kenosha East", "Kenosha Pass Campground"), false);
+  // OpenStreetMap's spellings: one typo in a long word, or words run together (the 2026-10-08 rebuild).
+  assert.equal(sameCampground("UPPER PENSTEMON CAMPGROUND", "Upper Penstmon Campground"), true);
+  assert.equal(sameCampground("Fourmile", "Four Mile Creek Campground"), true);
+  // But not two different short words, or a number.
+  assert.equal(sameCampground("Big Creek", "Bog Creek"), false);
+  assert.equal(sameCampground("Loop 12", "Loop 13"), false);
+  assert.equal(sameCampground("Kenosha East", "Kenosha Easy"), false);
   // A name with no telling words matches nothing.
   assert.equal(sameCampground("Campground", "Campground"), false);
   assert.equal(sameCampground("Elbert Creek", ""), false);

@@ -70,9 +70,27 @@ export function nameWords(name: string): string[] {
     Grove (CO)" and "Spruce Grove Campground - Grand Valley RD"), never "Kenosha East" and
     "Kenosha Pass Campground", or "Davis Flat" and "South Fork Campground". */
 export function sameCampground(a: string, b: string): boolean {
-  const A = nameWords(a), B = new Set(nameWords(b));
-  if (!A.length || !B.size) return false;
-  return A.every((w) => B.has(w)) || [...B].every((w) => A.includes(w));
+  const A = nameWords(a), B = nameWords(b);
+  if (!A.length || !B.length) return false;
+  const inB = (w: string) => B.some((v) => sameWord(w, v)), inA = (w: string) => A.some((v) => sameWord(w, v));
+  if (A.every(inB) || B.every(inA)) return true;
+  // Words run together: "Fourmile" and "Four Mile Creek Campground".
+  const ja = A.join(""), jb = B.join("");
+  return Math.min(ja.length, jb.length) >= 6 && (ja.includes(jb) || jb.includes(ja));
+}
+
+/** One word, allowing a single typo in a long one ("Penstemon", OpenStreetMap's "Penstmon"). */
+function sameWord(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (Math.min(a.length, b.length) < 6 || Math.abs(a.length - b.length) > 1 || /\d/.test(a + b)) return false;
+  // At most one letter added, dropped or changed.
+  let i = 0, j = 0, edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue; }
+    if (++edits > 1) return false;
+    if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
 }
 
 export type NamedRing = { ring: Pt[]; name: string };
