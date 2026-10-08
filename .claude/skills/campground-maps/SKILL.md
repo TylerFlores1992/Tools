@@ -17,7 +17,10 @@ Then, for context: `docs/NEXT-SESSION.md` ("Campground site maps"), `docs/design
 1. `git fetch origin main`; read `docs/NEXT-SESSION.md` and the playbook's §1 and §10.
 2. **Check the owner's Gmail (read only) for State Parks' answer** (`from:parks.ca.gov`, since
    2026-10-07). Never reply without the owner. An answer changes the plan (playbook §6.1).
-3. Download the newest RIDB export into the scratchpad (playbook §3). Network commands need
+3. **Probe the network first** (playbook §3.4: the host list and a one-line check). A `403` on
+   CONNECT is the environment's policy: stop and ask the owner to set Network access to Full or to
+   list every host there. Don't work around it.
+4. Download the newest RIDB export into the scratchpad (playbook §3). Network commands need
    `NODE_USE_ENV_PROXY=1`. Never disable TLS or unset the proxy.
 
 ## The rules that cost the most if broken
