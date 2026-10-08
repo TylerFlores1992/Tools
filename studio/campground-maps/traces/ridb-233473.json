@@ -1,0 +1,119 @@
+{
+ "version": 1,
+ "map": "ridb-233473",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -93.3505174,
+     34.5412459
+    ],
+    [
+     -93.3508769,
+     34.5414983
+    ],
+    [
+     -93.3512038,
+     34.5416967
+    ],
+    [
+     -93.3514761,
+     34.5417598
+    ],
+    [
+     -93.3518248,
+     34.5417778
+    ],
+    [
+     -93.3521626,
+     34.5418049
+    ],
+    [
+     -93.3525112,
+     34.5418229
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3571308,
+     34.5431122
+    ],
+    [
+     -93.3568693,
+     34.543022
+    ],
+    [
+     -93.3566296,
+     34.5428597
+    ],
+    [
+     -93.3564335,
+     34.5427696
+    ],
+    [
+     -93.3561938,
+     34.5427335
+    ],
+    [
+     -93.3558888,
+     34.5426794
+    ],
+    [
+     -93.3556708,
+     34.5426073
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.355758,
+     34.543581
+    ],
+    [
+     -93.3555619,
+     34.5436711
+    ],
+    [
+     -93.3554965,
+     34.5437793
+    ],
+    [
+     -93.3554094,
+     34.5438514
+    ],
+    [
+     -93.3552786,
+     34.5438514
+    ],
+    [
+     -93.3551479,
+     34.5437433
+    ],
+    [
+     -93.3551043,
+     34.543599
+    ],
+    [
+     -93.3550171,
+     34.5433105
+    ],
+    [
+     -93.3550171,
+     34.5431122
+    ],
+    [
+     -93.3545813,
+     34.5430941
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the NAIP photo: the entrance road, the road from the group site east past 69 and 70, and the loop on the point past 38 to 48. Left out: the lane up the east point past 01 to 21 (its middle can't be placed within 3 m under the trees), the lanes on the middle point (23 to 37) and past 49 to 59, which show only in pieces, and the main road between x -140 and 150 under the canopy."
+}

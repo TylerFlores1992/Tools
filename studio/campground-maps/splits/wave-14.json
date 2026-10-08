@@ -1,0 +1,28 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 14.",
+ "listings": [
+  {
+   "id": "232659",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Three places on separate fingers of the lake: loop G in the north, loop A in the east, loops D to F on the south point, and group site B alone in the woods."
+  },
+  {
+   "id": "234043",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Group sites G2 to G5 sit 900 m west of the loops in the forest, apart from the campground on the river."
+  },
+  {
+   "id": "233531",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Three places on separate fingers of the lake: 080 to 104 in the west, 035 to 079 in the middle, 001 to 034 on the east point (gap 150 m to part the west two).",
+   "gap": 150
+  }
+ ]
+}
