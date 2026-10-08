@@ -47,4 +47,32 @@ Waves 6, 7, 8 (us-west, multi). Branch `wip/maps-west-b`.
   - 251567 Contorta Flat: only the lake road drawn; sites across an open flat with no traceable lane.
 - Anything new: the dune listings (234195, 234196, 234200) are already split into areas by the build; the sites are on bare sand, so two are unsure.
 
-STATUS: started
+## Wave 08 (us-west, multi)
+- Built 95, failed 0
+- Check: ready 71, review 24, not drawn 0 (before traces; Chavez Crossing and Moose Creek Flat went to review with traces)
+- First look: good 20, usable 49, hold 7, unsure 19
+- Traced: 232143 (Chavez Crossing: the paved lane to the turnaround, no roads were drawn), 233738 (Moose Creek Flat: two pull-through loops and two west spurs). Both checked over the photo after the rebuild, within about 2 to 3 m.
+- Split calls: none kept. Tried 233217 (Big River, group sites across the river); it failed the area test, so it was dropped and the note says so.
+- Held, and why:
+  - 231900 Deer Run: the sites don't sit at the drawn spur ends; points look shifted.
+  - 232137 Frenchman: the drawn loop is a rough outline; most of 38 sites sit 30 to 100 m from it.
+  - 233217 Big River: group sites on the north bank with no road; south-bank sites off the loop.
+  - 234113 Boyington Mill: the drawn lanes cut across the open gravel area; its lanes aren't drawn.
+  - 234537 Diablo: only a Census track drawn; 010A and 010B sit 250 to 350 m north across the creek.
+  - 251894 East Lemolo: the drawn loop doesn't follow the visible lanes.
+  - 266141 North Twin Lake: only the middle lane drawn; the west loop and east lanes show and aren't.
+- Anything new: 232894 Packard Creek has one site (XXX17) 4 km north across the lake, shown as its own area: likely a misplaced RIDB point.
+
+## Not traced, and why (all waves)
+Many usable maps miss short spurs that show in gaps through the trees; I traced only where a whole lane showed
+plainly and its join could be placed within about 3 m. Considered and not traced: 251616, 272092, 233895 (wave 6);
+10060948, 251567, 232311, 233835 (wave 7); 251894, 266141 (wave 8: lanes show but partly under pines, left for the
+review page's tracing tool).
+
+## Timing
+- Setup: about 65 min (the us-west extract: 3.76 GB at about 1 MB/s, then the trim).
+- Wave 6: build 18 min, first look and trace attempts about 45 min.
+- Wave 7: build about 25 min (in parallel with wave 6's look), first look, trace and split about 40 min.
+- Wave 8: build about 25 min (in parallel), first look and traces about 40 min.
+
+STATUS: complete
