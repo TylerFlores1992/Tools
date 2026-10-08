@@ -33,3 +33,34 @@ resumed), MD5 ok, trimmed to 3.09 GB; OSM as of 2026-10-07T00:17:45Z. About 2 h 
 - Anything new: "Extra Vehicle" twin sites (a stacked-point failure mode with a clear fix);
   a RIDB site literally named "This site should be deleted" (233360). USGS water sometimes didn't
   answer and the build used OpenStreetMap's water instead (it says so in the log).
+
+## Wave 13 (us-west, multi)
+- Built 94, failed 0
+- Check: ready 49, review 40, not drawn 5 (after traces)
+- First look: good 8, usable 26, hold 42, unsure 18 (the clarified `usable` bar applied from the start)
+- Traced: 10158808, 262702, 10046989, 10377519, 232218, 232846, 232847, 233325, 234107 (each
+  checked over the photo after the rebuild; Sunstrip, Roaring River and Grouse Valley moved onto the
+  road on a second or third pass)
+- Split calls: none. 10364920 (Kerr, spread over 1.2 km, looks dispersed) and 232803 (Jackass Meadow,
+  two clusters 200 m apart) might be splits; both are held for missing roads anyway, so no call made.
+- Held, and why (one line each):
+  - 10191054, 232398, 232804, 232909, 10406480: not drawn; sites stacked on one or a few points.
+  - 232817: thirty-odd sites crammed on an open slope off the visible paved loop; points misplaced.
+  - 272246, 10114392, 10377502, 10377515, 10377584, 232811, 232814, 232839, 232842, 232843, 234650,
+    251357: drawn roads (Census, Forest Service or OSM) don't follow the visible lanes.
+  - 274288, 10077501, 10110742, 10377600, 10405307, 267076, 10190967, 234553: no drawn road reaches
+    most or all of the sites (Panchuela's units are on footpaths; Lightning Point's paved loops
+    aren't in any source).
+  - 10165706, 10364920, 10373422, 10377563, 232371, 232803, 232823, 232851, 232879, 267077, 249982,
+    233437, 262702, 232847, 10377519: a third or more of the sites have no drawn road.
+  - 232460 (Dorst Creek, 204 sites): the northeast loops' rings cross the trees instead of the lanes.
+- Anything new: Forest Service roads ("usfs") were the commonest bad source in this wave: rings drawn
+  beside the visible loop (Lockaby, Bogus Creek, Clearwater Falls). USGS water kept timing out during
+  the build (the build fell back to OpenStreetMap's water, as designed), which made the wave 13 build
+  take about 90 minutes.
+
+Times: setup about 2 h (mostly the 3.8 GB extract at 0.7 MB/s); wave 12 about 2 h 15 min (build 25 min,
+first look and traces about 1 h 50 min); wave 13 about 2 h (build about 90 min, overlapping wave 12's
+first look; first look and traces about 1 h 15 min).
+
+STATUS: complete
