@@ -86,6 +86,15 @@ updates, owner decisions; the `campground-maps` skill loads it on "complete the 
   - **Restrooms and water:** the Forest Service publishes only text ("Vault toilet(s)"), not
     locations. Saying that text on the map where no location exists is not built.
   - **Rebuilding needs the RIDB export** (248 MB, not committed; README step 1).
+- **The owner decided (2026-10-08):**
+  - **All 23 held sample maps:** 18 approved (12 with traced roads, 6 flagged but fine), 5 kept
+    hidden (Yellowbottom, Murrell, Rabbit Valley, Medicine Lake, Pioneer Trail). Recorded in
+    `src/lab/camphawk/round2/maps/decisions/wave-00.json`; the review page shows them for everyone.
+  - **Waves go by CampHawk demand.** Only 23 Recreation.gov campgrounds have ever been watched; 17
+    new ones are in the 2,196, so they lead wave 1. After that, Recreation.gov's reservation
+    history (to check). Playbook §4.2.
+  - **Single-unit and split-listing maps: yes, designed after wave 1.**
+  - **Still the owner's:** allow `download.geofabrik.de` (playbook §3.4, §10).
 
 **Waiting on California State Parks** (both emails sent 2026-10-07 from the owner's Gmail):
 - **Public Records Act request** to Parks.PRA@parks.ca.gov, for their campsite layer (ArcGIS item
