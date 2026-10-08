@@ -344,8 +344,8 @@
    "built": "2026-10-08",
    "count": 95,
    "summary": {
-    "ready": 54,
-    "review": 40,
+    "ready": 53,
+    "review": 41,
     "notDrawn": 1,
     "failed": 0
    },
@@ -672,8 +672,8 @@
    "built": "2026-10-08",
    "count": 94,
    "summary": {
-    "ready": 62,
-    "review": 30,
+    "ready": 61,
+    "review": 31,
     "notDrawn": 2,
     "failed": 0
    },
@@ -1437,8 +1437,8 @@
    "built": "2026-10-08",
    "count": 90,
    "summary": {
-    "ready": 48,
-    "review": 40,
+    "ready": 47,
+    "review": 41,
     "notDrawn": 2,
     "failed": 0
    },
@@ -1542,8 +1542,8 @@
    "built": "2026-10-08",
    "count": 91,
    "summary": {
-    "ready": 44,
-    "review": 46,
+    "ready": 38,
+    "review": 52,
     "notDrawn": 1,
     "failed": 0
    },
@@ -1648,8 +1648,8 @@
    "built": "2026-10-08",
    "count": 90,
    "summary": {
-    "ready": 48,
-    "review": 42,
+    "ready": 44,
+    "review": 46,
     "notDrawn": 0,
     "failed": 0
    },
@@ -1964,8 +1964,8 @@
    "built": "2026-10-08",
    "count": 87,
    "summary": {
-    "ready": 39,
-    "review": 46,
+    "ready": 38,
+    "review": 47,
     "notDrawn": 2,
     "failed": 0
    },
@@ -2066,8 +2066,8 @@
    "built": "2026-10-08",
    "count": 86,
    "summary": {
-    "ready": 47,
-    "review": 39,
+    "ready": 42,
+    "review": 44,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2167,8 +2167,8 @@
    "built": "2026-10-08",
    "count": 87,
    "summary": {
-    "ready": 60,
-    "review": 26,
+    "ready": 58,
+    "review": 28,
     "notDrawn": 1,
     "failed": 0
    },
@@ -3043,8 +3043,8 @@
    "built": "2026-10-08",
    "count": 88,
    "summary": {
-    "ready": 57,
-    "review": 31,
+    "ready": 56,
+    "review": 32,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3146,8 +3146,8 @@
    "built": "2026-10-08",
    "count": 89,
    "summary": {
-    "ready": 80,
-    "review": 9,
+    "ready": 56,
+    "review": 33,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3470,8 +3470,8 @@
    "built": "2026-10-08",
    "count": 53,
    "summary": {
-    "ready": 43,
-    "review": 10,
+    "ready": 38,
+    "review": 15,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3538,8 +3538,8 @@
    "built": "2026-10-08",
    "count": 53,
    "summary": {
-    "ready": 52,
-    "review": 1,
+    "ready": 37,
+    "review": 16,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3662,8 +3662,8 @@
    "built": "2026-10-08",
    "count": 36,
    "summary": {
-    "ready": 29,
-    "review": 7,
+    "ready": 28,
+    "review": 8,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3713,8 +3713,8 @@
    "built": "2026-10-08",
    "count": 23,
    "summary": {
-    "ready": 18,
-    "review": 5,
+    "ready": 17,
+    "review": 6,
     "notDrawn": 0,
     "failed": 0
    },
