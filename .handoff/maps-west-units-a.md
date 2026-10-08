@@ -35,4 +35,23 @@ Setup (2026-10-08): network fine (every map host answers; Geofabrik still resets
   - 234661 Fall River Guard Station: pin in unbroken forest; a green-roofed building 130 m west at a lane's end is likely it.
 - Anything new: a winter (snow) photo at Windy Pass (234327). The same two failure modes as wave 26: the unit pin is off while the listing point is right (Whitetail, Deer Ridge), or the pin is 80 to 130 m off a building that plainly shows (Grizzly Ridge, Fall River). USGS photo requests were slow (one zoom failed twice before loading).
 
-STATUS: started (wave 28 next)
+## Wave 28 (us-west, units)
+- Built 89, failed 0 (34 min, then a full re-run of about 10 min: see below)
+- Check: ready 74, review 15, not drawn 0
+- First look: good 47, usable 15, hold 10, unsure 17
+- Traced: 234212 (Peavy Cabin: the gravel drive from the road to the cabin's parking pad; moved once to sit on the drive's middle and join the road). Checked over the photo.
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 232342 Holiday Group: pin on the highway's edge; neither nearby clearing is plainly the group site.
+  - 233178 Shaw House: pin on an empty juniper slope 600 m from any road; the listing's own point is among several houses.
+  - 233162 Gray Pine Group: pin in brush by the creek; the group area plainly shows 80 m west.
+  - 234006 Harvey West Cabin: pin in unbroken forest 200 m from any road; the listing's own point is in forest too.
+  - 234168 Ludlum House: pin in forest; the house plainly shows 100 m north.
+  - 234294 Limber Flag Yurt: pin in unbroken forest; the listing's own point (2.2 km) is on a round structure at a road bend.
+  - 234521 McCain Cabin: pin in an empty meadow; the listing's own point (860 m) is on the cabin in its yard.
+  - 234531 Podunk Guard Station: pin in an empty wet meadow 110 m from any road.
+  - 234570 Hoback Guard Station: pin in open grassland with no building.
+  - 234582 La Barge Guard Station: pin in a wet meadow; the station plainly shows 60 m northwest.
+- Anything new: **the first full build exited without writing the manifest** ("unsettled top-level await"): one campground (234522) never finished, likely a hung request. A full re-run from the cache finished all 89 and wrote it. A rebuild by id fails until the manifest exists ("a campground is missing from the manifest").
+
+STATUS: started (wave 29 next)
