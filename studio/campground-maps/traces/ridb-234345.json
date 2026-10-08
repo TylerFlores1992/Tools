@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234345",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -114.709141,
+     48.3826166
+    ],
+    [
+     -114.709303,
+     48.3825446
+    ],
+    [
+     -114.7094785,
+     48.3824727
+    ],
+    [
+     -114.709654,
+     48.3823918
+    ],
+    [
+     -114.709789,
+     48.3823558
+    ],
+    [
+     -114.709924,
+     48.3823108
+    ],
+    [
+     -114.7099375,
+     48.3822479
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane from the end of the Forest Service spur to the guard station's yard, plainly visible in the open. Left out: the parallel lane to the east (x 20 to 40), which may be a separate drive, and the tracks across the meadow south of the station."
+}
