@@ -5,7 +5,7 @@
 // (Site maps review page) downloads:
 //
 //   { "version": 1, "map": "ridb-274721", "traced": "2026-10-07", "by": "…",
-//     "photo": "USDA NAIP via USGS The National Map (public domain)",
+//     "photo": "USDA NAIP via USGS The National Map (public domain)",   (aerial.ts's credit for the map)
 //     "roads":  [{ "coords": [[lon, lat], …], "through": true?, "name": "…"? }],
 //     "points": [{ "type": "Restroom" | "Water", "at": [lon, lat] }],
 //     "replace": true?, "note": "…" }

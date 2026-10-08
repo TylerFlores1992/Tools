@@ -17,6 +17,7 @@ import { LATEST_WAVE, LOOK_LEVEL, SAMPLE_WAVE, WAVES, loadWave, needsDecision, w
 import { AdminFrame } from "./AdminFrame";
 import { MapThumb } from "./MapThumb";
 import { AerialCheck } from "./AerialCheck";
+import { AERIAL, aerialSource, NO_PHOTO } from "../maps/aerial";
 import { TraceTool } from "./TraceTool";
 import { useSavedTraceIds, useTraceDraft } from "./useTraceDraft";
 import { withDraft } from "../maps/trace";
@@ -799,6 +800,7 @@ const WATER_SOURCE: Record<WaveEntry["sources"]["water"], string> = {
 function Sources({ entry, map }: { entry: WaveEntry; map: SiteMapData | null }) {
   const pick = map?.sources?.roadPick;
   const traced = map?.sources?.traced;
+  const photo = map?.bbox ? aerialSource({ facilityId: map.facilityId, bbox: map.bbox }) : AERIAL.naip;
   const rows: [string, ReactNode][] = [
     ["Sites", "Recreation.gov’s published points (RIDB, CC BY 4.0)"],
     ["Roads", traced?.replace
@@ -806,7 +808,7 @@ function Sources({ entry, map }: { entry: WaveEntry; map: SiteMapData | null }) 
       : <>{ROAD_SOURCE[entry.sources.roads]}{pick && <span className="block text-[13.5px] text-ch-ink-2">{pick.why}.</span>}</>],
     ...(traced && (traced.roads || traced.points) ? [["Traced", <>{`${[traced.roads && `${traced.roads} road${traced.roads === 1 ? "" : "s"}`, traced.points && `${traced.points} point${traced.points === 1 ? "" : "s"}`].filter(Boolean).join(" and ")} from the aerial photo${traced.by ? `, by ${traced.by}` : ""}${traced.on ? `, ${traced.on}` : ""}.`}{traced.note && <span className="block text-[13.5px] text-ch-ink-2">{traced.note}</span>}</>] as [string, ReactNode]] : []),
     ["Lakes and rivers", WATER_SOURCE[entry.sources.water]],
-    ["Aerial photo", "USDA NAIP, via USGS The National Map (public domain). For checking and tracing; never drawn on a camper’s map."],
+    ["Aerial photo", <>{photo ? `${photo.credit}.` : NO_PHOTO} For checking and tracing; never drawn on a camper’s map.</>],
   ];
   const fits = pick ? (Object.keys(SOURCE_SHORT) as (keyof typeof SOURCE_SHORT)[]).map((k) => [k, pick.fits[k] ?? null] as const) : [];
   return (

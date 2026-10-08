@@ -1,4 +1,4 @@
-// A tracing aid: the USDA aerial photo (NAIP, public domain) of a built map, or of part of it,
+// A tracing aid: the aerial photo (public domain; src/lab/camphawk/round2/maps/aerial.ts picks it) of a built map, or of part of it,
 // with a labelled grid in the map's own metres, the map's roads (yellow; traced ones cyan) and its
 // sites (magenta), as a PNG. A session reads the PNG to judge a map and to trace what's missing in
 // map metres (then trace-from-grid.mjs writes the trace file); a person can use the review page's
@@ -10,6 +10,7 @@
 // 0.6-1 m a pixel). Coordinates on the grid are the map's local metres, x east and y south.
 import { readFileSync, writeFileSync } from "node:fs";
 import sharp from "sharp";
+import { AERIAL, aerialSource, exportUrl, sizeFor } from "../../src/lab/camphawk/round2/maps/aerial.ts";
 
 const [file, out, ...rest] = process.argv.slice(2);
 if (!file || !out) { console.error("usage: aerial-grid.mjs <map.json> <out.png> [x0 y0 x1 y1] [step] [width]"); process.exit(1); }
@@ -21,13 +22,16 @@ const step = Number(rest[4] ?? 20), W = Number(rest[5] ?? 1600);
 // The map's metres are linear in longitude and latitude, so the box converts by interpolation.
 const lon = (x) => w + ((x - f.x) / f.w) * (e - w), lat = (y) => n - ((y - f.y) / f.h) * (n - s);
 const H = Math.round((W * (y1 - y0)) / (x1 - x0));
-const q = new URLSearchParams({ bbox: [lon(x0), lat(y1), lon(x1), lat(y0)].join(","), bboxSR: "4326", imageSR: "3857", size: `${W},${H}`, format: "jpg", f: "image" });
+const src = process.env.AERIAL ? AERIAL[process.env.AERIAL] : aerialSource(map); // AERIAL=<key> to compare
+if (!src) { console.error(`${file}: no public-domain aerial photo covers this map (aerial.ts)`); process.exit(1); }
+// A fixed-scale source (aerial.ts) is asked at its own scale and stretched to the grid's width.
+const url = exportUrl(src, [lon(x0), lat(y1), lon(x1), lat(y0)], sizeFor(src, { w: x1 - x0, h: y1 - y0 }, W));
 let photo;
 for (let i = 0; i < 4 && !photo; i++) {
-  const res = await fetch(`https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?${q}`, { signal: AbortSignal.timeout(90000) }).catch(() => null);
+  const res = await fetch(url, { signal: AbortSignal.timeout(90000) }).catch(() => null);
   if (res?.ok && /image/.test(res.headers.get("content-type") ?? "")) photo = Buffer.from(await res.arrayBuffer());
 }
-if (!photo) { console.error("the aerial photo didn't load (USGS may be busy; try again)"); process.exit(1); }
+if (!photo) { console.error(`the aerial photo didn't load (${src.key} may be busy; try again)`); process.exit(1); }
 const k = W / (x1 - x0);
 const px = (x, y) => [((x - x0) * k).toFixed(1), ((y - y0) * k).toFixed(1)];
 const path = (d) => d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_m, a, b) => px(Number(a), Number(b)).join(" "));

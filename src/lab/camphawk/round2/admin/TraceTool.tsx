@@ -7,14 +7,15 @@ import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
 import { cleanRoad, lengthM, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
 import { TracedMark } from "./AerialCheck";
-import { naipUrl } from "../maps/naip";
+import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
 // water taps a person can see. The reviewer clicks along a road; the trace is kept in this browser
 // and downloaded as the file the build reads (studio/campground-maps/traces/<map>.json). Nothing
 // here changes a map until that file is added and the map rebuilt.
 //
-// The photo is USDA NAIP (public domain), so what is traced from it is our own work. It is drawn
+// The photo is public domain (maps/aerial.ts picks it: USDA NAIP, or the Forest Service's in
+// Alaska), so what is traced from it is our own work. It is drawn
 // in ochre, CampHawk's "yours" colour, with a square at each end (and at every point of the road
 // being drawn), so it reads as the reviewer's own lines by shape as well as hue.
 
@@ -82,7 +83,8 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const perPx = drawnW ? f.w / drawnW : 0;
   // Asked for in steps of 400px so a resize doesn't fetch a new photo every pixel; USGS serves up to 4000.
   const photoW = drawnW ? Math.min(4000, Math.ceil((drawnW * dpr) / 400) * 400) : 1400;
-  const src = naipUrl(map.bbox, f, photoW);
+  const source = aerialSource(map);
+  const src = aerialUrl(map, f, photoW);
   const [photo, setPhoto] = useState<{ src: string; state: "ready" | "error" } | null>(null);
   const photoState = photo?.src === src ? photo.state : "loading";
   const img = useRef<HTMLImageElement>(null);
@@ -238,7 +240,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
 
   const finished = draft.roads.filter((r) => r.coords.length > 1).length;
   const hasAny = finished > 0 || draft.points.length > 0;
-  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10));
+  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10), "", source?.credit);
   const download = () => {
     const blob = new Blob([JSON.stringify(file(), null, 1) + "\n"], { type: "application/json" });
     const a = document.createElement("a");
@@ -313,8 +315,8 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           style={{ width: zoom === 1 ? "100%" : `${zoom * 100}%`, aspectRatio: `${f.w} / ${f.h}` }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
-          <img ref={img} src={src} alt="" width={photoW} height={Math.round((photoW * f.h) / f.w)} draggable={false} onLoad={() => setPhoto({ src, state: "ready" })} onError={() => setPhoto({ src, state: "error" })}
-            className={cx("absolute inset-0 size-full select-none object-fill", photoState === "error" && "opacity-0")} />
+          {src && <img ref={img} src={src} alt="" width={photoW} height={Math.round((photoW * f.h) / f.w)} draggable={false} onLoad={() => setPhoto({ src, state: "ready" })} onError={() => setPhoto({ src, state: "error" })}
+            className={cx("absolute inset-0 size-full select-none object-fill", photoState === "error" && "opacity-0")} />}
           <svg aria-hidden="true" viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} preserveAspectRatio="none" className="pointer-events-none absolute inset-0 size-full">
             {/* The source's roads. Replaced, they fade (no casing), so what goes is still visible. */}
             {!draft.replace && sourceRoads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={0.6} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
@@ -352,7 +354,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           })}
           {photoState !== "ready" && (
             <p role={photoState === "error" ? "alert" : "status"} className="pointer-events-none absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-              {photoState === "error" ? "The aerial photo didn’t load. USGS’s imagery service may be busy; try again in a minute." : "Loading the aerial photo…"}
+              {!source ? NO_PHOTO : photoState === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
             </p>
           )}
         </div>

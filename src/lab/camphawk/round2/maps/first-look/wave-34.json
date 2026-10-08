@@ -1,380 +1,380 @@
 {
  "version": 1,
  "wave": 34,
- "by": "Claude (rollout northeast-api)",
+ "by": "Claude (Alaska and Hawaii imagery)",
  "on": "2026-10-08",
  "looks": {
   "232919": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 194 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake shore under the trees; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 194 m away."
   },
   "232921": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 241 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy on a point between the creek mouth and the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 241 m away."
   },
   "232923": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 287 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is on the beach edge under the trees of a point; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 287 m away."
   },
   "232925": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's water off a small beach, with no cabin on the shore near it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232926": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 100 m in from the tidal flat; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232927": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 40 m above the shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232929": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 1 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 20 m above the lake shore, on the drawn trail; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 1 m away."
   },
   "232930": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 22 m away."
+   "call": "good",
+   "note": "Zoomed on the Forest Service photo, the pin is on the cabin's small roof at the lake shore, and the drawn trail passes 22 m from it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 22 m away."
   },
   "232931": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on an open brushy slope with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232932": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is in open muskeg with no building; a small structure shows about 145 m north-west, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232933": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 6 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is on the creek's shore under forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 6 m away."
   },
   "232934": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 94 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the cove's tidal flat with no building; a small building shows about 90 m south-west at the forest edge, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn trail 94 m away."
   },
   "232936": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232937": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232949": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 43 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the grassy shore strip at the water's edge with no cabin, which would show there. On the map: the pin is 43 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232952": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 136 m from the listing's own point, with a drawn trail 58 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees with no building; a small cabin shows about 125 m north on the same shore. On the map: the pin is 136 m from the listing's own point, with a drawn trail 58 m away."
   },
   "232954": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 121 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy on a point; no cabin shows. On the map: the pin is 121 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232955": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 340 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees; no cabin plainly shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 340 m away."
   },
   "232956": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 45 m from the listing's own point, with a drawn trail 1 m away."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service photo, the cabin's roofs plainly show about 40 m south-west of the pin, on the wooded islet by the lake; the drawn trail passes the pin. On the map: the pin is 45 m from the listing's own point, with a drawn trail 1 m away."
   },
   "232957": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 77 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy beside a channel of the lake; no cabin shows. On the map: the pin is 77 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232958": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 24 m from the listing's own point, with a drawn trail 10 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees, with a small dark shape 25 m west that may be the cabin; nothing is plainly it. On the map: the pin is 24 m from the listing's own point, with a drawn trail 10 m away."
   },
   "232960": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 147 m from the listing's own point, with a drawn trail 115 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is in unbroken forest; a cabin plainly shows about 140 m south-west near the lake. On the map: the pin is 147 m from the listing's own point, with a drawn trail 115 m away."
   },
   "232961": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 588 m from the listing's own point, with a drawn trail 62 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 30 m above the lake shore; no cabin shows. The listing's own point is 588 m away. On the map: the pin is 588 m from the listing's own point, with a drawn trail 62 m away."
   },
   "232962": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 115 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at the forest edge above the bay's beach; no cabin plainly shows. On the map: the pin is 115 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232964": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is in open muskeg on a river bend with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232965": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 418 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water, 40 m from the nearest shore; no cabin shows near it. The listing's own point is 418 m away. On the map: the pin is 418 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232966": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the cabin plainly shows about 30 m north-west of the pin in the lakeside meadow, with a floatplane at the shore; nothing drawn reaches it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232967": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 17 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's water at a narrows by a log jam; no cabin shows on the shores near it. On the map: the pin is 17 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232969": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 309 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at the shore under the trees by the narrows; no cabin shows. The listing's own point is 309 m away. On the map: the pin is 309 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232970": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on the river's open gravel and driftwood at a channel, with no cabin, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232971": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 109 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's water off a creek mouth; no cabin shows on the shore near it. On the map: the pin is 109 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232973": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is under forest canopy between meadows; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232976": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on the riverside edge of an open meadow with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232977": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 331 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. The listing's own point is 331 m away. On the map: the pin is 331 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232979": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 335 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy on a point in the lake; no cabin shows. The listing's own point is 335 m away. On the map: the pin is 335 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232980": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 166 m away."
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is under full forest canopy 50 m above the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 166 m away."
   },
   "232981": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on open grass flats beside a slough with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232982": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on open water 140 m off the shore; a small building shows on the beach to the west, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232984": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 205 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. The listing's own point is 205 m away. On the map: the pin is 205 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232985": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 349 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on the edge of the creek's open gravel bed; no cabin shows near it. On the map: the pin is 0 m from the listing's own point, with a drawn road 349 m away."
   },
   "232986": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 840 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on open water with no shore in the 300 m around it; the listing's own point is 840 m away. On the map: the pin is 840 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232990": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 82 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 50 m above the lake; no cabin shows. On the map: the pin is 82 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232992": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 1.3 km from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is in forest by a meadow edge; no cabin shows. The listing's own point is 1.3 km away. On the map: the pin is 1.3 km from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232993": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 261 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on an open grassy shore meadow with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with a drawn road 261 m away."
   },
   "232996": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 342 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water 25 m off the shore; a small cabin shows on the point about 70 m north-west, which may be it. On the map: the pin is 0 m from the listing's own point, with a drawn road 342 m away."
   },
   "232997": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is among scattered trees on wet meadow by the bay; no cabin plainly shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232999": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at the forest edge above the tidal flat; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233003": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service photo, the pin is on the cabin's small red roof above the lake shore; nothing drawn reaches it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233011": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 87 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under a stand of trees in the open meadow; no cabin shows through them. On the map: the pin is 0 m from the listing's own point, with a drawn trail 87 m away."
   },
   "233012": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is in dense brush and forest 100 m from the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233015": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at the forest edge by the creek meadow; no cabin plainly shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233017": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 21 m away."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service photo, the cabin with a blue tarp shows about 35 m north-west of the pin, with its boardwalk to the dock; the pin is in the muskeg by the lake, and the drawn trail passes 21 m from it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 21 m away."
   },
   "233030": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 149 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 80 m in from the shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 149 m away."
   },
   "233032": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 90 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 60 m above the lake shore; no cabin shows. On the map: the pin is 90 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233033": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 642 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's water 10 m off the wooded shore; no cabin shows near it. On the map: the pin is 0 m from the listing's own point, with a drawn road 642 m away."
   },
   "233034": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 625 m from the listing's own point, with a drawn road 373 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is in open forest and muskeg by the lake's inlet; no cabin plainly shows. The listing's own point is 625 m away. On the map: the pin is 625 m from the listing's own point, with a drawn road 373 m away."
   },
   "233035": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 128 m from the listing's own point, with a drawn road 156 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water 35 m off a small beach; no cabin shows near it. On the map: the pin is 128 m from the listing's own point, with a drawn road 156 m away."
   },
   "233036": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 40 m above the lake shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233042": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 249 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at a forest and muskeg edge by a creek; no cabin plainly shows. The listing's own point is 249 m away. On the map: the pin is 249 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233043": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 90 m above the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233044": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 61 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under a stand of trees by the creek meadow; no cabin shows. On the map: the pin is 61 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233054": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water off a wooded point; no cabin shows near it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233056": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233060": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 50 m from the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233061": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 37 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees above a beach with a dock; no cabin plainly shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 37 m away."
   },
   "233063": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 171 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 171 m away."
   },
   "233066": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 238 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 238 m away."
   },
   "233067": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 126 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy on an island in the slough; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 126 m away."
   },
   "233069": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy between the tidal meadow and the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233071": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the glacial lake's water off a wooded point; no cabin shows near it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233072": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service photo, a small cabin shows about 50 m south of the pin at the edge of the grass flat; the pin is at the forest edge, and nothing drawn reaches it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233073": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 18 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is at the edge of a stand of trees in the open grass flats with no building at it; nothing nearby is plainly the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn trail 18 m away."
   },
   "233074": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is on the open grass flat with no building; a small cabin shows about 120 m south-west at the forest edge, which is likely it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233075": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy at the edge of the grass flats; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233077": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 140 m from the lake, where a dock shows to the west; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233080": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233081": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 80 m east of the lake's inlet meadow; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233083": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233084": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233085": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 264 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy above the slough; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 264 m away."
   },
   "233086": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn trail 60 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service photo, the pin is at the edge of a stand of trees in the open grass flats with no building at it, which would show there. On the map: the pin is 0 m from the listing's own point, with a drawn trail 60 m away."
   },
   "233087": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 40 m above the river bank; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233088": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 1.1 km from the listing's own point, with a drawn trail 52 m away."
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is under full forest canopy; no cabin shows. The listing's own point is 1.1 km away. On the map: the pin is 1.1 km from the listing's own point, with a drawn trail 52 m away."
   },
   "233089": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 14 m from the listing's own point, with a drawn trail 14 m away."
+   "call": "good",
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is on a small roof in a clearing by the river, and the drawn trail passes 14 m from it. On the map: the pin is 14 m from the listing's own point, with a drawn trail 14 m away."
   },
   "233090": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 3 m from the listing's own point, with a drawn trail 8 m away."
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is in forest between the river and a gravel road; nothing at it is plainly the cabin. On the map: the pin is 3 m from the listing's own point, with a drawn trail 8 m away."
   },
   "233091": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 141 m from the listing's own point, with a drawn road 109 m away."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is on open meadow beside a dirt track with no building; buildings show about 120 m south where the drawn road ends. On the map: the pin is 141 m from the listing's own point, with a drawn road 109 m away."
   },
   "233093": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 266 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is in forest above the river flats; no cabin plainly shows at this resolution. On the map: the pin is 266 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233094": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 999 m from the listing's own point, with a drawn trail 134 m away."
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is in mixed forest and brush; no cabin plainly shows. The listing's own point is 999 m away. On the map: the pin is 999 m from the listing's own point, with a drawn trail 134 m away."
   },
   "233095": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 4.6 km from the listing's own point, with a drawn road 446 m away."
+   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is in brush above the river's gravel; no cabin plainly shows at this resolution. The listing's own point is 4.6 km away. On the map: the pin is 4.6 km from the listing's own point, with a drawn road 446 m away."
   },
   "234671": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 13 m away."
+   "call": "good",
+   "note": "Zoomed on the Forest Service photo, the pin is on the cabin beside its gravel parking pad, and the drawn road passes 13 m from it. On the map: the pin is 0 m from the listing's own point, with a drawn road 13 m away."
   },
   "253458": {
-   "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with a drawn road 71 m away."
+   "call": "good",
+   "note": "Zoomed on the Forest Service photo, the pin is on the cabin; the gravel lane from the drawn road to it shows plainly and was traced. On the map: the pin is 0 m from the listing's own point, with a drawn road 71 m away."
   },
   "10006208": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is No listing point from the listing's own point, with a drawn trail 20 m away."
+   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here), so the pin can't be checked. On the map: the pin is No listing point from the listing's own point, with a drawn trail 20 m away."
   },
   "10075403": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is No listing point from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here), so the pin can't be checked. On the map: the pin is No listing point from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "10165215": {
    "call": "unsure",
@@ -382,7 +382,7 @@
   },
   "10341414": {
    "call": "unsure",
-   "note": "No NAIP photo (USGS returns black for Alaska), so the pin can't be checked. On the map: the pin is 241 m from the listing's own point, with a drawn road 23 m away."
+   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 25 m from the drawn road, above the beach; no cabin shows. On the map: the pin is 241 m from the listing's own point, with a drawn road 23 m away."
   }
  }
 }
