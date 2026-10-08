@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-233096",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.2528029,
+     40.8679152
+    ],
+    [
+     -122.2526606,
+     40.8678162
+    ],
+    [
+     -122.252625,
+     40.8676811
+    ],
+    [
+     -122.2526131,
+     40.867555
+    ],
+    [
+     -122.2526013,
+     40.867465
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt lane on from where the drawn spur ends, down the bare strip to the group site."
+}

@@ -43,3 +43,33 @@ STATUS: started
     234755 Berlin Flats, 234314 Meyers Creek, 233944 Jack Creek): called good with that said.
   - USGS hydro (NHD) didn't answer for many maps; the build used OSM water instead.
   - About 55 minutes for the wave (build about 40 minutes, overlapping the first look).
+
+## Wave 31 (us-west, units)
+- Built 88, failed 0 (first run, about 45 minutes, alongside wave 30's look)
+- Check: ready 57, review 31, not drawn 0 (after the traces; 62 and 26 before them)
+- First look: good 37, usable 18, hold 13, unsure 20
+- Traced: 10176099 (Burgdorf: drive to the ranger house), 231845 (Hidden Valley: dirt road up to
+  the pad), 232401 (Elk Creek Cabins: the gravel road through the station, x -400..400 m only),
+  233096 (Hirz Bay Group 1: lane down the bare strip), 234532 (Jones Corral: track to the station)
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 10165535 (Piety Island): pin in open water 80 m off the island.
+  - 231964: pin on a ranch compound, not a campground; listing point 29 km away.
+  - 232351: pin in juniper scrub 85 m from any road, no corral or pad; listing point 480 m away.
+  - 232765: pin on the lake's drawdown flats 180 m from any road, nothing at it.
+  - 233097: pin on a wooded slope 135 m from any road, nothing at it.
+  - 233161: pin in a burned stand 170 m from any road, nothing at it.
+  - 233820: pin in unbroken forest 225 m from any road.
+  - 234000: pin in pinyon scrub, nothing at it; listing point 1.7 km away.
+  - 234466: pin in unbroken forest; the drawn loop beside it crosses trees where no road shows.
+  - 234771: pin in open pasture with no building; buildings are 100 m south.
+  - 251579: pin on an open slope with no building; listing point 1.7 km away.
+  - 273375: pin in burned forest 50 m from the drawn loop, whose own clearing is the likely camp.
+  - 273378 (Hirz Cabin): pin on bare ground with no building.
+- Anything new:
+  - Units whose pin sits beside, not on, the plain unit (234147 last wave, 233945, 234443 here)
+    were called usable: a pin 15-40 m off a building isn't wrong enough to hold.
+  - 233996 (Jarvies boat-in group) has no road by design: usable, not hold.
+  - Pairs of listings with pins 50 m apart in the same featureless stand (233233/233234
+    Treasure Park East/North) are both unsure.
+  - About 25 minutes for the look and traces.

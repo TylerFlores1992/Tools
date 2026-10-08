@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-234532",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-units-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -112.1676735,
+     38.0716775
+    ],
+    [
+     -112.1678103,
+     38.0715334
+    ],
+    [
+     -112.1679242,
+     38.0713893
+    ],
+    [
+     -112.1679812,
+     38.0712721
+    ],
+    [
+     -112.1680154,
+     38.071155
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt track from the drawn road's corner southwest to the guard station at the forest edge."
+}
