@@ -837,6 +837,34 @@ Recorded in each wave's decisions file ("Approved as areas" / "Kept hidden as ar
 **Single units:** the check and the location map are built. No wave has drawn one yet: the waves
 by demand pick from the multi-site population. A unit wave is next (playbook §10).
 
+## The parallel rollout (waves 3 to 39, from 2026-10-08)
+Eleven child sessions, one batch of waves each (playbook §5.4); this session merges each batch,
+makes the final check and records pass or hold (`decide-wave.mjs`). Each child's handoff is folded
+in here.
+
+| Batch | Waves | Maps | Passed | Held | Final check |
+|---|---|---|---|---|---|
+| northeast-api | 24, 39, 25, 33, 34 | 283 | 37 | 246 | 18 looked at over the photo (all 5 traces, all 3 splits, 10 sampled): agreed with all 18 |
+
+**northeast-api (2026-10-08):**
+- **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
+  6 hold, 10 unsure (full summer canopy over many New England forest campgrounds).
+  - Held: Tracy Ridge, Waterville (points around a treatment pond and a construction yard),
+    Wildwood, East Branch, Bush, and Tompkins (lettered sites and Loop P with no lane).
+  - 1 traced (Camp Gateway Sandy Hook). 3 split calls (Twin Lakes, Susquehannock with gap 150 m,
+    Tompkins).
+- **Wave 39 (northeast single units):** 23 built. First look: 10 good, 3 usable, 2 hold, 8 unsure.
+  - The six Allegheny boat-in sites are under canopy (unsure). The "road within 700 m" check
+    passes them on lakeside roads that don't reach them.
+  - 4 drives traced.
+- **Waves 25, 33, 34 (Alaska, Hawaii; OSM API): all 220 held.**
+  - **USGS's NAIP service returns an all-black image for every Alaska frame and for both Hawaii
+    listings** (measured on each pin: 87–88% black pixels).
+  - So nothing there can be judged over a photo. These need another public-domain photo source,
+    or the owner's call to pass on the map alone.
+  - Four Alaska listings can't be drawn (every site on one spot). Joe T. Fallini (Nevada) spans
+    4,974 km: its listing's points are wrong.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|

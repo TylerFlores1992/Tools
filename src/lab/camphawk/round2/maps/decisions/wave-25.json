@@ -1,0 +1,217 @@
+{
+ "version": 1,
+ "wave": 25,
+ "source": "The final check (2026-10-08): 0 maps looked at over the photo against the first look (every traced map, every split listing, and a random sample of the rest); good and usable pass, hold and unsure are held to fix after.",
+ "decisions": [
+  {
+   "id": "10156151",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look hold."
+  },
+  {
+   "id": "10191011",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10276314",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10322643",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10325233",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look hold."
+  },
+  {
+   "id": "10325252",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look hold."
+  },
+  {
+   "id": "10325266",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look hold."
+  },
+  {
+   "id": "252494",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10296828",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "233317",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "234629",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10300372",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232141",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232324",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232330",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232352",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232353",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "232360",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "233909",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "233974",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "233994",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "234108",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "234110",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "234112",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "234504",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "251356",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10119505",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "10382456",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look hold."
+  },
+  {
+   "id": "234783",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  },
+  {
+   "id": "251861",
+   "decision": "hidden",
+   "by": "Claude (final check, owner's delegation)",
+   "on": "2026-10-08",
+   "note": "Held to fix after: first look unsure."
+  }
+ ]
+}

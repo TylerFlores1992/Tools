@@ -179,3 +179,16 @@ test("the rollout's batches cover every planned wave once, each from one extract
     assert.ok(r === b.extract || r === "api", `${b.name}: wave ${n} is ${r}, not ${b.extract}`);
   }
 });
+
+test("the final check's decisions: good and usable pass, hold and unsure are held, its own calls override, and every map gets one", async () => {
+  const { decideWave } = await import("../studio/campground-maps/decide-wave.mjs");
+  const manifest = { entries: [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }, { id: "e", error: "x" }] };
+  const looks = { a: { call: "good" }, b: { call: "usable" }, c: { call: "hold" }, d: { call: "unsure" } };
+  const f = decideWave({ wave: 9, manifest, looks, checked: 4, on: "2026-10-08" });
+  assert.deepEqual(f.decisions.map((d: { id: string; decision: string }) => [d.id, d.decision]), [["a", "approved"], ["b", "approved"], ["c", "hidden"], ["d", "hidden"]]);
+  const o = decideWave({ wave: 9, manifest, looks, hold: ["b"], pass: ["d"], checked: 4, on: "2026-10-08" });
+  assert.deepEqual(o.decisions.map((d: { decision: string }) => d.decision), ["approved", "hidden", "hidden", "approved"]);
+  assert.match(o.source, /2 overridden/);
+  assert.throws(() => decideWave({ wave: 9, manifest, looks: { a: { call: "good" } }, checked: 1, on: "2026-10-08" }), /no first look for b/);
+  assert.throws(() => decideWave({ wave: 9, manifest, looks, hold: ["zz"], checked: 1, on: "2026-10-08" }), /not in the wave: zz/);
+});
