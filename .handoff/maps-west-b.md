@@ -50,7 +50,7 @@ Waves 6, 7, 8 (us-west, multi). Branch `wip/maps-west-b`.
 ## Wave 08 (us-west, multi)
 - Built 95, failed 0
 - Check: ready 71, review 24, not drawn 0 (before traces; Chavez Crossing and Moose Creek Flat went to review with traces)
-- First look: good 20, usable 49, hold 7, unsure 19
+- First look: good 20, usable 48, hold 7, unsure 20
 - Traced: 232143 (Chavez Crossing: the paved lane to the turnaround, no roads were drawn), 233738 (Moose Creek Flat: two pull-through loops and two west spurs). Both checked over the photo after the rebuild, within about 2 to 3 m.
 - Split calls: none kept. Tried 233217 (Big River, group sites across the river); it failed the area test, so it was dropped and the note says so.
 - Held, and why:
