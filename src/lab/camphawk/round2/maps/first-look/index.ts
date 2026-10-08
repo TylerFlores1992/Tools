@@ -15,6 +15,10 @@ import wave22 from "./wave-22.json" with { type: "json" };
 import wave23 from "./wave-23.json" with { type: "json" };
 import wave24 from "./wave-24.json" with { type: "json" };
 import wave25 from "./wave-25.json" with { type: "json" };
+import wave26 from "./wave-26.json" with { type: "json" };
+import wave27 from "./wave-27.json" with { type: "json" };
+import wave28 from "./wave-28.json" with { type: "json" };
+import wave29 from "./wave-29.json" with { type: "json" };
 import wave30 from "./wave-30.json" with { type: "json" };
 import wave31 from "./wave-31.json" with { type: "json" };
 import wave32 from "./wave-32.json" with { type: "json" };
@@ -26,4 +30,4 @@ import wave39 from "./wave-39.json" with { type: "json" };
 
 export type LooksFile = { version: 1; wave: number; by: string; on: string; looks: Record<string, { call: FirstLook; note: string }> };
 
-export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile, wave03 as LooksFile, wave04 as LooksFile, wave05 as LooksFile, wave06 as LooksFile, wave07 as LooksFile, wave08 as LooksFile, wave22 as LooksFile, wave23 as LooksFile, wave24 as LooksFile, wave25 as LooksFile, wave30 as LooksFile, wave31 as LooksFile, wave32 as LooksFile, wave33 as LooksFile, wave34 as LooksFile, wave35 as LooksFile, wave36 as LooksFile, wave39 as LooksFile];
+export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile, wave03 as LooksFile, wave04 as LooksFile, wave05 as LooksFile, wave06 as LooksFile, wave07 as LooksFile, wave08 as LooksFile, wave22 as LooksFile, wave23 as LooksFile, wave24 as LooksFile, wave25 as LooksFile, wave26 as LooksFile, wave27 as LooksFile, wave28 as LooksFile, wave29 as LooksFile, wave30 as LooksFile, wave31 as LooksFile, wave32 as LooksFile, wave33 as LooksFile, wave34 as LooksFile, wave35 as LooksFile, wave36 as LooksFile, wave39 as LooksFile];
