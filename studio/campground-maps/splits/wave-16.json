@@ -50,6 +50,20 @@
    "by": "First look (Claude, rollout south-a)",
    "on": "2026-10-08",
    "note": "Three places either side of the highway causeway: N01 to N36 on the north point, S01 to S33 on the south point, E01 to E08 on the east point."
+  },
+  {
+   "id": "233584",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Places on separate points round the cove: L01 to L11 on the north point, M and N in the west, O01 to O10 and F65 in the east."
+  },
+  {
+   "id": "251355",
+   "split": true,
+   "by": "First look (Claude, rollout south-a)",
+   "on": "2026-10-08",
+   "note": "Three places along the river: 001 to 024 in the north, 025 to 035 in the middle, 037 to 045 in the south."
   }
  ]
 }
