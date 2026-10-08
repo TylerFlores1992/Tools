@@ -407,6 +407,13 @@ stops the rest? Build: `studio/campground-maps/` (README has the commands). Revi
     day**, so most maps fell back to OSM's lakes and rivers. Each map records its source.
   - No build failed.
 
+### The owner's review of the sample (2026-10-08)
+
+The owner approved all 18 maps the first look found usable (12 with traced roads, 6 flagged by the
+check but fine on the photo) and kept the other 5 hidden. So **45 of 50 maps are publishable** and
+5 show "not drawn yet". This was one review of a session's first look, grouped and linked; review
+time per map was not measured. Recorded in `src/lab/camphawk/round2/maps/decisions/wave-00.json`.
+
 ### What would raise it (owner's call)
 1. ~~**Pick the road source by fit, not by agency.**~~ **Built the same night**, with two more
    sources than first measured (Forest Service and Census roads); it helped 4 maps on its own,

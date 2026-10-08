@@ -23,7 +23,7 @@ loads this) should be able to do the next step from here alone.
 |---|---|---|
 | Site points | RIDB, CC BY 4.0, open now | California State Parks' layer, **waiting on permission** |
 | Campgrounds to draw | 2,196 with two or more sites (+1,016 single units, §5) | 341 RC areas in CampHawk's catalog |
-| Built so far | Upper Pines (live), a 50-campground sample (lab review page) | Jedediah Smith, local only |
+| Built so far | Upper Pines (live), a 50-campground sample (lab review page), **all 50 decided** (2026-10-08: 45 publishable, 5 hidden) | Jedediah Smith, local only |
 | Measured result | 45 of 50 (90%; 79–96%) can go live after one look | 87% of sites match a State Parks point |
 | Blocked by | nothing (owner's go-ahead per wave) | State Parks' answer (records request due ~2026-10-17) |
 
@@ -52,7 +52,8 @@ loads this) should be able to do the next step from here alone.
 - OpenStreetMap from bulk extracts;
 - a population list and waves;
 - the review page at 2,196 maps;
-- decisions that survive outside one browser.
+- a "Download decisions" button (decisions are recorded by hand for now: the owner sends their
+  calls and a session commits them, §4.4).
 
 ---
 
@@ -135,9 +136,14 @@ loads this) should be able to do the next step from here alone.
 4. **The network.**
    - `download.geofabrik.de` and Overpass were unreachable from session containers on 2026-10-07
      and 2026-10-08 (proxy answers 000). §4.1 needs Geofabrik.
-   - If it's still blocked, ask the owner to add `download.geofabrik.de` under the environment's
-     Network access → Allowed domains (cloud environment menu → Edit;
-     https://code.claude.com/docs/en/cloud-environments#network-access).
+   - If it's still blocked, ask the owner to add `download.geofabrik.de`. The docs list only
+     claude.ai/code and the Desktop app for editing environments, not the mobile app (a phone's
+     browser on claude.ai/code should work). Steps: the cloud icon with the environment's name above
+     the message box → **Cloud** → the environment's settings icon → **Network access**. The level is
+     **Custom** with an allowlist already (USGS, Census, the Park Service and others answer), so
+     **add one line to Allowed domains, don't replace the list**, and keep "Also include default
+     list of common package managers" ticked. Save; it applies to new sessions.
+     https://code.claude.com/docs/en/cloud-environments#network-access
    - Then install `osmium-tool` (apt).
 5. **The cache.** `studio/campground-maps/.cache/` (git-ignored) keeps every answer, so a rebuild
    doesn't hit free services again. A failed answer is never cached.
@@ -171,10 +177,35 @@ a session or less.
   state, rec area and site counts, from the newest export. Record the export date and the counts.
   If the counts move from 2,196 / 1,016, say by how much.
 - **Waves of about 100**, stratified by agency like the sample, so each wave's pass rate is a
-  fresh estimate. **Order the waves by demand if the owner provides it:** CampHawk's watch counts
-  per campground (from campsite-finder's database, read-only, with the owner's OK). Otherwise
-  order by agency, then state. Write `specs/wave-NN.json` in `sample.mjs`'s format, so
-  `build-sample.mjs` reads it.
+  fresh estimate. Write `specs/wave-NN.json` in `sample.mjs`'s format, so `build-sample.mjs`
+  reads it.
+- **Order: by CampHawk demand (owner's decision, 2026-10-08; read-only reads of watch counts are
+  approved).** Measured that day, the demand signal is thin:
+  - **23 Recreation.gov campgrounds have ever been watched** (147 watches, 14 people since
+    2026-06-30), and the counts include the owner's own test watches.
+  - **18 of the 23 are in the 2,196.** Upper Pines is already built, so **17 are new**. 2 are single
+    units (§5.1); 3 are outside the population (Tail Race and Smith Springs list no overnight
+    sites; Kelty Meadow has points for 7 of 15).
+  - **So wave 1 is those 17**, topped up to about 100 by the agency-stratified draw.
+  - **After that, order by Recreation.gov's own reservation history** as the demand proxy, then
+    agency and state. RIDB publishes it as `https://ridb.recreation.gov/downloads/reservations<year>.zip`
+    (`reservations2024.zip` answered 200, 505 MB, last modified 2025-04-22). **Not checked yet:**
+    its columns, its license (the RIDB export is CC BY 4.0; confirm this file is the same), and
+    whether a newer year exists. Count reservations per facility over the newest full year.
+  - **Re-read the watch counts before every wave**, so a campground somebody starts watching
+    jumps the queue. The query (campsite-finder's Supabase, read-only):
+    ```sql
+    with w as (select w.id, w.user_id, coalesce(wc.campground_id, w.campground_id) cg
+               from watches w left join watch_campgrounds wc on wc.watch_id = w.id
+               where w.user_id not like '\_\_%' and w.created_at > '2021-01-01')
+    select c.id, c.name, count(distinct w.user_id) users, count(distinct w.id) watches
+    from w join campgrounds c on c.id = w.cg where c.source = 'ridb'
+    group by c.id, c.name order by users desc, watches desc;
+    ```
+    `campgrounds.id` is the RIDB facility id. **Never commit the counts or the list** (this
+    repository is public, and with few users a campground can point to one person). Commit only
+    the wave spec, which holds campground ids like every other wave.
+  - **The same applies to ReserveCalifornia later:** 22 RC areas have been watched (§6).
 - **The 50 already built are wave 0**; don't rebuild them unless the builder changed.
 
 ### 4.3 Building waves
@@ -193,13 +224,17 @@ a session or less.
 - **The queue must page and filter:** by wave, verdict, first look, agency and state, "has traces",
   "decided / not decided". Each wave's manifest is fetched when chosen, never bundled whole.
   Keep the deep links (`?id=`, `?show=`, `?tool=trace`) and add `?wave=`.
-- **Decisions must survive outside one browser.** Today Approve / Needs roads / Keep hidden are
-  saved in localStorage only.
-  - Add "Download decisions" (like the trace file), giving `studio/campground-maps/decisions/wave-NN.json`:
-    `{ id, decision, by, on, note }`.
-  - The session commits it, and the build reads it: approved maps are published; hidden ones
-    show "not drawn yet".
-  - The page shows a committed decision as decided.
+- **Decisions are recorded with the maps (built 2026-10-08 for wave 0):**
+  `src/lab/camphawk/round2/maps/decisions/wave-NN.json`, `{ version, wave, source, decisions:
+  [{ id, decision, by, on, note }] }`, read through `maps/decisions.ts` and checked by
+  `decisions.test.mts` (every id is a map of that wave, no id twice, a known decision, a date).
+  - The page shows a recorded decision for everyone, with "Recorded with the maps, <date>". A click
+    on the page is kept in that browser on top of it; Undo reopens even a recorded one.
+  - **Still to build:** "Download decisions" (like the trace file), so the owner's clicks become
+    the file without retyping; until then the owner sends their calls in chat and a session
+    writes the file. Add the new wave's file to `DECISION_FILES`.
+  - **Still to build:** the build reads it: approved maps are published; hidden ones show "not
+    drawn yet".
 - **Test it like the tracing tool:**
   - unit tests;
   - an e2e check (filters, a decision downloaded and validated);
@@ -263,8 +298,10 @@ a session or less.
    - spurs too short or faint to place;
    - listings that aren't one campground (§5.2).
 7. **Owner review.** Tell the owner the wave is ready, with its numbers: ready on its own, usable
-   after a look, needs traces approved, can't go live. They decide on the page and download the
-   decisions file (§4.4). Commit it.
+   after a look, needs traces approved, can't go live. Give them a short list grouped like
+   wave 0's (A: traces to approve, B: fine but flagged, C: keep hidden), each with its review-page
+   link (`…/admin/site-maps?id=<id>`). They decide on the page or in chat; record the calls in
+   `maps/decisions/wave-NN.json` (§4.4) and commit it.
 8. **Record the wave in the docs** (§8): its numbers, the running totals with intervals, what the
    first look found, the time it took, and anything new.
 9. **Measure review time.** Note how long the session's first look and tracing took per map, and
@@ -281,7 +318,8 @@ A cabin, fire lookout or guard station has nothing to tell apart. It needs a loc
 site map: one pin on a small area map with the access road, and the unit's facts.
 - **Design it first** with `design-direction`'s gates, then build, test and review it like the site
   map (critic rounds, `ui-audit`).
-- **Owner's call on the look.**
+- **Owner's decision (2026-10-08): yes, design it after wave 1.** The look is still theirs to
+  approve.
 - RIDB's facility pin can be kilometres off (Dimond O: about 4 km), so use the unit's own campsite
   point.
 
@@ -291,7 +329,8 @@ Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart)
 - **Detect them** with the check's spread and outlier rules.
 - **Proposed:** one map per cluster (sites within about 300 m of each other), titled by its loop or
   area, or, for dispersed areas, a list of areas with a location each.
-- Design and build it like §5.1. **Owner's call.**
+- Design and build it like §5.1. **Owner's decision (2026-10-08): yes, after wave 1.** The look
+  is still theirs to approve.
 
 ### 5.3 Restroom and water text (optional, owner's call)
 - **Where it comes from:**
@@ -360,6 +399,8 @@ Rabbit Valley (spread over 8 km), Medicine Lake (several campgrounds 2 km apart)
 
 ### 6.4 The RC loop
 - Same as §5: build, check, first look, trace, owner review, docs.
+- **Order by demand, as for Recreation.gov (§4.2):** 22 RC areas had been watched on 2026-10-08
+  (the same query with `c.source = 'reservecalifornia'`). Draw those first.
 - **Expect:** about 150 areas automatic, 48 to review, 17 by hand, 126 without State Parks points.
   The last stay "not drawn yet" unless the owner chooses hand work.
 - **Report the data faults found back to State Parks** (Jedediah Smith's two 56s and no 57), on the
@@ -438,15 +479,21 @@ of bookable sites).
 
 ## 10. Open owner decisions
 
-1. **Approve the sample's 23 held maps** on the review page: 12 only need their traces approved.
-2. **Allow `download.geofabrik.de`** in the environment's network settings (§3.4).
-3. **Wave order:** by CampHawk demand (needs a read of watch counts) or by agency and state.
-4. **Single-unit location maps (§5.1)** and **split listings (§5.2):** build them, and how they
-   should look.
-5. **Restroom and water text from the Forest Service (§5.3):** build it or not.
-6. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
+**Decided 2026-10-08:**
+- ~~Approve the sample's 23 held maps.~~ **Done:** groups A (12 traced) and B (6 flagged but fine)
+  approved, C (5) kept hidden; recorded in `maps/decisions/wave-00.json`.
+- ~~Wave order.~~ **By CampHawk demand**, read-only reads approved (§4.2).
+- ~~Single-unit and split-listing maps.~~ **Yes, designed after wave 1** (§5.1, §5.2); the look
+  still needs the owner's approval.
+
+**Still open:**
+1. **Allow `download.geofabrik.de`** in the environment's network settings (§3.4). From
+   claude.ai/code or the Desktop app; the docs don't list the mobile app for editing environments.
+2. **Approve the look** of the single-unit and split-listing maps, when designed.
+3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
+4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.
-7. **State Parks:** what to do with their answer (§6.1). If they refuse, whether to hand-draw the
+5. **State Parks:** what to do with their answer (§6.1). If they refuse, whether to hand-draw the
    most-watched RC campgrounds.
 
 ## 11. Known gaps (as of 2026-10-08)
