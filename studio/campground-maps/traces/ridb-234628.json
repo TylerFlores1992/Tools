@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234628",
+ "traced": "2026-10-07",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -97.1017544,
+     33.0028858
+    ],
+    [
+     -97.1018614,
+     33.0028948
+    ],
+    [
+     -97.102054,
+     33.0029579
+    ],
+    [
+     -97.1022466,
+     33.0030121
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -97.1018774,
+     33.0024438
+    ],
+    [
+     -97.1020326,
+     33.0024529
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The two paved pull-ins near sites 33 and 34. Sites 24-34 sit on the open lawn by the water, with no lanes to them."
+}

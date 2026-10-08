@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cx } from "@/components/cx";
 import { pct, type SiteMapData } from "../maps";
+import { segmentsOfPath } from "../maps/trace";
 
 // A map laid over the aerial photo of the same ground, so a reviewer can see whether the sites sit
 // on real pads and the roads on real roads. The photo is USDA NAIP (public domain) from USGS The
@@ -11,6 +12,8 @@ import { pct, type SiteMapData } from "../maps";
 // photo is ever drawn on a camper's map: it is evidence for the reviewer, not a layer.
 
 const NAIP = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage";
+
+const ROAD_WORD: Record<string, string> = { nps: "the Park Service", osm: "OpenStreetMap", usfs: "the Forest Service", tiger: "the Census Bureau" };
 
 export function naipUrl(bbox: [number, number, number, number], frame: { w: number; h: number }, width = 1400): string {
   const height = Math.round((width * frame.h) / frame.w);
@@ -71,8 +74,15 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
             {/* Told from the roads by shape (dashes), not by a colour that means something else in CampHawk. */}
             {map.evidence?.outline && <path d={map.evidence.outline} fill="none" className="stroke-ch-ink" strokeOpacity={0.7} strokeWidth={4} strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />}
             {map.evidence?.outline && <path d={map.evidence.outline} fill="none" className="stroke-ch-white" strokeWidth={2} strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />}
-            {map.roads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={0.7} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-            {map.roads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-white" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+            {map.roads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={r.traced ? 1 : 0.7} strokeWidth={r.traced ? 5 : 4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+            {/* Traced roads in ochre (the reviewer's own), with a square at each end as in the tracing tool. */}
+            {map.roads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className={r.traced ? "stroke-ch-ochre" : "stroke-ch-white"} strokeWidth={r.traced ? 2.5 : 1.75} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+            {perPx > 0 && map.roads.filter((r) => r.traced).flatMap((r, i) => {
+              const segs = segmentsOfPath(r.d);
+              if (!segs.length) return [];
+              const v = 6 * perPx;
+              return [segs[0][0], segs.at(-1)![1]].map((p, j) => <rect key={`e${i}-${j}`} x={p[0] - v / 2} y={p[1] - v / 2} width={v} height={v} className="fill-ch-ochre stroke-ch-ink" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />);
+            })}
             {/* Thin hollow rings, so the pad under each site stays visible: 11px across, 7px on a phone,
                 where a big campground's rings would otherwise cover the pads they mark. */}
             {perPx > 0 && placed.map((s) => <circle key={`k${s.name}`} cx={s.at[0]} cy={s.at[1]} r={ring * perPx} fill="none" className="stroke-ch-ink" strokeOpacity={0.75} strokeWidth={2.75} vectorEffect="non-scaling-stroke" />)}
@@ -86,12 +96,18 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
       </div>
       <ul aria-label="What’s drawn on the photo" className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
         <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[10px] rounded-full border-2 border-ch-white shadow-[0_0_0_1.5px_var(--color-ch-ink)]" />Sites, where Recreation.gov places them</li>
-        <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads the map draws</li>
+        {map.roads.some((r) => !r.traced) && <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {ROAD_WORD[map.sources?.roads ?? "none"] ?? "the map’s sources"}</li>}
+        {map.roads.some((r) => r.traced) && <li className="flex items-center gap-2"><TracedMark />Roads traced from this photo, a square at each end</li>}
         {map.evidence?.outline && <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-[3px] border-dashed border-ch-ink" />OpenStreetMap’s campground outline</li>}
         <li className="text-ch-muted">Photo: USDA NAIP via USGS (public domain)</li>
       </ul>
     </div>
   );
+}
+
+/** The key's mark for a traced road: an ochre line with a square at its end. */
+export function TracedMark() {
+  return <span aria-hidden="true" className="relative h-[6px] w-7 rounded-full border border-ch-ink bg-ch-ochre"><span className="absolute -top-[3px] -right-[2px] size-[10px] rounded-[2px] border-[1.5px] border-ch-ink bg-ch-ochre" /></span>;
 }
 
 function Toggle({ on, onChange, disabled, children }: { on: boolean; onChange: (v: boolean) => void; disabled?: boolean; children: string }) {

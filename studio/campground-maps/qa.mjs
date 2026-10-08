@@ -70,11 +70,12 @@ export const sameNumber = (a, b) => {
  * @param {object} input
  * @param {{ name: string, at: [number, number] | null }[]} input.sites  every bookable overnight site
  * @param {[[number, number], [number, number]][]} input.roadSegments   drawn roads, in metres
- * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "none"
+ * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "tiger" | "traced" | "none"
+ * @param {{ roads: number, points: number }} [input.traced]  what was traced from the aerial photo
  * @param {[number, number][][]} [input.outlineRings]  OSM campground outlines, in metres
  * @param {{ ref: string, at: [number, number] }[]} [input.pitches]  OSM numbered pitches, in metres
  */
-export function checkMap({ sites, roadSegments, roadSource, outlineRings = [], pitches = [] }) {
+export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0, points: 0 }, outlineRings = [], pitches = [] }) {
   const placed = sites.filter((s) => s.at);
   const pts = placed.map((s) => s.at);
   const near = (i) => { let best = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) best = Math.min(best, Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1])); return best; };
@@ -99,6 +100,7 @@ export function checkMap({ sites, roadSegments, roadSource, outlineRings = [], p
     roads: { source: roadSource, medianM: r1(median(road)), p90M: r1(quantile(road, 0.9)) },
     outline: inside === null ? null : { insideShare: Math.round((inside / pts.length) * 100) / 100 },
     pitches: pitchPairs.length ? { matched: pitchPairs.length, medianM: r1(median(pitchPairs)) } : null,
+    traced: { roads: traced.roads, points: traced.points },
   };
 
   const notDrawn = [];
@@ -114,12 +116,19 @@ export function checkMap({ sites, roadSegments, roadSource, outlineRings = [], p
   else if (m.roads.medianM > RULES.roadMedianM || m.roads.p90M > RULES.roadP90M) review.push({ code: "far-from-roads", text: `Sites sit far from the roads (median ${Math.round(m.roads.medianM)} m)` });
   if (m.outline && m.outline.insideShare < RULES.insideOutline) review.push({ code: "outline", text: `Only ${Math.round(m.outline.insideShare * 100)}% of sites inside OpenStreetMap’s campground outline` });
   if (m.pitches && m.pitches.matched >= RULES.pitchMinMatched && m.pitches.medianM > RULES.pitchMedianM) review.push({ code: "pitches", text: `OpenStreetMap places matching sites ${Math.round(m.pitches.medianM)} m away` });
+  // Traced roads and points are someone's reading of a photo, not a published source: a person
+  // approves them before the map goes live, however well the sites fit.
+  const tracedText = tracedWords(m.traced);
+  if (tracedText) review.push({ code: "traced", text: `${tracedText} traced from the aerial photo` });
 
   const verdict = notDrawn.length ? "not-drawn" : review.length ? "review" : "ready";
   return { verdict, reasons: notDrawn.length ? notDrawn : review, metrics: m, checks: checkList(m, roadSource) };
 }
 
 const pct = (v) => `${Math.round(v * 100)}%`;
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+/** "2 roads and 1 point", or "" when nothing was traced. */
+const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points")].filter(Boolean).join(" and ");
 /**
  * Every check as a reviewer reads it: what was measured, the limit, and the result ("pass",
  * "review", "fail", or "none" when there was nothing to check against). The lab's review page
@@ -141,5 +150,6 @@ function checkList(m, roadSource) {
     m.pitches
       ? { code: "pitches", label: "OpenStreetMap’s numbered sites agree", value: `${m.pitches.matched} matched; median ${Math.round(m.pitches.medianM)} m apart`, limit: `Within ${RULES.pitchMedianM} m (needs ${RULES.pitchMinMatched} matches)`, result: m.pitches.matched < RULES.pitchMinMatched ? "none" : m.pitches.medianM > RULES.pitchMedianM ? "review" : "pass" }
       : { code: "pitches", label: "OpenStreetMap’s numbered sites agree", value: "None mapped", limit: `Within ${RULES.pitchMedianM} m`, result: "none" },
+    { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
   ];
 }

@@ -2,6 +2,7 @@
 // One JSON per campground, built by `node studio/campground-maps/build.mjs`. Coordinates are
 // metres on a local north-up plane; `frame` is the box the map shows.
 import upperPines from "./ridb-232447.json" with { type: "json" };
+import type { TraceFile } from "./trace";
 
 export type MapSite = {
   name: string;
@@ -22,6 +23,11 @@ export type MapSite = {
   backIn?: boolean;
   shade?: boolean;
 };
+/** A road on the map. `traced`: a person traced it from the aerial photo (no source had it). */
+export type MapRoad = { name: string; cls: string; oneWay: string; traced?: boolean; d: string };
+/** A restroom, water tap and the like. `traced`: placed by a person from the aerial photo. */
+export type MapPoi = { name: string; type: string; at: [number, number]; traced?: boolean };
+export type RoadSourceKey = "nps" | "osm" | "usfs" | "tiger" | "none";
 export type SiteMapData = {
   facilityId: string;
   source: { ridbExport: string; built: string };
@@ -36,16 +42,27 @@ export type SiteMapData = {
   bbox?: [number, number, number, number];
   name?: string;
   /** Which source drew each layer (maps built since 2026-10-07). */
-  sources?: { roads: string; water: string; osm: boolean };
+  sources?: {
+    roads: RoadSourceKey;
+    /** Why that road source (studio/campground-maps/roads.mjs), and how each source's roads fit. */
+    roadPick?: { why: string; fits: Partial<Record<Exclude<RoadSourceKey, "none">, { medianM: number; p90M: number } | null>> };
+    water: string;
+    osm: boolean;
+    traced?: { roads: number; points: number; replace?: boolean; by?: string; on?: string; note?: string };
+  };
+  /** The trace built into this map (studio/campground-maps/traces/), for the tracing tool to edit. */
+  trace?: TraceFile;
   /** What the automatic checks compared against (OpenStreetMap's outline and numbered pitches). */
   evidence?: { outline: string; pitches: { ref: string; at: [number, number] }[] };
   labels: { text: string; kind: "road" | "trail" | "water"; at: [number, number]; angle: number }[];
-  roads: { name: string; cls: string; oneWay: string; d: string }[];
+  roads: MapRoad[];
+  /** Only when a trace replaces the roads: the source's roads it replaced (the tracing tool shows them). */
+  sourceRoads?: MapRoad[];
   trails: { name: string; d: string }[];
   lots: { d: string }[];
   water: { fcode: number; d: string }[];
   buildings: { name: string; type: string; d: string }[];
-  pois: { name: string; type: string; at: [number, number] }[];
+  pois: MapPoi[];
   sites: MapSite[];
 };
 

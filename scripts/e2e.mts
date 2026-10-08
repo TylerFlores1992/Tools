@@ -1,13 +1,16 @@
 /**
  * Behaviour checks in a real browser against a production build.
  *   npm run e2e            (starts `next start` itself if nothing answers on BASE_URL)
+ *   E2E_ONLY="site-map tracing" npm run e2e   (only the checks whose name contains it)
  * Covers what unit tests can't: deep links, keyboard control, unit switching, error copy.
  */
 import { chromium } from "playwright-core";
 import { spawn, type ChildProcess } from "node:child_process";
 import { LOOKS } from "../src/lab/camphawk/looks.ts";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { traceProblems } from "../studio/campground-maps/trace.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const BASE = process.env.BASE_URL ?? "http://localhost:3110";
@@ -23,7 +26,10 @@ if (!(await up())) {
 }
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium" });
 const results: string[] = [];
+// E2E_ONLY=<text> runs only the checks whose name contains it (for a mutation run, say).
+const ONLY = process.env.E2E_ONLY;
 async function check(name: string, fn: () => Promise<void>) {
+  if (ONLY && !name.includes(ONLY)) return;
   try { await fn(); results.push(`ok   ${name}`); } catch (e) { results.push(`FAIL ${name}\n     ${(e as Error).message.split("\n").slice(0, 4).join(" / ")}`); }
 }
 try {
@@ -400,7 +406,7 @@ try {
     const name = (await cards.first().innerText()).trim();
     await cards.first().click();
     await p.getByRole("heading", { level: 1, name }).waitFor();
-    assert.equal(await p.locator("table tbody tr").count(), 7);
+    assert.equal(await p.getByRole("region", { name: "The automatic checks" }).locator("table tbody tr").count(), 8);
     await p.getByRole("img", { name: new RegExp(`^Aerial photo of ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`) }).waitFor();
     await p.getByRole("button", { name: "Sites and roads on top" }).waitFor();
     // At 390 the decision follows the photo (the copy beside the header is hidden there).
@@ -417,6 +423,146 @@ try {
     await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Undo" }).click();
     await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve map" }).waitFor();
     assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab site-map tracing: roads and a restroom traced by mouse and keyboard, kept, previewed and downloaded as a file the build accepts", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    // Dog Creek: no trace built in, so the tool starts empty.
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=233488&tool=trace`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    const area = p.getByRole("application", { name: /^Tracing area/ });
+    await area.waitFor();
+    await p.getByText("Nothing traced yet").waitFor();
+    const status = p.locator("p[aria-live=polite]");
+    // Three clicks and Finish: one road.
+    // Snapping off, so every point lands exactly where it was put (checked in the file below).
+    await p.getByRole("checkbox", { name: "Snap to roads" }).uncheck();
+    // Clicks relative to the photo (Playwright scrolls each into view: the photo is taller than the window).
+    const box = (await area.boundingBox())!;
+    const at = (fx: number, fy: number) => area.click({ position: { x: box.width * fx, y: box.height * fy } });
+    for (const [fx, fy] of [[0.3, 0.3], [0.5, 0.5], [0.7, 0.4]]) await at(fx, fy);
+    await status.filter({ hasText: "Road 1: 3 points" }).waitFor();
+    await p.getByRole("button", { name: "Finish road" }).click();
+    await status.filter({ hasText: /^Road 1 finished: 3 points, \d+ m\.$/ }).waitFor();
+    assert.equal(await p.getByRole("button", { name: "Finish road" }).count(), 0, "nothing left to finish");
+    // A restroom.
+    await p.getByRole("group", { name: "Draw" }).getByRole("button", { name: "Restroom" }).click();
+    await at(0.45, 0.7);
+    await status.filter({ hasText: "Restroom placed." }).waitFor();
+    // The keyboard way: a second road from the cross, Escape to finish.
+    await p.getByRole("group", { name: "Draw" }).getByRole("button", { name: "Road" }).click();
+    await area.focus();
+    for (let i = 0; i < 5; i++) await p.keyboard.press("ArrowLeft");
+    await p.keyboard.press("Enter");
+    await status.filter({ hasText: /^Road 2 started/ }).waitFor();
+    await p.keyboard.press("Shift+ArrowDown");
+    await p.keyboard.press("Shift+ArrowDown");
+    await p.keyboard.press("Enter");
+    await p.keyboard.press("Escape");
+    await status.filter({ hasText: "Road 2 finished: 2 points, 20 m." }).waitFor();
+    const list = p.getByRole("region", { name: "Your traces" });
+    await list.getByText("Saved in this browser; not on the map yet").waitFor();
+    // Each road is numbered once on the photo, matching the list (and nowhere else).
+    assert.deepEqual(await area.locator("span", { hasText: /^\d+$/ }).allInnerTexts(), ["1", "2"]);
+    assert.equal(await list.locator("span", { hasText: /^\d+$/ }).count(), 0, "no road numbers inside the list");
+    // Kept after a reload (this browser only), and shown on the camper's map.
+    await p.reload();
+    await area.waitFor();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 2);
+    assert.equal(await list.getByRole("button", { name: "Delete restroom 1" }).count(), 1);
+    await p.getByText("With your traces in place. They aren’t built yet, so the checks above don’t include them.").waitFor();
+    // The decision can't be mistaken for approving the traces.
+    await p.getByRole("region", { name: "Your decision" }).getByRole("button", { name: "Approve without my traces" }).waitFor();
+    // The camper's map counts the traced restroom with the sources' ones.
+    const built = await (await p.request.get(`${BASE}/private/camphawk/maps/ridb-233488.json`)).json();
+    const before = built.pois.filter((x: { type: string }) => x.type === "Restroom").length;
+    await p.getByRole("img", { name: new RegExp(`^Map of .*, ${before + 1} restrooms\\.`) }).waitFor();
+    // Name road 1 and make it a through road (behind Edit); then download the file and check it as the build would.
+    await list.getByRole("button", { name: "Edit road 1" }).click();
+    assert.equal(await list.getByRole("button", { name: "Edit road 1" }).getAttribute("aria-expanded"), "true");
+    await list.getByRole("textbox", { name: "Name" }).fill("Dog Creek Road");
+    await list.getByRole("checkbox", { name: "Through road" }).check();
+    const [download] = await Promise.all([p.waitForEvent("download"), list.getByRole("button", { name: "Download trace file" }).click()]);
+    assert.equal(download.suggestedFilename(), "ridb-233488.json");
+    const file = JSON.parse(readFileSync(await download.path(), "utf8"));
+    assert.equal(file.roads.length, 2);
+    assert.deepEqual(file.roads[0].name, "Dog Creek Road");
+    assert.equal(file.roads[0].through, true);
+    assert.equal(file.roads[0].coords.length, 3);
+    assert.deepEqual(file.points.map((x: { type: string }) => x.type), ["Restroom"]);
+    assert.deepEqual(traceProblems(file, "ridb-233488", built.bbox), [], "the build accepts the downloaded file");
+    // Each point is where it was clicked: a fraction across and down the photo is that fraction of the bbox.
+    const [w, so, e, no] = built.bbox as number[];
+    const near = ([lon, lat]: number[], fx: number, fy: number) =>
+      assert.ok(Math.abs((lon - w) / (e - w) - fx) < 0.01 && Math.abs((no - lat) / (no - so) - fy) < 0.01, `[${lon}, ${lat}] is not at ${fx}, ${fy}`);
+    near(file.roads[0].coords[0], 0.3, 0.3);
+    near(file.roads[0].coords[1], 0.5, 0.5);
+    near(file.roads[0].coords[2], 0.7, 0.4);
+    near(file.points[0].at, 0.45, 0.7);
+    // The queue says which maps have traces waiting in this browser.
+    await p.goto(`${BASE}/private/camphawk/golden-hour/admin/site-maps`);
+    await p.locator("main ul li").filter({ hasText: "Dog Creek" }).getByText("Your traces, not built yet").waitFor();
+    assert.equal(await p.getByText("Your traces, not built yet").count(), 1);
+    await p.goto(url);
+    await area.waitFor();
+    // A finished road can be picked up again (under Edit): the next point goes on its end.
+    await list.getByRole("button", { name: "Edit road 1" }).click();
+    await list.getByRole("button", { name: "Continue road 1" }).click();
+    await status.filter({ hasText: "Continuing road 1: new points go on its end." }).waitFor();
+    await at(0.75, 0.45);
+    await status.filter({ hasText: "Road 1: 4 points." }).waitFor();
+    await p.getByRole("button", { name: "Undo last point" }).click();
+    await status.filter({ hasText: "Road 1: 3 points." }).waitFor();
+    await p.getByRole("button", { name: "Finish road" }).click();
+    // Replacing the source's roads asks first, and Keep leaves them.
+    const replace = p.getByRole("checkbox", { name: "Replace the source’s roads" });
+    await replace.check();
+    await p.getByRole("button", { name: "Keep the source’s roads" }).click();
+    assert.ok(!(await replace.isChecked()), "replace stays off when you keep the source's roads");
+    // Delete one road; then delete everything, two steps.
+    await list.getByRole("button", { name: "Delete road 2" }).click();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
+    // A delete can be taken back, until the next change.
+    await p.getByRole("button", { name: "Undo delete" }).click();
+    await status.filter({ hasText: "Road 2 is back." }).waitFor();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 2);
+    await list.getByRole("button", { name: "Delete road 2" }).click();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 1);
+    await list.getByRole("button", { name: "Delete my traces" }).click();
+    await list.getByRole("button", { name: "Yes, delete my traces" }).click();
+    await list.getByText("Nothing traced yet").waitFor();
+    // On a phone, zoomed in, the photo scrolls inside its frame and the page doesn't.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.getByRole("group", { name: "Zoom" }).getByRole("button", { name: "4×" }).click();
+    const { inner, page } = await p.evaluate(() => ({ inner: document.querySelector("[role=application]")!.getBoundingClientRect().width, page: document.documentElement.scrollWidth }));
+    assert.ok(inner > 1000, `zoomed photo ${inner}px wide`);
+    assert.ok(page <= 390, `the page itself must not scroll sideways (${page}px)`);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab site-map tracing: a map built with a trace starts from it, and says which roads were traced", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
+    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    // Lost Creek: its trace replaces OpenStreetMap's roads.
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=10243253&tool=trace`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    const list = p.getByRole("region", { name: "Your traces" });
+    await list.getByText("As built into this map").waitFor();
+    assert.equal(await list.getByRole("button", { name: /^Delete road / }).count(), 11);
+    assert.ok(await p.getByRole("checkbox", { name: "Replace the source’s roads" }).isChecked());
+    // The checks say what was traced; the sources say why the road source was picked.
+    await p.getByRole("cell", { name: "11 roads" }).waitFor();
+    await p.getByRole("region", { name: "Your decision" }).getByText(/traced from this photo/).waitFor();
     await ctx.close();
   });
 

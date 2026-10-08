@@ -93,7 +93,7 @@ test("the geometry helpers", () => {
 
 test("the checks list says each measurement, its limit and its result, and agrees with the verdict", () => {
   const ok = run();
-  assert.equal(ok.checks.length, 7);
+  assert.equal(ok.checks.length, 8);
   assert.ok(ok.checks.every((c) => c.result === "pass" || c.result === "none"));
   assert.equal(ok.checks.find((c) => c.code === "outline")!.result, "none"); // nothing to check against
   for (const r of [run(good(), { roadSegments: [], roadSource: "none" }), run(good().map((x) => ({ ...x, at: [5, 5] as At })))]) {
@@ -126,4 +126,21 @@ test("the checks list marks the road check for review when sites sit far from th
   const far = good().map((x) => ({ ...x, at: [x.at![0], x.at![1] * 4] as At }));
   assert.equal(run(far).checks.find((c) => c.code === "far-from-roads")!.result, "review");
   assert.equal(run().checks.find((c) => c.code === "far-from-roads")!.result, "pass");
+});
+
+test("anything traced from the aerial photo waits for a person, however well the sites fit", () => {
+  const r = run(good(), { traced: { roads: 2, points: 1 } });
+  assert.equal(r.verdict, "review");
+  assert.deepEqual(r.reasons.map((x) => x.code), ["traced"]);
+  assert.equal(r.reasons[0].text, "2 roads and 1 point traced from the aerial photo");
+  const row = r.checks.find((c) => c.code === "traced")!;
+  assert.equal(row.result, "review");
+  assert.equal(row.value, "2 roads and 1 point");
+  assert.equal(run(good(), { traced: { roads: 1, points: 0 } }).reasons[0].text, "1 road traced from the aerial photo");
+  // Nothing traced: no reason, and the row has nothing to check.
+  assert.equal(run().verdict, "ready");
+  assert.equal(run().checks.find((c) => c.code === "traced")!.result, "none");
+  // Traced roads alone are roads: no "No roads to draw".
+  const only = run(good(), { roadSource: "traced", traced: { roads: 1, points: 0 } });
+  assert.deepEqual(only.reasons.map((x) => x.code), ["traced"]);
 });
