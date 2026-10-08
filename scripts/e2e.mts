@@ -472,6 +472,30 @@ try {
     await ctx.close();
   });
 
+  await check("lab site-map review: a split listing shows campers its areas and each area's checks; one kept as one map stays one", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1280, height: 900 } });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=1&id=233626`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    // Seven Points: recorded as areas by the build, shown one area at a time, and checked per area.
+    await p.getByRole("heading", { level: 2, name: /^Area 1: / }).waitFor();
+    const areas = await p.getByRole("group", { name: "Areas" }).getByRole("button").count();
+    assert.ok(areas >= 2, `${areas} areas`);
+    const checks = p.getByRole("region", { name: new RegExp(`^Each area’s checks \\(${areas} areas\\)$`) });
+    assert.equal(await checks.getByRole("listitem").count(), areas);
+    // Strawberry Bay spreads over 1.5 km, but the owner approved it as one map: no areas.
+    const one = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=1&id=231932`;
+    await p.goto(one);
+    await p.getByRole("heading", { level: 2, name: "Site map" }).waitFor();
+    assert.equal(await p.getByRole("group", { name: "Areas" }).count(), 0);
+    assert.equal(await p.getByRole("region", { name: /^Each area’s checks/ }).count(), 0);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
   await check("lab site-map waves: the newest wave by default, filters in the URL, Show more, and decisions downloaded as a file the tests accept", async () => {
     // The newest wave is the default; read which it is rather than assume one.
     const newest = Math.max(...JSON.parse(readFileSync(join(import.meta.dirname, "../src/lab/camphawk/round2/maps/waves.json"), "utf8")).waves.map((w: { wave: number }) => w.wave));

@@ -52,7 +52,7 @@ export function decisionsFileFor(wave: number, ids: string[], shown: Record<stri
 
 /** Codes that mean the listing isn't one campground's map (spread over kilometers, sites stacked on
     one spot, or far from all the others): a person keeps it hidden until it can be split. */
-const NOT_ONE_MAP = new Set(["spread", "stacked", "outlier"]);
+const NOT_ONE_MAP = new Set(["spread", "stacked", "outlier", "dispersed"]);
 
 /**
  * The decision the review page offers first for a map the first look held. A hold whose checks

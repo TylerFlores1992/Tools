@@ -170,9 +170,10 @@ function checkList(m, roadSource) {
 const LISTING_CODES = new Set(["unplaced", "stacked", "traced"]);
 
 /**
- * @param {{ verdict: string, reasons: {code:string,text:string}[], metrics: object, checks: object[] }} whole  checkMap on the whole listing
+ * @param {ReturnType<typeof checkMap>} whole  checkMap on the whole listing
  * @param {{ name: string, sites: string[], frame: {x:number,y:number,w:number,h:number} }[]} areas
  * @param {Parameters<typeof checkMap>[0]} input  what the whole listing was checked with
+ * @returns {Omit<ReturnType<typeof checkMap>, "metrics"> & { metrics: ReturnType<typeof checkMap>["metrics"] & { areas?: number }, areas?: { name: string, verdict: string, reasons: { code: string, text: string }[] }[] }}
  */
 export function checkAreas(whole, areas, input) {
   if (whole.verdict === "not-drawn") return whole;
@@ -201,7 +202,11 @@ export function checkAreas(whole, areas, input) {
   return { verdict: "review", reasons, metrics: { ...whole.metrics, areas: areas.length }, checks, areas: perArea };
 }
 
-/** A listing too scattered to draw as areas: held, and said so. */
+/**
+ * A listing too scattered to draw as areas: held, and said so.
+ * @param {ReturnType<typeof checkMap>} whole
+ * @param {number} groups
+ */
 export function checkDispersed(whole, groups) {
   if (whole.verdict === "not-drawn") return whole;
   return { ...whole, verdict: "review", reasons: [{ code: "dispersed", text: `${groups} groups of sites: dispersed camping, not drawn as areas yet` }, ...whole.reasons.filter((r) => r.code !== "spread")], metrics: { ...whole.metrics, dispersed: groups } };

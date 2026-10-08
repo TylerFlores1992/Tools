@@ -4,6 +4,7 @@
 import upperPines from "./ridb-232447.json" with { type: "json" };
 import type { TraceFile } from "./trace";
 
+import type { Split } from "./areas";
 export type MapSite = {
   name: string;
   /** RIDB's campsite type, upper case ("STANDARD NONELECTRIC"). */
@@ -66,6 +67,10 @@ export type SiteMapData = {
   buildings: { name: string; type: string; d: string }[];
   pois: MapPoi[];
   sites: MapSite[];
+  /** Several places under one listing: its areas, or "dispersed" (studio/campground-maps/build.mjs
+      viewOf). Absent for one campground, one unit, or a map built before areas. Who called it split,
+      when a person did. */
+  split?: Exclude<Split, { kind: "one" }> & { by?: string; on?: string };
 };
 
 /** Lab campground id → its drawn map. A campground missing here has no map yet. */

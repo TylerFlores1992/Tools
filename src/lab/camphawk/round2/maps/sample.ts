@@ -6,7 +6,11 @@ import type { Level } from "../../ui/StatusMark";
 import type { SiteMapData } from ".";
 
 export type Verdict = "ready" | "review" | "not-drawn";
-export type ReasonCode = "one-spot" | "stacked" | "unplaced" | "outlier" | "spread" | "no-roads" | "far-from-roads" | "outline" | "pitches" | "traced";
+export type ReasonCode = "one-spot" | "stacked" | "unplaced" | "outlier" | "spread" | "no-roads" | "far-from-roads" | "outline" | "pitches" | "traced"
+  // A listing shown as areas, or too scattered for areas (qa.mjs checkAreas, checkDispersed).
+  | "areas" | "dispersed"
+  // A single unit (qa.mjs checkUnit).
+  | "facility-point" | "no-access";
 export type Reason = { code: ReasonCode; text: string };
 export type Metrics = {
   sites: number;
@@ -20,7 +24,25 @@ export type Metrics = {
   outline: { insideShare: number } | null;
   pitches: { matched: number; medianM: number } | null;
   traced?: { roads: number; points: number };
+  /** Shown as this many areas (qa.mjs checkAreas). */
+  areas?: number;
+  /** Groups of a dispersed listing (qa.mjs checkDispersed). */
+  dispersed?: number;
 };
+/** A single unit's check measures other things (qa.mjs checkUnit). */
+export type UnitMetrics = {
+  kind: "unit";
+  sites: 1;
+  placed: 0 | 1;
+  unplaced: string[];
+  facilityM: number | null;
+  roadM: number | null;
+  trailM: number | null;
+  roads: { source: string };
+  traced: { roads: number; points: number };
+};
+/** Each area's own check, for a listing shown as areas. */
+export type AreaCheck = { name: string; verdict: Verdict; reasons: Reason[] };
 /** One automatic check as the build measured it (studio/campground-maps/qa.mjs, checkList). */
 export type Check = { code: ReasonCode; label: string; value: string; limit: string; result: "pass" | "review" | "fail" | "none" };
 export type Thumb = { frame: { x: number; y: number; w: number; h: number }; roads: { service: boolean; d: string }[]; water: string[]; dots: [number, number][] };
@@ -33,7 +55,9 @@ export type SampleEntry = {
   verdict: Verdict;
   reasons: Reason[];
   checks: Check[];
-  metrics: Metrics;
+  metrics: Metrics | UnitMetrics;
+  /** A listing shown as areas: each area's check. */
+  areas?: AreaCheck[];
   sources: NonNullable<SiteMapData["sources"]> & { water: "usgs" | "osm" | "none" };
   thumb: Thumb;
 };
@@ -70,6 +94,10 @@ export const REASON_LABEL: Record<ReasonCode, string> = {
   pitches: "OpenStreetMap places sites elsewhere",
   "one-spot": "Every site on one spot",
   traced: "Roads traced from the photo, to approve",
+  areas: "Shown as areas: a person checks the split",
+  dispersed: "Dispersed sites, not drawn as areas yet",
+  "facility-point": "A unit far from its listing’s own point",
+  "no-access": "No road or trail on a unit’s map",
 };
 
 /** "Forest Service" → "Forest Service"; the long agency names, shortened for a card. */

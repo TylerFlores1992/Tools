@@ -96,6 +96,7 @@ test("the first offer for a held map follows what held it: spread or stacked →
   assert.equal(suggestedDecision([{ code: "far-from-roads" }, { code: "traced" }], "hold"), "roads");
   assert.equal(suggestedDecision([{ code: "unplaced" }, { code: "spread" }], "hold"), "hidden");
   assert.equal(suggestedDecision([{ code: "stacked" }], "hold"), "hidden");
+  assert.equal(suggestedDecision([{ code: "dispersed" }, { code: "no-roads" }], "hold"), "hidden");
   assert.equal(suggestedDecision([{ code: "outlier" }, { code: "far-from-roads" }], "hold"), "hidden");
   for (const look of ["good", "usable", "unsure", undefined]) assert.equal(suggestedDecision([{ code: "spread" }], look), "approved");
 });
