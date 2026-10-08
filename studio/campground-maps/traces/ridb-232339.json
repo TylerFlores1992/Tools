@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-232339",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.0953461,
+     39.0632745
+    ],
+    [
+     -105.0954224,
+     39.0633376
+    ],
+    [
+     -105.0954801,
+     39.0634096
+    ],
+    [
+     -105.0955148,
+     39.0634997
+    ],
+    [
+     -105.0955379,
+     39.0635898
+    ],
+    [
+     -105.095561,
+     39.0636889
+    ],
+    [
+     -105.0955957,
+     39.063779
+    ],
+    [
+     -105.0956303,
+     39.0638871
+    ],
+    [
+     -105.095665,
+     39.0639952
+    ],
+    [
+     -105.095665,
+     39.0641033
+    ],
+    [
+     -105.0956384,
+     39.0641825
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane past sites 021 to 025 joining the west side of the loop, plain on the photo. Left out: site 032, alone in the meadow to the north-west with no lane, and 016, off the loop's south side."
+}

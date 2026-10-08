@@ -619,6 +619,10 @@ of bookable sites).
 2a. **Alaska and Hawaii (230 maps held, 2026-10-08):** USGS's NAIP returns all black there, so no
    first look is possible. Options: another public-domain photo source (to research: USGS's other
    imagery services, Alaska's state imagery, NOAA), or pass those maps on the automatic check alone.
+2b. **"Whole campground as one Standard site" (65 maps held, colorado batch):** a listing whose one
+   bookable site is named "Standard" is a whole campground, not a unit. Building them as
+   campground maps needs roads and loops without site points (a different map), or a "whole
+   campground" design. Owner's call whether to pursue.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.

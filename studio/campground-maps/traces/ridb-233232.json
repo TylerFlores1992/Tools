@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-233232",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.6820202,
+     38.0194312
+    ],
+    [
+     -106.6819405,
+     38.0193591
+    ],
+    [
+     -106.681838,
+     38.0192961
+    ],
+    [
+     -106.6817127,
+     38.019242
+    ],
+    [
+     -106.6815874,
+     38.019206
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt track from the drawn road down to the guard station's yard, plain on the photo. Left out: nothing else visible."
+}

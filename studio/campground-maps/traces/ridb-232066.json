@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-232066",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.0585751,
+     37.9849149
+    ],
+    [
+     -105.0584294,
+     37.984941
+    ],
+    [
+     -105.0582017,
+     37.9849681
+    ],
+    [
+     -105.0579741,
+     37.9850041
+    ],
+    [
+     -105.0577464,
+     37.9850401
+    ],
+    [
+     -105.0574618,
+     37.9850762
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane east from the end of La Vista Road past sites 008 to 010, plain on the photo. Left out: lanes to 001 to 007 south of the road, under canopy."
+}
