@@ -89,8 +89,8 @@
    "note": "Under canopy. The A loop's drawn roads follow lanes that show in places, and A01 to A11 sit near them, but A12 to A26 sit in the trees between drawn roads with only pieces of lanes showing."
   },
   "232625": {
-   "call": "hold",
-   "note": "Only the road along the river is drawn, past 01 to 21. The paved lanes to B1 to B11 and to the loop past 20 to 34 show plainly but aren't drawn, too long and branched to trace safely here."
+   "call": "usable",
+   "note": "Traced the lane from the river road east through the lot to the loop past 22 to 30, and the B lane north past B11 to B3 (a single lane, plain in the gaps in the canopy). B1 and B2 sit under canopy with no visible lane."
   },
   "232645": {
    "call": "usable",

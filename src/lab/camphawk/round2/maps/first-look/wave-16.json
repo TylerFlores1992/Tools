@@ -257,8 +257,8 @@
    "note": "Split listing, now two areas 1 km apart (01 to 27 on the east point, 28 to 72 on the west point), and they follow the real places. In the west area the shore rows sit 20 to 40 m off the one drawn road, and in the east area 01 to 18 have no lane drawn; under full canopy the lanes don't show. Held: over a third of the sites have no drawn road."
   },
   "233409": {
-   "call": "hold",
-   "note": "Most of the lanes the sites sit on show plainly and aren't drawn: B and C (B015 to C033) have no road, the F lanes past F069 to F081 and the E lane past E054 to E064 are drawn only in part, and the D loop's sites sit outside the drawn ring."
+   "call": "usable",
+   "note": "Replace trace: the roads now follow the visible lanes through loops A, B, E and F and D's north lane (the source's west lane ran 8 m off and its F triangle cut through trees). C's lanes (C026 to C033) and D's south arc (D034 to D042) are under canopy and have no drawn road."
   },
   "233456": {
    "call": "hold",
@@ -274,7 +274,7 @@
   },
   "233448": {
    "call": "hold",
-   "note": "Split listing, now two areas (loop A in the north, loop B on the point 600 m south), and they follow the real places. Loop A's lanes (past A01 to A42) show plainly and none is drawn beyond the road in; on the point, the drawn outline runs out into the water and B06 to B10 sit off it. Held: most sites have no drawn road."
+   "note": "Split listing, two areas (loop A north, loop B on the point 600 m south). Not traced: loop A's east lanes (A20 to A40) show plainly, but its west half (A01 to A19, A24, A42) is dirt pads joined under canopy, and B05 to B10 sit on open grass with no lane, so over a third of the sites would still have no road."
   },
   "233500": {
    "call": "hold",
@@ -326,7 +326,7 @@
   },
   "233790": {
    "call": "hold",
-   "note": "The horse sites (Horse 001 to 013) sit on gravel lanes that show plainly inside the west loop and aren't drawn, and the shore sites 014 to 024 sit 30 to 50 m east of the drawn roads along a lane by the beach that isn't drawn. Held: over a third of the sites have no drawn road."
+   "note": "Not traced: the horse lanes (Horse 001 to 013) show in pieces, but where they meet the roads is under trees and the stretch past Horse 007 ends in a footpath; the shore lane past 014 to 024 is under pine canopy. Over a third of the sites still have no drawn road."
   },
   "233589": {
    "call": "usable",

@@ -157,8 +157,8 @@
    "note": "Shown as three areas along the shore, and they follow the real clusters. Zoomed on the west area, the main roads follow the visible pavement within a few metres, but the lanes between T021 and T039 and the loop by T001 show and aren't drawn."
   },
   "232623": {
-   "call": "hold",
-   "note": "The north point (101 to 115) has no road at all, and on the main point the Census loops cut across the visible lanes: the paved pull-throughs past 051 to 099 show plainly and aren't drawn where they are. Needs a replace trace."
+   "call": "usable",
+   "note": "Replace trace: the two herringbone lanes on the main point (051 to 099), the east loop's lanes (016 to 043), the lane past 011 to 015 and the south loop past 002 to 010 now follow the visible lanes, and the north point's ring road (101 to 115) is drawn. The north point's link across the neck and the lane to 001 and 006 aren't visible and are left out."
   },
   "232622": {
    "call": "good",
@@ -353,8 +353,8 @@
    "note": "The loops round 105 to 124, 62 to 66 and 41 to 61, and the east loop past 9 to 32, follow the visible roads. The middle block (67 to 104) and A to G have only the outer roads drawn, and their inner lanes, faint on the grass, aren't. Held: over a third of the sites (the middle block and A to G) have only outer roads drawn."
   },
   "234651": {
-   "call": "hold",
-   "note": "On the island the drawn roads cut across the lawns while the real loops show plainly beside them, and the ring road past 013 to 018 and 026 to 032 isn't drawn. The east shore (002 to 012) is fine. A full replace trace from the photo would fix it."
+   "call": "usable",
+   "note": "Replace trace: the dam road and the island's ring, curve, cross road and lanes now follow the visible roads past 013 to 048, and the east shore's lane and its loop past 009 to 012 are drawn. The lane on past 005 to 008 runs under trees and is left out."
   },
   "233125": {
    "call": "usable",
