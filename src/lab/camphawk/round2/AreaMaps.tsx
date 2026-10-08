@@ -229,8 +229,8 @@ function UnitDrawing({ map, frame, label, className }: { map: SiteMapData; frame
     <div className={cx("relative isolate overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell", className)} style={{ aspectRatio: `${f.w} / ${f.h}` }}>
       {/* USGS shaded relief multiplied onto the map's paper, light, so hills read without a colour of their own. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
-      {relief && <img src={relief} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover opacity-45 mix-blend-multiply" />}
-      <svg viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full" role="img" aria-label={`Map of the ground around the ${label.toLowerCase()}: roads, trails and water within ${fmtMi(f.w / 2)}, with the land's shape shaded.`}>
+      {relief && <img src={relief} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover mix-blend-multiply brightness-125 contrast-50" />}
+      <svg viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full" role="img" aria-label={`Map of the ground around the ${label.toLowerCase()}: roads, trails and water within ${fmtMi(f.w / 2)}, with the land’s shape shaded.`}>
         {map.water.map((w, i) => <path key={i} d={w.d} fillRule="evenodd" className="fill-ch-map-water" />)}
         {[...map.trails, ...map.roads.filter(isFootway)].map((t, i) => <path key={i} d={t.d} fill="none" className="stroke-ch-ink-2" strokeWidth={2.2 * s} strokeDasharray={`${8 * s} ${6 * s}`} strokeLinecap="round" />)}
         {map.roads.filter((r) => !isFootway(r)).map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-muted" strokeWidth={(r.cls === "Service" ? 7 : 10) * s} strokeLinecap="round" strokeLinejoin="round" />)}
