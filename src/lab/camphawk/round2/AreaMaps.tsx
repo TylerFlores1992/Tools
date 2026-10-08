@@ -7,6 +7,8 @@ import { SiteMap } from "./SiteMap";
 import { scaleBar, type SiteMapData } from "./maps";
 import { segmentsOfPath } from "./maps/trace";
 import { areaMap, outline, unplacedSites, type Area, type Split } from "./maps/areas";
+import { isFirstCome } from "./maps/first-come";
+import { FirstComeMap } from "./FirstCome";
 
 // Two kinds of Recreation.gov listing that one site map can't show (wave 1, 2026-10-08):
 // - a SPLIT listing, several areas kilometres apart (Seven Points, Diamond Lake): an overview of the
@@ -190,6 +192,9 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
  * time; anything else → the site map.
  */
 export function CamperMap(p: Props) {
+  // A first-come campground booked as one "Standard" site: the campground and how to get a site
+  // (the owner picked A, 2026-10-08; docs/design/campground-maps-first-come.md).
+  if (isFirstCome(p.map)) return <FirstComeMap map={p.map} name={p.name} facts={p.map.firstCome ?? null} layout="glance" />;
   if (p.map.sites.length === 1) return <UnitMap map={p.map} name={p.name} provider={p.provider} layout="card" />;
   return <AreaMaps layout="pick" {...p} />;
 }

@@ -10,7 +10,9 @@ export type ReasonCode = "one-spot" | "stacked" | "unplaced" | "outlier" | "spre
   // A listing shown as areas, or too scattered for areas (qa.mjs checkAreas, checkDispersed).
   | "areas" | "dispersed"
   // A single unit (qa.mjs checkUnit).
-  | "facility-point" | "no-access";
+  | "facility-point" | "no-access"
+  // A first-come campground booked as one "Standard" site (qa.mjs checkFirstCome).
+  | "no-outline" | "closed";
 export type Reason = { code: ReasonCode; text: string };
 export type Metrics = {
   sites: number;
@@ -41,6 +43,17 @@ export type UnitMetrics = {
   roads: { source: string };
   traced: { roads: number; points: number };
 };
+/** A first-come campground's check (qa.mjs checkFirstCome). */
+export type FirstComeMetrics = {
+  kind: "firstcome";
+  sites: 1;
+  placed: 0 | 1;
+  unplaced: string[];
+  /** Metres from the listed point to OpenStreetMap's nearest campground outline (0 inside). */
+  outlineM: number | null;
+  closed: boolean;
+  traced: { roads: number; points: number };
+};
 /** Each area's own check, for a listing shown as areas. */
 export type AreaCheck = { name: string; verdict: Verdict; reasons: Reason[] };
 /** One automatic check as the build measured it (studio/campground-maps/qa.mjs, checkList). */
@@ -55,7 +68,7 @@ export type SampleEntry = {
   verdict: Verdict;
   reasons: Reason[];
   checks: Check[];
-  metrics: Metrics | UnitMetrics;
+  metrics: Metrics | UnitMetrics | FirstComeMetrics;
   /** A listing shown as areas: each area's check. */
   areas?: AreaCheck[];
   sources: NonNullable<SiteMapData["sources"]> & { water: "usgs" | "osm" | "none" };
@@ -98,6 +111,8 @@ export const REASON_LABEL: Record<ReasonCode, string> = {
   dispersed: "Dispersed sites, not drawn as areas yet",
   "facility-point": "A unit far from its listing’s own point",
   "no-access": "No road or trail on a unit’s map",
+  "no-outline": "A first-come campground with no outline",
+  closed: "A first-come campground marked closed",
 };
 
 /** "Forest Service" → "Forest Service"; the long agency names, shortened for a card. */

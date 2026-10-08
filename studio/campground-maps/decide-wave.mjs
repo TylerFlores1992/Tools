@@ -15,19 +15,21 @@ const nn = (n) => String(n).padStart(2, "0");
 
 /**
  * The decisions file for one wave. Every built map in the manifest gets one decision.
- * `wholeCampgrounds` are listings whose one bookable site is named "Standard": a whole campground
- * booked as one site, its point a placeholder (colorado batch, 2026-10-08: 65 of 106 "units").
- * A unit location map of one misleads, so each is held, whatever the first look said.
- * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string }>, hold?: string[], pass?: string[], wholeCampgrounds?: string[], checked: number, on: string, by?: string, why?: string }} opts
+ * `wholeCampgrounds` are listings whose one bookable site is named "Standard": a first-come
+ * campground booked as one site, its point a placeholder (colorado batch, 2026-10-08: 65 of 106
+ * "units"). A unit location map of one misleads. Since the owner picked the first-come map
+ * (2026-10-08), one passes only when its first look judged it as a first-come map (`as:
+ * "firstcome"`); a look that judged it as a unit is held, whatever it said.
+ * @param {{ wave: number, manifest: { entries: { id: string, error?: string }[] }, looks: Record<string, { call: string, as?: string }>, hold?: string[], pass?: string[], wholeCampgrounds?: string[], checked: number, on: string, by?: string, why?: string }} opts
  */
 export function decideWave({ wave, manifest, looks, hold = [], pass = [], wholeCampgrounds = [], checked, on, by = "Claude (final check, owner's delegation)", why }) {
   const decisions = manifest.entries.filter((e) => !e.error).map((e) => {
     const call = looks[e.id]?.call;
     if (!call) throw new Error(`wave ${wave}: no first look for ${e.id}`);
-    const whole = wholeCampgrounds.includes(e.id);
+    const whole = wholeCampgrounds.includes(e.id) && looks[e.id]?.as !== "firstcome";
     const override = hold.includes(e.id) || whole ? "hidden" : pass.includes(e.id) ? "approved" : null;
     const decision = override ?? (call === "good" || call === "usable" ? "approved" : "hidden");
-    const note = whole ? `Held: a whole campground booked as one "Standard" site, not a unit (first look ${call}).`
+    const note = whole ? `Held: a first-come campground booked as one "Standard" site, looked at as a unit, not as a first-come map (first look ${call}).`
       : override
       ? `Final check overrode the first look (${call}): ${decision === "approved" ? "passed" : "held"}${why ? `, ${why}` : ""}.`
       : decision === "approved" ? `Passed: first look ${call}.` : `Held to fix after: first look ${call}.`;

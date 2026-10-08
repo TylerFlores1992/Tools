@@ -24,7 +24,8 @@ import { join } from "node:path";
 import { csvObjects } from "./ridb.mjs";
 import { NHD, arcgis, kept, lines, makeGeo, rings } from "./geo.mjs";
 import { fetchOsm, fetchWaterRelation, osmLayers, osmSource } from "./osm.mjs";
-import { checkAreas, checkDispersed, checkMap, checkUnit } from "./qa.mjs";
+import { checkAreas, checkDispersed, checkFirstCome, checkMap, checkUnit } from "./qa.mjs";
+import { factsFromLoaded, isFirstComeSites } from "./first-come.mjs";
 import { splitAreas } from "../../src/lab/camphawk/round2/maps/areas.ts";
 import { pickRoadSource, roadFit } from "./roads.mjs";
 import { readTrace } from "./trace.mjs";
@@ -82,6 +83,9 @@ const SPLIT_CALLS = splitCalls();
  * A reviewer's call overrides the 1.5 km rule either way.
  */
 export function viewOf(sites, call) {
+  // A first-come campground booked as one "Standard" site is a campground, not a unit
+  // (docs/design/campground-maps-first-come.md; the owner picked its look, 2026-10-08).
+  if (isFirstComeSites(sites.map((s) => s.name))) return { kind: "firstcome" };
   if (sites.length === 1) return { kind: "unit" };
   // A split call may also set how tight the areas are, read off the photo: `gap` (m between areas)
   // or `maxSpan` (m across one area), when the defaults put several clusters in one area.
@@ -240,10 +244,14 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   };
   // One unit is a place (a location map and its own check); a listing of several places is shown,
   // and checked, area by area (areas.ts, qa.mjs). Anything else is one campground map.
-  let qa = checkMap(checkInput), split = null;
+  let qa = checkMap(checkInput), split = null, firstCome = null;
   const call = meta.split ?? SPLIT_CALLS.get(facilityId);
   const view = viewOf(outSites, call);
-  if (view.kind === "unit") {
+  if (view.kind === "firstcome") {
+    const standard = rows.find((r) => r.CampsiteName.trim().toLowerCase() === "standard");
+    firstCome = factsFromLoaded(facilityId, fac ?? { FacilityName: meta.name ?? "", FacilityDescription: "" }, standard ? ridb.attrs?.get(standard.CampsiteID) : {});
+    qa = checkFirstCome({ site: checkInput.sites[0], outlineRings: checkInput.outlineRings, closed: firstCome.closed, traced: checkInput.traced });
+  } else if (view.kind === "unit") {
     const flat = Number(fac?.FacilityLatitude), flon = Number(fac?.FacilityLongitude);
     qa = checkUnit({ site: checkInput.sites[0], facilityAt: flat && flon ? xy([flon, flat]) : null, roadSegments: checkInput.roadSegments, trailSegments: segmentsOf(trails.map((t) => t.f), xy), roadSource: checkInput.roadSource, traced: checkInput.traced });
   } else if (qa.verdict === "not-drawn") {
@@ -306,6 +314,8 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     sites: outSites,
     /** How a camper sees it: several areas (areas.ts), or dispersed; absent for one campground or one unit. */
     ...(split ? { split } : {}),
+    /** A first-come campground: what RIDB says about it (first-come.mjs), for the first-come map. */
+    ...(firstCome ? { firstCome } : {}),
     /** The trace built in (studio/campground-maps/traces/), so the lab's tracing tool edits it whole. */
     ...(trace ? { trace } : {}),
     /** What the checks compared against, kept so a reviewer sees it on the aerial photo. */

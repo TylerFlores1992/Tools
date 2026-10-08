@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { RULES, UNIT_RULES, checkAreas, checkDispersed, checkMap, checkUnit, inRing, sameNumber, toSegments } from "../studio/campground-maps/qa.mjs";
+import { FIRST_COME_RULES, RULES, UNIT_RULES, checkAreas, checkDispersed, checkFirstCome, checkMap, checkUnit, inRing, sameNumber, toSegments } from "../studio/campground-maps/qa.mjs";
 
 // A tidy loop campground in local metres: 20 sites in two rows either side of an east-west
 // road, 12 m off it, 15 m apart. Every check passes on it; each test breaks one thing.
@@ -251,4 +251,32 @@ test("a unit with no point can't be drawn; one with traced roads waits for a per
   assert.equal(unit({ site: { name: "CABIN", at: null } }).verdict, "not-drawn");
   const r = unit({ traced: { roads: 1, points: 0 } });
   assert.deepEqual(r.reasons.map((x) => x.code), ["traced"]);
+});
+
+test("a first-come campground is ready when an outline holds its point (or lies within reach) and it isn't closed", () => {
+  const sq = (x: number, y: number, w: number): [number, number][] => [[x, y], [x + w, y], [x + w, y + w], [x, y + w]];
+  const fc = (over: Partial<Parameters<typeof checkFirstCome>[0]> = {}) => checkFirstCome({ site: { name: "Standard", at: [0, 0] }, outlineRings: [sq(-50, -50, 100)], ...over });
+  const inside = fc();
+  assert.equal(inside.verdict, "ready");
+  assert.equal(inside.metrics.outlineM, 0);
+  assert.equal(inside.metrics.kind, "firstcome");
+  // On the road 40 m south of the outline: still the campground's outline.
+  const near = fc({ outlineRings: [sq(-50, 40, 100)] });
+  assert.equal(near.verdict, "ready");
+  assert.equal(near.metrics.outlineM, 40);
+  // Beyond reach, or no outline: a person looks.
+  const far = fc({ outlineRings: [sq(FIRST_COME_RULES.outlineReachM + 10, 0, 50)] });
+  assert.equal(far.verdict, "review");
+  assert.deepEqual(far.reasons.map((r) => r.code), ["no-outline"]);
+  assert.match(far.reasons[0].text, /m from the listed point/);
+  assert.equal(fc({ outlineRings: [] }).verdict, "review");
+  assert.match(fc({ outlineRings: [] }).reasons[0].text, /doesn’t outline/);
+  // Closed: a person looks, and the check says so.
+  const closed = fc({ closed: true });
+  assert.deepEqual(closed.reasons.map((r) => r.code), ["closed"]);
+  assert.equal(closed.checks.find((c) => c.code === "closed")!.result, "review");
+  // No point: not drawn.
+  assert.equal(fc({ site: { name: "Standard", at: null } }).verdict, "not-drawn");
+  // A trace waits for a person too.
+  assert.deepEqual(fc({ traced: { roads: 1, points: 0 } }).reasons.map((r) => r.code), ["traced"]);
 });

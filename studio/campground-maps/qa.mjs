@@ -266,3 +266,39 @@ function unitChecks(m) {
     { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
   ];
 }
+
+/** A first-come campground booked as one "Standard" site (docs/design/campground-maps-first-come.md):
+    its point is a payment placeholder, so the map draws OpenStreetMap's outline of the campground.
+    Farther than this from the point, an outline is someone else's (the lab's OUTLINE_REACH_M). */
+export const FIRST_COME_RULES = { outlineReachM: 250 };
+
+/**
+ * The first-come check: the placeholder has a point, an OpenStreetMap outline holds it or lies
+ * within reach, and the listing isn't marked closed. Never "ready" on a guess: no outline or a
+ * closed listing waits for a person.
+ * @param {{ site: { name: string, at: [number, number] | null }, outlineRings?: [number, number][][], closed?: boolean, traced?: { roads: number, points: number } }} input
+ * @returns {{ verdict: "ready" | "review" | "not-drawn", reasons: { code: string, text: string }[], metrics: { kind: "firstcome", sites: number, placed: number, unplaced: string[], outlineM: number | null, closed: boolean, traced: { roads: number, points: number } }, checks: { code: string, label: string, value: string, limit: string, result: string }[] }}
+ */
+export function checkFirstCome({ site, outlineRings = [], closed = false, traced = { roads: 0, points: 0 } }) {
+  const at = site.at;
+  const ringM = (r) => (inRing(at, r) ? 0 : toSegments(at, r.slice(1).map((b, i) => [r[i], b]).concat([[r[r.length - 1], r[0]]])));
+  const outlineM = at && outlineRings.length ? Math.round(Math.min(...outlineRings.map(ringM))) : null;
+  const m = { kind: "firstcome", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], outlineM, closed, traced: { roads: traced.roads, points: traced.points } };
+  if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The listing has no point" }], metrics: m, checks: firstComeChecks(m) };
+  const review = [];
+  if (outlineM === null || outlineM > FIRST_COME_RULES.outlineReachM) review.push({ code: "no-outline", text: outlineM === null ? "OpenStreetMap doesn’t outline the campground" : `OpenStreetMap’s nearest campground outline is ${outlineM} m from the listed point` });
+  if (closed) review.push({ code: "closed", text: "Recreation.gov’s listing says it’s closed" });
+  const tracedText = tracedWords(m.traced);
+  if (tracedText) review.push({ code: "traced", text: `${tracedText} traced from the aerial photo` });
+  return { verdict: review.length ? "review" : "ready", reasons: review, metrics: m, checks: firstComeChecks(m) };
+}
+
+function firstComeChecks(m) {
+  const near = m.outlineM !== null && m.outlineM <= FIRST_COME_RULES.outlineReachM;
+  return [
+    { code: "unplaced", label: "The listing has a point", value: m.placed ? "Yes" : "No", limit: "Yes", result: m.placed ? "pass" : "fail" },
+    { code: "no-outline", label: "OpenStreetMap outlines the campground", value: m.outlineM === null ? "No outline nearby" : m.outlineM === 0 ? "Yes, around the listed point" : `${m.outlineM} m from the listed point`, limit: `Within ${FIRST_COME_RULES.outlineReachM} m`, result: !m.placed ? "none" : near ? "pass" : "review" },
+    { code: "closed", label: "Open, by Recreation.gov’s listing", value: m.closed ? "Says closed" : "Not marked closed", limit: "Not closed", result: m.closed ? "review" : "pass" },
+    { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
+  ];
+}
