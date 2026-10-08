@@ -848,6 +848,7 @@ in here.
 | colorado | 22, 23, 35, 36 | 232 | 131 | 101 | 30 looked at (all 8 traces, all 5 splits, 17 sampled): agreed with all 30 |
 | west-a | 3, 4, 5 | 283 | 176 | 107 | 31 looked at (all 13 traces, all 6 splits, 12 sampled): agreed with all 31 |
 | west-units-b | 30, 31, 32 | 266 | 132 | 134 | 19 looked at (all 7 traces, 12 sampled): agreed with 17; held 2 the child passed (whole campgrounds booked as one "Standard" site) |
+| west-b | 6, 7, 8 | 283 | 189 | 94 | 18 looked at (all 3 traces, both splits, 12 sampled, plus Packard Creek's stray point): agreed with all 18 |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -901,6 +902,16 @@ group-site lanes).
   "Standard" site.
 - The child passed two of them. **The final check now holds every listing whose one site is named
   "Standard"** (`decide-wave.mjs`, tested), so the rule doesn't depend on each child's call.
+
+**west-b (2026-10-08, us-west extract, multi-site):** 283 built. First
+look: 61 good, 128 usable, 25 hold, 69 unsure (Pacific Northwest canopy).
+- 3 traced (Lower Billy Creek, Chavez Crossing, Moose Creek Flat). 2 split calls: Swan Creek
+  (two clusters 800 m apart) and Sand Flats Group C, which the build shows as dispersed groups of
+  sites (the rule for clusters too spread to frame as areas). Big River's split failed the area
+  test and was dropped.
+- Packard Creek (232894): one site 4 km across the lake, shown as its own area; held, the same
+  stray-point case as colorado's.
+- USGS's water service failed for a few maps; the build fell back to OSM water as designed.
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
