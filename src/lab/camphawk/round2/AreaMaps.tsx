@@ -37,14 +37,19 @@ const fmtMi = (m: number) => { const mi = m / 1609.34; return mi < 0.1 ? `${Math
     sits just outside its outline, on the side away from the listing's middle, so it never covers a
     site; a tap target is 44px around a 28px badge. */
 function Overview({ map, areas, current, onPick, linkTo }: { map: SiteMapData; areas: Area[]; current: number | null; onPick?: (i: number) => void; linkTo?: (i: number) => string }) {
-  // Never thinner than 1:2, so a listing strung along a shore still has room for its numbers.
-  const g = map.frame, f = { ...g };
-  if (f.w < f.h / 2) { f.x -= (f.h / 2 - f.w) / 2; f.w = f.h / 2; }
-  if (f.h < f.w / 2) { f.y -= (f.w / 2 - f.h) / 2; f.h = f.w / 2; }
-  const s = Math.max(f.w, f.h) / 600; // stroke scale: about 1px at 600px across
+  const g = map.frame;
+  const s = Math.max(g.w, g.h) / 600; // stroke scale: about 1px at 600px across
   const pad = 14 * s;
   const mid: [number, number] = [g.x + g.w / 2, g.y + g.h / 2];
   const rings = areas.map((a) => outline(map, a, pad));
+  // The map's own frame has only a narrow margin, so an area at its edge would lose its outline and
+  // number (Medicine Lake, Hardin Ridge: first look, 2026-10-08). Room for every outline and a badge.
+  const room = 40 * s, xs = rings.flat().map((q) => q[0]), ys = rings.flat().map((q) => q[1]);
+  const x0 = Math.min(g.x, Math.min(...xs) - room), y0 = Math.min(g.y, Math.min(...ys) - room);
+  const f = { x: x0, y: y0, w: Math.max(g.x + g.w, Math.max(...xs) + room) - x0, h: Math.max(g.y + g.h, Math.max(...ys) + room) - y0 };
+  // Never thinner than 1:2, so a listing strung along a shore still has room for its numbers.
+  if (f.w < f.h / 2) { f.x -= (f.h / 2 - f.w) / 2; f.w = f.h / 2; }
+  if (f.h < f.w / 2) { f.y -= (f.w / 2 - f.h) / 2; f.h = f.w / 2; }
   // The badge: from the area's middle, out past its outline away from the listing's middle.
   const badgeAt = (a: Area, ring: [number, number][]): [number, number] => {
     let dx = a.center[0] - mid[0], dy = a.center[1] - mid[1];
