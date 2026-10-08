@@ -35,39 +35,20 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Waiting on the owner
-0. **CampHawk shirts round 4: the back print is open again** (2026-10-07). The owner's wife says the
-   mirrored peak reads as a diamond. Seven layouts without the diamond:
-   https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j (reviewer's top three: Arch window, Panorama,
-   Round badge). **Waiting on the owner's pick.** Then: vector print files and print check for the pick,
-   then the Vercel image polish. How it's built: `studio/camphawk-shirts/README.md`, "Round 4".
-   The DTF plan below still holds; the gang sheet waits for the new back.
-   **Earlier: art final; owner leaning to DTF transfers pressed at home** (2026-10-07).
-   - **The art.** Still Water comes in two versions:
-     - giveaway: one ink on a natural shirt;
-     - owners: three inks on sage.
-     Both backs carry the camp (a tent and a campfire under the peak; critic 6 → 8/10). Both chest
-     prints are fixed: they had lost the C and the K.
-   - **The files.**
-     - Print files: `studio/camphawk-shirts/kit/` (an SVG per ink, plus 300 dpi PNGs).
-     - Kit page (mockups, a zip of all 12 files, order spec, printer table):
-       https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM. Emailed to the owner.
-   - **The decision so far.** Screen printing ($13.50–25 a shirt) was too high; the owner wants about
-     $10 at about 20 shirts. Recommended, and the owner is leaning to it: **DTF transfers pressed at
-     home.** The owner's wife has a heat press.
-     - Order one 22 in DTF gang sheet, about 20 ft: all backs plus chests, about $93–107 (DTF
-       Transfers Now or DTF Dallas).
-     - Blanks: Gildan 5000 Natural, $3.41 (Blankstyle).
-     - Total: about $8.30–9 a shirt.
-     - Printify (DTG, back only) is the fallback at about $10.50–11.
-     - Skip AliExpress: duty is now about 36% landed, plus quality risk.
-     - Skip Cricut vinyl (the hatching is too fine to weed) and sublimation (polyester only).
-     - Full comparison: the README's "Printers" and "About $10 a shirt" sections.
-   - **Next step (waiting on the owner):** how many shirts of each version, and the heat press size.
-     The back is 11.5 × 13 in, which fits a 15 × 15 press in one press; a 10 × 12 Cricut EasyPress
-     needs two. Then build the gang-sheet PNG: 22 in wide, 300 dpi, transparent, backs turned
-     sideways, chests in the strip beside them, from `kit/*_300dpi.png`.
-   - **Before the full run:** press one test shirt; the 1 mm gaps are at DTF's limit.
-   - Image credit used: $0.54 of the owner's $0.75 (AI Gateway balance $1.505).
+0. **CampHawk shirts: back redesigned and print-ready; owner to order** (2026-10-08).
+   - **The design.** The owner's wife said the mirrored peak read as a diamond. Round 4 drew seven layouts
+     without it; the owner picked **no. 7, "Short reflection"**: the peak, camp and hawk on a few broken
+     lake lines. The back is now 11.5 × 8.33 in on both shirts (one ink on natural, three on sage); the
+     chest prints are unchanged.
+   - **The files.** `studio/camphawk-shirts/kit/` (an SVG per ink plus 300 dpi PNGs), built by
+     `final4.mjs`. Kit page: https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM. Round 4 options:
+     https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j.
+   - **The plan.** DTF transfers pressed at home by the owner's wife, about $9 a shirt (one 22 in gang
+     sheet plus Gildan 5000 Natural at $3.41). Printify is the fallback. Details in the shirt README.
+   - **Next steps, waiting on the owner:** how many shirts of each version and the heat press size, then
+     build the gang-sheet PNG from `kit/*_300dpi.png`. The owner also planned a Vercel image polish of the
+     art before ordering.
+   - Image credit used: $0.54 of the owner's $0.75.
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a

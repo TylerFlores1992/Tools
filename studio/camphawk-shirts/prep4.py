@@ -8,7 +8,7 @@ SHORE = 1614                       # last row of the shore band (the reflection 
 HAWK = (360, 960, 2520, 3300)      # y0 y1 x0 x1 of the hawk in both renders
 def disk(r):
     y, x = np.mgrid[-r:r + 1, -r:r + 1]; return x * x + y * y <= r * r
-for src, name in [("kit/still-water-one-ink_back_300dpi.png", "one"), ("kit/still-water_back_300dpi.png", "three")]:
+for src, name in [("ref/still-water-one-ink_diamond_300dpi.png", "one"), ("ref/still-water_diamond_300dpi.png", "three")]:
     im = np.asarray(Image.open(src).convert("RGBA")).copy()
     im[SHORE:] = 0
     y0, y1, x0, x1 = HAWK; im[y0:y1, x0:x1] = 0

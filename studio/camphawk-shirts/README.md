@@ -145,3 +145,18 @@ banner, Short reflection. Review page: https://claude.ai/artifact/SjC3vk4yMahmUM
 - Reviewer notes not taken: "hatch gaps under 1 mm" (it measured downscaled previews; the print files
   were cleaned to 1 mm and over), "scale the tent and fire 1.4×" (the owner approved their size).
 - `sheet4-share.mjs` makes the one numbered image of all seven for sharing (`round4-options.jpg`; needs `out4/old-diamond.png`, the old back on natural).
+
+## The pick (2026-10-08): no. 7, Short reflection
+The owner picked round 4's no. 7, "Short reflection" (`round4.mjs` id `dashes`). It is now the back print for
+both shirts: the peak, camp and hawk stand on five rows of broken lake lines, then the wordmark. The print is
+11.5 x 8.33 in (it was 11.5 x 13 in as the diamond). The chest prints are unchanged.
+- `python3 prep4.py` (the peak without its reflection, from the old diamond renders kept in
+  `ref/still-water*_diamond_300dpi.png`), then `node final4.mjs`. It renders at 300 dpi, snaps every pixel to
+  an ink, and traces one SVG per ink into `kit/`, plus the 300 dpi PNGs.
+- Print check: only the pointed tips of the lake dashes and letter and tree corners are flagged; every gap
+  between dashes is well over 1 mm. The peak and camp are the art that passed before.
+- `campkit.mjs` (the diamond kit) now writes to `out2/kit-diamond/`, so it can never overwrite the kit.
+- Kit page (mockups, a zip of all 12 files, order spec, the DTF plan): https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM
+- Still open: the Vercel image polish the owner planned, and the DTF gang sheet once the shirt counts and the
+  heat press size are known (the shorter back fits more to a 22 in sheet).
+
