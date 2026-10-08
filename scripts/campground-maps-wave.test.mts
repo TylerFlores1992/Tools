@@ -190,6 +190,10 @@ test("the final check's decisions: good and usable pass, hold and unsure are hel
   const o = decideWave({ wave: 9, manifest, looks, hold: ["b"], pass: ["d"], checked: 4, on: "2026-10-08" });
   assert.deepEqual(o.decisions.map((d: { decision: string }) => d.decision), ["approved", "hidden", "hidden", "approved"]);
   assert.match(o.source, /2 overridden/);
+  // The reason for an override is kept on the overridden maps only.
+  const y = decideWave({ wave: 9, manifest, looks, hold: ["b"], checked: 4, on: "2026-10-08", why: "too many sites with no road" });
+  assert.match(y.decisions[1].note, /held, too many sites with no road\./);
+  assert.doesNotMatch(y.decisions[0].note, /too many sites/);
   // A whole campground booked as one "Standard" site is held, whatever the first look said.
   const w = decideWave({ wave: 9, manifest, looks, wholeCampgrounds: ["a"], checked: 4, on: "2026-10-08" });
   assert.equal(w.decisions[0].decision, "hidden");

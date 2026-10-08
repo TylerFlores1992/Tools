@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-232587",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.6862808,
+     37.0720382
+    ],
+    [
+     -84.6860671,
+     37.0720022
+    ],
+    [
+     -84.6858591,
+     37.0720247
+    ],
+    [
+     -84.685651,
+     37.0720742
+    ],
+    [
+     -84.6854711,
+     37.0722184
+    ],
+    [
+     -84.685263,
+     37.0722634
+    ],
+    [
+     -84.6850156,
+     37.0722904
+    ],
+    [
+     -84.6848076,
+     37.0723355
+    ],
+    [
+     -84.6845939,
+     37.072376
+    ],
+    [
+     -84.6844533,
+     37.0724166
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the lane along the shore from the road past 14 to 24. Left out: the lanes to 21 and 25 to 44 under full canopy north of the road."
+}

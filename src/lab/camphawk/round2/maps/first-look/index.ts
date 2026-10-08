@@ -11,6 +11,11 @@ import wave05 from "./wave-05.json" with { type: "json" };
 import wave06 from "./wave-06.json" with { type: "json" };
 import wave07 from "./wave-07.json" with { type: "json" };
 import wave08 from "./wave-08.json" with { type: "json" };
+import wave17 from "./wave-17.json" with { type: "json" };
+import wave18 from "./wave-18.json" with { type: "json" };
+import wave19 from "./wave-19.json" with { type: "json" };
+import wave20 from "./wave-20.json" with { type: "json" };
+import wave21 from "./wave-21.json" with { type: "json" };
 import wave22 from "./wave-22.json" with { type: "json" };
 import wave23 from "./wave-23.json" with { type: "json" };
 import wave24 from "./wave-24.json" with { type: "json" };
@@ -26,8 +31,10 @@ import wave33 from "./wave-33.json" with { type: "json" };
 import wave34 from "./wave-34.json" with { type: "json" };
 import wave35 from "./wave-35.json" with { type: "json" };
 import wave36 from "./wave-36.json" with { type: "json" };
+import wave37 from "./wave-37.json" with { type: "json" };
+import wave38 from "./wave-38.json" with { type: "json" };
 import wave39 from "./wave-39.json" with { type: "json" };
 
 export type LooksFile = { version: 1; wave: number; by: string; on: string; looks: Record<string, { call: FirstLook; note: string }> };
 
-export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile, wave03 as LooksFile, wave04 as LooksFile, wave05 as LooksFile, wave06 as LooksFile, wave07 as LooksFile, wave08 as LooksFile, wave22 as LooksFile, wave23 as LooksFile, wave24 as LooksFile, wave25 as LooksFile, wave26 as LooksFile, wave27 as LooksFile, wave28 as LooksFile, wave29 as LooksFile, wave30 as LooksFile, wave31 as LooksFile, wave32 as LooksFile, wave33 as LooksFile, wave34 as LooksFile, wave35 as LooksFile, wave36 as LooksFile, wave39 as LooksFile];
+export const LOOK_FILES: LooksFile[] = [wave01 as LooksFile, wave02 as LooksFile, wave03 as LooksFile, wave04 as LooksFile, wave05 as LooksFile, wave06 as LooksFile, wave07 as LooksFile, wave08 as LooksFile, wave17 as LooksFile, wave18 as LooksFile, wave19 as LooksFile, wave20 as LooksFile, wave21 as LooksFile, wave22 as LooksFile, wave23 as LooksFile, wave24 as LooksFile, wave25 as LooksFile, wave26 as LooksFile, wave27 as LooksFile, wave28 as LooksFile, wave29 as LooksFile, wave30 as LooksFile, wave31 as LooksFile, wave32 as LooksFile, wave33 as LooksFile, wave34 as LooksFile, wave35 as LooksFile, wave36 as LooksFile, wave37 as LooksFile, wave38 as LooksFile, wave39 as LooksFile];

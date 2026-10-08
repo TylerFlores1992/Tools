@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-234597",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -81.3906451,
+     29.0130017
+    ],
+    [
+     -81.3904296,
+     29.0129972
+    ],
+    [
+     -81.3902756,
+     29.0129475
+    ],
+    [
+     -81.3901524,
+     29.0128573
+    ],
+    [
+     -81.3900601,
+     29.012758
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the gravel lane from the drawn road east to the group site's building. Left out: the lane around the lawn, which loops back on itself."
+}

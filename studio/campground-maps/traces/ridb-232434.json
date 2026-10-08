@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-232434",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -83.0738468,
+     35.6506629
+    ],
+    [
+     -83.0739087,
+     35.6507611
+    ],
+    [
+     -83.0739241,
+     35.6508639
+    ],
+    [
+     -83.0738987,
+     35.6509657
+    ],
+    [
+     -83.0738722,
+     35.6510261
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the gravel lot from the end of the drawn road north to the field by G002 and G003. Left out: any lane to G001, under canopy."
+}

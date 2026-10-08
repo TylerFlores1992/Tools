@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-251904",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.9860788,
+     30.2759996
+    ],
+    [
+     -84.9860039,
+     30.2757642
+    ],
+    [
+     -84.9859228,
+     30.2755521
+    ],
+    [
+     -84.9858001,
+     30.2754096
+    ],
+    [
+     -84.9857055,
+     30.2753392
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the sand lane south-east from the loop past 09 and 07. Left out: the short spurs to 01, 02 and 06, too faint under the pines."
+}
