@@ -26,6 +26,11 @@ for _ in range(3):                                   # repeat: filling can creat
             if len(vals): lab[sl][blob] = np.bincount(vals + 1).argmax() - 1; changed += 1
     print("filled", changed)
     if not changed: break
+# a snow stripe on the right face ended in a straight vertical cut (x 2148, y 847-915, from the source art):
+# cut its end on a diagonal like the strokes around it, so it tapers to a point
+yy, xx = np.mgrid[840:922, 2060:2150]
+cut = ((xx - 2075) * (915 - 847) - (yy - 847) * (2149 - 2075)) > 0
+blk = lab[840:922, 2060:2150]; blk[cut & (blk == 2)] = 0
 out = np.zeros(a.shape, np.uint8)
 for k, c in enumerate(INKS): out[lab == k] = c + (255,)
 Image.fromarray(out).save("out5/peak-three.png")
