@@ -15,8 +15,6 @@ Waves 30, 31, 32: us-west single units (cabins, lookouts, guard stations, group 
   a 10 m grid side by side, with OSM trails (dashed) drawn over both, since aerial-check and
   aerial-grid draw roads only. Every map in the wave was read that way.
 
-STATUS: started
-
 ## Wave 30 (us-west, units)
 - Built 89, failed 0. The first run hung on 234420 (Savenac Cookhouse): it never logged and the
   run never wrote the manifest; a second full run from cache built all 89.
@@ -73,3 +71,45 @@ STATUS: started
   - Pairs of listings with pins 50 m apart in the same featureless stand (233233/233234
     Treasure Park East/North) are both unsure.
   - About 25 minutes for the look and traces.
+
+## Wave 32 (us-west, units)
+- Built 89, failed 0 (one run, about 45 minutes)
+- Check: ready 80, review 9, not drawn 0 (after the trace; 81 and 8 before it)
+- First look: good 12, usable 32, hold 37, unsure 8
+- Traced: 234631 (Lodgepole Guard Station: the gravel drive from the road into the station's yard)
+- Split calls: none
+- Held, and why (one line each). 26 of the 37 are whole campgrounds listed with one generic
+  "Standard" site (see below) whose one point is not on the campground:
+  - 10165105, 10165305, 10314707: the generic site in unbroken forest, no campground near.
+  - 10165155, 10165165, 10165205, 10165375, 10165385, 10165430, 10165495, 10165581, 10165626,
+    10165656, 10165721, 10191065, 10191075, 10191090, 10191100, 10192067, 10221637, 10221647,
+    10221657, 10221667, 10221677, 10215904: the generic site 20-350 m off the campground (in the
+    trees, across the creek or highway, on a slope, in a meadow).
+  - 10165596, 10165606: the generic site in the river / the lake.
+  - 10116518: pin in open forest with no building; the guard station isn't plain anywhere near.
+  - 118990: pin in sagebrush; the station's buildings are 110 m south.
+  - 232348: pin in the trees of a parking island; no chalet.
+  - 232790: pin on a hillside above a housing tract, 130 m from any road; listing point 640 m away.
+  - 233126: pin on a forested slope 130 m from any road, no lookout or cabin.
+  - 233183: pin on grass 200 m from the campground's loops and buildings.
+  - 233988: pin in unbroken forest across the river, 180 m from any road.
+  - 234157: pin in forest; the cabin plainly shows 70 m south on the drawn trail.
+  - 234160: pin in a burned stand 315 m from any road, no cabin.
+  - 234161: pin on a brushy slope 300 m below the road, no lookout.
+- Anything new: **wave 32 is mostly not single units.** 50 of its 89 listings are whole
+  campgrounds (Sawtooth, Boise, Mendocino, Willamette, Tonto, San Bernardino NFs and others) that
+  RIDB lists with one campsite named "Standard" and no point of its own, so the build places it at
+  the listing's point and calls the listing a unit. The unit check passes them ("ready": point
+  within 300 m of itself, a road within 700 m), so the check's 80 ready says nothing for these.
+  Where the point sits inside the campground I called it usable ("marks the campground but no
+  site", 23); where it sits off it, hold (26); one unsure. None of the 50 is a site map, and a
+  location pin is the most they can be. The orchestrator may want to re-plan these as multi-site
+  campgrounds with no campsite points (they can't be drawn from RIDB) rather than units.
+  Two more bad listing points (10038994: 1,690 km; 231968: 86 km) and one 97 km (10165285).
+
+## Timing
+- Setup (npm, RIDB, extract): about 15 minutes.
+- Wave 30: about 55 minutes. Wave 31: about 25 minutes of look and traces (built alongside 30).
+- Wave 32: about 50 minutes (built alongside 31's look).
+
+STATUS: complete
