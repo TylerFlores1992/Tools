@@ -36,6 +36,26 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
+
+**Wave 1 (2026-10-08, this branch, PR pending):** the rollout tooling is built (OpenStreetMap from
+regional extracts, `population.mjs`, `build-wave.mjs`, the review page at scale with Download
+decisions). Wave 1 is 100 campgrounds by demand (the 16 watched, then the most-reserved of each
+agency).
+- **Built:** all 100 (no failures).
+- **First look over the photo:** 49 good, 26 usable with roads missing, 20 not usable as drawn, 5
+  can't tell. So **75 of 100 are usable after one look (66–82%)**. That is below the sample's
+  79–96%, so per the playbook it waits on the owner.
+- **Army Corps parks are the weak group:** 11 of 23 usable. All 16 watched campgrounds are usable.
+- **9 maps traced** from the photo. Each was checked over the photo after the rebuild.
+- **Why the 20 are held:** 10 split listings, 9 missing roads under canopy, 1 repeated site
+  numbers.
+- **The check passed 4 maps the photo doesn't support** (Cave Spring and others). The review page
+  now asks for a decision on those too.
+- **Waiting on the owner:** decisions on wave 1 (review page `?wave=1`, then Download decisions),
+  and whether wave 2 goes ahead as planned.
+- **Next after that:** design the split-listing and single-unit maps (owner approved, after wave
+  1).
+- **Full write-up:** the design doc's "Wave 1".
 **Start here for maps:** `docs/design/campground-maps-playbook.md` (the plan to finish every
 Recreation.gov and ReserveCalifornia map: rules, tooling to build, the wave loop, testing, doc
 updates, owner decisions; the `campground-maps` skill loads it on "complete the maps"). Then
@@ -90,8 +110,8 @@ updates, owner decisions; the `campground-maps` skill loads it on "complete the 
   - **All 23 held sample maps:** 18 approved (12 with traced roads, 6 flagged but fine), 5 kept
     hidden (Yellowbottom, Murrell, Rabbit Valley, Medicine Lake, Pioneer Trail). Recorded in
     `src/lab/camphawk/round2/maps/decisions/wave-00.json`; the review page shows them for everyone.
-  - **Waves go by CampHawk demand.** Only 23 Recreation.gov campgrounds have ever been watched; 17
-    new ones are in the 2,196, so they lead wave 1. After that, Recreation.gov's reservation
+  - **Waves go by CampHawk demand.** Only 23 Recreation.gov campgrounds have ever been watched; ~~17~~
+    **16** new ones are in the 2,196, so they lead wave 1. After that, Recreation.gov's reservation
     history (to check). Playbook §4.2.
   - **Single-unit and split-listing maps: yes, designed after wave 1.**
   - **Network, after the owner's change (2026-10-08 night):** the environment went to Custom with

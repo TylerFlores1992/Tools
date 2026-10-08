@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232572",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -85.9097295,
+     36.2991472
+    ],
+    [
+     -85.9097852,
+     36.2989219
+    ],
+    [
+     -85.9098408,
+     36.2986515
+    ],
+    [
+     -85.9098965,
+     36.2984262
+    ],
+    [
+     -85.9098965,
+     36.2982009
+    ],
+    [
+     -85.9098631,
+     36.2979756
+    ],
+    [
+     -85.9098186,
+     36.2977503
+    ],
+    [
+     -85.9096182,
+     36.2976782
+    ],
+    [
+     -85.9094512,
+     36.2976692
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The middle lane past 116, 119, 122, 124, 127 and 128, which shows between the trees and joins the south loop. Left out: the curving lane past 046 and 050, whose line under the trees can't be followed closely enough."
+}

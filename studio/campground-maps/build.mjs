@@ -23,10 +23,11 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { csvObjects } from "./ridb.mjs";
 import { NHD, arcgis, kept, lines, makeGeo, rings } from "./geo.mjs";
-import { fetchOsm, fetchWaterRelation, osmLayers } from "./osm.mjs";
+import { fetchOsm, fetchWaterRelation, osmLayers, osmSource } from "./osm.mjs";
 import { checkMap } from "./qa.mjs";
 import { pickRoadSource, roadFit } from "./roads.mjs";
 import { readTrace } from "./trace.mjs";
+import { poiKind } from "./pois.mjs";
 
 const NPS = "https://mapservices.nps.gov/arcgis/rest/services/NationalDatasets";
 const USFS_ROADS = "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0";
@@ -62,6 +63,16 @@ export const bookable = (r) => r.CampsiteType !== "MANAGEMENT" && r.TypeOfUse ==
 
 const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).flatMap((p) => { const m = p.map(xy); return m.slice(1).map((b, i) => [m[i], b]); }));
 
+/** The box a campground's map asks map services for ([w, s, e, n]), and whether it is too big to
+    be one campground (MAX_FRAME_M): the same frame buildRidbMap() fits, so a wave can cut all its
+    OpenStreetMap boxes in one pass first (osm.mjs prefetchOsm). Null when no site has a point. */
+export function frameBoxOf(ridb, facilityId) {
+  const placed = (ridb.sites.get(facilityId) ?? []).filter(bookable).filter((r) => Number(r.CampsiteLatitude) && Number(r.CampsiteLongitude));
+  if (!placed.length) return null;
+  const { frame, bboxArr } = makeGeo(placed.map((r) => [Number(r.CampsiteLongitude), Number(r.CampsiteLatitude)]));
+  return { bboxArr, huge: Math.max(frame.w, frame.h) > MAX_FRAME_M };
+}
+
 /** Build one campground's map. Returns { map, qa }; throws if a source fails (never a silent gap). */
 export async function buildRidbMap(ridb, facilityId, meta = {}) {
   const fac = ridb.facilities.get(facilityId);
@@ -84,7 +95,10 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
     arcgis(`${NPS}/NPS_Public_ParkingLots_Geographic/FeatureServer/0`, bbox, "LOTNAME,PUBLICDISPLAY"),
     arcgis(`${NPS}/NPS_Public_Trails_Geographic/FeatureServer/0`, bbox, "TRLNAME,TRLCLASS,TRLUSE,PUBLICDISPLAY"),
   ]);
-  const osm = huge ? null : osmLayers(await fetchOsm(bboxArr));
+  // OSM from a regional extract when one covers the frame, else the API (osm.mjs). `meta.osm`
+  // "extract" makes a missing extract an error, so a wave is never read half one way.
+  const osmFrom = huge ? null : osmSource(bboxArr, meta.osm ?? process.env.OSM_FROM ?? "auto");
+  const osm = huge ? null : osmLayers(await fetchOsm(bboxArr, osmFrom));
 
   // Water: USGS hydrography, or, when USGS doesn't answer, OpenStreetMap's (which is often
   // NHD's own outlines, imported). One source per map, recorded in `sources.water`.
@@ -105,7 +119,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
       console.warn(`  USGS water didn't answer (${String(e.message).slice(0, 80)}); using OpenStreetMap's`);
       waterSource = "osm";
       const relRings = [];
-      for (const id of osm.waterRelations) relRings.push(await fetchWaterRelation(id));
+      for (const id of osm.waterRelations) relRings.push(await fetchWaterRelation(id, osmFrom));
       waterParts = [...osm.water.map((r) => [r]), ...relRings.filter((r) => r.length)].map((parts) => ({ fcode: 0, parts }));
       flowlines = osm.waterways.map((f) => ({ name: f.properties.name ?? "", f }));
     }
@@ -147,9 +161,11 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   roads = replaced ? traced : [...roads, ...traced];
 
   // Service points, per kind: the Park Service's where it has that kind, else OpenStreetMap's.
-  const npsPoints = npsPois.filter((f) => f.geometry?.type === "Point").map((f) => ({ name: f.properties.POINAME ?? "", type: f.properties.POITYPE ?? "", at: f.geometry.coordinates, src: "nps" }));
+  // Only the kinds the map draws, under its names (pois.mjs): the Park Service's layer also holds
+  // campsite markers, food lockers, hookups and the like.
+  const npsPoints = npsPois.filter((f) => f.geometry?.type === "Point" && poiKind(f.properties.POITYPE)).map((f) => ({ name: f.properties.POINAME ?? "", type: poiKind(f.properties.POITYPE), at: f.geometry.coordinates, src: "nps" }));
   const kinds = new Set(npsPoints.map((p) => p.type));
-  const osmPoints = (osm?.pois ?? []).filter((p) => !kinds.has(p.type)).map((p) => ({ ...p, src: "osm" }));
+  const osmPoints = (osm?.pois ?? []).filter((p) => poiKind(p.type) && !kinds.has(poiKind(p.type))).map((p) => ({ ...p, type: poiKind(p.type), src: "osm" }));
   const tracedPoints = (trace?.points ?? []).map((p) => ({ name: "", type: p.type, at: p.at, src: "traced" }));
   const pois = [...npsPoints, ...osmPoints, ...tracedPoints].map((p) => ({ name: p.name, type: p.type, at: xy(p.at), src: p.src })).filter((p) => inFrame(p.at));
 
@@ -221,6 +237,8 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
       roadPick: { why: picked.why, fits: roadFits },
       water: waterSource,
       osm: Boolean(usedOsm),
+      /** Where OSM was read: a dated regional extract, or the live API (osm.mjs). */
+      ...(osmFrom ? { osmFrom: osmFrom.from === "extract" ? { from: "extract", regions: osmFrom.regions, asOf: osmFrom.asOf } : { from: "api", on: new Date().toISOString().slice(0, 10) } } : {}),
       traced: { roads: traced.length, points: tracedPoints.length, ...(replaced ? { replace: true } : {}), ...(trace ? { by: trace.by ?? "", on: trace.traced ?? "", note: trace.note ?? "" } : {}) },
     },
     credits,

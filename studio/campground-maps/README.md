@@ -32,6 +32,37 @@ NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-sample.mjs ridb 233411 10
 The lab's review page is `/private/camphawk/golden-hour/admin/site-maps`. What the sample found
 is in `docs/design/campground-maps.md`.
 
+## The rollout: waves (2026-10-08)
+
+The whole procedure is `docs/design/campground-maps-playbook.md` §4-5. The commands:
+
+```sh
+# 1. OpenStreetMap extracts, once (and when they're a few weeks old): download, check the MD5,
+#    trim to the tags the maps read, keep the region's boundary. ~13 GB raw for the US.
+node studio/campground-maps/osm-extract.mjs us-west us-south us-midwest us-northeast
+#    → .cache/osm/<region>.osm.pbf (trimmed) + .json (date, data box) + .poly (boundary)
+# 2. Check the extracts against the API on a few built maps (cached API answers cost OSM nothing)
+node studio/campground-maps/osm-compare.mjs public/private/camphawk/maps/ridb-<id>.json …
+# 3. FY2025 reservations per facility, for ordering by demand (public RIDB data; counts only)
+curl -O https://ridb.recreation.gov/downloads/reservations2025.zip
+unzip -p reservations2025.zip | python3 -I studio/campground-maps/reservations-count.py counts-fy25.json
+# 4. Re-read CampHawk's watch counts (read only; playbook §4.2 has the query) into watched.json,
+#    which is NEVER committed. Then plan the next wave → specs/ridb-all.json + specs/wave-NN.json
+node studio/campground-maps/population.mjs <ridb-dir> --export=YYYY-MM-DD --watched=watched.json --reservations=counts-fy25.json
+# 5. Build it → public/private/camphawk/maps/ridb-<id>.json, waves/wave-NN.json, and the page's waves.json
+NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-wave.mjs <ridb-dir> studio/campground-maps/specs/wave-NN.json
+#    Rebuild some after a trace or a failed source: add their ids. Alaska and Hawaii have no
+#    extract; build those with OSM_FROM=auto (the API, for those few only).
+```
+
+- **OSM from extracts (`osm.mjs`):** a campground's box is cut out of every extract whose
+  boundary it's in (two at a region border, merged). One cut reads the whole file (about 70 s
+  for the 3 GB us-west), so a wave cuts all its boxes in one pass per extract first
+  (`prefetchOsm`). Each map records `sources.osmFrom` (extract and date, or the API).
+- **Checked against the API:** 13 sample maps across us-west, us-south and Colorado gave the same
+  features as the API, 0 different (2026-10-08).
+- **Download speed varies:** 0.6 to 30 MB/s from a session on 2026-10-08.
+
 - **`build.mjs` is one function for both** (`buildRidbMap`). Each layer comes from one source,
   never merged:
   - **Roads: the source the sites sit along** (`roads.mjs`, tested). All four are fetched (Park
@@ -39,7 +70,7 @@ is in `docs/design/campground-maps.md`.
     sites within" distance wins, unless the usual order's pick is within 5 m (or a quarter) of it.
     Each map records every source's fit and the reason in `sources.roadPick`.
   - Trails, parking and buildings: the Park Service's when its roads were picked, else OSM's.
-  - Restrooms and water taps per kind; lakes and rivers from USGS, or OpenStreetMap when USGS
+  - Restrooms, water taps, dump stations and parking, under the names the map draws (`pois.mjs` maps each agency's types: the Park Service's "Potable Water" is a water tap, "Toilet" a restroom); lakes and rivers from USGS, or OpenStreetMap when USGS
     doesn't answer (recorded in the map's `sources.water`).
   - **Then the map's trace, if it has one** (below).
 - **`qa.mjs` is the automatic check** (tested in `scripts/campground-maps-qa.test.mts`, 19 of 19
@@ -93,7 +124,7 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 | Site points, type, accessibility, max vehicle length, people, shade | RIDB full export, `Campsites_API_v1.csv` + `CampsiteAttributes_API_v1.csv` | CC BY 4.0 (data.gov record). Credit Recreation.gov; don't imply endorsement. |
 | Campground roads, restrooms, kiosk, parking, shuttle stop, trails | NPS national datasets, `mapservices.nps.gov/arcgis/rest/services/NationalDatasets/NPS_Public_*_Geographic` | Federal government data. The service credits "National Park Service". |
 | Lakes and rivers | USGS NHD, `hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer` (layers 6, 9, 12) | US government work (USGS). |
-| Roads, paths, restrooms, water taps, parking, campground outlines, numbered pitches (where the Park Service has none) | OpenStreetMap API (`api.openstreetmap.org/api/0.6/map`) | ODbL 1.0. Every map that uses it says "© OpenStreetMap contributors". The OSM-derived layers in the map JSON files are offered under ODbL. |
+| Roads, paths, restrooms, water taps, parking, campground outlines, numbered pitches (where the Park Service has none) | OpenStreetMap: regional extracts from OpenStreetMap France (`download.openstreetmap.fr/extracts/north-america/`, trimmed with osmium) for waves; the API (`api.openstreetmap.org/api/0.6/map`) for a single rebuild and for Alaska and Hawaii | ODbL 1.0. Every map that uses it says "© OpenStreetMap contributors". The OSM-derived layers in the map JSON files are offered under ODbL. |
 | Forest Service system roads (when they fit best) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
 | Census TIGER roads (when they fit best) | `tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer` (layers 2, 6, 8) | US government work (Census Bureau). |
 | Roads and points traced by a person | `traces/`, from the USDA NAIP photo | Our own work, from a public-domain photo. |

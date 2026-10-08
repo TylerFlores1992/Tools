@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-232220",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.0754248,
+     39.6016258
+    ],
+    [
+     -106.0755761,
+     39.6015808
+    ],
+    [
+     -106.0756926,
+     39.6015718
+    ],
+    [
+     -106.0758672,
+     39.6015718
+    ],
+    [
+     -106.0760302,
+     39.6014998
+    ],
+    [
+     -106.0762281,
+     39.6014637
+    ],
+    [
+     -106.0764027,
+     39.6014547
+    ],
+    [
+     -106.0764726,
+     39.6014457
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -106.0748194,
+     39.6015358
+    ],
+    [
+     -106.0747728,
+     39.6013827
+    ],
+    [
+     -106.0746564,
+     39.6012386
+    ],
+    [
+     -106.0745516,
+     39.6011576
+    ],
+    [
+     -106.0744585,
+     39.6010855
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt lanes south of the D loop that show in the open: west from the road to D44 to D47, and south-east to D49 and D50. Left out: the short spurs to D45, D48 and D49."
+}

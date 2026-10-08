@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { DECISION_FILES, RECORDED, decisionProblems, type DecisionFile } from "./decisions.ts";
+import { DECISION_FILES, RECORDED, decisionProblems, decisionsFileFor, suggestedDecision, type DecisionFile } from "./decisions.ts";
 import { SAMPLE } from "./sample.ts";
 
 const sampleIds = new Set(SAMPLE.entries.map((e) => e.id));
@@ -37,4 +37,29 @@ test("decisionProblems names each fault", () => {
     "232471: \"on\" is not a date",
     "232471: decided twice",
   ]);
+});
+
+test("the downloaded file keeps a recorded decision's record, dates a new one, and drops other waves' maps", () => {
+  const ids = ["233595", "274721", "232471"];
+  const { file, problems } = decisionsFileFor(0, ids, { "233595": "approved", "274721": "approved", "232471": "approved", "999": "approved" }, "2026-10-09");
+  assert.deepEqual(problems, []);
+  assert.deepEqual(file.decisions.map((d) => d.id), ids);
+  assert.equal(file.decisions[0].on, "2026-10-08");
+  assert.equal(file.decisions[0].by, "Owner");
+  // Changed on the page (recorded hidden, now approved): a new record, dated today.
+  assert.deepEqual(file.decisions[1], { id: "274721", decision: "approved", by: "Owner (review page)", on: "2026-10-09", note: "" });
+  assert.equal(file.decisions[2].on, "2026-10-08");
+  assert.match(file.source, /3 decisions on wave 0/);
+});
+
+test("the first offer for a held map follows what held it: spread or stacked → hidden, anything else → roads", () => {
+  // Wave 1, 2026-10-08: Cave Spring's E and F loops have no roads, though every check passed; the
+  // page called it "not one campground's map". A hold with no spread-out or stacked reason is roads.
+  assert.equal(suggestedDecision([], "hold"), "roads");
+  assert.equal(suggestedDecision([{ code: "unplaced" }], "hold"), "roads");
+  assert.equal(suggestedDecision([{ code: "far-from-roads" }, { code: "traced" }], "hold"), "roads");
+  assert.equal(suggestedDecision([{ code: "unplaced" }, { code: "spread" }], "hold"), "hidden");
+  assert.equal(suggestedDecision([{ code: "stacked" }], "hold"), "hidden");
+  assert.equal(suggestedDecision([{ code: "outlier" }, { code: "far-from-roads" }], "hold"), "hidden");
+  for (const look of ["good", "usable", "unsure", undefined]) assert.equal(suggestedDecision([{ code: "spread" }], look), "approved");
 });

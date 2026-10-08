@@ -32,3 +32,33 @@ export function decisionProblems(file: DecisionFile, mapIds: Set<string>): strin
   }
   return out;
 }
+
+/**
+ * The decisions file for one wave (decisions/wave-NN.json), from what the review page shows: a
+ * decision recorded with the maps keeps its record (who, when, why); one made on the page is
+ * dated today. Only maps in the wave, in the wave's order. Returns the file and its problems
+ * (decisionProblems), so the page never offers a file the tests would refuse.
+ */
+export function decisionsFileFor(wave: number, ids: string[], shown: Record<string, Decision>, today: string, by = "Owner (review page)"): { file: DecisionFile; problems: string[] } {
+  const decisions: DecisionRecord[] = ids.filter((id) => shown[id]).map((id) => {
+    const r = RECORDED[id];
+    return r && r.decision === shown[id] ? r : { id, decision: shown[id], by, on: today, note: "" };
+  });
+  const file: DecisionFile = { version: 1, wave, source: `Downloaded from the review page, ${today}: ${decisions.length} decision${decisions.length === 1 ? "" : "s"} on wave ${wave}.`, decisions };
+  return { file, problems: decisionProblems(file, new Set(ids)) };
+}
+
+/** Codes that mean the listing isn't one campground's map (spread over kilometers, sites stacked on
+    one spot, or far from all the others): a person keeps it hidden until it can be split. */
+const NOT_ONE_MAP = new Set(["spread", "stacked", "outlier"]);
+
+/**
+ * The decision the review page offers first for a map the first look held. A hold whose checks
+ * say the listing is spread out or stacked points to "keep it hidden"; any other hold (roads
+ * missing, including ones no check can see) points to "needs roads added". Anything not held
+ * points to approval. The reviewer can always pick another.
+ */
+export function suggestedDecision(reasons: { code: string }[], look: string | undefined): Decision {
+  if (look !== "hold") return "approved";
+  return reasons.some((r) => NOT_ONE_MAP.has(r.code)) ? "hidden" : "roads";
+}
