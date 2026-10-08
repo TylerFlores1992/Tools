@@ -29,22 +29,25 @@ test("clusters with kilometres between them split at the gaps (Seven Points, Ive
   }
 });
 
-test("one long string of loops is cut by its loop letters into readable areas (Diamond Lake, 3.5 km)", () => {
+test("one long string of loops is cut into readable areas along the shore (Diamond Lake, 3.5 km)", () => {
+  // Diamond Lake's G, H and K "loops" are parallel rows ~1.5 km long side by side, so areas by
+  // letter overlapped (critic round 2); they are cut by position, named by where they are.
   const m = load("231980"), s = splitAreas(m.sites);
   assert.equal(s.kind, "areas");
   if (s.kind !== "areas") return;
-  for (const a of s.areas) {
-    assert.match(a.name, /^Loops? [A-M]/, a.name);
-    // Merged loops fit; a single loop is never cut, whatever its length (Loop G runs ~1.9 km).
-    if (a.name.startsWith("Loops ")) assert.ok(spanOf(m, a.sites) <= AREA_MAX_SPAN_M, `${a.name} spans ${spanOf(m, a.sites)} m`);
-  }
+  for (const a of s.areas) assert.ok(spanOf(m, a.sites) <= AREA_MAX_SPAN_M, `${a.name} spans ${spanOf(m, a.sites)} m`);
+  assert.match(s.areas[0].name, /^North end: /);
+  assert.match(s.areas.at(-1)!.name, /^South end: /);
   assert.ok(s.areas.length >= 4 && s.areas.length <= 12, `${s.areas.length} areas`);
-  // A loop is never cut in two: each letter is in exactly one area (by index, not by name, since
-  // two halves of a cut loop would carry the same name).
-  const letterAreas = new Map<string, Set<number>>();
-  s.areas.forEach((a, i) => { for (const n of a.sites) { const l = n[0]; (letterAreas.get(l) ?? letterAreas.set(l, new Set()).get(l)!).add(i); } });
-  for (const [l, set] of letterAreas) assert.equal(set.size, 1, `loop ${l} is in ${set.size} areas`);
   assert.equal(new Set(s.areas.map((a) => a.name)).size, s.areas.length, "every area has its own name");
+});
+
+test("loops that are separate places stay whole loops (Lost Lake, Strawberry Bay)", () => {
+  for (const id of ["251434", "231932"]) {
+    const s = splitAreas(load(id).sites);
+    if (s.kind !== "areas") { assert.fail(id); continue; }
+    for (const a of s.areas) assert.doesNotMatch(a.name, /end:|Middle/, `${id}: ${a.name}`);
+  }
 });
 
 test("dispersed sites along a river are a list, not ten tiny maps (Au Sable, 101 sites over 35 km)", () => {
@@ -95,4 +98,16 @@ test("sites with no point are counted, so the area counts add up to the listing"
   if (s.kind !== "areas") return assert.fail("expected areas");
   assert.equal(s.areas.reduce((n, a) => n + a.sites.length, 0) + unplacedSites(m.sites).length, m.sites.length);
   assert.ok(unplacedSites(m.sites).length > 0);
+});
+
+test("areas don't sit on top of each other: no area's sites fall inside another's outline (Diamond Lake, Seven Points)", () => {
+  for (const id of ["231980", "233626", "232136"]) {
+    const m = load(id), s = splitAreas(m.sites);
+    if (s.kind !== "areas") { assert.fail(`${id}: ${s.kind}`); continue; }
+    const rings = s.areas.map((a) => outline(m, a, 10));
+    const inside = (ring: [number, number][], [x, y]: [number, number]) => ring.every((p, i) => { const q = ring[(i + 1) % ring.length]; return (q[0] - p[0]) * (y - p[1]) - (q[1] - p[1]) * (x - p[0]) >= 0; });
+    let crossings = 0, total = 0;
+    s.areas.forEach((a, i) => { for (const site of m.sites) if (site.at && a.sites.includes(site.name)) { total++; if (rings.some((r, j) => j !== i && inside(r, site.at!))) crossings++; } });
+    assert.ok(crossings / total < 0.05, `${id}: ${crossings} of ${total} sites sit inside another area's outline`);
+  }
 });

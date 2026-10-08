@@ -100,7 +100,8 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
   const open = new Set(p.openIds);
   const openIn = (a: Area) => a.sites.filter((s) => open.has(s)).length;
   const unplaced = unplacedSites(p.map.sites);
-  const sentence = `${p.map.sites.length} sites in ${areas.length} areas, spread over ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h) - 110)}.${unplaced.length ? ` ${unplaced.length} more ${unplaced.length === 1 ? "has" : "have"} no published location, so ${unplaced.length === 1 ? "it isn’t" : "they aren’t"} on any area’s map (${unplaced.slice(0, 4).join(", ")}${unplaced.length > 4 ? "…" : ""}).` : ""}`;
+  const placedN = areas.reduce((n, a) => n + a.sites.length, 0);
+  const sentence = `${placedN} sites in ${areas.length} areas, spread over ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h) - 110)}.${unplaced.length ? ` ${unplaced.length} more ${unplaced.length === 1 ? "has" : "have"} no published location, so ${unplaced.length === 1 ? "it isn’t" : "they aren’t"} on any area’s map (${unplaced.slice(0, 4).join(", ")}${unplaced.length > 4 ? "…" : ""}).` : ""}`;
   // Find a site that's in another area: switch to it, then find it there.
   const findElsewhere = (q: string) => {
     const i = areas.findIndex((a) => a.sites.some((s) => s.toLowerCase() === q.toLowerCase() || s.replace(/^0+/, "") === q.replace(/^0+/, "")));
@@ -236,7 +237,8 @@ function UnitDrawing({ map, frame, label, className }: { map: SiteMapData; frame
         {map.roads.filter((r) => !isFootway(r)).map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-card" strokeWidth={(r.cls === "Service" ? 4.5 : 7) * s} strokeLinecap="round" strokeLinejoin="round" />)}
         {map.buildings.map((b, i) => <path key={i} d={b.d} className="fill-ch-faint" />)}
       </svg>
-      {map.labels.map((l) => (
+      {/* A name that would run into the pin or its label is left off: the pin is the point of the map. */}
+      {map.labels.filter((l) => !site?.at || Math.abs(l.at[0] - site.at[0]) > f.w * 0.22 || Math.abs(l.at[1] - site.at[1]) > f.h * 0.09).map((l) => (
         <span key={l.text} aria-hidden="true" style={{ ...pct(l.at), transform: `translate(-50%, -50%) rotate(${l.angle}deg)` }}
           className={cx("pointer-events-none absolute whitespace-nowrap text-[11px] sm:text-[12px]", l.kind !== "water" && "gh-map-halo", l.kind === "water" ? "font-semibold italic text-ch-map-water-ink" : "font-bold text-ch-ink-2")}>{l.text}</span>
       ))}

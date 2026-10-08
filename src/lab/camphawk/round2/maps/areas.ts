@@ -55,10 +55,10 @@ export function groupsByGap(ps: Pt[], gap = AREA_GAP_M): Pt[][] {
 
 /** Cut a group that's too big to read: by its loop letters where the sites have them, else at the
     widest gap along its long side, until every piece fits. */
-function cut(g: Pt[], maxSpan: number): Pt[][] {
+function cut(g: Pt[], maxSpan: number, byLetter = true): Pt[][] {
   if (g.length < 2 || span(g) <= maxSpan) return [g];
   const letters = [...new Set(g.map((p) => prefix(p.name)))];
-  if (letters.length > 1 && !letters.includes(null)) {
+  if (byLetter && letters.length > 1 && !letters.includes(null)) {
     // Whole loops, merged in letter order while the union still fits.
     const loops = (letters as string[]).sort().map((l) => g.filter((p) => prefix(p.name) === l));
     const out: Pt[][] = [];
@@ -78,7 +78,7 @@ function cut(g: Pt[], maxSpan: number): Pt[][] {
     const d = sorted[i].at[axis] - sorted[i - 1]?.at[axis];
     if (i > 0 && d > widest) { widest = d; at = i; }
   }
-  return [...cut(sorted.slice(0, at), maxSpan), ...cut(sorted.slice(at), maxSpan)];
+  return [...cut(sorted.slice(0, at), maxSpan, byLetter), ...cut(sorted.slice(at), maxSpan, byLetter)];
 }
 
 /** What a camper calls the sites in an area: their loop letters, else the first and last number. */
@@ -112,6 +112,19 @@ function frameOf(ps: Pt[]): Area["frame"] {
   return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10, w: Math.round(w * 10) / 10, h: Math.round(h * 10) / 10 };
 }
 
+/** The share of sites that fall inside another group's convex hull (plus 10 m). */
+function overlapShare(groups: Pt[][]): number {
+  const rings = groups.map((g) => {
+    const ring: [number, number][] = [];
+    for (const p of g) for (let k = 0; k < 8; k++) ring.push([p.at[0] + 10 * Math.cos((k * Math.PI) / 4), p.at[1] + 10 * Math.sin((k * Math.PI) / 4)]);
+    return hull(ring);
+  });
+  const inside = (ring: [number, number][], [x, y]: [number, number]) => ring.length >= 3 && ring.every((p, i) => { const q = ring[(i + 1) % ring.length]; return (q[0] - p[0]) * (y - p[1]) - (q[1] - p[1]) * (x - p[0]) >= 0; });
+  let n = 0, total = 0;
+  groups.forEach((g, i) => { for (const p of g) { total++; if (rings.some((r, j) => j !== i && inside(r, p.at))) n++; } });
+  return total ? n / total : 0;
+}
+
 /** Split a listing's placed sites into readable areas, or say it's one area, or dispersed. */
 export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: number } = {}): Split {
   const ps = sites.filter((s): s is MapSite & { at: [number, number] } => s.at !== null).map((s) => ({ name: s.name, at: s.at }));
@@ -122,13 +135,21 @@ export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: num
   // order while they still fit (Diamond Lake). Otherwise, groups by the gaps between sites.
   const letters = new Set(ps.map((p) => prefix(p.name)));
   if (letters.size > 1 && !letters.has(null)) {
-    const loops = [...letters as Set<string>].sort().map((l) => ps.filter((p) => prefix(p.name) === l));
+    // Whole loops in order along the listing's long axis (not letter order: Diamond Lake's letters
+    // interleave along the shore, and merging by letter drew areas on top of each other).
+    const xs = ps.map((p) => p.at[0]), ys = ps.map((p) => p.at[1]);
+    const axis = Math.max(...xs) - Math.min(...xs) >= Math.max(...ys) - Math.min(...ys) ? 0 : 1;
+    const mean = (g: Pt[]) => g.reduce((t, p) => t + p.at[axis], 0) / g.length;
+    const loops = [...letters as Set<string>].sort().map((l) => ps.filter((p) => prefix(p.name) === l)).sort((a, b) => mean(a) - mean(b));
     const merged: Pt[][] = [];
     for (const loop of loops) {
       const last = merged.at(-1);
       if (last && span([...last, ...loop]) <= maxSpan) last.push(...loop); else merged.push([...loop]);
     }
-    return toAreas(merged, ps.length);
+    // Loops that are parallel rows along one shore (Diamond Lake's G, H and K each run ~1.5 km
+    // side by side) overlap whatever the grouping: then cut by position instead, below.
+    if (overlapShare(merged) < 0.05) return toAreas(merged, ps.length);
+    return toAreas(cut(ps, maxSpan, false), ps.length, axis);
   }
   const groups = groupsByGap(ps, opts.gap ?? AREA_GAP_M);
   // Many small groups is dispersed camping, whatever the cut would make of it.
@@ -144,7 +165,7 @@ export function splitAreas(sites: MapSite[], opts: { gap?: number; maxSpan?: num
   return toAreas(big.flatMap((g) => cut(g, maxSpan)), ps.length);
 }
 
-function toAreas(pieces: Pt[][], placed: number): Split {
+function toAreas(pieces: Pt[][], placed: number, axis?: 0 | 1): Split {
   if (pieces.length === 1) return { kind: "one" };
   if (pieces.length > MAX_AREAS || placed / pieces.length < 4) return { kind: "dispersed", groups: pieces.length };
   const areas = pieces
@@ -153,7 +174,13 @@ function toAreas(pieces: Pt[][], placed: number): Split {
       const cx = p.reduce((s, q) => s + q.at[0], 0) / p.length, cy = p.reduce((s, q) => s + q.at[1], 0) / p.length;
       return { name: areaName(names), sites: names, frame: frameOf(p), center: [Math.round(cx), Math.round(cy)] as [number, number] };
     })
-    .sort((a, b) => byNumber(a.sites[0], b.sites[0]));
+    // Cut by position, areas run in order along the listing (north to south, or west to east) and
+    // say where they are, since one loop's sites may be in two of them.
+    .sort((a, b) => (axis === undefined ? byNumber(a.sites[0], b.sites[0]) : a.center[axis] - b.center[axis]));
+  if (axis !== undefined) {
+    const ends = axis === 1 ? ["North end", "South end"] : ["West end", "East end"];
+    areas.forEach((a, i) => { a.name = `${i === 0 ? ends[0] : i === areas.length - 1 ? ends[1] : `Middle ${areas.length > 3 ? i : ""}`.trim()}: ${a.name.replace(/^Loops? /, "loops ").replace(/^Sites? /, "sites ")}`; });
+  }
   return { kind: "areas", areas };
 }
 
