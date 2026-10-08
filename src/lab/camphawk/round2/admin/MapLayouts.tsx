@@ -15,10 +15,10 @@ import { AdminFrame } from "./AdminFrame";
 // picks one of each; the rollout then builds it. ?split=pick|stack&unit=card|wide&ex=<id>.
 
 const SPLITS: [string, string][] = [
-  ["233626", "Six clusters around a lake"],
-  ["231980", "Ten loops along 3.5 km of shore"],
+  ["233626", "Five areas around a lake"],
+  ["231980", "Ten loops along 2 mi of shore"],
   ["232136", "Three clusters up a creek"],
-  ["234130", "Dispersed river sites (35 km)"],
+  ["234130", "River sites over 22 mi (not designed yet)"],
 ];
 const UNITS: [string, string][] = [
   ["234334", "Fire lookout, trail only"],
@@ -32,8 +32,8 @@ const SPLIT_LOOKS: [SplitLayout, string, string][] = [
   ["stack", "B · Every area, in order", "The same overview, then every area’s site map one after another, each under its number. Nothing to switch; a longer page."],
 ];
 const UNIT_LOOKS: [UnitLayout, string, string][] = [
-  ["card", "A · Map and facts side by side", "A square location map with the one place marked, and beside it what it is, the nearest road and its coordinates."],
-  ["wide", "B · Wide map, facts on it", "A wide map strip with the facts in a card over its corner (below it on a phone)."],
+  ["card", "A · Map and facts side by side", "A square location map with the land’s shape shaded and the one place marked; beside it (below it on a phone) what it is, the nearest trail and road, and its coordinates."],
+  ["wide", "B · Wide map, facts on it", "A wide strip of the same map with the facts in a card over its corner (below it on a phone). Shows more of the ground; the card covers part of it."],
 ];
 
 function useMapFile(id: string) {

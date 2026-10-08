@@ -173,3 +173,25 @@ export function areaMap(map: SiteMapData, area: Area): SiteMapData {
 
 /** The area a site is in (for Find a site), or null. */
 export const areaOf = (split: Split, site: string) => (split.kind === "areas" ? split.areas.find((a) => a.sites.includes(site)) ?? null : null);
+
+/** The convex hull of points (monotone chain), counter-clockwise. Fewer than 3 points come back as given. */
+export function hull(pts: [number, number][]): [number, number][] {
+  const p = [...pts].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  if (p.length < 3) return p;
+  const cross = (o: number[], a: number[], b: number[]) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower: [number, number][] = [], upper: [number, number][] = [];
+  for (const q of p) { while (lower.length >= 2 && cross(lower.at(-2)!, lower.at(-1)!, q) <= 0) lower.pop(); lower.push(q); }
+  for (const q of [...p].reverse()) { while (upper.length >= 2 && cross(upper.at(-2)!, upper.at(-1)!, q) <= 0) upper.pop(); upper.push(q); }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+}
+
+/** An area's outline: its sites' hull pushed out by `pad` metres (a rounded buffer, as a polygon). */
+export function outline(map: SiteMapData, area: Area, pad: number): [number, number][] {
+  const pts = map.sites.filter((s) => s.at && area.sites.includes(s.name)).map((s) => s.at!);
+  const ring: [number, number][] = [];
+  for (const [x, y] of pts) for (let k = 0; k < 12; k++) ring.push([x + pad * Math.cos((k * Math.PI) / 6), y + pad * Math.sin((k * Math.PI) / 6)]);
+  return hull(ring);
+}
+
+/** Sites the listing publishes no point for: on no area's map, and said so. */
+export const unplacedSites = (sites: MapSite[]) => sites.filter((s) => !s.at).map((s) => s.name);

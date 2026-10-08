@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AREA_MAX_SPAN_M, MAX_AREAS, areaMap, areaName, areaOf, splitAreas } from "./areas.ts";
+import { AREA_MAX_SPAN_M, MAX_AREAS, areaMap, areaName, areaOf, hull, outline, splitAreas, unplacedSites } from "./areas.ts";
 import type { SiteMapData } from "./index.ts";
 
 const MAPS = join(import.meta.dirname, "../../../../../public/private/camphawk/maps");
@@ -75,4 +75,24 @@ test("an area's map shows only its sites, inside its own frame, and a site finds
   assert.ok(am.frame.w >= am.frame.h / 2 && am.frame.h >= am.frame.w / 2, "never thinner than 1:2");
   assert.equal(areaOf(s, a.sites[0]), a);
   assert.equal(areaOf(s, "no such site"), null);
+});
+
+test("an area's outline holds every one of its sites, and the hull is convex", () => {
+  const m = load("231980"), s = splitAreas(m.sites);
+  assert.equal(s.kind, "areas");
+  if (s.kind !== "areas") return;
+  for (const a of s.areas) {
+    const ring = outline(m, a, 40);
+    assert.ok(ring.length >= 3);
+    const inside = ([x, y]: [number, number]) => ring.every((p, i) => { const q = ring[(i + 1) % ring.length]; return (q[0] - p[0]) * (y - p[1]) - (q[1] - p[1]) * (x - p[0]) >= -1e-6; });
+    for (const site of m.sites) if (site.at && a.sites.includes(site.name)) assert.ok(inside(site.at), `${a.name}: ${site.name}`);
+  }
+  assert.deepEqual(hull([[0, 0], [2, 0], [1, 1], [2, 2], [0, 2]]), [[0, 0], [2, 0], [2, 2], [0, 2]]);
+});
+
+test("sites with no point are counted, so the area counts add up to the listing", () => {
+  const m = load("233626"), s = splitAreas(m.sites);
+  if (s.kind !== "areas") return assert.fail("expected areas");
+  assert.equal(s.areas.reduce((n, a) => n + a.sites.length, 0) + unplacedSites(m.sites).length, m.sites.length);
+  assert.ok(unplacedSites(m.sites).length > 0);
 });
