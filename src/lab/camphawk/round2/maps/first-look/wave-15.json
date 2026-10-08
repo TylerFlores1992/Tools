@@ -142,7 +142,7 @@
   },
   "232609": {
    "call": "hold",
-   "note": "The Census lines run through the trees, not along the visible lanes: the shore lane past 01 to 17 and the lot, and the lanes past 19 to 31 on the south shore, show plainly and aren't drawn; 32 to 50 inside sit under canopy."
+   "note": "Not traced: the lanes past 32 to 50 inside sit under full canopy, so 19 of 51 sites would have no road even with the shore lane and the lot traced; the Census lines through the trees still don't follow any visible lane."
   },
   "232620": {
    "call": "good",
@@ -154,7 +154,7 @@
   },
   "232634": {
    "call": "hold",
-   "note": "Shown as two areas 1.5 km apart, and they follow the real places. But in the north area the drawn lanes cut across the trees while the real gravel lanes past 09 to 22 run elsewhere, and in the south area 35 to 48 sit 15 to 30 m off the one drawn lane under full canopy."
+   "note": "Not traced: the south area's 35 to 48 (14 of 49 sites) sit 15 to 30 m off the one drawn lane under full canopy, where no lane can be placed, so the map stays wrong there whatever the north gets. The north area's gravel lanes past 09 to 22 are visible and could be traced if the south area is ever dropped or fixed."
   },
   "232651": {
    "call": "hold",
@@ -162,7 +162,7 @@
   },
   "232665": {
    "call": "hold",
-   "note": "No road inside the campground is drawn: only the county road at the top. The paved loops on the east point (01 to 36) show plainly, and the lane down the west side past 37 to 58 shows in part; a network too dense to trace from this photo without a closer look."
+   "note": "Traced the access lane past 59, the day-use loop, the lane to the boat ramp and the paved loops on the east point past 01 to 36, and they follow the visible lanes. The west lanes past 37 to 58 sit under canopy and still have no road, so the map stays held."
   },
   "232636": {
    "call": "usable",
@@ -174,15 +174,15 @@
   },
   "232684": {
    "call": "hold",
-   "note": "Only the access road is drawn. The paved lanes past 01 to 40 along the shore show plainly through the autumn trees and aren't drawn, so most sites sit 100 m or more from any drawn road."
+   "note": "Not traced: the sites past 42 to 57 east of the access road sit under full canopy, and zoomed in the photo of the shore lanes past 01 to 40 is too blurred by the autumn trees to place them within a few metres."
   },
   "232694": {
    "call": "usable",
    "note": "The loops on the middle point (016 to 066) and the lane down the south point (071 to 099) follow the visible pavement, and those sites sit beside them. In the north woods 001 to 015 sit off the one drawn lane, and the shore sites 067 to 070 have no lane drawn."
   },
   "232662": {
-   "call": "hold",
-   "note": "Only the through road is drawn. The lanes the sites sit on (past B13 to B16, B24 to B38, and B02 to B08) show plainly as gravel loops off it and aren't drawn, so most sites sit 20 to 60 m from any drawn road."
+   "call": "usable",
+   "note": "Traced the gravel lanes off the through road past B13 to B21, east past B41 and the triangle by B05, past B29 to B32 and past B35 to B38, and they follow the visible lanes. The sites past B23 to B28 by the railway, B05 and B06 have no lane visible and sit 20 to 40 m from a drawn road."
   },
   "232562": {
    "call": "hold",
@@ -198,11 +198,11 @@
   },
   "232698": {
    "call": "hold",
-   "note": "The drawn loops cut through the pines while the real paved lanes run elsewhere: the shore lanes past 01 to 28 and past 55 to 91 on the west point show plainly and aren't drawn; only the middle loops near 29 to 54 and 94 to 100 come close."
+   "note": "Not traced: the shore lanes past 01 to 28 show plainly, but the west point's lanes past 55 to 91 are under full pine canopy with only fragments visible, so a replace trace would leave 37 of 99 sites with no road. The drawn loops still cut through the pines away from the real lanes."
   },
   "232704": {
    "call": "hold",
-   "note": "The drawn roads miss most of the campground: the big loop past F1 to F4 and E7, and the lanes among C, D and E, show plainly and aren't drawn, and the G and H sites up the wooded slope have no road at all."
+   "note": "Not traced: the outer roads and the loops past F1 to F7, P and A show plainly, but the G and H sites (G1 to G11, H1 to H9) sit under full canopy with no visible lane, and the lanes among C01 to C09 and D1 to D9 show only in fragments through the trees, so about half the sites would still have no road."
   },
   "232708": {
    "call": "good",
@@ -226,7 +226,7 @@
   },
   "232747": {
    "call": "hold",
-   "note": "The Census lines cross the slope while the real paved lanes run elsewhere: the lanes past 26 to 37, 59 to 88 and 01 to 16 show plainly through the autumn trees and don't match the drawn roads, which cut across lawns."
+   "note": "Not traced: zoomed in, the west end past 35 to 49 and 84 to 88, the south slope past 59 to 69 and the east loop past 01 to 16 sit under autumn canopy with no lane that can be placed within a few metres, so a replace trace would leave well over a third of the sites without a road. Only the central lanes past 17 to 34 and 70 to 83 show plainly."
   },
   "233410": {
    "call": "usable",
@@ -241,8 +241,8 @@
    "note": "Loop A's lanes follow the visible pavement and A01 to A78 sit on the pull-ins beside them; loop B's lanes (B01 to B53), 500 m south, follow what shows through the trees with the sites beside them."
   },
   "233457": {
-   "call": "hold",
-   "note": "The drawn roads cut across the lawns while the real lanes run elsewhere: the lanes past 001 to 012, 025 to 032, 043 to 066 and 095 to 102 show plainly and aren't drawn, and several drawn lines cross open grass."
+   "call": "usable",
+   "note": "Replace trace: the access and through roads, the lane round the boat-ramp lot past 017 to 038, the central lane round the lawn past 040 to 060, the east loop, the south loop past 067 to 094 with its rows past 076 to 082, and the inner loop past 095 to 100, and they now follow the visible lanes. The lanes past 001 to 011, 044 to 053 and 064 to 066 sit under trees and aren't drawn (22 of 101 sites)."
   },
   "233466": {
    "call": "hold",
@@ -265,8 +265,8 @@
    "note": "The drawn roads cross the wooded slope, but most sites sit 20 to 50 m from them (01 to 05, 15 to 23, 28 to 36, 40 to 51), and under full canopy the photo shows only scattered clearings, not the lanes between them."
   },
   "233508": {
-   "call": "hold",
-   "note": "The drawn lines run beside the real lanes rather than on them: the gravel lanes past 01 to 18 and 35 to 47 show plainly 10 to 20 m from where they are drawn, and several drawn lines cross the trees."
+   "call": "usable",
+   "note": "Traced every visible paved lane (replace trace): the access road, the west lane past 17, 18, 31 and 32, the west loop past 24 to 30, the east lane past 14, 15, 19 and 20 and south past 47 to 36, the inner lanes past 01 to 16, and the loop round the shelter. The roads now follow the visible lanes; 21 to 23 on the shore sit on pads with no lane drawn."
   },
   "233525": {
    "call": "usable",
@@ -301,8 +301,8 @@
    "note": "Loop B and the lanes through loop A follow what shows of the roads, and most sites sit beside them. A01 to A07 and A12 to A22 sit 20 to 40 m off the drawn roads in the trees, and the lane to B19 and B20 isn't drawn."
   },
   "233590": {
-   "call": "hold",
-   "note": "Most of the campground has no lane drawn: loop A (A01 to A24) sits off the one drawn road, loop C's sites C57 to C63 off its spine, and the inner lanes of B and D, all visible as gravel through the trees, aren't drawn."
+   "call": "usable",
+   "note": "Traced loop A's lane past A11 to A24 and the lane past A01 to A03, loop B's lane past B41 to B39, its west lane past B35 to B38 and the spur past B42, and kept the source's roads where they follow the visible ones (the main roads, C's spine, D's lanes, the group camps) (replace trace). The driveways to A04 to A10, the west tip past A18 to A20 and B30 to B33 are under trees and have no lane drawn."
   },
   "233606": {
    "call": "usable",
@@ -334,7 +334,7 @@
   },
   "233650": {
    "call": "hold",
-   "note": "Only the highway is drawn. The campground's lanes show plainly (loop B's gravel lanes past B01 to B58, and loop A's lane down the shore past A01 to A32) and none is drawn."
+   "note": "Traced loop B's gravel lanes and pull-through rows past B04 to B58, loop A's lane past A11 to A24 and round the shelter, and the access lane from the highway, and they follow the visible lanes. Loop A's shore lane past A01 to A10 and A25 to A32 and the lane past B01 to B03 sit under canopy, so 25 of 90 sites still have no road, and neither loop is joined to the access lane."
   },
   "233658": {
    "call": "hold",
@@ -345,8 +345,8 @@
    "note": "The south loop (001 to 020, 100, 101) and the loops round 083 to 099 follow what shows of the lanes, and those sites sit near them. The shore lane past 033 to 058 and 069 to 072 shows plainly through the trees and isn't drawn; five sites have no point. Held: a third of the sites (033 to 058, 069 to 072) have no drawn lane, and five have no point."
   },
   "233678": {
-   "call": "hold",
-   "note": "Along the river, the road past 030 to 064 follows the visible pavement. But zoomed on the north arm, the drawn road runs 5 to 15 m off the gravel lane that 012 to 027 sit on, and the lane up past 003 to 011 isn't drawn; 111 to 156 in the west and 065 to 110 sit on lanes drawn only in part."
+   "call": "usable",
+   "note": "Redrew the north arm's lane past 003 to 027 onto the visible gravel and the west loop past 149 to 156 with the lane to 153 and 155, and kept the source's roads where they follow the visible pavement: the river road, the lanes past 030 to 110 and the west loops past 111 to 148 (replace trace). The roads now follow the visible lanes; the site pull-ins are not drawn."
   },
   "233684": {
    "call": "usable",
@@ -357,8 +357,8 @@
    "note": "The road along the river and the east loop follow the visible pavement, and 01 to 48 sit on the pull-ins beside them, though the drawn road runs 10 m south of the pavement past 13 to 27. 49 sits alone in the woods with no road. Held: the drawn road runs 10 m off the pavement past 13 to 27."
   },
   "234478": {
-   "call": "hold",
-   "note": "The drawn loops cut through the trees beside the real ones: the paved lanes past 001 to 026 and the shore lane past 027 to 043 show plainly and don't match the drawn roads, and many sites (011 to 024, 027 to 036) sit off them."
+   "call": "usable",
+   "note": "Traced the visible paved lanes (replace trace): the shore road, the main road south past 001 to 026, the west loop's north and south ends, the south lane past 017 to 022, the north loop past 044 to 050, the east loop past 037 to 042 and the shore lane back past 027 to 036. The roads now follow the visible pavement; the west loop's middle past 015 to 019 is under full canopy and left out."
   },
   "234665": {
    "call": "usable",
