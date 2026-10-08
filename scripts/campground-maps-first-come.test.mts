@@ -7,6 +7,8 @@ test("a first-come campground's site count is read only when its description sta
   assert.equal(siteCount("<h2>Facilities</h2><p>3 campsites are located in this area.</p>"), 3);
   assert.equal(siteCount("This campground has 9 campsites at an elevation of 9,700 feet."), 9);
   assert.equal(siteCount("This is a tent-only campground with 19 sites located on the east bank."), 19);
+  // "and" after the count is ordinary prose, not a list of site numbers.
+  assert.equal(siteCount("The campground has 14 sites and a vault toilet."), 14);
   // Numbers that name particular sites, or none at all, are not a count.
   assert.equal(siteCount("Most campsites are less shaded than the favored 11 and 12 campsites, so please feel free."), null);
   assert.equal(siteCount("Sites 4 and 5 sites are near the creek."), null);

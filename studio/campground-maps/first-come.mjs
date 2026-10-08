@@ -40,7 +40,7 @@ const text = (html) => html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").rep
 export function siteCount(description) {
   const t = text(description);
   // Not a number that names particular sites ("the favored 11 and 12 campsites").
-  const m = t.match(/(?<!\band\s|,\s|#)\b(\d{1,3})\s+(?:(?:single|family|individual|tent|rv|primitive|developed|campground)\s+)?(?:campsites|camp sites|sites|campsite units)\b(?!\s+(?:and|or)\b)/i);
+  const m = t.match(/(?<!\band\s|,\s|#)\b(\d{1,3})\s+(?:(?:single|family|individual|tent|rv|primitive|developed|campground)\s+)?(?:campsites|camp sites|sites|campsite units)\b/i);
   return m ? Number(m[1]) : null;
 }
 
