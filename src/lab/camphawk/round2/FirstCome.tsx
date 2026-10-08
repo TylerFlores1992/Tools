@@ -40,7 +40,7 @@ function FirstComeDrawing({ map, aspect, className }: { map: SiteMapData; aspect
       {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
       {relief && <img src={relief} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover mix-blend-multiply brightness-125 contrast-50" />}
       <svg viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} className="absolute inset-0 size-full" role="img"
-        aria-label={o ? `Map of the campground: its area hatched${wcs.length ? `, ${wcs.length} restroom${wcs.length > 1 ? "s" : ""} marked` : ""}, with the roads, trails and water around it.` : "Map of where the campground is listed, with the roads, trails and water around it. Its own area isn’t mapped."}>
+        aria-label={o ? `Map of the campground: its area hatched${own.inside.length ? `, ${own.inside.length} restroom${own.inside.length > 1 ? "s" : ""} inside it` : ""}${own.nearby.length ? `, ${own.nearby.length} more just outside` : ""}, with the roads, trails and water around it.` : "Map of where the campground is listed, with the roads, trails and water around it. Its own area isn’t mapped."}>
         <defs>
           <pattern id={`fc-hatch-${map.facilityId}`} width={14 * s} height={14 * s} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2={14 * s} className="stroke-ch-ink-2" strokeWidth={2.4 * s} strokeOpacity="0.45" />
@@ -109,7 +109,7 @@ const sentence = (xs: string[]) => { const t = listJoin(xs.map((x, i) => (i ? x.
 /** The steps, short enough for a strip; the app note only when Recreation.gov says Scan and Pay. */
 function steps(facts: FirstComeFacts): { title: string; text: string }[] {
   return [
-    { title: "Go to the campground", text: "Sites go to whoever arrives first. The map shows where it is." },
+    { title: "Go to the campground", text: "“Open in a maps app” below gets you there." },
     { title: "Take an open site", text: "Pick any site that nobody has taken." },
     facts.scanAndPay
       ? { title: "Pay at the site", text: "Scan the QR code on the post with the Recreation.gov app. Download it before you go: there may be no signal." }
@@ -166,7 +166,7 @@ export function FirstComeMap({ map, name, facts, layout }: { map: SiteMapData; n
         <p className="inline-flex items-center gap-1.5 rounded-ch-chip border border-ch-line bg-ch-shell px-2.5 py-1 text-[13px] font-extrabold text-ch-ink"><Tent aria-hidden="true" className="size-4" />First come, first served</p>
         {closed}
         <h2 id="fc-h" className="mt-2 font-ch-display text-[22px] font-extrabold tracking-[-.02em] text-ch-ink">{layout === "steps" ? "No reservations here" : "Where it is, and how to get a site"}</h2>
-        <p className="mt-1 max-w-[62ch] text-[15px] text-ch-ink-2">{layout === "steps" ? "" : `${name} can’t be reserved. `}This listing is the whole campground, not one site: you take any open site when you arrive{f?.scanAndPay ? " and pay there" : ""}.</p>
+        <p className="mt-1 max-w-[62ch] text-[15px] text-ch-ink-2">{layout === "steps" ? "" : `${name} can’t be reserved. `}This listing is the whole campground, not one site{f?.closed ? "." : `: sites go to whoever arrives first${f?.scanAndPay ? ", and you pay there" : ""}.`}</p>
       </div>
       {layout === "glance" ? (
         <div className="mt-4 grid gap-5 px-1 sm:px-0 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:items-start">

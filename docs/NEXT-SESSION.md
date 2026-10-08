@@ -37,6 +37,18 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
+**Late night, 2026-10-08: the fix-after list, started (owner: "start with the 60 trace
+candidates; find a public-domain photo source for Alaska and Hawaii; design a whole campground map
+for the Standard ones").**
+- **Trace candidates (63 maps):** two children, `wip/maps-trace-a` (28, the south) and
+  `wip/maps-trace-b` (35, midwest, west and northeast). Rebuilt with `OSM_FROM=auto` (no extract).
+  Integrate as before: merge, final check over the photo, `decide-wave --pass/--hold`.
+- **Alaska and Hawaii (219 maps):** one child, `wip/maps-akhi-imagery`. It researches public-domain
+  sources, wires the chosen one in beside NAIP, and gives every map a first look.
+- **First-come campgrounds (130 "Standard" listings):** designed. Two directions are on the layouts
+  page, with two critique rounds (A 7, B 6.5; A recommended). `docs/design/campground-maps-first-come.md`.
+  **Waits on the owner's pick.**
+
 **Night, 2026-10-08: the parallel rollout is done: all 12 batch groups merged (PRs #32 to #40).**
 - **2,961 maps built in waves 3 to 39; 1,386 passed the final check and 1,575 are held to fix
   after.** Per-batch numbers and notes are in the design doc's "The parallel rollout" table.

@@ -18,8 +18,8 @@
   (88 of 130), the point is inside it for 39, within 50 m for 32, 50–200 m for 12, and 200–800 m
   for 5.
 - **What RIDB says about them is thin:**
-  - 34 descriptions state a site count (read by `siteCount`, checked by hand on all 36 candidates;
-    one false match fixed);
+  - 36 descriptions state a site count (read by `siteCount`, each checked by hand against its
+    sentence);
   - 3 list amenities on the Standard site;
   - 2 say the campground is closed.
   - Nothing is invented to fill the gaps.
@@ -67,6 +67,38 @@
   - the site count is attributed to "Recreation.gov's description";
   - an unknown count is said to be unknown;
   - amenities come from RIDB attributes or restrooms on the map.
+
+## Critique (two rounds, a separate critic agent) and the recommendation
+| Direction | Round 1 | Round 2 |
+|---|---|---|
+| A · map and how-to side by side | 6.5 | 7 |
+| B · steps first, then a wide map | 5.5 | 6.5 |
+
+**Recommended: A.** The critic picked it too: it reads as the same family as the single-unit map
+the owner picked, and it holds up on a phone.
+
+**What round 1 changed (four were truth problems in the copy):**
+- Restrooms are counted inside the outline; ones just outside are "nearby". A trailhead toilet
+  across the road had been counted as the campground's.
+- A closed listing shows no steps, and its notice sits under the chip.
+- Coordinates are rounded: 4 places for an outline's middle; 3 places and "(approximate)" for the
+  listed point, which can be hundreds of metres off.
+- The placeholder site's limits are the listing's ("Its listing allows … per site"), not each
+  site's.
+- B on a phone gets a 4:3 map and a compact list.
+- Names that run off the frame or overlap are dropped (`fittedLabels`).
+- The frame is tighter; the scale bar is capped at 22% (`fittedScaleBar`).
+- A map key (hatching, restroom).
+
+**What round 2 changed:**
+- A closed listing's intro no longer says how to take a site.
+- "Arrives first" is said once.
+- The map's accessible label says which restrooms are inside.
+
+**Still open after two rounds (the ceiling):**
+- Blair Lake's relief is blocky: USGS's elevation there is coarse. The relief can't yet be dropped
+  for coarse tiles.
+- A's facts column ends above the map's bottom at 1440.
 
 ## Not settled
 - Whether the build should record "first-come" for these listings, so the check and the review
