@@ -189,6 +189,10 @@ test("the final check's decisions: good and usable pass, hold and unsure are hel
   const o = decideWave({ wave: 9, manifest, looks, hold: ["b"], pass: ["d"], checked: 4, on: "2026-10-08" });
   assert.deepEqual(o.decisions.map((d: { decision: string }) => d.decision), ["approved", "hidden", "hidden", "approved"]);
   assert.match(o.source, /2 overridden/);
+  // A whole campground booked as one "Standard" site is held, whatever the first look said.
+  const w = decideWave({ wave: 9, manifest, looks, wholeCampgrounds: ["a"], checked: 4, on: "2026-10-08" });
+  assert.equal(w.decisions[0].decision, "hidden");
+  assert.match(w.decisions[0].note, /Standard/);
   assert.throws(() => decideWave({ wave: 9, manifest, looks: { a: { call: "good" } }, checked: 1, on: "2026-10-08" }), /no first look for b/);
   assert.throws(() => decideWave({ wave: 9, manifest, looks, hold: ["zz"], checked: 1, on: "2026-10-08" }), /not in the wave: zz/);
 });
