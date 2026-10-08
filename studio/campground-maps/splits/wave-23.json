@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 23.",
+ "listings": [
+  {
+   "id": "10165180",
+   "split": true,
+   "by": "First look (Claude, rollout colorado)",
+   "on": "2026-10-08",
+   "note": "Three groups of sites strung 1 km along the creek: south, middle and a loop in the north."
+  },
+  {
+   "id": "233811",
+   "split": true,
+   "by": "First look (Claude, rollout colorado)",
+   "on": "2026-10-08",
+   "note": "Two loops 400 m apart along the river road: 001 to 005 in the west, 006 to 018 in the east."
+  }
+ ]
+}

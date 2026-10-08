@@ -27,3 +27,22 @@ Network: every map host answered; Geofabrik resets the connection, as the playbo
   The National Park Service maps (232462, 234052, 260552, 233187) draw only each loop's outer road,
   so inner or outer ring lanes are missing; called usable.
   Note: images briefly stopped loading mid-wave; every map's call was redone from its photo after.
+
+## Wave 23 (Colorado, multi)
+- Built 63, failed 0
+- Check: ready 47, review 15, not drawn 1 (10122789: 42% of sites share a spot)
+- First look: good 30, usable 20, hold 9, unsure 4
+- Traced: 232153, 273348 (each checked over the photo after the rebuild; 273348 moved about 6 m onto the lane's middle)
+- Split calls: 10165180 (three groups strung 1 km along the creek), 233811 (two loops 400 m apart). 234724's call (group site across the lake) was tried and dropped: the area rules keep a single-site area with the main one, so the test failed.
+- Held, and why (one line each):
+  - 10122789: sites sit in neat grid rows across an open lot (not drawn by the check either).
+  - 10165180: north loop drawn as an angular outline 10 to 20 m off the visible lane; split listing.
+  - 10165435: angular roads cut through the pines beside the visible lanes.
+  - 10168487: north part drawn as one big angular outline; sites 4 to 20 on no visible lane.
+  - 10317346: the only road drawn (Census) runs through the trees where none shows; the visible lane isn't drawn.
+  - 232152: a long road drawn down an open meadow where nothing shows, and a line west of the trees with no lane.
+  - 232155: Census loops are angular lines through dense spruce in canyon shadow.
+  - 233880: Census road zigzags through brush; the lanes to the two group shelters aren't drawn.
+  - 234684: only the road above is drawn; no site has a road.
+- Anything new: Census (TIGER) roads often come out as angular outlines that don't follow anything
+  (10317346, 232155, 233880); OpenStreetMap does the same in a few (10165435, 10168487).

@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-273348",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout colorado)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.3732637,
+     37.1251137
+    ],
+    [
+     -106.3730387,
+     37.1250596
+    ],
+    [
+     -106.3728137,
+     37.1249785
+    ],
+    [
+     -106.3725886,
+     37.1248883
+    ],
+    [
+     -106.3723861,
+     37.1247712
+    ],
+    [
+     -106.3722061,
+     37.124645
+    ],
+    [
+     -106.3720373,
+     37.1245188
+    ],
+    [
+     -106.3718685,
+     37.1244016
+    ],
+    [
+     -106.3716997,
+     37.1242935
+    ],
+    [
+     -106.3715197,
+     37.1241763
+    ],
+    [
+     -106.3713059,
+     37.1240591
+    ],
+    [
+     -106.3711034,
+     37.1240141
+    ],
+    [
+     -106.3708783,
+     37.1240051
+    ],
+    [
+     -106.3706533,
+     37.1240051
+    ],
+    [
+     -106.3704395,
+     37.1240051
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the wide gravel lane west past sites 31 to 38, plain on the photo, joined to the two drawn roads at its east end. Left out: spurs to single pads, and the lanes to 06, 10 and 11 at the east end, under trees."
+}
