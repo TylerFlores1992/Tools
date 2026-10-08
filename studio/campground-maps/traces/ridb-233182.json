@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "map": "ridb-233182",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.5242481,
+     35.5843324
+    ],
+    [
+     -118.5241444,
+     35.5843504
+    ],
+    [
+     -118.524034,
+     35.5843414
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the short paved spur from the east side of the north loop out to the parking pads by Sites 011 to 013. Left out the faint tracks to the west-side sites (022, 026, 028, 030) and between the two roads (006, 007, 029, 031, 032, 034): not clear enough to place within 3 m."
+}

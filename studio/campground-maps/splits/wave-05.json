@@ -1,0 +1,38 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 05.",
+ "listings": [
+  {
+   "id": "232431",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "The horse camp (035 to 038) sits about 500 m northeast of the lakeshore sites, and the west loops (016 to 034) about 300 m west of the lake road.",
+   "gap": 150
+  },
+  {
+   "id": "251722",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "Three shore clusters: the west loop (022 to 029) about 600 m from the middle group (013 to 021), and the east group (001 to 012) 150 m beyond it.",
+   "gap": 120
+  },
+  {
+   "id": "234472",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "Sites 034 to 039 are a separate lakeshore cluster about 900 m northeast of the main campground.",
+   "gap": 150
+  },
+  {
+   "id": "233898",
+   "split": true,
+   "by": "First look (Claude, rollout west-a)",
+   "on": "2026-10-08",
+   "note": "Sites 1, 2, 3 and a second 002 sit around a field 800 m south of the north campground.",
+   "gap": 150
+  }
+ ]
+}

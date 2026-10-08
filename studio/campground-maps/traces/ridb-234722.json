@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-234722",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -112.1356829,
+     36.4109524
+    ],
+    [
+     -112.1357609,
+     36.4109164
+    ],
+    [
+     -112.1358055,
+     36.4108623
+    ],
+    [
+     -112.1358055,
+     36.4107632
+    ],
+    [
+     -112.1357944,
+     36.410655
+    ],
+    [
+     -112.1357944,
+     36.4105649
+    ],
+    [
+     -112.1357609,
+     36.4104748
+    ],
+    [
+     -112.1356829,
+     36.4104207
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane that runs beside the middle road on the west, past 018 and 020, joining the drawn road at both ends. Left out the short spurs to 013 and 015 and the pull-outs to 001 and 003."
+}

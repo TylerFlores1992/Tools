@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-249312",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-a)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.2016927,
+     33.728901
+    ],
+    [
+     -111.2015956,
+     33.7289461
+    ],
+    [
+     -111.2015416,
+     33.7290092
+    ],
+    [
+     -111.2015146,
+     33.7291083
+    ],
+    [
+     -111.2014931,
+     33.7292436
+    ],
+    [
+     -111.2014661,
+     33.7293517
+    ],
+    [
+     -111.2014067,
+     33.7294329
+    ],
+    [
+     -111.2013312,
+     33.729487
+    ],
+    [
+     -111.2012017,
+     33.7295456
+    ],
+    [
+     -111.2010992,
+     33.7295952
+    ],
+    [
+     -111.2010129,
+     33.7296583
+    ],
+    [
+     -111.2008943,
+     33.7297169
+    ],
+    [
+     -111.2008349,
+     33.7297664
+    ],
+    [
+     -111.2008133,
+     33.729816
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane that leaves the east side of the lot at 177 and runs north past T14, T15 and T16 to T18. The short stubs to the T14 and T17 shelters were left out as too short; the T1 to T13 tent sites in the north have only footpaths, so nothing was traced there."
+}
