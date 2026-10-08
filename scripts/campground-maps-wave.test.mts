@@ -221,3 +221,30 @@ test("the build keeps each outline ring's OpenStreetMap name, in the path's orde
   assert.deepEqual(ev.outlineNames, ["Fouts Campground", "Fouts Campground", ""]);
   assert.equal(ev.outline, "M0 0L1 0L1 1ZM5 5L6 5L6 6ZM9 9L10 9L10 10Z");
 });
+
+test("a point kilometres from every other site is left off; a listing really spread out is not pruned", async () => {
+  const { strayPoints, withoutStrays, STRAY_M } = await import("../studio/campground-maps/build.mjs");
+  // Six sites in one loop, and E18 placed in another state (Clear Springs, 2026-10-08).
+  const loop = Array.from({ length: 6 }, (_, i) => ({ name: `E${i + 1}`, lat: 33.0 + i * 0.0003, lon: -97.0 }));
+  const stray = { name: "E18", lat: 33.9, lon: -117.0 };
+  assert.deepEqual(strayPoints([...loop, stray]).map((s: { name: string }) => s.name), ["E18"]);
+  const out = withoutStrays([...loop, stray]);
+  assert.deepEqual(out.at(-1), { name: "E18", lat: 0, lon: 0, strayM: Math.round(strayPoints([...loop, stray])[0].m / 100) * 100 });
+  assert.deepEqual(out.slice(0, 6), loop);
+  // Just under the limit stays.
+  const near = { name: "N", lat: 33.0, lon: -97.0 + (STRAY_M - 50) / (111320 * Math.cos(33 * Math.PI / 180)) };
+  assert.deepEqual(strayPoints([...loop, near]), []);
+  // Three far points, or fewer than five left: a spread-out listing, left as it is.
+  assert.deepEqual(strayPoints([...loop, stray, { ...stray, name: "X", lat: 34.9 }, { ...stray, name: "Y", lat: 35.9 }]), []);
+  assert.deepEqual(strayPoints([...loop.slice(0, 4), stray]), []);
+  // A site with no point is never a stray.
+  assert.deepEqual(strayPoints([...loop, { name: "Z", lat: 0, lon: 0 }]), []);
+});
+
+test("parking rows (BLM's Extra Vehicle at every site's spot) aren't campsites", async () => {
+  const { bookable } = await import("../studio/campground-maps/build.mjs");
+  assert.equal(bookable({ CampsiteType: "PARKING", TypeOfUse: "Overnight" }), false);
+  assert.equal(bookable({ CampsiteType: "STANDARD NONELECTRIC", TypeOfUse: "Overnight" }), true);
+  assert.equal(bookable({ CampsiteType: "MANAGEMENT", TypeOfUse: "Overnight" }), false);
+  assert.equal(bookable({ CampsiteType: "STANDARD NONELECTRIC", TypeOfUse: "Day" }), false);
+});

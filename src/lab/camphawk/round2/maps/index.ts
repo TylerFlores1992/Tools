@@ -15,6 +15,9 @@ export type MapSite = {
   /** Where the provider put it, when a person moved it to what the aerial photo shows (a trace's
       `sites`, studio/campground-maps/trace.mjs). Null when the provider had no point. */
   movedFrom?: [number, number] | null;
+  /** Left off the map: Recreation.gov's point for it is this far (m) from every other site's, a bad
+      point (studio/campground-maps/build.mjs withoutStrays). `at` is null. */
+  strayM?: number;
   /** Unit vector pointing away from the nearest campground road: where the number goes. */
   out?: [number, number];
   accessible: boolean;

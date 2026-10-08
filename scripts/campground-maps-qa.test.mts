@@ -312,3 +312,11 @@ test("a moved site sends any map to a person, and says so", () => {
   assert.equal(r.metrics.traced.sites, 1);
   assert.match(checkFirstCome({ site: { name: "Standard", at: [0, 0] }, traced: { roads: 2, points: 0, sites: 2 } }).reasons.at(-1)!.text, /2 roads and 2 site positions/);
 });
+
+test("a stray point left off is named, with how far it was; a site with no point is counted", () => {
+  const sites = [{ name: "E18", at: null, strayM: 2423600 }, { name: "E19", at: null }, ...Array.from({ length: 5 }, (_, i) => ({ name: `E${i + 1}`, at: [i * 20, 0] as [number, number] }))];
+  const r = checkMap({ sites, roadSegments: [[[0, 5], [100, 5]]], roadSource: "osm" });
+  const texts = r.reasons.filter((x) => x.code === "unplaced").map((x) => x.text);
+  assert.deepEqual(texts, ["E18’s point is 2,424 km from every other site, so it’s left off", "1 site has no point"]);
+  assert.match(checkMap({ sites: [{ name: "B19", at: null, strayM: 2200 }, ...sites.slice(2)], roadSegments: [[[0, 5], [100, 5]]], roadSource: "osm" }).reasons.find((x) => x.code === "unplaced")!.text, /2\.2 km/);
+});

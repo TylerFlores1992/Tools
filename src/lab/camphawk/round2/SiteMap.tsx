@@ -7,6 +7,7 @@ import { buttonClasses } from "../ui";
 import { dayLabel } from "./campground-data";
 import { nearestRestroomFt, restrooms, scaleBar, siteTypeLabel, type MapSite, type SiteMapData } from "./maps";
 import { findSite, placeNumbers, toPx, type Box } from "./maps/layout";
+import { strayMiles } from "./maps/areas";
 
 // The campground's own site map, drawn by CampHawk from public data (no provider map image is
 // copied or traced): site points from Recreation.gov's RIDB, roads, restrooms and parking from the
@@ -147,7 +148,9 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     if ((!s || !s.at) && q.trim() && findElsewhere?.(q.trim())) return;
     if (!s || !s.at) {
       setFound(null);
-      setFindMsg(q.trim() ? `There’s no site “${q.trim()}” at ${name}.` : "Type a site number.");
+      setFindMsg(!q.trim() ? "Type a site number." : !s ? `There’s no site “${q.trim()}” at ${name}.`
+        : s.strayM ? `Site ${s.name} is at ${name}, but Recreation.gov’s location for it is ${strayMiles(s.strayM)} from the other sites, so it isn’t on the map.`
+        : `Site ${s.name} is at ${name}, but Recreation.gov doesn’t give its location, so it isn’t on the map.`);
       return;
     }
     const p = s as Placed;

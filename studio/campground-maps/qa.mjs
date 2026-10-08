@@ -70,7 +70,7 @@ export const sameNumber = (a, b) => {
 
 /**
  * @param {object} input
- * @param {{ name: string, at: [number, number] | null }[]} input.sites  every bookable overnight site
+ * @param {{ name: string, at: [number, number] | null, strayM?: number }[]} input.sites  every bookable overnight site (strayM: its point was left off as a stray)
  * @param {[[number, number], [number, number]][]} input.roadSegments   drawn roads, in metres
  * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "tiger" | "traced" | "none"
  * @param {{ roads: number, points: number, sites?: number }} [input.traced]  what was traced from the aerial photo
@@ -110,7 +110,9 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
   else if (m.stackedShare > RULES.stackedNotDrawn) notDrawn.push({ code: "stacked", text: `${Math.round(m.stackedShare * 100)}% of sites share a spot with another` });
 
   const review = [];
-  if (m.unplaced.length) review.push({ code: "unplaced", text: `${m.unplaced.length} site${m.unplaced.length === 1 ? " has" : "s have"} no point` });
+  const strays = sites.filter((s) => !s.at && s.strayM);
+  if (strays.length) review.push({ code: "unplaced", text: `${strays.map((s) => `${s.name}’s point is ${fmtKm(s.strayM)} from every other site, so it’s left off`).join("; ")}` });
+  if (m.unplaced.length > strays.length) review.push({ code: "unplaced", text: `${m.unplaced.length - strays.length} site${m.unplaced.length - strays.length === 1 ? " has" : "s have"} no point` });
   if (m.stackedShare > RULES.stackedReview && !notDrawn.length) review.push({ code: "stacked", text: `${Math.round(m.stackedShare * 100)}% of sites share a spot` });
   if (outliers.length) review.push({ code: "outlier", text: `${outliers.length} site${outliers.length === 1 ? " is" : "s are"} over ${RULES.outlierM} m from any other` });
   if (span > RULES.spanReviewM) review.push({ code: "spread", text: `Sites spread over ${(span / 1000).toFixed(1)} km` });
@@ -129,6 +131,8 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
 
 const pct = (v) => `${Math.round(v * 100)}%`;
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+/** 2,300 km, 28 km, 2.2 km. */
+const fmtKm = (m) => (m >= 10000 ? `${Math.round(m / 1000).toLocaleString("en-US")} km` : `${(m / 1000).toFixed(1)} km`);
 /** "2 roads and 1 point", or "" when nothing was traced. */
 const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points"), t.sites && plural(t.sites, "site position", "site positions")].filter(Boolean).join(" and ");
 /**

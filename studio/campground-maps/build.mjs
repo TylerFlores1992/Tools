@@ -95,7 +95,30 @@ export function viewOf(sites, call) {
 export const padFor = (placedSites) => (placedSites === 1 ? SINGLE_UNIT_PAD_M : undefined);
 
 /** Bookable overnight sites: staff (management) and day-use sites are never drawn. */
-export const bookable = (r) => r.CampsiteType !== "MANAGEMENT" && r.TypeOfUse === "Overnight";
+/** Bookable overnight sites: staff (management), day-use and parking rows (BLM lists an "Extra
+    Vehicle" at every site's own spot) are never drawn. */
+export const bookable = (r) => r.CampsiteType !== "MANAGEMENT" && r.CampsiteType !== "PARKING" && r.TypeOfUse === "Overnight";
+
+/** A point this far from every other site is a bad point, not a site: the build leaves it off. */
+export const STRAY_M = 2000;
+/**
+ * The sites whose point is STRAY_M or more from every other site's (RIDB has points 1,300 km off,
+ * in the wrong state): at most two, and only when five or more sites are left, so a listing that
+ * really is spread out (dispersed, boat-in) is never pruned. Each with how far it is (m).
+ * Pure: sites are { name, lat, lon } (0, 0 for no point).
+ */
+export function strayPoints(sites) {
+  const placed = sites.filter((s) => s.lat && s.lon);
+  const m = (a, b) => Math.hypot((a.lon - b.lon) * 111320 * Math.cos(((a.lat + b.lat) / 2) * Math.PI / 180), (a.lat - b.lat) * 110540);
+  const far = placed.map((s) => ({ name: s.name, m: Math.min(...placed.filter((o) => o !== s).map((o) => m(s, o))) })).filter((s) => s.m >= STRAY_M);
+  return far.length && far.length <= 2 && placed.length - far.length >= 5 ? far : [];
+}
+
+/** The sites with stray points taken off the map: no point, and `strayM` to say why. */
+export function withoutStrays(sites) {
+  const stray = new Map(strayPoints(sites).map((s) => [s.name, s.m]));
+  return sites.map((s) => (stray.has(s.name) ? { ...s, lat: 0, lon: 0, strayM: Math.round(stray.get(s.name) / 100) * 100 } : s));
+}
 
 const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).flatMap((p) => { const m = p.map(xy); return m.slice(1).map((b, i) => [m[i], b]); }));
 
@@ -104,7 +127,7 @@ const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).f
     OpenStreetMap boxes in one pass first (osm.mjs prefetchOsm). Null when no site has a point. */
 export function frameBoxOf(ridb, facilityId) {
   // Sites a person moved count where they were moved to (trace.mjs), as in buildRidbMap().
-  const sites = applySiteMoves((ridb.sites.get(facilityId) ?? []).filter(bookable).map((r) => ({ name: r.CampsiteName.trim(), lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites);
+  const sites = withoutStrays(applySiteMoves((ridb.sites.get(facilityId) ?? []).filter(bookable).map((r) => ({ name: r.CampsiteName.trim(), lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites));
   const placed = sites.filter((s) => s.lat && s.lon);
   if (!placed.length) return null;
   const { frame, bboxArr } = makeGeo(placed.map((s) => [s.lon, s.lat]), padFor(placed.length));
@@ -125,7 +148,9 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   if (!rows.length) throw new Error(`no bookable overnight campsites for facility ${facilityId}`);
   // Sites a person moved to where the aerial photo shows them (a trace's `sites`), before the map is
   // framed: a stray point's frame would be kilometres wide.
-  const sites = applySiteMoves(rows.map((r) => ({ ridbId: r.CampsiteID, name: r.CampsiteName.trim(), type: r.CampsiteType, accessible: r.CampsiteAccessible === "true", lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites);
+  // A point kilometres from every other site is left off (withoutStrays), after any move: a person
+  // may have moved it back.
+  const sites = withoutStrays(applySiteMoves(rows.map((r) => ({ ridbId: r.CampsiteID, name: r.CampsiteName.trim(), type: r.CampsiteType, accessible: r.CampsiteAccessible === "true", lat: Number(r.CampsiteLatitude) || 0, lon: Number(r.CampsiteLongitude) || 0 })), readTrace(`ridb-${facilityId}`, null)?.sites));
   const moved = sites.filter((s) => s.movedFrom !== undefined).length;
   const placed = sites.filter((s) => s.lat && s.lon);
   if (!placed.length) throw new Error(`facility ${facilityId} has no site points`);
@@ -230,6 +255,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
         type: s.type,
         at,
         ...(s.movedFrom !== undefined ? { movedFrom: s.movedFrom ? xy(s.movedFrom) : null } : {}),
+        ...(s.strayM ? { strayM: s.strayM } : {}),
         out: at ? awayFromRoad(at) : undefined,
         accessible: s.accessible || a.Accessibility === "Y",
         maxVehicleFt: num("Max Vehicle Length"),
@@ -248,7 +274,7 @@ export async function buildRidbMap(ridb, facilityId, meta = {}) {
   // --- Automatic check ---
   const toM = (ring) => ring.map(xy);
   const checkInput = {
-    sites: outSites.map((s) => ({ name: s.name, at: s.at })),
+    sites: outSites.map((s) => ({ name: s.name, at: s.at, ...(s.strayM ? { strayM: s.strayM } : {}) })),
     roadSegments: segmentsOf(roads.map((r) => r.f), xy),
     roadSource: (roadSource === "none" || replaced) && traced.length ? "traced" : roadSource,
     traced: { roads: traced.length, points: tracedPoints.length, sites: moved },

@@ -239,3 +239,6 @@ export function outline(map: SiteMapData, area: Area, pad: number): [number, num
 
 /** Sites the listing publishes no point for: on no area's map, and said so. */
 export const unplacedSites = (sites: MapSite[]) => sites.filter((s) => !s.at).map((s) => s.name);
+
+/** How far a stray point was, for a camper: "1.4 miles", "17 miles", "1,430 miles". */
+export const strayMiles = (m: number) => { const mi = m / 1609.34; return `${mi < 10 ? mi.toFixed(1) : Math.round(mi).toLocaleString("en-US")} miles`; };
