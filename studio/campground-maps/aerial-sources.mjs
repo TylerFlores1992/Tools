@@ -65,8 +65,9 @@ for (const file of files) {
   // Real: most of the frame, or the ground around the first site where the frame isn't wholly blank
   // (a unit's 1.4 km frame at a coverage edge).
   const real = (a) => a && a.frame !== null && (a.frame < 0.5 || (a.zoom !== null && a.zoom < 0.5 && a.frame < 0.99));
-  const best = keys.find((k) => real(answers[k])) ?? "none";
   const now = aerialSource({ facilityId: map.facilityId, bbox: map.bbox })?.key ?? "none";
+  // A pick that answers stands (some are chosen for a clearer photo, not the only one).
+  const best = real(answers[now]) ? now : keys.find((k) => real(answers[k])) ?? "none";
   rows.push({ id: map.facilityId, name: map.name, state: map.state, best, now, answers });
   console.log(`${map.facilityId}\t${best}${best === now ? "" : `\t(aerial.ts gives ${now}${PICKS[map.facilityId] ? ", a pick" : ""})`}`);
 }

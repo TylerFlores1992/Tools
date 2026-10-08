@@ -98,6 +98,10 @@ export const PICKS: Record<string, AerialKey | "none"> = {
   "234629": "usfs-r10-rgb", "10382456": "usfs-r10-rgb", "233045": "usfs-r10-rgb", "233052": "usfs-r10-rgb",
   "233088": "usfs-r10-rgb", "233089": "usfs-r10-rgb", "233090": "usfs-r10-rgb", "233091": "usfs-r10-rgb",
   "233093": "usfs-r10-rgb", "233094": "usfs-r10-rgb", "233095": "usfs-r10-rgb",
+  // Both services cover these; the older one's leaf-off 2016 photo (Chugach) or 2008 one shows the
+  // loops that the newer summer photo hides under canopy. The first look was made on it.
+  "232213": "usfs-r10-rgb", "232324": "usfs-r10-rgb", "232353": "usfs-r10-rgb", "232360": "usfs-r10-rgb",
+  "233994": "usfs-r10-rgb", "234112": "usfs-r10-rgb", "234504": "usfs-r10-rgb",
   // Only the 2010 0.6 m photo, which must be asked for at its own scale.
   "10300372": "usfs-r10-0.6m", "251714": "usfs-r10-0.6m",
   // Neither Forest Service service: the Dalton Highway and White Mountains (BLM), Kenai Fjords and

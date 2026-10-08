@@ -20,7 +20,8 @@ test("Hawaii gets NAIP 2021 Hawaii (USGS's NAIP answers blank there)", () => {
 });
 
 test("Alaska gets the Forest Service's Alaska Region photos, four-band by default", () => {
-  assert.equal(aerialSource({ facilityId: "232213", bbox: RUSSIAN_RIVER })?.key, "usfs-r10");
+  assert.equal(aerialSource({ bbox: RUSSIAN_RIVER })?.key, "usfs-r10");
+  assert.equal(aerialSource({ facilityId: "232213", bbox: RUSSIAN_RIVER })?.key, "usfs-r10-rgb", "Russian River: picked for the leaf-off photo");
   assert.equal(aerialSource({ bbox: ATTU })?.key, "usfs-r10", "the Aleutians past 180°");
   const u = new URL(aerialUrl({ bbox: RUSSIAN_RIVER }, { w: 742, h: 850 })!);
   assert.equal(u.hostname, "imagery.geoplatform.gov");
