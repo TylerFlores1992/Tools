@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-08 (CampHawk shirts: the owner picked round 4's no. 7 "Short reflection", kit rebuilt. PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-08 (CampHawk shirts: the owner's pick, round 4 no. 7, polished over rounds 5-10 to a print technician's 9 and "ready"; PR #24. PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -142,20 +142,24 @@ in the design doc):
 site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync drops them.
 
 ## Waiting on the owner
-0. **CampHawk shirts: back redesigned and print-ready; owner to order** (2026-10-08).
-   - **The design.** The owner's wife said the mirrored peak read as a diamond. Round 4 drew seven layouts
-     without it; the owner picked **no. 7, "Short reflection"**: the peak, camp and hawk on a few broken
-     lake lines. The back is now 11.5 × 8.33 in on both shirts (one ink on natural, three on sage); the
-     chest prints are unchanged.
-   - **The files.** `studio/camphawk-shirts/kit/` (an SVG per ink plus 300 dpi PNGs), built by
-     `final4.mjs`. Kit page: https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM. Round 4 options:
-     https://claude.ai/artifact/SjC3vk4yMahmUMpr9DZt7j.
-   - **The plan.** DTF transfers pressed at home by the owner's wife, about $9 a shirt (one 22 in gang
-     sheet plus Gildan 5000 Natural at $3.41). Printify is the fallback. Details in the shirt README.
+0. **CampHawk shirts: the back polished and print-ready; owner to order** (2026-10-08, PR #24).
+   - **The design.** The owner's pick from round 4, no. 7 "Short reflection" (no mirrored peak: the wife
+     said it read as a diamond), polished in rounds 5-10 with a fresh art director and print technician
+     scoring every round. Final scores: technician 9 ("ready for a 20-shirt run, PNGs as masters"); art
+     director 6.5 (one ink) / 7 (three inks), "print it after three fixes", all three done in round 10
+     (see below for its confirming check). What caps the art score is the owner's to change: the familiar
+     peak-over-lake concept, the Josefin lockup, and whether to add a light distress texture.
+   - **The files.** `studio/camphawk-shirts/kit/`: 300 dpi PNGs (the masters), 1-bit screen films per ink
+     with registration marks, traced SVGs. Back 10.13 x 8.38 in. Built by `polish5.py` → `hatch5.py` →
+     `node final5.mjs` (design in `round5.mjs`; print rules in `prep5.py`/`finish5.py`). Rounds and the
+     production spec (press settings, screen order, meshes, strike-off) are in the shirt README.
+     Kit page: https://claude.ai/artifact/W4NqM9AcXuW41qFYoVUGhM.
+   - **The plan.** Giveaway (one ink, natural): DTF transfers pressed at home, about $9 a shirt. Owners
+     (three inks, sage): a screen shop (as DTF it is a stiff 26.6 in2 patch).
    - **Next steps, waiting on the owner:** how many shirts of each version and the heat press size, then
-     build the gang-sheet PNG from `kit/*_300dpi.png`. The owner also planned a Vercel image polish of the
-     art before ordering.
-   - Image credit used: $0.54 of the owner's $0.75.
+     build the DTF gang sheet from `kit/*_300dpi.png`; merge PR #24.
+   - Vercel image credit used: $0.62 of the owner's $0.75. The two Flux Kontext edits weren't usable as
+     flat-ink art, so the polish was done in code.
 1. **GitHub default branch → `main`** (GitHub → Settings → General → Default branch). New PRs
    still default to the old session branch.
 2. *(Optional)* **`LAB_PASSWORD` for Preview** in Vercel, so lab work can be reviewed on a
