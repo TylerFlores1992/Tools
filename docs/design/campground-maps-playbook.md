@@ -133,17 +133,42 @@ loads this) should be able to do the next step from here alone.
    `https://ridb.recreation.gov/downloads/RIDBFullExport_V1_CSV.zip` into the scratchpad and
    unzip it. A rollout uses the newest export and records its date (`source.ridbExport`,
    `drawn.export`).
-4. **The network.**
-   - `download.geofabrik.de` and Overpass were unreachable from session containers on 2026-10-07
-     and 2026-10-08 (proxy answers 000). §4.1 needs Geofabrik.
-   - If it's still blocked, ask the owner to add `download.geofabrik.de`. The docs list only
-     claude.ai/code and the Desktop app for editing environments, not the mobile app (a phone's
-     browser on claude.ai/code should work). Steps: the cloud icon with the environment's name above
-     the message box → **Cloud** → the environment's settings icon → **Network access**. The level is
-     **Custom** with an allowlist already (USGS, Census, the Park Service and others answer), so
-     **add one line to Allowed domains, don't replace the list**, and keep "Also include default
-     list of common package managers" ticked. Save; it applies to new sessions.
-     https://code.claude.com/docs/en/cloud-environments#network-access
+4. **The network. Check it first; nothing works without it.**
+   - **What the map work reaches** (the builders, the photo tools, the smoke test):
+     ```
+     ridb.recreation.gov
+     imagery.nationalmap.gov
+     hydro.nationalmap.gov
+     tigerweb.geo.census.gov
+     mapservices.nps.gov
+     apps.fs.usda.gov
+     api.openstreetmap.org
+     services2.arcgis.com
+     california-rdr.prod.cali.rd12.recreation-management.tylerapp.com
+     tylerflores.dev
+     download.geofabrik.de
+     ```
+     Probe them in one go: `for h in <hosts>; do curl -sS -o /dev/null -I --max-time 15 -w "%{http_code} $h\n" https://$h/; done`.
+     A `403` on CONNECT (`curl: (56) CONNECT tunnel failed, response 403`) is the environment's
+     network policy; anything else is the far end.
+   - **What happened on 2026-10-08.** Until then every host above except Geofabrik answered, so the
+     environment was almost certainly on **Full** network access. The owner switched it to
+     **Custom** with only `download.geofabrik.de` in Allowed domains (and the package-manager
+     defaults ticked). The change applied to the running session at once. Every other host above
+     then got `403`, tylerflores.dev included, so the builds and the smoke test stopped working.
+     **A Custom list is the whole allowlist; it doesn't add to Full.**
+   - **The fix (owner, in the environment settings):** either set Network access back to **Full**
+     (what worked all of 2026-10-07/08), or keep **Custom** and list every host above, one per line,
+     with "Also include default list of common package managers" ticked. Where: claude.ai/code or
+     the Desktop app (the docs don't list the mobile app; a phone's browser on claude.ai/code
+     works). Click the cloud icon with the environment's name above the message box → **Cloud** → the
+     environment's settings icon → **Network access**. It applies to new sessions (and, as seen, to
+     the running one). https://code.claude.com/docs/en/cloud-environments#network-access
+   - **Geofabrik resets the connection even when allowed** (2026-10-08, after the owner allowed it:
+     the proxy accepted the tunnel, then `Recv failure: Connection reset by peer` three times out of
+     three; the proxy logged `ws_closed_mid_exchange` after 39 bytes). Before it was allowed, it
+     failed the same way, not with a 403. So it's the path to Geofabrik, not the policy. **§4.1
+     must start by finding an extract source that answers** (below).
    - Then install `osmium-tool` (apt).
 5. **The cache.** `studio/campground-maps/.cache/` (git-ignored) keeps every answer, so a rebuild
    doesn't hit free services again. A failed answer is never cached.
@@ -159,7 +184,15 @@ a session or less.
 - **Why:** OSM's API is for editing. Fifty small reads was within its usage policy; 2,196 is bulk
   use. `osm.mjs` must read OSM features from a state extract.
 - **How:**
-  - Download `north-america/us/<state>-latest.osm.pbf` from Geofabrik.
+  - Download a state extract (`.osm.pbf`). **First find a source that answers from a session**
+    (Geofabrik `north-america/us/<state>-latest.osm.pbf` resets the connection here, §3.4). Try, and
+    record which answered and when:
+    - Geofabrik again (the reset may be temporary);
+    - OpenStreetMap France's extracts (`download.openstreetmap.fr/extracts/north-america/us/`);
+    - BBBike's extract service (custom boxes; check its usage limits);
+    - the OSM planet on AWS Open Data (`osm-pds`, the whole planet in ORC; heavy, last resort).
+    Each new host needs allowing unless the environment is on Full (§3.4). All are ODbL, the same
+    data as the API.
   - `osmium tags-filter` it to the tags `osmLayers()` reads: `highway`, `amenity`, `tourism`,
     `natural=water`, `waterway`, `landuse=reservoir`, `building`.
   - `osmium extract -b <bbox>` per campground (or one pass per state), exported as OSM XML, so
@@ -487,8 +520,9 @@ of bookable sites).
   still needs the owner's approval.
 
 **Still open:**
-1. **Allow `download.geofabrik.de`** in the environment's network settings (§3.4). From
-   claude.ai/code or the Desktop app; the docs don't list the mobile app for editing environments.
+1. **Network access back to Full, or Custom with every host in §3.4.** On 2026-10-08 it was set to
+   Custom with only `download.geofabrik.de`, which blocked every other map source and the site's
+   own smoke test.
 2. **Approve the look** of the single-unit and split-listing maps, when designed.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
