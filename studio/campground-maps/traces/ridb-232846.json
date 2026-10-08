@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-232846",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.106734,
+     45.1514108
+    ],
+    [
+     -122.1067213,
+     45.1513028
+    ],
+    [
+     -122.1067086,
+     45.1512128
+    ],
+    [
+     -122.1066958,
+     45.1511409
+    ],
+    [
+     -122.106645,
+     45.1510779
+    ],
+    [
+     -122.1065687,
+     45.1510329
+    ],
+    [
+     -122.1064796,
+     45.1510059
+    ],
+    [
+     -122.1063906,
+     45.1509879
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved west lane past Sites 001 and 002, traced from the photo where it leaves the drawn road at the top and rejoins it at the fork. The footpaths to 004 to 006 are left out."
+}

@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-10046989",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.8308053,
+     40.9105338
+    ],
+    [
+     -110.8308528,
+     40.9104887
+    ],
+    [
+     -110.8309121,
+     40.9104437
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.8308172,
+     40.9102186
+    ],
+    [
+     -110.830924,
+     40.9101916
+    ],
+    [
+     -110.831019,
+     40.9101556
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.8308172,
+     40.9099755
+    ],
+    [
+     -110.8309003,
+     40.9099395
+    ],
+    [
+     -110.8309715,
+     40.9099035
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.8308528,
+     40.9097144
+    ],
+    [
+     -110.8308409,
+     40.9096604
+    ],
+    [
+     -110.830829,
+     40.9096063
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The four dirt spurs off the drawn road to Sites 1 to 4, traced from the photo where they show; the last few metres to 1 and 4 go under the trees."
+}

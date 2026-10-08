@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-232335",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout west-d)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.2955151,
+     43.537017
+    ],
+    [
+     -115.2955151,
+     43.536855
+    ],
+    [
+     -115.2955151,
+     43.536675
+    ],
+    [
+     -115.2955151,
+     43.536495
+    ],
+    [
+     -115.2955151,
+     43.536342
+    ],
+    [
+     -115.2955274,
+     43.53627
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane from the drawn road south toward Site 002, traced from the photo as far as it shows. Its last 25 m to 002 go under the trees and are left out, as are the lane west from 002 out of the frame and the open gravel round the group building (001)."
+}
