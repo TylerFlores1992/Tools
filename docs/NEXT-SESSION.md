@@ -37,6 +37,29 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
+**Night, 2026-10-08: the parallel rollout, 10 of 12 batch groups merged (PRs #32 to #38).**
+- **2,490 maps built in waves 3 to 39 so far; 1,158 passed the final check and 1,332 are held to
+  fix after.** Per-batch numbers and notes are in the design doc's "The parallel rollout" table.
+  Production smoke after #38: every check passes (curl, with retries for this sandbox's TLS
+  resets; Node's fetch to tylerflores.dev is reset here, so `npm run smoke` fails before the
+  first answer).
+- **Still running: west-c (waves 9 to 11) and west-d (12, 13).** Integrate each with the same
+  loop: lane check, merge, `lab-index`, final check, `decide-wave`, doc row, verify, PR, merge.
+- **One `usable` bar for every batch**, from the owner's wave 1 and 2 approvals. Sites and drawn
+  roads right with some spurs or lanes missing pass. Held instead:
+  - a drawn road off the visible one;
+  - misplaced or stacked sites;
+  - about a third or more of the sites with no drawn road.
+  - The final check re-read every `usable` note against it: 173 of 449 held. It is in the
+    child brief and the playbook, and `decide-wave --why` keeps the reason on each held map.
+- **Held, to fix after:**
+  - Alaska and Hawaii: 220 listings, NAIP is black there (playbook §10 2a).
+  - "Standard" whole campgrounds (2b).
+  - About 60 trace candidates the children listed (lanes plain in the open).
+  - Stray RIDB points 14 km to 6,000 km away; an outlier rule should drop them.
+  - Dispersed lake and island listings, waiting for the dispersed design.
+  - OSM area outlines drawn as roads in Oklahoma, Arkansas and Texas.
+
 **Late evening, 2026-10-08: the rest of Recreation.gov, in parallel (PR pending, then children).**
 - The 27 area listings decided (14 approved, 13 hidden). Tighter areas for the 5 coarse ones (a
   loop joins only an area it touches; a split call can set `gap` or `maxSpan`).
