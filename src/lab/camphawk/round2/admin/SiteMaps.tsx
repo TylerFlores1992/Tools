@@ -42,7 +42,7 @@ const EVT = "lab-site-map-decisions";
 // A click is saved here; "open" reopens a map whose decision is recorded with the maps (Undo).
 type Local = Record<string, Decision | "open">;
 /** "1 unit" for a single unit (a cabin, lookout or group site), else "N sites". */
-const sitesWord = (n: number) => (n === 1 ? "1 unit" : `${n} sites`);
+const sitesWord = (n: number, kind?: string) => (kind === "firstcome" ? "first-come campground" : n === 1 ? "1 unit" : `${n} sites`);
 
 function readLocal(): Local {
   try { return JSON.parse(window.localStorage.getItem(KEY) ?? "{}") ?? {}; } catch { return {}; }
@@ -462,7 +462,7 @@ function Card({ entry: e, wave, looks, home, decision, traced }: { entry: WaveEn
         <h3 className="font-ch-display text-[17px] font-bold leading-snug text-ch-ink">
           <Link href={`${home}?wave=${wave}&id=${e.id}`} className="after:absolute after:inset-0 focus-visible:outline-none group-focus-within:underline">{name}</Link>
         </h3>
-        <p className="text-[13.5px] text-ch-muted">{[AGENCY_SHORT[e.agency] ?? e.agency, e.state, sitesWord(e.metrics.sites)].filter(Boolean).join(" · ")}</p>
+        <p className="text-[13.5px] text-ch-muted">{[AGENCY_SHORT[e.agency] ?? e.agency, e.state, sitesWord(e.metrics.sites, "kind" in e.metrics ? e.metrics.kind : undefined)].filter(Boolean).join(" · ")}</p>
         {look && <p className="line-clamp-3 text-[13.5px] leading-snug text-ch-ink-2">{look.note}</p>}
         <p className={cx("text-[13px] leading-snug", look ? "mt-auto pt-1 text-ch-muted" : "text-ch-ink-2")}>
           {look && <span className="font-bold text-ch-ink-2">Checks: </span>}
@@ -552,7 +552,7 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
             {changed && <span className="inline-flex items-center gap-1 text-[13.5px] font-bold text-ch-ochre-ink"><PenLine aria-hidden="true" className="size-4" />your traces aren’t built yet</span>}
           </p>
           <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">{name}</h1>
-          <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, sitesWord(entry.metrics.sites), waveLabel(n)].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-[15px] text-ch-ink-2">{[entry.agency, entry.recArea, entry.state, sitesWord(entry.metrics.sites, "kind" in entry.metrics ? entry.metrics.kind : undefined), waveLabel(n)].filter(Boolean).join(" · ")}</p>
           {look && <p className="mt-2 flex flex-wrap items-center gap-x-2 text-[14px] text-ch-ink-2"><span className="font-bold">The automatic check:</span><StatusMark level={v.level} label={entry.verdict === "ready" ? `all ${entry.checks.length} passed` : v.word} className="text-[14px]" /></p>}
           {entry.reasons.length > 0 && (
             <ul className="mt-3 grid list-disc gap-1 pl-5 text-[15px] text-ch-ink marker:text-ch-muted">

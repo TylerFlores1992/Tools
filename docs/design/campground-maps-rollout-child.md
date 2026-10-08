@@ -80,6 +80,20 @@ branch (the spawn prompt names it).
      agrees with the listing's point;
    - `unsure`: canopy, or no photo.
    Don't trace for a unit unless a road to it is plainly visible and undrawn.
+3b. **First-come campgrounds** (a map with `firstCome`: one site named "Standard", a first-come
+   "Scan and Pay" campground; `docs/design/campground-maps-first-come.md`). The camper's map is
+   OpenStreetMap's outline of the campground, hatched, or a pin "About here" when there's none.
+   `aerial-check.mjs` draws the outline dashed white. Judge the outline and the point, not sites:
+   - `good`: the outline follows the campground on the photo (its loops and pads are inside it)
+     and the listed point is in it or by its entrance;
+   - `usable`: the outline is roughly the campground (a little extra ground, or one loop outside
+     it), or there's no outline and the pin is within about 100 m of a campground the photo plainly
+     shows;
+   - `hold`: the outline is something else (a parking lot, a picnic area, a whole park), the point
+     is at a different campground, or there's no outline and nothing near the pin is a campground;
+   - `unsure`: canopy, or no photo.
+   - Add `"as": "firstcome"` to the entry. Without it the final check holds the map, because a
+     look that judged it as a single unit doesn't count.
 4. **Split listings** (several places under one name): the build shows a listing as areas when its
    sites spread over 1.5 km. If the photo shows several separate places inside 1.5 km, add a call
    to `studio/campground-maps/splits/wave-NN.json`:
