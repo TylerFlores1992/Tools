@@ -11,4 +11,10 @@
   osm-extract.mjs, which checked the MD5 and trimmed. Suggest adding `--speed-limit/--speed-time`
   to its curl (not changed here: code is out of a child's scope).
 
+## Bar for `usable` (message from the orchestrating session, 19:23Z)
+Applied to every wave here: `usable` only when at most about 1 site in 7 has no drawn road within
+about 20 m and every drawn road sits on a visible one; otherwise `hold`. (The message said the brief
+on main was updated; at 19:25Z origin/main didn't carry it yet. It is stricter than the brief, so
+applied.)
+
 STATUS: started
