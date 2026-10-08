@@ -8,6 +8,9 @@ import { cx } from "@/components/cx";
 import type { SiteMapData } from "../maps";
 import { tidyCase } from "../maps/name";
 import { AreaMaps, UnitMap, type SplitLayout, type UnitLayout } from "../AreaMaps";
+import { FirstComeMap, type FirstComeLayout } from "../FirstCome";
+import type { FirstComeFacts } from "../maps/first-come";
+import firstComeExamples from "../maps/first-come-examples.json";
 import { AdminFrame } from "./AdminFrame";
 
 // Design comps for the owner (docs/design/campground-maps-areas.md): how a split listing and a single
@@ -26,6 +29,19 @@ const UNITS: [string, string][] = [
   ["233272", "Guard station by a highway"],
   ["231992", "Group camp"],
   ["234342", "Cabin by a river"],
+];
+// First-come campgrounds booked as one "Standard" site (docs/design/campground-maps-first-come.md).
+const FIRST_COME: [string, string][] = [
+  ["10165280", "17 sites, mapped area, restrooms"],
+  ["10165555", "Walk-in, area not mapped"],
+  ["10165105", "No count; amenities listed"],
+  ["10165165", "Closed"],
+  ["10165335", "Two loops by a road"],
+];
+const FC_FACTS = (firstComeExamples as { facts: Record<string, FirstComeFacts> }).facts;
+const FC_LOOKS: [FirstComeLayout, string, string][] = [
+  ["glance", "A · Map and how-to side by side", "The campground’s area hatched on the map, its restrooms marked; beside it (below it on a phone) the three steps to get a site, then the facts."],
+  ["steps", "B · Steps first, then a wide map", "The three steps as a strip across the top, a wide map of the campground under them, and the facts below. Leads with what to do."],
 ];
 const SPLIT_LOOKS: [SplitLayout, string, string][] = [
   ["pick", "A · One area at a time", "An overview with each area numbered, a list of areas beside it, and one area’s site map below. Find a site switches area."],
@@ -69,14 +85,16 @@ export function MapLayouts() {
   const splitEx = SPLITS.some(([id]) => id === params.get("s")) ? params.get("s")! : SPLITS[0][0];
   const unitEx = UNITS.some(([id]) => id === params.get("u")) ? params.get("u")! : UNITS[0][0];
   const set = (k: string, v: string) => { const q = new URLSearchParams(params.toString()); q.set(k, v); window.history.replaceState(null, "", `${pathname}?${q}`); };
-  const splitMap = useMapFile(splitEx), unitMap = useMapFile(unitEx);
+  const fc = (params.get("fc") === "steps" ? "steps" : "glance") as FirstComeLayout;
+  const fcEx = FIRST_COME.some(([id]) => id === params.get("f")) ? params.get("f")! : FIRST_COME[0][0];
+  const splitMap = useMapFile(splitEx), unitMap = useMapFile(unitEx), fcMap = useMapFile(fcEx);
   const [site, setSite] = useState<string | null>(null);
 
   return (
     <AdminFrame page="Site maps: layouts (design comps)" home={home}>
       <Link href={home} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-ch-ink-2 underline-offset-2 hover:underline"><ArrowLeft aria-hidden="true" className="size-4" />Site maps</Link>
-      <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">Two kinds of listing, two ways each</h1>
-      <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">How the campground page would show a listing that is several areas apart, and one that is a single cabin or lookout. Drawn from real Recreation.gov listings. Pick one of each; nothing here is live.</p>
+      <h1 className="mt-1 text-balance font-ch-display text-ch-title font-bold leading-tight text-ch-ink">Three kinds of listing, two ways each</h1>
+      <p className="mt-1 max-w-[70ch] text-[15px] leading-relaxed text-ch-ink-2">How the campground page would show a listing that is several areas apart, one that is a single cabin or lookout, and a first-come campground you can’t reserve. Drawn from real Recreation.gov listings. Pick one of each; nothing here is live.</p>
 
       <section aria-labelledby="split-h" className="mt-8">
         <h2 id="split-h" className="font-ch-display text-[22px] font-extrabold text-ch-ink">Several areas under one listing</h2>
@@ -105,6 +123,20 @@ export function MapLayouts() {
           : <>
               <p className="mt-5 text-[14px] font-bold text-ch-ink-2">{tidyCase(unitMap.name ?? "")}</p>
               <UnitMap map={unitMap} name={tidyCase(unitMap.name ?? "")} provider="Recreation.gov" layout={unit} />
+            </>}
+      </section>
+      <section aria-labelledby="fc-sec-h" className="mt-12">
+        <h2 id="fc-sec-h" className="font-ch-display text-[22px] font-extrabold text-ch-ink">A first-come campground (booked as one “Standard” site)</h2>
+        <div className="mt-3 grid gap-3">
+          <Pills label="Direction" value={fc} options={FC_LOOKS.map(([v, t]): [FirstComeLayout, string] => [v, t])} onChange={(v) => set("fc", v)} />
+          <p className="max-w-[70ch] text-[14px] leading-snug text-ch-ink-2">{FC_LOOKS.find(([v]) => v === fc)![2]}</p>
+          <Pills label="Example" value={fcEx} options={FIRST_COME.map(([id, t]) => [id, t])} onChange={(v) => set("f", v)} />
+        </div>
+        {fcMap === null ? <p role="status" className="mt-4 text-[15px] text-ch-ink-2">Loading the map…</p>
+          : fcMap === "error" ? <p role="alert" className="mt-4 text-[15px] text-ch-ink-2">This example’s map didn’t load.</p>
+          : <>
+              <p className="mt-5 text-[14px] font-bold text-ch-ink-2">{tidyCase(fcMap.name ?? "")}</p>
+              <FirstComeMap map={fcMap} name={tidyCase(fcMap.name ?? "")} facts={FC_FACTS[fcEx] ?? null} layout={fc} />
             </>}
       </section>
     </AdminFrame>

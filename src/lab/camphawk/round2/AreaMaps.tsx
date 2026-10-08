@@ -30,7 +30,7 @@ type Props = {
   note?: string;
 };
 
-const fmtMi = (m: number) => { const mi = m / 1609.34; return mi < 0.1 ? `${Math.round(m * 3.28084 / 10) * 10} ft` : `${mi < 1 ? mi.toFixed(1) : mi.toFixed(1)} mi`; };
+export const fmtMi = (m: number) => { const mi = m / 1609.34; return mi < 0.1 ? `${Math.round(m * 3.28084 / 10) * 10} ft` : `${mi < 1 ? mi.toFixed(1) : mi.toFixed(1)} mi`; };
 
 /** The listing's whole frame, drawn small: water, roads, a dot per site, each area outlined by a
     buffer around its own sites (boxes overlapped on a diagonal shore: critic round 1). Each number
@@ -202,7 +202,7 @@ const KIND: [RegExp, string][] = [[/lookout/i, "Fire lookout"], [/guard station|
 const kindOf = (name: string, type: string) => KIND.find(([re]) => re.test(name))?.[1] ?? (/GROUP/.test(type) ? "Group site" : /CABIN/.test(type) ? "Cabin" : "Site");
 
 /** A "road" a source tags as a path, track or named trail: drawn and counted as a trail. */
-const isFootway = (r: { name: string; cls: string }) => /trail|path|footway/i.test(`${r.cls} ${r.name}`);
+export const isFootway = (r: { name: string; cls: string }) => /trail|path|footway/i.test(`${r.cls} ${r.name}`);
 
 /** The nearest mapped road and the nearest trail to a point: name (when the source names it) and
     straight-line distance. A road OpenStreetMap tags as a path or track is a trail here, so a
@@ -223,7 +223,7 @@ export function nearestWays(map: SiteMapData, at: [number, number]): { road: { n
 }
 
 /** Metres on the map to [lat, lon], through the map's own bbox. */
-const latLon = (map: SiteMapData, [x, y]: [number, number]): [number, number] | null => {
+export const latLon = (map: SiteMapData, [x, y]: [number, number]): [number, number] | null => {
   if (!map.bbox) return null;
   const [w, s, e, n] = map.bbox, f = map.frame;
   return [n - ((y - f.y) / f.h) * (n - s), w + ((x - f.x) / f.w) * (e - w)];

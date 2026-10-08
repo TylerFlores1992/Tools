@@ -617,13 +617,14 @@ of bookable sites).
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. ~~**Approve the look** of the single-unit and split-listing maps.~~ **Done** (0b).
-2a. **Alaska and Hawaii (230 maps held, 2026-10-08):** USGS's NAIP returns all black there, so no
-   first look is possible. Options: another public-domain photo source (to research: USGS's other
-   imagery services, Alaska's state imagery, NOAA), or pass those maps on the automatic check alone.
-2b. **"Whole campground as one Standard site" (65 maps held, colorado batch):** a listing whose one
-   bookable site is named "Standard" is a whole campground, not a unit. Building them as
-   campground maps needs roads and loops without site points (a different map), or a "whole
-   campground" design. Owner's call whether to pursue.
+2a. **Alaska and Hawaii (219 maps held, 2026-10-08):** USGS's NAIP has nothing there. **Owner,
+   2026-10-08: find another public-domain source.** A child session is on it (`wip/maps-akhi-imagery`).
+   The National Map's imagery basemap is ruled out: its Alaska layer is licensed SPOT imagery,
+   "provided for viewing".
+2b. **"Whole campground as one Standard site" (130 listings):** these are first-come "Scan and
+   Pay" campgrounds, not units. **Owner, 2026-10-08: design a whole-campground map.** Two
+   directions are built as lab comps (`docs/design/campground-maps-first-come.md`); the critic and
+   I recommend A. **Waits on the owner's pick**, then the build records them as their own kind.
 3. **Restroom and water text from the Forest Service (§5.3):** build it or not.
 4. **Put traced roads into OpenStreetMap too:** needs the owner's own OSM account. No automated
    edits.

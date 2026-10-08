@@ -1,0 +1,85 @@
+{
+ "version": 1,
+ "source": "RIDB full export (CC BY 4.0)",
+ "facts": {
+  "10165105": {
+   "id": "10165105",
+   "name": "Alder Springs",
+   "sites": null,
+   "firstCome": true,
+   "scanAndPay": true,
+   "closed": false,
+   "access": "Drive-In",
+   "maxPeople": 8,
+   "maxVehicles": 2,
+   "pets": "Yes",
+   "campfires": "Yes",
+   "amenities": [
+    "Fire rings",
+    "Picnic tables",
+    "Vault toilets",
+    "Water you have to treat"
+   ]
+  },
+  "10165165": {
+   "id": "10165165",
+   "name": "Blair Lake Campground",
+   "sites": null,
+   "firstCome": true,
+   "scanAndPay": true,
+   "closed": true,
+   "access": null,
+   "maxPeople": null,
+   "maxVehicles": null,
+   "pets": null,
+   "campfires": null,
+   "amenities": []
+  },
+  "10165280": {
+   "id": "10165280",
+   "name": "Elbert Creek",
+   "sites": 17,
+   "firstCome": true,
+   "scanAndPay": true,
+   "closed": false,
+   "access": null,
+   "maxPeople": null,
+   "maxVehicles": null,
+   "pets": null,
+   "campfires": null,
+   "amenities": []
+  },
+  "10165335": {
+   "id": "10165335",
+   "name": "Halfmoon West",
+   "sites": 17,
+   "firstCome": true,
+   "scanAndPay": true,
+   "closed": false,
+   "access": null,
+   "maxPeople": null,
+   "maxVehicles": null,
+   "pets": null,
+   "campfires": null,
+   "amenities": []
+  },
+  "10165555": {
+   "id": "10165555",
+   "name": "Platte River",
+   "sites": 10,
+   "firstCome": true,
+   "scanAndPay": true,
+   "closed": false,
+   "access": "Walk-In",
+   "maxPeople": 8,
+   "maxVehicles": 2,
+   "pets": "Yes",
+   "campfires": "Yes",
+   "amenities": [
+    "Fire rings",
+    "Picnic tables",
+    "Vault toilets"
+   ]
+  }
+ }
+}
