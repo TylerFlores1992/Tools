@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-232463",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.6057723,
+     40.3617001
+    ],
+    [
+     -105.6060548,
+     40.3617722
+    ],
+    [
+     -105.606408,
+     40.3618442
+    ],
+    [
+     -105.6067612,
+     40.3619162
+    ],
+    [
+     -105.6070555,
+     40.3620063
+    ],
+    [
+     -105.6072909,
+     40.3620783
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt lane west from the main road toward A102 to A108, where it shows plainly. The tracks around A080 to A089 and up to A110 to A113 are too faint under the pines to trace."
+}

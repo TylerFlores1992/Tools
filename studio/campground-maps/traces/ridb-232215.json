@@ -1,0 +1,83 @@
+{
+ "version": 1,
+ "map": "ridb-232215",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.1067805,
+     35.4002895
+    ],
+    [
+     -84.1065054,
+     35.4002535
+    ],
+    [
+     -84.1061751,
+     35.4002354
+    ],
+    [
+     -84.1058449,
+     35.4002354
+    ],
+    [
+     -84.1055477,
+     35.4002264
+    ],
+    [
+     -84.1053496,
+     35.4001814
+    ],
+    [
+     -84.1051294,
+     35.4001092
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -84.1062082,
+     35.4020651
+    ],
+    [
+     -84.1061201,
+     35.4019119
+    ],
+    [
+     -84.10601,
+     35.4017947
+    ],
+    [
+     -84.1058449,
+     35.4017046
+    ],
+    [
+     -84.1056798,
+     35.4016235
+    ],
+    [
+     -84.1055147,
+     35.4015514
+    ],
+    [
+     -84.1053496,
+     35.4014793
+    ],
+    [
+     -84.1051845,
+     35.4014072
+    ],
+    [
+     -84.1049643,
+     35.4013531
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Two lanes that show between the trees: the south lane past 029 to 035, and the lane from the 069 junction down past 053 to 058 toward 073. Left out: the spurs to each site and the lane through 064 to 068, which is too broken by trees to follow."
+}

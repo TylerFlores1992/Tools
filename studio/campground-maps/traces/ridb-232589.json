@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-232589",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -85.7682189,
+     36.0418239
+    ],
+    [
+     -85.7683077,
+     36.0416256
+    ],
+    [
+     -85.7683631,
+     36.0414002
+    ],
+    [
+     -85.768341,
+     36.0411298
+    ],
+    [
+     -85.7682855,
+     36.0409045
+    ],
+    [
+     -85.7682189,
+     36.0406341
+    ],
+    [
+     -85.7681412,
+     36.0403637
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane on south from the drawn road's end, past 086 to 098, where it shows through the trees. The short spurs to each site, and a second lane near 093, are too faint to trace."
+}

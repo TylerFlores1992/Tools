@@ -608,3 +608,105 @@ and this is one more section of it. There are no alternative directions to offer
   the photo. Single-key shortcuts were left out on purpose: WCAG 2.1.4 needs a way to turn them off.
 - **A UI audit (`ui-audit`) found three items, all fixed:** 40px controls raised to 44px, heading
   levels in the summary, and the photo's size attributes.
+
+## Wave 1: the 100 most-wanted Recreation.gov campgrounds (2026-10-08)
+
+**Wave 1 is 100 campgrounds chosen by demand, not at random,** so its shares describe these 100
+and do not estimate the 2,045 still to draw. Built from the RIDB export of 2026-10-07 (the
+population rule gave the same 3,212 / 1,016 / 2,196 as the 10-06 export). Review it at
+`/private/camphawk/golden-hour/admin/site-maps?wave=1`.
+
+### What went in
+- **16 campgrounds a CampHawk user has watched.** That's all of them in the 2,196 that weren't
+  already built. (An earlier count said 17; corrected.) **Which 16 is not recorded anywhere in
+  this repository**: the wave's spec and manifest hold no reason per campground and aren't in
+  the plan's order (`committedPicks`), because the repository is public and the watched list can
+  point to a person (playbook §4.2).
+- **84 most-reserved, by agency share of what's left:** Recreation.gov's FY2025 overnight
+  camping reservations per facility (`reservations2025.zip`, 487 MB, from the RIDB downloads
+  page; only `facilityid` was kept, never a customer column).
+- By agency: Forest Service 59, Army Corps 23, Park Service 14, BLM 4.
+- They are big, busy campgrounds: Mather (48,193 reservations a year), Watchman, Gros Ventre,
+  Colter Bay, Jumbo Rocks.
+
+### How it was built
+- **OpenStreetMap came from regional extracts** (OpenStreetMap France, 2026-10-07), not the
+  API. Measured:
+  - 102 boxes were cut in one pass per extract in 363 s.
+  - **On 13 maps compared, the extract and the API gave the same features.**
+  - Downloads ran 0.25 to about 30 MB/s; `us-northeast` (2.0 GB) took about 40 minutes.
+- **Roads by fit:** OpenStreetMap 80, Park Service 13, Forest Service 5, Census 1, none 1.
+- **Water:** USGS 99, none 1. USGS answered all day this time.
+- **No build failed.** Eight first waited for their region's extract, then built.
+
+### The automatic check against the first look over the photo
+Every map was looked at over the aerial photo; wide frames were zoomed on a gridded view
+(`aerial-grid.mjs`).
+
+| The check said | Good | Usable, roads incomplete | Not usable as drawn | Can't tell |
+|---|---|---|---|---|
+| Ready (48) | 34 | 10 | 2 | 2 |
+| Needs a look (52) | 15 | 16 | 18 | 3 |
+
+- **Usable after one look: 75 of 100 (95% interval 66-82%).** That counts the maps whose traces
+  wait for approval. **That is below the sample's 79-96%, and outside it.** The playbook says to
+  stop and ask the owner when that happens (§5).
+- **By agency:**
+  - Park Service: 14 of 14;
+  - BLM: 4 of 4;
+  - Forest Service: 46 of 59 (78%);
+  - **Army Corps: 11 of 23 (48%; 29-67%).** Corps parks are large lake campgrounds spread over
+    peninsulas, and OpenStreetMap often has only their entrance road.
+- **The watched 16: all usable** (11 good, 5 usable).
+- **The check passed 4 maps the photo doesn't support.** The sample had none. Two are held:
+  - Cave Spring: two of its six loops have no road. The check reads the median distance to a
+    road, and two thirds of the sites are near one.
+  - Bloomington East: four areas over 1.4 km, numbers overlapping.
+  - Wheeler Gorge and Cagle are "can't tell", because their sites sit off the drawn roads
+    under canopy.
+- **Why the 20 are held:**
+  - **10 aren't one campground's map:** Diamond Lake, Lost Lake, Dinkey Creek, Au Sable River,
+    North Bend, Holiday, Seven Points, Ives Run, Bloomington East, Dam Site. They wait for the
+    split-listing design the owner approved for after wave 1.
+  - **9 are missing roads the photo can't supply under canopy:** Cave Spring, Hume Lake,
+    Rancheria, Twin Lakes (SC), Kendall, Canal, Gunter Hill, Baileys Point, Piney Grove.
+  - **1 has repeated site numbers:** La Wis Wis (several loops each have a 005, 010, 015).
+- **New failure shapes, not seen in the sample:**
+  - repeated site numbers;
+  - walk-in loops reached by footpaths (Watchman's F loop), which aren't roads to trace;
+  - dispersed river sites over 35 km (Au Sable);
+  - a facility with the wrong state in RIDB (Hardin Ridge, Indiana, listed under Maine; shown
+    as published).
+- **RIDB's points held up again.** No point was seen off its pad where the pads show. The gap is
+  still roads, and now also split listings.
+
+### Traced
+- **9 maps were traced from the photo:** Moraine Park, Floating Mill, Sycamore Grove, Red Rock
+  Canyon, Indian Boundary, Heaton Bay, Defeated Creek, Gunter Hill and Baileys Point.
+- Every trace was checked over the photo after the rebuild, and each file's note says what was
+  left out.
+- Gunter Hill and Baileys Point stay held: only their open halves could be traced.
+- **Looked for and not traced:**
+  - Oh Be Joyful: the only track is across the river.
+  - Watchman F: footpaths, not roads.
+  - Juniper Springs: the track leads elsewhere.
+  - Canal, Gun Creek and Dam West: the lanes don't show.
+- **Still worth a person's trace on the review page:** White Oak (lane past 073 to 083), Hume
+  Lake and Piney Grove (lanes show in places).
+
+### Also found and fixed while building it
+- **Service points were dropped by name.** The Park Service types its taps "Potable Water" and
+  its toilets "Toilet". `pois.mjs` now maps every published type to the names the map draws.
+  19 maps were rebuilt, including Upper Pines, where a stray "Campground" point became its
+  water tap.
+- **Tall frames had no photo.** USGS serves at most 4,000 px a side and answers a bigger ask
+  with a JSON error under an image header. `naip.ts` scales the request.
+- **The review page offered "Keep it hidden — not one campground" for maps held over missing
+  roads.** The first offer now follows what held the map (`suggestedDecision`).
+
+### Running totals (Recreation.gov)
+| | Maps built | Usable after one look | Decided by the owner |
+|---|---|---|---|
+| Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
+| Wave 1 (demand) | 100 | 75 | 0 (waiting) |
+| **Total** | **150 of 2,196** | **120** | **50** |
