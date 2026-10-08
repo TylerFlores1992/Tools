@@ -1,0 +1,7 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 17.",
+ "listings": [
+  { "id": "10053793", "split": true, "by": "First look (Claude, rollout south-b)", "on": "2026-10-08", "note": "Two loops on separate points 800 m apart across the water." }
+ ]
+}

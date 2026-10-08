@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-232733",
+ "traced": "2026-10-08",
+ "by": "Claude (rollout south-b)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.6400497,
+     37.0155162
+    ],
+    [
+     -84.6403924,
+     37.0154531
+    ],
+    [
+     -84.64078,
+     37.0153765
+    ],
+    [
+     -84.6410496,
+     37.0152684
+    ],
+    [
+     -84.6412407,
+     37.0151738
+    ],
+    [
+     -84.6415552,
+     37.0150656
+    ],
+    [
+     -84.6419372,
+     37.0149304
+    ],
+    [
+     -84.6420945,
+     37.0148674
+    ],
+    [
+     -84.642308,
+     37.0147592
+    ],
+    [
+     -84.6425159,
+     37.0146781
+    ],
+    [
+     -84.6427855,
+     37.014588
+    ],
+    [
+     -84.6429372,
+     37.01457
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the road along the shore from the east edge to the gravel lot by 01 to 05 and 13. Left out: the lane on west to 06 to 12, which shows only in pieces under the trees, and any lane to 15 to 22."
+}
