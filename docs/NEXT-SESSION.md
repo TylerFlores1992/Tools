@@ -55,8 +55,9 @@ for the Standard ones").**
 - **First-come campgrounds (130 "Standard" listings): the owner picked A ("Go with A, build it
   in").** Built in: the `firstcome` kind, `checkFirstCome`, the camper page, and decide-wave's
   `"as": "firstcome"` rule. All 130 are rebuilt: 81 ready, 49 for a person (47 have no outline in
-  reach, 2 are closed). **Next: their first look as first-come maps** (brief step 3b), then the
-  decisions. Until then they stay hidden under their old unit calls.
+  reach, 2 are closed). **First look and final check done: 86 pass, 44 held.** Open idea: check
+  an outline's OpenStreetMap name against the listing's name (one ring serving two listings).
+  `docs/design/campground-maps-first-come.md` has the list.
 
 **Night, 2026-10-08: the parallel rollout is done: all 12 batch groups merged (PRs #32 to #40).**
 - **2,961 maps built in waves 3 to 39; 1,386 passed the final check and 1,575 are held to fix

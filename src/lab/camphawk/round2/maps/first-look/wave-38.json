@@ -5,32 +5,39 @@
  "on": "2026-10-08",
  "looks": {
   "10192012": {
-   "call": "unsure",
-   "note": "Under full canopy: the pin sits in the forest 30 m north of the drawn lane, where no clearing shows. The lane and the lake loop follow the visible tracks."
+   "call": "usable",
+   "note": "The outline holds a loop road along the lakeshore under dense leaf canopy, and the point is inside it. The road shows faintly through the trees, but the pads are hidden.",
+   "as": "firstcome"
   },
   "10192062": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in unbroken forest 50 m north of the drawn loop, with no clearing or building visible."
+   "note": "The outline holds a loop by the lake under unbroken leaf canopy, and the point is about 10 m outside its north edge. The trees hide the road and any pads, so the photo can't confirm it.",
+   "as": "firstcome"
   },
   "10192097": {
-   "call": "unsure",
-   "note": "Under full canopy: the pin sits on OpenStreetMap's lane through the forest by the lake, but no clearing or building shows there."
+   "call": "usable",
+   "note": "The outline holds a loop road on a point of the lake under dense canopy, and the point is inside it. Parts of the road and a few clearings show through the trees.",
+   "as": "firstcome"
   },
   "10192127": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in the middle of the drawn loop on the point, with no clearing or building visible."
+   "note": "The outline holds a lakeshore point under dense leaf canopy, and the point is inside it. Only the road in at the north end shows; the trees hide the loop and any pads.",
+   "as": "firstcome"
   },
   "10315092": {
    "call": "good",
-   "note": "The pin sits in a small clearing 10 m east of the campground lane, among its pull-outs, and the drawn lane reaches it from the highway."
+   "note": "The outline follows a strip with spur roads and pads in the trees beside the highway, and the point is inside it at the south end near the road in.",
+   "as": "firstcome"
   },
   "10315097": {
    "call": "good",
-   "note": "The pin sits inside the fenced, tree-planted compound with its corral and building, and the drawn track passes its gate."
+   "note": "The outline follows a small fenced area of trees with a short drive in open grassland, and the point is inside it.",
+   "as": "firstcome"
   },
   "10315102": {
    "call": "hold",
-   "note": "The pin sits on an open, scrubby hillside with no road, track or clearing drawn or visible within 150 m: nothing there marks the unit."
+   "note": "There's no outline, and the pin is on an open grassy hillside with no road, pads or campers near it.",
+   "as": "firstcome"
   },
   "232062": {
    "call": "good",

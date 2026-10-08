@@ -5,52 +5,52 @@
  "decisions": [
   {
    "id": "10192012",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look unsure)."
+   "note": "Passed as a first-come campground: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "10192062",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look unsure)."
+   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
   },
   {
    "id": "10192097",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look unsure)."
+   "note": "Passed as a first-come campground: first look usable, checked over the photo (2026-10-08)."
   },
   {
    "id": "10192127",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look unsure)."
+   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
   },
   {
    "id": "10315092",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look good)."
+   "note": "Passed as a first-come campground: first look good, checked over the photo (2026-10-08)."
   },
   {
    "id": "10315097",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look good)."
+   "note": "Passed as a first-come campground: first look good, checked over the photo (2026-10-08)."
   },
   {
    "id": "10315102",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-08",
-   "note": "Held: a whole campground booked as one \"Standard\" site, not a unit (first look hold)."
+   "note": "Held as a first-come campground: first look hold (2026-10-08)."
   },
   {
    "id": "232062",

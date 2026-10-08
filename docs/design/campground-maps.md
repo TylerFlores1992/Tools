@@ -1076,13 +1076,18 @@ has nothing there, so these maps had been held without a photo.
   likely cabin 20 to 150 m away. That's the listing, not the map. A "move the pin to the visible
   cabin" trace would fix it; it isn't built.
 
+**First-come campgrounds (130 "Standard" listings, design A built in, PR #42):** rebuilt as
+first-come maps and given a first look as first-come maps by a separate reader (43 good, 45 usable,
+34 hold, 8 unsure). The final check passed 86 and held 44. Findings are in
+`docs/design/campground-maps-first-come.md`.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,441 passed, 1,520 held to fix after; 23 passed after the trace fixes and 32 over the Alaska and Hawaii photos) |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,527 passed, 1,434 held to fix after; 23 passed after the trace fixes, 32 over the Alaska and Hawaii photos and 86 as first-come campgrounds) |
 | **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).
