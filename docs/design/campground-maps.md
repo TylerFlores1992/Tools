@@ -852,6 +852,7 @@ in here.
 | west-units-a | 26, 27, 28, 29 | 354 | 239 | 115 | 22 looked at (all 6 traces, 16 sampled): agreed with all 22 |
 | south-b | 17, 18, 37 | 222 | 100 | 122 | 27 looked at over the photo (all 16 traces, both splits, 9 sampled), then every `usable` note re-read: 25 of 50 usable held (see below) |
 | midwest | 19, 20, 21, 38 | 296 | 146 | 150 | 36 looked at (all 7 traces, all 17 splits, 12 sampled), then every `usable` note re-read: 47 of 112 usable held |
+| south-a | 14, 15, 16 | 271 | 109 | 162 | 24 passing maps looked at over the photo (traced and split maps that pass, 9 sampled): agreed with all 24; the child called waves 15 and 16 under the corrected `usable` bar and re-called wave 14 |
 
 **northeast-api (2026-10-08):**
 - **Wave 24 (New England, New York, Pennsylvania):** 40 built. First look: 4 good, 20 usable,
@@ -972,6 +973,22 @@ look: 61 good, 128 usable, 25 hold, 69 unsure (Pacific Northwest canopy).
   - Two misplaced RIDB points: 233505 B19 is 33 km off, and 232720's A sites sit out in the lake.
   - River Run Park's photo was taken in a flood.
   - The child listed about 20 trace candidates (lanes plain on the photo) for the fix-after pass.
+
+**south-a (2026-10-08, us-south extract, multi-site):** 271 built.
+First look: 50 good, 59 usable, 127 hold, 35 unsure.
+- 10 traced, 20 split calls.
+- The highest hold share yet, and mostly not from canopy. In eastern Oklahoma, Arkansas and Texas,
+  OSM often has the park road and area outlines but not the campground lanes, or draws the lanes
+  beside the pavement.
+  - Three listings draw area outlines as if they were roads: 233429, 233464, 234253.
+  - About 25 holds have lanes plainly visible in the open and are trace candidates (several need a
+    `replace` trace); they're listed in the handoff, kept in the branch history.
+- New failure modes:
+  - 10119481 has one site thousands of km away (a 6,000 km frame).
+  - 273352 places its sites on an invented 10 m grid.
+  - 232621 stacks sites two or three to a pad.
+  - Three more listings have one site 14–28 km off (232655, 233703, 233658).
+- The same OSM relation (r6265485) failed `osmium getid` in four builds across three batches.
 
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
