@@ -43,15 +43,15 @@ for the Standard ones").**
 - **Trace candidates (63 maps): done.** Two children traced them from NAIP (`wip/maps-trace-a`, 28
   in the south; `wip/maps-trace-b`, 35 in the midwest, west and northeast). The final check over the
   photo passed **23** that were held (13 and 10). 40 stay held, mostly lanes under full canopy.
-  Rollout totals are now 1,409 passed and 1,552 held. Results are in the design doc's "Fix after"
+  Results are in the design doc's "Fix after"
   section.
-- **Alaska and Hawaii (219 maps):** the child finished (`wip/maps-akhi-imagery`), not yet
-  integrated.
-  - **Alaska:** the Forest Service Alaska Region's CC0 orthophotos via IIPP (202 of 217).
-  - **Hawaii:** NAIP 2021 via IIPP (both maps).
-  - 15 Alaska maps have no public-domain photo.
-  - New first looks for all 219: good 16, usable 17, hold 69, unsure 117.
-  - Next: merge, final check, decisions.
+- **Alaska and Hawaii (219 maps): done.** Two public-domain photo sources are wired in beside NAIP
+  (`aerial.ts`).
+  - Alaska: the Forest Service Alaska Region's CC0 orthophotos via IIPP (202 of 217).
+  - Hawaii: NAIP 2021 via IIPP (both maps).
+  - 15 Alaska maps have no photo and stay held.
+  - The final check passed 32 (first look: good 16, usable 17; Williwaw held).
+  - Rollout totals: 1,441 passed, 1,520 held.
 - **First-come campgrounds (130 "Standard" listings): the owner picked A ("Go with A, build it
   in").** Built in: the `firstcome` kind, `checkFirstCome`, the camper page, and decide-wave's
   `"as": "firstcome"` rule. All 130 are rebuilt: 81 ready, 49 for a person (47 have no outline in

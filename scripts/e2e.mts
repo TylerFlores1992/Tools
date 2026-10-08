@@ -386,8 +386,8 @@ try {
     const errors: string[] = [];
     p.on("pageerror", (e) => errors.push(String(e)));
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-    // The aerial photo is USGS's, live; here it's a stand-in so the check needs no network.
-    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    // The aerial photo is live (USGS, or IIPP in Alaska and Hawaii); here it's a stand-in so the check needs no network.
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
     // The sample (wave 0): the newest wave is the page's default, so ask for it.
     const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?wave=0`;
     await p.goto(url);
@@ -535,7 +535,7 @@ try {
     const errors: string[] = [];
     p.on("pageerror", (e) => errors.push(String(e)));
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
     const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps`;
     await p.goto(url);
     await signIn(p);
@@ -603,7 +603,7 @@ try {
     const errors: string[] = [];
     p.on("pageerror", (e) => errors.push(String(e)));
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
     // Dog Creek: no trace built in, so the tool starts empty.
     const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=233488&tool=trace`;
     await p.goto(url);
@@ -722,7 +722,7 @@ try {
 
   await check("lab site-map tracing: a map built with a trace starts from it, and says which roads were traced", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
-    await p.route(/imagery\.nationalmap\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
     // Lost Creek: its trace replaces OpenStreetMap's roads.
     const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=10243253&tool=trace`;
     await p.goto(url);

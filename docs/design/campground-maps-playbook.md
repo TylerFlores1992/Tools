@@ -617,10 +617,14 @@ of bookable sites).
 1. ~~Network access back to Full.~~ **Done 2026-10-08 night** (it had briefly been Custom with one
    host, §3.4).
 2. ~~**Approve the look** of the single-unit and split-listing maps.~~ **Done** (0b).
-2a. **Alaska and Hawaii (219 maps held, 2026-10-08):** USGS's NAIP has nothing there. **Owner,
-   2026-10-08: find another public-domain source.** A child session is on it (`wip/maps-akhi-imagery`).
-   The National Map's imagery basemap is ruled out: its Alaska layer is licensed SPOT imagery,
-   "provided for viewing".
+2a. ~~**Alaska and Hawaii (219 maps held).**~~ **Done 2026-10-08: two public-domain sources,
+   wired in beside NAIP** (`src/lab/camphawk/round2/maps/aerial.ts` picks the photo per map).
+   - Alaska: the Forest Service Alaska Region's orthophotos (CC0), via IIPP.
+   - Hawaii: NAIP 2021, via IIPP.
+   - 15 Alaska maps have no public-domain photo from any federal source found. They stay held.
+   - The National Map's imagery basemap is ruled out (licensed SPOT imagery, "provided for
+     viewing").
+   - Results are in the design doc's "Fix after" section.
 2b. **"Whole campground as one Standard site" (130 listings):** these are first-come "Scan and
    Pay" campgrounds, not units. **Owner, 2026-10-08: design a whole-campground map.** Two
    directions are built as lab comps (`docs/design/campground-maps-first-come.md`); the critic and

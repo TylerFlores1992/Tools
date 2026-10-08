@@ -1056,13 +1056,33 @@ traces: 233468, 233547, 233438, 234115), 19 not traced. 10 now pass that were he
   - 231907 Lucerne and 233425 Berry Bend are dense webs of pull-throughs, better done with the
     review page's tracing tool.
 
+**Alaska and Hawaii: a public-domain photo for 204 of 219 (child akhi-imagery).** NAIP via USGS
+has nothing there, so these maps had been held without a photo.
+- **Alaska:** the U.S. Forest Service Alaska Region's orthophotos, served by IIPP
+  (imagery.geoplatform.gov). Each service's own licence field dedicates them to the public domain
+  under CC0. They cover 202 of the 217 Alaska maps, mostly at 0.3 m (2009 to 2024).
+  - In the Chugach, the 2016 leaf-off photo shows loops the 2020 summer photo hides. 7 maps use it.
+  - The 2010 0.6 m set only draws when asked at about 0.6 m a pixel, so `aerial.ts` asks for it
+    at that scale.
+- **Hawaii:** NAIP 2021 (flown January 2022, 0.6 m), via IIPP. Both maps are covered.
+- **15 Alaska maps have no public-domain photo** from any federal source checked: interior Alaska,
+  Kenai Fjords, Lake Clark, the Kenai Refuge, Yakutat's Esker Stream and two Tongass cabins. They
+  stay held.
+- **First look over the new photos (all 219):** 16 good, 17 usable, 69 hold, 117 unsure.
+- **The final check passed 32.** I held Williwaw (232324): its drawn diagonal road doesn't follow
+  the visible lane. Russian River (232213, wave 2) keeps the owner's decision.
+- **Listing points off the cabin are common in Southeast Alaska.** Of the 183 units with a photo,
+  51 pins sit on water, gravel, beach, meadow, muskeg or forest with no cabin, and 19 have the
+  likely cabin 20 to 150 m away. That's the listing, not the map. A "move the pin to the visible
+  cabin" trace would fix it; it isn't built.
+
 ### Running totals (Recreation.gov)
 | | Maps built | Usable after one look | Decided by the owner |
 |---|---|---|---|
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,409 passed, 1,552 held to fix after; 23 passed after the trace fixes) |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,441 passed, 1,520 held to fix after; 23 passed after the trace fixes and 32 over the Alaska and Hawaii photos) |
 | **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).

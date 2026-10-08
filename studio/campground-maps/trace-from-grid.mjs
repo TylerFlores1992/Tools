@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { TRACES, traceProblems } from "./trace.mjs";
+import { aerialSource } from "../../src/lab/camphawk/round2/maps/aerial.ts";
 
 const [file, specFile, by = "Claude (CampHawk session)"] = process.argv.slice(2);
 if (!file || !specFile) { console.error("usage: trace-from-grid.mjs <map.json> <spec.json> [by]"); process.exit(1); }
@@ -20,7 +21,7 @@ const f = map.frame, [w, s, e, n] = map.bbox;
 const deg = ([x, y]) => [Math.round((w + ((x - f.x) / f.w) * (e - w)) * 1e7) / 1e7, Math.round((n - ((y - f.y) / f.h) * (n - s)) * 1e7) / 1e7];
 const out = {
   version: 1, map: `ridb-${map.facilityId}`, traced: new Date().toISOString().slice(0, 10), by,
-  photo: "USDA NAIP via USGS The National Map (public domain)",
+  photo: aerialSource(map)?.credit ?? "none",
   roads: t.roads.map((r) => ({ coords: (Array.isArray(r) ? r : r.c).map(deg), ...(r.through ? { through: true } : {}), ...(r.name ? { name: r.name } : {}) })),
   points: (t.points ?? []).map((p) => ({ type: p.type, at: deg(p.at) })),
   ...(t.replace ? { replace: true } : {}),

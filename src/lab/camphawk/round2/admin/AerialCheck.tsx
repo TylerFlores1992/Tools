@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { cx } from "@/components/cx";
 import { pct, type SiteMapData } from "../maps";
 import { segmentsOfPath } from "../maps/trace";
-import { naipUrl } from "../maps/naip";
+import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
 
 // A map laid over the aerial photo of the same ground, so a reviewer can see whether the sites sit
-// on real pads and the roads on real roads. The photo is USDA NAIP (public domain) from USGS The
-// National Map, asked for live in Web Mercator with the map's own bbox and proportions; across a
+// on real pads and the roads on real roads. The photo is public domain, picked per map by
+// maps/aerial.ts (USDA NAIP, or the Forest Service's in Alaska), asked for live in Web Mercator with the map's own bbox and proportions; across a
 // campground that lines up with the map's local metres to well under a pixel. Nothing from the
 // photo is ever drawn on a camper's map: it is evidence for the reviewer, not a layer.
 
@@ -39,6 +39,8 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
   const f = map.frame;
   const placed = map.sites.filter((s): s is typeof s & { at: [number, number] } => s.at !== null);
   if (!map.bbox) return <p className="text-[14.5px] text-ch-ink-2">This map was built before aerial checks existed. Rebuild it to compare.</p>;
+  const source = aerialSource({ facilityId: map.facilityId, bbox: map.bbox });
+  const src = aerialUrl({ facilityId: map.facilityId, bbox: map.bbox }, f);
 
   return (
     <div>
@@ -57,11 +59,11 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
           campground can scroll rather than shrink. */}
       <div ref={box} className="relative mt-3 overflow-hidden rounded-ch-input border border-ch-line bg-ch-shell" style={{ aspectRatio: `${f.w} / ${f.h}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- a live service image, not ours to optimise */}
-        <img ref={img} src={naipUrl(map.bbox, f)} width={1400} height={Math.round((1400 * f.h) / f.w)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
-          className={cx("absolute inset-0 size-full object-fill transition-opacity duration-300", photo === "ready" ? "opacity-100" : "opacity-0")} />
-        {photo !== "ready" && (
+        {src && <img ref={img} src={src} width={1400} height={Math.round((1400 * f.h) / f.w)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
+          className={cx("absolute inset-0 size-full object-fill transition-opacity duration-300", photo === "ready" ? "opacity-100" : "opacity-0")} />}
+        {(photo !== "ready" || !source) && (
           <p role={photo === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-            {photo === "error" ? "The aerial photo didn’t load. USGS’s imagery service may be busy; try again in a minute." : "Loading the aerial photo…"}
+            {!source ? NO_PHOTO : photo === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
           </p>
         )}
         {overlay && (
@@ -94,7 +96,7 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
         {map.roads.some((r) => !r.traced) && <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {ROAD_WORD[map.sources?.roads ?? "none"] ?? "the map’s sources"}</li>}
         {map.roads.some((r) => r.traced) && <li className="flex items-center gap-2"><TracedMark />Roads traced from this photo, a square at each end</li>}
         {map.evidence?.outline && <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-[3px] border-dashed border-ch-ink" />OpenStreetMap’s campground outline</li>}
-        <li className="text-ch-muted">Photo: USDA NAIP via USGS (public domain)</li>
+        {source && <li className="text-ch-muted">Photo: {source.short}</li>}
       </ul>
     </div>
   );

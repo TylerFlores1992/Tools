@@ -1,88 +1,88 @@
 {
  "version": 1,
  "wave": 25,
- "by": "Claude (rollout northeast-api)",
+ "by": "Claude (Alaska and Hawaii imagery)",
  "on": "2026-10-08",
  "looks": {
   "232141": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop and the middle lane are drawn and 005 to 024 line them, but nothing can be checked against a photo."
+   "note": "Full canopy over the campground on both Forest Service photos (2016 and 2019): the loop and the middle lane drawn from OpenStreetMap can't be seen, so 002 to 024 can't be checked against them."
   },
   "232324": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two lanes are drawn and 006 to 038 line them, but nothing can be checked against a photo."
+   "call": "usable",
+   "note": "On the Forest Service's leaf-off photo the two drawn lanes and the east link follow the visible ones, and 006 to 038 sit on pads beside them (RVs on several). The short spurs to the pads aren't drawn, nor the parking lane at the east end."
   },
   "232330": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop is drawn and most sites sit near it, but 001, 003, 016 and 014 sit 20 to 30 m off it, so it can't be checked."
+   "note": "Full canopy on both Forest Service photos (2016 and 2019): only the entrance off the highway shows, where the drawn road leaves it; the loop and 001 to 019 can't be seen. The existing note's 001, 003, 016 and 014, 20 to 30 m off the loop, still can't be checked."
   },
   "232352": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 001 to 007 sit 15 to 40 m west of the drawn road with no lanes, and 008 to 014 around the loop."
+   "call": "good",
+   "note": "On the Forest Service's 2020 photo the drawn road and the loop follow the visible ones, and 001 to 014 sit on pads at the end of short spurs off them (the 15 to 40 m the old note flagged); the spurs aren't drawn."
   },
   "232353": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 002, 003, 005, 006, 008, 011, 019 and 021 sit 20 to 40 m outside the one drawn loop, so it can't be checked."
+   "call": "hold",
+   "note": "On the Forest Service's 2016 leaf-off photo the drawn loop roughly follows the visible one, but the entrance from the highway isn't drawn and 002, 003, 005, 006, 008, 011, 013, 019 and 021 sit 20 to 60 m outside it, on pads along lanes that aren't drawn."
   },
   "232360": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 002 to 012 sit 20 to 50 m north of the highway with no drawn lanes; the campground's own lanes aren't drawn."
+   "call": "hold",
+   "note": "On the Forest Service photo the drawn highway runs 10 to 20 m south of the visible road through the campground. 004 to 008 sit on pads at the end of visible pull-in spurs north of it, and 009 to 012 along a lane to the north-west; none of these is drawn."
   },
   "233317": {
    "call": "unsure",
-   "note": "A list of refuge cabins spread over 93 km (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+   "note": "A list of refuge cabins spread over 93 km (dispersed, not drawn as areas) with no roads. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "233909": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the south loop and the north lane are drawn and most sites line them, but nothing can be checked against a photo."
+   "call": "hold",
+   "note": "On the Forest Service's 2020 photo the south loop roughly follows the visible lane, with RVs on pads beside 004, 009, 018, 021 and 022, but about a third of the sites sit 20 to 40 m from any drawn road on spurs and lanes that aren't drawn (001 to 003, 005 to 008, 010 to 012, 014, 015, 019, 032, 034); the north-east loop by 025 and 027 is under canopy."
   },
   "233974": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop is drawn and 001 to 014 sit beside it, but nothing can be checked against a photo."
+   "call": "good",
+   "note": "The loop follows the visible road on both Forest Service photos (2008 and 2019), and 001 to 014 sit on the pads along it; the short spurs to the west-side pads (001 to 004) aren't drawn."
   },
   "233994": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two loops are drawn and 001 to 025 line them; the walk-in sites 027H to 032H and 039 to 041 have no drawn lane."
+   "call": "usable",
+   "note": "Zoomed on the Forest Service's leaf-off photo, both loops and the middle lane follow the visible lanes (within about 8 m) and 001 to 025 sit on the pads along them. The walk-in sites 027H to 032H and 039 to 041 have no drawn lane, and none shows to trace."
   },
   "234108": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, 014 to 022 sit 50 to 150 m south of the one drawn loop with no lanes, so the south part has nothing drawn."
+   "call": "hold",
+   "note": "On the Forest Service's 2020 photo the drawn loop follows the visible road, with RVs on 004, 006, 002 and 031. But 014 to 022 sit 50 to 150 m south of it in the trees with no visible lane, and 024 to 030, 032 and 034 sit 20 to 40 m off it, so the south half has nothing drawn."
   },
   "234110": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, only one road is drawn and 001 to 034 are spread up to 150 m from it, so the lanes aren't drawn."
+   "call": "hold",
+   "note": "On the Forest Service's 2020 photo a road along the shore shows plainly, past 001 to 007 and Host Site 5, but isn't drawn; the one drawn road runs under canopy further west. 012 to 028 sit 50 to 150 m into the trees with no visible lane."
   },
   "234112": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two drawn roads pass 001 to 019, with 009, 011 to 014 and 016 to 018 sitting 20 to 40 m off them."
+   "call": "hold",
+   "note": "Zoomed on the Forest Service's leaf-off photo, both drawn roads follow the visible ones, and 001 to 007, 010, 015 and 017 sit beside them. But 008, 009, 011 to 014 and 016 sit 30 to 70 m east, toward the river, with no visible lane or pad, and 012 is on a gravel bar in the river."
   },
   "234504": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loops are drawn and 001 to 070 line them, but nothing can be checked against a photo."
+   "call": "usable",
+   "note": "On the Forest Service's leaf-off photo the access road, the north road and the loops follow the visible roads, and 010 to 069 sit beside them. The lakeside sites 001 to 009 and 026 to 029 sit 20 to 40 m off the drawn road on spurs that aren't drawn."
   },
   "234629": {
-   "call": "unsure",
-   "note": "A list of refuge cabins spread over 142 km on Kodiak (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+   "call": "hold",
+   "note": "Zoomed on each cabin on the Forest Service's older Kodiak photo (2006-2011, 0.5 to 0.6 m): Deadman Bay and North Frazer Lake sit on a small building, South Frazer Lake at a trail's end, but Chief Cove's pin is on open water (a building shows 60 m north-west), Blue Fox Bay's is on a bare beach, and Little River, Uganik Island, Uganik Lake and Viekoda Bay show no building. Little Waterfall Lake has no point. Cabins over 142 km (dispersed), no roads."
   },
   "234783": {
-   "call": "unsure",
-   "note": "Three wilderness cabins spread over 8 km (dispersed, not drawn as areas) with no roads; the photo is black here too (no NAIP for Hawaii)."
+   "call": "hold",
+   "note": "Zoomed on NAIP 2021 Hawaii: Kapalaoa Cabin's pin sits on the cabin, but Paliku Cabin's is about 40 m west of the building and Holua Cabin's is on open grass with no building near it. Three cabins spread over 8 km (dispersed, not drawn as areas) with no roads."
   },
   "251356": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the loop and the lanes are drawn and 001 to 011 sit near them, 006 and 008 west of the west lane."
+   "note": "Full canopy on both Forest Service photos (2008 and 2019): the loop and lanes can't be seen, only cars on the loop's east side near 004 and a track off the top-left corner that the drawn entrance doesn't follow. 001 to 011 can't be checked."
   },
   "251861": {
    "call": "unsure",
-   "note": "Two park cabins 6 km apart (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska)."
+   "note": "Two park cabins 6 km apart (dispersed, not drawn as areas) with no roads. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "252494": {
    "call": "unsure",
-   "note": "A list of remote cabins spread over 66 km (dispersed, not drawn as areas) with no roads; No NAIP photo here (USGS returns black for Alaska), so no pin can be checked."
+   "note": "A list of remote cabins spread over 66 km (dispersed, not drawn as areas) with no roads. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "10119505": {
-   "call": "unsure",
-   "note": "Wilderness tent sites at Hōlua and Palikū, shown as 2 areas 8 km apart with no roads (reached on foot); the photo is black here too (no NAIP for Hawaii)."
+   "call": "usable",
+   "note": "Zoomed on NAIP 2021 Hawaii (0.6 m), Hōlua 1 to 5 sit on the open grass south-east of the Hōlua cabin and Palikū 1 to 5 on the meadow west of the Palikū cabin, where tent sites would be; no pads show at this resolution. Two areas 8 km apart with no roads (reached on foot); no trail is drawn to them."
   },
   "10156151": {
    "call": "hold",
@@ -90,39 +90,39 @@
   },
   "10191011": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the three loops are drawn and Site 2 to Site 27 line them, but Site 5 sits 250 m north of everything with no road, so it can't be checked."
+   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here). On the map, the three loops are drawn and Site 2 to Site 27 line them, but Site 5 sits 250 m north of everything with no road, so it can't be checked."
   },
   "10276314": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, Site 2 to 19 sit inside a tangle of drawn tracks, with Site 9, 11 and 12 off any of them, so it can't be checked."
+   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here). On the map, Site 2 to 19 sit inside a tangle of drawn tracks, with Site 9, 11 and 12 off any of them, so it can't be checked."
   },
   "10296828": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, the two loops are drawn and 1 to 25 sit beside them, but nothing can be checked against a photo."
+   "note": "The Forest Service photo covers only the east half: there the drawn road follows the visible one and 16 to 25 sit on its pads, with trailers on 17, 18 and 25. The west loop (1 to 15) is past the photo's edge."
   },
   "10300372": {
-   "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). Group sites A and B sit 30 to 80 m west of the drawn loop with no lane, at a whistle-stop reached by train."
+   "call": "hold",
+   "note": "On the Forest Service's 2010 photo (0.6 m, asked at its own scale), group sites A and B sit in two clearings joined by a track running north-south, 30 to 80 m west of the drawn loop; the track isn't drawn, so neither site has a road. Reached by train."
   },
   "10322643": {
    "call": "unsure",
-   "note": "No NAIP photo here (USGS returns black for Alaska). On the map, Site 1 to 12 are spread around a large loop, several 20 to 40 m off it (Site 3, 4, 8, 12), so it can't be checked."
+   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here). On the map, Site 1 to 12 are spread around a large loop, several 20 to 40 m off it (Site 3, 4, 8, 12), so it can't be checked."
   },
   "10325233": {
    "call": "hold",
-   "note": "Not drawn: every site is on one spot (T6), so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+   "note": "Not drawn: every site is on one spot (T6), so there is nothing to place. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "10325252": {
    "call": "hold",
-   "note": "Not drawn: every site is on one spot, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+   "note": "Not drawn: every site is on one spot, so there is nothing to place. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "10325266": {
    "call": "hold",
-   "note": "Not drawn: every site is on one spot, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+   "note": "Not drawn: every site is on one spot, so there is nothing to place. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "10382456": {
    "call": "hold",
-   "note": "Not drawn: every Chilkoot Trail camp shares a spot with another, so there is nothing to place. No NAIP photo here (USGS returns black for Alaska)."
+   "note": "Not drawn: every Chilkoot Trail camp shares a spot with another, so there is nothing to place. The Forest Service's older photo covers the trail, but there are no points to check on it."
   }
  }
 }

@@ -79,7 +79,7 @@ NODE_USE_ENV_PROXY=1 node studio/campground-maps/build-wave.mjs <ridb-dir> studi
 
 ## Traces: roads and points no source has (`traces/`, `trace.mjs`)
 
-`traces/ridb-<id>.json` is what a person traced from the aerial photo (USDA NAIP, public domain,
+`traces/ridb-<id>.json` is what a person traced from the aerial photo (public domain: USDA NAIP, or the Forest Service's in Alaska;
 so it's our own work). The review page's **Trace what's missing** tool downloads exactly this file.
 To put one on the map, add it here and rebuild that campground (command above).
 
@@ -127,8 +127,15 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 | Roads, paths, restrooms, water taps, parking, campground outlines, numbered pitches (where the Park Service has none) | OpenStreetMap: regional extracts from OpenStreetMap France (`download.openstreetmap.fr/extracts/north-america/`, trimmed with osmium) for waves; the API (`api.openstreetmap.org/api/0.6/map`) for a single rebuild and for Alaska and Hawaii | ODbL 1.0. Every map that uses it says "© OpenStreetMap contributors". The OSM-derived layers in the map JSON files are offered under ODbL. |
 | Forest Service system roads (when they fit best) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
 | Census TIGER roads (when they fit best) | `tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer` (layers 2, 6, 8) | US government work (Census Bureau). |
-| Roads and points traced by a person | `traces/`, from the USDA NAIP photo | Our own work, from a public-domain photo. |
-| Aerial photo (review and tracing only, never drawn on a camper's map) | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain. Loaded live by the review page; nothing is committed. |
+| Roads and points traced by a person | `traces/`, from the map's aerial photo (below; the trace's `photo` names it) | Our own work, from a public-domain photo. |
+| Aerial photo (review and tracing only, never drawn on a camper's map), lower 48 | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain ("free downloads of public domain, NAIP … orthoimagery", the service's own description). Loaded live; nothing is committed. |
+| Aerial photo, Hawaii | USDA NAIP 2021 (flown Jan 2022, 0.6 m) via the Interdepartmental Imagery Publication Platform, `imagery.geoplatform.gov/iipp/rest/services/NAIP/NAIP2021_Hawaii/ImageServer` | Public domain (NAIP, as above). USGS's NAIP mosaic has no Hawaii. |
+| Aerial photo, Alaska | U.S. Forest Service Alaska Region orthophotos (2009-2024, mostly 0.3 m) via IIPP: `…/Aerial_Imagery/RGBI_post2000_USFS_R10_Alaska_multiRes_Public/ImageServer`, and `…/RGB_post2000_USFS_R10_Alaska_multiRes_Public` (2006-2018) for 11 maps only it covers and 7 where its leaf-off photo is clearer; the 2010 0.6 m photo answers only when asked at 0.6 m a pixel (aerial.ts asks so for the 2 maps that need it) | CC0: "the U.S. Forest Service waives copyright and related rights in the work worldwide through the CC0" (each service's licence info). Covers the Tongass, the Chugach and land around them; not interior Alaska, Lake Clark or Kenai Fjords' coast (15 maps have no photo). NAIP never flew Alaska. **Not** The National Map's `USGSImageryOnly`: its Alaska is licensed SPOT imagery "provided for viewing". |
+
+Which map gets which photo is decided in one place, `src/lab/camphawk/round2/maps/aerial.ts` (by
+place, and by a measured pick per map where the default service has nothing). Re-measure with
+`NODE_USE_ENV_PROXY=1 node studio/campground-maps/aerial-sources.mjs <out.json> <map.json>…`: it
+prints any map whose pick should change.
 
 **Never used:** recreation.gov's own `/api/camps` endpoints (robots.txt disallows `/api/*`,
 and its terms ban scraping), provider map images, and Google, Esri or Bing imagery for tracing

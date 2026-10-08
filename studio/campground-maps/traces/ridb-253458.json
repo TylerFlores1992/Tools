@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-253458",
+ "traced": "2026-10-08",
+ "by": "Claude (Alaska and Hawaii imagery)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -132.6461179,
+     56.3948473
+    ],
+    [
+     -132.6463284,
+     56.3948428
+    ],
+    [
+     -132.6465389,
+     56.3948608
+    ],
+    [
+     -132.6467332,
+     56.3948877
+    ],
+    [
+     -132.6468951,
+     56.3949237
+    ],
+    [
+     -132.6470571,
+     56.3949641
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane from the Forest Service road to the cabin's parking area, plain on the 2023 photo. Nothing else traced."
+}
