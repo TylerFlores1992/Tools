@@ -87,4 +87,65 @@ no drawn road at all. (The first message's "1 in 7" bar was withdrawn.)
   - 10077451: Under canopy.
 - Anything new: several Forest Service loops drawn as coarse polygons through the trees (234008, 234103, 234738, 234772, 267078, 267081). Goose Island (251841): the source's highway runs about 15 m east of the visible pavement. Schoolhouse (249291): site points on the lane centerlines, not at the ramadas. Black Rock (234723): paddock fence lines drawn as roads.
 
-STATUS: started
+## Wave 11 (us-west: UT, CA, OR, ID, WY, AZ, WA, NM, NV; multi, many group sites)
+- Built 94, failed 0 (build 20:00-20:39Z, alongside wave 10's first look; first look and trace 20:39-20:50Z)
+- Check: ready 58, review 33, not drawn 3 (233366, 233928, 234598)
+- First look: good 15, usable 26, hold 45, unsure 8
+- Traced: 267554 (Three Creeks Meadow Horse Camp: only the highway was drawn; traced the west lane with its south branch and the east lane to the teardrop loop; checked over the photo after two nudges, within about 3 m)
+- Split calls: none (Buckhorn Draw 10283369, Spinreel 234201 and Horse Campground 233729 are dispersed or broken, held)
+- Held, and why (first sentence of each note):
+  - 120990: The drawn lanes are the parking rows by the highway.
+  - 231905: The lanes follow the visible dirt roads across the flat, with group sites 1 and 3 beside them.
+  - 232048: The roads follow the visible gravel, but 01, 02 and 03 sit 27 to 47 m from them among the pines, with no lanes drawn: none of the three group sites is on a drawn road.
+  - 232053: No road is drawn at all, and the two group sites sit under the pines with no lane showing.
+  - 232285: Under full canopy: the three group sites sit 40 to 123 m west of the only drawn road, among the pines with no lane showing.
+  - 232304: The drawn ring is a coarse polygon that cuts through the trees between the visible paved lanes; group sites A, B and C sit 22 to 24 m off it, B by the lot on the north lane and C by the west lane.
+  - 232455: Under full canopy: G01 and G02 sit 37 to 43 m from the only drawn road, with no lane showing through the oaks.
+  - 232779: The drawn loops are coarse polygons: the south one cuts through the trees on its east side, away from the visible paved lanes, and Group C sits under the trees inside it.
+  - 232840: Under canopy.
+  - 232850: Under full canopy: the two drawn loops are coarse polygons that cross each other, and B, D and E sit outside them; nothing shows through the firs to confirm any lane.
+  - 232910: The drawn loop is a coarse outline over the visible lot and doesn't follow its lanes, and Scout, Knoll and Lagoon sit 23 to 34 m out in the open around it at clearings reached by lanes that aren't drawn.
+  - 233366: The check can't draw it: both group sites share one point in open scrub, with no road anywhere in the frame.
+  - 233385: The roads follow the visible gravel, but the listing's three points (Group A, 011, 013) sit at three separate spots up to 500 m apart; a fragment of a larger campground, not a map of its sites.
+  - 233729: The sites' points are scattered across four states (the frame is 515 by 1,016 km): broken coordinates, not a campground.
+  - 233928: The check can't draw it: the three group sites share one point in open forest, with no road anywhere in the frame.
+  - 233995: Boat-in: no road is drawn or reaches the sites, which sit among the junipers on the point.
+  - 234020: Under canopy.
+  - 234029: Under canopy, the drawn loop's west side cuts through the trees between the visible lanes, and 010 to 013 sit north and west of it on lanes that show and aren't drawn.
+  - 234071: 002 sits at the shelters by the lot on the point, but the drawn lot road stops short of it, and 001 sits 30 m west of the drawn loop by a grove at the end of a lot that shows and isn't drawn: both sites off the drawn roads.
+  - 234098: The Forest Service road through the pines follows a faint lane, but 002 to 010 sit 23 to 50 m west of it along the reservoir shore, on a lane by the water that shows and isn't drawn: most of the sites.
+  - 234100: The drawn lane follows a faint track through the pines, but 002 to 007 sit 21 to 95 m west of it along the reservoir shore and 001 north of its end, with no lane drawn to them.
+  - 234151: Under canopy, the loop's east lobe is a polygon through the trees, and 002 sits 27 m south and 005 and 006 east of it, with no lanes showing.
+  - 234172: The four group sites sit exactly on the drawn line, evenly spaced along it, as if placed on the road rather than at the clearings beside it; the line itself runs through the trees.
+  - 234174: The Census roads cross the meadow and the trees diagonally, not along the visible lanes; cabin C01 and H01 sit in open ground with the visible drive past the buildings undrawn.
+  - 234190: Six sites spread 900 m along the canyon: 002 to 004 sit by the north loop (which follows the visible gravel), but 005 sits in the trees west of it, 001 by the highway and 006 at the far south end, on nothing drawn.
+  - 234201: Dispersed sand camping along 3.7 km of dune track: the sites are points beside the sandy track through the scrub, 22 to 65 m from it, spread too far for one map.
+  - 234348: Under canopy, the drawn roads follow the visible gravel, but group sites A and C sit in the forest 32 to 41 m off them, and D sits 145 m from any road at the far south-east, with nothing drawn to it.
+  - 234401: Under canopy, the drawn loops are coarse polygons: the big loop cuts across the trees through the middle of the sites, and 008 to 010 and 013 sit outside it with no lanes drawn.
+  - 234593: Census lines everywhere cut through the forest instead of following the visible lanes, and the four group sites sit among the trees between them; only the lane by the buildings fits.
+  - 234598: The check can't draw it, and the photo agrees: 004 to 008 and Host sit in full canopy south of the road's end with 005 and Host stacked, and 010 sits 300 m away among houses north-east.
+  - 236938: Boat-in: no road is drawn or reaches the sites, which sit on the rocky shore and under the firs above it.
+  - 237056: Boat-in: no road is drawn or reaches the sites, which sit along the beach of the cove.
+  - 251454: The horse sites sit 24 to 66 m from the drawn loop and road, scattered among the pines (001 to 006 east, 007 to 009 west), along lanes that show faintly and aren't drawn: every site is off the drawn roads.
+  - 251886: Under canopy, the drawn loop is a coarse polygon whose lines cut through the trees; the visible lanes past 001 to 005 and 008 to 013 run outside it, and the sites line them, not the drawn loop.
+  - 256893: Only the road along the south edge is drawn (Census).
+  - 266137: Under canopy.
+  - 267557: Under canopy, the drawn loop is a coarse polygon across the trees, and 001 to 004 and 007 to 009 sit outside it along lanes that show faintly and aren't drawn (007 47 m).
+  - 273379: The sites sit stacked in a short row 5 to 10 m apart (001 to 005) at the end of a drawn loop that cuts across the trees; the visible lanes run parallel to the north and south of it, and the pads can't be told apart.
+  - 10008944: Under full canopy, the two Census lines cross each other without a junction, and the west one runs through the trees where no lane shows; the visible lane is the east one, and 1 to 17 sit west of it.
+  - 10048998: The road and the south loop follow the visible gravel, with 01, 09 to 12, 14 and 15 near them.
+  - 10114427: The drawn loop is a coarse outline: its west side cuts through the trees between the visible lanes, and the lanes to 006 to 009 and the lot by 008 show and aren't drawn (008 42 m).
+  - 10220609: The two horse sites sit 38 to 43 m south of the drawn road, in a clearing reached by a lane that shows and isn't drawn: neither site is on a drawn road.
+  - 10283369: Dispersed river camping along 8 km of Buckhorn Draw: no roads drawn, and the sites are scattered points across the canyon.
+  - 10299310: The forest road and the spur to the lot follow the visible gravel, with 1, 2, 3, 10 and 11 near them.
+  - 10299335: Under canopy.
+- Anything new: 233729 (Horse Campground, CA): its site points span four states (a 515 by 1,016 km frame), broken coordinates in RIDB. 234172 (Bear River Group): site points evenly spaced on the road line itself. Many small group-site listings whose sites sit 30 to 50 m from the drawn lot at their shelters or clearings; held where none or most of the sites are off a drawn road. Three Cultus Lake boat-in listings (236938, 237056, and wave 10's 236991) have no roads by nature.
+
+## Totals
+- 282 maps built (94 a wave), none failed.
+- First look: good 58, usable 91, hold 97, unsure 36.
+- Traced 6 maps: 233568, 273822, 232347, 233822 (wave 9), 267074 (wave 10), 267554 (wave 11). Other gaps were under canopy, footpaths, or gravel flats too wide to place a line.
+
+Time: setup 16:37-18:52Z (about 2 h 15 min, mostly the stalled OSM download); wave 9 18:52-20:00Z; wave 10 19:35-20:18Z (build overlapped wave 9's look); wave 11 20:00-20:50Z (build overlapped wave 10's look).
+
+STATUS: complete
