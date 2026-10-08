@@ -33,3 +33,19 @@ every map host answered; tylerflores.dev timed out and Geofabrik reset (not need
   - 10004661 Le Count Beach House: pin on a bare sandy patch with no building; houses 50 m east and 100 m west
   - 10168556 Cottage at Sailors Haven: pin on open dune grass; the nearest roof is 35 m northwest
 - Anything new: the six Allegheny boat-access sites (10165350 to 10165540) are boat-in under full canopy, so all are unsure; a "road within 700 m" check passes for them on lakeside roads that don't reach them.
+
+## Wave 25 (Alaska, Hawaii; OSM API, multi)
+- Built 30, failed 0 (OSM API answered for all 22 boxes outside the extracts on the first run)
+- Check: ready 13, review 13, not drawn 4
+- First look: good 0, usable 0, hold 5, unsure 25
+- Traced: none (no photo to trace from)
+- Split calls: none
+- Held, and why (one line each):
+  - 10156151 Joe T. Fallini: sites spread across a 4,974 km frame (Nevada and thousands of km east); the listing's points are wrong
+  - 10325233 Cripple Creek, 10325252 Mount Prindle, 10325266 Ophir Creek: not drawn, every site on one spot
+  - 10382456 Chilkoot Trail: not drawn, every camp shares a spot
+- Anything new: USGS's NAIP service returns an all-black image for every Alaska frame AND for the two
+  Hawaii listings (10119505, 234783), so nothing in this wave can be judged over a photo: all are unsure,
+  with what the map itself shows in each note. These need another public-domain photo source, or the
+  owner's call to pass them on the map alone. Six listings are cabin or permit lists spread over 6 to
+  142 km (dispersed, no roads).
