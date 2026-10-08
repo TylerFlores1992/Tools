@@ -54,4 +54,28 @@ Setup (2026-10-08): network fine (every map host answers; Geofabrik still resets
   - 234582 La Barge Guard Station: pin in a wet meadow; the station plainly shows 60 m northwest.
 - Anything new: **the first full build exited without writing the manifest** ("unsettled top-level await"): one campground (234522) never finished, likely a hung request. A full re-run from the cache finished all 89 and wrote it. A rebuild by id fails until the manifest exists ("a campground is missing from the manifest").
 
-STATUS: started (wave 29 next)
+## Wave 29 (us-west, units; mostly group sites)
+- Built 88, failed 0 (about 40 min)
+- Check: ready 69, review 19, not drawn 0
+- First look: good 33, usable 14, hold 8, unsure 33
+- Traced: 10007160 (Spyglass Ground House: the dirt lane from the end of the Census road round to the cabin; moved once to sit within 3 m). Checked over the photo.
+- Split calls: none (single units)
+- Held, and why (one line each):
+  - 10165611 Secret: pin on the highway's edge in forest; the riverside loop 70 m south is likely the campground.
+  - 232783 Cove Group: pin in unbroken forest on a slope, 66 m from any road.
+  - 233775 Pines Group (Stanislaus): pin in scrub 150 m from any road; the listing's own point (1.1 km) is by a paved loop campground.
+  - 234077 Horsethief Cabin: pin in unbroken scrub with no building.
+  - 234315 Trout Creek Guard Station: pin in unbroken forest; the listing's own point (720 m) is on the station's buildings.
+  - 234320 Bear Creek Cabin (MT): pin in forest 64 m from any road, no building.
+  - 234632 Swan Lake Kitchen: pin in unbroken forest; a building 130 m south by the lake may be it.
+  - 267559 Cave Creek Group Site: pin on an open slope 46 m from the drawn loop that is likely the site.
+- Anything new: group sites are a third of this wave, and half of them are `unsure`: a group site under canopy shows nothing a photo can confirm (no building), unlike a cabin. Two listings share one clearing (Lower and Upper Twilight, 234626 and 234627, pins 25 m apart). USGS water timed out on most maps again; the build fell back to OpenStreetMap's water each time.
+
+## Batch totals (waves 26 to 29, 354 single units)
+- Built 354, failed 0
+- First look: good 195, usable 44, hold 32, unsure 83
+- Traced: 7 maps, one road each (the last stretch to the unit, only where it was plain in the open)
+- Times: setup about 10 min (RIDB 1 min, us-west extract 7 min); wave 26 41 min build + first look; wave 27 22 min build; wave 28 34 min + 10 min re-run; wave 29 about 40 min. First look ran alongside the next wave's build: about 2 h 20 min for all four waves end to end.
+- Not checked: the camper-facing location map itself (only the review data); restroom and water points (none added).
+
+STATUS: complete
