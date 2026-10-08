@@ -15,7 +15,7 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
 ## Wave 14 (us-south, multi)
 - Built 90, failed 0 (233099 Dam Site River failed once on `osmium getid` of an OSM relation; the retry built it)
 - Check: ready 48, review 40, not drawn 2
-- First look: good 29, usable 14, hold 36, unsure 11 (after the 1-in-7 bar; first pass was usable 30, hold 20)
+- First look: good 29, usable 27, hold 23, unsure 11 (after the corrected bar; first pass was usable 30, hold 20)
 - Traced: 246892 (lane past 27 to 36), 232630 (west loop past 49 to 53), 233125 (spine past 013 to 022, lane past 005 to 009), 233473 (entrance road, point loop past 38 to 48, road past 69 and 70), 233445 (shore lane past 001 to 012). All checked over the photo after the rebuild; I dropped one 233473 lane (east point) that I couldn't place within 3 m.
 - Split calls: 232659 (three fingers), 234043 (group sites G2 to G5 900 m west), 233531 (three fingers, gap 150)
 - Held, and why:
@@ -46,7 +46,7 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
 ## Wave 15 (us-south, multi)
 - Built 91, failed 0 (232562 Cricket Creek and 232619 Lakeview Park failed once on `osmium getid` of an OSM relation; the retry built both)
 - Check: ready 44, review 46, not drawn 1 (after the split rebuilds)
-- First look: good 12, usable 2, hold 63, unsure 14 (after the 1-in-7 bar; first pass was usable 34, hold 31)
+- First look: good 12, usable 18, hold 47, unsure 14 (after the corrected bar; first pass was usable 34, hold 31)
 - Traced: 251938 (west loop past 017 to 022), 232582 (road through the campground and the west loop past 18 to 39). Both checked over the photo after the rebuild; nudged 251938's south arc by 3 m.
 - Split calls: 232513 (five fingers), 232557 (two), 232602 (two, 900 m), 233469 (two across a cove), 233527 (three either side of a bridge), 233581 (two across a marina), 234665 (loop and group sites 1 km off), 234726 (two loops 1 km apart). All rebuilt and looked at; the areas follow the real places.
 - Held, and why:
@@ -71,8 +71,8 @@ Waves 14, 15, 16 (us-south, multi). Branch wip/maps-south-a.
 - Anything new: the hold share is higher than wave 14 (31 of 91). Most of the extra holds are not canopy: OSM in eastern Oklahoma and Arkansas often has the park road but not the campground lanes, or has them drawn off the pavement. Fourteen of the holds (232665, 232684, 232662, 233650, 232609, 232747, 233457, 233508, 234478, 232698, 232704, 233590, 232634, 233678) have lanes plainly visible in the open and could be traced (several need a replace trace). I didn't trace them all in this batch, to leave time for wave 16. A third listing (233658) has one site placed 14 km off.
 - Time: build 17:46 to 18:21 (with rebuilds); first look done 18:34.
 
-## The 1-in-7 bar (applied 19:30)
-- A message from session_01G3DBCNs1edHEgLMktsQNGv (the orchestrator, by its own account) set a stricter bar for `usable`: at most about 1 site in 7 without a drawn road within about 20 m, and every drawn road on a visible one; otherwise `hold`. It said the brief on main was updated, but at 19:26 main's brief still had the old wording. I applied it anyway, since it only moves calls towards `hold`.
-- Re-called from my notes, which name the sites off: 16 of wave 14's 30 usable and 32 of wave 15's 34 usable became `hold` (their notes end "Held under the 1-in-7 bar"). Wave 16 was called under the bar as I went (26 re-called the same way). I didn't re-open the photos for these; the counts come from the site ranges in each note, and three borderline maps at about 1 in 7 (122390, 232535, 233534) stayed `usable`.
+## The usable bar (messages from the orchestrator, 19:23 and 19:28)
+- session_01G3DBCNs1edHEgLMktsQNGv (the orchestrator, by its own account) first sent a 1-in-7 bar for `usable`, then five minutes later corrected it: `hold` when a drawn road doesn't follow the visible one, sites are misplaced or stacked, or about a third or more of the sites have no drawn road; sites 20 to 40 m out on undrawn spurs stay `usable`. Both said the brief on main matches; at 19:30 main's brief still had the original wording. I applied the corrected bar, since it matches the original brief's "a loop with nothing drawn".
+- Re-called from my notes, which name the sites off (no photos re-opened). Under the corrected bar: wave 14, 3 of 30 usable became hold (232539, 234181, 233473); wave 15, 16 of 34 (251938, 273848, 232528, 232547, 232585, 232651, 232619, 232672, 232746, 233430, 233466, 233526, 233572, 233647, 233666, 233698); wave 16 was called under it, with the reason ending each note ("Held: ...").
 
 STATUS: started
