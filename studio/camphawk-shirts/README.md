@@ -203,3 +203,28 @@ Print prep (`prep5.py`, `finish5.py`, `final5.mjs`), each from a measured techni
   inks painted over 9.7% of the forest).
 - Tracing at 3x (softened) with alphaMax 0.8: 5k px off the PNG instead of 14-17k, and half the sub-0.4 mm tips.
 The back is now 10.26 x 8.22 in. Ink: one-ink 16.4 in2; three-ink 15.6 / 4.0 / 7.9 in2 (films, with traps).
+Scores: art director 6 (one ink) / 7 (three inks); technician 8.
+
+## Round 8 (2026-10-08)
+Art, from the round 7 art director:
+- The fire is the brightest thing in the camp: a light flame (mist, or bare shirt on one ink) keylined 1.2 mm
+  in forest, three tongues at about 100/70/50%, a dark heart, behind two round-ended logs crossed at about 25
+  degrees (the ember wedge that made them one bar is gone).
+- The lake is laid out from the light lane outward, so it is even about the fire's axis; strokes thicken from
+  1.45 mm to 2.75 mm toward the viewer; the lane carries the rows on as short broken strokes (mist, or forest
+  on one ink), drawn outside the wobble that turned them into blobs.
+- The tent has a second light cut. The hawk's near wing, a stub that read as a second beak, is the far wing's
+  shape (with fingers) turned and mirrored onto the near shoulder at 72%.
+- The lower-left snowfield's four forest tongues no longer repeat: one cut back, one broken, one drawn out
+  (`polish5.py`, the cut ends rounded like a gouge's).
+- Tagline: 640 from the variable Josefin Sans (`fonts.sh`), stems about 1.0 mm with the A counters 0.85 mm open
+  (700 closed them to 0.7); 0.35 in under the wordmark, lines at 1.4x.
+Print, from the round 7 technician:
+- Traps in whole pixels (4 px = 0.34 mm under forest, 3 px = 0.25 mm mist under moss), never within 0.3 mm of
+  bare shirt; knockouts under 1 mm beneath darker ink close on the films (no hairlines a screen can't hold).
+- The prep repeats until stable; strokes that nearly touch and cycled between filled and thinned are bridged
+  at 0.5 mm.
+- Screen films (`out5/final/*-film*.png`, traced into the kit's per-ink SVGs) carry three registration
+  crosshairs and a label: ink, hex, print order (mist, moss, forest) and RIGHT READING.
+- `all-inks.svg` is stacked as it prints, mist then moss then forest, each from its trapped film: no butted
+  edges, so no hairline seams.

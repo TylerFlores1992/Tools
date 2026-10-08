@@ -31,6 +31,25 @@ for _ in range(3):                                   # repeat: filling can creat
 yy, xx = np.mgrid[840:922, 2060:2150]
 cut = ((xx - 2075) * (915 - 847) - (yy - 847) * (2149 - 2075)) > 0
 blk = lab[840:922, 2060:2150]; blk[cut & (blk == 2)] = 0
+# round 7 review: the lower-left snowfield's four forest tongues read as one repeated swoosh (same curve, length
+# and spacing). One is cut back by about 40%, the long low one is broken by a 2.2 mm gap of snow, and one is
+# drawn out about 6 mm further, tapering.
+def band(tip, d, a0, a1, half, taper=False):
+    """Pixels along axis d from tip (a0..a1 px along, within `half` px across; narrowing to the far end if taper)."""
+    d = np.array(d) / np.hypot(*d); y0, x0 = int(tip[1] - 200), int(tip[0] - 200)
+    yy, xx = np.mgrid[y0:y0 + 400, x0:x0 + 400]
+    al, ac = (xx - tip[0]) * d[0] + (yy - tip[1]) * d[1], np.abs((xx - tip[0]) * -d[1] + (yy - tip[1]) * d[0])
+    w = half * (np.clip((a1 - al) / (a1 - a0), 0, 1) ** 0.8 if taper else 1)
+    return (slice(y0, y0 + 400), slice(x0, x0 + 400)), (al >= a0) & (al <= a1) & (ac <= w)
+def gouge_end(sl, m):
+    """Snow over the forest in m, then the cut ends rounded like a gouge's (an opening of the forest near the cut)."""
+    blk = lab[sl]; blk[m & (blk == 0)] = 2
+    near = nd.binary_dilation(m, iterations=40); f = blk == 0
+    rounded = nd.binary_opening(f, structure=np.hypot(*np.mgrid[-11:12, -11:12]) <= 11.5)
+    blk[near & f & ~rounded] = 2
+gouge_end(*band((920, 1375), (0.82, -0.57), -10, 105, 22))     # cut back
+gouge_end(*band((1270, 1392), (0.91, -0.40), -16, 16, 34))     # broken
+sl, m = band((1246, 1281), (-0.82, 0.57), -6, 72, 11, True); blk = lab[sl]; blk[m & (blk == 2)] = 0  # drawn out
 out = np.zeros(a.shape, np.uint8)
 for k, c in enumerate(INKS): out[lab == k] = c + (255,)
 Image.fromarray(out).save("out5/peak-three.png")

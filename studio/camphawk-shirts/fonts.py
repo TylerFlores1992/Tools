@@ -5,5 +5,6 @@ out = []
 for f in sorted(os.listdir("fonts")):
     base, w = f[:-6].rsplit("-", 1)
     b = base64.b64encode(open("fonts/" + f, "rb").read()).decode()
-    out.append(f"@font-face{{font-family:'{names[base]}';font-weight:{w};src:url(data:font/woff2;base64,{b}) format('woff2')}}")
+    fam, w = (names[base] + " Var", "100 700") if w == "wght" else (names[base], w)   # a variable font
+    out.append(f"@font-face{{font-family:'{fam}';font-weight:{w};src:url(data:font/woff2;base64,{b}) format('woff2')}}")
 open("fonts.css", "w").write("\n".join(out))

@@ -6,4 +6,6 @@ for f in josefin-sans:600 josefin-sans:400 alfa-slab-one:400 bebas-neue:400 yell
   n=${f%:*}; w=${f#*:}
   curl -sf "https://cdn.jsdelivr.net/npm/@fontsource/$n/files/$n-latin-$w-normal.woff2" -o "fonts/$n-$w.woff2"
 done
+# Josefin Sans as a variable font (weights 100-700), for the Still Water tagline at 650
+curl -sf "https://cdn.jsdelivr.net/npm/@fontsource-variable/josefin-sans/files/josefin-sans-latin-wght-normal.woff2" -o "fonts/josefin-sans-wght.woff2"
 python3 fonts.py

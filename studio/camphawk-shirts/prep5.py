@@ -8,7 +8,8 @@
 #     so no part of it is thinner than 0.4 mm; what that removes goes to the nearest remaining ink or the shirt;
 #  4. above the type, ink pieces under 2 mm2 or narrower than 0.8 mm at their widest go (they lift off DTF
 #     film at the peel); anywhere, specks under 1 mm2 go.
-# Steps 1-4 run three times, since thinning can open new pinholes and filling can leave new necks.
+# Steps 1-4 repeat until a pass changes nothing (at most 8), since thinning can open new pinholes and filling
+# can leave new necks; round 7 stopped after three passes with 20 small leftovers.
 # args: labels.npy typeTop out.npy
 import sys
 import numpy as np
@@ -24,7 +25,9 @@ def give_nearest(lab, holes, allowed):
     _, (iy, ix) = nd.distance_transform_edt(~src, return_indices=True)
     lab[holes] = lab[iy[holes], ix[holes]]
 art = np.zeros(lab.shape, bool); art[:top] = True
-for rnd in range(3):
+last = None
+for rnd in range(8):
+    changed = 0
     inkm = lab >= 0
     # 1a. pinholes: shirt components enclosed by ink, under 1.5 mm2
     sh, n = nd.label(~inkm); sz = nd.sum(~inkm, sh, range(1, n + 1))
@@ -38,13 +41,18 @@ for rnd in range(3):
     # 2. above the type: knockouts under 1 mm close
     closed1 = nd.binary_closing(np.pad(inkm, 30), disk(0.5 * MM))[30:-30, 30:-30]
     holes |= closed1 & ~inkm & art
-    print(f"round {rnd + 1}: filled shirt pixels", int(holes.sum()))
+    # where strokes nearly touch, the fill makes a bridge thinner than 0.4 mm that step 3 then removes, and the
+    # passes cycle; when a pass refills exactly what the last one did, those bridges are thickened to 0.5 mm
+    if last is not None and np.array_equal(holes, last):
+        holes = holes | (nd.binary_dilation(holes, disk(3)) & ~inkm & art); print("  thickening cycling bridges")
+    last = holes.copy()
+    print(f"round {rnd + 1}: filled shirt pixels", int(holes.sum())); changed += int(holes.sum())
     if holes.any(): give_nearest(lab, holes, inks)
     # 3. no ink thinner than 0.4 mm
     for k in inks:
         m = lab == k
         keep = nd.binary_opening(np.pad(m, 10), disk(0.2 * MM))[10:-10, 10:-10]
-        lost = m & ~keep
+        lost = m & ~keep; changed += int(lost.sum())
         if lost.any():
             lab[lost] = -2                                     # placeholder
             give_nearest(lab, lab == -2, [-1] + [j for j in inks if j != k])
@@ -55,6 +63,8 @@ for rnd in range(3):
         sz = nd.sum(m, l, idx); wide = 2 * nd.maximum(nd.distance_transform_edt(np.pad(m, 1))[1:-1, 1:-1], l, idx)
         ys = np.array([s[0].start for s in nd.find_objects(l)]) if n else np.zeros(0)
         bad = (sz < MM * MM) | ((ys < top) & ((sz < 2 * MM * MM) | (wide < 0.8 * MM)))
+        changed += int(bad.sum())
         if bad.any(): lab[np.r_[False, bad][l]] = -2; give_nearest(lab, lab == -2, [-1] + [j for j in inks if j != k])
         print(f"  ink {k}: {int(bad.sum())} small or narrow pieces dropped")
+    if not changed: break
 np.save(sys.argv[3], lab.astype(np.int8))

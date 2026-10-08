@@ -45,18 +45,25 @@ for (const [v, ink, out, inks] of jobs) {
   // ink labels → finish5.py (prep, trim, trap, 300 dpi PNG and separations) → trace each separation
   const labels = new Int8Array(n); for (let i = 0; i < n; i++) labels[i] = which[i];
   writeFileSync(`out5/final/${out}-labels.npy`, npy(labels, info.height, info.width));
-  execFileSync("python3", ["-W", "ignore", "finish5.py", out, inks.map(([, hx]) => hx).join(","), String(typeTop)], { stdio: "inherit" });
+  execFileSync("python3", ["-W", "ignore", "finish5.py", out, inks.map(([nm, hx]) => `${nm}:${hx}`).join(","), String(typeTop)], { stdio: "inherit" });
   const size = JSON.parse(readFileSync(`out5/final/${out}-size.json`, "utf8"));
-  const svg = (body) => `<svg xmlns="http://www.w3.org/2000/svg" width="${(size.w / 300).toFixed(3)}in" height="${(size.h / 300).toFixed(3)}in" viewBox="0 0 ${size.w * UP} ${size.h * UP}">${body}</svg>`;
-  // each film is traced from its trapped separation; the all-inks file from the untrapped shapes, which butt
-  const trace = async (file) => { const big = await sharp(file).resize(size.w * UP, size.h * UP, { kernel: "cubic" }).blur(0.6 * UP).png().toBuffer();
+  const svg = (body, w = size.w, h = size.h) => `<svg xmlns="http://www.w3.org/2000/svg" width="${(w / 300).toFixed(3)}in" height="${(h / 300).toFixed(3)}in" viewBox="0 0 ${w * UP} ${h * UP}">${body}</svg>`;
+  const trace = async (file, w = size.w, h = size.h) => { const big = await sharp(file).resize(w * UP, h * UP, { kernel: "cubic" }).blur(0.6 * UP).png().toBuffer();
     return new Promise((res, rej) => potrace.trace(big, TRACE, (e, s) => e ? rej(e) : res(s.match(/ d="([^"]+)"/)?.[1] ?? ""))); };
-  const all = [];
+  if (inks.length === 1) {                                     // one ink: the art itself, no film furniture
+    const [name, hx] = inks[0];
+    writeFileSync(`kit/${out}_1-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-sep1.png`)}"/>`));
+    continue;
+  }
+  // three inks: each screen film with its registration marks and label; and the all-inks composite stacked as
+  // it prints, mist then moss then forest, each from its trapped separation (the spreads sit under the darker
+  // ink, so there are no butted edges to leave hairline seams, as round 7's untrapped composite did)
+  const [fw, fh] = size.film, all = [];
   for (let k = 0; k < inks.length; k++) {
     const [name, hx] = inks[k];
-    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-sep${k + 1}.png`)}"/>`));
-    if (inks.length > 1) all.push(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-ink${k + 1}.png`)}"/>`);
+    writeFileSync(`kit/${out}_${k + 1}-${name}.svg`, svg(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-film${k + 1}.png`, fw, fh)}"/>`, fw, fh));
+    all.unshift(`<path fill="${hx}" fill-rule="evenodd" d="${await trace(`out5/final/${out}-sep${k + 1}.png`)}"/>`);
   }
-  if (inks.length > 1) writeFileSync(`kit/${out}_all-inks.svg`, svg(all.join("")));
+  writeFileSync(`kit/${out}_all-inks.svg`, svg(all.join("")));
 }
 await browser.close();
