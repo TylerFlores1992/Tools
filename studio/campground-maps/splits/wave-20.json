@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "about": "Split calls from the first look of wave 20.",
+ "listings": [
+  {
+   "id": "232002",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Two ends 1 km apart: the north lane (001 to 014) and the south loops (017 to 037)."
+  },
+  {
+   "id": "232391",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The RTL, GL and PO loops on the gravel bar and the CL loop 600 m north-east."
+  },
+  {
+   "id": "233774",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The south loops (001 to 040) and the north-east string and loop (041 to 077), 1.2 km apart."
+  },
+  {
+   "id": "234080",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The west loops and the east point, 600 m apart across the bay."
+  },
+  {
+   "id": "233481",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The north lane (1 to 10) and the south loop by the dam (11 to 21), 700 m apart."
+  },
+  {
+   "id": "233602",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "The north loops (001 to 026) and the south lane (027 to 041), 1 km apart along the river."
+  },
+  {
+   "id": "234677",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Three areas over 1.1 km: the west loops, the middle lanes and the east loop.",
+   "gap": 100
+  },
+  {
+   "id": "251948",
+   "split": true,
+   "by": "First look (Claude, rollout midwest)",
+   "on": "2026-10-08",
+   "note": "Four clusters along 1.5 km of shore.",
+   "gap": 100
+  }
+ ]
+}
