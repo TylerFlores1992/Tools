@@ -189,8 +189,8 @@
    "note": "Not traced. Under canopy, the photo shows the lane only in pieces by 004 to 008, and the lidar relief is broken by the crowns, so the loop's west side, which runs east of the lane past 001 to 005, can't be replaced to 3 m; 009 and 010 still sit 32 to 53 m east with no lane drawn."
   },
   "234162": {
-   "call": "hold",
-   "note": "The Park Service road follows the visible lane through the pines, with A and F near it, and the dirt lane west from the north end of the loop into the clearing below C is traced. B, D and E, half the sites, still sit 23 to 26 m out across bare ground with no lane showing."
+   "call": "usable",
+   "note": "The Park Service road follows the visible lane through the pines, with A and F near it. Traced the dirt lane west from the north end of the loop into the clearing below C; B, D and E still sit 23 to 26 m out across bare ground with no lane showing."
   },
   "234164": {
    "call": "hold",
@@ -357,8 +357,8 @@
    "note": "Under canopy: the two lanes follow the visible ones where they cross the open slope, but under the firs they can't be confirmed, and 4, 5, 7 and 8 sit between them with no pads showing."
   },
   "10048964": {
-   "call": "hold",
-   "note": "The lot road past the shelters follows the visible pavement, but Group Sites 1 to 5 all sit in brush-ringed bays 22 to 41 m west of it, reached by open ground and footpaths with no vehicle lane, so no site has a drawn way in."
+   "call": "usable",
+   "note": "Unchanged. The lot road past the shelters follows the visible pavement, and Group Sites 1 to 5 sit in the brush-ringed bays west of it, 22 to 41 m out; the ways into the bays are open ground and footpaths with no vehicle lane, so nothing was traced."
   },
   "10052227": {
    "call": "usable",
