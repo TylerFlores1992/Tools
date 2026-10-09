@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233788",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-05)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.7869733,
+     43.9972519
+    ],
+    [
+     -121.7870669,
+     43.9972564
+    ],
+    [
+     -121.7871666,
+     43.9972474
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.7869733,
+     43.996811
+    ],
+    [
+     -121.7870669,
+     43.996829
+    ],
+    [
+     -121.7871666,
+     43.9968425
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.786244,
+     43.9975264
+    ],
+    [
+     -121.7861442,
+     43.9975129
+    ],
+    [
+     -121.7860445,
+     43.9974949
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the photo the gravel pull-outs west of the lane by 003 and 005, and the lane east to 024. Left out: the rest of the horse-camp spurs, which show only as pale patches between the firs that can't be followed."
+}

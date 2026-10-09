@@ -778,11 +778,11 @@
   },
   {
    "wave": 8,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 71,
-    "review": 24,
+    "ready": 57,
+    "review": 38,
     "notDrawn": 0,
     "failed": 0
    },

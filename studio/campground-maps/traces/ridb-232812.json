@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232812",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-05)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.1700268,
+     37.2518506
+    ],
+    [
+     -119.1699479,
+     37.251819
+    ],
+    [
+     -119.1698578,
+     37.2517739
+    ],
+    [
+     -119.1697676,
+     37.2517199
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -119.1699141,
+     37.2519633
+    ],
+    [
+     -119.1700268,
+     37.2519678
+    ],
+    [
+     -119.1701621,
+     37.2519678
+    ],
+    [
+     -119.1702748,
+     37.2519723
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the photo: the paved lane southeast toward 007, and the lane west past 009 to the building by 010. Left out: anything to 002, 003 and 004 on the open slope by the lake, where no lane shows."
+}

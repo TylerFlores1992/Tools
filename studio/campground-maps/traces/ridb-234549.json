@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-234549",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-05)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.9776776,
+     39.5132961
+    ],
+    [
+     -120.9777823,
+     39.5133006
+    ],
+    [
+     -120.9779335,
+     39.5133087
+    ],
+    [
+     -120.9780847,
+     39.5133204
+    ],
+    [
+     -120.9782359,
+     39.5133285
+    ],
+    [
+     -120.9783522,
+     39.5133231
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.9776892,
+     39.5131068
+    ],
+    [
+     -120.9778172,
+     39.5131186
+    ],
+    [
+     -120.9779218,
+     39.5131339
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the photo: the dirt lane west from the middle lane past 001 to 002 and 003, and the lane west to 004. Left out: anything to 005 to 010 east of the middle lane, where the oaks hide any way in."
+}

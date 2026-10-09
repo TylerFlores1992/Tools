@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-234007",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-05)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.5883733,
+     43.7953896
+    ],
+    [
+     -115.588249,
+     43.7953266
+    ],
+    [
+     -115.5881247,
+     43.7952726
+    ],
+    [
+     -115.5880004,
+     43.7952276
+    ],
+    [
+     -115.587901,
+     43.7951961
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.5883982,
+     43.7953986
+    ],
+    [
+     -115.5884976,
+     43.7954076
+    ],
+    [
+     -115.5885971,
+     43.7954121
+    ],
+    [
+     -115.5886841,
+     43.7954211
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the photo: the gravel lane from the bottom of the east loop down to the lot past 001, and the gravel west from there to 002. Left out: anything to 005, 007 and 009, where the pale strips between the pines don't show how they join the loop."
+}
