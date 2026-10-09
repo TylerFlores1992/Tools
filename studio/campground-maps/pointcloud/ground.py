@@ -49,7 +49,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import frame as FR
 
 OUT = os.path.join(CACHE, "pointcloud")
-TMP = os.path.join(OUT, "tmp")
+# One folder per run: two runs at once must never delete each other's tiles (the cleanup below
+# empties the folder).
+TMP = os.path.join(OUT, f"tmp-{os.getpid()}")
 TNM = "https://tnmaccess.nationalmap.gov/api/v1/products"
 WESM = "https://index.nationalmap.gov/arcgis/rest/services/3DEPElevationIndex/MapServer/8/query"
 EPT = "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/"
@@ -621,6 +623,8 @@ def main(argv):
             if os.path.isdir(TMP):  # never leave a tile behind
                 for x in os.listdir(TMP):
                     os.remove(os.path.join(TMP, x))
+    if os.path.isdir(TMP):
+        os.rmdir(TMP)
     return 0 if ok else 1
 
 
