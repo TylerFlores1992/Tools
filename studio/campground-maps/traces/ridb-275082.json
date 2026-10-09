@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-275082",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.1519295,
+     48.560872
+    ],
+    [
+     -118.1518211,
+     48.5608495
+    ],
+    [
+     -118.1517127,
+     48.560809
+    ],
+    [
+     -118.1516314,
+     48.5607551
+    ],
+    [
+     -118.1515705,
+     48.5606832
+    ],
+    [
+     -118.1515366,
+     48.5605933
+    ],
+    [
+     -118.1515231,
+     48.5604944
+    ],
+    [
+     -118.1515298,
+     48.5603955
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane curving south from the end of the drawn spur past 12 and 13 toward 10 and 11, which the lidar intensity shows as a gray band under the firs and the relief as a faint arc. Not traced: the narrow line north toward 15 and 17, which reads as a path."
+}

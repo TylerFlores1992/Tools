@@ -86,7 +86,7 @@
   },
   "232113": {
    "call": "unsure",
-   "note": "The loop roads are drawn and Sites 002 to 047 line them, but the whole campground is under dense conifer canopy and neither the lanes nor the pads show on the photo."
+   "note": "The lidar intensity is mottled under the firs (1.9 ground points per square meter) and shows no lane. The relief shows the west end of the north loop (by 033 to 037) and its south side (by 039 to 046) as a smooth band within a few meters of the drawn road, but the loop's east half, the lanes by 020 and 021 and the south loop (002 to 011) are lost in noise, so they can't be checked. Nothing traced."
   },
   "232115": {
    "call": "good",
@@ -197,8 +197,8 @@
    "note": "Only one loop is drawn, and about a dozen sites sit 25 to 50 m outside it: 010, 011, 013, 014, 016 and 017 toward the lake, and 019, 021, 023, 025 and 026 to the east, where no second lane shows under the trees. 003 to 009, 012, 015, 018, 020, 022, 024, 027 and 028 fit the drawn loop."
   },
   "232861": {
-   "call": "unsure",
-   "note": "Almost the whole campground is under dense forest: Sites 001 to 044 follow the drawn road down to the south loop, but the photo shows no lanes to check them against, and 003, 005, 007, 014, 017 and 019 to 021 sit 15 to 30 m off it. Only the north cluster (045 to 054) is on visible open ground beside its road."
+   "call": "usable",
+   "note": "Despite a sparse 2016 survey (1.2 ground points per square meter), the lidar intensity shows the paved road and both loops as a plain dark band under the firs. Replaced the roads: the south loop (by 016 to 036) redrawn on its band, which ran 3 to 5 m off the drawn line, and the rest copied, as it sits on its band; every site is within 40 m of a drawn road, though 019 to 021, 023 and 031 inside the loop and 003, 005 and 007 by the north road show no lane of their own."
   },
   "232862": {
    "call": "unsure",
@@ -282,7 +282,7 @@
   },
   "234501": {
    "call": "hold",
-   "note": "Under dense trees, the two loops are drawn and 02, 06, 07, 11, 13, 14, 19, 21, 24 and 29 sit on them, but 03 to 05 and 08 sit west of the loop with no road, and 12, 16 to 18, 20, 22, 25 to 27, 30 to 33 and 35 sit in a column midway between two drawn roads."
+   "note": "Neither lidar layer helps here: the survey is sparse (1.6 ground points per square meter), the intensity is mottled with no band even under the drawn Middle Fork Road, and the relief is triangle noise with only the two drawn loops faintly smooth. Nothing shows to 03 to 05 and 08 west of the loop or to the column of sites (12, 16 to 18, 20, 22, 25 to 27, 30 to 33, 35) between the loop and the road. Nothing traced."
   },
   "234539": {
    "call": "usable",
@@ -306,7 +306,7 @@
   },
   "251447": {
    "call": "usable",
-   "note": "The loop and the lot near the entrance are drawn and Sites 001 to 003, 014 to 029 line them. The north row (004 to 013) sits 15 to 20 m north of the drawn road, toward the beach, where a lane may run under the pines."
+   "note": "The lidar intensity shows the loop, the paved lot by the entrance (001 to 003, 029) and Road 21 as plain dark bands, and the drawn roads sit on them within about 3 m (4 m on the loop's southwest bend). The north row (004 to 013) sits just north of the loop, where the band shows short pull-in arches toward the beach that aren't drawn; every site is within 40 m of a drawn road. Nothing traced."
   },
   "251448": {
    "call": "usable",

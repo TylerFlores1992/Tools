@@ -6,7 +6,7 @@
  "looks": {
   "10060948": {
    "call": "hold",
-   "note": "Only the highway is drawn. Zoomed, the paved lanes show only in pieces (the lane past 005 and 006, the loop by 008 and 009, the ends of the lanes to 001, 007 and 010); where they join each other and the highway is under the firs, so a trace would leave unconnected islands, and none was made."
+   "note": "The lidar relief shows the campground's paved lanes better than the photo (a hairpin past 005 and 006, a lane down past 007 to 010, and a lane east of the ditch toward 001 to 003), but where they join each other and the highway the layer is broken by ditches and cut banks, and the intensity is mottled, so the network can't be placed to 3 m as one connected set. Only the highway is drawn and 7 of 10 sites are more than 40 m from it. Nothing traced."
   },
   "261804": {
    "call": "good",
@@ -21,8 +21,8 @@
    "note": "Split listing: Datura group sites A to D and group sites E-1 and E-10 sit 1.2 km apart. With the split call the build calls it 2 groups of dispersed camping, not drawn as areas yet. Zoomed, Datura A sits by its small loop and B by its building, C and D 20 m east of the drawn road; E-10 sits in its loop, E-1 30 m west of the drawn lane."
   },
   "10039887": {
-   "call": "unsure",
-   "note": "Under full canopy: only the road through the forest and the beach lot are drawn. 1D to 3D sit 50 m west of the road and 5 to 10 sit 60 to 100 m east of it in the trees, where no lanes show."
+   "call": "hold",
+   "note": "The lidar relief and intensity show the road through the forest where it is drawn, within a few meters, but no lane to the sites: east of the road only narrow winding tracks show among 5 to 10 (footpaths, not traced), and nothing reaches 1D to 3D in the west. 5 of 10 sites (2D, 3D, 8 to 10) are more than 40 m from a drawn road. Nothing traced."
   },
   "10047969": {
    "call": "hold",
@@ -38,7 +38,7 @@
   },
   "231831": {
    "call": "usable",
-   "note": "The lane along the river and the east loop follow the visible roads, and 001 to 004, 015 to 017, 021 to 032 sit by them. 005 to 010 sit 15 to 25 m off the east loop and 018 to 020 between the lanes, under pines where spurs show in gaps."
+   "note": "The lidar intensity shows the river lane, the west loop and the east loop as plain dark bands under the pines, and the drawn roads sit on them within about 3 m. The short pull-in spurs toward 005 to 010, 018 to 020 and 025 also show but aren't drawn; every site is within 40 m of a drawn road. Nothing traced."
   },
   "231884": {
    "call": "hold",
@@ -61,8 +61,8 @@
    "note": "The two lanes follow the gravel that shows through the junipers, and 004 to 019 sit by them. 014 and 015 sit 20 m west of the loop's end on open ground where a lane shows faintly."
   },
   "231988": {
-   "call": "unsure",
-   "note": "Under full canopy: the loops are drawn and some lanes show as gaps (the spurs by 004 to 010), but 006, 008, 010, 011 and 013 sit 20 to 30 m outside the loops and 017 to 019 between them, where the photo can't confirm a lane."
+   "call": "usable",
+   "note": "The lidar intensity shows the west loop, the northeast loop with its inner lanes by 016, the two south loops and the lanes between them as smooth gravel bands under the firs, and the drawn roads sit on them within about 3 m. 006, 008, 010 and 011 sit 15 to 30 m west of the west loop and 017 to 019 between the loops, where no lane shows, but every site is within 40 m of a drawn road. Nothing traced."
   },
   "232022": {
    "call": "hold",
@@ -70,7 +70,7 @@
   },
   "232051": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service lanes are drawn and 052 to 091 line them, but no lanes show through the firs to confirm them; 020, 071 and 092 sit apart."
+   "note": "The lidar intensity is mottled under the firs (1.9 ground points per square meter) and shows only the highway, and in the relief the two drawn lanes (past 061 to 070 and past 077 to 081) show only as faint smooth strips in the noise, close to the drawn roads but not plain enough to check to 3 m; nothing shows to 052 to 059 or 060, 062, 088 to 090. Nothing traced."
   },
   "232058": {
    "call": "good",
@@ -78,7 +78,7 @@
   },
   "232102": {
    "call": "unsure",
-   "note": "Under full canopy: the two north loops are drawn and 001 to 013 sit near them, but 003, 004, 012 and 013 sit 20 to 40 m outside and no lanes show to confirm them. GRP A and GRP B sit by the lane south, GRP B by its buildings."
+   "note": "The lidar shows the paved lane south to the group sites plainly (dark in the intensity, a smooth crowned band in the relief), and the drawn road sits on it. The two north loops can't be checked: the intensity is mottled under the trees there, and in the relief the ground around them is smooth and flat throughout, so no loop edge shows to place the drawn roads to 3 m; nothing shows to 003, 004, 012 or 013 outside them. Nothing traced."
   },
   "232108": {
    "call": "usable",
@@ -106,11 +106,11 @@
   },
   "232225": {
    "call": "usable",
-   "note": "The lanes along the canyon follow the visible roads, and 004, 005, 007 to 011, 018 to 025 sit by them. 001 to 003, G01 and G06 sit 20 to 40 m south of the drawn road under the trees, and 012 to 017 crowd past the east turnaround where a lane shows faintly."
+   "note": "The lidar relief shows the campground lane as a smooth strip between the creek channels, and the drawn lane follows it to the east lot within about 3 m; the dark sinuous bands in the intensity are the creek, not lanes. Nothing new shows to 001 to 003, G01 and G06 south of the lane or to 012 to 017 past the east lot, but all are within 40 m of a drawn road. Nothing traced."
   },
   "232234": {
-   "call": "unsure",
-   "note": "Under full canopy: the Forest Service loops are drawn but no lanes show to confirm them, and many sites (016 to 024, 028, 030, 031, 057 to 071, 087 to 098M) sit 20 to 40 m outside them; one drawn loop in the southwest has no sites."
+   "call": "usable",
+   "note": "The lidar intensity shows every loop as a plain gravel band under the pines, and the drawn Forest Service loops sat 10 to 30 m inside them. Replaced the roads: Loop D (055 to 079), Loop E (081 to 096), the center Loop C (037 to 054) and the two linked northwest loops (016 to 035) redrawn on their bands, the bypass lane by 031 and a short spur north of Loop D added, and the drawn southwest loop, which shows no lane and has no sites, left out. Every placed site is within 40 m of a drawn road; 3 sites have no point."
   },
   "232261": {
    "call": "unsure",
@@ -161,8 +161,8 @@
    "note": "Not traced. Zoomed, the west end is a web of gravel lanes and pull-throughs by 32 to 46 that the drawn loop crosses rather than follows, and the shore loop's south lane past 02 to 04, 06 and 07 isn't drawn. A fix means replacing every road in the 450 m frame from the photo, which this pass didn't attempt; the shore lane by 08 to 24 is right."
   },
   "232833": {
-   "call": "unsure",
-   "note": "Under the pines: the two loops are drawn and follow lanes that show faintly, but most of the 53 sites (001 to 016, 036 to 044, 049, 052) sit 30 to 100 m from them, by dirt lanes that show only in gaps and aren't drawn."
+   "call": "usable",
+   "note": "The lidar intensity shows both paved loops, with their pull-in spurs, and the lane in from the west as plain dark bands under the pines. Replaced the roads: the south loop (035 to 053) redrawn on its band, which ran 8 to 15 m outside the drawn loop, the west lane past 011 to 014 moved up to 15 m onto its band, and the north loop's east end and the lane east of the south loop moved onto theirs. 7 of 29 sites are still more than 40 m from a road (004, 005, 007, 010 between the loop and the highway, 015, 040, 044), where no lane shows."
   },
   "232854": {
    "call": "unsure",
@@ -189,8 +189,8 @@
    "note": "Not traced: zoomed, the pads south of the west loop by 002 to 005 show as long pale gravel strips laid along the tree shadows, with no clear way in from the loop, and the Oregon lidar shows the loops and the lane north but no spurs. The lanes follow the visible gravel; 002 to 005 and 011 to 013 still sit 15 to 30 m off them, about a third of the sites."
   },
   "233363": {
-   "call": "unsure",
-   "note": "Under full canopy: the Forest Service lanes are drawn but no lanes show to confirm them, and 05 to 08, 15, 16, 18 to 22 and 24 sit 30 to 80 m from any drawn road."
+   "call": "hold",
+   "note": "The lidar relief shows the campground's lanes faintly between creek channels: the north lane runs 8 to 15 m west of the drawn Forest Service road and ends in a small loop around 24 that isn't drawn, and the south lane runs straight south at about x -53 where the drawn one bends west. But nothing shows to 05 to 08, 15, 16 and 19 east of the lanes (6 of 17 sites more than 40 m from a road; the relief there is only creek channels), so the map stays held, and the lanes are too faint in the intensity to place to 3 m. Nothing traced."
   },
   "233371": {
    "call": "good",
@@ -209,8 +209,8 @@
    "note": "The two roads up the meadow follow the visible gravel, and the earlier trace's spurs to 010, 013, 017, 023, 025 and past 019 stay. Added from the photo: the spurs west into the meadow to 024, 026 and 027, to 022, 014, 016, 002 and 003, and the pull-outs by 030 and 032; the spurs to 004, 007, 012, 015, 028, 029 and 031 are too faint to place, and those sites sit 15 to 40 m out."
   },
   "233864": {
-   "call": "unsure",
-   "note": "Under full canopy: the loops are drawn and 006, 010, 011 and 020 sit near them, but no lanes show to confirm them, and 001, 002, 005, 007, 012 to 017 sit 20 to 40 m off them."
+   "call": "usable",
+   "note": "The lidar relief shows the two loops and the lane from the junction to the main road as smooth crowned bands under the firs, and the intensity shows them as dark lanes with light gravel edges; the drawn roads sit on them within about 3 m. Every site is within 40 m of a drawn road, though 001 and 002 sit by a short lane toward the main road and 014 to 017 south of the loop, neither of which shows plainly enough to draw. Nothing traced."
   },
   "233865": {
    "call": "unsure",
@@ -221,12 +221,12 @@
    "note": "The two loops and the lane south follow the visible gravel, and 001 to 019 sit beside them on pull-outs that show; 012 and 017 sit 20 m off on spurs."
   },
   "233901": {
-   "call": "unsure",
-   "note": "Under full canopy: the two lanes are drawn and 001 to 015 line them, but they can't be seen through the firs to confirm them."
+   "call": "good",
+   "note": "The lidar intensity shows both campground lanes and their loop at the north end as a plain gravel band under the firs. Replaced the roads: the middle of both lanes (by 001 to 004 and 010 to 014) moved onto the band, 3 to 4 m east of where they were drawn, and the rest copied; 001 to 015 all sit beside the lanes, within about 15 m."
   },
   "233950": {
-   "call": "unsure",
-   "note": "Under full canopy: the loop is drawn and 003, 004, 007 and 012 sit on it, but no lanes show to confirm it, and 005, 006, 008, 009, 010 sit inside or outside it by 15 to 30 m."
+   "call": "usable",
+   "note": "The lidar intensity shows the loop and the lane in from the south as a plain dark band under the trees, and the drawn roads sit on it within about 3 m. 009 to 011 sit 10 to 20 m west of the loop and 014, 015 and 017 south of it, where no lane shows, but every site is within 40 m of a drawn road. Nothing traced."
   },
   "233963": {
    "call": "unsure",
@@ -249,8 +249,8 @@
    "note": "Not traced: zoomed, the pads for 01, 03, 06 and 08 show as short angled strips of gravel between the lodgepoles with no way in that shows, and the lidar here is too coarse to help. The east lane follows the visible gravel; 01, 03, 06, 08 and 09 to 12 still sit 15 to 30 m from a drawn road."
   },
   "234022": {
-   "call": "unsure",
-   "note": "Under full canopy: two small loops and a lane are drawn, but no lanes show to confirm them, and 001, 007 to 016 sit 20 to 40 m off any drawn road between the river and the highway."
+   "call": "usable",
+   "note": "The lidar intensity and relief show the campground lane as a plain gravel band curving along the river side (past 008 to 018, with short spurs west) and a loop south of the entrance (by 020 to 024), while the drawn lane ran up to 30 m east of it through the trees. Replaced the roads: the lane and the loop redrawn on their bands and the highway added as the through road. 001 to 007 sit 25 to 45 m east of the lane where no lane shows, and 003 and 005 are just over 40 m from it."
   },
   "234106": {
    "call": "hold",
@@ -262,7 +262,7 @@
   },
   "234196": {
    "call": "unsure",
-   "note": "Split listing, shown as 6 areas along 4.5 km of open dunes: the sites are points on bare sand and dune tracks with no pads or campground roads, which the photo can't confirm as campsites. 052 to 057 sit along the forest edge at the south end by a drawn road."
+   "note": "The lidar layers can't settle this one: the 2016 survey covers only the forest edge of the listing (most of the dunes have no data, and 053 to 057 sit right at its edge), and the sites are points on open sand with no pads or campground lanes to find, so neither layer can confirm them as campsites. Nothing traced."
   },
   "234200": {
    "call": "unsure",
@@ -290,15 +290,15 @@
   },
   "234502": {
    "call": "unsure",
-   "note": "Under full canopy: the loops are drawn and 019, 022, 023, 025 and 027 sit on them, but no lanes show to confirm them, and 001 to 016, 029 to 032, 034 and 039 sit 20 to 60 m off any drawn road."
+   "note": "The 2009 survey is sparse (0.8 ground points per square meter) and full of gaps, but where the intensity has data the paved lanes show as dark bands and the drawn loops sit on them within a few meters (the two north loops, the lane past 001 to 005 and the south loop by 028 to 037). Nothing shows to the sites north and east of the north loop (003, 006 to 016) or to 029 to 032 and 038, and the south end around 039 has more dark fragments than drawn lanes, which can't be read as lanes at this density. Nothing traced."
   },
   "234579": {
    "call": "usable",
    "note": "The loop follows the visible pavement, and 002 to 004, 007, 012, 013 and 016 sit by it. Now traced: the lane northeast past 017, the pull-outs east of 016, the spurs west to 006 and 007, southwest to 008, south to 009 and 010, and east to 011 and 014; still missing are the short inner lanes by 003 and the pads by 005 and 018."
   },
   "234709": {
-   "call": "unsure",
-   "note": "Under full canopy: the loops are drawn but no lanes show through the firs to confirm them, and 002, 004, 007, 009, 010, 012, 014, 015, 018, 019, 021, 023, 024 sit 20 to 50 m off them."
+   "call": "usable",
+   "note": "The lidar intensity shows the lane in and the long loop as a plain gravel band under the firs. Replaced the roads: both redrawn on the band, which ran 5 to 10 m off the drawn line along the lane (by 001 to 006) and the loop's west side (by 007 to 014). 002, 004, 007, 009, 010 and 012 sit 20 to 40 m west of the loop where no lane shows, but every placed site is within 40 m of a drawn road; 1 site has no point."
   },
   "234789": {
    "call": "good",
@@ -330,7 +330,7 @@
   },
   "251583": {
    "call": "unsure",
-   "note": "Under full canopy: the loop is drawn and 004, 007, 009, 015 and 019 sit on it, but no lanes show through the firs, and 001 to 003, 010, 012 to 014, 016, 018 and 020 sit 20 to 40 m off it."
+   "note": "The 2008-09 survey is far too sparse here (0.3 ground points per square meter): the intensity is speckle with gaps and shows only the highway, so the loop and the sites off it (001 to 003, 010, 012 to 014, 016, 018, 020) can't be checked. Nothing traced."
   },
   "253918": {
    "call": "good",
@@ -338,7 +338,7 @@
   },
   "266139": {
    "call": "unsure",
-   "note": "Under pines: the drawn loop runs between the sites, and 01, 03 to 06 and 08 to 12 sit 20 to 50 m either side of it, where lanes show only in gaps."
+   "note": "The lidar layers can't settle the loop: the 2011 survey is sparse (1.7 ground points per square meter), the relief inside the drawn loop is flat noise with no crowned lane, and the intensity shows only a few thin dark lines (one from 07 southwest past 05 toward 04, one north-south east of the loop) that don't form a loop or reach the pads. So the drawn loop between the sites can't be checked, and 01, 03 to 06 and 08 to 12 still sit 20 to 50 m either side of it. Nothing traced."
   },
   "266142": {
    "call": "usable",
@@ -365,8 +365,8 @@
    "note": "Not traced: the photo of the burnt forest is too coarse to place the lane, and the lidar shows only the valley road. The pale band from the junction runs east about 10 to 15 m south of the drawn lane by 1 to 4, so the drawn lane may be off, and 7 to 17 still sit 20 to 50 m from it."
   },
   "10101324": {
-   "call": "unsure",
-   "note": "Under full canopy: no campground lanes are drawn or show, and 1 to 5, 7 and the group site sit in the trees west of the river, 30 to 80 m from the road across it; the photo can't say how they're reached."
+   "call": "hold",
+   "note": "The lidar layers show no campground lane: west of the river the intensity is mottled forest with only a light clearing by 1 and 2, and a faint light strip along the riverbank by 3 to 5 that reads as a trail rather than a road. The sites (1 to 5, 7 and the group site) sit 50 to 100 m from the only drawn road, across the river, and the layers don't show how they're reached. Nothing traced."
   },
   "10138237": {
    "call": "good",
