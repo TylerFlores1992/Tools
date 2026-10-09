@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-233977",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.5318087,
+     42.0949966
+    ],
+    [
+     -111.5318812,
+     42.0949831
+    ],
+    [
+     -111.5319658,
+     42.0949696
+    ],
+    [
+     -111.5320504,
+     42.0949561
+    ],
+    [
+     -111.532135,
+     42.0949561
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spur west off the entrance road past 1. The lot north of the forest road by GS1 shows, but its way in is under the trees and wasn't traced."
+}

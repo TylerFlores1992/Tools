@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-232832",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.5046699,
+     39.9299829
+    ],
+    [
+     -120.5045529,
+     39.9299649
+    ],
+    [
+     -120.5044242,
+     39.9299469
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.5025173,
+     39.9305143
+    ],
+    [
+     -120.502412,
+     39.9304783
+    ],
+    [
+     -120.5023184,
+     39.9304512
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.5027747,
+     39.9301
+    ],
+    [
+     -120.5026577,
+     39.930127
+    ],
+    [
+     -120.502529,
+     39.9301631
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spurs that show between the pines: west to 004, and in the east loop to 023 and to the pad east of 024. The lanes past 015 to 020 don't show through the crowns and weren't traced."
+}

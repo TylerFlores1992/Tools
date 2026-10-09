@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-267560",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.8082814,
+     43.9666991
+    ],
+    [
+     -121.8081904,
+     43.9666676
+    ],
+    [
+     -121.8080994,
+     43.9666172
+    ],
+    [
+     -121.8080147,
+     43.9665587
+    ],
+    [
+     -121.8079237,
+     43.9664777
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane from the junction lot by 001 east through the open lot past 004 to the lot by 006. The way south from that lot to the boat ramp is under the trees and wasn't traced."
+}
