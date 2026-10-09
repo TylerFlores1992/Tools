@@ -20,7 +20,7 @@ Pilots and their results are recorded here as they finish.*
 
 | Blocking cause | Hidden | Usable | Fix | Status |
 |---|---|---|---|---|
-| Canopy hides the lanes | 692 | 130 | Trace over lidar relief; for the rest, an owner decision (5 below) | Pilot: 2 of 25 pass, 5 traced and still held |
+| Canopy hides the lanes | 692 | 130 | Trace over lidar point-cloud layers (below) | Relief pilot: 7 of 25 helped; point-cloud pilot: 11 of 17 traceable or confirmed; tool in progress |
 | Drawn road off the visible lane | 112 | 47 | Replace trace from the photo | Tool exists; needs tracing |
 | Lanes visible but not drawn | 93 | 155 | Trace from the photo | Tool exists; needs tracing |
 | Unit pin on nothing | 77 | 1 | Forest Service cabin points (Alaska); lidar for a clearing | Researched; not built |
@@ -97,6 +97,34 @@ Pilots and their results are recorded here as they finish.*
 - Overture: no campground outlines beyond OpenStreetMap.
 - The Corps' recreation points (no campsites).
 - An automatic lane detector on the relief, which found ditches and creek banks, not inner lanes.
+
+## Canopy: the answer is lidar point clouds (research pilot, 2026-10-09)
+The 3DEP elevation service smooths away the fine relief and carries no intensity. USGS's raw
+point clouds keep both, so a pilot built layers from them for the 18 maps where the relief showed
+no lane. The full report is `research/campground-maps-pointcloud.md`.
+- **Ground-return intensity shows paved and gravel lanes plainly under full canopy:** every lane
+  and pull-in spur at Oak Ridge, the herringbone pads at Gulpha Gorge, the shoreline lane at
+  Charbonneau. A relief built from the ground points at 0.5 m helps beside it.
+- **Results on the 18:**
+  - 7 lanes plain enough to trace.
+  - 4 drawn roads confirmed, with no other lane.
+  - 3 partial: the paved lanes show, the dirt ones don't.
+  - 3 nothing: faint dirt lanes, or under about 1.5 ground points per m².
+  - 1 no USGS points: Oak Fork, Oregon, which has DOGAMI's lidar only.
+  - So 11 of 17 with data are traceable or confirmed; read that as a sample, not a forecast.
+- **Coverage:** 567 of the 692 canopy holds have USGS point clouds. Most of the 125 without are
+  in Alaska (67) and Oregon (40).
+- **Licence:** public domain (USGS; "US Government Public Domain" on the AWS open-data registry).
+  A trace drawn over it credits "USGS 3D Elevation Program lidar point cloud".
+- **Not a build step:** automatic lane masks pick up creek banks, highway edges and trails. A
+  person traces over the layers, as with the relief.
+- **Cost:** about 400 MB of download and a few minutes per map from USGS's tile server, less from
+  the AWS copy where the survey is there.
+- **Plan:**
+  - build a studio tool that makes the layers per map and keeps no points (in progress);
+  - then run a canopy tracing campaign over the 567 maps, paved campgrounds and dense surveys
+    first.
+  - Faint dirt lanes and sparse surveys stay the hard remainder.
 
 ## Decisions for the owner
 **Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
