@@ -27,7 +27,7 @@ Pilots and their results are recorded here as they finish.*
 | Unit pin 15–150 m off a visible building | 67 | 24 | **Move the pin** (site-move trace) | Built 2026-10-08; 40 of 79 now pass |
 | Only the access road drawn | 58 | 13 | Trace from the photo or the lidar | Tool exists |
 | A third or more of the sites roadless | 49 | 7 | Trace from the photo or the lidar | Tool exists |
-| Dispersed sites, not one campground | 40 | 3 | Dispersed-area design | **Owner's decision** |
+| Dispersed sites, not one campground | 40 | 3 | Stay off (owner, 2026-10-09) | Decided |
 | Split into areas, split wrong | 39 | 23 | Split calls (gap / maxSpan), or the split design | Tool exists |
 | No lane visible to trace | 37 | 47 | Lidar; else accept the sites where they are | Partly |
 | Can't be drawn (sites on one spot) | 31 | 0 | Parking rows dropped (built); stacked twins need moves | Partly built |
@@ -36,7 +36,7 @@ Pilots and their results are recorded here as they finish.*
 | Site points misplaced | 24 | 13 | Move the points | Built (site move) |
 | Sites stacked on one spot | 19 | 11 | Move the points | Built (site move) |
 | Stray point km away | 15 | 0 | **Left off by rule** | Built 2026-10-08; with the parking rule, 8 of 17 rebuilt now pass |
-| No public-domain photo (Alaska) | 15 | 0 | USGS IfSAR radar image | **Owner's decision** (licence unclear) |
+| No public-domain photo (Alaska) | 15 | 0 | Stay off (owner, 2026-10-09) | Decided |
 | Unit pin wrong, listing's own point right | 12 | 0 | Move the pin to the listing's point | Built (site move); in the 79 below |
 | Unit right, no road reaches it | 6 | 67 | Trace the last stretch; fly-in and boat-in are right as drawn | Tool exists |
 | First-come: another campground's outline | 8 | 0 | **Outline-name check** | Built 2026-10-08 |
@@ -99,6 +99,11 @@ Pilots and their results are recorded here as they finish.*
 - An automatic lane detector on the relief, which found ditches and creek banks, not inner lanes.
 
 ## Decisions for the owner
+**Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
+them for good nor publish them half drawn; research below); (2) dispersed listings: keep them off;
+(3) the Alaska maps with no photo: keep them off (no IfSAR, no letter to USGS); (4) the tracing
+campaign: all of it (`campground-maps-fix-brief.md`, 17 batches by wave). The questions as asked:
+
 1. **The dispersed-area design (40 maps):** listings that aren't one campground (backcountry
    permits, boat-in shores). Should they show as a list of places, or a map per area, or stay off?
 2. **USGS IfSAR for interior Alaska (5–10 maps):** write to USGS to confirm the licence?
