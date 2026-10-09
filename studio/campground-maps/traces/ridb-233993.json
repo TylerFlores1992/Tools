@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233993",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -117.1102144,
+     34.2462332
+    ],
+    [
+     -117.1102469,
+     34.2463053
+    ],
+    [
+     -117.1103447,
+     34.2463955
+    ],
+    [
+     -117.110475,
+     34.2464947
+    ],
+    [
+     -117.1106379,
+     34.2465759
+    ],
+    [
+     -117.1108008,
+     34.246612
+    ],
+    [
+     -117.111018,
+     34.246621
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt track up through the middle clearing from the road's south bend. Nothing shows to 004 under the trees east of the road."
+}

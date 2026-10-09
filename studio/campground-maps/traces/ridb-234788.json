@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-234788",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -113.9821934,
+     48.3047661
+    ],
+    [
+     -113.9823013,
+     48.304856
+    ],
+    [
+     -113.9824226,
+     48.3049369
+    ],
+    [
+     -113.9824901,
+     48.3049999
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane north-west from the loop's south-west corner past 009. Its continuation north toward 006 is under the firs and was left out."
+}

@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233926",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.5007871,
+     44.7045696
+    ],
+    [
+     -107.5007115,
+     44.7045696
+    ],
+    [
+     -107.5006484,
+     44.7045606
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.5006043,
+     44.7049252
+    ],
+    [
+     -107.5005097,
+     44.7049207
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt pull-ins east of the lane to 003 and to 002. The spurs to 001 and 004 don't show plainly through the firs."
+}

@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-247366",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.8295091,
+     40.9124778
+    ],
+    [
+     -110.8296041,
+     40.9124328
+    ],
+    [
+     -110.8297109,
+     40.9123608
+    ],
+    [
+     -110.8297822,
+     40.9122932
+    ],
+    [
+     -110.8298297,
+     40.9122302
+    ],
+    [
+     -110.8298534,
+     40.9121942
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane south-west off the campground road to 1. The track on along the river past 1 was left out."
+}

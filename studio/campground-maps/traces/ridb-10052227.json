@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-10052227",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -108.4897207,
+     34.1369154
+    ],
+    [
+     -108.4896665,
+     34.1368072
+    ],
+    [
+     -108.4895906,
+     34.1367171
+    ],
+    [
+     -108.4895039,
+     34.1366449
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -108.4897858,
+     34.1369334
+    ],
+    [
+     -108.4897858,
+     34.1368252
+    ],
+    [
+     -108.4897966,
+     34.1367621
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane south-west from the north-west loop past 07 to 09 and the short lane by the trailers at 10 to 12. Left out the pad lanes to 01 to 03, which sit within 17 m of the loop."
+}

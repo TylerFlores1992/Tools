@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-272244",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.5315525,
+     40.5762086
+    ],
+    [
+     -122.5315938,
+     40.5763617
+    ],
+    [
+     -122.5316588,
+     40.5765419
+    ],
+    [
+     -122.5317532,
+     40.5766951
+    ],
+    [
+     -122.5318476,
+     40.5768393
+    ],
+    [
+     -122.5319185,
+     40.5769564
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.5313164,
+     40.5761365
+    ],
+    [
+     -122.5312692,
+     40.5762716
+    ],
+    [
+     -122.5312102,
+     40.5763617
+    ],
+    [
+     -122.5311512,
+     40.5764158
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.5313164,
+     40.5761365
+    ],
+    [
+     -122.5313282,
+     40.5760014
+    ],
+    [
+     -122.53134,
+     40.5758302
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt track north-west from the lot, and lanes through the open dirt lot north to 001 and south to 002. The paved path to the restroom is a footpath and was left out."
+}

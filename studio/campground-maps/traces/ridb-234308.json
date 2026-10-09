@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "map": "ridb-234308",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.5180776,
+     38.3428021
+    ],
+    [
+     -111.5180089,
+     38.3428832
+    ],
+    [
+     -111.5179288,
+     38.3429553
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt way from the north end of the paved end loop to the group site A lot by its fire ring. Nothing else was missing."
+}

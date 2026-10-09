@@ -1,0 +1,83 @@
+{
+ "version": 1,
+ "map": "ridb-232026",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -112.898399,
+     37.5912126
+    ],
+    [
+     -112.8982631,
+     37.5912396
+    ],
+    [
+     -112.8981159,
+     37.5912576
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.9010148,
+     37.5910864
+    ],
+    [
+     -112.9010148,
+     37.5909782
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.9025436,
+     37.5912306
+    ],
+    [
+     -112.9025436,
+     37.5913387
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.9058728,
+     37.5927086
+    ],
+    [
+     -112.9057143,
+     37.5926816
+    ],
+    [
+     -112.9055784,
+     37.5926726
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.906088,
+     37.5927447
+    ],
+    [
+     -112.9061333,
+     37.5928438
+    ],
+    [
+     -112.9062125,
+     37.592952
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spurs and pads that show plainly: east of the end loop toward 001, the pad by 010, the pad below 013, the spur east from the west loop toward 018 and the lot north of it toward 019. Left out the spurs to 002 to 009, 011, 012 and 014 to 017, which don't show plainly through the firs."
+}
