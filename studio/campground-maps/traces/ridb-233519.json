@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233519",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -72.848481,
+     42.3431111
+    ],
+    [
+     -72.8485635,
+     42.3431435
+    ],
+    [
+     -72.8486848,
+     42.3431975
+    ],
+    [
+     -72.8488062,
+     42.343256
+    ],
+    [
+     -72.8489275,
+     42.343319
+    ],
+    [
+     -72.8490003,
+     42.343364
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved lane past the shelter to IHC, traced from the photo."
+}

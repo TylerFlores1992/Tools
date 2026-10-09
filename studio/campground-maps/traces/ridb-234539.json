@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-234539",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.6153549,
+     39.6205882
+    ],
+    [
+     -120.6152617,
+     39.6205612
+    ],
+    [
+     -120.6151453,
+     39.6205252
+    ],
+    [
+     -120.6150288,
+     39.6204891
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.6153782,
+     39.620354
+    ],
+    [
+     -120.6153083,
+     39.6203089
+    ],
+    [
+     -120.6152268,
+     39.6202819
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane east from the loop's north-east corner past 016 and the short lane east toward 014. Left out lanes to 017 to 019, which the photo doesn't show plainly."
+}

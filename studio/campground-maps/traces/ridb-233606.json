@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233606",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -95.3178049,
+     36.0315512
+    ],
+    [
+     -95.3178826,
+     36.0315512
+    ],
+    [
+     -95.3179713,
+     36.0315422
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -95.3172056,
+     36.0318396
+    ],
+    [
+     -95.3173055,
+     36.0318441
+    ],
+    [
+     -95.3173943,
+     36.0318486
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -95.3172167,
+     36.0319297
+    ],
+    [
+     -95.3173277,
+     36.0319748
+    ],
+    [
+     -95.3174165,
+     36.0320018
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the spurs to 029, 039 and 040; the other spurs in the south woods (030 to 034, 036 to 038, 041 to 043) are under the trees and left out."
+}

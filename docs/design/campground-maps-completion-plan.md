@@ -20,14 +20,14 @@ Pilots and their results are recorded here as they finish.*
 
 | Blocking cause | Hidden | Usable | Fix | Status |
 |---|---|---|---|---|
-| Canopy hides the lanes | 692 | 130 | Trace over lidar relief; for the rest, an owner decision (5 below) | Pilot: 2 of 25 pass, 5 traced and still held |
+| Canopy hides the lanes | 692 | 130 | Trace over lidar point-cloud layers (below) | Relief pilot: 7 of 25 helped; point-cloud pilot: 11 of 17 traceable or confirmed; tool in progress |
 | Drawn road off the visible lane | 112 | 47 | Replace trace from the photo | Tool exists; needs tracing |
 | Lanes visible but not drawn | 93 | 155 | Trace from the photo | Tool exists; needs tracing |
 | Unit pin on nothing | 77 | 1 | Forest Service cabin points (Alaska); lidar for a clearing | Researched; not built |
 | Unit pin 15–150 m off a visible building | 67 | 24 | **Move the pin** (site-move trace) | Built 2026-10-08; 40 of 79 now pass |
 | Only the access road drawn | 58 | 13 | Trace from the photo or the lidar | Tool exists |
 | A third or more of the sites roadless | 49 | 7 | Trace from the photo or the lidar | Tool exists |
-| Dispersed sites, not one campground | 40 | 3 | Dispersed-area design | **Owner's decision** |
+| Dispersed sites, not one campground | 40 | 3 | Stay off (owner, 2026-10-09) | Decided |
 | Split into areas, split wrong | 39 | 23 | Split calls (gap / maxSpan), or the split design | Tool exists |
 | No lane visible to trace | 37 | 47 | Lidar; else accept the sites where they are | Partly |
 | Can't be drawn (sites on one spot) | 31 | 0 | Parking rows dropped (built); stacked twins need moves | Partly built |
@@ -36,7 +36,7 @@ Pilots and their results are recorded here as they finish.*
 | Site points misplaced | 24 | 13 | Move the points | Built (site move) |
 | Sites stacked on one spot | 19 | 11 | Move the points | Built (site move) |
 | Stray point km away | 15 | 0 | **Left off by rule** | Built 2026-10-08; with the parking rule, 8 of 17 rebuilt now pass |
-| No public-domain photo (Alaska) | 15 | 0 | USGS IfSAR radar image | **Owner's decision** (licence unclear) |
+| No public-domain photo (Alaska) | 15 | 0 | Stay off (owner, 2026-10-09) | Decided |
 | Unit pin wrong, listing's own point right | 12 | 0 | Move the pin to the listing's point | Built (site move); in the 79 below |
 | Unit right, no road reaches it | 6 | 67 | Trace the last stretch; fly-in and boat-in are right as drawn | Tool exists |
 | First-come: another campground's outline | 8 | 0 | **Outline-name check** | Built 2026-10-08 |
@@ -98,7 +98,62 @@ Pilots and their results are recorded here as they finish.*
 - The Corps' recreation points (no campsites).
 - An automatic lane detector on the relief, which found ditches and creek banks, not inner lanes.
 
+## Canopy: the answer is lidar point clouds (research pilot, 2026-10-09)
+The 3DEP elevation service smooths away the fine relief and carries no intensity. USGS's raw
+point clouds keep both, so a pilot built layers from them for the 18 maps where the relief showed
+no lane. The full report is `research/campground-maps-pointcloud.md`.
+- **Ground-return intensity shows paved and gravel lanes plainly under full canopy:** every lane
+  and pull-in spur at Oak Ridge, the herringbone pads at Gulpha Gorge, the shoreline lane at
+  Charbonneau. A relief built from the ground points at 0.5 m helps beside it.
+- **Results on the 18:**
+  - 7 lanes plain enough to trace.
+  - 4 drawn roads confirmed, with no other lane.
+  - 3 partial: the paved lanes show, the dirt ones don't.
+  - 3 nothing: faint dirt lanes, or under about 1.5 ground points per m².
+  - 1 no USGS points: Oak Fork, Oregon, which has DOGAMI's lidar only.
+  - So 11 of 17 with data are traceable or confirmed; read that as a sample, not a forecast.
+- **Coverage:** 567 of the 692 canopy holds have USGS point clouds. Most of the 125 without are
+  in Alaska (67) and Oregon (40).
+- **Licence:** public domain (USGS; "US Government Public Domain" on the AWS open-data registry).
+  A trace drawn over it credits "USGS 3D Elevation Program lidar point cloud".
+- **Not a build step:** automatic lane masks pick up creek banks, highway edges and trails. A
+  person traces over the layers, as with the relief.
+- **Cost:** about 400 MB of download and a few minutes per map from USGS's tile server, less from
+  the AWS copy where the survey is there.
+- **Plan:**
+  - build a studio tool that makes the layers per map and keeps no points (in progress);
+  - then run a canopy tracing campaign over the 567 maps, paved campgrounds and dense surveys
+    first.
+  - Faint dirt lanes and sparse surveys stay the hard remainder.
+
+## The fix-after campaign: results (2026-10-09)
+Every held or usable map a person can fix from the photo went through one of 17 photo batches
+(`campground-maps-fix-brief.md`), plus the first three canopy batches over the lidar point clouds
+(`campground-maps-canopy-brief.md`). Each batch's maps were checked over the photo, and canopy
+maps over the layer, by the orchestrating session before any decision was recorded.
+- **Photo batches (691 maps):**
+  - 379 pass (good or usable) and 298 are held. 14 more are in the owner's waves, where the
+    decisions stay the owner's.
+  - Of the 379 maps that started held, 112 now pass.
+  - About 60 that had passed as usable were found below the bar and are now held. Most have a
+    drawn road off the lane, or a third or more of their sites more than 40 m from a drawn road.
+- **Canopy batches 1–3 (126 maps):** 70 pass and 52 are held. More canopy batches are running as
+  the point-cloud layers are made (667 canopy maps have USGS point clouds).
+- **Delegated waves now:** 1,703 pass and 1,258 are held (were 1,577 and 1,384).
+- **Rules made explicit on the way:**
+  - a site counts as roadless more than 40 m from any drawn road or lot, walk-ins included;
+  - lanes that would be drawn unconnected to any road hold a map;
+  - a trace keeps every earlier tracer's credit (fixed, tested).
+- **What stays held, mostly:** lanes no photo or layer places to 3 m (dense canopy on sparse
+  surveys, faint dirt lanes); walk-in or boat-in sites far from any road; stacked or misplaced
+  sites with no pad to tell them apart; first-come pins with no campground near them.
+
 ## Decisions for the owner
+**Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
+them for good nor publish them half drawn; research below); (2) dispersed listings: keep them off;
+(3) the Alaska maps with no photo: keep them off (no IfSAR, no letter to USGS); (4) the tracing
+campaign: all of it (`campground-maps-fix-brief.md`, 17 batches by wave). The questions as asked:
+
 1. **The dispersed-area design (40 maps):** listings that aren't one campground (backcountry
    permits, boat-in shores). Should they show as a list of places, or a map per area, or stay off?
 2. **USGS IfSAR for interior Alaska (5–10 maps):** write to USGS to confirm the licence?

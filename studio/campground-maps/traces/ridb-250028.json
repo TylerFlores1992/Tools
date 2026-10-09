@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-250028",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.9870215,
+     44.072394
+    ],
+    [
+     -106.9868218,
+     44.0724345
+    ],
+    [
+     -106.986672,
+     44.0724435
+    ],
+    [
+     -106.9865472,
+     44.0724075
+    ],
+    [
+     -106.9864474,
+     44.07234
+    ],
+    [
+     -106.98636,
+     44.0722681
+    ],
+    [
+     -106.9863101,
+     44.0722051
+    ],
+    [
+     -106.9862227,
+     44.0721466
+    ],
+    [
+     -106.9861229,
+     44.0720881
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane through the meadow from the main road past 04 and 05 back to it. Nothing else was missing."
+}

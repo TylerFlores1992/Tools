@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232272",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "36",
+   "at": [
+    -109.4063045,
+    37.7376519
+   ]
+  }
+ ],
+ "note": "Moved 36 off the highway shoulder onto the gravel pull-in beside the lane between 35 and 37, the one unclaimed pad in that stretch."
+}

@@ -1,0 +1,80 @@
+{
+ "version": 1,
+ "map": "ridb-10317346",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.572069,
+     40.79374
+    ],
+    [
+     -105.5719611,
+     40.7937175
+    ],
+    [
+     -105.5718426,
+     40.7936995
+    ],
+    [
+     -105.5717241,
+     40.7936905
+    ],
+    [
+     -105.5716056,
+     40.7936905
+    ],
+    [
+     -105.5714871,
+     40.793695
+    ],
+    [
+     -105.5713685,
+     40.793695
+    ],
+    [
+     -105.57125,
+     40.7936995
+    ],
+    [
+     -105.5711315,
+     40.793704
+    ],
+    [
+     -105.571013,
+     40.793713
+    ],
+    [
+     -105.5708945,
+     40.7937265
+    ],
+    [
+     -105.5707759,
+     40.793749
+    ],
+    [
+     -105.5706574,
+     40.7937805
+    ],
+    [
+     -105.5705626,
+     40.793821
+    ],
+    [
+     -105.5704915,
+     40.793875
+    ],
+    [
+     -105.5704441,
+     40.793938
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replaces the straight Census line through the trees: the lane in from the highway past the assistant ranger cabin, traced over the lidar relief (USGS 3DEP), where its bench shows plainly, and checked against the photo where it is open."
+}

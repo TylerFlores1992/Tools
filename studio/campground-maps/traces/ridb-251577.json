@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-251577",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.6282541,
+     44.5284695
+    ],
+    [
+     -121.6282604,
+     44.5285369
+    ],
+    [
+     -121.6282793,
+     44.5286404
+    ],
+    [
+     -121.6282918,
+     44.5287529
+    ],
+    [
+     -121.6283044,
+     44.5288879
+    ],
+    [
+     -121.6283107,
+     44.5289779
+    ],
+    [
+     -121.6283107,
+     44.5290229
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane north past 003, 002 and 001. The drawn loop west and south of it could not be checked or replaced: the river sites 004 to 016 sit under full canopy, with only clearings at 008 to 012 and a dirt stretch from 012 to 014 showing, and the lidar relief there is too noisy to follow a lane."
+}

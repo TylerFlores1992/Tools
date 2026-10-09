@@ -1,0 +1,91 @@
+{
+ "version": 1,
+ "map": "ridb-234736",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -116.7900638,
+     33.3863346
+    ],
+    [
+     -116.7900423,
+     33.3862264
+    ],
+    [
+     -116.7899993,
+     33.3861362
+    ],
+    [
+     -116.7899563,
+     33.386046
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.7900423,
+     33.3862174
+    ],
+    [
+     -116.7902035,
+     33.3862084
+    ],
+    [
+     -116.7903325,
+     33.3862264
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.7894942,
+     33.3863707
+    ],
+    [
+     -116.7895802,
+     33.3863075
+    ],
+    [
+     -116.7896446,
+     33.3862444
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.7886451,
+     33.3878316
+    ],
+    [
+     -116.7885806,
+     33.3877865
+    ],
+    [
+     -116.7885161,
+     33.3877324
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.7887204,
+     33.3872544
+    ],
+    [
+     -116.7886236,
+     33.3872364
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the stem and spur by 030 and the pull-ins to 033, 040 and 043. Left out the larger lane network south of the loop, which holds no listed sites, the lane to 044 (not plain on the photo) and the short spurs between the loops."
+}

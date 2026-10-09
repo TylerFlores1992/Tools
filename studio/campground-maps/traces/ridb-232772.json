@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-232772",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.4129084,
+     45.0569947
+    ],
+    [
+     -109.4129592,
+     45.0569047
+    ],
+    [
+     -109.4129973,
+     45.0568327
+    ],
+    [
+     -109.4130988,
+     45.0567607
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the gravel lane south off the loop toward 008. Left out: the short angled pull-ins inside the loop by 003 and 006, and any way to 009 and 010, too broken by the firs to place."
+}

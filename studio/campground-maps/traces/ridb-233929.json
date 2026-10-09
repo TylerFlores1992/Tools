@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-233929",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.522079,
+     45.4989653
+    ],
+    [
+     -110.5220278,
+     45.4988663
+    ],
+    [
+     -110.5219766,
+     45.4987763
+    ],
+    [
+     -110.5219254,
+     45.4986953
+    ],
+    [
+     -110.5218999,
+     45.4986144
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.5219254,
+     45.4986953
+    ],
+    [
+     -110.5218359,
+     45.4986414
+    ],
+    [
+     -110.5217847,
+     45.4985604
+    ],
+    [
+     -110.5217591,
+     45.4984704
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spur south from the drawn road toward 024 and 026, with its two branches. Left out any lane to 018 in the meadow; none shows."
+}

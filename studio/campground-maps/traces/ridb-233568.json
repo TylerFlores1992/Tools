@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233568",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-c)",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -344,8 +344,56 @@
      39.7713581
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -122.3544876,
+     39.7735916
+    ],
+    [
+     -122.3545342,
+     39.7736636
+    ],
+    [
+     -122.3545926,
+     39.7737357
+    ],
+    [
+     -122.3546159,
+     39.7738167
+    ],
+    [
+     -122.3546276,
+     39.7738888
+    ],
+    [
+     -122.354651,
+     39.7739743
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.3533906,
+     39.7721597
+    ],
+    [
+     -122.3535539,
+     39.7721597
+    ],
+    [
+     -122.3536823,
+     39.7721597
+    ],
+    [
+     -122.3537523,
+     39.7721642
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "The paved loops, lanes and lot edges from the photo. The pads off the lanes and the dirt tracks are left out."
+ "note": "The paved loops, lanes and lot edges from the photo. The pads off the lanes and the dirt tracks are left out. Added (fix fix-06): the paved lane west of the OB08 to OB10 island, joining the north and south lanes, and the south loop's north side from the lane east."
 }

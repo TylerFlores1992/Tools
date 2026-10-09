@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-251946",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -79.4430689,
+     41.47984
+    ],
+    [
+     -79.4432365,
+     41.4798355
+    ],
+    [
+     -79.443416,
+     41.4798355
+    ],
+    [
+     -79.4435597,
+     41.4798445
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -79.4432784,
+     41.4807671
+    ],
+    [
+     -79.4433562,
+     41.4807446
+    ],
+    [
+     -79.443428,
+     41.4807266
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane west to the lot by 207 and the drive to 201, traced from the photo."
+}

@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-232122",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -112.5882753,
+     37.7454601
+    ],
+    [
+     -112.5881504,
+     37.7454601
+    ],
+    [
+     -112.588037,
+     37.7454646
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.5882185,
+     37.7455818
+    ],
+    [
+     -112.5880824,
+     37.7455863
+    ],
+    [
+     -112.5879575,
+     37.7455908
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.5864879,
+     37.7467081
+    ],
+    [
+     -112.5864879,
+     37.7467982
+    ],
+    [
+     -112.5864879,
+     37.7468793
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the two gravel parking spurs east of the west lane toward 004 and 005, and the short spur north of the river lane toward 017 and 018. The spurs to 020 to 025 don't show through the trees and weren't traced."
+}

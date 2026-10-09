@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-251950",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -101.2598582,
+     47.6190992
+    ],
+    [
+     -101.2597651,
+     47.6191622
+    ],
+    [
+     -101.2596986,
+     47.6192341
+    ],
+    [
+     -101.2596653,
+     47.6193151
+    ],
+    [
+     -101.2596587,
+     47.619423
+    ],
+    [
+     -101.2596587,
+     47.6195849
+    ],
+    [
+     -101.2596587,
+     47.6196299
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel road north from the north loop's turnaround past 037."
+}

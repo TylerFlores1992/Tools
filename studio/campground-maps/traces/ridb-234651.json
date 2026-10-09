@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-234651",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout trace-a); Claude (fix fix-11)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -149,32 +149,48 @@
      36.4215644
     ],
     [
-     -93.8585574,
-     36.4214698
+     -93.858583,
+     36.4215014
+    ],
+    [
+     -93.85836,
+     36.4213887
     ],
     [
      -93.858137,
-     36.4212085
+     36.4212761
     ],
     [
-     -93.8578103,
-     36.4210085
+     -93.857914,
+     36.4211499
     ],
     [
-     -93.857313,
-     36.4207273
+     -93.857691,
+     36.4210283
     ],
     [
-     -93.8570637,
-     36.4205868
+     -93.8574679,
+     36.4209031
     ],
     [
-     -93.8565647,
-     36.420366
+     -93.8572449,
+     36.4207832
     ],
     [
-     -93.8563194,
-     36.4202849
+     -93.8570219,
+     36.4206607
+    ],
+    [
+     -93.8567989,
+     36.420539
+    ],
+    [
+     -93.8565759,
+     36.4204147
+    ],
+    [
+     -93.8563529,
+     36.4203075
     ],
     [
      -93.8560685,
@@ -761,9 +777,53 @@
      36.420731
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -93.8616607,
+     36.4231233
+    ],
+    [
+     -93.8617276,
+     36.4230963
+    ],
+    [
+     -93.8617833,
+     36.4230692
+    ],
+    [
+     -93.8618279,
+     36.4230242
+    ],
+    [
+     -93.8618391,
+     36.4229341
+    ],
+    [
+     -93.8618056,
+     36.42288
+    ],
+    [
+     -93.8617555,
+     36.422844
+    ],
+    [
+     -93.8616997,
+     36.4228034
+    ],
+    [
+     -93.8616272,
+     36.4227809
+    ],
+    [
+     -93.861577,
+     36.4227899
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replace trace: the dam road, the island's ring (north road past 013 to 019, west road past 024 to 030, south road past 032 to 040), the curve and the cross road between them, the lanes past 041 to 044 and the turnaround, the lanes to 013 and 026, County Road 113, and the east shore's lane and loop past 009 to 012. The lane on past 005 to 008 runs under trees, and the boat-ramp drive and the shore track below 030 are left out."
+ "note": "Replace trace: the dam road, the island's ring (north road past 013 to 019, west road past 024 to 030, south road past 032 to 040), the curve and the cross road between them, the lanes past 041 to 044 and the turnaround, the lanes to 013 and 026, County Road 113, and the east shore's lane and loop past 009 to 012. The lane on past 005 to 008 runs under trees, and the boat-ramp drive and the shore track below 030 are left out. Fix 2026-10-09 (fix-11): the dam road moved onto the pavement's middle, 6 to 8 m north of where it was drawn, and the west lane past 022 and 023 added (placed from the photo's brightness profile across the lanes)."
 }

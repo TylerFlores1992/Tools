@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234442",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -91.5627717,
+     37.3758678
+    ],
+    [
+     -91.562783,
+     37.3757958
+    ],
+    [
+     -91.5627491,
+     37.3757147
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -91.5623087,
+     37.3758228
+    ],
+    [
+     -91.5622861,
+     37.3757417
+    ],
+    [
+     -91.5622748,
+     37.3756697
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The spurs south from the loop into the riverside clearing and toward G03. Left out: G01 and G04, in the trees with no lane showing."
+}

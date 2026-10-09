@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-234108",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -149.4987798,
+     60.6349552
+    ],
+    [
+     -149.4987926,
+     60.6348834
+    ],
+    [
+     -149.4988017,
+     60.6348295
+    ],
+    [
+     -149.4987104,
+     60.6347757
+    ],
+    [
+     -149.4986007,
+     60.6347308
+    ],
+    [
+     -149.4985368,
+     60.634668
+    ],
+    [
+     -149.4985185,
+     60.6346052
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -149.4988017,
+     60.6348295
+    ],
+    [
+     -149.4988748,
+     60.6347891
+    ],
+    [
+     -149.4989296,
+     60.6347712
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane south from the lot by 023 toward 022 and 024, traced from the photo."
+}

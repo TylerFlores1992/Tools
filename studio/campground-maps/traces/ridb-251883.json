@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-251883",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-d)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout west-d); Claude (fix fix-09)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -54,6 +54,26 @@
     [
      -122.0951202,
      43.3192069
+    ],
+    [
+     -122.0950462,
+     43.3192608
+    ],
+    [
+     -122.0949969,
+     43.3193328
+    ],
+    [
+     -122.0949723,
+     43.3194138
+    ],
+    [
+     -122.0949846,
+     43.3194858
+    ],
+    [
+     -122.0950093,
+     43.3195398
     ]
    ]
   },
@@ -123,5 +143,5 @@
   }
  ],
  "points": [],
- "note": "The three gravel lanes that show through the firs, traced from the photo: the B loop's lane past B002 to B004, the lane past A003 toward B006, and the lane up to A008. The A003 lane's south end is left short where it goes under the trees (its join to the parking clearing doesn't show). The lanes to A004 to A007 and B007 don't show."
+ "note": "The three gravel lanes that show through the firs, traced from the photo: the B loop's lane past B002 to B004 (extended by fix-09 round the bend north of B004, where the gravel shows to about 40 m further), the lane past A003 toward B006, and the lane up to A008. The A003 lane's south end is left short where it goes under the trees (its join to the parking clearing doesn't show). The lanes to A004 to A007 and B007 don't show."
 }

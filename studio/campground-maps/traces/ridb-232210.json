@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232210",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.04338,
+     43.1974761
+    ],
+    [
+     -111.0434908,
+     43.1974806
+    ],
+    [
+     -111.0435892,
+     43.1974806
+    ],
+    [
+     -111.043663,
+     43.1974761
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.0431955,
+     43.197152
+    ],
+    [
+     -111.0433062,
+     43.19717
+    ],
+    [
+     -111.0434047,
+     43.197179
+    ],
+    [
+     -111.0435031,
+     43.1971745
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the pull-ins west of the north loop to 011 and 013, which show on the photo and as cuts in the lidar relief. The pads by 008 and 009 show only as clearings with no lane, so they aren't traced."
+}

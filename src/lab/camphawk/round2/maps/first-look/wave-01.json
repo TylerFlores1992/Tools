@@ -30,7 +30,7 @@
   },
   "232433": {
    "call": "usable",
-   "note": "The Park Service draws every lettered loop and the lanes inside them match. The numbered sites around the rim (001 to 044, and some A sites) sit off the drawn roads; they may be walk-in tent sites, but the trees hide any lanes."
+   "note": "The lidar intensity shows every lettered loop and its pull-through lanes as dark bands, and the drawn roads run down their middles. The numbered rim sites (001 to 044, 20 of 202 more than 40 m from a road) are reached by footpaths from the lots on the ring road, which aren't drawn as roads. Nothing traced."
   },
   "232449": {
    "call": "good",
@@ -154,7 +154,7 @@
   },
   "10305470": {
    "call": "usable",
-   "note": "The outer loop and the two cross lanes follow the visible lanes, and the sites line them. The short east–west spurs between the rows of trailers (51 to 88, 56 to 86) aren't drawn."
+   "note": "Unchanged. Over the photo the short east-west spurs between the trailer rows (51 to 88, 56 to 86) show only as gaps between pine shadows, not as lanes that can be followed, so nothing was traced. The outer loop and the cross lanes follow the visible lanes and the sites line them."
   },
   "251434": {
    "call": "hold",
@@ -166,7 +166,7 @@
   },
   "234031": {
    "call": "usable",
-   "note": "The two loops and the road east follow the lanes that show under the oaks, and most sites line them. Zoomed at 5 m: a sandy track runs parallel to the drawn road 10 m to its west, but it leads toward 074, not to 076 to 079, and what it is can't be told from the photo, so nothing was traced. 076 to 079 sit 20 to 40 m from any road."
+   "note": "The two loops and the road east follow the lanes under the oaks. Traced the sandy lane that runs north from the road by 064 toward 074, which the photo shows where the canopy opens and the lidar relief shows as a smooth band with a ditch; 076 to 079 still show no lane and sit 20 to 40 m from a road."
   },
   "232215": {
    "call": "usable",
@@ -182,7 +182,7 @@
   },
   "233965": {
    "call": "usable",
-   "note": "The west road along the bluff follows the visible pavement, and the sites there sit on pads beside it. The east road runs under full canopy, and the east row (21, 35 to 40, 52 to 60) and the south sites (47 to 53) sit 20 to 40 m off it with no lane showing."
+   "note": "The lidar intensity shows the west road along the bluff and the east road under the canopy as dark bands, and the drawn roads follow them within a few meters. East of the east road (sites 21, 35 to 40, 52 to 60) the survey has almost no ground returns, so no lane can be seen there; those sites sit 20 to 40 m off the road. Nothing traced."
   },
   "10305353": {
    "call": "good",
@@ -194,7 +194,7 @@
   },
   "256933": {
    "call": "usable",
-   "note": "The loops follow the visible pavement, and the sites sit on spurs beside them. The straight road drawn north–south through the middle doesn't show on the photo, and the short spurs to 13 to 15 aren't drawn."
+   "note": "Unchanged. Zoomed on a 5 m grid and over the lidar relief, the straight road through the middle does follow a paved lane that runs from the top loop south past 23 and 21 to the lower loop (within about 5 m), so it wasn't removed; the lanes around 24 to 31 and the loop by 14 and 15 are drawn roughly. The short spurs to 13 to 15 still aren't drawn."
   },
   "232136": {
    "call": "hold",
@@ -302,7 +302,7 @@
   },
   "232459": {
    "call": "usable",
-   "note": "The lettered loops are drawn and right. The numbered sites around the rim (001 to 053) sit off the drawn roads under the trees; they may be walk-in tent sites."
+   "note": "The lettered loops (A to I) are drawn on the lanes the lidar intensity shows under the trees. The numbered tent sites around the rim (001 to 053, 24 of 215 more than 40 m from a road) are reached by footpaths, which aren't drawn as roads; the lidar survey doesn't reach the northeast edge of the E and I loops, so that part is unchecked. Nothing traced."
   },
   "232508": {
    "call": "good",
@@ -346,7 +346,7 @@
   },
   "232741": {
    "call": "usable",
-   "note": "Zoomed: the road along the shore follows the visible pavement, and the sites sit on spurs between it and the beach. A lane through 073 to 083 shows and isn't drawn."
+   "note": "Unchanged. Zoomed on a 10 m grid, the lane through 073 to 083 shows only as separate pale pads (by 074, 077 and 083) under the canopy, not as a line that can be followed, so nothing was traced. The shore road and the spurs to the other sites follow the visible pavement."
   },
   "232607": {
    "call": "hold",
@@ -378,7 +378,7 @@
   },
   "233504": {
    "call": "usable",
-   "note": "The loops follow the visible pavement, and the sites sit beside them. On a 20 m grid the row 001 to 008 sits 10 to 15 m from the drawn loop's south side, so no trace was needed."
+   "note": "Zoomed on a 5 m grid, 001 to 009 sit on their own pads and pull-ins beside the loop's south side, so no site needed moving. Traced the lane north from the loop to 003 and the spur to 009; the short pull-ins to 001, 002, 004, 005, 007 and 008 stay undrawn."
   },
   "233700": {
    "call": "hold",

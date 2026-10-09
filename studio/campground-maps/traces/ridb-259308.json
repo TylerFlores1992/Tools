@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-259308",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.3909656,
+     44.8881377
+    ],
+    [
+     -110.3909467,
+     44.8880477
+    ],
+    [
+     -110.3909214,
+     44.8879398
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.3907695,
+     44.8891634
+    ],
+    [
+     -110.3909214,
+     44.8891769
+    ],
+    [
+     -110.3910732,
+     44.8891904
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the lane on south past 16 and 17, and the gravel spur west to 7, 8 and 9. Left out the pull-ins by 12 to 15."
+}

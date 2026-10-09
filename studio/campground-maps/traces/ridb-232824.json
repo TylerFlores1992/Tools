@@ -1,0 +1,107 @@
+{
+ "version": 1,
+ "map": "ridb-232824",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-05)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.1746202,
+     39.9022713
+    ],
+    [
+     -120.1745618,
+     39.9022713
+    ],
+    [
+     -120.1745033,
+     39.9022713
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1746787,
+     39.9025954
+    ],
+    [
+     -120.1747606,
+     39.902609
+    ],
+    [
+     -120.1748307,
+     39.9025954
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1747547,
+     39.9019201
+    ],
+    [
+     -120.1747723,
+     39.9018661
+    ],
+    [
+     -120.174784,
+     39.9018121
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1727143,
+     39.9028566
+    ],
+    [
+     -120.1726441,
+     39.9028656
+    ],
+    [
+     -120.1725623,
+     39.9028701
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1738251,
+     39.903667
+    ],
+    [
+     -120.1738602,
+     39.903595
+    ],
+    [
+     -120.1738953,
+     39.9035229
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1738368,
+     39.9027575
+    ],
+    [
+     -120.1738427,
+     39.9028476
+    ],
+    [
+     -120.1738485,
+     39.9029376
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Spurs traced from the photo to 034, 036, 030 and 033, 024, 009 and 005. Zoomed, the drawn loops mostly follow the paved lanes within 3 to 4 m, so they were kept; the east loop's north side runs under shadow and can't be checked. Left out: lanes to 006, 010, 021, 022 and the outer west row, which don't show."
+}

@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-251433",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.8360776,
+     43.7860481
+    ],
+    [
+     -121.8360589,
+     43.7859941
+    ],
+    [
+     -121.8360403,
+     43.7859671
+    ],
+    [
+     -121.8359968,
+     43.7859221
+    ],
+    [
+     -121.8359533,
+     43.7858771
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved spur south off the north junction toward 040. The dirt strip from the west loop past 014, 029 and 028 to the lane by 027 looks closed off (a row of logs along it) and wasn't traced."
+}

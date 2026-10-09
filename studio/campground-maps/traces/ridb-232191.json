@@ -1,0 +1,131 @@
+{
+ "version": 1,
+ "map": "ridb-232191",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.4503778,
+     34.0454768
+    ],
+    [
+     -109.4502912,
+     34.0455128
+    ],
+    [
+     -109.4501937,
+     34.0455291
+    ],
+    [
+     -109.4500475,
+     34.0455615
+    ],
+    [
+     -109.4499392,
+     34.0456003
+    ],
+    [
+     -109.4498796,
+     34.045648
+    ],
+    [
+     -109.449858,
+     34.0457111
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.4507786,
+     34.0453416
+    ],
+    [
+     -109.4508327,
+     34.0452605
+    ],
+    [
+     -109.4508544,
+     34.0451703
+    ],
+    [
+     -109.4508544,
+     34.0450982
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.4487641,
+     34.0442149
+    ],
+    [
+     -109.4487641,
+     34.044287
+    ],
+    [
+     -109.4487695,
+     34.0443591
+    ],
+    [
+     -109.4487749,
+     34.0444312
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.4487641,
+     34.0443411
+    ],
+    [
+     -109.4486774,
+     34.0443456
+    ],
+    [
+     -109.4485908,
+     34.0443456
+    ],
+    [
+     -109.4485475,
+     34.0443366
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.4489915,
+     34.0440616
+    ],
+    [
+     -109.4489049,
+     34.0440977
+    ],
+    [
+     -109.4488074,
+     34.0441067
+    ],
+    [
+     -109.4486991,
+     34.0441022
+    ],
+    [
+     -109.4485908,
+     34.0440977
+    ],
+    [
+     -109.4484933,
+     34.0440887
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Red dirt lanes that show and weren't drawn, traced from the photo (fix-09): at the west end, the lane northeast from 019 past the parked trailer and the lane south toward the parked vehicles; at the east loop, the lane north from the loop's top with its branch east to a trailer, and the lane across the loop's middle. Left out: the open red ground round the grass island at the west end, which is a clearing rather than a lane."
+}

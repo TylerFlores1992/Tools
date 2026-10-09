@@ -261,3 +261,16 @@ test("the credits say what a trace was drawn over: aerial photos, lidar, or both
   assert.equal(tracedOver("USGS 3D Elevation Program lidar (public domain)"), "lidar elevation (USGS 3DEP)");
   assert.equal(tracedOver("U.S. Forest Service Alaska Region; Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)"), "aerial photos and lidar elevation (Oregon DOGAMI)");
 });
+
+test("a trace drawn over the lidar point clouds (GROUND=…) credits lidar, not only its elevation", async () => {
+  const { tracedOver } = await import("../studio/campground-maps/build.mjs");
+  const { GROUND_CREDIT } = await import("../studio/campground-maps/ground.mjs");
+  const NAIP = "USDA NAIP via USGS The National Map (public domain)", ELEV = "USGS 3D Elevation Program lidar (public domain)";
+  const DOGAMI = "Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)";
+  assert.equal(tracedOver(`${NAIP}; ${GROUND_CREDIT}`), "aerial photos and lidar (USGS 3DEP)");
+  assert.equal(tracedOver(GROUND_CREDIT), "lidar (USGS 3DEP)");
+  assert.equal(tracedOver(`${NAIP}; ${ELEV}; ${GROUND_CREDIT}`), "aerial photos and lidar (USGS 3DEP)");
+  assert.equal(tracedOver(`${NAIP}; ${DOGAMI}; ${GROUND_CREDIT}`), "aerial photos and lidar (USGS 3DEP and Oregon DOGAMI)");
+  // The elevation relief alone still reads as elevation.
+  assert.equal(tracedOver(`${NAIP}; ${ELEV}`), "aerial photos and lidar elevation (USGS 3DEP)");
+});

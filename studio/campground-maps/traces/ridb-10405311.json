@@ -1,0 +1,105 @@
+{
+ "version": 1,
+ "map": "ridb-10405311",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.229076,
+     48.7403951
+    ],
+    [
+     -118.2290624,
+     48.7403322
+    ],
+    [
+     -118.229076,
+     48.7399724
+    ],
+    [
+     -118.2290624,
+     48.7396576
+    ],
+    [
+     -118.2289808,
+     48.7392708
+    ],
+    [
+     -118.2289128,
+     48.739019
+    ],
+    [
+     -118.228872,
+     48.7388121
+    ],
+    [
+     -118.2288788,
+     48.7387042
+    ]
+   ],
+   "through": true
+  },
+  {
+   "coords": [
+    [
+     -118.2288788,
+     48.7387042
+    ],
+    [
+     -118.2288244,
+     48.7386637
+    ],
+    [
+     -118.2287088,
+     48.7386142
+    ],
+    [
+     -118.2286137,
+     48.7385693
+    ],
+    [
+     -118.2285729,
+     48.7385153
+    ],
+    [
+     -118.2285593,
+     48.7384613
+    ],
+    [
+     -118.2286001,
+     48.7384029
+    ],
+    [
+     -118.2287224,
+     48.7383669
+    ],
+    [
+     -118.2288176,
+     48.7383804
+    ],
+    [
+     -118.2288584,
+     48.7384343
+    ],
+    [
+     -118.2288652,
+     48.7385333
+    ],
+    [
+     -118.228872,
+     48.7386232
+    ],
+    [
+     -118.2288788,
+     48.7387042
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replaced the source roads. The road along the lake is kept where it already sat on the gaps in the firs; the loop south of 04 is retraced on the ring the lidar relief shows round its central knoll, 4 to 7 m inside the old drawn loop. The photo is coarse here, so the lanes to the single sites aren't drawn."
+}

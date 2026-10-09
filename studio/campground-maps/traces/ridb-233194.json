@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233194",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.2565232,
+     43.70305
+    ],
+    [
+     -121.2565232,
+     43.703149
+    ],
+    [
+     -121.2565108,
+     43.703248
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.256548,
+     43.702933
+    ],
+    [
+     -121.2566473,
+     43.702924
+    ],
+    [
+     -121.2567342,
+     43.702924
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.2556545,
+     43.703356
+    ],
+    [
+     -121.2556545,
+     43.703437
+    ],
+    [
+     -121.2556669,
+     43.7035181
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel pull-outs off the loop: north past the trailers toward 010, west toward 007 and 008, and the open lot north of the road toward 014."
+}

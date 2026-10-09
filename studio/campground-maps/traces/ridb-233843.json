@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233843",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -91.7297321,
+     47.8178791
+    ],
+    [
+     -91.7296119,
+     47.8178431
+    ],
+    [
+     -91.7295184,
+     47.8177802
+    ],
+    [
+     -91.7294249,
+     47.8177082
+    ],
+    [
+     -91.7293448,
+     47.8176542
+    ],
+    [
+     -91.729278,
+     47.8176272
+    ],
+    [
+     -91.7291979,
+     47.8176182
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane from the loop's north-west side to the turnaround by 025. The pads off the south-east side (008 to 014) are short pull-ins, not lanes."
+}

@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233426",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -98.6168045,
+     36.1225523
+    ],
+    [
+     -98.6168489,
+     36.1226695
+    ],
+    [
+     -98.6168822,
+     36.1227957
+    ],
+    [
+     -98.6169155,
+     36.1229128
+    ],
+    [
+     -98.616971,
+     36.12303
+    ],
+    [
+     -98.617071,
+     36.1231201
+    ],
+    [
+     -98.6171598,
+     36.1231742
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane north from the A loop's lot toward the building; the pull-ins to A30 to A34 and the open-ground spots A04 to A09 have no lane to trace."
+}

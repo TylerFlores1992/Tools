@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-233503",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -90.6965742,
+     42.6484053
+    ],
+    [
+     -90.696501,
+     42.6483513
+    ],
+    [
+     -90.6964156,
+     42.6483063
+    ],
+    [
+     -90.6963059,
+     42.6482793
+    ],
+    [
+     -90.696184,
+     42.6482523
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane from the east loop's end into the clearing of the south cluster (64 to 73). 28, 30 and 32 below the west loop show no lane of their own."
+}

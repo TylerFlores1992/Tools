@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-233847",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.1025222,
+     40.4901521
+    ],
+    [
+     -111.102416,
+     40.4900891
+    ],
+    [
+     -111.1023216,
+     40.4900081
+    ],
+    [
+     -111.1022567,
+     40.4899181
+    ],
+    [
+     -111.1021978,
+     40.489828
+    ],
+    [
+     -111.1021447,
+     40.489738
+    ],
+    [
+     -111.1020975,
+     40.489648
+    ],
+    [
+     -111.1020621,
+     40.4895579
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.1021329,
+     40.4907013
+    ],
+    [
+     -111.1020149,
+     40.4907193
+    ],
+    [
+     -111.101897,
+     40.4907013
+    ],
+    [
+     -111.101779,
+     40.4906923
+    ],
+    [
+     -111.1016846,
+     40.4906923
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel lane southeast from the north loop's south bend past 017, and the spur east from the loop toward 021, traced from the photo. The pads by 016, 018 and 020 and the track east across the meadow are left out."
+}

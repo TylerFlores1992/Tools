@@ -1,0 +1,37 @@
+{
+ "version": 1,
+ "map": "ridb-231893",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.654144,
+     35.8446757
+    ],
+    [
+     -105.654134,
+     35.8447298
+    ],
+    [
+     -105.6541229,
+     35.844829
+    ],
+    [
+     -105.6541052,
+     35.8449011
+    ],
+    [
+     -105.6540942,
+     35.8449552
+    ]
+   ],
+   "through": true
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replaces the source's road (fix-09): the paved access road up the middle of its pavement to the parking lot, traced from the photo. Left out: the narrow dirt tracks from the lot past the restroom to the two group sites, which look like walking paths."
+}

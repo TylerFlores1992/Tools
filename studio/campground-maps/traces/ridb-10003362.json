@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-10003362",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.7076843,
+     46.6520625
+    ],
+    [
+     -111.7075667,
+     46.6519905
+    ],
+    [
+     -111.707436,
+     46.6519365
+    ],
+    [
+     -111.7072923,
+     46.6519095
+    ],
+    [
+     -111.7071355,
+     46.6519005
+    ],
+    [
+     -111.7069918,
+     46.6519185
+    ],
+    [
+     -111.7069003,
+     46.6519725
+    ],
+    [
+     -111.7068611,
+     46.6520445
+    ],
+    [
+     -111.7068873,
+     46.6521164
+    ],
+    [
+     -111.7069657,
+     46.6521704
+    ],
+    [
+     -111.7070963,
+     46.6522064
+    ],
+    [
+     -111.707227,
+     46.6522334
+    ],
+    [
+     -111.7073184,
+     46.6522784
+    ],
+    [
+     -111.7073838,
+     46.6523144
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel loop past 022 to 025, joined to the through road at both ends. Left out the lanes to 012 to 021 and to the 026 to 038 pads east of the road, which don't show plainly on the bare ground."
+}

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "map": "ridb-234775",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.813699,
+     39.3727957
+    ],
+    [
+     -106.8138742,
+     39.3732417
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -106.8138742,
+     39.3732417
+    ],
+    [
+     -106.8137175,
+     39.373366
+    ],
+    [
+     -106.8135899,
+     39.3734652
+    ],
+    [
+     -106.8134855,
+     39.3735463
+    ],
+    [
+     -106.8134159,
+     39.3736454
+    ],
+    [
+     -106.8133579,
+     39.3737445
+    ],
+    [
+     -106.8132999,
+     39.3738436
+    ],
+    [
+     -106.8132535,
+     39.3739427
+    ],
+    [
+     -106.8132187,
+     39.3740148
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replaces the drawn outline, which crossed the open lot: the drive in from the south kept, and the aisle along the trailer pull-ins (2 to 8) traced from the photo."
+}

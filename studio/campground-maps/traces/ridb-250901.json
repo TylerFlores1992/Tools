@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-250901",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.3554006,
+     32.0115271
+    ],
+    [
+     -109.35539,
+     32.0115722
+    ],
+    [
+     -109.3553741,
+     32.0116173
+    ],
+    [
+     -109.3553529,
+     32.0116533
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the short paved spur from the loop to 11 and 12. Left out the pad by 26, whose link to the loop doesn't show under the trees."
+}

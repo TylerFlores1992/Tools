@@ -37,6 +37,15 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
+**2026-10-09 (later): the fix-after campaign ran (owner: "all of them"; dispersed and the no-photo
+Alaska maps stay off; canopy: "find a solution to get done correctly").** All 17 photo batches are
+done and checked; the canopy answer is the USGS lidar point clouds (`studio/campground-maps/pointcloud/`,
+`docs/design/campground-maps-canopy-brief.md`). Results: the completion plan's "The fix-after
+campaign: results". Still to do: the canopy batches for waves 8 to 39 as their layers are made
+(two layer runs at a time, 40 maps each, under the 2-hour background limit), then the 12 maps
+waiting for a full road replace (`replace-later.json` in the session's scratchpad: 234381, 232792,
+231918, 232186, 232311, 232346, 232267, 234488, 10124445, 10064730, 231981, 233267, 232210).
+
 **2026-10-09: finishing every map (owner: "outline-name check; move the Alaska cabin pins; find a
 solution for all of the usable and unusable maps").** The plan, the census of every held map by
 cause, and the researched sources are in `docs/design/campground-maps-completion-plan.md`. Start

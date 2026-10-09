@@ -1,9 +1,9 @@
 {
  "version": 1,
  "map": "ridb-234093",
- "traced": "2026-10-08",
- "by": "Claude (rollout midwest)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout midwest); Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
  "roads": [
   {
    "coords": [
@@ -29,23 +29,23 @@
     ],
     [
      -90.8282309,
-     46.2903779
+     46.2903869
     ],
     [
-     -90.8284945,
-     46.2904085
+     -90.8284906,
+     46.2904364
     ],
     [
-     -90.8287801,
-     46.2904166
+     -90.8287762,
+     46.2904454
     ],
     [
-     -90.8290215,
-     46.290386
+     -90.8289968,
+     46.2904139
     ],
     [
-     -90.8291747,
-     46.2902646
+     -90.8291526,
+     46.29027
     ],
     [
      -90.8292188,
@@ -84,8 +84,24 @@
      46.2900208
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -90.8288021,
+     46.2904499
+    ],
+    [
+     -90.8287762,
+     46.2905128
+    ],
+    [
+     -90.8287502,
+     46.2905758
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the campground loop from the photo, where it shows as a clear gap in the canopy round the meadow, joined to the end of the drawn access road. The spurs to each site don't show under the trees and are left out."
+ "note": "The campground loop round the meadow, from the photo's gap in the canopy and the lidar relief (its north side moved 3 to 4 m north onto the lane the relief shows), and the spur north from the loop toward 006. The other spurs don't show and are left out."
 }

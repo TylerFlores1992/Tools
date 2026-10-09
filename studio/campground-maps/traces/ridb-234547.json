@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234547",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.0013783,
+     39.5195031
+    ],
+    [
+     -121.0014829,
+     39.519467
+    ],
+    [
+     -121.0015992,
+     39.519449
+    ],
+    [
+     -121.0017387,
+     39.51944
+    ],
+    [
+     -121.0018899,
+     39.5194445
+    ],
+    [
+     -121.0020294,
+     39.519458
+    ],
+    [
+     -121.0021689,
+     39.5194761
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt track west from the drawn lane through the open ground past 010 to 013. West of 014 the ground is patchy under trees (015 to 017) and no single track shows, so nothing is traced there."
+}

@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233772",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.8729032,
+     37.8625182
+    ],
+    [
+     -119.8729145,
+     37.8624371
+    ],
+    [
+     -119.8729373,
+     37.862356
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -119.8724941,
+     37.8625272
+    ],
+    [
+     -119.8725509,
+     37.8624641
+    ],
+    [
+     -119.8725964,
+     37.8624101
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved spurs south from the loop to 24/25 and to 027. Left out the spurs west to 019, 20/21 and 023, which don't show under the pines."
+}

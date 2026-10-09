@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-232074",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.4085154,
+     47.7299941
+    ],
+    [
+     -121.4083287,
+     47.7298141
+    ],
+    [
+     -121.4081288,
+     47.7296342
+    ],
+    [
+     -121.4079288,
+     47.7294543
+    ],
+    [
+     -121.4077289,
+     47.7292743
+    ],
+    [
+     -121.4075689,
+     47.7291124
+    ],
+    [
+     -121.4074622,
+     47.7290044
+    ],
+    [
+     -121.4072489,
+     47.7287345
+    ],
+    [
+     -121.4070623,
+     47.7284646
+    ],
+    [
+     -121.406889,
+     47.7281947
+    ],
+    [
+     -121.4067157,
+     47.7279248
+    ],
+    [
+     -121.4065424,
+     47.7276549
+    ],
+    [
+     -121.4064491,
+     47.7274749
+    ],
+    [
+     -121.4063958,
+     47.727367
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane that runs south through the middle, past 002 and 014, which the lidar intensity shows as a continuous band with bright edges and the photo shows paved where the canopy opens. The Forest Service loops to the west and east don't show in either layer, so they are left as drawn and unchecked."
+}

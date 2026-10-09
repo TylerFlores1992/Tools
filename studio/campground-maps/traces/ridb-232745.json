@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-232745",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-12)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -97.3815832,
+     30.6957901
+    ],
+    [
+     -97.3814788,
+     30.6958893
+    ],
+    [
+     -97.3813536,
+     30.6959976
+    ],
+    [
+     -97.3812492,
+     30.6960878
+    ],
+    [
+     -97.3811657,
+     30.6961599
+    ],
+    [
+     -97.3810405,
+     30.696187
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane from the east lot to the group site 28 clearing."
+}

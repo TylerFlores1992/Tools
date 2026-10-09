@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-233886",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -124.1465109,
+     43.8003573
+    ],
+    [
+     -124.1465109,
+     43.8004095
+    ],
+    [
+     -124.1464948,
+     43.8004788
+    ],
+    [
+     -124.1465345,
+     43.8005543
+    ],
+    [
+     -124.1466141,
+     43.8006173
+    ],
+    [
+     -124.1466948,
+     43.8006695
+    ],
+    [
+     -124.1467421,
+     43.8006902
+    ],
+    [
+     -124.1468415,
+     43.8006794
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -124.1470055,
+     43.799947
+    ],
+    [
+     -124.1470539,
+     43.8000046
+    ],
+    [
+     -124.1470937,
+     43.8000631
+    ],
+    [
+     -124.1471335,
+     43.8001432
+    ],
+    [
+     -124.1471732,
+     43.8002133
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane north from 014 past 020 to 022 and the dirt lane northwest from the paved loop by 009. The drawn diagonal between 012 and 014 runs under full canopy and was left as it is; 024, 025 and 027 sit under the trees with no lane showing."
+}

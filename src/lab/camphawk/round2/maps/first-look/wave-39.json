@@ -5,8 +5,8 @@
  "on": "2026-10-08",
  "looks": {
   "234237": {
-   "call": "unsure",
-   "note": "Full canopy in autumn leaf: the pin sits in a faint gap in the trees, but no roof or clearing shows, and no road or trail is drawn in the zoomed frame."
+   "call": "usable",
+   "note": "The lidar relief shows a building-sized gap in the ground returns right at the pin, and the photo a gray roof edge just north of it under the autumn canopy, so the pin reads as the cabin. No road or trail shows near it in the photo or either layer. Nothing traced."
   },
   "234238": {
    "call": "usable",
@@ -22,7 +22,7 @@
   },
   "234681": {
    "call": "unsure",
-   "note": "The pin sits 3 m from the drawn road, by a small gravel pull-off 20 m south; under the canopy no cabin roof shows for certain."
+   "note": "The lidar layers show Farnsworth Road plainly beside the pin and a gravel area with a lane running north-east from it 15 m south-east of the pin, but no building-shaped gap in the ground returns: the two raised blobs in the relief 15 to 30 m east read as mounds, and the photo shows only a small brown patch under the trees there. The cabin can't be placed. Nothing traced."
   },
   "261322": {
    "call": "good",
@@ -61,9 +61,9 @@
    "note": "The pin sits on the house roof, 10 m from the drawn sand lane, among the houses of the dune community."
   },
   "10165350": {
-   "call": "unsure",
-   "note": "The outline is a strip of forested shoreline on the reservoir with no road, and the point is inside it. Dense leaf canopy hides any sites, so the photo can't confirm the boat-in campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "The lidar relief shows about a dozen levelled tent pads terraced along the shore under the canopy, and the point sits among them inside OpenStreetMap's outline. The outline also runs about 200 m farther south-west along the shore where no pads show, so it holds extra ground. No road; a boat-in campground. Nothing traced."
   },
   "10165365": {
    "call": "unsure",
@@ -71,19 +71,19 @@
    "as": "firstcome"
   },
   "10165370": {
-   "call": "unsure",
-   "note": "The outline is a strip of forested shoreline on the reservoir with no road, and the point is inside it. Dense leaf canopy hides any sites, so the photo can't confirm the boat-in campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "good",
+   "note": "The lidar relief shows about 19 levelled tent pads along the shore under the canopy, and OpenStreetMap's outline holds all but two at its east edge; the point sits among them. No road; a boat-in campground. Nothing traced."
   },
   "10165465": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "The outline holds a short spur road with a small structure under the trees just north of the trailhead parking lot, and the point is inside it. The canopy hides the pads.",
-   "as": "firstcome"
+   "note": "The lidar relief shows the drawn spur on a levelled bench running north-west from the trailhead parking loop, with level ground beside it where the photo shows a small structure; OpenStreetMap's outline holds it and the point is inside. The individual pads don't show. Nothing traced."
   },
   "10165475": {
-   "call": "unsure",
-   "note": "There's no outline, and the pin is in dense leaf canopy near the reservoir shore with no road, as a boat-in campground would be. The trees hide any sites, so the photo can't confirm or rule it out.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "hold",
+   "note": "There's no outline, and the lidar relief around the pin shows only old field rows, a ditch and faint trails, with no levelled tent pads, though the same survey shows them plainly at Handsome Lake and Hopewell. The nearest sign of a campground is OpenStreetMap's restroom on the shore 160 m south, so the pin isn't on the campground. Nothing traced or moved."
   },
   "10165540": {
    "call": "unsure",

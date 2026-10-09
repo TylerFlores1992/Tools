@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233649",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.3073073,
+     35.6441416
+    ],
+    [
+     -106.3074287,
+     35.6441507
+    ],
+    [
+     -106.3075502,
+     35.6441326
+    ],
+    [
+     -106.3076275,
+     35.6440695
+    ],
+    [
+     -106.3076496,
+     35.6439884
+    ],
+    [
+     -106.3076054,
+     35.6439163
+    ],
+    [
+     -106.3075171,
+     35.6438712
+    ],
+    [
+     -106.3074067,
+     35.6438622
+    ],
+    [
+     -106.3073183,
+     35.6439073
+    ],
+    [
+     -106.3072852,
+     35.6439794
+    ],
+    [
+     -106.3073514,
+     35.6440515
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel turnaround ring in the south loop that 040 to 048 sit around, joined to the drawn road. Left out any lane to 051, which doesn't show."
+}

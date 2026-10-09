@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-231866",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.24449,
+     38.7105352
+    ],
+    [
+     -106.244513,
+     38.7104811
+    ],
+    [
+     -106.2445475,
+     38.7104181
+    ],
+    [
+     -106.2445705,
+     38.710355
+    ],
+    [
+     -106.244559,
+     38.710301
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The spur from the loop's north-east side to 019. Left out: lanes to 020 and 021, under the trees."
+}

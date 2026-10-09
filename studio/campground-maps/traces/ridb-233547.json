@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233547",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -961,9 +961,149 @@
      38.9303422
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -98.5340999,
+     38.9361704
+    ],
+    [
+     -98.5328311,
+     38.9361704
+    ],
+    [
+     -98.5316777,
+     38.9361704
+    ],
+    [
+     -98.530778,
+     38.9361704
+    ],
+    [
+     -98.5298321,
+     38.9361704
+    ],
+    [
+     -98.5292554,
+     38.9361794
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -98.530778,
+     38.9361704
+    ],
+    [
+     -98.5307895,
+     38.9356389
+    ],
+    [
+     -98.530778,
+     38.9351705
+    ],
+    [
+     -98.5307318,
+     38.9350444
+    ],
+    [
+     -98.5306396,
+     38.9349543
+    ],
+    [
+     -98.5304781,
+     38.9348912
+    ],
+    [
+     -98.530109,
+     38.9348552
+    ],
+    [
+     -98.5297629,
+     38.9348462
+    ],
+    [
+     -98.5295784,
+     38.9349093
+    ],
+    [
+     -98.5294169,
+     38.9349813
+    ],
+    [
+     -98.5291862,
+     38.9349993
+    ],
+    [
+     -98.5289555,
+     38.9349813
+    ],
+    [
+     -98.5287479,
+     38.9349183
+    ],
+    [
+     -98.5286441,
+     38.9347831
+    ],
+    [
+     -98.5285864,
+     38.934639
+    ],
+    [
+     -98.5285749,
+     38.9344589
+    ],
+    [
+     -98.5285749,
+     38.9341886
+    ],
+    [
+     -98.5285979,
+     38.9339904
+    ],
+    [
+     -98.5286902,
+     38.9338733
+    ],
+    [
+     -98.5288863,
+     38.9338553
+    ],
+    [
+     -98.5290593,
+     38.9339184
+    ],
+    [
+     -98.5291862,
+     38.9340625
+    ],
+    [
+     -98.5293015,
+     38.9342427
+    ],
+    [
+     -98.5293938,
+     38.9344228
+    ],
+    [
+     -98.5294746,
+     38.934585
+    ],
+    [
+     -98.5296014,
+     38.9347291
+    ],
+    [
+     -98.5297629,
+     38.9348462
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replaces the source's roads, which ran 30 to 60 m from the pavement. Traced from the photo the dam road, the two lanes past 001 to 022, the lane and loop past 023 to 033, the lake road and the lane past 043 to 050, the loops past 058 to 084, and the roads, shore lane and oval past 085 to 105. Left out: the short pull-ins to each site and the pull-through lanes beside the lane past 043 to 047; the dam road east of the campground isn't drawn."
+ "note": "Replaces the source's roads, which ran 30 to 60 m from the pavement. Traced from the photo the dam road, the two lanes past 001 to 022, the lane and loop past 023 to 033, the lake road and the lane past 043 to 050, the loops past 058 to 084, and the roads, shore lane and oval past 085 to 105. Left out: the short pull-ins to each site and the pull-through lanes beside the lane past 043 to 047; the dam road east of the campground isn't drawn. Added (fix-14): the park road and the loop round 104."
 }

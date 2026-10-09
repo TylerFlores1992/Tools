@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233504",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -88.929671,
+     38.0824174
+    ],
+    [
+     -88.9297052,
+     38.0825255
+    ],
+    [
+     -88.9297508,
+     38.08263
+    ],
+    [
+     -88.9297964,
+     38.0826876
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -88.9291126,
+     38.0825525
+    ],
+    [
+     -88.9291126,
+     38.0823453
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the lane north from the loop to 003 and the spur to 009. Left out the short pull-ins to 001, 002, 004, 005, 007 and 008."
+}

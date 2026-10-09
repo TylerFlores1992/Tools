@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-232029",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.8024578,
+     40.824587
+    ],
+    [
+     -110.802517,
+     40.824623
+    ],
+    [
+     -110.8025881,
+     40.8246636
+    ],
+    [
+     -110.8026474,
+     40.8246951
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.8023037,
+     40.8247131
+    ],
+    [
+     -110.802197,
+     40.8247131
+    ],
+    [
+     -110.8020785,
+     40.8247176
+    ],
+    [
+     -110.8019718,
+     40.8247221
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.8022563,
+     40.8247851
+    ],
+    [
+     -110.8022326,
+     40.8248481
+    ],
+    [
+     -110.8022207,
+     40.8249111
+    ],
+    [
+     -110.8022089,
+     40.8249561
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lanes west of the loop: north-west toward 004, north toward 003, and east to the pad by 002. The lane to 006 runs into open ground with no edge and wasn't traced."
+}

@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-231920",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.6798109,
+     38.609187
+    ],
+    [
+     -111.6797649,
+     38.609151
+    ],
+    [
+     -111.679719,
+     38.609124
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.6797879,
+     38.6086017
+    ],
+    [
+     -111.6798568,
+     38.6085476
+    ],
+    [
+     -111.6799142,
+     38.6084846
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved pull-outs east of loop C's west side by 009 and west of it toward 005 and 006. The paved path from the lot to the group shelter at G1 is a footpath and was left out."
+}

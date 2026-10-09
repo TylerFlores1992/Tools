@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-232636",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -94.2357263,
+     30.8811605
+    ],
+    [
+     -94.2356217,
+     30.8812146
+    ],
+    [
+     -94.2355171,
+     30.8812778
+    ],
+    [
+     -94.2354753,
+     30.8813138
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.2354753,
+     30.8809711
+    ],
+    [
+     -94.2353603,
+     30.8810342
+    ],
+    [
+     -94.2352766,
+     30.8810883
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.2360609,
+     30.881368
+    ],
+    [
+     -94.2359354,
+     30.881404
+    ],
+    [
+     -94.2358099,
+     30.8814491
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the pull-in lanes to 26, 25 and 27 in the middle area; the other shore spurs are under trees and left out."
+}

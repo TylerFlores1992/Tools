@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233142",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -123.6579587,
+     40.9443596
+    ],
+    [
+     -123.6579587,
+     40.9444766
+    ],
+    [
+     -123.6579646,
+     40.9445847
+    ],
+    [
+     -123.6579765,
+     40.9447018
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -123.6578459,
+     40.9447513
+    ],
+    [
+     -123.6578399,
+     40.9448279
+    ],
+    [
+     -123.6578162,
+     40.9448819
+    ],
+    [
+     -123.6577805,
+     40.944972
+    ],
+    [
+     -123.6577805,
+     40.945044
+    ],
+    [
+     -123.6578518,
+     40.94508
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved entrance from the highway past 001 to the loop, and the dirt lane inside the loop past 004 and 007. The strip past 015 and 016 is pads along the west side and wasn't traced."
+}

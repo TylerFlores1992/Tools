@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-251008",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.9634219,
+     36.7443093
+    ],
+    [
+     -118.9632875,
+     36.7443634
+    ],
+    [
+     -118.9631755,
+     36.7444265
+    ],
+    [
+     -118.9630859,
+     36.7444806
+    ],
+    [
+     -118.9629851,
+     36.7445167
+    ],
+    [
+     -118.9628619,
+     36.7445347
+    ],
+    [
+     -118.9627275,
+     36.7445347
+    ],
+    [
+     -118.9625931,
+     36.7445167
+    ],
+    [
+     -118.9624811,
+     36.7445077
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved lane east from the west road past N and on as dirt toward G. A and B sit in the trees by the drawn lane with no pads showing, so nothing else is traced."
+}

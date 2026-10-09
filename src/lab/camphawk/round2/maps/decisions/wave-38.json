@@ -7,29 +7,29 @@
    "id": "10192012",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed as a first-come campground: first look usable, checked over the photo (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look good, checked over the photo (2026-10-09)."
   },
   {
    "id": "10192062",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10192097",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed as a first-come campground: first look usable, checked over the photo (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look good, checked over the photo (2026-10-09)."
   },
   {
    "id": "10192127",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "10315092",
@@ -47,10 +47,10 @@
   },
   {
    "id": "10315102",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look hold (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-17): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232062",
@@ -91,8 +91,8 @@
    "id": "234235",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look hold."
   },
   {
    "id": "234273",
@@ -105,8 +105,8 @@
    "id": "234678",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "234679",
@@ -119,8 +119,8 @@
    "id": "234734",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "265539",
@@ -140,8 +140,8 @@
    "id": "273340",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "273341",
@@ -168,15 +168,15 @@
    "id": "273351",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "273353",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "273356",
@@ -250,10 +250,10 @@
   },
   {
    "id": "233914",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look usable, checked over the photo (2026-10-09)."
   }
  ]
 }

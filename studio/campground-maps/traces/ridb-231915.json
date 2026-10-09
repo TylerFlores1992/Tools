@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-231915",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.9455399,
+     37.7441051
+    ],
+    [
+     -111.9454718,
+     37.74406
+    ],
+    [
+     -111.945381,
+     37.7439969
+    ],
+    [
+     -111.9452676,
+     37.7439429
+    ],
+    [
+     -111.9451541,
+     37.7438978
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane east from the east turnaround past the parked trailers toward 021. The faint tracks south of the west loop (009, 011, 013, 014) and the straight track north of 022 and 023 can't be told from bare ground, so they aren't traced."
+}

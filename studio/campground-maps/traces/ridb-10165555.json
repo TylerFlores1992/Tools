@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-10165555",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-17)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Standard",
+   "at": [
+    -105.2077031,
+    39.2964381
+   ]
+  }
+ ],
+ "note": "Moved the first-come pin from the highway junction to the end of the Platte River Campground Road parking strip, where tents show among the trees between it and the river."
+}

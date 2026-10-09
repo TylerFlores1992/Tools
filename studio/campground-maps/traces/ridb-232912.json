@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-232912",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.5466239,
+     37.3091347
+    ],
+    [
+     -119.5465337,
+     37.3091708
+    ],
+    [
+     -119.5464435,
+     37.3092068
+    ],
+    [
+     -119.5463646,
+     37.3092609
+    ],
+    [
+     -119.5463082,
+     37.3093059
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane from the north loop's top northeast toward 020. The open gravel west of the loop toward 022 has no single lane to follow, so it isn't traced."
+}

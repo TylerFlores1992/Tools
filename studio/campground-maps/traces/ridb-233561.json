@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233561",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -97.4619566,
+     42.847117
+    ],
+    [
+     -97.4617853,
+     42.847099
+    ],
+    [
+     -97.4616263,
+     42.847045
+    ],
+    [
+     -97.461504,
+     42.846946
+    ],
+    [
+     -97.4614183,
+     42.846838
+    ],
+    [
+     -97.4613694,
+     42.8467299
+    ],
+    [
+     -97.4613327,
+     42.8466219
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the riverside lane's end into the gravel area by 35 and 36. The group camp's point was left: no camp shows anywhere near it."
+}

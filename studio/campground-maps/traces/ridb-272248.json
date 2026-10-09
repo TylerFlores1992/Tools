@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-272248",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.5519752,
+     40.5858262
+    ],
+    [
+     -122.5519693,
+     40.5857001
+    ],
+    [
+     -122.5519693,
+     40.5855651
+    ],
+    [
+     -122.5519752,
+     40.58543
+    ],
+    [
+     -122.551987,
+     40.585313
+    ],
+    [
+     -122.5519989,
+     40.5851959
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane south from the road by the bridge past 04, 05 and 06, which the lidar relief shows as a flat bench and the intensity as a smooth band, and the photo shows where the canopy opens. 08 and 09 under closed canopy and 01 to 03 across the creek show no lane that joins the network and are left without one."
+}

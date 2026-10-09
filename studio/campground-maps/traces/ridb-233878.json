@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-233878",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.4524297,
+     44.7141031
+    ],
+    [
+     -107.4524991,
+     44.7141166
+    ],
+    [
+     -107.4526126,
+     44.7141211
+    ],
+    [
+     -107.4527262,
+     44.7141211
+    ],
+    [
+     -107.4528272,
+     44.7141166
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.4514896,
+     44.7142741
+    ],
+    [
+     -107.4514265,
+     44.7142201
+    ],
+    [
+     -107.451376,
+     44.7141571
+    ],
+    [
+     -107.4513508,
+     44.7140941
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.4514896,
+     44.7142741
+    ],
+    [
+     -107.4515779,
+     44.7142831
+    ],
+    [
+     -107.4516788,
+     44.7143011
+    ],
+    [
+     -107.4517672,
+     44.7143101
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel west from the south loop to 006, the lane southeast from the loop past 013 to 011 and the pull-in west toward 012. The pale strips by 004 and 005 don't join any lane, and 015 and 016 sit in the open meadow with no track, so they aren't traced."
+}

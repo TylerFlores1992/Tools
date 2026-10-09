@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-273822",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-c)",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -128,8 +128,76 @@
      37.5217363
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -112.7892651,
+     37.5209615
+    ],
+    [
+     -112.7891294,
+     37.5209254
+    ],
+    [
+     -112.7889483,
+     37.5208894
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.7890728,
+     37.5207182
+    ],
+    [
+     -112.7889823,
+     37.5207182
+    ],
+    [
+     -112.7888918,
+     37.5207137
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.7893443,
+     37.5206417
+    ],
+    [
+     -112.7892651,
+     37.5206101
+    ],
+    [
+     -112.7891633,
+     37.5205651
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.7891294,
+     37.521457
+    ],
+    [
+     -112.788937,
+     37.521448
+    ],
+    [
+     -112.7888126,
+     37.5214435
+    ],
+    [
+     -112.7886994,
+     37.5214435
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "The dirt lanes north of the highway past 18 to 24, from the lot. The short spurs to 18, 23 and 24 are too faint to place."
+ "note": "The dirt lanes north of the highway past 18 to 24, from the lot. The short spurs to 18, 23 and 24 are too faint to place. Added (fix fix-06): the gravel spurs to 01 and 02, the lane inside the south loop past 03, and the lane across the north loop's east end to 14."
 }

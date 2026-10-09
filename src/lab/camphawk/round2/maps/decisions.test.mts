@@ -16,6 +16,17 @@ const ofWave = (wave: number) => DECISION_FILES.find((f) => f.wave === wave)!.de
 /** Held as one map, approved once shown as areas (owner, 2026-10-08): the split fixed them. */
 const APPROVED_AS_AREAS = new Set(["255303", "232136", "233523", "233563", "233626", "232446", "232472", "232511", "232546", "233496", "233611", "233627", "233695", "234557"]);
 
+test("a delegated decision in the owner's waves only approves a map that was ready at their review and is usable now", () => {
+  for (const [wave, first] of [[1, first01], [2, first02]] as const) {
+    const looks = first.looks as Record<string, { call: string }>;
+    for (const d of ofWave(wave).filter((x) => x.by !== "Owner")) {
+      assert.equal(d.decision, "approved", d.id);
+      assert.ok(["good", "usable"].includes(looks[d.id]?.call), d.id);
+      assert.match(d.note, /^Ready \(no decision needed\) at the owner's review/, d.id);
+    }
+  }
+});
+
 test("every recorded decision is for a map in its wave and is well formed", () => {
   for (const f of DECISION_FILES) assert.deepEqual(decisionProblems(f, idsOf(f.wave)), [], `wave ${f.wave}`);
 });
@@ -36,8 +47,11 @@ test("the four maps that aren't usable stay hidden; the other 19 are approved (M
 
 test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
   const looks = first01.looks as Record<string, { call: string }>;
-  const w1 = new Map(ofWave(1).map((d) => [d.id, d.decision]));
-  const needs = manifest(1).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
+  // The owner's own decisions; a map that was ready at their review and rebuilt with a trace
+  // later carries a delegated decision instead (fix-after campaign, 2026-10-09).
+  const w1 = new Map(ofWave(1).filter((d) => d.by === "Owner").map((d) => [d.id, d.decision]));
+  const delegated = new Set(ofWave(1).filter((d) => d.by !== "Owner").map((d) => d.id));
+  const needs = manifest(1).filter((e) => !delegated.has(e.id) && (e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call)));
   assert.equal(needs.length, 56);
   assert.deepEqual([...w1.keys()].sort(), needs.map((e) => e.id).sort());
   for (const e of needs) assert.equal(w1.get(e.id), ["good", "usable"].includes(looks[e.id].call) || APPROVED_AS_AREAS.has(e.id) ? "approved" : "hidden", e.id);
@@ -46,8 +60,11 @@ test("wave 1 (owner, 2026-10-08): every map that needs a decision has one; usabl
 
 test("wave 2 (owner, 2026-10-08): every map that needs a decision has one; usable ones approved, the rest hidden", () => {
   const looks = first02.looks as Record<string, { call: string }>;
-  const w2 = new Map(ofWave(2).map((d) => [d.id, d.decision]));
-  const needs = manifest(2).filter((e) => e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call));
+  // The owner's own decisions; a map that was ready at their review and rebuilt with a trace
+  // later carries a delegated decision instead (fix-after campaign, 2026-10-09).
+  const w2 = new Map(ofWave(2).filter((d) => d.by === "Owner").map((d) => [d.id, d.decision]));
+  const delegated = new Set(ofWave(2).filter((d) => d.by !== "Owner").map((d) => d.id));
+  const needs = manifest(2).filter((e) => !delegated.has(e.id) && (e.verdict !== "ready" || ["hold", "unsure"].includes(looks[e.id].call)));
   assert.equal(needs.length, 62);
   assert.deepEqual([...w2.keys()].sort(), needs.map((e) => e.id).sort());
   for (const e of needs) assert.equal(w2.get(e.id), ["good", "usable"].includes(looks[e.id].call) || APPROVED_AS_AREAS.has(e.id) ? "approved" : "hidden", e.id);

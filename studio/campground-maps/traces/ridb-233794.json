@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233794",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.8731551,
+     40.5334949
+    ],
+    [
+     -110.8732318,
+     40.5334319
+    ],
+    [
+     -110.8733263,
+     40.5333644
+    ],
+    [
+     -110.8734443,
+     40.5332698
+    ],
+    [
+     -110.8735506,
+     40.5331753
+    ],
+    [
+     -110.873645,
+     40.5330898
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane south-west from the bottom of the loop past 004. The spurs west to 007 and 008 and south-east to 009 to 012 don't show plainly through the pines and were left out."
+}

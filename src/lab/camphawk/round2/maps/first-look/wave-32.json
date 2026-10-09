@@ -145,9 +145,9 @@
    "note": "Zoomed in, a brown-roofed cabin about 7 m across stands right at the pin, with a dirt lane running to it from the drawn road 45 m north; the pin is already on it."
   },
   "10165105": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in unbroken forest about 150 m from the nearest road. Nothing near it shows a campground.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in unbroken forest between the switchbacks of the McKenzie Highway, about 120 m north of the road; the only spur near it (Forest Road 4200-246, about 290 m west) is a short stub under full canopy, and no campground, loop or clearing shows, so nothing was moved."
   },
   "10165155": {
    "call": "unsure",
@@ -179,9 +179,9 @@
    "as": "firstcome"
   },
   "10165305": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in unbroken forest with no road or clearing near it. The nearest road in the frame is several hundred meters away.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in unbroken forest about 250 m northwest of Waldo Road, and neither Gold Lake nor any campground, loop or clearing shows anywhere in the 1.4 km frame, so there's nothing to move it to."
   },
   "10165320": {
    "call": "usable",
@@ -189,14 +189,14 @@
    "as": "firstcome"
   },
   "10165360": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline. The pin is on a gravel road between the highway and the trees that ends in a turnaround with one small building, but no pads or campers show, so the photo doesn't plainly show a campground.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is already on the gravel lane that runs beside the Salmon River Scenic Byway to a small turnaround loop with one small building; that may be the campground, but no pads, tables or campers show along it, so the photo doesn't plainly show one and there was nothing to move it to."
   },
   "10165375": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in unbroken forest about 80 m south of a road, with no spur or clearing near it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in unbroken forest north of Forest Road 21; an OpenStreetMap spur with a toilet tag about 210 m west-southwest may be the campground, but it lies under full canopy and the photo shows neither the spur nor any pad, so nothing was moved."
   },
   "10165385": {
    "call": "usable",
@@ -224,9 +224,9 @@
    "as": "firstcome"
   },
   "10165495": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is in an open meadow beside a dirt road and a creek, with no pads, loops or campers near it.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 220 m north-northwest from an open meadow into the camping loop off North Fork Canyon Road, where trailers sit on pads around the lane; it's the only campground loop within a kilometer (Caribou and North Fork are 1.7 to 1.9 km off). There's no outline, so the map shows the pin there."
   },
   "10165510": {
    "call": "good",
@@ -254,9 +254,9 @@
    "as": "firstcome"
   },
   "10165606": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in the middle of a shallow lake, with only forest and a road around it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in the shallow south arm of Scott Lake; Forest Road 4200-260 runs past under full canopy to a trailhead lot about 450 m west, and the only sign of camping is a couple of cars along the road south of the lake, so no campground plainly shows to move it to."
   },
   "10165626": {
    "call": "unsure",
@@ -264,9 +264,9 @@
    "as": "firstcome"
   },
   "10165631": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is on a gravel pull-out at the end of a road in dense forest. Nothing near it shows pads or a loop.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is already on the gravel lot at the end of road 1957, the likely parking for the campground, but everything around it is under full canopy and no pads, tents or loop show, so the photo doesn't plainly show a campground and there was nothing to move it to."
   },
   "10165636": {
    "call": "usable",
@@ -279,9 +279,9 @@
    "as": "firstcome"
   },
   "10165721": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is on a gravel bar at the river's edge. A small road loop with a clearing about 100 m northwest doesn't plainly show campsites.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is on a gravel bar at the river's edge; a small loop with bare pull-outs about 90 m northwest may be Upper O'Brien, but no campers show and Lower O'Brien's loop is 400 m east on the same road, so it isn't plainly the one named and nothing was moved."
   },
   "10165741": {
    "call": "good",
@@ -289,9 +289,9 @@
    "as": "firstcome"
   },
   "10191065": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is in an open meadow east of the highway. The nearest gravel lots with vehicles are 150 m or more away and aren't plainly a campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 245 m west from the meadow east of Rock Creek Road into the wide gravel camping loop west of the road, beside its toilet, with trailers parked around its edge (RIDB's own Diamondfield Jack entry also sits by it). There's no outline, so the map shows the pin there."
   },
   "10191075": {
    "call": "hold",
@@ -299,9 +299,9 @@
    "as": "firstcome"
   },
   "10191090": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is in a meadow east of the highway. A small road loop across the highway, about 90 m west, doesn't plainly show campsites.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 135 m northwest from the meadow east of Rock Creek Road onto the lane OpenStreetMap names Pettit Campground, west of the road, whose spurs, pads and Spur A loop show among the trees; Diamondfield Jack is 1.3 km off. There's no outline, so the map shows the pin there."
   },
   "10191095": {
    "call": "usable",
@@ -309,9 +309,9 @@
    "as": "firstcome"
   },
   "10191100": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is on a bare hillside east of the road. Nothing near it shows a loop, pads or campers.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is on a bare hillside east of Rock Creek Road; about 100 m southwest a gravel pull-out with a short lane into a grove by the creek may be the campground, but no pads, tables or campers show there, so the photo doesn't plainly show one and nothing was moved."
   },
   "10191105": {
    "call": "good",
@@ -329,9 +329,9 @@
    "as": "firstcome"
   },
   "10192067": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is at the end of a short track in open scrub. Nothing near it shows pads, a loop or campers.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is at the end of a short track in open scrub; a dirt loop about 150 m west (where RIDB's other Horse Springs entry sits) may be the campground, but no pads, tables or campers show along it, so the photo doesn't plainly show one and nothing was moved."
   },
   "10192122": {
    "call": "good",
@@ -398,9 +398,9 @@
    "note": "The pin is on the ranger office building beside the drawn road, which passes 10 m east."
   },
   "10314707": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline is over 400 m away, and the pin is in dense forest by a creek with no road or clearing near it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in dense forest by the Little Naches River; the only campground in the frame is a small loop with a toilet about 450 m west-southwest that OpenStreetMap names Longmire Meadow, reached by road 1906 where the listing's directions say road 1902, so it isn't plainly the one named and nothing was moved."
   },
   "10327336": {
    "call": "usable",

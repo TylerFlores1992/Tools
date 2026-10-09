@@ -9,8 +9,8 @@
    "note": "The pin is on the cabin in a small clearing, and the drawn road ends at the yard beside it."
   },
   "10103111": {
-   "call": "usable",
-   "note": "The pin is on the lookout on the bare summit. The drawn Census road zigzags up the slope up to 30 m east of the visible road, which comes in from the southwest."
+   "call": "good",
+   "note": "The pin is on the lookout on the bare summit. Replaced the Census road, which zigzagged up the slope off the visible one: the road up from the south, its switchbacks through the clearing and the last loop to the summit are now traced over the lidar relief, where the road bench shows plainly, and they match the photo wherever the road is in the open."
   },
   "10122832": {
    "call": "usable",

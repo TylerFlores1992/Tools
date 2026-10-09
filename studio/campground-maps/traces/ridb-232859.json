@@ -1,0 +1,79 @@
+{
+ "version": 1,
+ "map": "ridb-232859",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.1169943,
+     39.470653
+    ],
+    [
+     -120.1168665,
+     39.47068
+    ],
+    [
+     -120.1167154,
+     39.4706981
+    ],
+    [
+     -120.116576,
+     39.4707071
+    ],
+    [
+     -120.1164598,
+     39.470689
+    ],
+    [
+     -120.1163668,
+     39.470644
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1162158,
+     39.4699773
+    ],
+    [
+     -120.1160763,
+     39.4699503
+    ],
+    [
+     -120.1159369,
+     39.4699593
+    ],
+    [
+     -120.1158091,
+     39.4699953
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1180169,
+     39.4711575
+    ],
+    [
+     -120.1181098,
+     39.4712026
+    ],
+    [
+     -120.1182609,
+     39.4712071
+    ],
+    [
+     -120.1183887,
+     39.4712116
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved spurs to three of the group lots: east off the road toward the north-east site, east from the south lot to the south-east site, and west from the loop's north end to the north-west site. The way to the north site doesn't show plainly and was left out."
+}

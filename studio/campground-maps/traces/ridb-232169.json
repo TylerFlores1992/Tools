@@ -1,0 +1,99 @@
+{
+ "version": 1,
+ "map": "ridb-232169",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.6043877,
+     44.079032
+    ],
+    [
+     -115.6045,
+     44.079041
+    ],
+    [
+     -115.6045999,
+     44.07905
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6045749,
+     44.0793381
+    ],
+    [
+     -115.6046623,
+     44.0792931
+    ],
+    [
+     -115.6047496,
+     44.0792571
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6046747,
+     44.0795091
+    ],
+    [
+     -115.6047621,
+     44.0795181
+    ],
+    [
+     -115.6048245,
+     44.0795271
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6023407,
+     44.078555
+    ],
+    [
+     -115.6022534,
+     44.078609
+    ],
+    [
+     -115.6021785,
+     44.078663
+    ],
+    [
+     -115.6021286,
+     44.078708
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6028525,
+     44.0784469
+    ],
+    [
+     -115.6026028,
+     44.0783839
+    ],
+    [
+     -115.6023657,
+     44.0783299
+    ],
+    [
+     -115.602191,
+     44.0783119
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the sandy pull-outs west of the west lane to 012, 013 and 014, the spur northeast to 002, and the lane across the loop past 003 to the pads east of it. Left out: the pads by 005 to 011 off the river lane, where trees break the way in."
+}

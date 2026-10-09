@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-249254",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.2039214,
+     33.6257191
+    ],
+    [
+     -111.2040076,
+     33.6256831
+    ],
+    [
+     -111.2040939,
+     33.625638
+    ],
+    [
+     -111.2041801,
+     33.6255839
+    ],
+    [
+     -111.2042664,
+     33.6255298
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.2034256,
+     33.6255298
+    ],
+    [
+     -111.2034579,
+     33.6254577
+    ],
+    [
+     -111.2034795,
+     33.6253856
+    ],
+    [
+     -111.2035226,
+     33.6253135
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane south-west from the main road past 73 toward 68, and the lane south from the main road between 71 and 75 toward 70. Left out the lanes to 66, 67 and 69, which the oaks hide."
+}

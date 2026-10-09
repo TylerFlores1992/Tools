@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-232070",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.3144294,
+     38.9809682
+    ],
+    [
+     -120.3143544,
+     38.9809502
+    ],
+    [
+     -120.3142852,
+     38.9809322
+    ],
+    [
+     -120.314216,
+     38.9809142
+    ],
+    [
+     -120.3141583,
+     38.9808962
+    ],
+    [
+     -120.3141006,
+     38.9808557
+    ],
+    [
+     -120.3140602,
+     38.9808331
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.3140717,
+     38.9805359
+    ],
+    [
+     -120.3140313,
+     38.9804908
+    ],
+    [
+     -120.3139852,
+     38.9804548
+    ],
+    [
+     -120.313939,
+     38.9804188
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Two gravel lanes in the east loop that show and weren't drawn, traced from the photo (fix-09): across the loop's middle from the west leg to the east leg, and the spur southeast from the loop's south end toward 073. Left out: the open dirt toward 076 and 074, where no lane can be told from the ground; 075 and 077 sit within about 8 m of the loop."
+}

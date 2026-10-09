@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-233876",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.4388014,
+     44.7598225
+    ],
+    [
+     -107.438675,
+     44.7598764
+    ],
+    [
+     -107.4385487,
+     44.7599214
+    ],
+    [
+     -107.4384224,
+     44.7599574
+    ],
+    [
+     -107.4382961,
+     44.7599934
+    ],
+    [
+     -107.4381698,
+     44.7600384
+    ],
+    [
+     -107.4380435,
+     44.7600924
+    ],
+    [
+     -107.4379298,
+     44.7601554
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel lane from the north loop's east end northeast past 006 and 005 to the pad by 004, which the lidar intensity shows as a continuous band under the trees and the photo shows at its pad. The roads drawn from OpenStreetMap already sit on their bands."
+}

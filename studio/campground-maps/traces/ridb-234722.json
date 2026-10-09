@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-234722",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout west-a); Claude (fix fix-02)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -40,8 +40,116 @@
      36.4104207
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -112.1353819,
+     36.4117185
+    ],
+    [
+     -112.1354711,
+     36.4116914
+    ],
+    [
+     -112.135538,
+     36.4116464
+    ],
+    [
+     -112.1355714,
+     36.4115923
+    ],
+    [
+     -112.1355714,
+     36.4115202
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.13546,
+     36.411367
+    ],
+    [
+     -112.1353819,
+     36.411376
+    ],
+    [
+     -112.1352928,
+     36.411403
+    ],
+    [
+     -112.1352036,
+     36.4114481
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.1356829,
+     36.4109975
+    ],
+    [
+     -112.1355826,
+     36.4110065
+    ],
+    [
+     -112.1354711,
+     36.4110155
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.1346351,
+     36.4116013
+    ],
+    [
+     -112.1347355,
+     36.4115923
+    ],
+    [
+     -112.1348246,
+     36.4115743
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.1346574,
+     36.4112498
+    ],
+    [
+     -112.1347577,
+     36.4112318
+    ],
+    [
+     -112.1348246,
+     36.4112048
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -112.1346574,
+     36.4110606
+    ],
+    [
+     -112.1347466,
+     36.4110335
+    ],
+    [
+     -112.1348246,
+     36.4109975
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the gravel lane that runs beside the middle road on the west, past 018 and 020, joining the drawn road at both ends. Left out the short spurs to 013 and 015 and the pull-outs to 001 and 003."
+ "note": "Traced the gravel lane that runs beside the middle road on the west, past 018 and 020, joining the drawn road at both ends. Left out the short spurs to 013 and 015 and the pull-outs to 001 and 003. Added (fix fix-02): the gravel spurs to 013, 015, 017, 005, 003 and 001."
 }

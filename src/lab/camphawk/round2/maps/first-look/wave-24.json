@@ -6,7 +6,7 @@
  "looks": {
   "232005": {
    "call": "usable",
-   "note": "Zoomed: the south loop roughly follows the visible gravel lanes and 019 to 027 line its west side, but 029 to 037 sit along a lane east of the drawn arm. The north loops are under canopy, with 010 to 018 off any drawn road."
+   "note": "Replaced the roads in the south: the loop past 019 to 038, with its east arm now on the visible gravel beside 029 to 037, the spur to 026 and 027, and the highway past it are traced from the photo. The north loops (001 to 018) are under canopy and kept from the source, and all 40 sites are within 40 m of a road."
   },
   "232126": {
    "call": "hold",
@@ -30,7 +30,7 @@
   },
   "232176": {
    "call": "usable",
-   "note": "The loop and the lane west of it follow the visible gravel lanes, and 013 to 021 and 023 line them. 001, 003, 007, 010 and 022 sit 20 to 40 m off any drawn lane, on spurs the leaves hide."
+   "note": "Unchanged. The loop and the lane west of it follow the visible gravel through the autumn canopy, and all 14 sites are within 40 m of a drawn road; the spurs to 001, 003, 007, 010 and 022 are hidden by leaves, so nothing was traced."
   },
   "232177": {
    "call": "unsure",
@@ -42,7 +42,7 @@
   },
   "232179": {
    "call": "hold",
-   "note": "The sites are placed around a treatment pond, its banks and a construction yard beside condominiums; nothing on the photo is a campground, so the points are wrong."
+   "note": "Unchanged. All 25 points sit on a sewage treatment pond, its banks, a construction yard and beside condominiums; nothing within the frame is a campground or a campsite pad, so there is nowhere on the photo to move them to and the points are wrong."
   },
   "232308": {
    "call": "good",
@@ -54,7 +54,7 @@
   },
   "232394": {
    "call": "usable",
-   "note": "The loop follows the visible lane and 001 to 007 and 010 sit around it; 008 and 009 sit in a clearing west of the loop that no drawn lane reaches."
+   "note": "Unchanged. The loop follows the visible lane and all 11 sites are within 40 m of it; zoomed on a 5 m grid, 008 and 009 sit in a shaded opening west of the loop where no lane shows plainly, so nothing was traced."
   },
   "233476": {
    "call": "unsure",
@@ -62,11 +62,11 @@
   },
   "233519": {
    "call": "usable",
-   "note": "IHC sits on the lawn beside the paved lane by the shelter; the drawn road stops at the junction and the lane past the shelter isn't drawn."
+   "note": "The paved lane past the shelter is now traced from the photo, continuing the drawn road from the junction north-west past IHC, which sits on the lawn beside it. The second, unnamed point sits on the open lawn east of the junction, with nothing on the photo marking a site there."
   },
   "233573": {
    "call": "usable",
-   "note": "The north loops, the long lane south and the south loop follow the visible lanes and most sites line them; 064 to 068 and 075 to 078 sit along a lane between the two north arms that is only partly drawn."
+   "note": "Unchanged. The north loops, the long lane south and the south loop follow the visible lanes, and all 124 sites are within 40 m of a drawn road. Zoomed on a 5 m grid, the ground between the two north arms (064 to 068, 075 to 078) shows pads and short drives rather than a continuous lane, so nothing was traced."
   },
   "233644": {
    "call": "usable",
@@ -81,8 +81,8 @@
    "note": "Zoomed: the main road and the north road follow the visible pavement and the S, N and L sites line them; S50 to S58 and L53, L54 sit along a gravel lane south of the main road that isn't drawn, and S46 to S49, N04 and N05 sit in the trees off any lane."
   },
   "234674": {
-   "call": "usable",
-   "note": "Loops A, B and C and the main road follow the visible pavement and their sites line them. The dense D area west of the D loop (D32 to D90) has no drawn lanes, so most of D sits off the drawn roads; the photo shows only footpaths through it."
+   "call": "hold",
+   "note": "Loops A, B and C and the D parking loop follow the visible pavement, but D04 to D99 west of the D loop are walk-in tent sites under full canopy, 40 to 160 m from the loop with footpaths only; 63 of 178 sites, about a third, are more than 40 m from any drawn road."
   },
   "234714": {
    "call": "usable",
@@ -102,7 +102,7 @@
   },
   "251575": {
    "call": "unsure",
-   "note": "No roads in the frame: AL2 to AL12 are spread along the riverbank in leafless woods where no pads show, likely paddle-in sites."
+   "note": "Unchanged. AL2 to AL12 are spread along the riverbank in leafless woods; no pads, tracks or roads show anywhere in the frame (likely paddle-in or hike-in sites), so there is nothing to trace and the points can't be checked."
   },
   "251609": {
    "call": "unsure",
@@ -114,11 +114,11 @@
   },
   "251946": {
    "call": "usable",
-   "note": "The main road and the lane east are drawn; 201 to 212 sit along a grass lane west of the main road that isn't drawn, 213 to 220 on the lawn east of it, and 221 to 225 in the woods inside an outline-like loop."
+   "note": "The main road and the lane east follow the visible roads; the gravel drive to 201 and the lane west to the lot by 207 are now traced from the photo. 201 to 212 sit on pads along the open lawn west of the main road, which has no lane of its own, and 221 to 225 sit in the woods inside Spillway Road, which runs under full canopy (the lidar relief puts its bench 5 to 10 m east of the drawn line, so it's unconfirmed)."
   },
   "251963": {
-   "call": "usable",
-   "note": "A boat-in campground: 01 to 50 sit on the mown point with tents and trailers on many of them; only the lane to the parking is drawn, and the grass track south past 13 and 17 isn't."
+   "call": "hold",
+   "note": "A boat-to-shore campground on a mown point: the gravel lane south from the parking past 17 and 13 is traced from the photo, but 22 of 50 sites at the north end sit 40 to 125 m from it across open lawn with no vehicle lane."
   },
   "255204": {
    "call": "good",
@@ -126,15 +126,15 @@
   },
   "256347": {
    "call": "usable",
-   "note": "The loop follows the visible gravel road and the sites sit on pads beside it; 005 and 006 sit on a gravel lane running north from the top of the loop that isn't drawn."
+   "note": "Unchanged. The loop follows the visible gravel (its north end runs about 4 m south of the lane) and the sites sit on pads beside it; all 19 sites are within 40 m. Zoomed on a 5 m grid, 006's pad sits in the trees north of the loop with no lane to it showing, so nothing was traced."
   },
   "261792": {
    "call": "good",
    "note": "The entrance road and the small loop follow the visible gravel, with 001 to 003 along the entrance and 004 to 007 around the loop's lawn."
   },
   "264293": {
-   "call": "usable",
-   "note": "01 to 05 sit on the five shelter roofs that show through the spruce; only the track up to 01 is drawn, and the footpaths between the shelters don't show."
+   "call": "hold",
+   "note": "01 to 05 sit on the five lean-to roofs showing through the spruce, reached on footpaths from the track that ends at 01; 03, 04 and 05 are 50 to 90 m from it, more than half the sites without a drawn road."
   },
   "270967": {
    "call": "hold",
@@ -149,8 +149,8 @@
    "note": "The Forest Service lanes for loops A to G are drawn and most sites line them under canopy; F04 to F08 west of the E loop, and C09, C10, B03, B04 and B08 sit off any drawn lane."
   },
   "274471": {
-   "call": "usable",
-   "note": "Site #1 to Site #5 sit by small tent pads that show through the leafless woods on the slope; only the lane to Site #1 is drawn, and the path up the slope doesn't show."
+   "call": "hold",
+   "note": "Site #1 to Site #5 sit by small tent pads in the woods above the end of Valley View Road; #2 to #5 are 43 to 84 m from the road with no vehicle lane showing, four of five sites without a drawn road."
   },
   "10040547": {
    "call": "unsure",
@@ -158,7 +158,7 @@
   },
   "10122722": {
    "call": "hold",
-   "note": "The photo (leafless) shows one lane looping through the campground past 1 to 9, Cabin 1, 10 to 16, 20 to 22 and Cabin 2 to 4, and the sites line it, but none of it is drawn: only the two highways are. Too faint to trace within 3 m."
+   "note": "Unchanged. Zoomed on a 5 m grid, the campground lane shows only as a soft grey band 5 to 8 m wide through the leafless woods, and the lidar relief shows the pads by 3 to 9 and Cabin 1 but not the lane itself, so it can't be placed to 3 m; 29 of 30 sites are still over 40 m from a drawn road (only the two highways are drawn)."
   },
   "10300159": {
    "call": "unsure",

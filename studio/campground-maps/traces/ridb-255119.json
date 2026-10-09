@@ -1,0 +1,79 @@
+{
+ "version": 1,
+ "map": "ridb-255119",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.0226686,
+     41.2447231
+    ],
+    [
+     -122.0228475,
+     41.2447951
+    ],
+    [
+     -122.0230265,
+     41.2448671
+    ],
+    [
+     -122.0231219,
+     41.2449031
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.0250308,
+     41.2447321
+    ],
+    [
+     -122.0251024,
+     41.2447591
+    ],
+    [
+     -122.025174,
+     41.2447771
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.0252336,
+     41.244507
+    ],
+    [
+     -122.0253171,
+     41.244534
+    ],
+    [
+     -122.0254007,
+     41.244552
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.0255677,
+     41.244219
+    ],
+    [
+     -122.0256393,
+     41.24421
+    ],
+    [
+     -122.0256989,
+     41.244201
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane from the east loop's road northwest past 26 to 25, and the short gravel pull-ins west of the entry road to 17, 14 and 12. Left out the spurs to 11, 13, 15-16 and 23 to 24, which don't show under the pines."
+}

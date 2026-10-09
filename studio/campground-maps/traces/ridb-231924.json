@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "map": "ridb-231924",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.1573463,
+     39.5394934
+    ],
+    [
+     -111.1574801,
+     39.5395294
+    ],
+    [
+     -111.1576197,
+     39.5395789
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the short gravel pull-out north-west of the east loop toward 007. No lane shows to 005 in the open meadow or to 009 under the trees, so neither was traced."
+}

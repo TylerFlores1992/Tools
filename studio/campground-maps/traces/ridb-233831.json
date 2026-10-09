@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-233831",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -96.0750594,
+     37.6658597
+    ],
+    [
+     -96.0752181,
+     37.6658867
+    ],
+    [
+     -96.0753881,
+     37.6659048
+    ],
+    [
+     -96.0755241,
+     37.6659138
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -96.0747874,
+     37.6655534
+    ],
+    [
+     -96.0749121,
+     37.6655174
+    ],
+    [
+     -96.0750481,
+     37.6654813
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the spurs to GS1 and GS2 off the point loop."
+}

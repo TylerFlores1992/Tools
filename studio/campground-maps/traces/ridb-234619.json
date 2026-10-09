@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-234619",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -116.9105988,
+     44.4120631
+    ],
+    [
+     -116.9105988,
+     44.4121441
+    ],
+    [
+     -116.9105862,
+     44.4122341
+    ],
+    [
+     -116.9105736,
+     44.412306
+    ],
+    [
+     -116.9105674,
+     44.41236
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.9100464,
+     44.4127379
+    ],
+    [
+     -116.9100527,
+     44.4128099
+    ],
+    [
+     -116.9100589,
+     44.4128818
+    ],
+    [
+     -116.9100652,
+     44.4129538
+    ],
+    [
+     -116.9100652,
+     44.4129988
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane north from the loop's west end to 08 and the north spur to 06. The spur to 07 is too faint to place."
+}

@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-232892",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.2413111,
+     46.6448017
+    ],
+    [
+     -121.241285,
+     46.6447657
+    ],
+    [
+     -121.2412066,
+     46.6447207
+    ],
+    [
+     -121.2411152,
+     46.6446577
+    ],
+    [
+     -121.2410498,
+     46.6445948
+    ],
+    [
+     -121.2410237,
+     46.6445228
+    ],
+    [
+     -121.2410237,
+     46.6444329
+    ],
+    [
+     -121.2410106,
+     46.6443609
+    ],
+    [
+     -121.2410106,
+     46.6442889
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved lane south from the ring road by 036, as far as it shows. Left out the lanes to the interior sites 009 to 018, 020 and 021, which the canopy hides."
+}

@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-234162",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.3075803,
+     40.5659895
+    ],
+    [
+     -121.3076865,
+     40.5660031
+    ],
+    [
+     -121.307781,
+     40.565985
+    ],
+    [
+     -121.3078636,
+     40.5659625
+    ],
+    [
+     -121.3079226,
+     40.5659265
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane west from the north end of the loop into the clearing below C. The ways to B, D and E show only as bare ground between the pines and were left out."
+}

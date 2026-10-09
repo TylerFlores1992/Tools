@@ -1,0 +1,111 @@
+{
+ "version": 1,
+ "map": "ridb-234538",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.9966342,
+     39.5199734
+    ],
+    [
+     -120.9967737,
+     39.5199914
+    ],
+    [
+     -120.9969249,
+     39.5200184
+    ],
+    [
+     -120.997076,
+     39.5200364
+    ],
+    [
+     -120.9971922,
+     39.5200184
+    ],
+    [
+     -120.9973085,
+     39.5199824
+    ],
+    [
+     -120.997448,
+     39.5199418
+    ],
+    [
+     -120.9975643,
+     39.5199283
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.9971457,
+     39.5200364
+    ],
+    [
+     -120.9971457,
+     39.5201265
+    ],
+    [
+     -120.9971922,
+     39.5201986
+    ],
+    [
+     -120.9972388,
+     39.5202707
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.9971225,
+     39.5201355
+    ],
+    [
+     -120.9970179,
+     39.5202977
+    ],
+    [
+     -120.9968667,
+     39.5203788
+    ],
+    [
+     -120.9966807,
+     39.5204239
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.9968202,
+     39.5208789
+    ],
+    [
+     -120.99689,
+     39.5209014
+    ],
+    [
+     -120.9970411,
+     39.5209059
+    ],
+    [
+     -120.9972155,
+     39.5209104
+    ],
+    [
+     -120.9974131,
+     39.5209149
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lanes across the two clearings: in the south from the road past 006 and 007 to 002 and 004, with the arm north-east through the clearing back to the road, and in the north along the clearing's south edge past 009 and 010. The rest of the north clearing is open ground with no lane to follow."
+}

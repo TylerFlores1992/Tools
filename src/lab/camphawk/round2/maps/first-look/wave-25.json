@@ -10,7 +10,7 @@
   },
   "232324": {
    "call": "usable",
-   "note": "On the Forest Service's leaf-off photo the two drawn lanes and the east link follow the visible ones, and 006 to 038 sit on pads beside them (RVs on several). The short spurs to the pads aren't drawn, nor the parking lane at the east end."
+   "note": "Unchanged. The two lanes and the east link follow the visible pavement within about 3 m, and all 19 sites are within 40 m of them; zoomed on a 5 m grid, the undrawn pieces are the short paved pull-throughs to the pads (006 to 038), not lanes of their own, so nothing was traced."
   },
   "232330": {
    "call": "unsure",
@@ -21,20 +21,20 @@
    "note": "On the Forest Service's 2020 photo the drawn road and the loop follow the visible ones, and 001 to 014 sit on pads at the end of short spurs off them (the 15 to 40 m the old note flagged); the spurs aren't drawn."
   },
   "232353": {
-   "call": "hold",
-   "note": "On the Forest Service's 2016 leaf-off photo the drawn loop roughly follows the visible one, but the entrance from the highway isn't drawn and 002, 003, 005, 006, 008, 011, 013, 019 and 021 sit 20 to 60 m outside it, on pads along lanes that aren't drawn."
+   "call": "usable",
+   "note": "Replaced the drawn loop, which cut inside the visible gravel: the entrance from the highway, the whole loop past 002 to 016, the east lane to 017 and 018, and short spurs to the pads by 005, 006 and south of 012 are now traced from the photo, within about 3 m of the gravel. All 20 sites are within 40 m of a road; the pull-ins to 008, 011, 013 and 019 aren't drawn."
   },
   "232360": {
-   "call": "hold",
-   "note": "On the Forest Service photo the drawn highway runs 10 to 20 m south of the visible road through the campground. 004 to 008 sit on pads at the end of visible pull-in spurs north of it, and 009 to 012 along a lane to the north-west; none of these is drawn."
+   "call": "usable",
+   "note": "Replaced the drawn road, which ran 10 to 20 m south of the visible one: Eagle Nest Campground Road is now traced through the campground from the Forest Service's usfs-r10 photo (the default leaf-off layer is blank over the middle), within about 3 m, with the lane north to 009. 001 and 004 to 012 sit 15 to 35 m off it on short undrawn pull-ins; 002 and 003 are walk-in sites on footpaths 120 to 150 m north, not traced."
   },
   "233317": {
    "call": "unsure",
    "note": "A list of refuge cabins spread over 93 km (dispersed, not drawn as areas) with no roads. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "233909": {
-   "call": "hold",
-   "note": "On the Forest Service's 2020 photo the south loop roughly follows the visible lane, with RVs on pads beside 004, 009, 018, 021 and 022, but about a third of the sites sit 20 to 40 m from any drawn road on spurs and lanes that aren't drawn (001 to 003, 005 to 008, 010 to 012, 014, 015, 019, 032, 034); the north-east loop by 025 and 027 is under canopy."
+   "call": "usable",
+   "note": "Replaced the roads: the shore lane past 036 to 045, the lane in from the highway, and the south loop past 001 to 013 and up the east side past 014, 016 and 020 are now traced from the photo, within about 3 m of the visible gravel, and all 44 sites are within 40 m of a road. The north-east loop (022 round to 030) is under canopy and is kept from the source, unconfirmed, and the short link between 013 and 016 is hidden by trees and left undrawn."
   },
   "233974": {
    "call": "good",
@@ -45,12 +45,12 @@
    "note": "Zoomed on the Forest Service's leaf-off photo, both loops and the middle lane follow the visible lanes (within about 8 m) and 001 to 025 sit on the pads along them. The walk-in sites 027H to 032H and 039 to 041 have no drawn lane, and none shows to trace."
   },
   "234108": {
-   "call": "hold",
-   "note": "On the Forest Service's 2020 photo the drawn loop follows the visible road, with RVs on 004, 006, 002 and 031. But 014 to 022 sit 50 to 150 m south of it in the trees with no visible lane, and 024 to 030, 032 and 034 sit 20 to 40 m off it, so the south half has nothing drawn."
+   "call": "usable",
+   "note": "The loop follows the visible road, and the gravel lane south from the lot past 022 is now traced from the photo. 016 to 021 still sit 60 to 120 m south in the trees with no visible lane (6 of 35 sites over 40 m from a road), and 024 to 030 sit beside short undrawn pull-ins."
   },
   "234110": {
    "call": "hold",
-   "note": "On the Forest Service's 2020 photo a road along the shore shows plainly, past 001 to 007 and Host Site 5, but isn't drawn; the one drawn road runs under canopy further west. 012 to 028 sit 50 to 150 m into the trees with no visible lane."
+   "note": "Traced the shore road from the photo, past 007, Host Site 5 and 002 to 004, closing the loop with the drawn road. Still held: 012 to 028, 031 and 033 sit 50 to 200 m west in unbroken forest with no visible lane, so 21 of 34 sites remain over 40 m from any road."
   },
   "234112": {
    "call": "hold",
@@ -58,7 +58,7 @@
   },
   "234504": {
    "call": "usable",
-   "note": "On the Forest Service's leaf-off photo the access road, the north road and the loops follow the visible roads, and 010 to 069 sit beside them. The lakeside sites 001 to 009 and 026 to 029 sit 20 to 40 m off the drawn road on spurs that aren't drawn."
+   "note": "The access road, the north road and the loops follow the visible roads, and now the spurs to the lakeside sites 001 to 006 and the lane north to 026 are traced from the photo too, so all 68 sites are within 40 m of a road. The short pull-ins to 007 to 009 and 027 to 029 still aren't drawn."
   },
   "234629": {
    "call": "hold",
@@ -81,8 +81,8 @@
    "note": "A list of remote cabins spread over 66 km (dispersed, not drawn as areas) with no roads. No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here)."
   },
   "10119505": {
-   "call": "usable",
-   "note": "Zoomed on NAIP 2021 Hawaii (0.6 m), Hōlua 1 to 5 sit on the open grass south-east of the Hōlua cabin and Palikū 1 to 5 on the meadow west of the Palikū cabin, where tent sites would be; no pads show at this resolution. Two areas 8 km apart with no roads (reached on foot); no trail is drawn to them."
+   "call": "hold",
+   "note": "Hōlua 1 to 5 and Palikū 1 to 5 are wilderness tent sites in the crater reached only on foot; every site is far from any road, so there is no campground map to draw."
   },
   "10156151": {
    "call": "hold",
@@ -102,7 +102,7 @@
   },
   "10300372": {
    "call": "hold",
-   "note": "On the Forest Service's 2010 photo (0.6 m, asked at its own scale), group sites A and B sit in two clearings joined by a track running north-south, 30 to 80 m west of the drawn loop; the track isn't drawn, so neither site has a road. Reached by train."
+   "note": "Unchanged. On the Forest Service's 2010 photo (0.6 m) group sites A and B sit in pale clearings west of the drawn loop, but zoomed on a 5 m grid the track between them is only a soft lighter band with no clear edges, and the lidar relief here is too coarse to show it, so it can't be placed to 3 m; A is still 66 m from any drawn road."
   },
   "10322643": {
    "call": "unsure",

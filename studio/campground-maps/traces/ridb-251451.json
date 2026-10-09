@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-251451",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.7861802,
+     43.9615251
+    ],
+    [
+     -121.7861366,
+     43.9614621
+    ],
+    [
+     -121.786093,
+     43.9614081
+    ],
+    [
+     -121.7860556,
+     43.9613631
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spur southeast from the lane to the pad by 005. The pale diagonal strips by 001, 003 and 015 to 017 are shadows and bare ground between pines, not lanes, so they aren't traced."
+}

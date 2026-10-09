@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-234115",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout trace-b); Claude (fix fix-02)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -452,9 +452,65 @@
      39.4207703
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -120.0873684,
+     39.418365
+    ],
+    [
+     -120.0874497,
+     39.4182479
+    ],
+    [
+     -120.087531,
+     39.4181308
+    ],
+    [
+     -120.0875891,
+     39.4180227
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.0867411,
+     39.4195181
+    ],
+    [
+     -120.0867992,
+     39.4195992
+    ],
+    [
+     -120.0868573,
+     39.4196802
+    ],
+    [
+     -120.0869038,
+     39.4197433
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.0863114,
+     39.421563
+    ],
+    [
+     -120.0861952,
+     39.421527
+    ],
+    [
+     -120.0860907,
+     39.4214999
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replaces the source's roads, whose west road on the south peninsula ran 8 to 10 m west of the gravel. Traced from the photo: the south peninsula's loop with its two inner lanes past 011 to 016, the road north to the open area by 019 to 022, and on the north side the entrance, the loop past 033 to 038, the lane north to 029 to 032 and the lane west past 026 to 028. The highway isn't drawn; the entrances stop at its edge. Left out: the short pull-ins and the tracks across the open ground by 023 and 024."
+ "note": "Replaces the source's roads, whose west road on the south peninsula ran 8 to 10 m west of the gravel. Traced from the photo: the south peninsula's loop with its two inner lanes past 011 to 016, the road north to the open area by 019 to 022, and on the north side the entrance, the loop past 033 to 038, the lane north to 029 to 032 and the lane west past 026 to 028. The highway isn't drawn; the entrances stop at its edge. Left out: the short pull-ins and the tracks across the open ground by 023 and 024. Added (fix fix-02): the gravel track south from the peninsula loop toward 001 and 002, the lane from the junction north-west past the open ground by 023, and the pull-off east to 039."
 }

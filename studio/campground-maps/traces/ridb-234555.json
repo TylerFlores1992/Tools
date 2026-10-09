@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "map": "ridb-234555",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.0039082,
+     34.3436239
+    ],
+    [
+     -118.0038919,
+     34.3435248
+    ],
+    [
+     -118.0038919,
+     34.3433986
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt way south from the bottom of the loop to the lot at 004. Nothing shows to 003 inside the loop under the oaks."
+}
