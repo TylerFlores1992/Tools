@@ -86,19 +86,19 @@
   },
   "232310": {
    "call": "usable",
-   "note": "Under canopy. The south side of the loop follows the visible pavement and its spurs, and every site but 001 (23 m) sits within 20 m of the loop; its north side doesn't show under the trees."
+   "note": "The lidar relief shows the loop under the pines as a plain smooth band with short spurs to the pads, and the drawn loop and the road in sit on it within about 3 m all the way round, north side included. Every site is within 25 m of the loop (001 the farthest). Nothing traced."
   },
   "232316": {
    "call": "usable",
-   "note": "Under canopy. The highway, the frontage road and the loop past 005 to 009 follow what shows of the lanes, and every site but 011 (24 m) sits within 20 m of them; the short link drawn south from 003 doesn't show under the trees."
+   "note": "The lidar intensity shows the highway, the frontage road and the loop past 004 to 009 as light gravel bands, and the drawn lines follow them within 3 to 4 m. The short link drawn south from 003 shows no band of its own; every site but 011 (24 m) is within 20 m of a drawn road. Nothing traced."
   },
   "232347": {
    "call": "good",
    "note": "The road and both loops follow the visible dirt lanes, with 003 and 006 to 015 beside them. Traced the gravel spurs to 001, 002, 003, 004 and 005, which show plainly; every site now sits within 20 m of a road."
   },
   "232363": {
-   "call": "unsure",
-   "note": "Under full canopy: every site sits within 20 m of a drawn road, but neither the loops nor any pads show through the pines to confirm them."
+   "call": "usable",
+   "note": "The lidar intensity shows the loops as plain gray bands under the pines. Replaced the roads: the loop's northeast side between 007 and 006 redrawn on its band (the drawn line had cut a chord 8 m inside it), and the inner loop round 003 carried up its east side to meet it; the rest copied, already on their bands. A short link south of the inner loop (toward 004) shows and isn't drawn; every site is within 20 m of a drawn road."
   },
   "232406": {
    "call": "good",
@@ -110,7 +110,7 @@
   },
   "232510": {
    "call": "unsure",
-   "note": "Under full canopy: the Park Service loop can't be seen through the firs, and F001 to F005 sit along it with nothing showing to confirm them."
+   "note": "The 2009 lidar survey is sparse (0.43 ground points per m²) and full of gaps: a smooth band in the intensity hints at the loop's south and east sides by F003 and F004, a few meters off the drawn Park Service line, but it breaks up and can't be followed to 3 m, and the west side by F001 and F002 doesn't show. Nothing traced."
   },
   "232758": {
    "call": "hold",
@@ -162,11 +162,11 @@
   },
   "233345": {
    "call": "unsure",
-   "note": "Under canopy: the loops sit where the open lanes might run, but neither they nor the pads show clearly through the pines, and 28 to 32 and 21 to 23 sit 20 to 37 m from them."
+   "note": "The lidar intensity and relief show the lanes and their angled pull-through pads under the pines. Replaced the roads: the northwest loop redrawn on its two lanes and the link between them (its east side had cut across the pads 15 to 20 m west of the lane by 26 to 32), the branch south from the wide area moved 6 to 8 m east onto its band, and the inner loop's west side (08 to 11) moved 5 m east; the access road, the south road and the 44 to 50 loop already sat on their bands. The inner loop's diagonal past 07 and 13 shows no band and the lane round 05 and 06 isn't plain enough to draw, so that part can't be checked; every site is within 40 m of a drawn road."
   },
   "233355": {
-   "call": "unsure",
-   "note": "Under full canopy: the loop and the road follow pale strips that may be lanes, and every site sits within 20 m of them, but no pads show to confirm the sites."
+   "call": "usable",
+   "note": "The lidar relief shows the loop as a plain crowned ring under the firs and the through road along the south as a wide band; both drawn roads sit on them within about 3 m. Sites 009, 010 and 011 sit beside the loop and 013 between the loop and the road, all within 20 m of a drawn road; no pads show to confirm them. Nothing traced."
   },
   "233568": {
    "call": "usable",
@@ -241,8 +241,8 @@
    "note": "A dispersed sand-camping listing with no roads drawn: four areas over 5 km of dune and forest, with the sites spread along sandy tracks. Not a map anyone can drive by."
   },
   "234465": {
-   "call": "unsure",
-   "note": "Under full canopy: the two loops can't be seen through the larches. Tent 1 to 5 sit 54 to 131 m east toward the shore (walk-in sites), and Group Site 1 sits 72 m from any road at the far south-west, with nothing showing."
+   "call": "usable",
+   "note": "The lidar intensity shows both loops as plain black asphalt bands under the larches (the east side of the 17 to 33 loop runs as two lanes round an island, and the drawn line follows the east one), and the relief agrees; the drawn loops sit on them within about 3 m. Tent 1 to 5 are walk-ins toward the shore and Group Site 1 sits 72 m from a road at the far southwest: 6 of 39 sites. Nothing traced."
   },
   "234538": {
    "call": "usable",
@@ -258,7 +258,7 @@
   },
   "234731": {
    "call": "unsure",
-   "note": "Under full canopy: the forest road and the small loop can't be seen through the trees. 01 to 03 and 05 to 11 sit along them, but 04 sits 72 m from any road, 600 m east of the rest, with nothing showing."
+   "note": "The 2009 lidar survey is sparse (0.45 ground points per m²): Aufderheide Drive and the road in from the northwest show as bands where drawn, but no band shows along NF 440 past 01 to 03 or round the small loop by 05 to 10, only the creek channels. Site 04 still sits 72 m from any road, 600 m east of the rest. Nothing traced."
   },
   "234751": {
    "call": "hold",
@@ -266,7 +266,7 @@
   },
   "250042": {
    "call": "usable",
-   "note": "The road in and the east loop follow the visible gravel, and 02, 05, 06 and 08 to 10 sit beside them. 03 and 04 sit 26 m south of the road, on a lane under the trees that isn't drawn."
+   "note": "The lidar intensity and relief show the road in and the east loop as plain bands, and the drawn lines sit on them within about 3 m. A faint gray band runs south from the road toward 03 and 04 in the intensity but isn't plain enough to trace; they sit 26 m from the road, within reach. Nothing traced."
   },
   "251433": {
    "call": "usable",
@@ -294,7 +294,7 @@
   },
   "259031": {
    "call": "unsure",
-   "note": "Zoomed: under full canopy along the White River. The loops (A to D) and their lanes sit where faint gaps show through the firs, and every site sits within 20 m of a drawn road, but no lane or pad shows clearly enough to confirm them."
+   "note": "The 2008 lidar survey is sparse (0.62 ground points per m²) and the layers are mottled with gaps: the main road through the campground shows faintly where drawn, but no band shows along the A to D loops or the lanes past the C sites, so they can't be checked to 3 m. Nothing traced."
   },
   "267080": {
    "call": "hold",
@@ -357,8 +357,8 @@
    "note": "The outer loop, the middle lane (30 to 48) and the row along the entry road (1 to 14) all follow the visible lanes, and the sites sit on the pads beside them. Six sites have no point and aren't drawn."
   },
   "10119398": {
-   "call": "hold",
-   "note": "Under full canopy. Sites 001 to 005 sit 44 to 74 m from the only drawn road and 006 to 009 sit 21 to 36 m from it, beside small clearings; no lane to them shows through the firs."
+   "call": "usable",
+   "note": "The lidar relief and intensity show the lanes under the firs plainly. Replaced the roads: traced the lane in from the west road to a junction, southeast past 001 to 003 to a turnaround loop by 004 and 005, and north past 006 to 009; redrew the road along the north and east on its band (the drawn line cut 10 m inside the curve) and left out its spur south along the east edge, where nothing shows. Every site is now within 20 m of a drawn road (010 at the branch's end the farthest)."
   },
   "10137699": {
    "call": "usable",

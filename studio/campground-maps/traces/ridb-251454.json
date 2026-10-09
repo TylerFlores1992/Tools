@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-251454",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-06)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.6905918,
+     44.2538475
+    ],
+    [
+     -121.6905417,
+     44.2538853
+    ],
+    [
+     -121.6904678,
+     44.2539348
+    ],
+    [
+     -121.6903864,
+     44.253978
+    ],
+    [
+     -121.6903288,
+     44.2540186
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the short paved spur off the top of the loop toward 006, a plain dark band in the lidar intensity."
+}
