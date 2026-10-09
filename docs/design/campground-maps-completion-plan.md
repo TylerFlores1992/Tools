@@ -126,6 +126,28 @@ no lane. The full report is `research/campground-maps-pointcloud.md`.
     first.
   - Faint dirt lanes and sparse surveys stay the hard remainder.
 
+## The fix-after campaign: results (2026-10-09)
+Every held or usable map a person can fix from the photo went through one of 17 photo batches
+(`campground-maps-fix-brief.md`), plus the first three canopy batches over the lidar point clouds
+(`campground-maps-canopy-brief.md`). Each batch's maps were checked over the photo, and canopy
+maps over the layer, by the orchestrating session before any decision was recorded.
+- **Photo batches (691 maps):**
+  - 379 pass (good or usable) and 298 are held. 14 more are in the owner's waves, where the
+    decisions stay the owner's.
+  - Of the 379 maps that started held, 112 now pass.
+  - About 60 that had passed as usable were found below the bar and are now held. Most have a
+    drawn road off the lane, or a third or more of their sites more than 40 m from a drawn road.
+- **Canopy batches 1–3 (126 maps):** 70 pass and 52 are held. More canopy batches are running as
+  the point-cloud layers are made (667 canopy maps have USGS point clouds).
+- **Delegated waves now:** 1,703 pass and 1,258 are held (were 1,577 and 1,384).
+- **Rules made explicit on the way:**
+  - a site counts as roadless more than 40 m from any drawn road or lot, walk-ins included;
+  - lanes that would be drawn unconnected to any road hold a map;
+  - a trace keeps every earlier tracer's credit (fixed, tested).
+- **What stays held, mostly:** lanes no photo or layer places to 3 m (dense canopy on sparse
+  surveys, faint dirt lanes); walk-in or boat-in sites far from any road; stacked or misplaced
+  sites with no pad to tell them apart; first-come pins with no campground near them.
+
 ## Decisions for the owner
 **Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
 them for good nor publish them half drawn; research below); (2) dispersed listings: keep them off;
