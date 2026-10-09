@@ -86,7 +86,7 @@
   },
   "232129": {
    "call": "usable",
-   "note": "The switchback road and the turnaround at the north end follow the visible gravel, and 004 to 006, 009 to 013 sit by them. 001 to 003 and 007 sit 20 to 30 m east of the drawn road under the firs, and 014 to 020 by the lot and paths near the lake."
+   "note": "The lidar intensity shows the lanes as grey gravel bands, and the drawn roads and the north turnaround past 004 to 006 sit on them. Traced the lane from the south lot northwest past 017, 018 and 019, which shows as a continuous band leaving the lot where the drawn road ends; every site is now within 40 m of a drawn road, and the pull-ins to 007 to 010 aren't drawn."
   },
   "232169": {
    "call": "hold",
@@ -114,15 +114,15 @@
   },
   "232261": {
    "call": "unsure",
-   "note": "Under the pines: the two loops are drawn but the lanes show only in gaps, and 02 to 09, 11 and 13 sit 20 to 40 m south of them toward the river, and 18 to 20 north of the east loop."
+   "note": "The lidar intensity shows the two loops as faint grey bands near where they are drawn, but too faintly to check them to 3 m; no lanes show toward 02 to 09, 11 and 13 by the river or 18 to 20 north of the east loop, which still sit 20 to 40 m from a drawn road. Nothing traced."
   },
   "232267": {
    "call": "hold",
    "note": "Not traced: the photo shows only faint lanes in gaps under the pines, and the lidar relief shows a wide mesh of old tracks across the whole 400 by 600 m frame that the drawn north loop only partly follows. Placing the real lanes to 3 m would mean replacing every road over 60 sites; most of 001 to 034, 056, 058 and 059 still sit 50 to 200 m from a drawn road."
   },
   "232270": {
-   "call": "unsure",
-   "note": "Under pines: the loop is drawn and 003, 005, 008, 011, 012, 014 and 015 sit near it, but 001, 002, 004, 006, 007, 009 and 016 to 019 sit 20 to 40 m outside it, where lanes show only in gaps."
+   "call": "usable",
+   "note": "The lidar intensity shows the loop as a plain asphalt band under the pines. Replaced the roads to redraw the loop on its band, which ran 5 to 10 m inside the OpenStreetMap loop along its top and northeast side (by 012 and 11) and 3 to 5 m off along its south side; the rest copied from OpenStreetMap. 001, 002, 016, 019, 07 and 09 sit 20 to 40 m outside the loop where no spurs show."
   },
   "232311": {
    "call": "hold",
@@ -130,11 +130,11 @@
   },
   "232321": {
    "call": "unsure",
-   "note": "Under pines: the loops are drawn but the lanes show only faintly, and many sites (001, 016, 018, 020 to 024, 026, 027, 029, 031 to 034, 043 to 046) sit 20 to 40 m between the drawn loops."
+   "note": "The lidar intensity shows the loops as blotchy grey bands that run roughly where they are drawn (within about 5 m), with inner lanes and pull-ins branching off toward 038 to 043 and 006 to 009. The bands are too uneven to place the inner lanes or check the loops to 3 m, so the sites between the loops (016, 018, 020 to 024, 026, 027, 029, 031 to 034, 043 to 046) still sit 20 to 40 m from a drawn road. Nothing traced."
   },
   "232326": {
    "call": "usable",
-   "note": "Loops B, C and D sit on three separate benches by the river, 300 to 600 m apart. Loops C (C1 to C26) and D (D1 to D11) line their drawn lanes; in loop B, B1, B03, B05, B8, B10, B11, B13, B14, B16, B19, B20 and B22 sit 15 to 30 m outside the drawn loop under the firs, and D04 and D6 sit by cabins on the lower road."
+   "note": "The lidar intensity shows every drawn road as a plain asphalt band, including the B loop under the firs and the C and D lanes, and the drawn roads sit on them. B1, B03, B05, B8, B10 and B11 sit between the B loop and the main road, within 40 m of both, and their pull-ins aren't drawn. Nothing traced."
   },
   "232346": {
    "call": "hold",
@@ -169,8 +169,8 @@
    "note": "Under full canopy: the Forest Service loop is drawn but no lanes show through the firs, and 005 to 014 sit 20 to 40 m south of it toward the river, with 018 and 019 north of it."
   },
   "232875": {
-   "call": "unsure",
-   "note": "Only the lot and the highway are drawn. Sites 001 to 009 sit scattered up the open pine slope west of the lot with no lanes or pads showing; they may be walk-in tent sites, but the photo can't say."
+   "call": "hold",
+   "note": "The lidar intensity shows the paved lot and the highway plainly, and only faint footpaths across the pine slope west of the lot; no vehicle lane reaches 001 to 009, so they read as walk-in tent sites 40 to 200 m up the slope, and 7 of 9 sit more than 40 m from the lot. Nothing traced."
   },
   "232893": {
    "call": "hold",
@@ -214,7 +214,7 @@
   },
   "233865": {
    "call": "unsure",
-   "note": "Under full canopy: the lane is drawn and 003, 005, 006, 008 and 010 sit by it, but no lanes show to confirm it, and 001, 002, 004, 011 to 013 sit 15 to 30 m off it."
+   "note": "The lidar intensity and relief show the main road plainly where it is drawn, but the north lane past 003 to 010 shows only as faint smooth strips among old river terraces in the relief, not clearly enough to check it to 3 m. 001, 002, 004 and 011 to 013 still sit 15 to 30 m off the drawn lanes. Nothing traced."
   },
   "233871": {
    "call": "good",
@@ -237,8 +237,8 @@
    "note": "The loop follows the visible gravel under the big trees; now traced: the spurs across the lawn (the cross by 16 and 20, the lane toward 08, the short lane by 09) and the spur to 12. Still hold: the west row along the river (15, 17, 18, 22, 25, 27 to 30) sits 20 to 40 m outside the loop by a lane that shows only in gaps under the trees, and 13 and 14 sit off the north lawn."
   },
   "233968": {
-   "call": "unsure",
-   "note": "Under full canopy: the loops are drawn but no lanes show through the firs, and 003 to 005, 013, 015 and 028 sit 30 to 60 m from any drawn road."
+   "call": "usable",
+   "note": "Under the firs the lidar intensity shows the loop, the west road and the turnaround at the south end as plain asphalt bands, and the drawn roads run down their middles. 003 to 005 sit inside the loop and 013 and 015 west of the west road, 20 to 40 m from them, and 028 sits 52 m east of the turnaround, where only a faint track shows. Nothing traced."
   },
   "233973": {
    "call": "usable",
@@ -321,8 +321,8 @@
    "note": "The loop follows the lanes that show between the pines, and 004 to 007, 009, 013 and 015 sit by it. 001 to 003, 008, 010 to 012, 014 and 016 to 021 sit 20 to 40 m outside it, where lanes show faintly and aren't drawn."
   },
   "251566": {
-   "call": "unsure",
-   "note": "Under full canopy: the Forest Service loop is drawn, but no lanes show through the pines, and 001, 002, 008 to 012, 014 and 017 sit 20 to 40 m off it; 008 and 009 are tent-only."
+   "call": "usable",
+   "note": "Under the pines the lidar intensity shows the loop as a narrow continuous band, and the Forest Service line was well off it. Replaced the road: the loop's west lane now runs past 010, 013, 015 and 018, 10 to 15 m east of the old line, turns at the top past 005 to 001, and its east lane runs 15 to 25 m east of the old one. Every site is within 40 m of it; 008 and 009 are tent-only sites west of the lane."
   },
   "251567": {
    "call": "hold",

@@ -1,0 +1,116 @@
+{
+ "version": 1,
+ "map": "ridb-251566",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.622575,
+     44.5505941
+    ],
+    [
+     -121.6226593,
+     44.5507021
+    ],
+    [
+     -121.6227135,
+     44.5509001
+    ],
+    [
+     -121.6227714,
+     44.5511071
+    ],
+    [
+     -121.6227852,
+     44.551404
+    ],
+    [
+     -121.6227991,
+     44.551701
+    ],
+    [
+     -121.6228268,
+     44.552007
+    ],
+    [
+     -121.6228393,
+     44.552304
+    ],
+    [
+     -121.6228268,
+     44.552484
+    ],
+    [
+     -121.6227135,
+     44.552646
+    ],
+    [
+     -121.622575,
+     44.552763
+    ],
+    [
+     -121.6224114,
+     44.5528889
+    ],
+    [
+     -121.6221848,
+     44.5530059
+    ],
+    [
+     -121.6219079,
+     44.5531274
+    ],
+    [
+     -121.6216498,
+     44.5531634
+    ],
+    [
+     -121.6215428,
+     44.5530869
+    ],
+    [
+     -121.6215101,
+     44.5529069
+    ],
+    [
+     -121.6215516,
+     44.552709
+    ],
+    [
+     -121.6216813,
+     44.552403
+    ],
+    [
+     -121.6218449,
+     44.552043
+    ],
+    [
+     -121.6219708,
+     44.551809
+    ],
+    [
+     -121.6220463,
+     44.551503
+    ],
+    [
+     -121.6220967,
+     44.5512061
+    ],
+    [
+     -121.6221269,
+     44.5509001
+    ],
+    [
+     -121.6221269,
+     44.5505941
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replaced, traced over the lidar intensity, which shows the loop as a narrow continuous band under the pines: its west lane runs past 010, 013, 015 and 018, 10 to 15 m east of the Forest Service line, it turns at the top past 005 to 001, and its east lane runs 15 to 25 m east of the drawn one. Both ends leave the frame to the south, where the drawn road comes in."
+}

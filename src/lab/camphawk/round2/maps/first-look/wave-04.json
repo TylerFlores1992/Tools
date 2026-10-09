@@ -206,7 +206,7 @@
   },
   "233885": {
    "call": "unsure",
-   "note": "Loops A and B are under dense coastal forest: the drawn loops roughly fit the few visible gaps, but A09, A19, A21, A23 and B01 to B10 sit well away from any drawn road where no lane shows. Loops C and D look plausible but are also under canopy."
+   "note": "The lidar survey is sparse here (0.85 ground points per square meter): the intensity and relief are mostly gaps and speckle under the coastal forest, so no lane shows to check the A and B loops against (A09, A19, A21, A23 and B01 to B10 still sit away from the drawn roads). Loops C and D are drawn where the layers show nothing either. Nothing traced."
   },
   "233900": {
    "call": "usable",
@@ -222,7 +222,7 @@
   },
   "234085": {
    "call": "usable",
-   "note": "The main roads and the loops past 017 to 099 follow the visible lanes, with the sites beside them. In the northwest loop, 114 to 138 and 139 to 146 sit 20 to 40 m from the drawn roads under the pines, where only faint pieces of lanes show."
+   "note": "Replaced the roads over the lidar intensity: the northwest loop's west side now sits on its asphalt band (it was 8 to 10 m west), the lane past 136 and 137 bows east onto its band, and two lanes were added: one from the north arc past 145, 143, 142 and 139 to 137, and the ring past 024, 025 and 028 that joins the road by 038. 076, 079, 080 and 093 show no lane and sit 40 to 60 m from a road."
   },
   "234086": {
    "call": "unsure",

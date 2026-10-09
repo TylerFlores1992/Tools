@@ -454,8 +454,8 @@
    "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 60,
-    "review": 34,
+    "ready": 51,
+    "review": 43,
     "notDrawn": 0,
     "failed": 0
    },
@@ -563,8 +563,8 @@
    "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 47,
-    "review": 47,
+    "ready": 42,
+    "review": 52,
     "notDrawn": 0,
     "failed": 0
    },
@@ -672,8 +672,8 @@
    "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 53,
-    "review": 39,
+    "ready": 50,
+    "review": 42,
     "notDrawn": 2,
     "failed": 0
    },

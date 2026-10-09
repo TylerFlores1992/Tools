@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-232129",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.2162794,
+     44.1756511
+    ],
+    [
+     -107.216392,
+     44.1757321
+    ],
+    [
+     -107.216492,
+     44.1758131
+    ],
+    [
+     -107.2165921,
+     44.1758851
+    ],
+    [
+     -107.2167047,
+     44.175975
+    ],
+    [
+     -107.2168172,
+     44.176056
+    ],
+    [
+     -107.2169298,
+     44.176137
+    ],
+    [
+     -107.2170424,
+     44.176209
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel lane from the lot at the south end northwest past 017, 018 and 019, which the lidar intensity shows as a continuous grey band and which leaves the lot where the drawn road ends. The roads drawn from OpenStreetMap already sit on their bands; the pull-ins to 007 to 010 aren't drawn."
+}
