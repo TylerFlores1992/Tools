@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-232524",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-13)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -94.240994,
+     34.2250865
+    ],
+    [
+     -94.2409484,
+     34.225165
+    ],
+    [
+     -94.2408182,
+     34.2252641
+    ],
+    [
+     -94.2406663,
+     34.2253363
+    ],
+    [
+     -94.2405252,
+     34.2253904
+    ],
+    [
+     -94.2403733,
+     34.2254445
+    ],
+    [
+     -94.240254,
+     34.2254986
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.2408399,
+     34.2252732
+    ],
+    [
+     -94.2408616,
+     34.2254264
+    ],
+    [
+     -94.2408616,
+     34.2255527
+    ],
+    [
+     -94.2408399,
+     34.2256608
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The road on past the lot by 27 to 23 and 24, and the lane north past 26 to the ramp; the stretch through the trees east of the lot follows the lidar relief's lane. Left out: the lanes west to 28 to 32, which show only on the lidar."
+}

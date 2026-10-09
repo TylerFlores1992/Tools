@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-233460",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-13)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -89.6951823,
+     34.4363014
+    ],
+    [
+     -89.6952258,
+     34.4363735
+    ],
+    [
+     -89.6952802,
+     34.4364456
+    ],
+    [
+     -89.6953455,
+     34.4365087
+    ],
+    [
+     -89.695389,
+     34.4365538
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -89.6948015,
+     34.4365719
+    ],
+    [
+     -89.6947797,
+     34.436644
+    ],
+    [
+     -89.6947471,
+     34.4367161
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane north-west off the loop's west side toward 29 and 30, and the short lane north from the loop's top to 31, both visible on the photo and on the lidar relief."
+}

@@ -1,9 +1,9 @@
 {
  "version": 1,
  "map": "ridb-232733",
- "traced": "2026-10-08",
- "by": "Claude (rollout south-b)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout south-b); Claude (fix fix-13)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
  "roads": [
   {
    "coords": [
@@ -25,7 +25,11 @@
     ],
     [
      -84.6412407,
-     37.0151738
+     37.0151918
+    ],
+    [
+     -84.6414092,
+     37.0151017
     ],
     [
      -84.6415552,
@@ -56,8 +60,80 @@
      37.01457
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -84.6429372,
+     37.01457
+    ],
+    [
+     -84.6430383,
+     37.0144889
+    ],
+    [
+     -84.6432518,
+     37.0143177
+    ],
+    [
+     -84.6434316,
+     37.0142185
+    ],
+    [
+     -84.6436113,
+     37.0141374
+    ],
+    [
+     -84.6437911,
+     37.0140744
+    ],
+    [
+     -84.6439709,
+     37.0140203
+    ],
+    [
+     -84.6441619,
+     37.0139662
+    ],
+    [
+     -84.6443304,
+     37.0138851
+    ],
+    [
+     -84.6444989,
+     37.013822
+    ],
+    [
+     -84.6446,
+     37.013786
+    ],
+    [
+     -84.6447236,
+     37.0137139
+    ],
+    [
+     -84.6448585,
+     37.0136508
+    ],
+    [
+     -84.6450045,
+     37.0136058
+    ],
+    [
+     -84.6451169,
+     37.0135156
+    ],
+    [
+     -84.6452854,
+     37.0134436
+    ],
+    [
+     -84.6455101,
+     37.0134165
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced from NAIP: the road along the shore from the east edge to the gravel lot by 01 to 05 and 13. Left out: the lane on west to 06 to 12, which shows only in pieces under the trees, and any lane to 15 to 22."
+ "note": "Traced from NAIP: the road along the shore from the east edge to the gravel lot by 01 to 05 and 13, and the lane on west along the shore past 06 and 07 to 08, 12, 11 and 9G, which shows in pieces on the photo and was joined along the lidar relief's bench. Left out: any lane to 15 to 22, which don't show under the trees."
 }

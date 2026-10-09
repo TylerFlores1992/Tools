@@ -1753,8 +1753,8 @@
    "built": "2026-10-09",
    "count": 91,
    "summary": {
-    "ready": 42,
-    "review": 47,
+    "ready": 36,
+    "review": 53,
     "notDrawn": 2,
     "failed": 0
    },
@@ -1859,8 +1859,8 @@
    "built": "2026-10-09",
    "count": 90,
    "summary": {
-    "ready": 54,
-    "review": 34,
+    "ready": 50,
+    "review": 38,
     "notDrawn": 2,
     "failed": 0
    },

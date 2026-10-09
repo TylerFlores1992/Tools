@@ -42,7 +42,7 @@
   },
   "232524": {
    "call": "usable",
-   "note": "The roads and the south loop follow the visible pavement, and 01 to 21 sit beside them. In the north cluster the road ends at 27, and the lanes to 23 to 26 and 28 to 32 show through the trees but aren't drawn."
+   "note": "The roads and the south loop follow the visible pavement, and 01 to 21 sit beside them. In the north cluster the road is now traced on past the lot by 27 to 23 and 24 (through the trees along the lidar relief's lane) and the lane north past 26 to the ramp; 29 to 31 in the west still sit about 50 m from any drawn road, as their lanes show only on the lidar."
   },
   "232537": {
    "call": "unsure",
@@ -61,8 +61,8 @@
    "note": "The road along the point and the north loop past 16 to 29 are drawn, but under the trees the loop shows only in pieces. The south point (01 to 11) has no drawn road and its lanes show only as gaps in the canopy, too unclear to trace; 12 to 15 sit in the trees north of the road."
   },
   "232566": {
-   "call": "usable",
-   "note": "Shown as areas. The C loop by the dam follows the visible lane and C02 to C31 sit along it, and P1 to P4 sit by the road to the west. B01 is a lone site on the shore 1.5 km south with no drawn road."
+   "call": "hold",
+   "note": "Unchanged. The C loop by the dam follows the visible lane and most of C02 to C31 sit on its pads, but C11 to C14 are bunched within about 15 m in the trees east of the loop, where the photo shows only two campers' pads, so they can't be told apart and weren't moved. P1 to P4 sit up the wooded slope west of the road, and B01 is a lone boat-in site 1.5 km south."
   },
   "232587": {
    "call": "usable",
@@ -70,7 +70,7 @@
   },
   "232588": {
    "call": "usable",
-   "note": "Shown as 3 areas. The 200s and lettered sites sit on the drawn loops by the point, and 101 to 119 line the drawn lane in the east, though the spurs to 116 to 119 aren't drawn. In the 400s the lane past 411 to 418 and to GR-4 shows plainly but isn't drawn."
+   "note": "Shown as 3 areas. The 200s and lettered sites sit on the drawn loops by the point. In the 100s, the loop lane west of the main road past 116 to 119 with its cross lanes, the spur to 107, the lane to the lot by 105 and the lane and turnaround east of 109 are now traced; in the 400s, the lane past 409 to 418 and the lane to the GR-4 lot are traced from the photo, and the sites sit beside them."
   },
   "232649": {
    "call": "usable",
@@ -86,11 +86,11 @@
   },
   "232671": {
    "call": "usable",
-   "note": "Shown as 2 areas. 01 to 11 sit along the drawn road in the west; in the east, 39 to 55 line the drawn road, but 30 to 38 sit on a lane along the shore, south of the road, that shows and isn't drawn."
+   "note": "Shown as 2 areas. 01 to 11 sit along the drawn road in the west; in the east, the paved lane along the shore past 30 to 38 is now traced from the photo and the sites sit beside it, and 39 to 55 line the drawn road."
   },
   "232676": {
-   "call": "usable",
-   "note": "The roads down the shore follow the visible lanes, and P01 to P34 sit on the pads along them. P35 to P44 are stacked together at the edge of a parking lot in the south-west, not on separate pads."
+   "call": "hold",
+   "note": "Unchanged. P01 to P34 sit on the pads along the shore roads, but the equestrian sites P35 to P44 are packed in two staggered rows about 8 m apart along the north-west edge of the gravel lot; the photo shows a light strip of pads there but not separate pads that could be told apart, so none was moved."
   },
   "232682": {
    "call": "unsure",
@@ -106,11 +106,11 @@
   },
   "232723": {
    "call": "usable",
-   "note": "The south loop follows the visible pavement around the point, and 01 to 15 sit on the pads along the lanes inside it, which show but aren't drawn. The north group (01 to 13) sits inside a drawn ring that doesn't follow the lanes through the trees."
+   "note": "Replaced the roads. The south loop's outer road and west road were already on the pavement; the pull-through lanes inside it past 03, 04, 05, 06, 08 and 09 are now traced from the photo. In the north group the ring now follows the loop road round the field (placed along the lidar relief's lane where the photo shows only pieces at the top and south side), with the visible lanes south past 12 and 06 and by 07 and 08; the sites there sit under trees within about 25 m of a drawn road."
   },
   "232733": {
-   "call": "hold",
-   "note": "No road was drawn; traced the shore road from the east to the gravel lot, where 01 to 05, 13 and 14 sit. The lane on west to 06 to 12 shows only in pieces, and 15 to 22 sit in the trees north of the road with no lane showing."
+   "call": "usable",
+   "note": "The shore road from the east to the gravel lot by 01 to 05, 13 and 14 follows the pavement, and the lane on west along the shore past 06 and 07 to 08, 12, 11 and 9G is now traced: it shows in pieces on the photo and was joined along the lidar relief's bench. 15 to 22 sit in the trees north of the road with no lane showing; 18, 20 and 22 are about 40 m from it."
   },
   "232744": {
    "call": "good",
@@ -142,27 +142,27 @@
   },
   "233423": {
    "call": "usable",
-   "note": "Both loops follow the visible lanes and the sites sit on the pads around them. East of the loops the road in is drawn about 10 m north of the visible lane, through the trees, and 22 sits alone beside that lane 300 m east."
+   "note": "Both loops follow the visible lanes and the sites sit on the pads around them. The road in from the east (E0120 Road), which was drawn about 10 m north of the pavement, is now traced on it from the photo to the north-south road at the east edge, and 22 sits beside it 300 m east of the loops."
   },
   "233442": {
    "call": "unsure",
    "note": "The lot by the beach and its loops follow the visible gravel, and 05 to 11 and 20 sit around it. Sites 01 to 04 and 12 to 22 sit under full canopy east of the road, where only pieces of a lane show near 12 and 13."
   },
   "233444": {
-   "call": "usable",
-   "note": "Traced the A loop (the lane north past A02 to A10, and the cross lane past A03 to A05) and the lane past B02 and B03, all plainly visible. The C loop on the east point is drawn as rings that only partly follow the lanes under the trees, and C13 to C18 sit off them."
+   "call": "hold",
+   "note": "Unchanged. The A loop and the lane past B02 and B03 are traced and follow the lanes, but the C loop on the east point is still drawn as rings off the lanes. Only its gravel spine (from the north lot past C37 and C36 to C05) shows on the photo; the side lanes to C23 to C33 on the west and C04 to C10 on the east are under full canopy and show on neither the photo nor the lidar relief clearly enough to place, so the replace wasn't done."
   },
   "233460": {
    "call": "usable",
-   "note": "The lane through the woods follows the visible track, and 19 to 26 and 31 to 35 sit on the clearings beside it. The loop at the north end is drawn through trees; the lane to 27 to 30 runs west of it."
+   "note": "The lane through the woods follows the visible track, and 19 to 26 and 31 to 35 sit on the clearings beside it. The loop at the north end runs under the trees but follows the loop lane the lidar relief shows, with its west side on the visible gravel; the lane on north-west toward 29 and 30 and the short lane to 31 are now traced, so 27 to 30 sit within about 15 m of a drawn lane."
   },
   "233479": {
    "call": "good",
    "note": "The roads and both loops follow the visible pavement, and the sites sit on the pads along them, including 35 to 51 around the west point."
   },
   "233495": {
-   "call": "hold",
-   "note": "The sites sit on the visible pads, but the roads are drawn as several parallel lines that cut across the field and through the trees east of 32 to 39, and the shore lane past 13 to 26 isn't the one drawn. Two sites have no number."
+   "call": "usable",
+   "note": "Replaced the roads, which ran as parallel lines across the field: now traced from the photo are the road in from the north-east and down the field's east side to the south end, the shore lane past 13 to 26 and on along the beach by 27 to 29, the middle lane round the field's west side, the lane north past 01, 02 and 05 to 04, the east arm by the trees and the lane along the treeline past 32 to 34. The sites sit on the visible pads beside them; the short pull-throughs to single sites aren't drawn, and two sites still have no number."
   },
   "233502": {
    "call": "good",
@@ -177,8 +177,8 @@
    "note": "The roads follow the visible pavement through the B, C, D, A, H, E and G loops, and the sites sit on the pads beside them."
   },
   "233564": {
-   "call": "hold",
-   "note": "The drawn roads don't follow the lanes: lines cut through the trees around 012 to 028 and in the west, while the visible gravel lanes past 012 to 024 and 030 to 036 aren't drawn."
+   "call": "usable",
+   "note": "Replaced the source's straight lines with every lane traced from the photo: the entry road past 001 to 003, the main road north past 050 and the pull-through lot by 044 to 047, the road east past 039 to 037 and down the east side past 035, 031 and 027 to 021, and the lanes through the south loops past 012 to 020. The east road under the trees between 033 and 027 shows only in pieces on the photo and was placed along the lidar relief's crowned lane; the short spurs to 004, 050 and 032 aren't drawn."
   },
   "233591": {
    "call": "hold",
@@ -214,11 +214,11 @@
   },
   "234479": {
    "call": "usable",
-   "note": "The lane up the middle follows the visible track and 005 to 009 and 014 to 018 sit beside it. The drawn north-west loop doesn't follow the lanes to 010 to 013, and the lane past 001 to 004 in the south-east shows but isn't drawn."
+   "note": "Replaced the roads. The lane up the middle (Horse Camp Road) and the county roads were already on the lanes and were kept; the north-west loop is redrawn on the loop lane the lidar relief shows, with 007 to 013 around it, the field loop in the east on the visible hairpin lane, and the lanes to 003 and the curve by 005 are added from the photo. 001, 002 and 004 sit 15 to 25 m off the drawn lanes on pads the photo shows."
   },
   "234574": {
-   "call": "usable",
-   "note": "The loop's west side follows the visible lane past 003 and 005. Its east side runs about 15 m inside the lane that 010 to 017 sit on, which shows through the trees."
+   "call": "hold",
+   "note": "Unchanged. The loop's west side follows the visible lane past 003 and 005, but its east side runs about 15 m inside the lane that 010 to 017 sit on. Zoomed on a 5 m grid and over the lidar relief, that lane shows only as pale patches between crowns (by 011, 013 and the parked cars south of the loop), not enough to place it to 3 m, so nothing was traced."
   },
   "234583": {
    "call": "usable",
@@ -266,7 +266,7 @@
   },
   "252968": {
    "call": "usable",
-   "note": "The lane and the loop follow the visible gravel, and 01 to 09 sit on the pads along it. Site 10 sits alone in a field across the creek, about 150 m from any drawn road."
+   "note": "Unchanged. The lane and the loop follow the visible gravel, and 01 to 09 sit on the pads along it; the undrawn pieces are the short pull-ins to 01, 02, 03, 07 and 08, each within about 15 m of the drawn lane. Site 10 sits alone in a field across the creek with no lane to it on the photo, only the canal towpath to the west."
   },
   "252971": {
    "call": "good",
@@ -326,7 +326,7 @@
   },
   "10058090": {
    "call": "hold",
-   "note": "Shown as areas: the sites line the west shore (01 to 20) and the peninsula in the east (47 to 70) with no drawn road along either, and the drawn roads in the middle are the highway and lanes south of it. Over 1.8 km, under trees, it can't be checked site by site from the photo."
+   "note": "Unchanged. Shown as areas: 35, 36 and 39 share one spot in the woods north of the loop, and 64 and 65 share one on the peninsula; zoomed on a 10 m grid, the pads there are under canopy and can't be told apart, so none was moved. The drawn roads in the west area also cut diagonally through the trees past 37 to 46 rather than following the lanes, which show only in pieces."
   },
   "10058234": {
    "call": "usable",
@@ -334,7 +334,7 @@
   },
   "10064530": {
    "call": "usable",
-   "note": "The road follows the lane that shows through the trees, and the sites sit on both sides of it; the spurs to 10 and 15 show but aren't drawn."
+   "note": "Unchanged. The road follows the lane that shows through the trees, and the sites sit on both sides of it within about 25 m. Zoomed on a 5 m grid, the spurs to 10 and 15 show only as short pale patches under the canopy, too faint to trace."
   },
   "10082227": {
    "call": "unsure",
@@ -342,15 +342,15 @@
   },
   "10124956": {
    "call": "hold",
-   "note": "No road is drawn. A paved lane shows past A7 to A10 and pieces of others near A12 to A14 and A22 to A24, but they don't join up on the photo, and B1 to B8 and A16 to A21 sit under full canopy; some sites also share a spot."
+   "note": "Unchanged. No road is drawn; zoomed on a 5 m grid, paved lanes show only in separate pieces (by A24, past A7 toward A8, and by A13 and A14) that don't join up under the canopy, and B1 to B8 and A16 to A21 sit under full canopy. A4 and A5 share one spot by a camper's pad, and A4's own pad can't be told apart, so it wasn't moved."
   },
   "10128465": {
    "call": "hold",
    "note": "Twenty boat-in primitive sites spread over 20 km of Center Hill Lake's shore: not one campground, and the build doesn't draw dispersed areas yet."
   },
   "10130532": {
-   "call": "usable",
-   "note": "The two loops follow the visible lanes and 08 to 10 and 15 to 20 sit beside them. The gravel lane down the east shore past 01 to 07 and the lane to 11 to 14 on the south point show but aren't drawn."
+   "call": "hold",
+   "note": "The two loops follow the visible lanes and 08 to 10 and 15 to 20 sit beside them, but the east shore past 01 to 07 and the south point by 11 to 14 are open dirt flats with no defined lane; 01, 02, 04, 06, 18 and 19, a third of the sites, sit more than 40 m from any drawn road."
   },
   "10145521": {
    "call": "unsure",

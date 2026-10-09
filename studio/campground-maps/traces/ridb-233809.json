@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233809",
- "traced": "2026-10-08",
- "by": "Claude (rollout south-b)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout south-b); Claude (fix fix-13)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -115,5 +115,28 @@
   }
  ],
  "points": [],
- "note": "Traced from NAIP: the gravel spine from the entrance lot past S-02 to S-18 to the turnaround by S-11 to S-13, and the lane along the shore past S-19 to S-28. Left out: the short pull-through spurs to single sites."
+ "sites": [
+  {
+   "name": "S-06",
+   "at": [
+    -83.3688802,
+    37.2731404
+   ]
+  },
+  {
+   "name": "S-07",
+   "at": [
+    -83.3688576,
+    37.2732125
+   ]
+  },
+  {
+   "name": "S-08",
+   "at": [
+    -83.3688125,
+    37.2733026
+   ]
+  }
+ ],
+ "note": "Traced from NAIP: the gravel spine from the entrance lot past S-02 to S-18 to the turnaround by S-11 to S-13, and the lane along the shore past S-19 to S-28. Left out: the short pull-through spurs to single sites. Moved S-06 and S-07 onto the pull-in pads at y 11 and 3 and kept S-08 on the pad north of them: seven pads east of the spine take S-03 to S-09 in order, where S-07 and S-08 had shared one."
 }
