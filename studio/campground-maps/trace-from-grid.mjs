@@ -14,7 +14,7 @@
 // Then rebuild the map (build-sample.mjs <ridb-dir> <id>) and check it with aerial-grid.mjs.
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { TRACES, traceProblems } from "./trace.mjs";
+import { TRACES, creditWith, traceProblems } from "./trace.mjs";
 import { aerialSource } from "../../src/lab/camphawk/round2/maps/aerial.ts";
 import { lidarSourcesFor } from "../../src/lab/camphawk/round2/maps/lidar.ts";
 import { GROUND_CREDIT, groundLayer } from "./ground.mjs";
@@ -31,7 +31,7 @@ const deg = ([x, y]) => [Math.round((w + ((x - f.x) / f.w) * (e - w)) * 1e7) / 1
 const before = (() => { try { return JSON.parse(readFileSync(join(TRACES, `ridb-${map.facilityId}.json`), "utf8")); } catch { return null; } })();
 const out = {
   version: 1, map: `ridb-${map.facilityId}`, traced: new Date().toISOString().slice(0, 10),
-  by: before?.by && !before.by.split("; ").includes(by) ? `${before.by}; ${by}` : by,
+  by: creditWith(before?.by, by),
   // LIDAR=1: traced over the lidar relief (aerial-grid.mjs LIDAR=1) as well as, or instead of, the photo.
   // GROUND=…: over the ground from the lidar point clouds (aerial-grid.mjs GROUND=…; ground.mjs).
   photo: [aerialSource(map)?.credit, process.env.LIDAR && lidarSourcesFor(map.bbox)[0].credit, ground && GROUND_CREDIT].filter(Boolean).join("; ") || "none",

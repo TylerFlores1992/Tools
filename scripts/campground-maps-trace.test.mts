@@ -3,7 +3,7 @@ import test from "node:test";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { POINT_TYPES, TRACE_VERSION, applySiteMoves, readTrace, traceProblems } from "../studio/campground-maps/trace.mjs";
+import { POINT_TYPES, TRACE_VERSION, applySiteMoves, creditWith, readTrace, traceProblems } from "../studio/campground-maps/trace.mjs";
 
 const bbox: [number, number, number, number] = [-122.39, 44.58, -122.37, 44.59];
 const ok = () => ({
@@ -99,4 +99,12 @@ test("a trace file is read before the map is framed too (no bbox), and checked f
   writeFileSync(join(dir, "ridb-274721.json"), JSON.stringify({ ...ok(), sites: [{ name: "A09", at: [-120, 44.585] }] }));
   assert.equal(readTrace("ridb-274721", null, dir).sites[0].name, "A09");
   assert.throws(() => readTrace("ridb-274721", bbox, dir), /far outside the map/);
+});
+
+test("a trace rewritten by another tracer, or again by the same one, keeps every earlier credit", () => {
+  assert.equal(creditWith(undefined, "B"), "B");
+  assert.equal(creditWith("A", "B"), "A; B");
+  // The bug: B rewriting a trace it had already added to used to leave only "B".
+  assert.equal(creditWith("A; B", "B"), "A; B");
+  assert.equal(creditWith("B", "B"), "B");
 });

@@ -107,3 +107,7 @@ export function readTrace(mapKey, bbox, dir = TRACES) {
   if (problems.length) throw new Error(`${file}: ${problems.join("; ")}`);
   return trace;
 }
+
+/** A trace's credit after another run over it: the earlier credit kept whole, this tracer added once
+    (a second run by the same tracer once dropped the first tracer's name; fix-12, 2026-10-09). */
+export const creditWith = (earlier, by) => (!earlier ? by : earlier.split("; ").includes(by) ? earlier : `${earlier}; ${by}`);
