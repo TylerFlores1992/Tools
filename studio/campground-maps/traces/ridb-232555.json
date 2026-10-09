@@ -1,0 +1,107 @@
+{
+ "version": 1,
+ "map": "ridb-232555",
+ "traced": "2026-10-09",
+ "by": "Claude (CampHawk session, lidar pilot)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -82.8922285,
+     34.5932413
+    ],
+    [
+     -82.8921849,
+     34.5933747
+    ],
+    [
+     -82.8922503,
+     34.5935604
+    ],
+    [
+     -82.8922176,
+     34.5938299
+    ],
+    [
+     -82.8921031,
+     34.5940968
+    ],
+    [
+     -82.8921631,
+     34.5943681
+    ],
+    [
+     -82.8921903,
+     34.5946368
+    ],
+    [
+     -82.892174,
+     34.5948189
+    ],
+    [
+     -82.8921805,
+     34.5950046
+    ],
+    [
+     -82.8922928,
+     34.5951759
+    ],
+    [
+     -82.8924651,
+     34.5953905
+    ],
+    [
+     -82.8924901,
+     34.5956321
+    ],
+    [
+     -82.8925206,
+     34.5958692
+    ],
+    [
+     -82.8923658,
+     34.5960341
+    ],
+    [
+     -82.8922078,
+     34.5961955
+    ],
+    [
+     -82.8921445,
+     34.596447
+    ],
+    [
+     -82.8920028,
+     34.5966444
+    ],
+    [
+     -82.8917684,
+     34.5967959
+    ],
+    [
+     -82.8916223,
+     34.5969699
+    ],
+    [
+     -82.8914806,
+     34.5970871
+    ],
+    [
+     -82.8912484,
+     34.5970772
+    ],
+    [
+     -82.8910293,
+     34.5970772
+    ],
+    [
+     -82.8908113,
+     34.5970591
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced over the lidar relief only (the photo shows unbroken canopy): the park's main road, a crowned road with ditches, from the end of the drawn entrance road north past 076 to 070 and along the north shore to 052. Left out: the lanes to the other sites, which the relief shows only in short pieces among the old farm terraces on the hill."
+}

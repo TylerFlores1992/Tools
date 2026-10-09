@@ -1,10 +1,288 @@
 {
  "version": 1,
  "map": "ridb-232540",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout trace-b; lidar pilot)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
  "roads": [
+  {
+   "coords": [
+    [
+     -93.5527548,
+     36.5962401
+    ],
+    [
+     -93.5531112,
+     36.5965727
+    ],
+    [
+     -93.5534364,
+     36.596926
+    ],
+    [
+     -93.5537381,
+     36.5971847
+    ],
+    [
+     -93.5539794,
+     36.5974298
+    ],
+    [
+     -93.5542152,
+     36.5976669
+    ]
+   ],
+   "through": true,
+   "name": "Campbell Point Rd"
+  },
+  {
+   "coords": [
+    [
+     -93.5527548,
+     36.5962401
+    ],
+    [
+     -93.5525302,
+     36.5959923
+    ],
+    [
+     -93.5521033,
+     36.5955344
+    ],
+    [
+     -93.5518005,
+     36.5953001
+    ],
+    [
+     -93.5515692,
+     36.5952019
+    ],
+    [
+     -93.5512374,
+     36.5951289
+    ],
+    [
+     -93.5507792,
+     36.5950946
+    ]
+   ],
+   "through": true,
+   "name": "Campbell Point Rd"
+  },
+  {
+   "coords": [
+    [
+     -93.5506597,
+     36.5950946
+    ],
+    [
+     -93.5503993,
+     36.5951883
+    ],
+    [
+     -93.5499177,
+     36.5953812
+    ],
+    [
+     -93.5498149,
+     36.5954209
+    ],
+    [
+     -93.549178,
+     36.5956913
+    ],
+    [
+     -93.5489478,
+     36.5958156
+    ],
+    [
+     -93.5488182,
+     36.5959409
+    ],
+    [
+     -93.5487031,
+     36.5961275
+    ],
+    [
+     -93.5487288,
+     36.5962825
+    ],
+    [
+     -93.5487836,
+     36.5964186
+    ],
+    [
+     -93.5489679,
+     36.5965304
+    ],
+    [
+     -93.5493155,
+     36.5966223
+    ],
+    [
+     -93.5496618,
+     36.5966637
+    ],
+    [
+     -93.5502015,
+     36.5965925
+    ],
+    [
+     -93.550986,
+     36.5964465
+    ],
+    [
+     -93.5511312,
+     36.5964213
+    ],
+    [
+     -93.5516463,
+     36.5963438
+    ],
+    [
+     -93.5521078,
+     36.5962546
+    ],
+    [
+     -93.5523313,
+     36.5962419
+    ],
+    [
+     -93.5527548,
+     36.5962401
+    ]
+   ],
+   "through": true,
+   "name": "Campbell Point Rd"
+  },
+  {
+   "coords": [
+    [
+     -93.5539794,
+     36.5974298
+    ],
+    [
+     -93.5536722,
+     36.5975767
+    ],
+    [
+     -93.5532274,
+     36.5979021
+    ],
+    [
+     -93.5528755,
+     36.5981022
+    ],
+    [
+     -93.5525213,
+     36.5981536
+    ],
+    [
+     -93.5522363,
+     36.5981229
+    ],
+    [
+     -93.5518966,
+     36.5980634
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.5516463,
+     36.5963438
+    ],
+    [
+     -93.551453,
+     36.5962149
+    ],
+    [
+     -93.5511904,
+     36.596086
+    ],
+    [
+     -93.550758,
+     36.5959625
+    ],
+    [
+     -93.5505736,
+     36.5958895
+    ],
+    [
+     -93.5503502,
+     36.5958292
+    ],
+    [
+     -93.5502105,
+     36.5957886
+    ],
+    [
+     -93.550101,
+     36.5956759
+    ],
+    [
+     -93.5500239,
+     36.5955624
+    ],
+    [
+     -93.5499177,
+     36.5953812
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.5518966,
+     36.5980634
+    ],
+    [
+     -93.5515201,
+     36.597994
+    ],
+    [
+     -93.5511111,
+     36.5979273
+    ],
+    [
+     -93.5508832,
+     36.597867
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.5518966,
+     36.5980634
+    ],
+    [
+     -93.5518598,
+     36.5981968
+    ],
+    [
+     -93.5518072,
+     36.5983338
+    ],
+    [
+     -93.5516687,
+     36.5984339
+    ],
+    [
+     -93.5514229,
+     36.5985159
+    ],
+    [
+     -93.5511245,
+     36.5985799
+    ],
+    [
+     -93.5510675,
+     36.5985934
+    ]
+   ]
+  },
   {
    "coords": [
     [
@@ -159,5 +437,6 @@
   }
  ],
  "points": [],
- "note": "Traced the paved lane past 37 to 48 (the source's line runs about 10 m east of it, across the pads) and the paved lanes in the south-east past 15 to 24. Left out: the west block (49 to 75), whose pads show as clearings under the trees with no lane line, the lanes past 07 to 13, and where the south-east lanes meet the lower road, which is under trees."
+ "replace": true,
+ "note": "Traced from the NAIP photo (rollout trace-b): the paved lane past 37 to 48 and the paved lanes in the south-east past 15 to 24. Lidar pilot: the relief confirms the lane past 37 to 48 runs between the two rows of pads, so the source's service line about 10 m east of it, across the pads, is dropped (the trace now replaces the source's roads, keeping the rest of them as drawn). Left out: the west block (49 to 75), where the relief shows pads but no lane line, and the lanes past 07 to 13."
 }

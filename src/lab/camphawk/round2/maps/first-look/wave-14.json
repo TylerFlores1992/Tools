@@ -9,12 +9,12 @@
    "note": "Backcountry sites spread over 45 km of the park (Paint Gap, Grapevine Hills, Pine Canyon, the Chisos rim camps), with no roads drawn: a list of places, not a site map."
   },
   "232432": {
-   "call": "unsure",
-   "note": "The A and B loops follow the lanes that show through the oaks, and the A sites line them. The C sites (C143 to C164) run down the middle between the loops with no road drawn, and the canopy hides whether a lane is there."
+   "call": "usable",
+   "note": "The relief shows the B loop's crowned lane under the drawn road with its pull-in pads, and the C pads (C143 to C164) angle off the drawn middle road, as the A pads (A080, A082) do off the west road. The drawn roads follow the lanes; a few spurs are missing."
   },
   "10041304": {
    "call": "unsure",
-   "note": "The east loop (43 to 92) is drawn and its sites line it under the trees. Sites 1 to 42 spread west of the main road with no lane drawn among them, and the canopy hides whether one is there."
+   "note": "The relief shows the pads of 1 to 42 as round bumps in a flat field, but no lane among them. Nothing traced."
   },
   "232467": {
    "call": "good",
@@ -22,7 +22,7 @@
   },
   "232474": {
    "call": "unsure",
-   "note": "Loops A to D are drawn and their sites cluster on them, but the canopy hides every lane, so the photo can't confirm them. The east side of loop A (A03 to A19) has no lane drawn, and 13 sites have no point."
+   "note": "The relief is flat here and shows none of the lanes, not even the drawn loops, so it can't confirm loops A to D or the east side of A. Nothing traced."
   },
   "232479": {
    "call": "good",
@@ -46,7 +46,7 @@
   },
   "233379": {
    "call": "unsure",
-   "note": "The roads through loops A and B are drawn and the sites sit beside them, but the canopy hides the lanes. In loop C only one side is drawn: C23 to C33 sit off any drawn road where no lane shows. Five sites have no point."
+   "note": "The relief is flat and shows the drawn roads only faintly; no lane shows for C23 to C33. Nothing traced."
   },
   "232504": {
    "call": "good",
@@ -66,7 +66,7 @@
   },
   "247559": {
    "call": "unsure",
-   "note": "The west row (20 to 44) sits on pads with trailers beside the drawn road. Sites 3 to 16 and the two middle lanes are under full canopy, so the photo can't confirm where those lanes run; three sites have no point."
+   "note": "The relief shows a raised strip down the middle between two dark lines, but it can't tell whether the two middle lanes are the dark cut lines (where the source draws them) or one crowned lane on the strip. Nothing traced."
   },
   "251430": {
    "call": "good",
@@ -89,8 +89,8 @@
    "note": "The loop and the road past 01 to 09 follow the visible pavement, and the sites sit on the clearings beside them; the group site is on its own 400 m east by the park road."
   },
   "258617": {
-   "call": "unsure",
-   "note": "Loops A to G are drawn, but under the autumn canopy few lanes show, and many sites (E-05 to E-14, D-13 to D-18) sit in the gaps between drawn roads as if on lanes that aren't drawn; the photo can't confirm them."
+   "call": "usable",
+   "note": "The relief shows loops A to G plainly, with ditched lanes and pull-in pads, and the drawn roads follow them; the sites sit on the pads. Nothing needed tracing."
   },
   "251945": {
    "call": "good",
@@ -102,7 +102,7 @@
   },
   "232555": {
    "call": "hold",
-   "note": "Only the park road to the entrance is drawn; the 106 sites across the peninsula's fingers have no road at all, and under the pines no lane shows well enough to trace."
+   "note": "Traced the main road over the relief (the photo shows only canopy, but agrees where it opens by 070): from the drawn entrance road north past 076 to 070 and along the shore to 052. Still held: the lanes to the 106 sites show only in short pieces among old farm terraces."
   },
   "232539": {
    "call": "hold",
@@ -142,7 +142,7 @@
   },
   "232597": {
    "call": "unsure",
-   "note": "The park road and the D loop's outer arc follow what shows, and sites D01 to D39 and F01 to F13 line them. Loops A, B and E are drawn as Census straight lines under the pines, and the photo can't confirm them or the lanes to D40 to D59."
+   "note": "The relief shows the park road plainly, but the A, B and E loops show no lanes, so the Census lines there can't be confirmed. Nothing traced."
   },
   "232606": {
    "call": "hold",
@@ -217,8 +217,8 @@
    "note": "The lanes through the west loops (001 to 067) and the spurs to 081 to 089 and 100 to 112 follow what shows through the trees, and the sites line them. Sites 104 to 107 and 090 to 099 sit 20 to 40 m off the drawn lanes under canopy."
   },
   "232696": {
-   "call": "unsure",
-   "note": "The park roads and the C loop follow the visible pavement. Loops A, B and D have only their outer roads drawn; most of their sites (A12 to A28, B09 to B29, D02 to D20) sit inside, on lanes that the canopy hides."
+   "call": "hold",
+   "note": "Traced three crowned lanes inside loop A over the relief (past A42 to A12, A41 to A15 and A35 to A30); the photo agrees where pavement shows. Still held: loops B and D show no lanes plainly in the relief, so about half the sites (B03 to B30, D02 to D41) still have no road."
   },
   "232699": {
    "call": "hold",
@@ -250,11 +250,11 @@
   },
   "232735": {
    "call": "hold",
-   "note": "Most sites sit 40 m or more from any drawn road: the drawn loop in the middle runs through the trees while sites 11 to 22 line the shore beyond it, and 01 to 08 and 42 to 51 have no road at all. The canopy hides the real lanes."
+   "note": "In the north the relief shows pieces of a curved lane past 46 and 47 and a straight lane west of 48, but they don't plainly match the photo or join the drawn roads, so they are left out; most sites still sit 40 m or more from any road."
   },
   "232743": {
    "call": "unsure",
-   "note": "The drawn loops are in roughly the right places, but under the full canopy the lanes don't show, and many sites (049 to 061, 010 to 016, 027 to 030) sit off them; the photo can't tell where the lanes run."
+   "note": "The relief shows faint bands near the rows 029 to 041 and 001 to 007, but not plainly enough to place a lane; the photo shows 001 to 007 off the drawn south road. Nothing traced."
   },
   "232752": {
    "call": "usable",
@@ -266,7 +266,7 @@
   },
   "232742": {
    "call": "unsure",
-   "note": "The Census roads run through the pines, and the canopy hides whether the lanes follow them. Sites 01 to 09 along the west shore, 14 to 25 on the south point and 39 to 44 on the east point sit 30 to 60 m from any drawn road."
+   "note": "The relief confirms the drawn loops in the west, but no lane shows for 01 to 09 along the shore, 14 to 25 on the south point or 39 to 44. Nothing traced."
   },
   "233422": {
    "call": "usable",
@@ -362,7 +362,7 @@
   },
   "233473": {
    "call": "hold",
-   "note": "Only the highway was drawn. Traced the entrance road, the road past 69 and 70 and the loop on the point past 38 to 48. The lanes on the east point (01 to 21) and the middle point (23 to 37) and past 49 to 59 show only in pieces through the trees and are left out, so those sites still sit off any drawn road. Held: most sites (01 to 37, 49 to 59) still have no drawn road."
+   "note": "Replaced the Census line for the main road, which ran up to 17 m off, with the crowned road the relief shows, and added the lane up the east point past 04 to 19 and the road to the ramp lot with its turnaround; kept the earlier photo traces. Still held: the middle point (23 to 37) and 49 to 59 show no lanes, so half the sites have no road."
   }
  }
 }
