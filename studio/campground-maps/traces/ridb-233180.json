@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-233180",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.4171949,
+     39.1332953
+    ],
+    [
+     -120.4171602,
+     39.1333584
+    ],
+    [
+     -120.4171602,
+     39.1334214
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.4177153,
+     39.1323498
+    ],
+    [
+     -120.4176921,
+     39.1322507
+    ],
+    [
+     -120.417669,
+     39.1321696
+    ],
+    [
+     -120.4176574,
+     39.1320346
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the spur north to 011 and the lane south past 019. The tan dirt west of both loops (026 to 033) shows no lane distinct from the open ground, so nothing is traced there."
+}

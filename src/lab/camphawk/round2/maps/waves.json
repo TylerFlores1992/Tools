@@ -560,11 +560,11 @@
   },
   {
    "wave": 6,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 64,
-    "review": 30,
+    "ready": 47,
+    "review": 47,
     "notDrawn": 0,
     "failed": 0
    },

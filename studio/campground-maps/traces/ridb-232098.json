@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-232098",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.663593,
+     44.6549626
+    ],
+    [
+     -115.6635426,
+     44.6548726
+    ],
+    [
+     -115.6634795,
+     44.6547736
+    ],
+    [
+     -115.6634543,
+     44.6547196
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6632904,
+     44.6548546
+    ],
+    [
+     -115.6632022,
+     44.6548096
+    ],
+    [
+     -115.6631265,
+     44.6547556
+    ],
+    [
+     -115.6630635,
+     44.6546925
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -115.6627735,
+     44.6544675
+    ],
+    [
+     -115.6627483,
+     44.6543955
+    ],
+    [
+     -115.6627231,
+     44.6543145
+    ],
+    [
+     -115.6626979,
+     44.6542425
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the three dead-end spurs that show as grey strips through the pines: past 029, past 027 and south past 025. The lanes west of 024 lie within a few metres of the drawn loop under dark canopy, so nothing else is traced."
+}

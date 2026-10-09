@@ -1,0 +1,87 @@
+{
+ "version": 1,
+ "map": "ridb-232871",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.3197516,
+     39.5492396
+    ],
+    [
+     -120.3198215,
+     39.5492351
+    ],
+    [
+     -120.3198913,
+     39.5492306
+    ],
+    [
+     -120.3199611,
+     39.549226
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.3195422,
+     39.5493836
+    ],
+    [
+     -120.319612,
+     39.5493926
+    ],
+    [
+     -120.3196818,
+     39.5494017
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.3163193,
+     39.5497303
+    ],
+    [
+     -120.3164007,
+     39.5497484
+    ],
+    [
+     -120.3164822,
+     39.5497664
+    ],
+    [
+     -120.3165404,
+     39.5497754
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.3155397,
+     39.5492531
+    ],
+    [
+     -120.3154583,
+     39.5492351
+    ],
+    [
+     -120.3153768,
+     39.5492215
+    ],
+    [
+     -120.3152954,
+     39.549208
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel pull-ins that show off the loops: west of the west loop toward 047 and to 045, and off the east loop west toward 017 and east toward 011. The other outer sites' pads show only as bare patches under the pines, so they aren't traced."
+}

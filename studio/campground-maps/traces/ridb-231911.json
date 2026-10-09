@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-231911",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.8626152,
+     43.8047145
+    ],
+    [
+     -115.8627643,
+     43.8046785
+    ],
+    [
+     -115.8629135,
+     43.8046514
+    ],
+    [
+     -115.863075,
+     43.8046244
+    ],
+    [
+     -115.8632242,
+     43.8046154
+    ],
+    [
+     -115.8633857,
+     43.8046154
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the dirt lane west from the buildings past group site GRPB. GRPA sits under trees north of the drawn road with no lane of its own showing."
+}

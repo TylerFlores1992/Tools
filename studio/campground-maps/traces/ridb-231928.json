@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-231928",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.9194146,
+     43.7564354
+    ],
+    [
+     -110.9194518,
+     43.7563814
+    ],
+    [
+     -110.9194891,
+     43.7563275
+    ],
+    [
+     -110.9194767,
+     43.7562825
+    ],
+    [
+     -110.9194022,
+     43.7562645
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.9193028,
+     43.7564264
+    ],
+    [
+     -110.9192034,
+     43.7564804
+    ],
+    [
+     -110.9190917,
+     43.7565074
+    ],
+    [
+     -110.9190047,
+     43.7564984
+    ],
+    [
+     -110.9189426,
+     43.7564444
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.9193525,
+     43.7569122
+    ],
+    [
+     -110.9193152,
+     43.7570022
+    ],
+    [
+     -110.9193028,
+     43.7571012
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the spur to 013, the short loop past 012 and the lane north from the loop's top. 017 sits on a pad beside the drawn lane, and the pads around the meadow are wide gravel, not separate lanes."
+}

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-232312",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.6811544,
+     44.0643909
+    ],
+    [
+     -115.6810795,
+     44.0644089
+    ],
+    [
+     -115.6810047,
+     44.0644359
+    ],
+    [
+     -115.6809548,
+     44.0644719
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spur east from the east loop toward 015 and 016. The other pads east of the loop (013, 014, 016A to 018) are open dirt with no lane distinct from the ground."
+}
