@@ -26,13 +26,13 @@ export function useLidar(bbox: Bbox | undefined, frameW: number, widthPx: number
         if (ctl.signal.aborted) return;
         const dem = res?.ok ? decodeBip(await res.arrayBuffer(), size.width, size.height) : null;
         if (!dem || mostlyMissing(dem)) continue;
-        const grey = lidarRelief(dem, size.width, size.height, metresPerPx(bbox, size));
+        const gray = lidarRelief(dem, size.width, size.height, metresPerPx(bbox, size));
         const canvas = document.createElement("canvas");
         canvas.width = size.width; canvas.height = size.height;
         const ctx = canvas.getContext("2d");
         if (!ctx) break;
         const rgba = ctx.createImageData(size.width, size.height);
-        for (let i = 0; i < grey.length; i++) { rgba.data[i * 4] = rgba.data[i * 4 + 1] = rgba.data[i * 4 + 2] = grey[i]; rgba.data[i * 4 + 3] = 255; }
+        for (let i = 0; i < gray.length; i++) { rgba.data[i * 4] = rgba.data[i * 4 + 1] = rgba.data[i * 4 + 2] = gray[i]; rgba.data[i * 4 + 3] = 255; }
         ctx.putImageData(rgba, 0, 0);
         const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
         if (ctl.signal.aborted || !blob) return;

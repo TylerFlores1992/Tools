@@ -17,7 +17,7 @@ export const LIDAR_SOURCES: Record<LidarSource["key"], LidarSource> = {
   "3dep": {
     key: "3dep",
     service: "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage",
-    host: "USGS's elevation service",
+    host: "USGS’s elevation service",
     /** What a trace drawn over it records as its `photo`, and the credit. */
     credit: "USGS 3D Elevation Program lidar (public domain)",
     short: "Lidar relief: USGS 3DEP (public domain)",
@@ -29,7 +29,7 @@ export const LIDAR_SOURCES: Record<LidarSource["key"], LidarSource> = {
   dogami: {
     key: "dogami",
     service: "https://gis.dogami.oregon.gov/arcgis/rest/services/lidar/DIGITAL_TERRAIN_MODEL_MOSAIC/ImageServer/exportImage",
-    host: "Oregon DOGAMI's lidar service",
+    host: "Oregon DOGAMI’s lidar service",
     credit: "Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)",
     short: "Lidar relief: Oregon DOGAMI (public domain)",
   },
