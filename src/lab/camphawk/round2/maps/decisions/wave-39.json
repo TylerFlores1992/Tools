@@ -5,10 +5,10 @@
  "decisions": [
   {
    "id": "10165350",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10165365",
@@ -19,24 +19,24 @@
   },
   {
    "id": "10165370",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look good, checked over the photo (2026-10-09)."
   },
   {
    "id": "10165465",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed as a first-come campground: first look usable, checked over the photo (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10165475",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held as a first-come campground: first look unsure (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look hold."
   },
   {
    "id": "10165540",
@@ -47,10 +47,10 @@
   },
   {
    "id": "234237",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-03): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "234238",
@@ -77,8 +77,8 @@
    "id": "234681",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-03): first look unsure."
   },
   {
    "id": "10004657",

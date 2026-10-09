@@ -45,8 +45,8 @@
    "note": "The outer loop and the cross lanes follow the visible pavement, and the sites (001 to 100) sit on the pads between them."
   },
   "233379": {
-   "call": "unsure",
-   "note": "The relief is flat and shows the drawn roads only faintly; no lane shows for C23 to C33. Nothing traced."
+   "call": "usable",
+   "note": "The lidar intensity shows the A, B and C loops as plain asphalt bands with their pull-ins under the trees. Replaced the roads: redrew the three loops and Oak Ridge Rd on the bands (the Park Service roads ran 3 to 10 m off on the west and south sides of the C loop) and kept West Gate Fire Rd; every placed site is within about 40 m of a drawn road (C15 and C25 just past it). The pull-ins, the short spurs to C25 and C32, and the old track north from B11 are left out, and 5 sites have no point."
   },
   "232504": {
    "call": "good",
@@ -65,8 +65,8 @@
    "note": "Loops A to D follow the lanes that show through the trees (plainly in loop A), and the sites line them."
   },
   "247559": {
-   "call": "unsure",
-   "note": "The relief shows a raised strip down the middle between two dark lines, but it can't tell whether the two middle lanes are the dark cut lines (where the source draws them) or one crowned lane on the strip. Nothing traced."
+   "call": "usable",
+   "note": "The lidar intensity shows every lane as a plain asphalt band under the trees, and the OpenStreetMap roads ran off several of them. Replaced the roads: traced Gorge Road, the center lane, the west loop past 23 to 41, the middle and east lanes past 3 to 16, the cross lane by the restroom and the turnaround at the south entrance; every placed site is within 40 m of a drawn road. The back-in pull-ins and the lanes by the amphitheater north of the parking area are left out, and 17 to 19 have no point."
   },
   "251430": {
    "call": "good",

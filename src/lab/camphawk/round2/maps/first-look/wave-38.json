@@ -5,24 +5,24 @@
  "on": "2026-10-08",
  "looks": {
   "10192012": {
-   "call": "usable",
-   "note": "The outline holds a loop road along the lakeshore under dense leaf canopy, and the point is inside it. The road shows faintly through the trees, but the pads are hidden.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "good",
+   "note": "The lidar relief shows the campground's lanes plainly under the leaves: the entrance from the road, the west loop, the turnaround by the shore and the lane east along the lake to its small loop, with the drawn roads on them and lighter pads along the shore in the intensity. OpenStreetMap's outline holds all of it and the point is inside. Nothing traced."
   },
   "10192062": {
-   "call": "unsure",
-   "note": "The outline holds a loop by the lake under unbroken leaf canopy, and the point is about 10 m outside its north edge. The trees hide the road and any pads, so the photo can't confirm it.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "The lidar relief shows the campground loop by the lake plainly under the leaves, with short spurs off its south side toward the shore, and the drawn roads sit on it; OpenStreetMap's outline holds the loop. The point is about 10 m outside the outline's north edge, 45 m from the loop, rather than at the entrance on the west. Nothing traced."
   },
   "10192097": {
-   "call": "usable",
-   "note": "The outline holds a loop road on a point of the lake under dense canopy, and the point is inside it. Parts of the road and a few clearings show through the trees.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "good",
+   "note": "The lidar relief shows the campground loop on the point plainly under the canopy, joining the road at both ends with the turnaround at its south end, and the drawn roads sit on it. OpenStreetMap's outline holds the loop and the point is inside it, by the loop's north lane. Nothing traced."
   },
   "10192127": {
+   "as": "firstcome",
    "call": "unsure",
-   "note": "The outline holds a lakeshore point under dense leaf canopy, and the point is inside it. Only the road in at the north end shows; the trees hide the loop and any pads.",
-   "as": "firstcome"
+   "note": "The lidar survey is too sparse here (0.5 ground points per m²): the relief shows only faint broken lines near the road in at the north end and none that is plainly the loop, and the intensity is mottled, so the outline on the lakeshore point and the loop in it can't be checked. Nothing traced."
   },
   "10315092": {
    "call": "good",
@@ -60,8 +60,8 @@
    "note": "The pin sits at the edge of the open gravel clearing on the point, and the drawn lane reaches the clearing."
   },
   "234235": {
-   "call": "unsure",
-   "note": "Under full canopy: the pin sits in unbroken forest between two lakes, with no clearing or roof visible and the nearest drawn road 150 m south-east."
+   "call": "hold",
+   "note": "The lidar relief shows unbroken forest floor at the pin, with no building-shaped gap in the ground returns, pad or lane within 50 m, so the pin isn't on the cabin; nothing that could be the cabin shows within 150 m either, and the nearest drawn road is 150 m south-east. Nothing traced."
   },
   "234273": {
    "call": "good",
@@ -69,7 +69,7 @@
   },
   "234678": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in the forest 10 m from the drawn spur off the road, but no clearing shows, and the listing's own point is 1.7 km away."
+   "note": "The lidar intensity shows the drawn spur from the road as a light gravel band past the pin, and a gravel clearing 45 to 95 m south of the pin beside the spur, where the photo shows a couple of small blue objects under the trees; that clearing may be the horse camp, but nothing shows it plainly, and the listing's own point is 1.7 km away. Nothing traced or moved."
   },
   "234679": {
    "call": "good",
@@ -77,7 +77,7 @@
   },
   "234734": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in forest by the lake 25 m north of where the drawn track ends, with no roof or clearing visible."
+   "note": "The lidar layers don't settle it: the survey is sparse (2 ground points per m²), the relief at the pin is coarse and shows no building gap or pad, and neither layer shows the drawn track ending 40 m south-west. The photo shows only unbroken canopy by the lake. Nothing traced."
   },
   "265539": {
    "call": "usable",
@@ -89,7 +89,7 @@
   },
   "273340": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in the forest by the lakeshore 20 m east of the drawn loop, with no clearing showing, and the listing's own point is 2.6 km away."
+   "note": "The lidar returns thin out to smooth facets along the shore, so neither layer can show a pad at the pin. The relief and the photo show an undrawn dirt track running south-east to the lakeshore 45 m north of the pin, while the drawn loop and the road in from the west follow no lane the relief shows; the listing's own point is 2.6 km away. Nothing traced."
   },
   "273341": {
    "call": "good",
@@ -105,11 +105,11 @@
   },
   "273351": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits in the forest 40 m east of the drawn track, toward the lake, where no clearing shows."
+   "note": "The lidar relief confirms the drawn track to the west, but at the pin it shows only level forest floor with a short slope edge 10 m north, no pad, clearing or lane; the intensity is washed out by sandy ground. The site can't be placed. Nothing traced."
   },
   "273353": {
    "call": "unsure",
-   "note": "Under full canopy: the pin sits on the drawn track 25 m from the lakeshore, with no clearing visible; the drawn track itself doesn't show through the trees."
+   "note": "The lidar relief shows a creek channel and its bank beside the drawn track's west half, and the track may run along a dark line at the bank's foot, but it can't be told from a ditch; at the pin by the shore the ground returns thin to smooth facets, with no pad or clearing. Nothing traced."
   },
   "273356": {
    "call": "usable",
@@ -152,8 +152,8 @@
    "note": "The pin is in forest between a road and a sewage lagoon; the listing's own point, 685 m north, is beside a row of paved RV pull-throughs, which look like ordinary campsites rather than a group area, so nothing is plainly the group site."
   },
   "233914": {
-   "call": "unsure",
-   "note": "Under full canopy: the pin sits inside the drawn loop in the forest, with no clearing showing, and the listing's own point is 3.3 km away."
+   "call": "usable",
+   "note": "The lidar intensity shows the drawn Shagbark Group Loop as a plain asphalt band with pull-offs, and the drawn road sits on it within about 3 m; the pin is inside the loop, 30 m from it. No pad or shelter shows at the pin under the canopy, and the listing's own point is 3.3 km away, but the loop's OpenStreetMap name agrees with the unit's point. Nothing traced."
   }
  }
 }
