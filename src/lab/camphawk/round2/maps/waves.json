@@ -1437,8 +1437,8 @@
    "built": "2026-10-09",
    "count": 90,
    "summary": {
-    "ready": 46,
-    "review": 42,
+    "ready": 43,
+    "review": 45,
     "notDrawn": 2,
     "failed": 0
    },
@@ -1539,11 +1539,11 @@
   },
   {
    "wave": 15,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 91,
    "summary": {
-    "ready": 38,
-    "review": 52,
+    "ready": 33,
+    "review": 57,
     "notDrawn": 1,
     "failed": 0
    },
