@@ -26,7 +26,7 @@
   },
   "231864": {
    "call": "hold",
-   "note": "Can't be drawn: one site's point (024) is about 260 km from the rest, a bad point in RIDB that the outlier rule didn't drop, so the frame spans 260 km and the photo shows nothing. The other sites have no roads drawn, and 13% share a spot."
+   "note": "Rebuilt with the stray point rule (024, 259 km away, left off). Several sites still share spots and the west loops are drawn coarsely through the trees."
   },
   "231866": {
    "call": "usable",
@@ -125,8 +125,8 @@
    "note": "The big loop and the lanes across it follow the visible gravel, and most sites sit beside them. The lane past 022 to 025 on the west side showed and wasn't drawn; 016 and 032 sit alone off any lane. Traced that lane from the photo."
   },
   "232364": {
-   "call": "hold",
-   "note": "Can't be drawn: one site's point (007) is about 870 km from the rest, a bad point in RIDB that the outlier rule didn't drop, so the frame spans 868 km and the photo shows nothing of the campground. The other 26 sites have no roads drawn."
+   "call": "usable",
+   "note": "Rebuilt with the stray point rule: 007's point, 936 km away, is left off. The loop is drawn on the visible road and the sites sit on its spurs; 025 to 027 are about 30 m off toward the highway."
   },
   "232368": {
    "call": "usable",

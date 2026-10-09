@@ -190,7 +190,7 @@
   },
   "232655": {
    "call": "hold",
-   "note": "No roads to draw in either area, and site 22 sits 14 km south of the rest, across the lake: a misplaced point that stretches the frame over the county."
+   "note": "Rebuilt with the stray point rule (22, 16 km away, left off). The drawn roads run through the middle of each point while the sites line the shores 30 to 40 m off them, under canopy."
   },
   "232654": {
    "call": "usable",
@@ -330,7 +330,7 @@
   },
   "233703": {
    "call": "hold",
-   "note": "No roads to draw in any area, and site E21 sits 28 km west of the rest, across the lake: a misplaced point that stretches the frame."
+   "note": "Rebuilt with the stray point rule (E21, 27 km away, left off). Still two areas with lanes showing through the trees but not drawn; a trace candidate."
   },
   "233099": {
    "call": "hold",

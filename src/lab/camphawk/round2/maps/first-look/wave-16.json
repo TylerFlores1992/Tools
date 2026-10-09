@@ -5,8 +5,8 @@
  "on": "2026-10-08",
  "looks": {
   "10119481": {
-   "call": "hold",
-   "note": "Site 4 is placed thousands of kilometres away (the frame is 6,000 km wide), and the other 21 sites have no roads to draw: not a usable map."
+   "call": "usable",
+   "note": "Rebuilt with the stray point rule: site 4's point, about 6,000 km away, is left off. The loop and the shore road are drawn on the visible roads and the sites line them."
   },
   "250860": {
    "call": "hold",

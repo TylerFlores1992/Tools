@@ -5,20 +5,20 @@
  "on": "2026-10-08",
  "looks": {
   "10206584": {
-   "call": "hold",
-   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\" at the same spot). Sites 1 to 9 line the drawn forest road under scattered pines, so the points look right; it needs the duplicates dropped, not traces."
+   "call": "usable",
+   "note": "Rebuilt without the Extra Vehicle parking rows, so the nine sites draw. They sit along the drawn forest road, Sites 1 and 3 a little off it under the pines."
   },
   "10206603": {
-   "call": "hold",
-   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The paved loop is drawn and Sites 1 to 4 sit on its pads by the river; Tent Sites 5 and 6 sit on the open ground to the west."
+   "call": "good",
+   "note": "Rebuilt without the Extra Vehicle parking rows: the paved loop is drawn on the visible road and Sites 1 to 4 sit on it; Tent Sites 5 and 6 are west of the loop by the trees."
   },
   "10206616": {
-   "call": "hold",
-   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The gravel loop is drawn on the visible road and Sites 1 to 9 sit beside it."
+   "call": "good",
+   "note": "Rebuilt without the Extra Vehicle parking rows: the gravel loop is drawn on the visible road, and the sites sit on its pads."
   },
   "10206646": {
-   "call": "hold",
-   "note": "The check doesn't draw it: every site is listed twice (the site and its \"Extra Vehicle\"). The loops by the river are drawn on the visible gravel and Sites 1 to 8 sit beside them."
+   "call": "usable",
+   "note": "Rebuilt without the Extra Vehicle parking rows: the loops by the river are drawn on the visible gravel, and the sites sit beside them; Site 8 is about 20 m off its lane."
   },
   "10214768": {
    "call": "good",

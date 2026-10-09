@@ -1218,9 +1218,9 @@
    "built": "2026-10-08",
    "count": 95,
    "summary": {
-    "ready": 61,
+    "ready": 65,
     "review": 29,
-    "notDrawn": 5,
+    "notDrawn": 1,
     "failed": 0
    },
    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
@@ -1750,7 +1750,7 @@
   },
   {
    "wave": 17,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 91,
    "summary": {
     "ready": 42,
@@ -1856,7 +1856,7 @@
   },
   {
    "wave": 18,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 90,
    "summary": {
     "ready": 54,
@@ -1961,7 +1961,7 @@
   },
   {
    "wave": 19,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 87,
    "summary": {
     "ready": 38,
@@ -2266,7 +2266,7 @@
   },
   {
    "wave": 22,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 63,
    "summary": {
     "ready": 42,
