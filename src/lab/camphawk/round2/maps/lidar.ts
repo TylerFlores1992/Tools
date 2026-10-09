@@ -37,8 +37,27 @@ export const LIDAR_SOURCES: Record<LidarSource["key"], LidarSource> = {
 /** The default source, for credits and the 3DEP-only callers. */
 export const LIDAR = LIDAR_SOURCES["3dep"];
 
-/** Oregon, roughly (its lidar mosaic answers no data a little past its edges, which falls back). */
-export const inOregon = (lon: number, lat: number) => lon >= -124.7 && lon <= -116.4 && lat >= 41.9 && lat <= 46.3;
+/**
+ * Oregon's outline, to a few kilometres: the coast, California and Nevada at 42°N, Idaho along the
+ * Snake, Washington along 46°N and then the Columbia. A box was too wide: it took in Charbonneau
+ * Park, Washington (46.25°N), and drew it from Oregon's lidar (pilot, 2026-10-09).
+ */
+const OREGON: [number, number][] = [
+  [-124.8, 42.0], [-117.03, 42.0], [-117.03, 43.68], [-116.93, 44.1], [-117.24, 44.39], [-116.46, 45.6],
+  [-116.92, 45.99], [-119.0, 46.0], [-119.6, 45.92], [-120.5, 45.7], [-121.2, 45.61], [-121.9, 45.66],
+  [-122.25, 45.55], [-122.77, 45.65], [-122.78, 45.87], [-122.95, 46.1], [-123.4, 46.2], [-123.9, 46.24],
+  [-124.8, 46.3],
+];
+
+/** Inside Oregon's outline (its lidar mosaic answers no data a little past its edges, which falls back). */
+export function inOregon(lon: number, lat: number): boolean {
+  let inside = false;
+  for (let i = 0, j = OREGON.length - 1; i < OREGON.length; j = i++) {
+    const [xi, yi] = OREGON[i], [xj, yj] = OREGON[j];
+    if (yi > lat !== yj > lat && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
 
 /** The sources to try for a box, best first: Oregon's own lidar there, then 3DEP. */
 export function lidarSourcesFor(bbox: Bbox): LidarSource[] {
@@ -62,11 +81,21 @@ export function metresPerPx(bbox: Bbox, size: { width: number; height: number })
   return [((e - w) * 111320 * Math.cos(lat)) / size.width, ((n - s) * 110540) / size.height];
 }
 
-/** The pixel size for a bbox at about `mPerPx` metres a pixel (1 m lidar: ask for 0.5-1 m). */
+/**
+ * The pixel size for a bbox at about `mPerPx` metres a pixel across (1 m lidar: ask for 0.5-1 m).
+ * The pixels are square in DEGREES, as the services draw them: asked for any other shape, they
+ * widen the box's latitude span to keep them square and the answer covers more ground than the box
+ * (26% more at 38°N, measured against 3DEP 2026-10-09), so every north-south position drawn over it
+ * would be off. So a pixel is `mPerPx` north-south and a little finer east-west (metresPerPx says
+ * how much).
+ */
 export function lidarSize(bbox: Bbox, mPerPx = 0.6): { width: number; height: number } {
-  const [mx, my] = metresPerPx(bbox, { width: 1, height: 1 });
-  const k = Math.min(1, LIDAR_MAX_PX / Math.max(mx / mPerPx, my / mPerPx));
-  return { width: Math.max(8, Math.round((mx / mPerPx) * k)), height: Math.max(8, Math.round((my / mPerPx) * k)) };
+  const [w, s, e, n] = bbox;
+  const [, my] = metresPerPx(bbox, { width: 1, height: 1 });
+  const tall = Math.max(8, Math.round(my / mPerPx));
+  const k = Math.min(1, LIDAR_MAX_PX / Math.max(tall, (tall * (e - w)) / (n - s)));
+  const height = Math.max(8, Math.round(tall * k));
+  return { width: Math.max(8, Math.round((height * (e - w)) / (n - s))), height };
 }
 
 /** The bare-earth elevation of `bbox` as raw float32 (format bip), in degrees, so its pixels line up
@@ -86,8 +115,8 @@ export function decodeBip(buf: ArrayBuffer, width: number, height: number): Floa
   return out;
 }
 
-/** A box blur of radius k (pixels) by an integral image, edges extended. */
-function boxBlur(a: Float64Array, w: number, h: number, k: number): Float64Array {
+/** A box blur of radius kx by ky (pixels) by an integral image, edges extended. */
+function boxBlur(a: Float64Array, w: number, h: number, kx: number, ky: number): Float64Array {
   const W = w + 1, sum = new Float64Array(W * (h + 1));
   for (let y = 0; y < h; y++) {
     let row = 0;
@@ -95,9 +124,9 @@ function boxBlur(a: Float64Array, w: number, h: number, k: number): Float64Array
   }
   const out = new Float64Array(w * h);
   for (let y = 0; y < h; y++) {
-    const y0 = Math.max(0, y - k), y1 = Math.min(h, y + k + 1);
+    const y0 = Math.max(0, y - ky), y1 = Math.min(h, y + ky + 1);
     for (let x = 0; x < w; x++) {
-      const x0 = Math.max(0, x - k), x1 = Math.min(w, x + k + 1);
+      const x0 = Math.max(0, x - kx), x1 = Math.min(w, x + kx + 1);
       out[y * w + x] = (sum[y1 * W + x1] - sum[y0 * W + x1] - sum[y1 * W + x0] + sum[y0 * W + x0]) / ((y1 - y0) * (x1 - x0));
     }
   }
@@ -117,9 +146,9 @@ export function lidarRelief(dem: Float32Array, width: number, height: number, mP
   const mean = count ? total / count : 0;
   const z = new Float64Array(n);
   for (let i = 0; i < n; i++) z[i] = dem[i] > -1000 ? dem[i] : mean;
-  const r = (mPerPx[0] + mPerPx[1]) / 2;
-  const k = Math.max(1, Math.round(windowM / 2 / r));
-  const smooth = boxBlur(boxBlur(z, width, height, k), width, height, k);
+  // The window is the same ground distance both ways, though a pixel isn't (lidarSize).
+  const kx = Math.max(1, Math.round(windowM / 2 / mPerPx[0])), ky = Math.max(1, Math.round(windowM / 2 / mPerPx[1]));
+  const smooth = boxBlur(boxBlur(z, width, height, kx, ky), width, height, kx, ky);
   const out = new Uint8ClampedArray(n);
   const alt = (35 * Math.PI) / 180, dirs = [315, 45, 135, 225].map((d) => (d * Math.PI) / 180);
   for (let y = 0; y < height; y++) {

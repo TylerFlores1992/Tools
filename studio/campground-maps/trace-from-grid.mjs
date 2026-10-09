@@ -23,8 +23,11 @@ const map = JSON.parse(readFileSync(file, "utf8"));
 const t = JSON.parse(readFileSync(specFile, "utf8"));
 const f = map.frame, [w, s, e, n] = map.bbox;
 const deg = ([x, y]) => [Math.round((w + ((x - f.x) / f.w) * (e - w)) * 1e7) / 1e7, Math.round((n - ((y - f.y) / f.h) * (n - s)) * 1e7) / 1e7];
+// Rewriting a trace keeps who traced it first (the lidar pilot replaced "rollout trace-b", 2026-10-09).
+const before = (() => { try { return JSON.parse(readFileSync(join(TRACES, `ridb-${map.facilityId}.json`), "utf8")); } catch { return null; } })();
 const out = {
-  version: 1, map: `ridb-${map.facilityId}`, traced: new Date().toISOString().slice(0, 10), by,
+  version: 1, map: `ridb-${map.facilityId}`, traced: new Date().toISOString().slice(0, 10),
+  by: before?.by && !before.by.split("; ").includes(by) ? `${before.by}; ${by}` : by,
   // LIDAR=1: traced over the lidar relief (aerial-grid.mjs LIDAR=1) as well as, or instead of, the photo.
   photo: [aerialSource(map)?.credit, process.env.LIDAR && lidarSourcesFor(map.bbox)[0].credit].filter(Boolean).join("; ") || "none",
   roads: t.roads.map((r) => ({ coords: (Array.isArray(r) ? r : r.c).map(deg), ...(r.through ? { through: true } : {}), ...(r.name ? { name: r.name } : {}) })),

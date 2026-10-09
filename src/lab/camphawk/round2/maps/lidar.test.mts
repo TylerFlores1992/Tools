@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { LIDAR, LIDAR_SOURCES, decodeBip, lidarRelief, lidarSize, lidarSourcesFor, lidarUrl, metresPerPx, mostlyMissing } from "./lidar.ts";
+import { LIDAR, LIDAR_SOURCES, decodeBip, lidarRelief, lidarSize, lidarSourcesFor, lidarUrl, metresPerPx, mostlyMissing, inOregon } from "./lidar.ts";
 
 const box: [number, number, number, number] = [-93.05, 34.48, -93.04, 34.49];
 
@@ -16,12 +16,17 @@ test("the request asks for raw elevation in degrees, so pixels line up with the 
   assert.equal(new URL(lidarUrl(box, { width: 9, height: 9 }, LIDAR_SOURCES.dogami)).hostname, "gis.dogami.oregon.gov");
 });
 
-test("pixel sizes: about the metres asked for, never past the limit", () => {
-  const s = lidarSize(box, 0.6);
-  const [mx, my] = metresPerPx(box, s);
-  assert.ok(Math.abs(mx - 0.6) < 0.01 && Math.abs(my - 0.6) < 0.01, `${mx} ${my}`);
+test("pixel sizes: square in degrees (the service widens the box otherwise), the metres asked for north-south, never past the limit", () => {
+  for (const b of [box, [-121.3, 38.0, -121.29, 38.01], [-150.1, 61.0, -150.09, 61.005]] as [number, number, number, number][]) {
+    const s = lidarSize(b, 0.6);
+    const degW = (b[2] - b[0]) / s.width, degH = (b[3] - b[1]) / s.height;
+    assert.ok(Math.abs(degW / degH - 1) < 0.01, `pixels ${degW} x ${degH} degrees`);
+    const [mx, my] = metresPerPx(b, s);
+    assert.ok(Math.abs(my - 0.6) < 0.01 && mx <= 0.6, `${mx} ${my}`);
+  }
   const big = lidarSize([-93.2, 34.3, -93.0, 34.5], 0.5);
   assert.ok(Math.max(big.width, big.height) <= 3000);
+  assert.ok(Math.abs(big.width / big.height - 1) < 0.01);
 });
 
 test("the answer decodes as little-endian float32, row by row; a short answer is no answer", () => {
@@ -54,5 +59,9 @@ test("a crowned lane through flat ground renders light, its ditches dark, and mi
 test("Oregon tries its own lidar first, then 3DEP; elsewhere only 3DEP", () => {
   assert.deepEqual(lidarSourcesFor([-121.774, 45.113, -121.768, 45.116]).map((s) => s.key), ["dogami", "3dep"]);
   assert.deepEqual(lidarSourcesFor(box).map((s) => s.key), ["3dep"]);
+  // Just across the borders: Charbonneau Park, Washington; Kalama, Washington; Weiser, Idaho.
+  for (const [lon, lat] of [[-118.85, 46.25], [-122.84, 46.0], [-116.97, 44.25]]) assert.equal(inOregon(lon, lat), false, `${lon} ${lat}`);
+  // And inside: Timothy Lake, the coast at Cape Blanco, Ontario by the Snake, Pendleton.
+  for (const [lon, lat] of [[-121.77, 45.11], [-124.5, 42.84], [-117.0, 44.03], [-118.79, 45.67]]) assert.equal(inOregon(lon, lat), true, `${lon} ${lat}`);
   for (const s of Object.values(LIDAR_SOURCES)) assert.match(s.credit, /public domain/);
 });
