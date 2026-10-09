@@ -34,7 +34,7 @@ Pilots and their results are recorded here as they finish.*
 | First-come: nothing at the pin | 24 | 0 | Move the pin to the campground the photo shows | Built (site move) |
 | Site points misplaced | 24 | 13 | Move the points | Built (site move) |
 | Sites stacked on one spot | 19 | 11 | Move the points | Built (site move) |
-| Stray point km away | 15 | 0 | **Left off by rule** | Built 2026-10-08 |
+| Stray point km away | 15 | 0 | **Left off by rule** | Built 2026-10-08; with the parking rule, 8 of 17 rebuilt now pass |
 | No public-domain photo (Alaska) | 15 | 0 | USGS IfSAR radar image | **Owner's decision** (licence unclear) |
 | Unit pin wrong, listing's own point right | 12 | 0 | Move the pin to the listing's point | Built (site move); in progress |
 | Unit right, no road reaches it | 6 | 67 | Trace the last stretch; fly-in and boat-in are right as drawn | Tool exists |
@@ -50,6 +50,9 @@ Pilots and their results are recorded here as they finish.*
   - A point 2 km or more from every other site is left off the map (at most two per listing,
     and only when five or more sites are left). The camper's search says why.
   - BLM's "Extra Vehicle" parking rows are no longer drawn as sites.
+  - **Result (2026-10-09):** the two rules rebuilt 17 held maps. After a check over the photo,
+    8 pass and are approved. The other 9 stay held for a second cause (roads off the lane, or
+    canopy). Two more maps in the owner's waves 1 and 2 were rebuilt and are left for the owner.
 - **Lidar relief:** the ground under the trees, from USGS 3DEP lidar (public domain) and, in
   Oregon, DOGAMI's lidar (public domain, credit DOGAMI). It is rendered as fine relief: the
   ground minus a smoothed copy of itself, with a low-sun hillshade.
