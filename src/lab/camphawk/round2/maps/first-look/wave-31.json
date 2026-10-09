@@ -337,9 +337,9 @@
    "note": "The pin is at the end of the drawn trail from the small loop off the road, at the edge of the clearing above the creek, with a structure at the loop."
   },
   "10165535": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The point is in open water on the lake, off a forested shore, and there's no outline. Nothing near the pin shows a campground.",
-   "as": "firstcome"
+   "note": "Unchanged. The point is in open water about 70 m off the island's east shore; zoomed on a 10 m grid the island shows only forest, a bare beach and a grassy flat, with no tents, tables or cleared sites, so there is no campground plainly shown to move the pin onto."
   },
   "10171272": {
    "call": "good",
