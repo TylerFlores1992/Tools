@@ -8,6 +8,8 @@
 //
 // With LIDAR=1 the ground is the lidar relief (USGS 3DEP, public domain; lidar.mjs) instead of the
 // photo: lanes and pads under full canopy show as light crowned lines with dark ditches.
+// With GROUND=intensity or GROUND=relief it is the map's ground from the lidar POINT CLOUDS
+// (pointcloud/ground.py makes it; ground.mjs): paved and gravel lanes plain under full canopy.
 //
 // With no box it shows the whole frame. Zoom in with a box and a 5 m step to trace (the photo is
 // 0.6-1 m a pixel). Coordinates on the grid are the map's local metres, x east and y south.
@@ -15,6 +17,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import sharp from "sharp";
 import { AERIAL, aerialSource, exportUrl, sizeFor } from "../../src/lab/camphawk/round2/maps/aerial.ts";
 import { lidarPng } from "./lidar.mjs";
+import { groundCommand, groundFile, groundImage, groundLabel, groundLayer } from "./ground.mjs";
 
 const [file, out, ...rest] = process.argv.slice(2);
 if (!file || !out) { console.error("usage: aerial-grid.mjs <map.json> <out.png> [x0 y0 x1 y1] [step] [width]"); process.exit(1); }
@@ -27,11 +30,20 @@ const step = Number(rest[4] ?? 20), W = Number(rest[5] ?? 1600);
 const lon = (x) => w + ((x - f.x) / f.w) * (e - w), lat = (y) => n - ((y - f.y) / f.h) * (n - s);
 const H = Math.round((W * (y1 - y0)) / (x1 - x0));
 const lidar = !!process.env.LIDAR;
-const src = lidar ? { key: "lidar" } : process.env.AERIAL ? AERIAL[process.env.AERIAL] : aerialSource(map); // AERIAL=<key> to compare
+let ground;
+try { ground = groundLayer(process.env.GROUND); } catch (e) { console.error(e.message); process.exit(1); }
+if (ground && lidar) { console.error("set GROUND or LIDAR, not both"); process.exit(1); }
+const src = ground ? { key: "ground" } : lidar ? { key: "lidar" } : process.env.AERIAL ? AERIAL[process.env.AERIAL] : aerialSource(map); // AERIAL=<key> to compare
 if (!src) { console.error(`${file}: no public-domain aerial photo covers this map (aerial.ts); try LIDAR=1`); process.exit(1); }
 let photo;
-let lidarFrom = "";
-if (lidar) { const l = await lidarPng([lon(x0), lat(y1), lon(x1), lat(y0)], Math.max(0.5, (x1 - x0) / W)); photo = l.png; lidarFrom = l.source.key; }
+let lidarFrom = "", groundFrom = "";
+if (ground) {
+  // The map's ground PNG covers exactly its frame: the box is a crop of it (black past the frame).
+  const g = groundFile(map, ground);
+  if (g.problem) { console.error(`${g.problem}\nmake it: ${groundCommand(file, g.stale)}`); process.exit(1); }
+  photo = await groundImage(g.png, f, [x0, y0, x1, y1], { width: W, height: H });
+  groundFrom = groundLabel(ground, g.meta);
+} else if (lidar) { const l = await lidarPng([lon(x0), lat(y1), lon(x1), lat(y0)], Math.max(0.5, (x1 - x0) / W)); photo = l.png; lidarFrom = l.source.key; }
 else {
   // A fixed-scale source (aerial.ts) is asked at its own scale and stretched to the grid's width.
   const url = exportUrl(src, [lon(x0), lat(y1), lon(x1), lat(y0)], sizeFor(src, { w: x1 - x0, h: y1 - y0 }, W));
@@ -53,6 +65,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
 ${map.roads.map((r) => `<path d="${path(r.d)}" fill="none" stroke="${r.traced ? "#00e5ff" : "#ffd400"}" stroke-width="${r.traced ? 2.5 : 2}" stroke-opacity="0.9"/>`).join("")}
 ${map.sites.filter((x) => x.at && x.movedFrom).map((x) => { const [a, b] = px(...x.movedFrom), [c, d] = px(...x.at); return `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/><circle cx="${a}" cy="${b}" r="4" fill="none" stroke="#ff2fd0" stroke-width="1.5" stroke-dasharray="2 2"/>`; }).join("")}
 ${map.sites.filter((x) => x.at).map((x) => { const [a, b] = px(...x.at); return `<circle cx="${a}" cy="${b}" r="3.5" fill="#ff2fd0" stroke="#fff" stroke-width="1.2"/><text x="${Number(a) + 5}" y="${Number(b) + 4}" font-family="sans-serif" font-size="10" font-weight="700" fill="#fff" stroke="#000" stroke-width="2.2" paint-order="stroke">${esc(x.name)}</text>`; }).join("")}
-<rect x="0" y="${H - 20}" width="${W}" height="20" fill="#000" fill-opacity="0.6"/><text x="6" y="${H - 6}" font-family="sans-serif" font-size="12" fill="#fff">${esc(map.name)}${lidar ? ` · LIDAR RELIEF (${lidarFrom})` : ""} · grid ${step} m · x ${x0}..${x1}, y ${y0}..${y1}</text></svg>`;
+<rect x="0" y="${H - 20}" width="${W}" height="20" fill="#000" fill-opacity="0.6"/><text x="6" y="${H - 6}" font-family="sans-serif" font-size="12" fill="#fff">${esc(map.name)}${lidar ? ` · LIDAR RELIEF (${lidarFrom})` : ""}${ground ? ` · ${esc(groundFrom)}` : ""} · grid ${step} m · x ${x0}..${x1}, y ${y0}..${y1}</text></svg>`;
 writeFileSync(out, await sharp(photo).resize(W, H, { fit: "fill" }).composite([{ input: Buffer.from(svg) }]).png().toBuffer());
 console.log(out, W, H);

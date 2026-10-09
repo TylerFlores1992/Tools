@@ -136,12 +136,15 @@ export function frameBoxOf(ridb, facilityId) {
 }
 
 /** What a trace was drawn over, for the credits, from its `photo`: "aerial photos", "lidar
-    elevation (USGS 3DEP)", or both. Public domain all; the trace file names each in full. */
+    elevation (USGS 3DEP)" (the elevation service's relief), "lidar (USGS 3DEP)" (the point clouds,
+    pointcloud/ground.py: the points themselves, not only the elevation), or photos and one of them.
+    Public domain all; the trace file names each in full. */
 export function tracedOver(photo = "") {
-  const lidar = /3DEP|USGS 3D Elevation/i.test(photo) ? "USGS 3DEP" : /DOGAMI/i.test(photo) ? "Oregon DOGAMI" : "";
-  const both = /3DEP|USGS 3D Elevation/i.test(photo) && /DOGAMI/i.test(photo) ? "USGS 3DEP and Oregon DOGAMI" : lidar;
-  const photos = /NAIP|Forest Service|USDA|photo/i.test(photo.replace(/lidar[^;]*/gi, "")) || !both;
-  return [photos && "aerial photos", both && `lidar elevation (${both})`].filter(Boolean).join(" and ");
+  const usgs = /3DEP|USGS 3D Elevation/i.test(photo), dogami = /DOGAMI/i.test(photo);
+  const who = [usgs && "USGS 3DEP", dogami && "Oregon DOGAMI"].filter(Boolean).join(" and ");
+  const points = /point cloud/i.test(photo);
+  const photos = /NAIP|Forest Service|USDA|photo/i.test(photo.replace(/lidar[^;]*/gi, "")) || !who;
+  return [photos && "aerial photos", who && `${points ? "lidar" : "lidar elevation"} (${who})`].filter(Boolean).join(" and ");
 }
 
 /** The outlines as the map keeps them: one path of every ring, and each ring's OpenStreetMap
