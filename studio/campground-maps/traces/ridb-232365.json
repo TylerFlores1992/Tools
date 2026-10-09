@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-232365",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -103.6591893,
+     44.2021654
+    ],
+    [
+     -103.6591268,
+     44.2020844
+    ],
+    [
+     -103.6590517,
+     44.2020124
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -103.6590142,
+     44.2028674
+    ],
+    [
+     -103.6589141,
+     44.2028944
+    ],
+    [
+     -103.6588015,
+     44.2028944
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the spurs off the north-east loop toward 007 and 001."
+}

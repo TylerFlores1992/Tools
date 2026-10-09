@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233840",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -91.9152839,
+     47.9948664
+    ],
+    [
+     -91.9150293,
+     47.9949204
+    ],
+    [
+     -91.9148953,
+     47.9949473
+    ],
+    [
+     -91.9147881,
+     47.9949833
+    ],
+    [
+     -91.9146943,
+     47.9950283
+    ],
+    [
+     -91.9146005,
+     47.9950732
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane from the loop's south-west side to 002, which passes below 001."
+}

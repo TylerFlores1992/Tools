@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-234120",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -100.2971721,
+     41.8988991
+    ],
+    [
+     -100.2972082,
+     41.898827
+    ],
+    [
+     -100.2972444,
+     41.898746
+    ],
+    [
+     -100.2972805,
+     41.898656
+    ],
+    [
+     -100.2973046,
+     41.898548
+    ],
+    [
+     -100.2972926,
+     41.8984399
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel lane south from the loop to the group area (GRP01)."
+}
