@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-232313",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.5444763,
+     44.0725154
+    ],
+    [
+     -115.5444763,
+     44.0725739
+    ],
+    [
+     -115.54447,
+     44.0726368
+    ],
+    [
+     -115.5444638,
+     44.0727088
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved spur north from the west lot to 010, traced from the photo (fix-09). Left out: the dirt and paved pull-ins round the trees inside the east loop (003, 005 to 007, 012, 013), which merge with the pads so no lane can be told apart."
+}

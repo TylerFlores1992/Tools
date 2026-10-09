@@ -1215,11 +1215,11 @@
   },
   {
    "wave": 12,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 65,
-    "review": 29,
+    "ready": 57,
+    "review": 37,
     "notDrawn": 1,
     "failed": 0
    },

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-232794",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.4734882,
+     35.6716903
+    ],
+    [
+     -118.4735545,
+     35.6716858
+    ],
+    [
+     -118.4736208,
+     35.6716813
+    ],
+    [
+     -118.473687,
+     35.6716768
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt pull-in west from the loop road by 032 to where trailers park, traced from the photo (fix-09). Left out: the spur by 008 (doesn't show apart from the open ground) and the short pull-ins to the other sites, which sit beside the drawn roads."
+}
