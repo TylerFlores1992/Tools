@@ -2,11 +2,11 @@
  "waves": [
   {
    "wave": 1,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 100,
    "summary": {
-    "ready": 47,
-    "review": 53,
+    "ready": 46,
+    "review": 54,
     "notDrawn": 0,
     "failed": 0
    },
@@ -117,11 +117,11 @@
   },
   {
    "wave": 2,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 100,
    "summary": {
-    "ready": 45,
-    "review": 54,
+    "ready": 39,
+    "review": 60,
     "notDrawn": 1,
     "failed": 0
    },
@@ -235,8 +235,8 @@
    "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 56,
-    "review": 38,
+    "ready": 50,
+    "review": 44,
     "notDrawn": 0,
     "failed": 0
    },

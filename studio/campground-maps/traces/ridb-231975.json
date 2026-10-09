@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-231975",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -116.8759506,
+     34.1720181
+    ],
+    [
+     -116.8760103,
+     34.1720767
+    ],
+    [
+     -116.8760699,
+     34.1721262
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -116.8757825,
+     34.1717207
+    ],
+    [
+     -116.87575,
+     34.1718018
+    ],
+    [
+     -116.8757392,
+     34.1719009
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the paved spurs from the middle lane to 019 and to 020 (by 022). Left out the short pull-ins to 018, 021 and 028."
+}

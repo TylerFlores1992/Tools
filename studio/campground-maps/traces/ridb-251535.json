@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-251535",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout west-a); Claude (fix fix-01)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -254,9 +254,65 @@
      38.1492724
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -109.8013169,
+     38.1483172
+    ],
+    [
+     -109.8012712,
+     38.1482451
+    ],
+    [
+     -109.8012256,
+     38.148173
+    ],
+    [
+     -109.8012142,
+     38.1481099
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.8022065,
+     38.1476954
+    ],
+    [
+     -109.8021609,
+     38.1476233
+    ],
+    [
+     -109.8021153,
+     38.1475512
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.8026445,
+     38.1475359
+    ],
+    [
+     -109.8027426,
+     38.1474972
+    ],
+    [
+     -109.8027426,
+     38.1474071
+    ],
+    [
+     -109.8026741,
+     38.1473169
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Drawn campground roads ran 10 to 20 m inside the visible pavement, so every road was retraced down the paved centerline: the entrance road (kept as drawn, it matches), the loop past 017, the road southwest past 022 to 026 to the parking lot, the teardrop turnaround by 021, and the short paved spur to 018. Left out: the short pull-ins to 022 to 024 and the lane south to 027, which are too short or faint to place within 3 m."
+ "note": "Drawn campground roads ran 10 to 20 m inside the visible pavement, so every road was retraced down the paved centerline: the entrance road (kept as drawn, it matches), the loop past 017, the road southwest past 022 to 026 to the parking lot, the teardrop turnaround by 021, and the short paved spur to 018. Left out: the short pull-ins to 022 to 024 and the lane south to 027, which are too short or faint to place within 3 m. Added (fix fix-01): the paved lane south from the road to 023 and 024, the lane past 025 to 026, and the turnaround at the lot's west end on to 027."
 }

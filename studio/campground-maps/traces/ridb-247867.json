@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-247867",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -36,8 +36,92 @@
      39.3213192
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -120.1227223,
+     39.3217516
+    ],
+    [
+     -120.1226991,
+     39.3218687
+    ],
+    [
+     -120.1226991,
+     39.3219498
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1230354,
+     39.3220489
+    ],
+    [
+     -120.1230238,
+     39.322157
+    ],
+    [
+     -120.1230238,
+     39.3222471
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1216553,
+     39.3208147
+    ],
+    [
+     -120.1217133,
+     39.3207246
+    ],
+    [
+     -120.1217365,
+     39.3206346
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1217713,
+     39.3223011
+    ],
+    [
+     -120.1218641,
+     39.322184
+    ],
+    [
+     -120.12198,
+     39.3221029
+    ],
+    [
+     -120.1220728,
+     39.3220669
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1229426,
+     39.3209769
+    ],
+    [
+     -120.1230586,
+     39.3209859
+    ],
+    [
+     -120.123163,
+     39.3209769
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the paved lane across the middle of the loop from the east side to the restroom. Left out the short pull-in spurs to the outer sites, the inner lanes to 19 to 24 (partly under trees), and the faint lane south from the restroom, which fades before reaching the loop."
+ "note": "Traced the paved lane across the middle of the loop from the east side to the restroom. Left out the short pull-in spurs to the outer sites, the inner lanes to 20 to 24 (partly under trees), and the faint lane south from the restroom, which fades before reaching the loop. Added (fix fix-01): the paved spurs to 19, 17, 23 and south toward 4 and 5, and the inner lane from the northeast side toward the north restroom."
 }

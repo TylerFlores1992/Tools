@@ -154,7 +154,7 @@
   },
   "10305470": {
    "call": "usable",
-   "note": "The outer loop and the two cross lanes follow the visible lanes, and the sites line them. The short east–west spurs between the rows of trailers (51 to 88, 56 to 86) aren't drawn."
+   "note": "Unchanged. Over the photo the short east-west spurs between the trailer rows (51 to 88, 56 to 86) show only as gaps between pine shadows, not as lanes that can be followed, so nothing was traced. The outer loop and the cross lanes follow the visible lanes and the sites line them."
   },
   "251434": {
    "call": "hold",
@@ -194,7 +194,7 @@
   },
   "256933": {
    "call": "usable",
-   "note": "The loops follow the visible pavement, and the sites sit on spurs beside them. The straight road drawn north–south through the middle doesn't show on the photo, and the short spurs to 13 to 15 aren't drawn."
+   "note": "Unchanged. Zoomed on a 5 m grid and over the lidar relief, the straight road through the middle does follow a paved lane that runs from the top loop south past 23 and 21 to the lower loop (within about 5 m), so it wasn't removed; the lanes around 24 to 31 and the loop by 14 and 15 are drawn roughly. The short spurs to 13 to 15 still aren't drawn."
   },
   "232136": {
    "call": "hold",
@@ -346,7 +346,7 @@
   },
   "232741": {
    "call": "usable",
-   "note": "Zoomed: the road along the shore follows the visible pavement, and the sites sit on spurs between it and the beach. A lane through 073 to 083 shows and isn't drawn."
+   "note": "Unchanged. Zoomed on a 10 m grid, the lane through 073 to 083 shows only as separate pale pads (by 074, 077 and 083) under the canopy, not as a line that can be followed, so nothing was traced. The shore road and the spurs to the other sites follow the visible pavement."
   },
   "232607": {
    "call": "hold",
@@ -378,7 +378,7 @@
   },
   "233504": {
    "call": "usable",
-   "note": "The loops follow the visible pavement, and the sites sit beside them. On a 20 m grid the row 001 to 008 sits 10 to 15 m from the drawn loop's south side, so no trace was needed."
+   "note": "Zoomed on a 5 m grid, 001 to 009 sit on their own pads and pull-ins beside the loop's south side, so no site needed moving. Traced the lane north from the loop to 003 and the spur to 009; the short pull-ins to 001, 002, 004, 005, 007 and 008 stay undrawn."
   },
   "233700": {
    "call": "hold",

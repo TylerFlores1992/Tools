@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "map": "ridb-232656",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -93.3159235,
+     36.5612512
+    ],
+    [
+     -93.3157336,
+     36.5612873
+    ],
+    [
+     -93.3155661,
+     36.5613323
+    ],
+    [
+     -93.3153986,
+     36.5613593
+    ],
+    [
+     -93.3152757,
+     36.5613503
+    ],
+    [
+     -93.3152198,
+     36.5612963
+    ],
+    [
+     -93.3151975,
+     36.5612062
+    ],
+    [
+     -93.3152087,
+     36.5611341
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3193526,
+     36.5607015
+    ],
+    [
+     -93.3191962,
+     36.5607015
+    ],
+    [
+     -93.319051,
+     36.5606745
+    ],
+    [
+     -93.3188834,
+     36.5606474
+    ],
+    [
+     -93.3187159,
+     36.5606745
+    ],
+    [
+     -93.3185707,
+     36.5607285
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the shore lane past 26 to 22 at the north tip, and the lane across the west loop from 73 past 72 to the drawn road. Left out the lane by 69 to 71 under the trees and the short pull-ins."
+}
