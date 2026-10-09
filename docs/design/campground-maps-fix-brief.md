@@ -55,7 +55,10 @@ results to the batch's results file (below). **Commit nothing and record no deci
 5. **Call it** by the bar in `docs/design/campground-maps-rollout-child.md` (each wave, step 2;
    single units step 3; first-come step 3b): `good`, `usable`, `hold` or `unsure`. **The usable bar:**
    a drawn road off the visible one, misplaced or stacked sites, or about a third or more of the
-   sites with no drawn road make it `hold`.
+   sites with no drawn road make it `hold`. A site counts as having no drawn road when it is more
+   than about 40 m from any drawn road or lot (the census's measure); a walk-in or group site a
+   short walk from a drawn loop or lot is fine when no vehicle lane to it is missing. Footpaths are
+   never traced as roads.
 6. **Write the result** at once (so nothing is lost if you stop): add to the results file
    `{ "<id>": { "call": "usable", "note": "…", "traced": true, "moved": 0, "minutes": 12 } }`.
    The note is one or two plain sentences of what the map shows now and what you did, naming loops
