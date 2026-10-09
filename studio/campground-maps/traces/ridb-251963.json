@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-251963",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -78.1431985,
+     40.3448207
+    ],
+    [
+     -78.1432103,
+     40.3447396
+    ],
+    [
+     -78.1432162,
+     40.3446496
+    ],
+    [
+     -78.1432162,
+     40.3445775
+    ],
+    [
+     -78.1432103,
+     40.3445234
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -78.1431985,
+     40.3448207
+    ],
+    [
+     -78.1431927,
+     40.3448928
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane south from the parking past 17 and 13, and the short stub north, traced from the photo."
+}

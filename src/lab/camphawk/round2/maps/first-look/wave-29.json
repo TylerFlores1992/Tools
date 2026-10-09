@@ -33,8 +33,8 @@
    "note": "The pin is on the drawn road at the edge of the guard station's clearing, 40 m north of its buildings, which the drawn road reaches."
   },
   "10163081": {
-   "call": "usable",
-   "note": "The pin is on the cabin at the end of its gravel turnaround in the meadow. The drawn road reaches it, but the drawn line runs up to 20 m west of the visible gravel track on the way up the slope."
+   "call": "good",
+   "note": "The pin is on the cabin at the end of its gravel turnaround in the meadow. Replaced the source line that ran up to 20 m west of the track: the gravel track up the slope from Road 058 and the turnaround loop by the cabin are now traced from the photo, within about 3 m of the gravel."
   },
   "10165195": {
    "call": "unsure",
@@ -318,11 +318,11 @@
   },
   "234626": {
    "call": "unsure",
-   "note": "The pin is beside the drawn road at the edge of a bare rocky clearing in the pines, and no group site pads, tables or shelter show plainly. Upper Twilight's pin is 25 m away in the same clearing."
+   "note": "Unchanged. Zoomed on a 5 m grid, the pin is at the south edge of a bare rocky clearing in the pines beside the drawn road, and no pads, tables, shelter or parking show that would tell Lower Twilight's spot from Upper Twilight's (25 m away in the same clearing), so it wasn't moved."
   },
   "234627": {
    "call": "unsure",
-   "note": "The pin is in the bare rocky clearing beside the drawn road, and no group site pads, tables or shelter show plainly. Lower Twilight's pin is 25 m away in the same clearing."
+   "note": "Unchanged. The pin is in the same bare rocky clearing as Lower Twilight's, 25 m apart, beside the drawn road; zoomed on a 5 m grid nothing marks either group site's own pad, so neither was moved."
   },
   "234632": {
    "call": "hold",

@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-10165691",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -107.2286848,
+     37.5108281
+    ],
+    [
+     -107.2286056,
+     37.510774
+    ],
+    [
+     -107.2285491,
+     37.510702
+    ],
+    [
+     -107.2285038,
+     37.5106299
+    ],
+    [
+     -107.2284699,
+     37.5105668
+    ],
+    [
+     -107.2284473,
+     37.5105128
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane south-east from the north loop's junction to 06, traced from the photo."
+}

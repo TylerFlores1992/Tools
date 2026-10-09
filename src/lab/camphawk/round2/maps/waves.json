@@ -2344,11 +2344,11 @@
   },
   {
    "wave": 23,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 63,
    "summary": {
-    "ready": 47,
-    "review": 15,
+    "ready": 38,
+    "review": 24,
     "notDrawn": 1,
     "failed": 0
    },
@@ -2422,11 +2422,11 @@
   },
   {
    "wave": 24,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 40,
    "summary": {
-    "ready": 21,
-    "review": 19,
+    "ready": 18,
+    "review": 22,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2480,8 +2480,8 @@
    "built": "2026-10-09",
    "count": 30,
    "summary": {
-    "ready": 13,
-    "review": 13,
+    "ready": 11,
+    "review": 15,
     "notDrawn": 4,
     "failed": 0
    },
@@ -2522,11 +2522,11 @@
   },
   {
    "wave": 26,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 74,
-    "review": 15,
+    "ready": 73,
+    "review": 16,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2629,8 +2629,8 @@
    "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 75,
-    "review": 13,
+    "ready": 74,
+    "review": 14,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2836,8 +2836,8 @@
    "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 67,
-    "review": 21,
+    "ready": 66,
+    "review": 22,
     "notDrawn": 0,
     "failed": 0
    },
