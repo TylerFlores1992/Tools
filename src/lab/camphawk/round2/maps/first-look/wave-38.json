@@ -35,9 +35,9 @@
    "as": "firstcome"
   },
   "10315102": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is on an open grassy hillside with no road, pads or campers near it.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 640 m east-southeast from an open hillside onto the campground the listing describes: the turnaround loop on Forest Road 805 beside the 15-paddock corral, with a trailer parked at it. There's no outline, so the map shows the pin there."
   },
   "232062": {
    "call": "good",

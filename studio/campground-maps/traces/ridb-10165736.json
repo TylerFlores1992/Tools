@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-10165736",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-17)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Standard",
+   "at": [
+    -106.1357463,
+    39.0771967
+   ]
+  }
+ ],
+ "note": "Moved the first-come pin from the entrance junction to the middle of the lane OpenStreetMap names Weston Pass Campground Road, between a parked camper and the loop at its end, with pale pull-outs along it."
+}

@@ -130,11 +130,11 @@
   },
   "234706": {
    "call": "hold",
-   "note": "The pin sits on open grass beside the road through Platoro, with no building under it; cabins 1 and 2 share this exact point, so neither cabin is placed."
+   "note": "Unchanged. Cabins 1 and 2 share one point on open grass beside the road through Platoro; two matching small cabins about 65 m south-southeast (with an OpenStreetMap toilet tag) may be them, but in a village of private cabins the photo can't tell them from others or say which is cabin 2, so neither was moved."
   },
   "234707": {
    "call": "hold",
-   "note": "The pin sits on open grass beside the road through Platoro, with no building under it; cabins 1 and 2 share this exact point, so neither cabin is placed."
+   "note": "Unchanged. Cabins 1 and 2 share one point on open grass beside the road through Platoro; two matching small cabins about 65 m south-southeast (with an OpenStreetMap toilet tag) may be them, but in a village of private cabins the photo can't tell them from others or say which is cabin 1, so neither was moved."
   },
   "234710": {
    "call": "good",
@@ -203,9 +203,9 @@
    "as": "firstcome"
   },
   "10165440": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline is over 400 m away. The pin is at a road bend between large paved boat-ramp lots and a wooded knoll, and no pads or campers show near it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is at the junction where Silver Dollar Campground Road leaves the Matchless boat ramp, between the ramp's paved lots (a few RVs parked in them) and the Maid of Erin picnic loops to the southwest; no pads or loop plainly show Matchless, and Molly Brown and Silver Dollar campgrounds lie 450 to 600 m away, so nothing was moved."
   },
   "10165455": {
    "call": "good",
@@ -223,9 +223,9 @@
    "as": "firstcome"
   },
   "10165686": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline is over 300 m away. The pin is at a junction beside two large gravel lots by the lake, and no pads or campers show near it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is at the Tabor boat ramp junction beside two large empty gravel lots, with the Lady of the Lake picnic road looping east and the outlined Father Dyer and Baby Doe campgrounds 300 to 500 m away; no pads or campers plainly show Tabor, so nothing was moved."
   },
   "10165716": {
    "call": "usable",

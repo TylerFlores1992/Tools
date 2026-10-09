@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-10165405",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-17)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Standard",
+   "at": [
+    -105.6609697,
+    38.2644073
+   ]
+  }
+ ],
+ "note": "Moved the first-come pin along the lane OpenStreetMap names Lake Creek Campground Road to where campers sit in pull-outs among the trees, about 115 m west."
+}

@@ -41,9 +41,9 @@
    "as": "firstcome"
   },
   "10165175": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in open pine scrub crossed by dirt tracks, with a few houses about 80 m north. Nothing near it shows campground loops or pads.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is in open pine scrub crossed by dirt tracks south of Chalk Creek, with a few houses about 80 m north; no loop, pads or campers show anywhere within reach, so there was nothing to move it to."
   },
   "10165190": {
    "call": "usable",
@@ -66,9 +66,9 @@
    "as": "firstcome"
   },
   "10165245": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is at a road junction in forest east of a lake. No pads, loop or campers show near it.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 280 m south from the road junction east of the lake to the two loops OpenStreetMap names Cottonwood Lake Campground Road, where pads and a camper show in clearings among the spruce; the loops by the dam are the parking area. There's no outline, so the map shows the pin between the loops."
   },
   "10165250": {
    "call": "usable",
@@ -106,9 +106,9 @@
    "as": "firstcome"
   },
   "10165325": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is at a junction of dirt roads in forest. No pads or campers show near it.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is at a fork of dirt roads in pine forest; the spur running south from it passes a couple of parked vehicles under heavy canopy, but no loop, pads or tents show, so the photo doesn't plainly show the campground and nothing was moved."
   },
   "10165340": {
    "call": "usable",
@@ -116,9 +116,9 @@
    "as": "firstcome"
   },
   "10165345": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline is over 300 m away. The pin is at a small pull-out on the road with a couple of vehicles and one structure, which doesn't plainly show a campground.",
-   "as": "firstcome"
+   "note": "Unchanged. The pin is already at the pull-out where the lanes OpenStreetMap names Handcart Campground Road leave Hall Valley Road, with four vehicles parked; the lanes run into full canopy and no pads or tents show, so the photo doesn't plainly show the campground (Hall Valley's outlined loop is 470 m west) and there was nothing better to move it to."
   },
   "10165355": {
    "call": "usable",
@@ -131,9 +131,9 @@
    "as": "firstcome"
   },
   "10165405": {
-   "call": "hold",
-   "note": "There's no outline, and the pin is on a dirt spur among scattered trees. A couple of vehicles about 100 m northwest aren't enough to show a campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 115 m west along the lane OpenStreetMap names Lake Creek Campground Road to its middle, where campers sit in pull-outs among the trees (one more 70 m further west). There's no outline and the trees hide most pads, so the map shows the pin on the lane."
   },
   "10165410": {
    "call": "good",
@@ -186,9 +186,9 @@
    "as": "firstcome"
   },
   "10165555": {
-   "call": "hold",
-   "note": "There's no outline. The pin is on the highway beside a dirt strip with parked vehicles along the river, which could be parking for walk-in sites but doesn't plainly show a campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 130 m south from the highway junction to the end of the Platte River Campground Road parking strip, with tents plainly showing among the trees between it and the river (the listing says tent camping only). There's no outline, so the map shows the pin there."
   },
   "10165571": {
    "call": "good",
@@ -251,9 +251,9 @@
    "as": "firstcome"
   },
   "10165736": {
-   "call": "hold",
-   "note": "There's no outline. The pin is at a junction on a dirt spur through the trees, and the only loop in view is about 250 m northwest, so nothing within reach plainly shows a campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Moved the pin about 140 m northwest from the entrance junction to the middle of the lane OpenStreetMap names Weston Pass Campground Road, between a parked camper and the small loop at its end, with pale pull-outs along both. There's no outline, so the map shows the pin on the lane."
   },
   "10165746": {
    "call": "good",
