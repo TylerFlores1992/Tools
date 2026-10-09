@@ -108,16 +108,17 @@ export const STRAY_M = 2000;
  * Pure: sites are { name, lat, lon } (0, 0 for no point).
  */
 export function strayPoints(sites) {
-  const placed = sites.filter((s) => s.lat && s.lon);
+  const placed = sites.map((s, i) => ({ ...s, i })).filter((s) => s.lat && s.lon);
   const m = (a, b) => Math.hypot((a.lon - b.lon) * 111320 * Math.cos(((a.lat + b.lat) / 2) * Math.PI / 180), (a.lat - b.lat) * 110540);
-  const far = placed.map((s) => ({ name: s.name, m: Math.min(...placed.filter((o) => o !== s).map((o) => m(s, o))) })).filter((s) => s.m >= STRAY_M);
+  // By position, not name: a listing can reuse a site's name (two loops' "12").
+  const far = placed.map((s) => ({ i: s.i, name: s.name, m: Math.min(...placed.filter((o) => o !== s).map((o) => m(s, o))) })).filter((s) => s.m >= STRAY_M);
   return far.length && far.length <= 2 && placed.length - far.length >= 5 ? far : [];
 }
 
 /** The sites with stray points taken off the map: no point, and `strayM` to say why. */
 export function withoutStrays(sites) {
-  const stray = new Map(strayPoints(sites).map((s) => [s.name, s.m]));
-  return sites.map((s) => (stray.has(s.name) ? { ...s, lat: 0, lon: 0, strayM: Math.round(stray.get(s.name) / 100) * 100 } : s));
+  const stray = new Map(strayPoints(sites).map((s) => [s.i, s.m]));
+  return sites.map((s, i) => (stray.has(i) ? { ...s, lat: 0, lon: 0, strayM: Math.round(stray.get(i) / 100) * 100 } : s));
 }
 
 const segmentsOf = (features, xy) => features.flatMap((f) => lines(f.geometry).flatMap((p) => { const m = p.map(xy); return m.slice(1).map((b, i) => [m[i], b]); }));

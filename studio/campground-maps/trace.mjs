@@ -86,7 +86,11 @@ export function traceProblems(trace, mapKey, bbox) {
  */
 export function applySiteMoves(sites, moves = []) {
   const byName = new Map(moves.map((m) => [m.name.trim(), m.at]));
-  for (const name of byName.keys()) if (!sites.some((s) => s.name === name)) throw new Error(`the trace moves site ${JSON.stringify(name)}, which the listing doesn't have`);
+  for (const name of byName.keys()) {
+    const n = sites.filter((s) => s.name === name).length;
+    if (!n) throw new Error(`the trace moves site ${JSON.stringify(name)}, which the listing doesn't have`);
+    if (n > 1) throw new Error(`the trace moves site ${JSON.stringify(name)}, but the listing has ${n} sites by that name`);
+  }
   return sites.map((s) => {
     const to = byName.get(s.name);
     return to ? { ...s, lon: to[0], lat: to[1], movedFrom: s.lat && s.lon ? [s.lon, s.lat] : null } : s;

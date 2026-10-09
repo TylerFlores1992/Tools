@@ -239,6 +239,10 @@ test("a point kilometres from every other site is left off; a listing really spr
   assert.deepEqual(strayPoints([...loop.slice(0, 4), stray]), []);
   // A site with no point is never a stray.
   assert.deepEqual(strayPoints([...loop, { name: "Z", lat: 0, lon: 0 }]), []);
+  // Two sites can share a name (GROVE's two "12"s): only the stray one is left off.
+  const twin = withoutStrays([...loop, { name: "E1", lat: 33.9, lon: -117.0 }]);
+  assert.deepEqual(twin[0], loop[0]);
+  assert.equal(twin[6].lat, 0);
 });
 
 test("parking rows (BLM's Extra Vehicle at every site's spot) aren't campsites", async () => {

@@ -90,6 +90,8 @@ test("the build moves a traced site and keeps where the listing had it; an unkno
   assert.deepEqual(moved[2], { name: "A11", lat: 44.52, lon: -122.32, movedFrom: null }, "a site the listing had no point for gets one, from nothing");
   assert.deepEqual(applySiteMoves(sites), sites);
   assert.throws(() => applySiteMoves(sites, [{ name: "B01", at: [-122.31, 44.51] }]), /B01/);
+  // A name two sites share can't say which one moves.
+  assert.throws(() => applySiteMoves([...sites, { name: "A09", lat: 44.7, lon: -122.5 }], [{ name: "A09", at: [-122.31, 44.51] }]), /2 sites by that name/);
 });
 
 test("a trace file is read before the map is framed too (no bbox), and checked fully after", () => {
