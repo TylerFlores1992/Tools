@@ -49,3 +49,4 @@ next-env.d.ts
 # State Parks campsite data, pending their permission: built locally, never committed
 /public/lab-local/
 /studio/campground-maps/.cache/
+/studio/campground-maps/pointcloud/__pycache__/
