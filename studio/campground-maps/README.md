@@ -124,6 +124,63 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 - **The network must reach every host these scripts use**; the list and a one-line probe are in
   playbook §3.4.
 
+## Ground from lidar point clouds (`pointcloud/ground.py`, `ground.mjs`)
+
+Where tree canopy hides a campground's lanes on the aerial photo, the lidar **point clouds** show the
+ground under it: how brightly the ground returned the laser (asphalt dark, gravel and bare soil light)
+and the bare earth's relief at 0.5 m. Paved and gravel lanes and their pull-in pads show plainly
+under full canopy (Oak Ridge, Gulpha Gorge, Charbonneau, 2026-10-09). For tracing only, like the
+photo: nothing from it is drawn on a camper's map.
+
+```sh
+# Once: the Python packages, into the git-ignored cache (ground.py puts it on its path)
+python3 -m pip install --target studio/campground-maps/.cache/py -r studio/campground-maps/pointcloud/requirements.txt
+# Each map: → .cache/pointcloud/ridb-<id>/intensity.png, relief.png (exactly the map's frame) + meta.json
+python3 -I studio/campground-maps/pointcloud/ground.py public/private/camphawk/maps/ridb-<id>.json [...] [--force]
+# Then look and trace over it, as over the photo (GROUND=relief for the bare earth)
+GROUND=intensity node studio/campground-maps/aerial-check.mjs /tmp/ground public/private/camphawk/maps/ridb-<id>.json
+GROUND=intensity node studio/campground-maps/aerial-grid.mjs public/private/camphawk/maps/ridb-<id>.json /tmp/z.png 100 40 260 160 5 1400
+GROUND=intensity node studio/campground-maps/trace-from-grid.mjs public/private/camphawk/maps/ridb-<id>.json spec.json
+# Its pure parts: python3 -I studio/campground-maps/pointcloud/test_frame.py; npx tsx --test scripts/campground-maps-ground.test.mts
+```
+
+- **Data: USGS 3D Elevation Program lidar point clouds, public domain.** Credit it as "USGS 3D
+  Elevation Program lidar point cloud (public domain)": a trace made with `GROUND=…` records exactly
+  that in its `photo`, and the map's credits then say "traced from … lidar (USGS 3DEP)" (`build.mjs`
+  `tracedOver`). The surveys over a map come from USGS's lidar index (`index.nationalmap.gov`
+  `3DEPElevationIndex/MapServer/8`: work unit, collection dates, quality level, CRS) and the tiles from
+  TNM Access (`tnmaccess.nationalmap.gov/api/v1/products?datasets=Lidar Point Cloud (LPC)`).
+- **Which survey:** the newest that covers the whole map with good density (QL0-QL2); an older or
+  sparser one only when nothing better covers it. Under 1.5 ground points per m² the next good survey
+  is tried once, and the output says "LANES MAY NOT SHOW" when the best is still under it.
+  `meta.json` names the work unit, when it was flown, ground points per m², where the points came
+  from, seconds and MB; aerial-grid and aerial-check print the layer and the year in their label.
+- **Where the points come from:** when the work unit is in the Entwine Point Tiles bucket
+  (`s3://usgs-lidar-public`, fast and spatially indexed) only the octree nodes over the frame are read
+  (Oak Ridge: 120 MB in 137 s); otherwise its LAZ tiles come from `rockyweb.usgs.gov` in 16 parallel
+  byte ranges (it serves ~0.25 MB/s a connection; Oak Ridge that way: 715 MB in 282 s). The bucket
+  lags the newest surveys (Gulpha Gorge's 2025 and Charbonneau's 2019-20 aren't in it). The two
+  routes give the same picture (Oak Ridge, correlation 0.99995, no shift). S3 sometimes answers 404
+  for an EPT file that exists, for minutes, on one endpoint: ground.py tries the bucket's others.
+- **Some legacy tiles carry no CRS record:** ground.py takes the work unit's CRS from USGS's index and
+  checks it against the tile's footprint; failing that, the projected CRS that fits the footprint.
+  Heights in feet are converted (USGS's EPT bucket is in metres).
+- **Disk:** it refuses to start a map, or a tile download, that would leave under 3 GB free; each
+  tile is deleted as soon as it is cropped; no point arrays are kept once the PNGs are written. The
+  PNGs are ~0.2-1 MB a map.
+- **A PNG belongs to one frame.** Rebuild a map and its frame may move: aerial-grid and aerial-check
+  refuse a PNG made for another frame and print the `--force` command. A missing PNG prints the
+  command too (exit 1).
+- **What it shows:** paved lanes (dark in intensity), gravel lanes and pads (light), crowned lanes,
+  pads and ditches (relief), trees as dark blobs where few pulses reached the ground. Water and gaps
+  in coverage are flat mid grey, except in old surveys that classed water as ground (South Shore's
+  2009-11 survey: the lake is noise).
+- **What it doesn't:** faint dirt lanes (the same brightness as the forest floor; the relief may catch
+  their edges, Fish Creek), and anything in a survey under about 1.5 ground points per m² (Colonial
+  Creek, under old-growth conifer: ~0.4-0.95 even in a QL1 survey; Whitetail Ridge's 2017 QL2: 0.6). A drawn lane must still match the photo where the photo shows anything.
+- **Never** Microsoft Planetary Computer's derived rasters (their licence says "proprietary"), and
+  never Google, Esri or Bing.
+
 ## Sources and terms (checked 2026-10-07)
 
 | Layer | Source | Terms |
@@ -135,6 +192,7 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 | Forest Service system roads (when they fit best) | `apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RoadBasic_01/MapServer/0` | US government work. |
 | Census TIGER roads (when they fit best) | `tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer` (layers 2, 6, 8) | US government work (Census Bureau). |
 | Roads and points traced by a person | `traces/`, from the map's aerial photo (below; the trace's `photo` names it) | Our own work, from a public-domain photo. |
+| Ground under the canopy (review and tracing only, never drawn on a camper's map) | USGS 3DEP lidar point clouds: the EPT bucket `s3://usgs-lidar-public`, or LAZ tiles from `rockyweb.usgs.gov` found with TNM Access and USGS's lidar index (`pointcloud/ground.py`) | Public domain (USGS). Credit "USGS 3D Elevation Program lidar point cloud (public domain)". Cached in `.cache/pointcloud/`; nothing is committed. |
 | Aerial photo (review and tracing only, never drawn on a camper's map), lower 48 | USDA NAIP via `imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer` | Public domain ("free downloads of public domain, NAIP … orthoimagery", the service's own description). Loaded live; nothing is committed. |
 | Aerial photo, Hawaii | USDA NAIP 2021 (flown Jan 2022, 0.6 m) via the Interdepartmental Imagery Publication Platform, `imagery.geoplatform.gov/iipp/rest/services/NAIP/NAIP2021_Hawaii/ImageServer` | Public domain (NAIP, as above). USGS's NAIP mosaic has no Hawaii. |
 | Aerial photo, Alaska | U.S. Forest Service Alaska Region orthophotos (2009-2024, mostly 0.3 m) via IIPP: `…/Aerial_Imagery/RGBI_post2000_USFS_R10_Alaska_multiRes_Public/ImageServer`, and `…/RGB_post2000_USFS_R10_Alaska_multiRes_Public` (2006-2018) for 11 maps only it covers and 7 where its leaf-off photo is clearer; the 2010 0.6 m photo answers only when asked at 0.6 m a pixel (aerial.ts asks so for the 2 maps that need it) | CC0: "the U.S. Forest Service waives copyright and related rights in the work worldwide through the CC0" (each service's licence info). Covers the Tongass, the Chugach and land around them; not interior Alaska, Lake Clark or Kenai Fjords' coast (15 maps have no photo). NAIP never flew Alaska. **Not** The National Map's `USGSImageryOnly`: its Alaska is licensed SPOT imagery "provided for viewing". |

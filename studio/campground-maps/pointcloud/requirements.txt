@@ -1,0 +1,7 @@
+# ground.py's Python packages. Install them into the git-ignored cache (ground.py puts it on sys.path):
+#   python3 -m pip install --target studio/campground-maps/.cache/py -r studio/campground-maps/pointcloud/requirements.txt
+laspy[lazrs]>=2.5
+pyproj>=3.6
+numpy>=1.26
+scipy>=1.11
+pillow>=10
