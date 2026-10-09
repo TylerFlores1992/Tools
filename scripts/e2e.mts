@@ -742,6 +742,63 @@ try {
     await ctx.close();
   });
 
+  await check("lab site-map tracing: a site is picked up and put where the photo shows it, and the file carries the move", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
+    const errors: string[] = [];
+    p.on("pageerror", (e) => errors.push(String(e)));
+    p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    // Petersburg Lake Cabin: one unit, its pin at the middle of the frame, nothing traced (held:
+    // no roof shows on its point). John Muir Cabin was the example until its pin was moved.
+    const built = JSON.parse(readFileSync("public/private/camphawk/maps/ridb-232996.json", "utf8"));
+    const unit = built.sites[0].name as string;
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=232996&tool=trace`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    const area = p.getByRole("application", { name: /^Tracing area/ });
+    await area.waitFor();
+    const status = p.locator("p[aria-live=polite]");
+    await p.getByRole("group", { name: "Draw" }).getByRole("button", { name: "Move a site" }).click();
+    const box = (await area.boundingBox())!;
+    const at = (fx: number, fy: number) => area.click({ position: { x: box.width * fx, y: box.height * fy } });
+    // A tap on nothing picks nothing up.
+    await at(0.2, 0.2);
+    await status.filter({ hasText: "No site there." }).waitFor();
+    // A tap on the pin picks it up; the next puts it down.
+    await at(0.5, 0.5);
+    await status.filter({ hasText: `Site ${unit} picked up.` }).waitFor();
+    await at(0.45, 0.55);
+    await status.filter({ hasText: new RegExp(`^Site ${unit} moved \\d+ m\\.$`) }).waitFor();
+    const list = p.getByRole("region", { name: "Your traces" });
+    await list.getByText(/^moved \d+ m$/).waitFor();
+    const [download] = await Promise.all([p.waitForEvent("download"), list.getByRole("button", { name: "Download trace file" }).click()]);
+    const file = JSON.parse(readFileSync((await download.path())!, "utf8"));
+    assert.equal(file.sites.length, 1);
+    assert.equal(file.sites[0].name, unit);
+    assert.deepEqual(traceProblems(file, "ridb-232996", built.bbox), [], "the build accepts the downloaded move");
+    // Putting it back empties the list.
+    await list.getByRole("button", { name: `Put site ${unit} back` }).click();
+    await status.filter({ hasText: /is back where the listing puts it\.$/ }).waitFor();
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  await check("lab site-map tracing: a map built with a moved site starts from the move, and the check names it", async () => {
+    const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
+    await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
+    // Windfall Lake Cabin: its pin was moved to the cabin on the shore.
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=232948&tool=trace`;
+    await p.goto(url);
+    await signIn(p);
+    await p.waitForURL(url);
+    const list = p.getByRole("region", { name: "Your traces" });
+    await list.getByText("As built into this map").waitFor();
+    await list.getByText(/^moved \d+ m$/).waitFor();
+    await p.getByRole("cell", { name: "1 site position" }).waitFor();
+    await ctx.close();
+  });
+
   await check("lab campground: days, months, unknown months, first come and the watch gate behave like CampHawk’s", async () => {
     const { ctx, p } = await fresh({ viewport: { width: 1440, height: 900 } });
     const errors: string[] = [];

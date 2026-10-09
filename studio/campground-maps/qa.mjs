@@ -13,6 +13,8 @@
 // Pines (checked by hand against the Park Service's roads) and from California State Parks'
 // points, which sit a median 1-9 m from real roads. They are not tuned to the sample's results.
 
+import { pickOutline } from "../../src/lab/camphawk/round2/maps/first-come.ts";
+
 export const RULES = {
   /** Two points closer than this are "the same spot". */
   stackM: 2,
@@ -68,10 +70,10 @@ export const sameNumber = (a, b) => {
 
 /**
  * @param {object} input
- * @param {{ name: string, at: [number, number] | null }[]} input.sites  every bookable overnight site
+ * @param {{ name: string, at: [number, number] | null, strayM?: number }[]} input.sites  every bookable overnight site (strayM: its point was left off as a stray)
  * @param {[[number, number], [number, number]][]} input.roadSegments   drawn roads, in metres
  * @param {string} input.roadSource  "nps" | "osm" | "usfs" | "tiger" | "traced" | "none"
- * @param {{ roads: number, points: number }} [input.traced]  what was traced from the aerial photo
+ * @param {{ roads: number, points: number, sites?: number }} [input.traced]  what was traced from the aerial photo
  * @param {[number, number][][]} [input.outlineRings]  OSM campground outlines, in metres
  * @param {{ ref: string, at: [number, number] }[]} [input.pitches]  OSM numbered pitches, in metres
  */
@@ -100,7 +102,7 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
     roads: { source: roadSource, medianM: r1(median(road)), p90M: r1(quantile(road, 0.9)) },
     outline: inside === null ? null : { insideShare: Math.round((inside / pts.length) * 100) / 100 },
     pitches: pitchPairs.length ? { matched: pitchPairs.length, medianM: r1(median(pitchPairs)) } : null,
-    traced: { roads: traced.roads, points: traced.points },
+    traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 },
   };
 
   const notDrawn = [];
@@ -108,7 +110,9 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
   else if (m.stackedShare > RULES.stackedNotDrawn) notDrawn.push({ code: "stacked", text: `${Math.round(m.stackedShare * 100)}% of sites share a spot with another` });
 
   const review = [];
-  if (m.unplaced.length) review.push({ code: "unplaced", text: `${m.unplaced.length} site${m.unplaced.length === 1 ? " has" : "s have"} no point` });
+  const strays = sites.filter((s) => !s.at && s.strayM);
+  if (strays.length) review.push({ code: "unplaced", text: `${strays.map((s) => `${s.name}’s point is ${fmtKm(s.strayM)} from every other site, so it’s left off`).join("; ")}` });
+  if (m.unplaced.length > strays.length) review.push({ code: "unplaced", text: `${m.unplaced.length - strays.length} site${m.unplaced.length - strays.length === 1 ? " has" : "s have"} no point` });
   if (m.stackedShare > RULES.stackedReview && !notDrawn.length) review.push({ code: "stacked", text: `${Math.round(m.stackedShare * 100)}% of sites share a spot` });
   if (outliers.length) review.push({ code: "outlier", text: `${outliers.length} site${outliers.length === 1 ? " is" : "s are"} over ${RULES.outlierM} m from any other` });
   if (span > RULES.spanReviewM) review.push({ code: "spread", text: `Sites spread over ${(span / 1000).toFixed(1)} km` });
@@ -127,8 +131,10 @@ export function checkMap({ sites, roadSegments, roadSource, traced = { roads: 0,
 
 const pct = (v) => `${Math.round(v * 100)}%`;
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+/** 2,300 km, 28 km, 2.2 km. */
+const fmtKm = (m) => (m >= 10000 ? `${Math.round(m / 1000).toLocaleString("en-US")} km` : `${(m / 1000).toFixed(1)} km`);
 /** "2 roads and 1 point", or "" when nothing was traced. */
-const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points")].filter(Boolean).join(" and ");
+const tracedWords = (t) => [t.roads && plural(t.roads, "road", "roads"), t.points && plural(t.points, "point", "points"), t.sites && plural(t.sites, "site position", "site positions")].filter(Boolean).join(" and ");
 /**
  * Every check as a reviewer reads it: what was measured, the limit, and the result ("pass",
  * "review", "fail", or "none" when there was nothing to check against). The lab's review page
@@ -235,7 +241,7 @@ export const UNIT_RULES = {
  * @param {[[number, number], [number, number]][]} input.roadSegments
  * @param {[[number, number], [number, number]][]} input.trailSegments
  * @param {string} input.roadSource
- * @param {{ roads: number, points: number }} [input.traced]
+ * @param {{ roads: number, points: number, sites?: number }} [input.traced]
  */
 export function checkUnit({ site, facilityAt, roadSegments, trailSegments, roadSource, traced = { roads: 0, points: 0 } }) {
   const at = site.at;
@@ -243,7 +249,7 @@ export function checkUnit({ site, facilityAt, roadSegments, trailSegments, roadS
   const facilityM = at && facilityAt ? r0(Math.hypot(at[0] - facilityAt[0], at[1] - facilityAt[1])) : null;
   const roadM = at && roadSegments.length ? r0(toSegments(at, roadSegments)) : null;
   const trailM = at && trailSegments.length ? r0(toSegments(at, trailSegments)) : null;
-  const m = { kind: "unit", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], facilityM, roadM, trailM, roads: { source: roadSource }, traced: { roads: traced.roads, points: traced.points } };
+  const m = { kind: "unit", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], facilityM, roadM, trailM, roads: { source: roadSource }, traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 } };
   if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The unit has no point" }], metrics: m, checks: unitChecks(m) };
   const reach = (d) => d !== null && d <= UNIT_RULES.accessM;
   const review = [];
@@ -276,17 +282,24 @@ export const FIRST_COME_RULES = { outlineReachM: 250 };
  * The first-come check: the placeholder has a point, an OpenStreetMap outline holds it or lies
  * within reach, and the listing isn't marked closed. Never "ready" on a guess: no outline or a
  * closed listing waits for a person.
- * @param {{ site: { name: string, at: [number, number] | null }, outlineRings?: [number, number][][], closed?: boolean, traced?: { roads: number, points: number } }} input
- * @returns {{ verdict: "ready" | "review" | "not-drawn", reasons: { code: string, text: string }[], metrics: { kind: "firstcome", sites: number, placed: number, unplaced: string[], outlineM: number | null, closed: boolean, traced: { roads: number, points: number } }, checks: { code: string, label: string, value: string, limit: string, result: string }[] }}
+ * @param {{ site: { name: string, at: [number, number] | null }, outlines?: { ring: [number, number][], name: string }[], name?: string, closed?: boolean, traced?: { roads: number, points: number, sites?: number } }} input
+ * @returns {{ verdict: "ready" | "review" | "not-drawn", reasons: { code: string, text: string }[], metrics: { kind: "firstcome", sites: number, placed: number, unplaced: string[], outlineM: number | null, outlineName: string | null, otherName: string | null, closed: boolean, traced: { roads: number, points: number, sites?: number } }, checks: { code: string, label: string, value: string, limit: string, result: string }[] }}
  */
-export function checkFirstCome({ site, outlineRings = [], closed = false, traced = { roads: 0, points: 0 } }) {
+export function checkFirstCome({ site, outlines = [], name = "", closed = false, traced = { roads: 0, points: 0 } }) {
   const at = site.at;
-  const ringM = (r) => (inRing(at, r) ? 0 : toSegments(at, r.slice(1).map((b, i) => [r[i], b]).concat([[r[r.length - 1], r[0]]])));
-  const outlineM = at && outlineRings.length ? Math.round(Math.min(...outlineRings.map(ringM))) : null;
-  const m = { kind: "firstcome", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], outlineM, closed, traced: { roads: traced.roads, points: traced.points } };
+  // The same pick the camper's map makes (first-come.ts): the outline named for this campground, or
+  // an unnamed one, never one named for another campground.
+  const { pick, other } = at ? pickOutline(at, outlines, name, FIRST_COME_RULES.outlineReachM) : { pick: null, other: null };
+  const outlineM = pick ? Math.round(pick.pointOutsideM) : null;
+  const m = { kind: "firstcome", sites: 1, placed: at ? 1 : 0, unplaced: at ? [] : [site.name], outlineM, outlineName: pick?.name ?? null, otherName: !pick && other ? other.name : null, closed, traced: { roads: traced.roads, points: traced.points, sites: traced.sites ?? 0 } };
   if (!at) return { verdict: "not-drawn", reasons: [{ code: "unplaced", text: "The listing has no point" }], metrics: m, checks: firstComeChecks(m) };
   const review = [];
-  if (outlineM === null || outlineM > FIRST_COME_RULES.outlineReachM) review.push({ code: "no-outline", text: outlineM === null ? "OpenStreetMap doesn’t outline the campground" : `OpenStreetMap’s nearest campground outline is ${outlineM} m from the listed point` });
+  if (!pick && other) review.push({ code: "outline-other-name", text: `OpenStreetMap’s campground outline here is “${other.name}”, not this campground` });
+  else if (!pick) {
+    const ringM = (r) => (inRing(at, r) ? 0 : toSegments(at, r.slice(1).map((b, i) => [r[i], b]).concat([[r[r.length - 1], r[0]]])));
+    const nearest = outlines.length ? Math.round(Math.min(...outlines.map((o) => ringM(o.ring)))) : null;
+    review.push({ code: "no-outline", text: nearest === null ? "OpenStreetMap doesn’t outline the campground" : `OpenStreetMap’s nearest campground outline is ${nearest} m from the listed point` });
+  }
   if (closed) review.push({ code: "closed", text: "Recreation.gov’s listing says it’s closed" });
   const tracedText = tracedWords(m.traced);
   if (tracedText) review.push({ code: "traced", text: `${tracedText} traced from the aerial photo` });
@@ -297,7 +310,8 @@ function firstComeChecks(m) {
   const near = m.outlineM !== null && m.outlineM <= FIRST_COME_RULES.outlineReachM;
   return [
     { code: "unplaced", label: "The listing has a point", value: m.placed ? "Yes" : "No", limit: "Yes", result: m.placed ? "pass" : "fail" },
-    { code: "no-outline", label: "OpenStreetMap outlines the campground", value: m.outlineM === null ? "No outline nearby" : m.outlineM === 0 ? "Yes, around the listed point" : `${m.outlineM} m from the listed point`, limit: `Within ${FIRST_COME_RULES.outlineReachM} m`, result: !m.placed ? "none" : near ? "pass" : "review" },
+    { code: "no-outline", label: "OpenStreetMap outlines the campground", value: m.outlineM === null ? (m.otherName ? `Only another campground’s, “${m.otherName}”` : "No outline nearby") : m.outlineM === 0 ? "Yes, around the listed point" : `${m.outlineM} m from the listed point`, limit: `Within ${FIRST_COME_RULES.outlineReachM} m`, result: !m.placed ? "none" : near ? "pass" : "review" },
+    { code: "outline-other-name", label: "The outline is this campground’s", value: m.outlineName ? `Named “${m.outlineName}”` : m.outlineM !== null ? "Unnamed" : m.otherName ? `Named “${m.otherName}”` : "No outline", limit: "Not named for another campground", result: !m.placed || (m.outlineM === null && !m.otherName) ? "none" : m.otherName ? "review" : "pass" },
     { code: "closed", label: "Open, by Recreation.gov’s listing", value: m.closed ? "Says closed" : "Not marked closed", limit: "Not closed", result: m.closed ? "review" : "pass" },
     { code: "traced", label: "Traced from the aerial photo", value: tracedWords(m.traced) || "Nothing", limit: "A person approves anything traced", result: tracedWords(m.traced) ? "review" : "none" },
   ];

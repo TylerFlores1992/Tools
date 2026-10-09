@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-251899",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -113.8403963,
+    43.808258
+   ]
+  }
+ ],
+ "note": "A dark-roofed building in a fenced yard, the only building for a kilometer, stands 240 m southeast of the pin just below the end of the drawn track; the pin was in open sagebrush. A trailer and small shed sit just outside the fence."
+}

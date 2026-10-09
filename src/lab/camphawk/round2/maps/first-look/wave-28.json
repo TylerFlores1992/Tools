@@ -45,16 +45,16 @@
    "note": "The pin is under the trees between the highway and a drawn lane, and no group site clearing shows plainly at it; small clearings with buildings show 50 to 100 m northeast."
   },
   "232342": {
-   "call": "hold",
-   "note": "The pin sits on the highway's edge in the chaparral, with no group site at it. A cleared flat with tables shows 80 m northwest, and a large gravel area 70 m southeast; neither is plainly the group site."
+   "call": "usable",
+   "note": "A cleared flat under oaks with several picnic tables, reached by a short lane from the highway, shows 80 m northwest of the pin, which was on the highway's edge in chaparral; the gravel lot to the southeast has no tables."
   },
   "233162": {
-   "call": "hold",
-   "note": "The pin is in dense brush beside the creek with no clearing, 60 m from any drawn road. The cleared group area with its drawn loop shows plainly 80 m west, so the pin misses it."
+   "call": "good",
+   "note": "The cleared group area with its drawn loop shows plainly 90 m west of the pin, which was in dense brush by the creek; the pin now sits in that clearing."
   },
   "233178": {
-   "call": "hold",
-   "note": "The pin is on an empty juniper slope 600 m from any road, with no building. The listing's own point, 790 m northwest, is among several houses on a road, any of which might be it."
+   "call": "good",
+   "note": "The listing's own point is within 10 m of a white-roofed house in its own yard beside the drawn road, 790 m northwest of the pin, which was on an empty juniper slope; other houses stand 50 m and more away."
   },
   "233229": {
    "call": "usable",
@@ -93,8 +93,8 @@
    "note": "The pin is at the edge of a small clearing 20 m north of the lodge's building, and the drawn Census lane ends at the meadow's drive just south of it."
   },
   "233989": {
-   "call": "unsure",
-   "note": "The pin is in a bare clearing on the summit, beside a dark shadow that may be the tower; the drawn road reaches 40 m east. The shadow alone doesn't prove the tower."
+   "call": "good",
+   "note": "Zoomed in, the pin is already on the tower's square cab, whose long shadow falls northwest across the summit clearing; the drawn road reaches the clearing 45 m east."
   },
   "233997": {
    "call": "unsure",
@@ -129,8 +129,8 @@
    "note": "The pin is under the trees 60 m east of the drawn road. The station's open meadow with a building and fence lies 50 to 100 m northwest, but nothing at the pin is plainly the station."
   },
   "234168": {
-   "call": "hold",
-   "note": "The pin is in forest inside a drawn Census loop with no building at it. The house, a large dark roof in its own clearing, plainly shows 100 m north by the road, so the pin misses it."
+   "call": "usable",
+   "note": "The house, a large dark roof in its own lawn clearing, shows plainly 100 m north of the pin, which was in forest inside a drawn loop; the pin now sits on the house."
   },
   "234186": {
    "call": "good",
@@ -161,8 +161,8 @@
    "note": "The pin is under dense forest beside a drawn spur, with only small light patches nearby, and no group camp clearing shows plainly."
   },
   "234294": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest 120 m from the drawn road, with no yurt or clearing. The listing's own point, 2.2 km northwest, is on a small round structure at a dirt road's bend, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "A small round yurt with its deck shows at a bend of a dirt road, 30 m west of the listing's own point; the pin was 2.2 km southeast in unbroken forest."
   },
   "234295": {
    "call": "usable",
@@ -273,8 +273,8 @@
    "note": "The pin is on the cabin's green roof in the meadow, beside the drawn road that passes 10 m west."
   },
   "234521": {
-   "call": "hold",
-   "note": "The pin is at the end of a drawn loop in an empty meadow, with no building. The listing's own point, 860 m west, is on a cabin in its fenced yard at the end of a drawn loop drive, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "The listing's own point is on a teal-roofed cabin in its fenced yard just above the end of a drawn loop drive, 860 m west of the pin, which was in an empty meadow."
   },
   "234522": {
    "call": "good",
@@ -286,7 +286,7 @@
   },
   "234531": {
    "call": "hold",
-   "note": "The pin is in an empty wet meadow, 110 m from any drawn road, with no building. A point at the end of a drawn spur 110 m northeast may be the station, but nothing at the pin could be it."
+   "note": "The pin is in an empty wet meadow; 270 m northeast, where the drawn spur ends, a dark-roofed building with parked vehicles stands at the edge of trees and another structure shows under them, so which one is the guard station isn't plain."
   },
   "234566": {
    "call": "usable",
@@ -298,11 +298,11 @@
   },
   "234570": {
    "call": "hold",
-   "note": "The pin is in open grassland with no building, 33 m above the drawn loop at the end of the spur. Small structures show along the drawn road 100 m east, but nothing at the pin could be the station."
+   "note": "The pin is in open grassland above the drawn loop; several small structures line the drawn road 30 to 170 m east, and none is plainly the guard station."
   },
   "234582": {
-   "call": "hold",
-   "note": "The pin is in an empty wet meadow. The station's white-roofed building in its fenced yard plainly shows 60 m northwest, at the end of the drawn road, so the pin misses it."
+   "call": "good",
+   "note": "The station's white-roofed building in its fenced yard shows 50 m northwest of the pin, at the end of the drawn road; the pin was in an empty wet meadow."
   },
   "234611": {
    "call": "good",

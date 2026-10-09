@@ -86,7 +86,8 @@ To put one on the map, add it here and rebuild that campground (command above).
 ```json
 { "version": 1, "map": "ridb-233411", "traced": "2026-10-07", "by": "…", "photo": "USDA NAIP via USGS The National Map (public domain)",
   "roads": [{ "coords": [[lon, lat], …], "name": "optional", "through": false }],
-  "points": [{ "type": "Restroom", "at": [lon, lat] }], "replace": false, "note": "what was left out and why" }
+  "points": [{ "type": "Restroom", "at": [lon, lat] }], "replace": false,
+  "sites": [{ "name": "J15", "at": [lon, lat] }], "note": "what was left out and why" }
 ```
 
 **A session traces from a gridded photo instead of clicking** (both write the same file):
@@ -105,6 +106,12 @@ The whole procedure (when to trace, when to replace, naming, checking over the p
 - **Roads add to the source's.** A traced road is a campground road (thin) unless `through`.
 - **`replace: true` makes the trace the map's only roads**, for a source that has the roads but in
   the wrong places (Lost Creek). Trace every road then, and mark the through roads.
+- **`sites` moves a listed site to where the photo shows it** (a cabin pin on the lake 100 m from
+  the cabin, a stray point). By the listing's name for the site; the build moves it before framing
+  the map, keeps where the listing had it (`movedFrom`, drawn as a dashed line on the review page
+  and in aerial-check/aerial-grid), says so in the credits, and the check sends the map to a person.
+  A name the listing doesn't have stops the build. The review page's tool has **Move a site**; the
+  grid spec takes `"sites": [{ "name": "J15", "at": [x, y] }]` in map metres.
 - **The build stops on a bad file** (another map's, a road far outside the frame, an unknown point
   type): a trace that silently fails to apply is a map that silently keeps its gap.
 - Trace only what you can see on the photo, and say in `note` what you left out.

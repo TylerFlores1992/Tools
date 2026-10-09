@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234157",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C1",
+   "at": [
+    -122.3925731,
+    42.4065718
+   ]
+  }
+ ],
+ "note": "The gray-roofed cabin shows plainly 85 m southwest of the pin at the meadow's edge, with a path to it; the pin was in unbroken forest and now sits on the cabin."
+}

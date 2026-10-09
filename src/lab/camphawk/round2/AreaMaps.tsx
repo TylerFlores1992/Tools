@@ -117,7 +117,7 @@ export function AreaMaps({ layout, ...p }: Props & { layout: SplitLayout }) {
   const openIn = (a: Area) => a.sites.filter((s) => open.has(s)).length;
   const unplaced = unplacedSites(p.map.sites);
   const placedN = areas.reduce((n, a) => n + a.sites.length, 0);
-  const sentence = `${placedN} sites in ${areas.length} areas, spread over ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h) - 110)}.${unplaced.length ? ` ${unplaced.length} more ${unplaced.length === 1 ? "has" : "have"} no published location, so ${unplaced.length === 1 ? "it isn’t" : "they aren’t"} on any area’s map (${unplaced.slice(0, 4).join(", ")}${unplaced.length > 4 ? "…" : ""}).` : ""}`;
+  const sentence = `${placedN} sites in ${areas.length} areas, spread over ${fmtMi(Math.max(p.map.frame.w, p.map.frame.h) - 110)}.${unplaced.length ? ` ${unplaced.length} more ${unplaced.length === 1 ? "has" : "have"} no usable published location, so ${unplaced.length === 1 ? "it isn’t" : "they aren’t"} on any area’s map (${unplaced.slice(0, 4).join(", ")}${unplaced.length > 4 ? "…" : ""}).` : ""}`;
   // Find a site that's in another area: switch to it, then find it there.
   const findElsewhere = (q: string) => {
     const i = areas.findIndex((a) => a.sites.some((s) => s.toLowerCase() === q.toLowerCase() || s.replace(/^0+/, "") === q.replace(/^0+/, "")));

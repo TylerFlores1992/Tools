@@ -55,17 +55,90 @@ const distToRing = ([px, py]: Pt, poly: Pt[]) => {
 /** Farther than this from the listed point, an outline is someone else's campground. */
 export const OUTLINE_REACH_M = 250;
 
-/** The campground's own outline: the polygon holding the listed point, else the nearest one within
-    OUTLINE_REACH_M; null when OpenStreetMap has none near it. With how far the point sits outside. */
-export function campgroundOutline(map: SiteMapData): { ring: Pt[]; pointOutsideM: number } | null {
+// Words that don't tell one campground from another, and spellings that mean the same word.
+const NAME_STOP = new Set(["campground", "campgrounds", "camground", "campgound", "camp", "camping", "cg", "campsite", "campsites", "site", "sites", "recreation", "rec", "area", "the", "and", "of", "at", "national", "forest", "nf", "park"]);
+const NAME_SAME: Record<string, string> = { mt: "mount", mtn: "mountain", ck: "creek", crk: "creek", lk: "lake", spgs: "springs", spg: "spring", ft: "fort", pt: "point" };
+
+/** The words of a campground's name that tell it apart: lowercase, without accents, apostrophes,
+    a parenthetical ("(CO)", "(Salida, CO)") or words every campground name has. */
+export function nameWords(name: string): string[] {
+  const plain = name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[’']/g, "").replace(/\([^)]*\)/g, " ");
+  return [...new Set(plain.split(/[^a-z0-9]+/).filter(Boolean).map((w) => NAME_SAME[w] ?? w).filter((w) => !NAME_STOP.has(w)))];
+}
+
+/** Whether two names are one campground's: every telling word of one is in the other ("Spruce
+    Grove (CO)" and "Spruce Grove Campground - Grand Valley RD"), never "Kenosha East" and
+    "Kenosha Pass Campground", or "Davis Flat" and "South Fork Campground". */
+export function sameCampground(a: string, b: string): boolean {
+  const A = nameWords(a), B = nameWords(b);
+  if (!A.length || !B.length) return false;
+  const inB = (w: string) => B.some((v) => sameWord(w, v)), inA = (w: string) => A.some((v) => sameWord(w, v));
+  if (A.every(inB) || B.every(inA)) return true;
+  // Words run together: "Fourmile" and "Four Mile Creek Campground".
+  const ja = A.join(""), jb = B.join("");
+  return Math.min(ja.length, jb.length) >= 6 && (ja.includes(jb) || jb.includes(ja));
+}
+
+/** One word, allowing a single typo in a long one ("Penstemon", OpenStreetMap's "Penstmon"). */
+function sameWord(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (Math.min(a.length, b.length) < 6 || Math.abs(a.length - b.length) > 1 || /\d/.test(a + b)) return false;
+  // At most one letter added, dropped or changed.
+  let i = 0, j = 0, edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue; }
+    if (++edits > 1) return false;
+    if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
+}
+
+export type NamedRing = { ring: Pt[]; name: string };
+export type OutlinePick = {
+  /** Every ring of the campground (one campground can be mapped as several). */
+  rings: Pt[][];
+  /** The ring nearest the listed point: where the label and "Open in a maps app" go. */
+  ring: Pt[];
+  pointOutsideM: number;
+  /** OpenStreetMap's name for it; empty when the outline has none. */
+  name: string;
+};
+
+/**
+ * The listing's own outline among OpenStreetMap's (docs/design/campground-maps-first-come.md):
+ * - one whose name is the listing's, within OUTLINE_REACH_M, whatever else is nearer, with every
+ *   ring of that name (exact names first, then the nearest);
+ * - else the nearest unnamed one, unless a ring named for another campground is as near: a
+ *   nameless shape beyond someone else's campground isn't ours either;
+ * - never one named for another campground. That one comes back as `other`, so the check can say
+ *   why there's no outline.
+ */
+export function pickOutline(at: Pt, rings: NamedRing[], listingName: string, reach = OUTLINE_REACH_M): { pick: OutlinePick | null; other: { name: string; m: number } | null } {
+  const near = rings.map((r) => ({ ...r, m: inside(at, r.ring) ? 0 : distToRing(at, r.ring) })).filter((r) => r.m <= reach).sort((a, b) => a.m - b.m);
+  const named = near.filter((r) => r.name.trim());
+  const ours = named.filter((r) => sameCampground(listingName, r.name));
+  const others = named.filter((r) => !sameCampground(listingName, r.name));
+  const other = others.length ? { name: others[0].name.trim(), m: others[0].m } : null;
+  if (ours.length) {
+    const key = (n: string) => nameWords(n).sort().join(" ");
+    const exact = ours.find((r) => key(r.name) === key(listingName));
+    const best = exact ?? ours[0];
+    const all = ours.filter((r) => key(r.name) === key(best.name));
+    return { pick: { rings: all.map((r) => r.ring), ring: best.ring, pointOutsideM: Math.min(...all.map((r) => r.m)), name: best.name.trim() }, other };
+  }
+  const unnamed = near.find((r) => !r.name.trim());
+  if (unnamed && (!other || unnamed.m < other.m)) return { pick: { rings: [unnamed.ring], ring: unnamed.ring, pointOutsideM: unnamed.m, name: "" }, other };
+  return { pick: null, other };
+}
+
+/** The campground's own outline on the built map (pickOutline over the build's outlines and their
+    names); null when OpenStreetMap has none near it that could be this campground's. */
+export function campgroundOutline(map: SiteMapData): OutlinePick | null {
   const at = map.sites[0]?.at;
   if (!at || !map.evidence?.outline) return null;
-  let best: { ring: Pt[]; pointOutsideM: number } | null = null;
-  for (const ring of polygonsOf(map.evidence.outline)) {
-    const m = inside(at, ring) ? 0 : distToRing(at, ring);
-    if (m <= OUTLINE_REACH_M && (!best || m < best.pointOutsideM)) best = { ring, pointOutsideM: m };
-  }
-  return best;
+  const names = map.evidence.outlineNames ?? [];
+  const rings = polygonsOf(map.evidence.outline).map((ring, i) => ({ ring, name: names[i] ?? "" }));
+  return pickOutline(at, rings, map.firstCome?.name ?? map.name ?? "").pick;
 }
 
 /** The frame to draw: the outline with room around it (and the listed point), never under
@@ -73,7 +146,7 @@ export function campgroundOutline(map: SiteMapData): { ring: Pt[]; pointOutsideM
 export function firstComeFrame(map: SiteMapData, aspect = 1, minSide = 320): SiteMapData["frame"] {
   const at = map.sites[0]?.at ?? [map.frame.x + map.frame.w / 2, map.frame.y + map.frame.h / 2];
   const o = campgroundOutline(map);
-  const pts: Pt[] = o ? [...o.ring, at] : [at];
+  const pts: Pt[] = o ? [...o.rings.flat(), at] : [at];
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
   let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   // Modest room, so the campground fills about half the map (critic round 1).
@@ -94,7 +167,10 @@ export const ringCenter = (ring: Pt[]): Pt => [ring.reduce((a, p) => a + p[0], 0
 export function campgroundRestrooms(map: SiteMapData, reach = 150): { inside: SiteMapData["pois"]; nearby: SiteMapData["pois"] } {
   const o = campgroundOutline(map), at = map.sites[0]?.at;
   const wcs = map.pois.filter((p) => p.type === "Restroom");
-  if (o) return { inside: wcs.filter((p) => inside(p.at, o.ring)), nearby: wcs.filter((p) => !inside(p.at, o.ring) && distToRing(p.at, o.ring) <= reach) };
+  if (o) {
+    const inAny = (p: Pt) => o.rings.some((r) => inside(p, r));
+    return { inside: wcs.filter((p) => inAny(p.at)), nearby: wcs.filter((p) => !inAny(p.at) && Math.min(...o.rings.map((r) => distToRing(p.at, r))) <= reach) };
+  }
   return { inside: [], nearby: at ? wcs.filter((p) => Math.hypot(p.at[0] - at[0], p.at[1] - at[1]) <= 2 * reach) : [] };
 }
 

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232952",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "K05",
+   "at": [
+    -131.541574,
+    55.5849008
+   ]
+  }
+ ],
+ "note": "Zoomed in, a small gray-roofed cabin with a path to the water stands on the same lake shore 125 m north of the pin, near the listing's own point; the pin was at the shore under trees and now sits on the cabin."
+}

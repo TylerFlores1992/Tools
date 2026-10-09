@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232991",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "G03",
+   "at": [
+    -148.3114034,
+    60.6569015
+   ]
+  }
+ ],
+ "note": "Zoomed in, a small building casting a shadow stands in the lakeside meadow 65 m northwest of the pin, 25 m from the shore, the only structure in view; the pin was at a forest edge and now sits on it."
+}

@@ -10,7 +10,7 @@
   },
   "231887": {
    "call": "hold",
-   "note": "The pin sits in open juniper scrub 185 m from the only drawn road, with no clearing, lane or pad at it, and the listing's own point is 435 m away."
+   "note": "The pin is in open juniper scrub 175 m from the only drawn road, and the listing's own point, 435 m north, is in juniper and pine too; neither shows a clearing, lane or pad for the group area."
   },
   "231890": {
    "call": "good",
@@ -298,7 +298,7 @@
   },
   "234573": {
    "call": "hold",
-   "note": "The pin sits in unbroken forest 65 m west of the road with no clearing at it, and the listing's own point is 2.2 km away."
+   "note": "The pin is in unbroken forest 65 m west of the road, and the listing's own point, 2.2 km southeast, is in unbroken forest too; nothing nearby is plainly the group site."
   },
   "234605": {
    "call": "good",
@@ -353,12 +353,12 @@
    "note": "The pin sits on the edge of a snow-covered stand at the end of the drawn spur; no building shows under the trees and snow, so the photo can't confirm the guard station."
   },
   "251836": {
-   "call": "unsure",
-   "note": "The pin sits on open desert ground 80 m south of the drawn campground loop, with only faint two-tracks near it; nothing at it shows a group site."
+   "call": "hold",
+   "note": "The pin is on open desert ground 80 m south of the campground's drawn loop; the loop has several paved pads with small shelters, and nothing marks which one is the group site."
   },
   "251899": {
-   "call": "hold",
-   "note": "The pin sits in open sagebrush 30 m north of a drawn track, with no building at it; the only structures show 150 m southeast by the road junction."
+   "call": "good",
+   "note": "A dark-roofed building in a fenced yard, the only building for a kilometer, stands 240 m southeast of the pin just below the end of the drawn track; the pin was in open sagebrush. A trailer and small shed sit just outside the fence."
   }
  }
 }

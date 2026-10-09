@@ -1087,7 +1087,7 @@ first-come maps and given a first look as first-come maps by a separate reader (
 | Sample (wave 0, random) | 50 | 45 | 50 (45 approved, 5 hidden) |
 | Wave 1 (demand) | 100 | 75 | 56 (31 approved, 25 hidden) |
 | Wave 2 (demand) | 100 | 61 | 62 (23 approved, 39 hidden) |
-| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,527 passed, 1,434 held to fix after; 23 passed after the trace fixes, 32 over the Alaska and Hawaii photos and 86 as first-come campgrounds) |
+| Waves 3 to 39 (the parallel rollout, multi-site and units) | 2,961 | 1,386 passed the final check | Delegated: Claude's final check (1,577 passed, 1,384 held to fix after; 23 passed after the trace fixes, 32 over the Alaska and Hawaii photos, 86 as first-come campgrounds, and on 2026-10-09 8 under the stray-point and parking rules, 40 by pin moves and 2 over the lidar relief) |
 | **Total** | **3,211** | | |
 
 Of the hidden, 27 are now shown as areas and wait on the owner again (above).

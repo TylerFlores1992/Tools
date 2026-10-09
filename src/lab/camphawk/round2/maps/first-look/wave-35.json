@@ -50,11 +50,11 @@
   },
   "233804": {
    "call": "hold",
-   "note": "The pin sits in unbroken forest with no clearing or building within 100 m, and the nearest drawn road is 116 m away."
+   "note": "The pin is in unbroken forest 116 m from the drawn road, and no clearing, pad or building within 200 m marks the group site."
   },
   "233805": {
    "call": "hold",
-   "note": "The pin sits in unbroken forest with no clearing or building within 100 m, and the nearest drawn road is 150 m away."
+   "note": "The pin is in unbroken forest 150 m from the drawn road; the only opening, a small meadow 100 m southeast, shows no pad or building, so nothing marks the group site."
   },
   "233808": {
    "call": "good",
@@ -69,12 +69,12 @@
    "note": "The pin sits among the guard station's buildings in a small clearing, but no drawn road reaches it: the dirt track that serves it runs north out of the frame, and the drawn road is 170 m south-west across open ground."
   },
   "233927": {
-   "call": "hold",
-   "note": "The pin sits in the forest 30 m south of a small blue-roofed building beside the drawn road; the building may be the guard station, but the pin itself is on nothing."
+   "call": "good",
+   "note": "A small blue-roofed building on a short lane off the drawn road stands 30 m northwest of the pin, 20 m from the listing's own point, and is the only building in view; the pin was in the forest and now sits on it."
   },
   "233932": {
    "call": "hold",
-   "note": "The pin sits in a small grassy clearing in unbroken forest with no building, and the nearest drawn road is 190 m away; nothing on the photo is plainly a ranch."
+   "note": "The pin is in a small grassy clearing in unbroken forest with no building, and the listing's own point, 300 m west, is in unbroken forest too; nothing on the photo is plainly a ranch."
   },
   "233941": {
    "call": "hold",
@@ -102,7 +102,7 @@
   },
   "234211": {
    "call": "hold",
-   "note": "The pin sits in dense forest 40 m south of the drawn road, while the open group area with its lanes lies just north-east; the pin isn't on it."
+   "note": "The pin is in dense forest 40 m south of the open campground area; zoomed in, that area has several lanes, a large bare flat to the northwest and a paved turnaround to the east, and nothing marks which one is the group site."
   },
   "234246": {
    "call": "good",

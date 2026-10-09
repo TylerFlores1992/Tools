@@ -20,15 +20,19 @@ export type TraceFile = {
   points: { type: TracePointType; at: LonLat }[];
   /** The trace replaces the source's roads (they're there but drawn in the wrong places). */
   replace?: boolean;
+  /** Sites moved to where the photo shows them (a cabin's pin on the lake, a stray point). */
+  sites?: TraceSite[];
   note: string;
 };
+/** A site moved: the listing's name for it, and where it really is. */
+export type TraceSite = { name: string; at: LonLat };
 /** A traced road: a campground road (drawn thin) unless `through`; a name is drawn along it. */
 export type TraceRoad = { coords: LonLat[]; through?: boolean; name?: string };
 
 /** A road as the file writes it: only the keys that say something. */
 export const cleanRoad = (r: TraceRoad): TraceRoad => ({ coords: r.coords, ...(r.through ? { through: true } : {}), ...(r.name?.trim() ? { name: r.name.trim() } : {}) });
 /** What the tool edits: the file's roads and points, in degrees. */
-export type TraceDraft = { roads: TraceRoad[]; points: { type: TracePointType; at: LonLat }[]; replace?: boolean };
+export type TraceDraft = { roads: TraceRoad[]; points: { type: TracePointType; at: LonLat }[]; replace?: boolean; sites?: TraceSite[] };
 
 export const TRACE_POINT_TYPES: TracePointType[] = ["Restroom", "Water"];
 export const PHOTO_CREDIT = AERIAL.naip.credit;
@@ -95,13 +99,44 @@ export function withDraft(map: SiteMapData, draft: TraceDraft): SiteMapData {
     ...map.pois.filter((p) => !p.traced),
     ...draft.points.map((p) => ({ name: "", type: p.type, at: toXY(framed, p.at), traced: true })),
   ];
-  return { ...map, roads, pois };
+  // Moved sites: where the draft puts them; a site moved in the built trace but not in the draft
+  // goes back to where the provider put it.
+  const moves = new Map((draft.sites ?? []).map((m) => [m.name, m.at]));
+  const sites = map.sites.map((s) => {
+    const from = s.movedFrom !== undefined ? s.movedFrom : s.at;
+    const to = moves.get(s.name);
+    if (to) return { ...s, at: toXY(framed, to), movedFrom: from };
+    if (s.movedFrom === undefined) return s;
+    const back = { ...s, at: from };
+    delete back.movedFrom;
+    return back;
+  });
+  return { ...map, roads, pois, sites };
+}
+
+/** Where a site was before it was moved (its own spot when it never was). */
+export const originalAt = (s: SiteMapData["sites"][number]) => (s.movedFrom !== undefined ? s.movedFrom : s.at);
+
+/** The draft with this site moved to `at` (moving it again replaces the earlier move). */
+export const moveSite = (draft: TraceDraft, name: string, at: LonLat): TraceDraft =>
+  ({ ...draft, sites: [...(draft.sites ?? []).filter((m) => m.name !== name), { name, at }] });
+
+/** The site nearest `p` within `maxM` (at its spot before any move), or null. */
+export function nearestSite(map: SiteMapData, p: XY, maxM: number): string | null {
+  let best: { name: string; d: number } | null = null;
+  for (const s of map.sites) {
+    const at = originalAt(s);
+    if (!at) continue;
+    const d = Math.hypot(at[0] - p[0], at[1] - p[1]);
+    if (d <= maxM && (!best || d < best.d)) best = { name: s.name, d };
+  }
+  return best?.name ?? null;
 }
 
 /** The draft a map starts with: what was traced and built into it, or nothing. */
 export const draftOf = (map: SiteMapData): TraceDraft =>
   map.trace
-    ? { roads: map.trace.roads.map(cleanRoad), points: map.trace.points.map((p) => ({ type: p.type, at: p.at })), ...(map.trace.replace ? { replace: true } : {}) }
+    ? { roads: map.trace.roads.map(cleanRoad), points: map.trace.points.map((p) => ({ type: p.type, at: p.at })), ...(map.trace.replace ? { replace: true } : {}), ...(map.trace.sites?.length ? { sites: map.trace.sites.map((m) => ({ name: m.name, at: m.at })) } : {}) }
     : EMPTY_DRAFT;
 
 /** The file to save as studio/campground-maps/traces/<map>.json. */
@@ -116,6 +151,7 @@ export function traceFile(mapKey: string, draft: TraceDraft, by: string, today: 
     roads: draft.roads.filter((r) => r.coords.length > 1).map(cleanRoad),
     points: draft.points.map((p) => ({ type: p.type, at: p.at })),
     ...(draft.replace ? { replace: true } : {}),
+    ...(draft.sites?.length ? { sites: draft.sites.map((m) => ({ name: m.name, at: m.at })) } : {}),
     note,
   };
 }

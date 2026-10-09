@@ -154,3 +154,10 @@ test("area names never give overlapping site ranges (Gros Ventre, Colter Bay, Lo
   }
   assert.equal(areaName(["001", "045", "ANDB2"]), "Sites 001–045");
 });
+
+test("a stray point's distance reads in miles for a camper", async () => {
+  const { strayMiles } = await import("./areas.ts");
+  assert.equal(strayMiles(2200), "1.4 miles");
+  assert.equal(strayMiles(27455), "17 miles");
+  assert.equal(strayMiles(2423600), "1,506 miles");
+});

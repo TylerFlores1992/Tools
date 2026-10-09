@@ -80,12 +80,19 @@ branch (the spawn prompt names it).
      agrees with the listing's point;
    - `unsure`: canopy, or no photo.
    Don't trace for a unit unless a road to it is plainly visible and undrawn.
+   **If the pin is on nothing but the building plainly shows nearby** (a cabin with its dock or
+   clearing, 15–150 m off), move the pin there: a trace with `"sites": [{ "name": "<site>",
+   "at": [x, y] }]` (trace-from-grid.mjs), rebuild, check it over the photo, and call the map again.
+   Never move it to a pale spot, or to a building that may be another.
 3b. **First-come campgrounds** (a map with `firstCome`: one site named "Standard", a first-come
    "Scan and Pay" campground; `docs/design/campground-maps-first-come.md`). The camper's map is
    OpenStreetMap's outline of the campground, hatched, or a pin "About here" when there's none.
    `aerial-check.mjs` draws the outline dashed white. Judge the outline and the point, not sites:
    - `good`: the outline follows the campground on the photo (its loops and pads are inside it)
      and the listed point is in it or by its entrance;
+   - The build takes only an outline named for this campground (or an unnamed one); one named for
+     another campground reads "OpenStreetMap’s campground outline here is “X”" and the map shows a
+     pin instead. Judge the map as drawn.
    - `usable`: the outline is roughly the campground (a little extra ground, or one loop outside
      it), or there's no outline and the pin is within about 100 m of a campground the photo plainly
      shows;

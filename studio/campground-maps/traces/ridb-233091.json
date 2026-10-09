@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233091",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2006-2018, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Y06N",
+   "at": [
+    -138.5036893,
+    59.2471839
+   ]
+  }
+ ],
+ "note": "On the older three-band photo, a long white-roofed building with two small outbuildings stands beside the airstrip 135 m south-southwest of the pin, where the drawn road ends and near the listing's own point; the pin was on open meadow and now sits on that building."
+}

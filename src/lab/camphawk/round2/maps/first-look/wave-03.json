@@ -58,7 +58,7 @@
   },
   "232868": {
    "call": "unsure",
-   "note": "The lakeside loop (003 to 016, 019, 022, 023, 026) and the west loop (029 to 042) are drawn, and the lanes show only in a few gaps in the trees. 017, 018, 020, 021, 024, 025 and 027 sit 15 to 30 m south of the drawn road, and A to H sit deep in the forest 60 to 120 m from any road, where no lane shows under the canopy."
+   "note": "The relief shows the drawn loops as smooth bands, but the forest floor is noisy and no lane shows to A to H or to 017 to 027. Nothing traced."
   },
   "232890": {
    "call": "good",
@@ -110,7 +110,7 @@
   },
   "10083831": {
    "call": "unsure",
-   "note": "The drawn lanes run through dense pines and only show in the clearing by 026 to 038; the sites line them, but 021, 022 and 027 sit between lanes and the rest can't be checked under the canopy."
+   "note": "The relief shows the highway plainly but none of the campground's dirt lanes. Nothing traced."
   },
   "10083840": {
    "call": "usable",
@@ -134,7 +134,7 @@
   },
   "10124502": {
    "call": "unsure",
-   "note": "Most sites sit near the drawn loops, but the campground is under dense pines and 20, 22, 36, 45, 60, 107 and 108 sit 15 to 30 m from any drawn road; the big northwest loop has sites only on its north edge (46 to 58) and its course doesn't show."
+   "note": "Rocky granite ground with boulders; the relief shows the drawn loops only faintly and no course for the big northwest loop. Nothing traced."
   },
   "10332664": {
    "call": "usable",
@@ -150,7 +150,7 @@
   },
   "232448": {
    "call": "hold",
-   "note": "Only the C and D loops and a road through B and H are drawn. The A loop (A001 to A022), most of B (B001 to B007, B017 to B034) and the H loop sit with no lane at all, and under the pines the lanes don't show clearly enough to trace."
+   "note": "The relief is glacial ground broken by boulders and rock cracks, and no lane shows for the A loop, most of B or the H loop; the drawn road through A doesn't follow any visible lane either. Nothing traced."
   },
   "232452": {
    "call": "good",
@@ -166,7 +166,7 @@
   },
   "232489": {
    "call": "hold",
-   "note": "The inner lanes are drawn, but the outer ring of sites (005 to 038 and T-01 to T-12) has no road: 010 to 027 and 028 to 038 sit 20 to 40 m outside the drawn roads, and under the pines that lane doesn't show clearly enough to trace."
+   "note": "Flat plateau: the relief shows the drawn inner lanes only faintly and no lane for the outer ring (005 to 038, T-01 to T-12). Nothing traced."
   },
   "232492": {
    "call": "good",
@@ -174,7 +174,7 @@
   },
   "232493": {
    "call": "unsure",
-   "note": "The B, C and D loops and the A loop run under dense cedar and pine; many sites sit in rows inside the loops (B46 to B52, C125 to C141, A21 to A30) with no lane drawn, and the teardrop loop in the middle has no sites. The photo can't show the inner lanes."
+   "note": "The relief shows the drawn A to D loops faintly, but no inner lanes among the rows of sites (B46 to B52, C125 to C141, A21 to A30). Nothing traced."
   },
   "232496": {
    "call": "usable",
@@ -285,8 +285,8 @@
    "note": "The loops are drawn through the trees and match the pavement where it shows (by 64 to 71 and the west bend by 75 and 76), and most sites line them. 72, 74, 80, 82 and 83 sit 15 to 25 m outside the southwest loop."
   },
   "255201": {
-   "call": "unsure",
-   "note": "The entry road and the two loops run under dense forest, and Sites 064 to 127 and 142 to 164 sit along them. Sites 128 to 141 lie 30 to 60 m west of the west loop with no road, and under the canopy no lane shows to confirm them."
+   "call": "hold",
+   "note": "The relief confirms the entry road and both drawn loops, but the forest floor is hummocky and shows no lane for 128 to 141 (only a straight trail-like line), and many lakeside sites sit 20 to 50 m off the roads. Nothing traced."
   },
   "258825": {
    "call": "usable",
@@ -330,7 +330,7 @@
   },
   "233454": {
    "call": "unsure",
-   "note": "The loop and the inner lane run under heavy shade trees; where the pavement shows (along the south side), the drawn road matches, and Sites 03 to 54 sit on both sides. The shoreline sites (32, 34, 37, 39, 42, 45 to 48) may sit on an outer lane that the canopy hides."
+   "note": "The relief (from Oregon's DOGAMI service, though the park is in Washington) is high-contrast and shows terraced pads but no outer lane for the shoreline sites. Nothing traced."
   },
   "233489": {
    "call": "hold",
@@ -366,11 +366,11 @@
   },
   "233600": {
    "call": "unsure",
-   "note": "The two loops run under dense forest, and the sites sit along them on both sides. Sites 017 to 029 between the loops and 043 to 055 on the west edge sit off any drawn road, and the canopy hides any lane."
+   "note": "Hummocky forest floor: only the south loop by 065 and 067 shows in the relief; the lanes between the loops and on the west edge don't. Nothing traced."
   },
   "233623": {
    "call": "hold",
-   "note": "Only the through road is drawn. The park's lanes show in the open meadows (around 046 to 061 and 025 to 033), but Sites 051 to 058 and 067 to 082 lie under dense forest with nothing visible, and the northwest sites (003D to 022) have no road."
+   "note": "Traced from the photo where lanes show in the meadow, and the relief agrees: the lane past 061 to 059, the lane past 047 to 051, and a short lane south toward 082. Still held: under the forest the relief is speckled, so 052 to 058, 067 to 082 and the northwest sites have no road."
   },
   "233692": {
    "call": "hold",

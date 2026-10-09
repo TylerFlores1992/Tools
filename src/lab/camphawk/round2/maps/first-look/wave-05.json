@@ -289,8 +289,8 @@
    "note": "The loop follows the visible dirt road, and Sites 001 to 013 and 020 to 027 sit on it. 014 and 016 to 019 sit 20 to 30 m beyond the loop on open dirt to the north and east, where the lanes to them are not drawn."
   },
   "234540": {
-   "call": "hold",
-   "note": "Now traced: the highway past the campground and the paved campground lane from its junction north-west past 016 to 031, with the loop at its end by 030 and 031; they follow the photo. Still held: the lanes south of the junction past 001 to 012 show only in pieces under the pines, so over a third of the sites have no road, and 033 is a stray point 25 km west at a highway pull-off."
+   "call": "usable",
+   "note": "Rebuilt with the stray point rule: 033's point, 27 km away, is left off. The traced lane along the campground and the loop at its end follow the visible road, and the sites line it."
   },
   "234672": {
    "call": "good",

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232948",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, fix-after)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "J15",
+   "at": [
+    -134.7243049,
+    58.5084937
+   ]
+  }
+ ],
+ "note": "The cabin and its dock show on the lake shore about 115 m south-west of the listing point, which is in unbroken forest."
+}

@@ -232,7 +232,7 @@
   },
   {
    "wave": 3,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 94,
    "summary": {
     "ready": 56,
@@ -1218,9 +1218,9 @@
    "built": "2026-10-08",
    "count": 95,
    "summary": {
-    "ready": 61,
+    "ready": 65,
     "review": 29,
-    "notDrawn": 5,
+    "notDrawn": 1,
     "failed": 0
    },
    "order": "Rollout of everything left, by region (OpenStreetMap extract us-west), most-reserved first within it (Recreation.gov FY2025 overnight camping reservations)",
@@ -1434,11 +1434,11 @@
   },
   {
    "wave": 14,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 90,
    "summary": {
-    "ready": 47,
-    "review": 41,
+    "ready": 46,
+    "review": 42,
     "notDrawn": 2,
     "failed": 0
    },
@@ -1750,7 +1750,7 @@
   },
   {
    "wave": 17,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 91,
    "summary": {
     "ready": 42,
@@ -1856,7 +1856,7 @@
   },
   {
    "wave": 18,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 90,
    "summary": {
     "ready": 54,
@@ -1961,7 +1961,7 @@
   },
   {
    "wave": 19,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 87,
    "summary": {
     "ready": 38,
@@ -2266,7 +2266,7 @@
   },
   {
    "wave": 22,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 63,
    "summary": {
     "ready": 42,
@@ -2477,7 +2477,7 @@
   },
   {
    "wave": 25,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 30,
    "summary": {
     "ready": 13,
@@ -2525,8 +2525,8 @@
    "built": "2026-10-08",
    "count": 89,
    "summary": {
-    "ready": 75,
-    "review": 14,
+    "ready": 74,
+    "review": 15,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2626,11 +2626,11 @@
   },
   {
    "wave": 27,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 77,
-    "review": 11,
+    "ready": 75,
+    "review": 13,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2729,11 +2729,11 @@
   },
   {
    "wave": 28,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 74,
-    "review": 15,
+    "ready": 70,
+    "review": 19,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2833,11 +2833,11 @@
   },
   {
    "wave": 29,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 69,
-    "review": 19,
+    "ready": 67,
+    "review": 21,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2936,11 +2936,11 @@
   },
   {
    "wave": 30,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 69,
-    "review": 20,
+    "ready": 68,
+    "review": 21,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3040,11 +3040,11 @@
   },
   {
    "wave": 31,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 56,
-    "review": 32,
+    "ready": 55,
+    "review": 33,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3143,11 +3143,11 @@
   },
   {
    "wave": 32,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 56,
-    "review": 33,
+    "ready": 54,
+    "review": 35,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3247,11 +3247,11 @@
   },
   {
    "wave": 33,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 53,
-    "review": 42,
+    "ready": 49,
+    "review": 46,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3357,11 +3357,11 @@
   },
   {
    "wave": 34,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 35,
-    "review": 60,
+    "ready": 31,
+    "review": 64,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3467,11 +3467,11 @@
   },
   {
    "wave": 35,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 53,
    "summary": {
-    "ready": 38,
-    "review": 15,
+    "ready": 37,
+    "review": 16,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3535,11 +3535,11 @@
   },
   {
    "wave": 36,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 53,
    "summary": {
-    "ready": 37,
-    "review": 16,
+    "ready": 33,
+    "review": 20,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3710,11 +3710,11 @@
   },
   {
    "wave": 39,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 23,
    "summary": {
-    "ready": 17,
-    "review": 6,
+    "ready": 16,
+    "review": 7,
     "notDrawn": 0,
     "failed": 0
    },

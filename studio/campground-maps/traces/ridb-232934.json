@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232934",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C04",
+   "at": [
+    -132.1720727,
+    55.0222575
+   ]
+  }
+ ],
+ "note": "Zoomed in, a small brown-roofed cabin stands at the forest edge above the cove's tidal flat, 100 m west-southwest of the pin, which was on the flat; the pin now sits on the cabin."
+}

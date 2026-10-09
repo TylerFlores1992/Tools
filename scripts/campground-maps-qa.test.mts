@@ -255,22 +255,23 @@ test("a unit with no point can't be drawn; one with traced roads waits for a per
 
 test("a first-come campground is ready when an outline holds its point (or lies within reach) and it isn't closed", () => {
   const sq = (x: number, y: number, w: number): [number, number][] => [[x, y], [x + w, y], [x + w, y + w], [x, y + w]];
-  const fc = (over: Partial<Parameters<typeof checkFirstCome>[0]> = {}) => checkFirstCome({ site: { name: "Standard", at: [0, 0] }, outlineRings: [sq(-50, -50, 100)], ...over });
+  const ring = (r: [number, number][], name = "") => ({ ring: r, name });
+  const fc = (over: Partial<Parameters<typeof checkFirstCome>[0]> = {}) => checkFirstCome({ site: { name: "Standard", at: [0, 0] }, name: "Davis Flat", outlines: [ring(sq(-50, -50, 100))], ...over });
   const inside = fc();
   assert.equal(inside.verdict, "ready");
   assert.equal(inside.metrics.outlineM, 0);
   assert.equal(inside.metrics.kind, "firstcome");
   // On the road 40 m south of the outline: still the campground's outline.
-  const near = fc({ outlineRings: [sq(-50, 40, 100)] });
+  const near = fc({ outlines: [ring(sq(-50, 40, 100))] });
   assert.equal(near.verdict, "ready");
   assert.equal(near.metrics.outlineM, 40);
   // Beyond reach, or no outline: a person looks.
-  const far = fc({ outlineRings: [sq(FIRST_COME_RULES.outlineReachM + 10, 0, 50)] });
+  const far = fc({ outlines: [ring(sq(FIRST_COME_RULES.outlineReachM + 10, 0, 50))] });
   assert.equal(far.verdict, "review");
   assert.deepEqual(far.reasons.map((r) => r.code), ["no-outline"]);
   assert.match(far.reasons[0].text, /m from the listed point/);
-  assert.equal(fc({ outlineRings: [] }).verdict, "review");
-  assert.match(fc({ outlineRings: [] }).reasons[0].text, /doesn’t outline/);
+  assert.equal(fc({ outlines: [] }).verdict, "review");
+  assert.match(fc({ outlines: [] }).reasons[0].text, /doesn’t outline/);
   // Closed: a person looks, and the check says so.
   const closed = fc({ closed: true });
   assert.deepEqual(closed.reasons.map((r) => r.code), ["closed"]);
@@ -279,4 +280,43 @@ test("a first-come campground is ready when an outline holds its point (or lies 
   assert.equal(fc({ site: { name: "Standard", at: null } }).verdict, "not-drawn");
   // A trace waits for a person too.
   assert.deepEqual(fc({ traced: { roads: 1, points: 0 } }).reasons.map((r) => r.code), ["traced"]);
+});
+
+test("a first-come campground never takes an outline named for another campground", () => {
+  const sq = (x: number, y: number, w: number): [number, number][] => [[x, y], [x + w, y], [x + w, y + w], [x, y + w]];
+  const ring = (r: [number, number][], name = "") => ({ ring: r, name });
+  const fc = (name: string, outlines: { ring: [number, number][]; name: string }[]) => checkFirstCome({ site: { name: "Standard", at: [0, 0] }, name, outlines });
+  // Davis Flat's point is inside South Fork's outline (the 2026-10-08 first look): held, and said why.
+  const shared = fc("Davis Flat", [ring(sq(-50, -50, 100), "South Fork Campground")]);
+  assert.equal(shared.verdict, "review");
+  assert.deepEqual(shared.reasons.map((r) => r.code), ["outline-other-name"]);
+  assert.match(shared.reasons[0].text, /South Fork Campground/);
+  assert.equal(shared.metrics.outlineM, null);
+  assert.equal(shared.checks.find((c) => c.code === "outline-other-name")!.result, "review");
+  // Its own outline 170 m away wins over another campground’s that holds the point.
+  const own = fc("Kenosha East", [ring(sq(-50, -50, 100), "Kenosha Pass Campground"), ring(sq(170, 0, 60), "Kenosha East Campground")]);
+  assert.equal(own.verdict, "ready");
+  assert.equal(own.metrics.outlineM, 170);
+  assert.equal(own.metrics.outlineName, "Kenosha East Campground");
+  // An unnamed outline still counts, unless another campground's is nearer.
+  assert.equal(fc("Davis Flat", [ring(sq(-50, -50, 100))]).verdict, "ready");
+  assert.deepEqual(fc("Davis Flat", [ring(sq(-50, -50, 100), "South Fork Campground"), ring(sq(100, 0, 50))]).reasons.map((r) => r.code), ["outline-other-name"]);
+  assert.equal(fc("Davis Flat", [ring(sq(-50, -50, 100)), ring(sq(100, 0, 50), "South Fork Campground")]).verdict, "ready");
+});
+
+test("a moved site sends any map to a person, and says so", () => {
+  const r = checkUnit({ site: { name: "A09", at: [0, 0] }, facilityAt: [0, 0], roadSegments: [[[0, 5], [10, 5]]], trailSegments: [], roadSource: "osm", traced: { roads: 0, points: 0, sites: 1 } });
+  assert.equal(r.verdict, "review");
+  assert.deepEqual(r.reasons.map((x) => x.code), ["traced"]);
+  assert.match(r.reasons[0].text, /1 site position traced/);
+  assert.equal(r.metrics.traced.sites, 1);
+  assert.match(checkFirstCome({ site: { name: "Standard", at: [0, 0] }, traced: { roads: 2, points: 0, sites: 2 } }).reasons.at(-1)!.text, /2 roads and 2 site positions/);
+});
+
+test("a stray point left off is named, with how far it was; a site with no point is counted", () => {
+  const sites = [{ name: "E18", at: null, strayM: 2423600 }, { name: "E19", at: null }, ...Array.from({ length: 5 }, (_, i) => ({ name: `E${i + 1}`, at: [i * 20, 0] as [number, number] }))];
+  const r = checkMap({ sites, roadSegments: [[[0, 5], [100, 5]]], roadSource: "osm" });
+  const texts = r.reasons.filter((x) => x.code === "unplaced").map((x) => x.text);
+  assert.deepEqual(texts, ["E18’s point is 2,424 km from every other site, so it’s left off", "1 site has no point"]);
+  assert.match(checkMap({ sites: [{ name: "B19", at: null, strayM: 2200 }, ...sites.slice(2)], roadSegments: [[[0, 5], [100, 5]]], roadSource: "osm" }).reasons.find((x) => x.code === "unplaced")!.text, /2\.2 km/);
 });

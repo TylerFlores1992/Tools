@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234359",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -105.9762916,
+    45.6403941
+   ]
+  }
+ ],
+ "note": "The listing's own point is beside a small gray-roofed cabin at the end of a gravel road in pine-dotted grassland; the pin was 10 km east on bare badland slopes."
+}

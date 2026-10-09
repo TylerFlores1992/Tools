@@ -135,6 +135,22 @@ the owner picked, and it holds up on a phone.
 - **"Point by the entrance" can sit 80–90 m outside the outline** (Angel of Shavano, Rivers End,
   Pitkin): the point is where the campground road leaves the main road. They passed as good.
 
+## Outline names (built 2026-10-08, owner: "do the outline-name check")
+- **The build keeps OpenStreetMap's name for each outline ring** (`evidence.outlineNames`), and
+  `pickOutline` (first-come.ts) takes, within 250 m:
+  - the ring named for this campground, with every ring of that name (a campground mapped in
+    pieces), even when another is nearer;
+  - else the nearest unnamed ring, unless a ring named for another campground is as near;
+  - never a ring named for another campground. The check then says whose it is
+    (`outline-other-name`) and the camper's map shows the pin "About here".
+- **Names match on their telling words** ("Spruce Grove (CO)" and "Spruce Grove Campground - Grand
+  Valley RD"), allowing one typo in a word of six letters or more (OpenStreetMap's "Penstmon") and
+  words run together ("Fourmile", "Four Mile Creek").
+- **On the 130:** the rebuild flags exactly four, the four the first look found: Davis Flat
+  (South Fork's outline), Big Creek ("Cottonwood Lake Campground"), Gothic ("Campsites GC 1-3") and
+  North Bank ("Granite Tent Campground"). All four were already held.
+- Tested in `first-come.test.mts` and `campground-maps-qa.test.mts`; mutation rounds 12/12 and 6/6.
+
 ## Not settled
 - 47 have no OpenStreetMap outline within 250 m (42 have none at all). For those the map is a pin "About here", which is honest but
   thin. Tracing their outline from the photo is possible where it shows.

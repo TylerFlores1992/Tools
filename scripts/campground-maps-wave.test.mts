@@ -209,3 +209,55 @@ test("the final check's decisions: good and usable pass, hold and unsure are hel
   assert.throws(() => decideWave({ wave: 9, manifest, looks: { a: { call: "good" } }, checked: 1, on: "2026-10-08" }), /no first look for b/);
   assert.throws(() => decideWave({ wave: 9, manifest, looks, hold: ["zz"], checked: 1, on: "2026-10-08" }), /not in the wave: zz/);
 });
+
+test("the build keeps each outline ring's OpenStreetMap name, in the path's order", async () => {
+  const { outlineEvidence } = await import("../studio/campground-maps/build.mjs");
+  // A stand-in for geo.mjs pathOf: a ring the frame clips away gives "".
+  const pathOf = (parts: number[][][]) => (parts[0][0][0] > 1000 ? "" : `M${parts[0].map((p) => p.join(" ")).join("L")}Z`);
+  const ev = outlineEvidence([
+    { name: "Fouts Campground", rings: [[[0, 0], [1, 0], [1, 1]], [[2000, 0], [2001, 0], [2001, 1]], [[5, 5], [6, 5], [6, 6]]] },
+    { name: "", rings: [[[9, 9], [10, 9], [10, 10]]] },
+  ], pathOf);
+  assert.deepEqual(ev.outlineNames, ["Fouts Campground", "Fouts Campground", ""]);
+  assert.equal(ev.outline, "M0 0L1 0L1 1ZM5 5L6 5L6 6ZM9 9L10 9L10 10Z");
+});
+
+test("a point kilometres from every other site is left off; a listing really spread out is not pruned", async () => {
+  const { strayPoints, withoutStrays, STRAY_M } = await import("../studio/campground-maps/build.mjs");
+  // Six sites in one loop, and E18 placed in another state (Clear Springs, 2026-10-08).
+  const loop = Array.from({ length: 6 }, (_, i) => ({ name: `E${i + 1}`, lat: 33.0 + i * 0.0003, lon: -97.0 }));
+  const stray = { name: "E18", lat: 33.9, lon: -117.0 };
+  assert.deepEqual(strayPoints([...loop, stray]).map((s: { name: string }) => s.name), ["E18"]);
+  const out = withoutStrays([...loop, stray]);
+  assert.deepEqual(out.at(-1), { name: "E18", lat: 0, lon: 0, strayM: Math.round(strayPoints([...loop, stray])[0].m / 100) * 100 });
+  assert.deepEqual(out.slice(0, 6), loop);
+  // Just under the limit stays.
+  const near = { name: "N", lat: 33.0, lon: -97.0 + (STRAY_M - 50) / (111320 * Math.cos(33 * Math.PI / 180)) };
+  assert.deepEqual(strayPoints([...loop, near]), []);
+  // Three far points, or fewer than five left: a spread-out listing, left as it is.
+  assert.deepEqual(strayPoints([...loop, stray, { ...stray, name: "X", lat: 34.9 }, { ...stray, name: "Y", lat: 35.9 }]), []);
+  assert.deepEqual(strayPoints([...loop.slice(0, 4), stray]), []);
+  // A site with no point is never a stray.
+  assert.deepEqual(strayPoints([...loop, { name: "Z", lat: 0, lon: 0 }]), []);
+  // Two sites can share a name (GROVE's two "12"s): only the stray one is left off.
+  const twin = withoutStrays([...loop, { name: "E1", lat: 33.9, lon: -117.0 }]);
+  assert.deepEqual(twin[0], loop[0]);
+  assert.equal(twin[6].lat, 0);
+});
+
+test("parking rows (BLM's Extra Vehicle at every site's spot) aren't campsites", async () => {
+  const { bookable } = await import("../studio/campground-maps/build.mjs");
+  assert.equal(bookable({ CampsiteType: "PARKING", TypeOfUse: "Overnight" }), false);
+  assert.equal(bookable({ CampsiteType: "STANDARD NONELECTRIC", TypeOfUse: "Overnight" }), true);
+  assert.equal(bookable({ CampsiteType: "MANAGEMENT", TypeOfUse: "Overnight" }), false);
+  assert.equal(bookable({ CampsiteType: "STANDARD NONELECTRIC", TypeOfUse: "Day" }), false);
+});
+
+test("the credits say what a trace was drawn over: aerial photos, lidar, or both", async () => {
+  const { tracedOver } = await import("../studio/campground-maps/build.mjs");
+  assert.equal(tracedOver("USDA NAIP via USGS The National Map (public domain)"), "aerial photos");
+  assert.equal(tracedOver(undefined), "aerial photos");
+  assert.equal(tracedOver("USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)"), "aerial photos and lidar elevation (USGS 3DEP)");
+  assert.equal(tracedOver("USGS 3D Elevation Program lidar (public domain)"), "lidar elevation (USGS 3DEP)");
+  assert.equal(tracedOver("U.S. Forest Service Alaska Region; Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)"), "aerial photos and lidar elevation (Oregon DOGAMI)");
+});

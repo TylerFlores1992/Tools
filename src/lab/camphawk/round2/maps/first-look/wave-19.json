@@ -82,7 +82,7 @@
   },
   "232540": {
    "call": "hold",
-   "note": "Now traced: the paved lane past 37 to 48 (the source's line ran about 10 m east of it, across the pads, and still does) and the paved lanes in the south-east past 15 to 24. Still held: the whole west block (49 to 75) shows only as pad clearings under the trees with no lane line to follow, so over a third of the sites have no road, and the lanes past 07 to 13 aren't drawn."
+   "note": "The relief confirms the earlier traced lane past 37 to 48 runs between the two rows of pads, so the trace now replaces the source's roads and drops its line across the pads, keeping the rest as drawn. Still held: the west block (49 to 75) shows pads but no lanes."
   },
   "232542": {
    "call": "usable",
@@ -130,7 +130,7 @@
   },
   "233441": {
    "call": "hold",
-   "note": "No roads are drawn, though every lane of the A, B and C loops shows plainly on the open point, and A029 is placed 8 km south-east on the far shore, which stretches Loop A's area over 8 km. Not traced in this pass: the stray A029 point holds the map whatever is traced, so the lanes are left for after the point is fixed; zoomed, the other sites sit on the visible pads."
+   "note": "Rebuilt with the stray point rule (A029, 9 km away, left off). Every lane of the A, B and C loops shows plainly on the open point but none is drawn: a trace candidate."
   },
   "233449": {
    "call": "good",
@@ -186,7 +186,7 @@
   },
   "233505": {
    "call": "hold",
-   "note": "B19 is placed 33 km south in farmland, which stretches Loop B's area over 33 km and makes the whole map unreadable; Loop C sits 2 km from A and B. A misplaced point: waits for a fix of the listing's data."
+   "note": "Rebuilt with the stray point rule (B19, 31 km away, left off). Still two areas, with the lanes in the trees not drawn."
   },
   "233510": {
    "call": "hold",
@@ -202,7 +202,7 @@
   },
   "233518": {
    "call": "unsure",
-   "note": "Four areas under full canopy. Zoomed, the drawn lanes run through the 001 to 095 and 096 to 177 areas, but most sites sit 20 to 40 m off them where nothing shows, and the HI sites (HI01 to HI20) are scattered over 700 m of forest with no road at all; the 'East end' and 'Middle 2' frames overlap."
+   "note": "Rebuilt with the stray point rule (the group campground's point, 2.2 km away, left off). Three areas under full canopy."
   },
   "233522": {
    "call": "good",

@@ -12,6 +12,12 @@ export type MapSite = {
   type: string;
   /** Null when the provider publishes no point for this site. */
   at: [number, number] | null;
+  /** Where the provider put it, when a person moved it to what the aerial photo shows (a trace's
+      `sites`, studio/campground-maps/trace.mjs). Null when the provider had no point. */
+  movedFrom?: [number, number] | null;
+  /** Left off the map: Recreation.gov's point for it is this far (m) from every other site's, a bad
+      point (studio/campground-maps/build.mjs withoutStrays). `at` is null. */
+  strayM?: number;
   /** Unit vector pointing away from the nearest campground road: where the number goes. */
   out?: [number, number];
   accessible: boolean;
@@ -57,7 +63,7 @@ export type SiteMapData = {
   /** The trace built into this map (studio/campground-maps/traces/), for the tracing tool to edit. */
   trace?: TraceFile;
   /** What the automatic checks compared against (OpenStreetMap's outline and numbered pitches). */
-  evidence?: { outline: string; pitches: { ref: string; at: [number, number] }[] };
+  evidence?: { outline: string; /** OpenStreetMap's name for each ring of `outline`, in order ("" when it has none). */ outlineNames?: string[]; pitches: { ref: string; at: [number, number] }[] };
   labels: { text: string; kind: "road" | "trail" | "water"; at: [number, number]; angle: number }[];
   roads: MapRoad[];
   /** Only when a trace replaces the roads: the source's roads it replaced (the tracing tool shows them). */

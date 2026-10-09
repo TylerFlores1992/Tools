@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
-import { Check, ChevronDown, Copy, Download, Droplet, EyeOff, PenLine, RotateCcw, Route, Toilet, Trash2, Undo2 } from "lucide-react";
+import { Check, ChevronDown, Copy, Download, Droplet, EyeOff, MapPin, PenLine, RotateCcw, Route, Toilet, Trash2, Undo2 } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
-import { cleanRoad, lengthM, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
+import { cleanRoad, lengthM, moveSite, nearestSite, originalAt, segmentsOfPath, snap, toDeg, toXY, traceFile, type TraceDraft, type TracePointType, type XY } from "../maps/trace";
 import { TracedMark } from "./AerialCheck";
 import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
+import { useLidar } from "./useLidar";
+import { LIDAR } from "../maps/lidar";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
 // water taps a person can see. The reviewer clicks along a road; the trace is kept in this browser
@@ -19,7 +21,7 @@ import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
 // in ochre, CampHawk's "yours" colour, with a square at each end (and at every point of the road
 // being drawn), so it reads as the reviewer's own lines by shape as well as hue.
 
-type Tool = "road" | TracePointType;
+type Tool = "road" | TracePointType | "site";
 const ZOOMS = [1, 2, 4] as const;
 type Zoom = (typeof ZOOMS)[number];
 /** A point this close to a road (in screen pixels) snaps onto it. */
@@ -28,7 +30,10 @@ const TOOLS: { t: Tool; label: string; Icon: typeof Route }[] = [
   { t: "road", label: "Road", Icon: Route },
   { t: "Restroom", label: "Restroom", Icon: Toilet },
   { t: "Water", label: "Water tap", Icon: Droplet },
+  { t: "site", label: "Move a site", Icon: MapPin },
 ];
+/** A tap this close to a site (in screen pixels) picks it up to move. */
+const PICK_PX = 16;
 const POINT_WORD: Record<TracePointType, string> = { Restroom: "Restroom", Water: "Water tap" };
 /** The lab's disabled look (as on New watch): a shell button that can't be mistaken for one that works. */
 const OFF = "disabled:cursor-not-allowed disabled:border-ch-line disabled:bg-ch-shell disabled:text-ch-ink-2 disabled:shadow-none disabled:hover:bg-ch-shell";
@@ -44,6 +49,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
 }) {
   const f = map.frame;
   const [tool, setTool] = useState<Tool>("road");
+  // What's under the tracing: the aerial photo, or the lidar relief where the photo shows only canopy.
+  const [ground, setGround] = useState<"photo" | "lidar">("photo");
+  // Whether anything was placed over the relief, so the file credits it.
+  const [usedLidar, setUsedLidar] = useState(false);
   const [activeAt, setActive] = useState<number | null>(null);
   const [zoom, setZoom] = useState<Zoom>(1);
   const [snapOn, setSnapOn] = useState(true);
@@ -52,6 +61,8 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const [said, setSaid] = useState("");
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReplace, setConfirmReplace] = useState(false);
+  // The site picked up to move (Move a site): the next tap puts it down.
+  const [moving, setMoving] = useState<string | null>(null);
   // The road a list row points at (hover or focus): drawn with a halo, so "Road 7" is findable.
   const [hi, setHi] = useState<number | null>(null);
   // Which list rows show their name and through-road controls.
@@ -84,9 +95,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   // Asked for in steps of 400px so a resize doesn't fetch a new photo every pixel; USGS serves up to 4000.
   const photoW = drawnW ? Math.min(4000, Math.ceil((drawnW * dpr) / 400) * 400) : 1400;
   const source = aerialSource(map);
-  const src = aerialUrl(map, f, photoW);
+  const lidar = useLidar(map.bbox, f.w, photoW, ground === "lidar");
+  const src = ground === "lidar" ? lidar.src : aerialUrl(map, f, photoW);
   const [photo, setPhoto] = useState<{ src: string; state: "ready" | "error" } | null>(null);
-  const photoState = photo?.src === src ? photo.state : "loading";
+  const photoState = ground === "lidar" ? (lidar.state === "ready" ? "ready" : lidar.state === "error" ? "error" : "loading") : photo?.src === src ? photo.state : "loading";
   const img = useRef<HTMLImageElement>(null);
   useEffect(() => { const el = img.current; if (el?.complete && el.src === src) setPhoto({ src, state: el.naturalWidth ? "ready" : "error" }); }, [src]);
 
@@ -120,6 +132,21 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   ];
 
   const add = (raw: XY) => {
+    if (ground === "lidar") setUsedLidar(true);
+    if (tool === "site") {
+      // First tap picks up the nearest site; the second puts it where the photo shows it.
+      if (moving === null) {
+        const name = nearestSite(map, raw, PICK_PX * (perPx || 1));
+        if (name) { setMoving(name); setSaid(`Site ${name} picked up. Tap where it really is on the photo.`); }
+        else setSaid("No site there. Tap on a site’s circle to pick it up.");
+      } else {
+        const s = map.sites.find((x) => x.name === moving), from = s ? originalAt(s) : null;
+        edit(moveSite(draft, moving, toDeg(map, raw)));
+        setSaid(`Site ${moving} moved${from ? ` ${Math.round(Math.hypot(raw[0] - from[0], raw[1] - from[1]))} m` : ""}.`);
+        setMoving(null);
+      }
+      return;
+    }
     const { at, snapped } = snapOn && perPx ? snap(raw, snapTargets(), SNAP_PX * perPx) : { at: raw, snapped: false };
     const deg = toDeg(map, at);
     const joined = snapped ? ", joined to a road" : "";
@@ -162,7 +189,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
       setSaid(`Road ${active + 1}: ${road.length - 1} point${road.length - 1 === 1 ? "" : "s"}.`);
     }
   };
-  const pickTool = (t: Tool) => { if (t !== "road") finish(); setTool(t); };
+  const pickTool = (t: Tool) => { if (t !== "road") finish(); if (t !== "site") setMoving(null); setTool(t); };
   /** Pick a finished road up again: new points go on its end, and Undo takes them back. */
   const continueRoad = (i: number) => {
     if (active !== null && active !== i) finish();
@@ -213,6 +240,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     setDraft({ ...draft, points: draft.points.filter((_, j) => j !== i) });
     setSaid(`${word} deleted.`);
   };
+  const removeMove = (name: string) => {
+    setDeleted({ draft, what: `The move of site ${name}` });
+    setDraft({ ...draft, sites: (draft.sites ?? []).filter((m) => m.name !== name) });
+    setSaid(`Site ${name} is back where the listing puts it.`);
+  };
   const undoDelete = () => {
     if (!deleted) return;
     setDraft(deleted.draft);
@@ -239,8 +271,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   };
 
   const finished = draft.roads.filter((r) => r.coords.length > 1).length;
-  const hasAny = finished > 0 || draft.points.length > 0;
-  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10), "", source?.credit);
+  const moves = draft.sites ?? [];
+  const hasAny = finished > 0 || draft.points.length > 0 || moves.length > 0;
+  // The trace records what it was drawn over: the photo, and the lidar relief when it was used.
+  const tracedOver = [source?.credit, usedLidar && (lidar.source ?? LIDAR).credit].filter(Boolean).join("; ");
+  const file = () => traceFile(mapKey, draft, "Site maps review page (CampHawk lab)", new Date().toISOString().slice(0, 10), "", tracedOver || undefined);
   const download = () => {
     const blob = new Blob([JSON.stringify(file(), null, 1) + "\n"], { type: "application/json" });
     const a = document.createElement("a");
@@ -286,6 +321,10 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
         <Segmented label="Draw">
           {TOOLS.map(({ t, label, Icon }) => <SegButton key={t} on={tool === t} onClick={() => pickTool(t)}><Icon aria-hidden="true" className="size-4" />{label}</SegButton>)}
         </Segmented>
+        <Segmented label="Ground">
+          <SegButton on={ground === "photo"} onClick={() => setGround("photo")}>Photo</SegButton>
+          <SegButton on={ground === "lidar"} onClick={() => setGround("lidar")}>Lidar relief</SegButton>
+        </Segmented>
         <Segmented label="Zoom">
           {ZOOMS.map((z) => <SegButton key={z} on={zoom === z} onClick={() => changeZoom(z)}>{z === 1 ? "Whole photo" : `${z}×`}</SegButton>)}
         </Segmented>
@@ -321,7 +360,17 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
             {/* The source's roads. Replaced, they fade (no casing), so what goes is still visible. */}
             {!draft.replace && sourceRoads.map((r, i) => <path key={`c${i}`} d={r.d} fill="none" className="stroke-ch-ink" strokeOpacity={0.6} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
             {sourceRoads.map((r, i) => <path key={`r${i}`} d={r.d} fill="none" className="stroke-ch-white" strokeOpacity={draft.replace ? 0.45 : 0.85} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-            {perPx > 0 && placed.map((s) => <circle key={s.name} cx={s.at[0]} cy={s.at[1]} r={3.5 * perPx} fill="none" className="stroke-ch-white" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />)}
+            {perPx > 0 && placed.map((s) => { const o = originalAt(s) ?? s.at; return <circle key={s.name} cx={o[0]} cy={o[1]} r={(s.name === moving ? 7 : 3.5) * perPx} fill="none" className="stroke-ch-white" strokeWidth={s.name === moving ? 2.5 : 1.25} strokeDasharray={moves.some((m) => m.name === s.name) ? "3 3" : undefined} vectorEffect="non-scaling-stroke" />; })}
+            {/* A moved site: a dashed line from where the listing put it to an ochre diamond where it is. */}
+            {perPx > 0 && moves.map((m) => {
+              const s = map.sites.find((x) => x.name === m.name), from = s ? originalAt(s) : null, to = toXY(map, m.at), d = 6 * perPx;
+              return (
+                <g key={`m${m.name}`}>
+                  {from && <line x1={from[0]} y1={from[1]} x2={to[0]} y2={to[1]} className="stroke-ch-ink" strokeWidth={2} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />}
+                  <path d={`M${to[0]} ${to[1] - d}L${to[0] + d} ${to[1]}L${to[0]} ${to[1] + d}L${to[0] - d} ${to[1]}Z`} className="fill-ch-ochre stroke-ch-ink" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+                </g>
+              );
+            })}
             {hi !== null && xyRoads[hi]?.length > 1 && <polyline points={xyRoads[hi].map((p) => p.join(",")).join(" ")} fill="none" className="stroke-ch-white" strokeOpacity={0.9} strokeWidth={draft.roads[hi].through ? 15 : 12} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />}
             {xyRoads.map((r, i) => r.length > 1 && <polyline key={`tc${i}`} points={r.map((p) => p.join(",")).join(" ")} fill="none" className="stroke-ch-ink" strokeWidth={draft.roads[i].through ? 8 : 5.5} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
             {xyRoads.map((r, i) => r.length > 1 && <polyline key={`tf${i}`} points={r.map((p) => p.join(",")).join(" ")} fill="none" className="stroke-ch-ochre" strokeWidth={draft.roads[i].through ? 5 : 2.75} strokeDasharray={i === active ? "6 4" : undefined} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
@@ -354,7 +403,8 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           })}
           {photoState !== "ready" && (
             <p role={photoState === "error" ? "alert" : "status"} className="pointer-events-none absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-              {!source ? NO_PHOTO : photoState === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
+              {ground === "lidar" ? (photoState === "error" ? "No lidar answered for this ground (or the service is busy; try again in a minute)." : "Loading the lidar relief…")
+                : !source ? NO_PHOTO : photoState === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
             </p>
           )}
         </div>
@@ -367,7 +417,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
         {active !== null && <button type="button" onClick={undo} className={buttonClasses({ variant: "quiet", size: "sm" })}><Undo2 aria-hidden="true" className="size-4" />Undo last point</button>}
         {deleted && <button type="button" onClick={undoDelete} className={buttonClasses({ variant: "quiet", size: "sm" })}><RotateCcw aria-hidden="true" className="size-4" />Undo delete</button>}
         <p aria-live="polite" className={cx("min-w-0 basis-full text-[13.5px] font-bold text-ch-ink sm:flex-1 sm:basis-auto", !said && "sr-only")}>{said}</p>
-        {!said && <p className="text-[13.5px] text-ch-ink-2">{tool === "road" ? "Tap the photo to start a road." : `Tap the photo to place a ${POINT_WORD[tool].toLowerCase()}.`}</p>}
+        {!said && <p className="text-[13.5px] text-ch-ink-2">{tool === "road" ? "Tap the photo to start a road." : tool === "site" ? "Tap a site to pick it up, then tap where it really is." : `Tap the photo to place a ${POINT_WORD[tool].toLowerCase()}.`}</p>}
       </div>
 
       <ul aria-label="What’s drawn on the photo" className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13.5px] text-ch-ink-2">
@@ -377,6 +427,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           : <li className="flex items-center gap-2"><span aria-hidden="true" className="h-[5px] w-6 rounded-full border border-ch-ink bg-ch-white" />Roads from {sourceWord}</li>)}
         {placedKinds.map(({ type, Icon, word }) => <li key={type} className="flex items-center gap-2"><span aria-hidden="true" className="grid size-[18px] place-items-center rounded-[5px] border-2 border-ch-ink bg-ch-ochre text-ch-ink"><Icon className="size-[11px]" /></span>{word} you placed</li>)}
         <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[10px] rounded-full border-2 border-ch-white shadow-[0_0_0_1.5px_var(--color-ch-ink)]" />Sites</li>
+        {moves.length > 0 && <li className="flex items-center gap-2"><span aria-hidden="true" className="size-[10px] rotate-45 border-[1.5px] border-ch-ink bg-ch-ochre" />Sites you moved, a dashed line from where the listing puts them</li>}
       </ul>
 
       <section aria-labelledby="traces-h" className="mt-4 rounded-ch-input border border-ch-line bg-ch-paper">
@@ -384,7 +435,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           <h3 id="traces-h" className="font-ch-display text-[16px] font-bold text-ch-ink">Your traces</h3>
           <p className="text-[13px] text-ch-ink-2">{changed ? "Saved in this browser; not on the map yet" : map.trace ? "As built into this map" : "Nothing traced yet"}</p>
         </div>
-        {draft.roads.length || draft.points.length ? (
+        {draft.roads.length || draft.points.length || moves.length ? (
           <ul className="divide-y divide-ch-line">
             {draft.roads.map((r, i) => (
               <li key={`r${i}`} className="px-4 py-1.5 text-[14px]" onMouseEnter={() => setHi(i)} onMouseLeave={() => setHi(null)} onFocus={() => setHi(i)} onBlur={() => setHi(null)}>
@@ -425,6 +476,17 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
                 )}
               </li>
             ))}
+            {moves.map((m) => {
+              const s = map.sites.find((x) => x.name === m.name), from = s ? originalAt(s) : null, to = toXY(map, m.at);
+              return (
+                <li key={`s${m.name}`} className="flex items-center gap-2 px-4 py-1.5 text-[14px]">
+                  <MapPin aria-hidden="true" className="size-4 shrink-0 text-ch-ink-2" />
+                  <span className="font-bold text-ch-ink">Site {m.name}</span>
+                  {from && <span className="tabular-nums text-ch-ink-2">moved {Math.round(Math.hypot(to[0] - from[0], to[1] - from[1]))} m</span>}
+                  <button type="button" onClick={() => removeMove(m.name)} aria-label={`Put site ${m.name} back`} className={cx(DEL_BTN, "ml-auto")}><Trash2 aria-hidden="true" className="size-4" /></button>
+                </li>
+              );
+            })}
             {draft.points.map((p, i) => {
               const Icon = p.type === "Restroom" ? Toilet : Droplet;
               const n = draft.points.slice(0, i + 1).filter((q) => q.type === p.type).length;
@@ -438,7 +500,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
             })}
           </ul>
         ) : (
-          <p className="px-4 py-3 text-[14px] text-ch-ink-2">Pick Road and click on the photo to start.</p>
+          <p className="px-4 py-3 text-[14px] text-ch-ink-2">Pick Road and click on the photo to start, or Move a site to put a site where the photo shows it.</p>
         )}
         {sourceRoads.length > 0 && (
           <div className="border-t border-ch-line px-4 py-2.5">

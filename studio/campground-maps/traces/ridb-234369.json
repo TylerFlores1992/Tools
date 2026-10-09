@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234369",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -122.2456948,
+    40.8970443
+   ]
+  }
+ ],
+ "note": "The lookout's square cab with its catwalk and tower shadow shows 95 m northwest of the pin, at the end of the drawn road's loop; the pin was on bare rock."
+}

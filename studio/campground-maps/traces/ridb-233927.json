@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233927",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "01",
+   "at": [
+    -106.5607607,
+    39.7574982
+   ]
+  }
+ ],
+ "note": "A small blue-roofed building on a short lane off the drawn road stands 30 m northwest of the pin, 20 m from the listing's own point, and is the only building in view; the pin was in the forest and now sits on it."
+}

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233162",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "G1",
+   "at": [
+    -122.6543773,
+    39.3569518
+   ]
+  }
+ ],
+ "note": "The cleared group area with its drawn loop shows plainly 90 m west of the pin, which was in dense brush by the creek; the pin now sits in that clearing."
+}

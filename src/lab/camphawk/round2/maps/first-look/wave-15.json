@@ -337,8 +337,8 @@
    "note": "Traced loop B's gravel lanes and pull-through rows past B04 to B58, loop A's lane past A11 to A24 and round the shelter, and the access lane from the highway, and they follow the visible lanes. Loop A's shore lane past A01 to A10 and A25 to A32 and the lane past B01 to B03 sit under canopy, so 25 of 90 sites still have no road, and neither loop is joined to the access lane."
   },
   "233658": {
-   "call": "hold",
-   "note": "No roads to draw, and site 25 sits 14 km west of the rest, out in farmland: a misplaced point that stretches the frame."
+   "call": "good",
+   "note": "Rebuilt with the stray point rule: site 25's point, 14 km away in farmland, is left off. The loops are drawn on the visible roads and the sites line them on their short spurs."
   },
   "233666": {
    "call": "hold",

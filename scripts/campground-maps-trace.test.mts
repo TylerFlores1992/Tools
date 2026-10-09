@@ -3,7 +3,7 @@ import test from "node:test";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { POINT_TYPES, TRACE_VERSION, readTrace, traceProblems } from "../studio/campground-maps/trace.mjs";
+import { POINT_TYPES, TRACE_VERSION, applySiteMoves, readTrace, traceProblems } from "../studio/campground-maps/trace.mjs";
 
 const bbox: [number, number, number, number] = [-122.39, 44.58, -122.37, 44.59];
 const ok = () => ({
@@ -69,4 +69,34 @@ test("a road's name is optional text, up to 80 characters", () => {
   assert.deepEqual(traceProblems(road("WY 70"), "ridb-274721", bbox), []);
   assert.deepEqual(traceProblems(road(7), "ridb-274721", bbox), ["road 1: name must be text, up to 80 characters"]);
   assert.deepEqual(traceProblems(road("x".repeat(81)), "ridb-274721", bbox), ["road 1: name must be text, up to 80 characters"]);
+});
+
+test("a trace may move sites: each by the listing's name, once, to a point near the map", () => {
+  assert.deepEqual(traceProblems({ ...ok(), sites: [{ name: "A09", at: [-122.38, 44.585] }] }, "ridb-274721", bbox), []);
+  assert.deepEqual(traceProblems({ ...ok(), sites: "A09" }, "ridb-274721", bbox), ["sites must be a list"]);
+  assert.match(traceProblems({ ...ok(), sites: [{ name: " ", at: [-122.38, 44.585] }] }, "ridb-274721", bbox).join(), /needs the listing's name/);
+  assert.match(traceProblems({ ...ok(), sites: [{ name: "A09", at: [-122.38, 44.585] }, { name: "A09", at: [-122.381, 44.585] }] }, "ridb-274721", bbox).join(), /moved twice/);
+  assert.match(traceProblems({ ...ok(), sites: [{ name: "A09", at: [-120, 44.585] }] }, "ridb-274721", bbox).join(), /far outside the map/);
+  assert.match(traceProblems({ ...ok(), sites: [{ name: "A09", at: [1] }] }, "ridb-274721", bbox).join(), /isn't at \[lon, lat\]/);
+  // Read before the map is framed (no bbox), a stray site's move isn't judged by place yet.
+  assert.deepEqual(traceProblems({ ...ok(), sites: [{ name: "A09", at: [-120, 44.585] }] }, "ridb-274721", null), []);
+});
+
+test("the build moves a traced site and keeps where the listing had it; an unknown name stops the build", () => {
+  const sites = [{ name: "A09", lat: 44.5, lon: -122.3 }, { name: "A10", lat: 44.6, lon: -122.4 }, { name: "A11", lat: 0, lon: 0 }];
+  const moved = applySiteMoves(sites, [{ name: "A09", at: [-122.31, 44.51] }, { name: "A11", at: [-122.32, 44.52] }]);
+  assert.deepEqual(moved[0], { name: "A09", lat: 44.51, lon: -122.31, movedFrom: [-122.3, 44.5] });
+  assert.deepEqual(moved[1], sites[1]);
+  assert.deepEqual(moved[2], { name: "A11", lat: 44.52, lon: -122.32, movedFrom: null }, "a site the listing had no point for gets one, from nothing");
+  assert.deepEqual(applySiteMoves(sites), sites);
+  assert.throws(() => applySiteMoves(sites, [{ name: "B01", at: [-122.31, 44.51] }]), /B01/);
+  // A name two sites share can't say which one moves.
+  assert.throws(() => applySiteMoves([...sites, { name: "A09", lat: 44.7, lon: -122.5 }], [{ name: "A09", at: [-122.31, 44.51] }]), /2 sites by that name/);
+});
+
+test("a trace file is read before the map is framed too (no bbox), and checked fully after", () => {
+  const dir = mkdtempSync(join(tmpdir(), "trace-"));
+  writeFileSync(join(dir, "ridb-274721.json"), JSON.stringify({ ...ok(), sites: [{ name: "A09", at: [-120, 44.585] }] }));
+  assert.equal(readTrace("ridb-274721", null, dir).sites[0].name, "A09");
+  assert.throws(() => readTrace("ridb-274721", bbox, dir), /far outside the map/);
 });

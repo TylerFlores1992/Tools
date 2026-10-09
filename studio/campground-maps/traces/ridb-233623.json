@@ -1,0 +1,91 @@
+{
+ "version": 1,
+ "map": "ridb-233623",
+ "traced": "2026-10-09",
+ "by": "Claude (CampHawk session, lidar pilot)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -122.9608769,
+     43.7859085
+    ],
+    [
+     -122.9607154,
+     43.7860885
+    ],
+    [
+     -122.9605539,
+     43.7862325
+    ],
+    [
+     -122.9604048,
+     43.7863585
+    ],
+    [
+     -122.9602433,
+     43.7863405
+    ],
+    [
+     -122.9600072,
+     43.7862145
+    ],
+    [
+     -122.9597587,
+     43.7861155
+    ],
+    [
+     -122.9595723,
+     43.7860435
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.9607154,
+     43.7860795
+    ],
+    [
+     -122.9605042,
+     43.7859805
+    ],
+    [
+     -122.9603178,
+     43.7859085
+    ],
+    [
+     -122.9601314,
+     43.7858365
+    ],
+    [
+     -122.9599699,
+     43.7857645
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -122.9608769,
+     43.7857465
+    ],
+    [
+     -122.9609017,
+     43.7856385
+    ],
+    [
+     -122.960939,
+     43.7855035
+    ],
+    [
+     -122.9609763,
+     43.7853685
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced over the NAIP photo where the lanes show in the meadows, checked against the lidar relief (Oregon DOGAMI), which agrees: the lane from the park road past 061 to 059, the lane past 047 to 051, and the short lane south toward 082. Left out: the lanes past 052 to 058 and 067 to 082 and in the northwest (003D to 022), where the relief is too speckled under the forest to place a lane."
+}

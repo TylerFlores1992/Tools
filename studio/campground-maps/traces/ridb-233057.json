@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233057",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "T05",
+   "at": [
+    -132.6128299,
+    55.5607064
+   ]
+  }
+ ],
+ "note": "Zoomed in, a small cabin with two skiffs pulled up on the beach shows on the lake shore 145 m southwest of the pin, right beside the drawn line; the pin was in unbroken forest and now sits on the cabin."
+}
