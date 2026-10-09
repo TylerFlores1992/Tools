@@ -51,6 +51,16 @@ test("a point in map metres lands where the box puts it (within a pixel), zoomed
   }
 });
 
+test("a box inside the frame is covered edge to edge (no black strip from whole-pixel rounding)", () => {
+  for (const [x0, y0, x1, y1, W] of [[-37.3, 12.9, -12.1, 40.4, 1600], [-100.1, -99.7, 100.3, 100.2, 800], [5.13, 7.77, 9.91, 11.04, 1200]]) {
+    const H = Math.round((W * (y1 - y0)) / (x1 - x0));
+    const c = groundCrop(FRAME, IMG, [x0, y0, x1, y1], { width: W, height: H })!;
+    assert.deepEqual(c.at, { left: 0, top: 0 }, `${x0},${y0}`);
+    assert.equal(c.at.left + c.clip.width, W, `${x0},${y0}: right edge`);
+    assert.equal(c.at.top + c.clip.height, H, `${x0},${y0}: bottom edge`);
+  }
+});
+
 test("past the frame stays black: the frame's west edge lands where the box puts it", () => {
   const c = groundCrop(FRAME, IMG, [-400, -350, 0, 0], { width: 1000, height: 875 })!;
   assert.equal(c.extract.left, 0);

@@ -58,6 +58,12 @@ class Grid(unittest.TestCase):
         self.assertEqual(g["GW"], g["W"] + 2 * g["mx"])
         self.assertLessEqual(g["rx"], 0.5); self.assertGreater(g["rx"], 0.499)
 
+    def test_cell_never_larger_than_asked(self):
+        for w in (100.2, 100.7, 233.2, 0.3):
+            g = FR.grid({"x": 0, "y": 0, "w": w, "h": w}, 0.5, 40)
+            self.assertLessEqual(g["rx"], 0.5 + 1e-12, w)
+            self.assertAlmostEqual(g["W"] * g["rx"], w, places=9)
+
     def test_res_coarsens_only_for_huge_frames(self):
         self.assertEqual(FR.pick_res(FRAME, 40), 0.5)
         big = {"x": 0, "y": 0, "w": 3000, "h": 3000}
