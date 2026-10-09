@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-234545",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.5577985,
+     39.6316531
+    ],
+    [
+     -120.5577111,
+     39.6316126
+    ],
+    [
+     -120.5576062,
+     39.631581
+    ],
+    [
+     -120.5575014,
+     39.631554
+    ],
+    [
+     -120.5574082,
+     39.631545
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt spur east from the entrance road to the pad by 001 and 002, traced from the photo. The pull-ins to the lower sites are short and broken by the firs, and left out."
+}

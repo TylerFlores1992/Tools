@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-232040",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -114.5372799,
+     43.7805095
+    ],
+    [
+     -114.5371929,
+     43.7805005
+    ],
+    [
+     -114.5371184,
+     43.7804915
+    ],
+    [
+     -114.5370687,
+     43.7804825
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -114.5393416,
+     43.7814003
+    ],
+    [
+     -114.5393665,
+     43.7813553
+    ],
+    [
+     -114.5393913,
+     43.7813103
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The gravel pull-ins east to 005 and south to 010, traced from the photo. The other sites' pull-ins fade into the trees and are left out."
+}
