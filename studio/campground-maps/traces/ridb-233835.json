@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233835",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout trace-b); Claude (fix fix-04)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -112,8 +112,176 @@
      44.1632153
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -107.2520742,
+     44.1635365
+    ],
+    [
+     -107.2521993,
+     44.163496
+    ],
+    [
+     -107.2523243,
+     44.1634555
+    ],
+    [
+     -107.2524244,
+     44.1634106
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.252143,
+     44.1632936
+    ],
+    [
+     -107.2523118,
+     44.163272
+    ],
+    [
+     -107.2524544,
+     44.163245
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.252168,
+     44.1631739
+    ],
+    [
+     -107.2523556,
+     44.163146
+    ],
+    [
+     -107.2525369,
+     44.1631028
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2535061,
+     44.1632396
+    ],
+    [
+     -107.2533498,
+     44.1632306
+    ],
+    [
+     -107.2532372,
+     44.1632846
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2535311,
+     44.1630237
+    ],
+    [
+     -107.2536374,
+     44.1630417
+    ],
+    [
+     -107.2537625,
+     44.1630686
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2521993,
+     44.1628887
+    ],
+    [
+     -107.2522868,
+     44.1628797
+    ],
+    [
+     -107.2523744,
+     44.1628617
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2526182,
+     44.1647017
+    ],
+    [
+     -107.2524494,
+     44.1646477
+    ],
+    [
+     -107.2522868,
+     44.1646342
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2526745,
+     44.1645983
+    ],
+    [
+     -107.252762,
+     44.1646432
+    ],
+    [
+     -107.2528246,
+     44.1646702
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2517866,
+     44.1648142
+    ],
+    [
+     -107.2518992,
+     44.1647872
+    ],
+    [
+     -107.2519867,
+     44.1647512
+    ],
+    [
+     -107.2519992,
+     44.1646882
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -107.2518116,
+     44.1644633
+    ],
+    [
+     -107.2517116,
+     44.1644498
+    ],
+    [
+     -107.251624,
+     44.1644273
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the angled gravel spurs that show between the trees: to 013, 017 and 010 off the west side, the lane past 019 toward the south, and to 023 and 025 off the east side. Left out: the spurs to 003, 007, 012, 016 and 028, too faint or short to place."
+ "note": "Traced the angled gravel spurs that show between the trees: to 013, 017 and 010 off the west side, the lane past 019 toward the south, and to 023 and 025 off the east side. Added (fix fix-04): the spurs west into the meadow to 024, 026 and 027, to 022, to 014 and 016, to 002 and 003, and the pull-outs by 030 and 032. Left out: the spurs to 004, 007, 012, 015, 028, 029 and 031, too faint or short to place."
 }

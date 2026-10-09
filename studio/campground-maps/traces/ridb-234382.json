@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-234382",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.9650347,
+     40.0279593
+    ],
+    [
+     -120.9650582,
+     40.0280583
+    ],
+    [
+     -120.9650699,
+     40.0281664
+    ],
+    [
+     -120.9650816,
+     40.0283915
+    ],
+    [
+     -120.9650875,
+     40.0286527
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.9650816,
+     40.0284455
+    ],
+    [
+     -120.9652105,
+     40.0284455
+    ],
+    [
+     -120.9653393,
+     40.0284455
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the paved lane north from the east loop toward the group sites, and its pull-out west toward A. Left out: the way on to B and C, under full canopy (only a paved patch by C shows), and spurs to 006 and 013."
+}

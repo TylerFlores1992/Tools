@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-273782",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.7272483,
+     44.0254721
+    ],
+    [
+     -121.7271984,
+     44.0254181
+    ],
+    [
+     -121.7271485,
+     44.0253641
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.7292443,
+     44.0247699
+    ],
+    [
+     -121.7292194,
+     44.0247069
+    ],
+    [
+     -121.7292069,
+     44.0246439
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -121.7297308,
+     44.0244999
+    ],
+    [
+     -121.7298556,
+     44.0244909
+    ],
+    [
+     -121.7299679,
+     44.0244999
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the paved spurs to 002 off the main road, south from the junction to 007, and west off the loop to 008 and 009. Left out: the ways to 001, 004, 006 and 010, under the pines or too faint to place."
+}

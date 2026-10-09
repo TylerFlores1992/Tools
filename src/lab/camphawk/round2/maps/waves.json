@@ -669,11 +669,11 @@
   },
   {
    "wave": 7,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 61,
-    "review": 31,
+    "ready": 53,
+    "review": 39,
     "notDrawn": 2,
     "failed": 0
    },

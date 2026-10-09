@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-267556",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -121.6239647,
+     44.095235
+    ],
+    [
+     -121.6239897,
+     44.095307
+    ],
+    [
+     -121.6239772,
+     44.09537
+    ],
+    [
+     -121.6239147,
+     44.095415
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the west end of the loop on to the paved turnaround by 008. Left out: the pads inside the loop by 001, 003, 007 and 008, and any way to 009 to 011 under the firs, none plain enough to place."
+}

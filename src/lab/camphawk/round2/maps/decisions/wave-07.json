@@ -28,8 +28,8 @@
    "id": "10003401",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "10039887",
@@ -42,8 +42,8 @@
    "id": "10047969",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "10114327",
@@ -68,24 +68,24 @@
   },
   {
    "id": "231884",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "231906",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "231918",
-   "decision": "approved",
+   "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "231919",
@@ -154,15 +154,15 @@
    "id": "232169",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232186",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232204",
@@ -203,8 +203,8 @@
    "id": "232267",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232270",
@@ -217,8 +217,8 @@
    "id": "232311",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Still held: the trace pass found nothing it could trace here, so the earlier hold stands (a third or more of the sites have no drawn road, or a drawn road is off the visible one) (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232321",
@@ -238,15 +238,15 @@
    "id": "232346",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232386",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232390",
@@ -257,24 +257,24 @@
   },
   {
    "id": "232404",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232772",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232792",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232833",
@@ -301,29 +301,29 @@
    "id": "232893",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "232906",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232914",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233215",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "233363",
@@ -350,15 +350,15 @@
    "id": "233771",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233835",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed after the trace: first look usable, checked over the photo (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233864",
@@ -399,15 +399,15 @@
    "id": "233963",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look unsure."
   },
   {
    "id": "233964",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "233968",
@@ -427,8 +427,8 @@
    "id": "234010",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "234022",
@@ -483,22 +483,22 @@
    "id": "234381",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "234382",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "234474",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "234502",
@@ -509,10 +509,10 @@
   },
   {
    "id": "234579",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "234709",
@@ -567,8 +567,8 @@
    "id": "251567",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "251583",
@@ -609,8 +609,8 @@
    "id": "267556",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "273360",
@@ -623,15 +623,15 @@
    "id": "273782",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (fix-04): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10047182",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-04): first look hold."
   },
   {
    "id": "10101324",
