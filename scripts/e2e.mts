@@ -748,8 +748,11 @@ try {
     p.on("pageerror", (e) => errors.push(String(e)));
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
     await p.route(/imagery\.(nationalmap|geoplatform)\.gov/, (r) => r.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64") }));
-    // John Muir Cabin: one unit, its pin at the middle of the frame, nothing traced.
-    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=232940&tool=trace`;
+    // Petersburg Lake Cabin: one unit, its pin at the middle of the frame, nothing traced (held:
+    // no roof shows on its point). John Muir Cabin was the example until its pin was moved.
+    const built = JSON.parse(readFileSync("public/private/camphawk/maps/ridb-232996.json", "utf8"));
+    const unit = built.sites[0].name as string;
+    const url = `${BASE}/private/camphawk/golden-hour/admin/site-maps?id=232996&tool=trace`;
     await p.goto(url);
     await signIn(p);
     await p.waitForURL(url);
@@ -764,19 +767,18 @@ try {
     await status.filter({ hasText: "No site there." }).waitFor();
     // A tap on the pin picks it up; the next puts it down.
     await at(0.5, 0.5);
-    await status.filter({ hasText: /^Site J\d+ picked up\./ }).waitFor();
+    await status.filter({ hasText: `Site ${unit} picked up.` }).waitFor();
     await at(0.45, 0.55);
-    await status.filter({ hasText: /^Site J\d+ moved \d+ m\.$/ }).waitFor();
+    await status.filter({ hasText: new RegExp(`^Site ${unit} moved \\d+ m\\.$`) }).waitFor();
     const list = p.getByRole("region", { name: "Your traces" });
     await list.getByText(/^moved \d+ m$/).waitFor();
     const [download] = await Promise.all([p.waitForEvent("download"), list.getByRole("button", { name: "Download trace file" }).click()]);
     const file = JSON.parse(readFileSync((await download.path())!, "utf8"));
-    const built = JSON.parse(readFileSync("public/private/camphawk/maps/ridb-232940.json", "utf8"));
     assert.equal(file.sites.length, 1);
-    assert.equal(file.sites[0].name, built.sites[0].name);
-    assert.deepEqual(traceProblems(file, "ridb-232940", built.bbox), [], "the build accepts the downloaded move");
+    assert.equal(file.sites[0].name, unit);
+    assert.deepEqual(traceProblems(file, "ridb-232996", built.bbox), [], "the build accepts the downloaded move");
     // Putting it back empties the list.
-    await list.getByRole("button", { name: /^Put site J\d+ back$/ }).click();
+    await list.getByRole("button", { name: `Put site ${unit} back` }).click();
     await status.filter({ hasText: /is back where the listing puts it\.$/ }).waitFor();
     assert.deepEqual(errors, []);
     await ctx.close();
