@@ -37,8 +37,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water near the outlet; no cabin shows on the shores near it. On the map: the pin is 0 m from the listing's own point, with a drawn road 482 m away."
   },
   "232940": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in open muskeg with no building at it; a small roof shows about 90 m south-west, near the visible boardwalk, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn road 212 m away."
+   "call": "good",
+   "note": "Zoomed in, a red-roofed cabin shows plainly 95 m southwest of the pin at the end of the boardwalk across the muskeg; the pin was in open muskeg and now sits on the cabin."
   },
   "232941": {
    "call": "unsure",
@@ -69,8 +69,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 140 m in from the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232948": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the cabin plainly shows with its dock on the lake shore about 120 m south-west of the pin, which is in unbroken forest; the drawn trail passes the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn road 87 m away."
+   "call": "good",
+   "note": "An earlier trace today already moved the pin 116 m southwest onto the cabin and its dock on the lake shore, and the photo confirms it; the drawn trail passes the cabin. Left as it was."
   },
   "232950": {
    "call": "unsure",
@@ -129,8 +129,8 @@
    "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is under full forest canopy; no cabin shows. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232991": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is at a forest edge with no building at it; a small building shows about 65 m north-west in the lakeside meadow, which may be the cabin. On the map: the pin is 2 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "good",
+   "note": "Zoomed in, a small building casting a shadow stands in the lakeside meadow 65 m northwest of the pin, 25 m from the shore, the only structure in view; the pin was at a forest edge and now sits on it."
   },
   "232994": {
    "call": "hold",
@@ -294,19 +294,19 @@
   },
   "233052": {
    "call": "unsure",
-   "note": "Only the Forest Service's older three-band photo covers this (2006-2008, 1 m) and it is blurred: the pin is in forest on a point, with a pale spot 80 m north that may be the cabin. On the map: the pin is 94 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The only photo here is the older blurred three-band one: the pin is in forest on a point, and the pale spot 80 m north-east in a small clearing can't be told apart from rock or a clearing, so nothing is plainly the cabin."
   },
   "233053": {
    "call": "hold",
    "note": "Zoomed on the Forest Service photo, the pin is in open muskeg with no building, which would show there. On the map: the pin is 300 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "233055": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in trees with no building at it; a cabin plainly shows about 110 m south-west on the lake shore. On the map: the pin is 0 m from the listing's own point, with a drawn road 521 m away."
+   "call": "good",
+   "note": "A brown-roofed cabin shows plainly on the lake shore 100 m southwest of the pin, with a trodden path to the water; the pin was in the trees and now sits on the cabin."
   },
   "233057": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in unbroken forest; a small structure shows about 150 m south-west at the lake shore, where the drawn road ends, which is likely the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn road 49 m away."
+   "call": "good",
+   "note": "Zoomed in, a small cabin with two skiffs pulled up on the beach shows on the lake shore 145 m southwest of the pin, right beside the drawn line; the pin was in unbroken forest and now sits on the cabin."
   },
   "233058": {
    "call": "hold",

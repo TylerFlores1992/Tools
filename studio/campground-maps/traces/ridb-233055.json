@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233055",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "T02",
+   "at": [
+    -132.8650582,
+    55.6940847
+   ]
+  }
+ ],
+ "note": "A brown-roofed cabin shows plainly on the lake shore 100 m southwest of the pin, with a trodden path to the water; the pin was in the trees and now sits on the cabin."
+}

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232940",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "J04",
+   "at": [
+    -134.6980014,
+    58.4089502
+   ]
+  }
+ ],
+ "note": "Zoomed in, a red-roofed cabin shows plainly 95 m southwest of the pin at the end of the boardwalk across the muskeg; the pin was in open muskeg and now sits on the cabin."
+}

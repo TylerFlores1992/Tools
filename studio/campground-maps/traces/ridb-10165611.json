@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-10165611",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Secret Campground Group",
+   "at": [
+    -122.4413124,
+    43.513529
+   ]
+  }
+ ],
+ "note": "The campground's drawn loop by the river, with cars parked in a clearing under the trees at its far end, shows 140 m south of the pin, which was on the highway's edge; the pin now sits at that clearing on the loop."
+}

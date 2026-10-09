@@ -6,7 +6,7 @@
  "looks": {
   "118990": {
    "call": "hold",
-   "note": "The pin sits in open sagebrush between two drawn roads with nothing at it; the station's buildings are 110 m south on the drawn lane."
+   "note": "The pin is in open sagebrush between two drawn roads; the station's buildings stand 180 to 190 m south along the drawn road (a large tan-roofed building, a small one beside it, a shed to the east, trailers to the west), and nothing says which is the rental."
   },
   "231968": {
    "call": "unsure",
@@ -34,7 +34,7 @@
   },
   "233183": {
    "call": "hold",
-   "note": "The pin sits on open grass at the edge of an oak wood, 37 m from the drawn road, with nothing at it; the campground's loops and buildings are 200 m southeast."
+   "note": "The pin is on open grass at the edge of an oak wood 37 m from the drawn road; no group site clearing, table or shelter shows within 200 m, and the campground's loops lie farther southeast."
   },
   "233357": {
    "call": "usable",
@@ -61,8 +61,8 @@
    "note": "The pin is on a small opening on the drawn road in the forest; no building shows at it or nearby, so the photo can't confirm the guard station."
   },
   "234157": {
-   "call": "hold",
-   "note": "The pin sits in unbroken forest 55 m from the road; the cabin plainly shows 70 m south, on the drawn trail at the meadow's edge."
+   "call": "good",
+   "note": "The gray-roofed cabin shows plainly 85 m southwest of the pin at the meadow's edge, with a path to it; the pin was in unbroken forest and now sits on the cabin."
   },
   "234160": {
    "call": "hold",
@@ -141,8 +141,8 @@
    "note": "The pin is on the guard station's roof in its bare yard, where the drawn road ends."
   },
   "10116518": {
-   "call": "hold",
-   "note": "The pin sits in open forest 47 m west of the drawn road with no building at it; nothing at or near it is plainly the guard station, and the campground's loops lie 150 m east."
+   "call": "usable",
+   "note": "Zoomed in, a brown-roofed cabin about 7 m across stands right at the pin, with a dirt lane running to it from the drawn road 45 m north; the pin is already on it."
   },
   "10165105": {
    "call": "hold",
@@ -150,8 +150,8 @@
    "as": "firstcome"
   },
   "10165155": {
-   "call": "hold",
-   "note": "The pin is at the listing's own point, in unbroken forest 20 m off the drawn road; the dirt loop with its clearing 120 m northwest is the likely group site."
+   "call": "unsure",
+   "note": "The pin, at the listing's own point, is in unbroken forest by the drawn road; the dirt loop 140 m northwest has clearings and a parked vehicle but nothing that marks which part, if any, is the group site."
   },
   "10165165": {
    "call": "usable",

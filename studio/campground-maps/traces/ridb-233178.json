@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233178",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "The Shaw House",
+   "at": [
+    -109.9617948,
+    31.9311779
+   ]
+  }
+ ],
+ "note": "The listing's own point is within 10 m of a white-roofed house in its own yard beside the drawn road, 790 m northwest of the pin, which was on an empty juniper slope; other houses stand 50 m and more away."
+}

@@ -37,16 +37,16 @@
    "note": "The pin is on the cabin beside the highway, with a short visible lane to it from the junction about 40 m north."
   },
   "233169": {
-   "call": "hold",
-   "note": "The pin is in an empty juniper draw with no building or road; the listing's own point, 2.7 km northwest, is on the old headquarters building and cabins with a road to them, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "The listing's own point is on the old headquarters building, with cabins and a road to it; the pin was 2.7 km southeast in an empty juniper draw."
   },
   "233271": {
    "call": "good",
    "note": "The pin is on a small light-roofed building at the forest edge, with the drawn road 15 m east; the station's other buildings sit around the drawn turnaround just south."
   },
   "233272": {
-   "call": "unsure",
-   "note": "The pin is under conifers 40 m west of the highway, and no building shows through them; a small building sits 90 m south by a drawn lane, which may be the station."
+   "call": "good",
+   "note": "A gray-roofed cabin with a small outbuilding stands in a clearing 90 m south of the pin, where the drawn lane ends; the pin was under conifers by the highway."
   },
   "233336": {
    "call": "good",
@@ -109,12 +109,12 @@
    "note": "The pin is on the small cabin in the meadow, and the drawn lane up from the highway reaches it."
   },
   "234247": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest beside a drawn road, with no building or clearing. The listing's own point, 800 m north, is on a building in a clearing at the end of a drawn road, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "The listing's own point is on the lookout's white-roofed building in a clearing with a loop drive at the end of the drawn road; the pin was 800 m south in unbroken forest."
   },
   "234248": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest on a straight drawn line with no lookout or clearing. The listing's own point, 1 km northwest, is on a building at a ridge-top clearing with a road to it, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "The listing's own point is on the lookout's white-roofed building in a ridge-top clearing at the end of a dirt road; the pin was 1 km southeast in unbroken forest."
   },
   "234278": {
    "call": "good",
@@ -221,8 +221,8 @@
    "note": "The pin is beside the cabin and its outbuildings in a small clearing, and the drawn Forest Service spur ends at it."
   },
   "234369": {
-   "call": "hold",
-   "note": "The pin is on bare rock with nothing on it. A small building 90 m northwest, near the end of the drawn road, may be the lookout. The listing's own point, 2.4 km northwest, is in unbroken forest."
+   "call": "good",
+   "note": "The lookout's square cab with its catwalk and tower shadow shows 95 m northwest of the pin, at the end of the drawn road's loop; the pin was on bare rock."
   },
   "234373": {
    "call": "good",
@@ -257,8 +257,8 @@
    "note": "The pin is on the lookout building in its summit clearing. The drawn road stopped 85 m short, so the dirt road on to the clearing, visible between the trees, is traced."
   },
   "234406": {
-   "call": "unsure",
-   "note": "The pin is in a small clearing 30 m west of the drawn lane, with tracks to it, but no building shows plainly; the green-roofed buildings 100 m southwest belong to the camp beside it."
+   "call": "good",
+   "note": "Zoomed in, a dark-roofed cabin about 8 m square sits in the clearing with the pin at its south edge, and a short lane runs to it from the drawn road 25 m east; the pin is already right."
   },
   "234417": {
    "call": "good",
@@ -325,8 +325,8 @@
    "note": "The pin is on the rental's building among the trees, and a drawn spur off the road ends 30 m west of it."
   },
   "234713": {
-   "call": "unsure",
-   "note": "The pin sits on the drawn campground road among parked trailers by the reservoir, and no building there is plainly the guard station. The listing's own point, 490 m east, is on a highway turnout with nothing on it."
+   "call": "hold",
+   "note": "The pin is on the campground road among parked trailers by the reservoir, and the listing's own point, 490 m east, is beside the highway in trees with only a faint spot by a small loop; no building in either place is plainly the guard station."
   },
   "234793": {
    "call": "good",

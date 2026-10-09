@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232982",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C16",
+   "at": [
+    -147.291512,
+    60.2162187
+   ]
+  }
+ ],
+ "note": "Zoomed in, a small pale-roofed cabin with a path down to the beach stands at the forest edge 130 m west of the pin, the only building on that shore; the pin was on open water and now sits on the cabin."
+}

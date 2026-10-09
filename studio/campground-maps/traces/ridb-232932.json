@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232932",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C03",
+   "at": [
+    -132.5556866,
+    55.2487477
+   ]
+  }
+ ],
+ "note": "Zoomed in, a pale-roofed cabin with a small outbuilding beside it stands in the muskeg 150 m northwest of the pin, about 60 m from the lake; the pin was in open muskeg and now sits on the cabin."
+}

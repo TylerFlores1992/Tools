@@ -41,16 +41,16 @@
    "note": "Zoomed on the Forest Service photo, the pin is on an open brushy slope with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232932": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in open muskeg with no building; a small structure shows about 145 m north-west, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "good",
+   "note": "Zoomed in, a pale-roofed cabin with a small outbuilding beside it stands in the muskeg 150 m northwest of the pin, about 60 m from the lake; the pin was in open muskeg and now sits on the cabin."
   },
   "232933": {
    "call": "unsure",
    "note": "Zoomed on the Forest Service photo, the pin is on the creek's shore under forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 6 m away."
   },
   "232934": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the cove's tidal flat with no building; a small building shows about 90 m south-west at the forest edge, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn trail 94 m away."
+   "call": "good",
+   "note": "Zoomed in, a small brown-roofed cabin stands at the forest edge above the cove's tidal flat, 100 m west-southwest of the pin, which was on the flat; the pin now sits on the cabin."
   },
   "232936": {
    "call": "unsure",
@@ -65,8 +65,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is on the grassy shore strip at the water's edge with no cabin, which would show there. On the map: the pin is 43 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232952": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees with no building; a small cabin shows about 125 m north on the same shore. On the map: the pin is 136 m from the listing's own point, with a drawn trail 58 m away."
+   "call": "good",
+   "note": "Zoomed in, a small gray-roofed cabin with a path to the water stands on the same lake shore 125 m north of the pin, near the listing's own point; the pin was at the shore under trees and now sits on the cabin."
   },
   "232954": {
    "call": "unsure",
@@ -89,8 +89,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees, with a small dark shape 25 m west that may be the cabin; nothing is plainly it. On the map: the pin is 24 m from the listing's own point, with a drawn trail 10 m away."
   },
   "232960": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in unbroken forest; a cabin plainly shows about 140 m south-west near the lake. On the map: the pin is 147 m from the listing's own point, with a drawn trail 115 m away."
+   "call": "good",
+   "note": "Zoomed in, a red-and-white-roofed cabin with a skiff and a small dock on the lake shore shows 145 m southwest of the pin, beside the listing's own point; the pin was in unbroken forest and now sits on the cabin."
   },
   "232961": {
    "call": "unsure",
@@ -153,8 +153,8 @@
    "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on open grass flats beside a slough with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232982": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on open water 140 m off the shore; a small building shows on the beach to the west, which may be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "good",
+   "note": "Zoomed in, a small pale-roofed cabin with a path down to the beach stands at the forest edge 130 m west of the pin, the only building on that shore; the pin was on open water and now sits on the cabin."
   },
   "232984": {
    "call": "unsure",
@@ -181,8 +181,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is on an open grassy shore meadow with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with a drawn road 261 m away."
   },
   "232996": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water 25 m off the shore; a small cabin shows on the point about 70 m north-west, which may be it. On the map: the pin is 0 m from the listing's own point, with a drawn road 342 m away."
+   "call": "unsure",
+   "note": "The pin is on open water 25 m off the shore; zoomed in on two Forest Service photo sets, the point 40 m northwest shows logs and a bare beach under the trees but no roof, so the cabin may be under the canopy and nothing is plainly it."
   },
   "232997": {
    "call": "unsure",
@@ -345,8 +345,8 @@
    "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is in forest between the river and a gravel road; nothing at it is plainly the cabin. On the map: the pin is 3 m from the listing's own point, with a drawn trail 8 m away."
   },
   "233091": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service's older three-band photo (Yakutat, the only one here), the pin is on open meadow beside a dirt track with no building; buildings show about 120 m south where the drawn road ends. On the map: the pin is 141 m from the listing's own point, with a drawn road 109 m away."
+   "call": "usable",
+   "note": "On the older three-band photo, a long white-roofed building with two small outbuildings stands beside the airstrip 135 m south-southwest of the pin, where the drawn road ends and near the listing's own point; the pin was on open meadow and now sits on that building."
   },
   "233093": {
    "call": "unsure",

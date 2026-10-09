@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232960",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "K15",
+   "at": [
+    -131.5671484,
+    56.010895
+   ]
+  }
+ ],
+ "note": "Zoomed in, a red-and-white-roofed cabin with a skiff and a small dock on the lake shore shows 145 m southwest of the pin, beside the listing's own point; the pin was in unbroken forest and now sits on the cabin."
+}

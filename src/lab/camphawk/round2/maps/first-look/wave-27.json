@@ -133,8 +133,8 @@
    "note": "The pin is on the lookout cabin among its outbuildings on the open ridge, and the drawn road passes right beside it."
   },
   "234293": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest. The yurt, a round structure, plainly shows 80 m northeast at the end of the drawn loop, so the pin misses it."
+   "call": "good",
+   "note": "The round yurt and its deck show 80 m northeast of the pin, at the end of the drawn loop; the pin was in unbroken forest."
   },
   "234305": {
    "call": "good",
@@ -173,8 +173,8 @@
    "note": "The pin is on the lookout on the open butte, and the drawn road climbs to within 35 m of it along the visible track."
   },
   "234359": {
-   "call": "hold",
-   "note": "The pin is on bare badland slopes with no building and the nearest drawn road 580 m off. The listing's own point, 10 km west, is at the end of a gravel road in grassland with a small building, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "The listing's own point is beside a small gray-roofed cabin at the end of a gravel road in pine-dotted grassland; the pin was 10 km east on bare badland slopes."
   },
   "234360": {
    "call": "good",
@@ -185,8 +185,8 @@
    "note": "The pin is on the cabin in its fenced yard in the open meadow, and the drawn spur off the road reaches it."
   },
   "234368": {
-   "call": "unsure",
-   "note": "The pin is on an open grassy slope at the forest edge, with no building plainly at it, and the nearest drawn road is 240 m off (a drawn trail is 12 m off)."
+   "call": "hold",
+   "note": "The pin is on an open grassy slope at the forest edge, and neither it, the listing's own point 220 m south in dense forest, nor a 1 km view shows any building that could be the cabin."
   },
   "234377": {
    "call": "unsure",
@@ -194,7 +194,7 @@
   },
   "234383": {
    "call": "hold",
-   "note": "The pin is in unbroken forest on a slope with no lookout or clearing, and the nearest drawn road is 500 m off. The listing's own point, 860 m northwest, is on an open, partly snow-covered ridge with no lookout plainly shown either."
+   "note": "The pin is in unbroken forest with snow patches, and the listing's own point, 860 m northwest, is on an open, partly snow-covered ridge with no lookout plainly shown; nothing on the photo is the lookout."
   },
   "234386": {
    "call": "good",
@@ -218,11 +218,11 @@
   },
   "234404": {
    "call": "hold",
-   "note": "The pin is in open, burned pine forest with no building or clearing, and the nearest drawn road is 120 m off. Nothing in the zoom is plainly the guard station."
+   "note": "The pin is in open, burned pine forest 120 m from the drawn road, and a 1 km view shows no building or clearing that could be the guard station."
   },
   "234405": {
    "call": "hold",
-   "note": "The pin is on a bare gravel flat beside the highway, with no building. A building 30 m to the west, across the creek, may be the station. The listing's own point, 1.3 km southeast, is in burned forest."
+   "note": "The pin is on a bare gravel flat beside the highway and river; several small buildings stand within 120 m on both sides of the river, and nothing marks which, if any, is the guard station."
   },
   "234409": {
    "call": "good",
@@ -269,8 +269,8 @@
    "note": "The pin is on the lookout's small building on the open ridge, and the drawn road along the ridge passes 15 m north."
   },
   "234429": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest on a slope with no lookout, and the nearest drawn road is 230 m off. The listing's own point, 2.7 km away, is on a small white building in a ridge-top clearing, so the photo agrees with the listing, not the pin."
+   "call": "good",
+   "note": "A small white-roofed lookout stands in a ridge-top clearing at the end of a dirt road, 90 m west of the listing's own point; the pin was 2.7 km away in unbroken forest."
   },
   "234433": {
    "call": "good",
@@ -285,8 +285,8 @@
    "note": "The pin is on the lookout in the small summit clearing, but no road or trail is drawn within 700 m. A cleared line runs west from it through the forest, which may be its access, but it can't be followed through the trees."
   },
   "234461": {
-   "call": "unsure",
-   "note": "The pin is in the open meadow 30 m west of the drawn loop, where nothing stands. The station's buildings are scattered around it (one 60 m north, a red-roofed one 110 m southeast), and none is plainly the bunkhouse."
+   "call": "hold",
+   "note": "The pin is in an open meadow between the station's buildings, one 55 m north by the highway and a red-roofed one 130 m southeast by the drawn loop; nothing says which is the bunkhouse."
   },
   "234506": {
    "call": "good",
@@ -302,15 +302,15 @@
   },
   "234609": {
    "call": "hold",
-   "note": "The pin is in an empty field between private-looking houses with no building on it, and the drawn roads are 80 m off. The listing's own point, 600 m west, is beside a building at the end of a drawn lane in the trees. Nothing here is plainly the guard station."
+   "note": "The pin is in an empty field between private-looking houses, and the listing's own point, 600 m west, is a small clearing with vehicles and tents at the end of a drawn lane; neither plainly shows the guard station."
   },
   "234659": {
    "call": "good",
    "note": "The pin is beside the cabin and its outbuildings at the creek, between two drawn roads that pass within 20 m."
   },
   "234661": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest with no building, 64 m from any drawn road. A green-roofed building 130 m west, where a drawn lane ends, is likely the guard station."
+   "call": "good",
+   "note": "The listing's own point is on a green-roofed cabin with a parking area beside it, 190 m northwest of the pin, which was in unbroken forest; a smaller green-roofed shed 100 m west of the pin is likely an outbuilding."
   },
   "234680": {
    "call": "good",

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232342",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "A001",
+   "at": [
+    -119.2781479,
+    34.517151
+   ]
+  }
+ ],
+ "note": "A cleared flat under oaks with several picnic tables, reached by a short lane from the highway, shows 80 m northwest of the pin, which was on the highway's edge in chaparral; the gravel lot to the southeast has no tables."
+}

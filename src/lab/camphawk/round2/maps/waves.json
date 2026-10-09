@@ -2477,7 +2477,7 @@
   },
   {
    "wave": 25,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 30,
    "summary": {
     "ready": 13,
@@ -2525,8 +2525,8 @@
    "built": "2026-10-08",
    "count": 89,
    "summary": {
-    "ready": 75,
-    "review": 14,
+    "ready": 74,
+    "review": 15,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2626,11 +2626,11 @@
   },
   {
    "wave": 27,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 77,
-    "review": 11,
+    "ready": 75,
+    "review": 13,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2729,11 +2729,11 @@
   },
   {
    "wave": 28,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 74,
-    "review": 15,
+    "ready": 70,
+    "review": 19,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2833,11 +2833,11 @@
   },
   {
    "wave": 29,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 69,
-    "review": 19,
+    "ready": 67,
+    "review": 21,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2936,11 +2936,11 @@
   },
   {
    "wave": 30,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 69,
-    "review": 20,
+    "ready": 68,
+    "review": 21,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3040,11 +3040,11 @@
   },
   {
    "wave": 31,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 88,
    "summary": {
-    "ready": 56,
-    "review": 32,
+    "ready": 55,
+    "review": 33,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3143,11 +3143,11 @@
   },
   {
    "wave": 32,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 89,
    "summary": {
-    "ready": 55,
-    "review": 34,
+    "ready": 54,
+    "review": 35,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3247,11 +3247,11 @@
   },
   {
    "wave": 33,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 52,
-    "review": 43,
+    "ready": 49,
+    "review": 46,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3357,11 +3357,11 @@
   },
   {
    "wave": 34,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 95,
    "summary": {
-    "ready": 35,
-    "review": 60,
+    "ready": 31,
+    "review": 64,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3467,11 +3467,11 @@
   },
   {
    "wave": 35,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 53,
    "summary": {
-    "ready": 38,
-    "review": 15,
+    "ready": 37,
+    "review": 16,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3535,11 +3535,11 @@
   },
   {
    "wave": 36,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 53,
    "summary": {
-    "ready": 34,
-    "review": 19,
+    "ready": 33,
+    "review": 20,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3710,11 +3710,11 @@
   },
   {
    "wave": 39,
-   "built": "2026-10-08",
+   "built": "2026-10-09",
    "count": 23,
    "summary": {
-    "ready": 17,
-    "review": 6,
+    "ready": 16,
+    "review": 7,
     "notDrawn": 0,
     "failed": 0
    },

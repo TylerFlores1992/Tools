@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-267559",
+ "traced": "2026-10-08",
+ "by": "Claude (CampHawk session, pin moves)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -111.8665469,
+    33.9750246
+   ]
+  }
+ ],
+ "note": "The drawn loop 70 m west of the pin encloses the group site's cleared ground and its shelter; the pin, which was on an open juniper slope across the wash, now sits at the shelter."
+}
