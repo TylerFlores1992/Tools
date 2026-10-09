@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-10214673",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -109.6228835,
+     38.1440054
+    ],
+    [
+     -109.6229177,
+     38.1439334
+    ],
+    [
+     -109.6229519,
+     38.1438613
+    ],
+    [
+     -109.6229861,
+     38.1437802
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.6228378,
+     38.1440865
+    ],
+    [
+     -109.6227237,
+     38.1440685
+    ],
+    [
+     -109.6226097,
+     38.1440595
+    ],
+    [
+     -109.6224956,
+     38.1440595
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -109.6232371,
+     38.1467527
+    ],
+    [
+     -109.623317,
+     38.1467797
+    ],
+    [
+     -109.6233626,
+     38.1468607
+    ],
+    [
+     -109.6234082,
+     38.1469418
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel spurs to the lot south of the south loop (toward 30 and 31), the lot east of it by 28 and 29, and the spur north-west to 6. The south loop's ring is drawn 3 to 7 m inside the visible gravel and was left as it was."
+}

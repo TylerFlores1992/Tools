@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-232060",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -115.9088174,
+     44.055412
+    ],
+    [
+     -115.9090046,
+     44.055358
+    ],
+    [
+     -115.9091918,
+     44.055322
+    ],
+    [
+     -115.909379,
+     44.055304
+    ],
+    [
+     -115.9095163,
+     44.055268
+    ],
+    [
+     -115.9095663,
+     44.0552229
+    ],
+    [
+     -115.9095787,
+     44.0551149
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the paved lane from the north end of the lot west round the picnic lawn to the west lot."
+}

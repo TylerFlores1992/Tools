@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-234071",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -118.9411678,
+     47.9355435
+    ],
+    [
+     -118.9412453,
+     47.9355687
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -118.9407905,
+     47.9345884
+    ],
+    [
+     -118.9409243,
+     47.9345974
+    ],
+    [
+     -118.9410581,
+     47.9346064
+    ],
+    [
+     -118.9411918,
+     47.9346064
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Extended the north lot's road to its west end by the shelters at 002, and traced the paved lot west of the loop's south end toward 001's grove."
+}

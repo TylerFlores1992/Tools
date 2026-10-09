@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-233150",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.6617529,
+     38.6212479
+    ],
+    [
+     -111.6616955,
+     38.6211848
+    ],
+    [
+     -111.6616381,
+     38.6211217
+    ],
+    [
+     -111.6615921,
+     38.6210587
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the dirt spur south-east from the road toward 001 and 002."
+}

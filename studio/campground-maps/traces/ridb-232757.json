@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-232757",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-08)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.5545325,
+     39.4861474
+    ],
+    [
+     -120.5544628,
+     39.4861969
+    ],
+    [
+     -120.5543582,
+     39.4862149
+    ],
+    [
+     -120.5542652,
+     39.4861969
+    ],
+    [
+     -120.5542071,
+     39.4861429
+    ],
+    [
+     -120.5542129,
+     39.4861069
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the gravel lane that bulges north of the loop's top past 008 and 006. The short pull-in pads by 003, 010 and 011 weren't traced."
+}
