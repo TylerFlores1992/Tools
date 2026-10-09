@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233283",
- "traced": "2026-10-08",
- "by": "Claude (rollout west-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout west-a); Claude (fix fix-02)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -104,8 +104,56 @@
      34.7040687
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -118.8148312,
+     34.7011187
+    ],
+    [
+     -118.8149731,
+     34.7011278
+    ],
+    [
+     -118.815126,
+     34.7011278
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -118.8153661,
+     34.7002896
+    ],
+    [
+     -118.8154425,
+     34.7002355
+    ],
+    [
+     -118.815508,
+     34.7001814
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -118.8122005,
+     34.7021733
+    ],
+    [
+     -118.8124516,
+     34.7020651
+    ],
+    [
+     -118.8125935,
+     34.702011
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the dirt road from the east loop's access road west past group site GSA to the junction by the parking area, its branch west to GSB, and its branch north to the highway. Left out the parking area ring and the short spur to GSC; nothing is traced to 58, 59, 62 and 64, where no lane shows."
+ "note": "Traced the dirt road from the east loop's access road west past group site GSA to the junction by the parking area, its branch west to GSB, and its branch north to the highway. Left out the parking area ring and the short spur to GSC; nothing is traced to 58, 59, 62 and 64, where no lane shows. Added (fix fix-02): the lanes west to 69 and 74 and the lane toward 55."
 }

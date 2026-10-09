@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-233331",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -111.2319046,
+     44.7357659
+    ],
+    [
+     -111.2320561,
+     44.7357479
+    ],
+    [
+     -111.2322203,
+     44.735703
+    ],
+    [
+     -111.2323718,
+     44.735658
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.2315005,
+     44.7362068
+    ],
+    [
+     -111.2315384,
+     44.7362878
+    ],
+    [
+     -111.2315636,
+     44.7363778
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -111.2313363,
+     44.7363328
+    ],
+    [
+     -111.2313237,
+     44.7364228
+    ],
+    [
+     -111.2313237,
+     44.7364948
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane west from the loop toward 23 and 27 and the two short lanes north off the loop toward 19 and 17. Left out the other short spurs; 07 was not moved, because its pad by the lake can't be told apart from its neighbors'."
+}

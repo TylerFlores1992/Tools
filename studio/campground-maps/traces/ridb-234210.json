@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-234210",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.1603704,
+     39.3773602
+    ],
+    [
+     -120.1602891,
+     39.3773692
+    ],
+    [
+     -120.1602079,
+     39.3773782
+    ],
+    [
+     -120.1601267,
+     39.3773963
+    ],
+    [
+     -120.1600455,
+     39.3774053
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.160382,
+     39.3771621
+    ],
+    [
+     -120.1602891,
+     39.3771711
+    ],
+    [
+     -120.1601963,
+     39.3771621
+    ],
+    [
+     -120.1601151,
+     39.3771441
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.1623314,
+     39.3780267
+    ],
+    [
+     -120.1624127,
+     39.3779997
+    ],
+    [
+     -120.1624707,
+     39.3779727
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel spur east past 019 to 018, the gravel lane east from the loop toward 020, and the short gravel pull-off west of the loop toward 002. Left out lanes to 003, 004, 006, 007 and 015, which the pines hide."
+}

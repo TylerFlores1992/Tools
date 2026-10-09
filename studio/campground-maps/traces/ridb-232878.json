@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-232878",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.5696647,
+     37.3128945
+    ],
+    [
+     -119.5695293,
+     37.3128945
+    ],
+    [
+     -119.5694053,
+     37.3128674
+    ],
+    [
+     -119.5692925,
+     37.3128584
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -119.5696308,
+     37.3121375
+    ],
+    [
+     -119.5694955,
+     37.3122366
+    ],
+    [
+     -119.5694053,
+     37.3122997
+    ],
+    [
+     -119.5692699,
+     37.3123448
+    ],
+    [
+     -119.5691346,
+     37.3123358
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane east from the access road to 015/016 and the lane from the south road's west end past 003 to 004 and 005. Left out the lanes to 006 to 011, 013 and 014 and to 019, which the trees hide."
+}
