@@ -23,7 +23,7 @@ Pilots and their results are recorded here as they finish.*
 | Drawn road off the visible lane | 112 | 47 | Replace trace from the photo | Tool exists; needs tracing |
 | Lanes visible but not drawn | 93 | 155 | Trace from the photo | Tool exists; needs tracing |
 | Unit pin on nothing | 77 | 1 | Forest Service cabin points (Alaska); lidar for a clearing | Researched; not built |
-| Unit pin 15–150 m off a visible building | 67 | 24 | **Move the pin** (site-move trace) | Built 2026-10-08; 79 in progress |
+| Unit pin 15–150 m off a visible building | 67 | 24 | **Move the pin** (site-move trace) | Built 2026-10-08; 40 of 79 now pass |
 | Only the access road drawn | 58 | 13 | Trace from the photo or the lidar | Tool exists |
 | A third or more of the sites roadless | 49 | 7 | Trace from the photo or the lidar | Tool exists |
 | Dispersed sites, not one campground | 40 | 3 | Dispersed-area design | **Owner's decision** |
@@ -36,7 +36,7 @@ Pilots and their results are recorded here as they finish.*
 | Sites stacked on one spot | 19 | 11 | Move the points | Built (site move) |
 | Stray point km away | 15 | 0 | **Left off by rule** | Built 2026-10-08; with the parking rule, 8 of 17 rebuilt now pass |
 | No public-domain photo (Alaska) | 15 | 0 | USGS IfSAR radar image | **Owner's decision** (licence unclear) |
-| Unit pin wrong, listing's own point right | 12 | 0 | Move the pin to the listing's point | Built (site move); in progress |
+| Unit pin wrong, listing's own point right | 12 | 0 | Move the pin to the listing's point | Built (site move); in the 79 below |
 | Unit right, no road reaches it | 6 | 67 | Trace the last stretch; fly-in and boat-in are right as drawn | Tool exists |
 | First-come: another campground's outline | 8 | 0 | **Outline-name check** | Built 2026-10-08 |
 | Other | 47 | 142 | Case by case | — |
@@ -108,7 +108,16 @@ Pilots and their results are recorded here as they finish.*
 ## The campaign
 - **Lidar pilot (running):** 25 high-demand canopy holds with 1 m lidar (22) or DOGAMI (3). It
   measures how many the relief makes traceable, and the time per map.
-- **Pin moves (running):** 79 unit maps.
+- **Pin moves (done 2026-10-09):** 79 unit maps held because the pin sat off the cabin, lookout or
+  station.
+  - 35 pins moved to the building the photo shows. Four of them went to the listing's own point,
+    0.8–10 km away, where the photo shows the building and the old pin showed nothing.
+  - Four more pins were already right on a closer look.
+  - All 40 were checked over the photo after the rebuild and approved.
+  - 39 stay held: no building shows plainly, several buildings could be it, or the photo can't
+    tell. Crescent Lake was moved and then put back, because a row of lakeside cabins makes the
+    station's cabin ambiguous. The Forest Service cabin points (above) are the next source to try
+    on these.
 - **Then, in batches by demand,** each with a final check over the photo and the relief:
   - ~600 canopy holds over lidar;
   - ~320 photo traces (lanes visible but not drawn, roads off the lane, only the access road,
