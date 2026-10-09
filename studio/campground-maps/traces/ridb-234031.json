@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "map": "ridb-234031",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -81.7076961,
+     29.1819031
+    ],
+    [
+     -81.7076858,
+     29.1820023
+    ],
+    [
+     -81.7076447,
+     29.1821196
+    ],
+    [
+     -81.7076036,
+     29.1822279
+    ],
+    [
+     -81.7075419,
+     29.1823362
+    ],
+    [
+     -81.7074494,
+     29.1824354
+    ],
+    [
+     -81.7073569,
+     29.1825347
+    ],
+    [
+     -81.7072952,
+     29.1826339
+    ],
+    [
+     -81.707254,
+     29.1827061
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The sandy lane from the road east of 063/064 north toward 074, which the photo shows where the oaks open and the lidar relief shows as a smooth band with a ditch. Its north end past 074 can't be told under the trees, so it stops there; 076 to 079 show no lane."
+}

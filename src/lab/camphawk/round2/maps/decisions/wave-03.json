@@ -21,8 +21,8 @@
    "id": "10040047",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-01): first look unsure."
   },
   {
    "id": "119290",
@@ -61,24 +61,24 @@
   },
   {
    "id": "232094",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232228",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232284",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-01): first look unsure."
   },
   {
    "id": "232801",
@@ -89,10 +89,10 @@
   },
   {
    "id": "232853",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232868",
@@ -112,22 +112,22 @@
    "id": "233390",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-01): first look hold."
   },
   {
    "id": "233705",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233707",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233730",
@@ -190,7 +190,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look unsure."
+   "note": "Held after the fix-after campaign (canopy-01): first look unsure."
   },
   {
    "id": "10083840",
@@ -229,10 +229,10 @@
   },
   {
    "id": "10124502",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look unsure."
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10332664",
@@ -260,7 +260,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look hold."
+   "note": "Held after the fix-after campaign (canopy-01): first look hold."
   },
   {
    "id": "232452",
@@ -271,10 +271,10 @@
   },
   {
    "id": "232453",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232464",
@@ -288,7 +288,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look hold."
+   "note": "Held after the fix-after campaign (canopy-01): first look unsure."
   },
   {
    "id": "232492",
@@ -299,10 +299,10 @@
   },
   {
    "id": "232493",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look unsure."
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232496",
@@ -329,8 +329,8 @@
    "id": "233257",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233395",
@@ -498,7 +498,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look hold."
+   "note": "Held after the fix-after campaign (canopy-01): first look hold."
   },
   {
    "id": "258825",
@@ -518,8 +518,8 @@
    "id": "258832",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "259304",
@@ -572,10 +572,10 @@
   },
   {
    "id": "233454",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look unsure."
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233489",
@@ -593,10 +593,10 @@
   },
   {
    "id": "233514",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233521",
@@ -635,10 +635,10 @@
   },
   {
    "id": "233600",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the lidar pilot: first look unsure."
+   "note": "Passed after the fix-after campaign (canopy-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233623",

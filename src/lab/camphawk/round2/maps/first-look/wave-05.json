@@ -25,8 +25,8 @@
    "note": "The lane north to 4, 6 to 10 and the little loop past 11 to 18 follow the visible tracks, and 5, 19 and 20 sit on the east pad. 13 and 14 sit on a short spur south of the loop that isn't drawn."
   },
   "10227380": {
-   "call": "unsure",
-   "note": "Under dense pines the drawn loops can't be checked except near the beach, where the east road matches the pavement by SLS27 to SLS29. SLS1, SLS3, SLS5 and SLS7 to SLS9 sit off the west loop, and nothing shows to say whether a lane reaches them."
+   "call": "usable",
+   "note": "The lidar intensity shows every loop plainly as asphalt under the pines, with a short spur to each site, and the drawn roads sit on the loops within a few meters. The spurs to SLS1, SLS3, SLS5 and SLS7 to SLS9 off the west loop show but aren't drawn; every site is within 40 m of a drawn road. The lane around the beach lot to the south doesn't show in the lidar. Nothing traced."
   },
   "231903": {
    "call": "usable",
@@ -122,7 +122,7 @@
   },
   "232242": {
    "call": "usable",
-   "note": "The main lane and the west turnaround (009, 010) are drawn, but the side lane Sites 005 and 007 sit on isn't, and 014, 018 to 021 sit 15 to 25 m north of the east loop in the trees. The side lanes are too broken up in the photo to trace with confidence."
+   "note": "The lidar intensity shows the main lane, the east loop and the west turnaround as light bands where they are drawn. The side lane by 005 and 007 shows only as a broad open patch in both the lidar and the photo, so its course can't be placed to a few meters, and 014 and 018 to 021 sit 15 to 25 m north of the east loop under the trees. Every placed site is within 40 m of a drawn road; 2 have no point. Nothing traced."
   },
   "232253": {
    "call": "good",

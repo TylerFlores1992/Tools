@@ -1,0 +1,87 @@
+{
+ "version": 1,
+ "map": "ridb-258832",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -110.6661247,
+     44.104372
+    ],
+    [
+     -110.6660248,
+     44.104363
+    ],
+    [
+     -110.6659249,
+     44.104336
+    ],
+    [
+     -110.6658375,
+     44.1043
+    ],
+    [
+     -110.6657501,
+     44.104255
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.6661622,
+     44.104255
+    ],
+    [
+     -110.6660623,
+     44.104219
+    ],
+    [
+     -110.6659749,
+     44.104174
+    ],
+    [
+     -110.665875,
+     44.104129
+    ],
+    [
+     -110.6657751,
+     44.104075
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -110.6663121,
+     44.104102
+    ],
+    [
+     -110.6661997,
+     44.104048
+    ],
+    [
+     -110.6660873,
+     44.103985
+    ],
+    [
+     -110.6659749,
+     44.103922
+    ],
+    [
+     -110.6658625,
+     44.1038501
+    ],
+    [
+     -110.6657501,
+     44.1037871
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Three short lanes into the 700 cabins east of the 300 loop, where the photo shows them between the trees and the lidar intensity agrees on the first. Sites 712 and 713 are reached on foot; no lane to them shows."
+}
