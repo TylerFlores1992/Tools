@@ -37,6 +37,29 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
 
+**2026-10-09: finishing every map (owner: "outline-name check; move the Alaska cabin pins; find a
+solution for all of the usable and unusable maps").** The plan, the census of every held map by
+cause, and the researched sources are in `docs/design/campground-maps-completion-plan.md`. Start
+there.
+- **Built:**
+  - the outline-name check (first-come maps take only an outline named for them, or an unnamed
+    one; it catches Davis Flat and Big Creek);
+  - site moves in traces (the tracing tool's "Move a site", `sites` in a trace file);
+  - stray points 2 km out left off the map, and BLM parking rows not drawn as sites;
+  - lidar relief on the review page, the tracing tool and the renders (`LIDAR=1`), from USGS 3DEP
+    or Oregon's DOGAMI.
+- **Fixed after the lidar pilot found it:** the relief was drawn up to 26% too tall north–south.
+- **Results:** 50 more maps pass.
+  - 8 passed under the stray-point and parking rules.
+  - 40 of 79 unit maps passed after pin moves.
+  - 2 of 25 passed in the lidar pilot.
+  - Delegated waves now stand at 1,577 passed and 1,384 held.
+- **What the pilot means:** lidar helps about 1 in 4 canopy maps and won't finish them. The owner
+  decisions are listed in the plan's "Decisions for the owner", and number 5 (publish canopy maps
+  with only the visible roads, or keep them hidden) decides most of what's left.
+- **Next, if the owner agrees:** Forest Service cabin points for the 39 unit maps still held;
+  lidar tracing by demand; photo traces (~320).
+
 **Late night, 2026-10-08: the fix-after list, started (owner: "start with the 60 trace
 candidates; find a public-domain photo source for Alaska and Hawaii; design a whole campground map
 for the Standard ones").**

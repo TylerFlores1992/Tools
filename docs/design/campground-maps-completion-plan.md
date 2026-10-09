@@ -8,8 +8,9 @@ Pilots and their results are recorded here as they finish.*
 
 ## Where it stands
 - **3,211 Recreation.gov maps built.**
-  - 1,527 passed in the delegated waves 3 to 39, plus the owner's approvals in waves 0 to 2.
-  - **1,489 are hidden.** 55 were hidden by the owner; 1,434 are held to fix after.
+  - 1,577 passed in the delegated waves 3 to 39 (as of 2026-10-09, 50 more than the census), plus
+    the owner's approvals in waves 0 to 2.
+  - **1,439 are hidden.** 55 were hidden by the owner; 1,384 are held to fix after.
   - **689 passed as "usable"**: right, but missing something a "good" map has.
 - Every count below is from the census: one blocking cause per map, taken from its first-look note
   and its measured checks. In a spot check of 30, about 25 matched the note exactly and the rest
@@ -19,7 +20,7 @@ Pilots and their results are recorded here as they finish.*
 
 | Blocking cause | Hidden | Usable | Fix | Status |
 |---|---|---|---|---|
-| Canopy hides the lanes | 692 | 130 | **Trace over lidar relief** (below) | Built 2026-10-08; pilot running |
+| Canopy hides the lanes | 692 | 130 | Trace over lidar relief; for the rest, an owner decision (5 below) | Pilot: 2 of 25 pass, 5 traced and still held |
 | Drawn road off the visible lane | 112 | 47 | Replace trace from the photo | Tool exists; needs tracing |
 | Lanes visible but not drawn | 93 | 155 | Trace from the photo | Tool exists; needs tracing |
 | Unit pin on nothing | 77 | 1 | Forest Service cabin points (Alaska); lidar for a clearing | Researched; not built |
@@ -64,7 +65,7 @@ Pilots and their results are recorded here as they finish.*
 ## Public data searched (`research/campground-maps-fix-sources.md`)
 
 **Used:**
-- **USGS 3DEP lidar:** a federal work, public domain. 1 m or finer lidar covers 1,143 of the 1,489
+- **USGS 3DEP lidar:** a federal work, public domain. 1 m or finer lidar covers 1,143 of the 1,489 then
   hidden maps, and 532 of the ~700 canopy holds.
 - **Oregon DOGAMI lidar:** "All DOGAMI lidar data is in the public domain, please reference
   DOGAMI as the data source" (DOGAMI's lidar program record on data.gov). It covers the 56–61
@@ -104,10 +105,28 @@ Pilots and their results are recorded here as they finish.*
 3. **Arkansas and North Carolina leaf-off photos:** ask the states? This is optional, because
    lidar covers the same maps.
 4. **The size of the tracing campaign** (below): run it all, or by demand, highest first?
+5. **Canopy maps the lidar can't finish (most of ~690).** The pilot says lidar alone won't
+   complete them (below). The choices:
+   - keep them hidden, with "We haven't drawn a map of X yet";
+   - or publish the sites with only the roads we can see, and say plainly on the map that lanes
+     under the trees aren't drawn. Today a map is held when a third or more of its sites have no
+     road, so this would change that rule for canopy maps only.
 
 ## The campaign
-- **Lidar pilot (running):** 25 high-demand canopy holds with 1 m lidar (22) or DOGAMI (3). It
-  measures how many the relief makes traceable, and the time per map.
+- **Lidar pilot (done 2026-10-09):** 25 high-demand canopy holds with 1 m lidar (22) or DOGAMI (3).
+  - **2 pass** (Mathews Arm, Wilderness Road): the relief shows their lanes and pull-in pads, and
+    the drawn roads already follow them. Measured share 8% (95% interval 2–25%).
+  - **5 got roads traced over the relief and stay held:** a third or more of their sites still
+    have no road. With the 2, the relief helped 7 of 25 (28%, interval 14–48%).
+  - **18 show no lane in the relief:** flat ground (lanes aren't crowned enough to show), unditched
+    dirt lanes, boulder fields, hummocky forest floor, and noisy or saturated DOGAMI relief.
+  - **Time:** about 11 minutes a map to look; about 25 minutes for a map that gets traced.
+  - **It found a defect, now fixed:** the relief was drawn up to 26% too tall north–south, because
+    the service widened the box. The pilot traced over a corrected copy; the tools are fixed and
+    tested.
+  - **What it means:** over ~690 canopy holds, lidar would pass about 15–175 on a look alone (8%,
+    from the interval above) and partly trace about 100–330 more. That is worth doing for the most
+    reserved maps, but it won't finish the canopy maps. That needs decision 5.
 - **Pin moves (done 2026-10-09):** 79 unit maps held because the pin sat off the cabin, lookout or
   station.
   - 35 pins moved to the building the photo shows. Four of them went to the listing's own point,
@@ -119,7 +138,8 @@ Pilots and their results are recorded here as they finish.*
     station's cabin ambiguous. The Forest Service cabin points (above) are the next source to try
     on these.
 - **Then, in batches by demand,** each with a final check over the photo and the relief:
-  - ~600 canopy holds over lidar;
+  - canopy holds over lidar, most reserved first, as far as decision 4 says (expect about 1 in 4
+    to improve);
   - ~320 photo traces (lanes visible but not drawn, roads off the lane, only the access road,
     roadless thirds);
   - the "usable" maps' undrawn lanes (~155), to make them good.
