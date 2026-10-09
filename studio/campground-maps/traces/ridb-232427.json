@@ -1,0 +1,55 @@
+{
+ "version": 1,
+ "map": "ridb-232427",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -90.6153976,
+     48.0673846
+    ],
+    [
+     -90.6153841,
+     48.0673127
+    ],
+    [
+     -90.615364,
+     48.0672407
+    ],
+    [
+     -90.6153573,
+     48.0671688
+    ],
+    [
+     -90.6153573,
+     48.0670789
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -90.614767,
+     48.0674026
+    ],
+    [
+     -90.6147268,
+     48.0673307
+    ],
+    [
+     -90.6146731,
+     48.0672677
+    ],
+    [
+     -90.6146194,
+     48.0672138
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The spurs south of the loop to 004's clearing and to 005. Left out: the faint lanes to 003 and 006."
+}

@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-10040569",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.8059778,
+     39.3782678
+    ],
+    [
+     -106.8059314,
+     39.3782228
+    ],
+    [
+     -106.805885,
+     39.3781688
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -106.8061402,
+     39.3783579
+    ],
+    [
+     -106.8061402,
+     39.3784119
+    ],
+    [
+     -106.8061286,
+     39.3784659
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane on past 019 and the spur north from the loop toward 020. Left out: the faint tracks to 016 and 017 under the trees."
+}

@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-234105",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.5670525,
+     38.0789013
+    ],
+    [
+     -105.5671893,
+     38.0788923
+    ],
+    [
+     -105.5673261,
+     38.0788832
+    ],
+    [
+     -105.5674401,
+     38.0788923
+    ],
+    [
+     -105.5675312,
+     38.0789463
+    ],
+    [
+     -105.567611,
+     38.0790093
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -105.563838,
+     38.0802163
+    ],
+    [
+     -105.5639292,
+     38.0802704
+    ],
+    [
+     -105.5640204,
+     38.0803154
+    ],
+    [
+     -105.564066,
+     38.0803424
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane west from 46 past 47, and the spur north-west toward E1 as far as it shows; E1 itself sits under the trees past its end."
+}

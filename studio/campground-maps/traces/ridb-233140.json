@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233140",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -94.530011,
+     47.3802286
+    ],
+    [
+     -94.529958,
+     47.380269
+    ],
+    [
+     -94.529905,
+     47.380305
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.5301567,
+     47.3802331
+    ],
+    [
+     -94.5301368,
+     47.380278
+    ],
+    [
+     -94.530117,
+     47.380314
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The short spurs north from the loop's west end to 011 and 012. Left out: the faint tracks to 001 and 003 east of the loop, under the canopy."
+}

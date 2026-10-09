@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-233144",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-15)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -94.3186368,
+     47.4245694
+    ],
+    [
+     -94.318544,
+     47.4245469
+    ],
+    [
+     -94.3184645,
+     47.4245155
+    ],
+    [
+     -94.3183849,
+     47.4244795
+    ],
+    [
+     -94.3183319,
+     47.4244525
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.3171787,
+     47.4262424
+    ],
+    [
+     -94.3170594,
+     47.4262244
+    ],
+    [
+     -94.3169533,
+     47.4262019
+    ],
+    [
+     -94.3168473,
+     47.4261705
+    ],
+    [
+     -94.3167545,
+     47.4261345
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The spurs east of the loop to 015 and to 027, where they show between the trees. Left out: the other lakeside spurs, under the canopy."
+}
