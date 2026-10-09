@@ -1328,8 +1328,8 @@
    "built": "2026-10-09",
    "count": 94,
    "summary": {
-    "ready": 42,
-    "review": 47,
+    "ready": 39,
+    "review": 50,
     "notDrawn": 5,
     "failed": 0
    },
@@ -1437,8 +1437,8 @@
    "built": "2026-10-09",
    "count": 90,
    "summary": {
-    "ready": 43,
-    "review": 45,
+    "ready": 36,
+    "review": 52,
     "notDrawn": 2,
     "failed": 0
    },

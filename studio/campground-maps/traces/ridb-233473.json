@@ -2,8 +2,8 @@
  "version": 1,
  "map": "ridb-233473",
  "traced": "2026-10-09",
- "by": "Claude (rollout south-a; lidar pilot)",
- "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain)",
+ "by": "Claude (rollout south-a; lidar pilot); Claude (canopy canopy-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
    "coords": [
@@ -44,12 +44,24 @@
   {
    "coords": [
     [
-     -93.3581779,
-     34.5428669
+     -93.3579044,
+     34.5429859
     ],
     [
-     -93.3575318,
-     34.5423503
+     -93.3577954,
+     34.5428958
+    ],
+    [
+     -93.3575231,
+     34.5426343
+    ],
+    [
+     -93.3573051,
+     34.542445
+    ],
+    [
+     -93.3570872,
+     34.5422917
     ]
    ],
    "through": true,
@@ -58,20 +70,20 @@
   {
    "coords": [
     [
-     -93.3575318,
-     34.5423503
+     -93.3570872,
+     34.5422917
     ],
     [
-     -93.357194,
-     34.5423007
+     -93.3569238,
+     34.5422286
     ],
     [
-     -93.3568693,
-     34.5422151
+     -93.3567604,
+     34.5422241
     ],
     [
      -93.3565425,
-     34.5422466
+     34.5422376
     ],
     [
      -93.3562156,
@@ -119,11 +131,15 @@
     ],
     [
      -93.3530603,
-     34.5417643
+     34.5417508
+    ],
+    [
+     -93.3528381,
+     34.5417057
     ],
     [
      -93.3525112,
-     34.5418229
+     34.5417057
     ]
    ],
    "through": true,
@@ -133,19 +149,19 @@
    "coords": [
     [
      -93.3525112,
-     34.5418229
+     34.5417057
     ],
     [
-     -93.3521626,
-     34.5418049
+     -93.3521843,
+     34.5417147
     ],
     [
-     -93.3518248,
-     34.5417778
+     -93.3518575,
+     34.5417328
     ],
     [
      -93.3514761,
-     34.5417598
+     34.5417463
     ],
     [
      -93.3512038,
@@ -230,11 +246,23 @@
      34.543599
     ],
     [
-     -93.3550171,
+     -93.355028,
      34.5433105
     ],
     [
-     -93.3550171,
+     -93.3549953,
+     34.5432474
+    ],
+    [
+     -93.3549082,
+     34.5431933
+    ],
+    [
+     -93.3547774,
+     34.5431482
+    ],
+    [
+     -93.3546358,
      34.5431122
     ],
     [
@@ -246,32 +274,36 @@
   {
    "coords": [
     [
-     -93.3537642,
-     34.5432744
+     -93.3535245,
+     34.5431031
     ],
     [
      -93.3533828,
-     34.5431302
+     34.5431031
+    ],
+    [
+     -93.3532194,
+     34.5430581
     ],
     [
      -93.353056,
-     34.5429769
+     34.543004
     ],
     [
      -93.3527836,
-     34.5428417
+     34.5428597
     ],
     [
      -93.3525657,
-     34.5427064
+     34.5427155
     ],
     [
      -93.3523478,
-     34.5425532
+     34.5425622
     ],
     [
      -93.3521843,
-     34.542436
+     34.542445
     ],
     [
      -93.3520536,
@@ -422,9 +454,233 @@
      34.5418229
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -93.3545813,
+     34.5430941
+    ],
+    [
+     -93.3544724,
+     34.5430761
+    ],
+    [
+     -93.3543634,
+     34.5430536
+    ],
+    [
+     -93.3541455,
+     34.5430536
+    ],
+    [
+     -93.3538731,
+     34.5430671
+    ],
+    [
+     -93.3536552,
+     34.5430851
+    ],
+    [
+     -93.3535245,
+     34.5431031
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3542762,
+     34.543022
+    ],
+    [
+     -93.3542762,
+     34.5429138
+    ],
+    [
+     -93.3543307,
+     34.5427515
+    ],
+    [
+     -93.3543743,
+     34.5425712
+    ],
+    [
+     -93.3544179,
+     34.5423909
+    ],
+    [
+     -93.3544506,
+     34.5422647
+    ],
+    [
+     -93.3544724,
+     34.5421204
+    ],
+    [
+     -93.3544833,
+     34.5420573
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3542762,
+     34.5429138
+    ],
+    [
+     -93.3542653,
+     34.5427515
+    ],
+    [
+     -93.3542545,
+     34.5425712
+    ],
+    [
+     -93.354298,
+     34.5423909
+    ],
+    [
+     -93.3543634,
+     34.5422647
+    ],
+    [
+     -93.3544288,
+     34.5421204
+    ],
+    [
+     -93.3544615,
+     34.5420573
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3535245,
+     34.5431031
+    ],
+    [
+     -93.3535245,
+     34.5432925
+    ],
+    [
+     -93.3535136,
+     34.5435629
+    ],
+    [
+     -93.3535136,
+     34.5437883
+    ],
+    [
+     -93.3535136,
+     34.5439236
+    ],
+    [
+     -93.3535136,
+     34.5440498
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3535136,
+     34.5439236
+    ],
+    [
+     -93.3536552,
+     34.5440588
+    ],
+    [
+     -93.3538186,
+     34.544176
+    ],
+    [
+     -93.3539494,
+     34.5442301
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3535136,
+     34.5440498
+    ],
+    [
+     -93.3533828,
+     34.5440859
+    ],
+    [
+     -93.3532194,
+     34.5440408
+    ],
+    [
+     -93.3531104,
+     34.5439777
+    ],
+    [
+     -93.3530778,
+     34.5439146
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -93.3564662,
+     34.5427786
+    ],
+    [
+     -93.3564553,
+     34.5429318
+    ],
+    [
+     -93.3564335,
+     34.5431122
+    ],
+    [
+     -93.3564117,
+     34.5432744
+    ],
+    [
+     -93.356379,
+     34.5434007
+    ],
+    [
+     -93.3563137,
+     34.5434728
+    ],
+    [
+     -93.3562374,
+     34.5434998
+    ],
+    [
+     -93.3561502,
+     34.5434818
+    ],
+    [
+     -93.3560631,
+     34.5434367
+    ],
+    [
+     -93.3559541,
+     34.5434007
+    ],
+    [
+     -93.3558561,
+     34.5434728
+    ],
+    [
+     -93.355758,
+     34.543581
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Traced over the NAIP photo and the lidar relief. Replaced the Census line for North Crystal Springs Road, which ran up to 17 m off, with the crowned road the relief shows (the photo agrees east of x 100 and west of x -100; between them the photo shows only a cleared strip about 8 m north of it). Added the road to the middle point's ramp lot with its turnaround, and the lane up the east point past 04 to 19. Left out: the lanes past 23 to 37 and 49 to 59, which neither the photo nor the relief shows plainly."
+ "note": "Traced over the NAIP photo, the lidar relief and the lidar point-cloud intensity. Replaced the Census line for North Crystal Springs Road with the road the relief and the intensity show. Canopy pass: added from the intensity (the photo agrees where it opens) the divided entrance road from the main road north to the lane along the middle cove, that lane east to the middle point, the middle point's stem road, a line through its lot and the lane north of 29 to 24 to 27, and the lane past 57, 55, 54, 53 and 51 to the 47/48 lane; moved North Crystal Springs Road onto its band at the west edge and east of x 90 (it ran 5 to 12 m north), the 38-48 lane's south end onto its curve and the ramp road's start onto its band. Left out: the lane round the south of 29 and the lane past 56, which show only in part."
 }
