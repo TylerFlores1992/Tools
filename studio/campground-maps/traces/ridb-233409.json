@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233409",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-a)",
+ "traced": "2026-10-09",
+ "by": "Claude (rollout trace-a); Claude (fix fix-12)",
  "photo": "USDA NAIP via USGS The National Map (public domain)",
  "roads": [
   {
@@ -581,9 +581,81 @@
      37.6282026
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -86.4347357,
+     37.6280674
+    ],
+    [
+     -86.4346677,
+     37.6280404
+    ],
+    [
+     -86.4345884,
+     37.6279953
+    ],
+    [
+     -86.4345091,
+     37.6279323
+    ],
+    [
+     -86.4344412,
+     37.6278782
+    ],
+    [
+     -86.4343619,
+     37.6278512
+    ],
+    [
+     -86.4342826,
+     37.6278422
+    ],
+    [
+     -86.4342146,
+     37.6278512
+    ],
+    [
+     -86.4341353,
+     37.6278872
+    ],
+    [
+     -86.4340786,
+     37.6279413
+    ],
+    [
+     -86.434022,
+     37.6280044
+    ],
+    [
+     -86.4339654,
+     37.6280584
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -86.4346224,
+     37.6283468
+    ],
+    [
+     -86.4346224,
+     37.6282296
+    ],
+    [
+     -86.4345998,
+     37.6281125
+    ],
+    [
+     -86.4345771,
+     37.6279953
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replace trace: the access road, parking aisle, west lane, A loop, main lane, the oval past B023 to B025, B's lane past B015 to B018, E's spine and the lanes past E049 to E054, the F lanes past F070, F072 and F074, and D's north lane past D043 to D047. C's lanes and D's south arc (D034 to D042) can't be joined to a road outside the canopy, so they're left out; F's spine is drawn through 40 m of canopy between visible ends."
+ "note": "Replace trace: the access road, parking aisle, west lane, A loop, main lane, the oval past B023 to B025, B's lane past B015 to B018, E's spine and the lanes past E049 to E054, the F lanes past F070, F072 and F074, and D's north lane past D043 to D047. C's lanes and D's south arc (D034 to D042) can't be joined to a road outside the canopy, so they're left out; F's spine is drawn through 40 m of canopy between visible ends. Added (fix fix-12): D's south arc from D034 past D035 to D036, D037 and D040, and the lane down to it from the D lot."
 }

@@ -1,0 +1,73 @@
+{
+ "version": 1,
+ "map": "ridb-258992",
+ "traced": "2026-10-09",
+ "by": "Claude (fix fix-12)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -86.2376126,
+     37.2024349
+    ],
+    [
+     -86.2375901,
+     37.2023537
+    ],
+    [
+     -86.2374662,
+     37.2022997
+    ],
+    [
+     -86.237376,
+     37.2022365
+    ],
+    [
+     -86.2373084,
+     37.2021644
+    ],
+    [
+     -86.2372408,
+     37.2020833
+    ],
+    [
+     -86.237162,
+     37.2020021
+    ],
+    [
+     -86.2371169,
+     37.201948
+    ],
+    [
+     -86.2371395,
+     37.2018759
+    ],
+    [
+     -86.2371732,
+     37.2018128
+    ]
+   ],
+   "through": true
+  },
+  {
+   "coords": [
+    [
+     -86.2371169,
+     37.2019751
+    ],
+    [
+     -86.2370155,
+     37.2019931
+    ],
+    [
+     -86.2368803,
+     37.2020021
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Replace trace: the gravel road from the north down to the lot by Sites 1 to 6, and the lane east to the shelter. The source's road south-east from the lot runs under full canopy with nothing showing, so it is left out."
+}
