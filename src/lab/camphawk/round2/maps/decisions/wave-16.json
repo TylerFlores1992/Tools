@@ -14,8 +14,8 @@
    "id": "10075391",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look unsure."
   },
   {
    "id": "10145499",
@@ -28,8 +28,8 @@
    "id": "10203811",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look unsure."
   },
   {
    "id": "233319",
@@ -42,8 +42,8 @@
    "id": "233343",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "233913",
@@ -56,8 +56,8 @@
    "id": "233954",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "234132",
@@ -112,15 +112,15 @@
    "id": "233241",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look unsure."
   },
   {
    "id": "233403",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "234048",
@@ -147,15 +147,15 @@
    "id": "273821",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "10012078",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10035048",
@@ -278,10 +278,10 @@
   },
   {
    "id": "232640",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232663",
@@ -329,8 +329,8 @@
    "id": "232703",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "232709",
@@ -404,17 +404,17 @@
   },
   {
    "id": "233278",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233280",
    "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Passed: first look usable."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233409",
@@ -504,15 +504,15 @@
    "id": "233515",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "233520",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233529",
@@ -560,15 +560,15 @@
    "id": "233630",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "233641",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "233660",
@@ -588,8 +588,8 @@
    "id": "233790",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Still held after the trace re-check: first look hold (2026-10-08)."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "233828",
@@ -602,8 +602,8 @@
    "id": "233946",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-08): first look hold."
   },
   {
    "id": "234199",
@@ -614,10 +614,10 @@
   },
   {
    "id": "234253",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-08): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "251355",

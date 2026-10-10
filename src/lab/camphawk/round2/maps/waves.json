@@ -1539,11 +1539,11 @@
   },
   {
    "wave": 15,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 91,
    "summary": {
-    "ready": 33,
-    "review": 57,
+    "ready": 29,
+    "review": 61,
     "notDrawn": 1,
     "failed": 0
    },
@@ -1645,11 +1645,11 @@
   },
   {
    "wave": 16,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 90,
    "summary": {
-    "ready": 34,
-    "review": 56,
+    "ready": 31,
+    "review": 59,
     "notDrawn": 0,
     "failed": 0
    },
