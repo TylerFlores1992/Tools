@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-233442",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -78.6294021,
+     36.6617744
+    ],
+    [
+     -78.6293126,
+     36.6616302
+    ],
+    [
+     -78.6292008,
+     36.661522
+    ],
+    [
+     -78.6290889,
+     36.6614319
+    ],
+    [
+     -78.6289771,
+     36.6613418
+    ],
+    [
+     -78.6288988,
+     36.6612787
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane from the park road south-east into the woods, plain in the lidar intensity and on the photo. Left out: the loop around 12, which shows as a band in the intensity but this sparse 2017 survey can't place its sides to 3 m."
+}

@@ -1,9 +1,9 @@
 {
  "version": 1,
  "map": "ridb-10052170",
- "traced": "2026-10-08",
- "by": "Claude (rollout south-b)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-10",
+ "by": "Claude (rollout south-b); Claude (canopy canopy-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
    "coords": [
@@ -68,8 +68,68 @@
      32.6997511
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -93.5143657,
+     32.6998954
+    ],
+    [
+     -93.5142164,
+     32.6998413
+    ],
+    [
+     -93.5141417,
+     32.6996519
+    ],
+    [
+     -93.5140884,
+     32.6994084
+    ],
+    [
+     -93.5140458,
+     32.699192
+    ],
+    [
+     -93.5139605,
+     32.6990477
+    ],
+    [
+     -93.5137259,
+     32.6990054
+    ],
+    [
+     -93.51347,
+     32.6990054
+    ],
+    [
+     -93.5132141,
+     32.6990477
+    ],
+    [
+     -93.5129902,
+     32.6991289
+    ],
+    [
+     -93.5127983,
+     32.6992461
+    ],
+    [
+     -93.5126383,
+     32.6994084
+    ],
+    [
+     -93.5125637,
+     32.6995437
+    ],
+    [
+     -93.5125317,
+     32.6996158
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced from NAIP: the gravel lane from the end of the road west past 2 to 8, and its turn south toward 9. Left out: the lanes to 10 to 19, which show only in pieces under the trees."
+ "note": "Traced from NAIP: the gravel lane from the end of the road west past 2 to 8, and its turn south toward 9.  Canopy canopy-09: the lidar relief shows the loop past 10 to 12, along 14 and 16 and back up past 18 and 19 to the road as a crowned lane between ditches, and the photo shows its gravel by 11, 12 and 14; traced it. Left out: the pull-ins to 13, 15 and 17."
 }

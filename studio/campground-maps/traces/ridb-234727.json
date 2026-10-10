@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "map": "ridb-234727",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -84.8470217,
+     36.9233575
+    ],
+    [
+     -84.8470329,
+     36.9232557
+    ],
+    [
+     -84.8470363,
+     36.9231646
+    ],
+    [
+     -84.8470408,
+     36.9230736
+    ],
+    [
+     -84.847043,
+     36.9229825
+    ],
+    [
+     -84.8470351,
+     36.9228915
+    ],
+    [
+     -84.8470194,
+     36.9228004
+    ],
+    [
+     -84.846997,
+     36.9227103
+    ],
+    [
+     -84.84697,
+     36.9226202
+    ],
+    [
+     -84.8469487,
+     36.92253
+    ],
+    [
+     -84.8469341,
+     36.922439
+    ],
+    [
+     -84.8469453,
+     36.922347
+    ],
+    [
+     -84.8469667,
+     36.9222596
+    ],
+    [
+     -84.8469925,
+     36.9222217
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced over the lidar intensity and relief: the gravel lane down the point from the end of the drawn road past 01 to 10, plain in both layers with the sites' pads off its sides. Left out: the pull-ins."
+}
