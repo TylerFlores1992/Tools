@@ -1648,8 +1648,8 @@
    "built": "2026-10-10",
    "count": 90,
    "summary": {
-    "ready": 31,
-    "review": 59,
+    "ready": 30,
+    "review": 60,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2063,11 +2063,11 @@
   },
   {
    "wave": 20,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 86,
    "summary": {
-    "ready": 37,
-    "review": 49,
+    "ready": 32,
+    "review": 54,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2422,11 +2422,11 @@
   },
   {
    "wave": 24,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 40,
    "summary": {
-    "ready": 18,
-    "review": 22,
+    "ready": 11,
+    "review": 29,
     "notDrawn": 0,
     "failed": 0
    },

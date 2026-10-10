@@ -1,0 +1,80 @@
+{
+ "version": 1,
+ "map": "ridb-232701",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -88.1507256,
+     31.7570502
+    ],
+    [
+     -88.1508871,
+     31.7570665
+    ],
+    [
+     -88.1510539,
+     31.7570944
+    ],
+    [
+     -88.1510972,
+     31.7571485
+    ],
+    [
+     -88.1510433,
+     31.757208
+    ],
+    [
+     -88.1509304,
+     31.7572216
+    ],
+    [
+     -88.1507256,
+     31.7570502
+    ],
+    [
+     -88.1480547,
+     31.7548141
+    ],
+    [
+     -88.1479301,
+     31.7546275
+    ],
+    [
+     -88.1483989,
+     31.7540495
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -88.1509789,
+     31.7572161
+    ],
+    [
+     -88.151,
+     31.7573604
+    ],
+    [
+     -88.1510317,
+     31.7574957
+    ],
+    [
+     -88.1510739,
+     31.7576039
+    ],
+    [
+     -88.1511373,
+     31.757694
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Added: the lane north from the turnaround through the paved lot toward 15 to 17, which the photo shows and the lidar intensity confirms as a gray band; the river road copied, as it sits on its band within about 3 m. Not drawn: the pull-through lanes round the river-side pads (01 to 14); the inland sites 19 to 26 sit on raised pads that open toward the river road, 10 to 20 m off it, with no separate lane showing."
+}

@@ -142,7 +142,7 @@
   },
   "232559": {
    "call": "usable",
-   "note": "The road along the east shore (001 to 050) and the loop on the middle point (051 to 071) follow the visible lanes, with those sites beside them. Zoomed on the west shore, 072 to 087 sit 20 to 40 m from the drawn road in the trees by the beach, where the spurs to them don't show."
+   "note": "The lidar intensity (16 ground points per square meter) shows every road as a plain asphalt band, and OpenStreetMap's lines follow them within about 2 to 4 m: the west shore road past 072 to 104 (its pull-ins to the shore sites show but aren't drawn), the two loops on the middle point (051 to 071) and the road along the east shore (001 to 050). Every site is within 40 m of a drawn road. Nothing traced."
   },
   "232611": {
    "call": "hold",
@@ -181,8 +181,8 @@
    "note": "Unchanged: the road along the river follows the visible pavement and C-01 to C-15 sit on the pull-ins beside it. Zoomed on a 5 m grid, loop B's gravel shows only in pieces under the trees (a lane past B-03 and pads by B-02 and B-04), with no piece joining the road and nothing showing toward B-05 to B-09, and the lidar relief is flat there; so B-01 to B-09 (9 of 24) still sit 70 to 165 m from a drawn road."
   },
   "232701": {
-   "call": "hold",
-   "note": "The road along the river follows the visible pavement, and 01 to 14 sit on the pull-ins between it and the water. The row inland (15 to 32) sits 20 to 40 m off it along a second lane under the trees that isn't drawn; one site has no point. Held: over half the sites (15 to 32) have no drawn lane."
+   "call": "usable",
+   "note": "The river road sits on the asphalt band the lidar intensity shows (within about 3 m), with 01 to 14 on the pull-through pads between it and the water. The relief shows the inland sites 19 to 26 as raised back-in pads opening toward that road, 10 to 20 m off it, with no second lane between; traced the lane north from the turnaround through the paved lot toward 15 to 17, so every placed site is within 40 m of a drawn road. One site has no point."
   },
   "232703": {
    "call": "hold",
@@ -209,8 +209,8 @@
    "note": "The loop follows the visible pavement, and sites 01 to 21 sit on the pull-ins along its shore side, with 23 to 25 inside it; the tent sites T-01 to T-04 sit on the open shore past the loop's east end."
   },
   "232751": {
-   "call": "hold",
-   "note": "Only the road down the spine is drawn, and the canopy hides the lanes off it: 001 to 015 sit either side of it in the trees, and the south islands' sites (023 to 030, 032 to 042) sit 30 to 80 m from any drawn road."
+   "call": "usable",
+   "note": "Traced over the lidar relief, which shows the lanes plainly even at 0.6 ground points per square meter (the intensity agrees on the asphalt): past the causeway, the lane to the south island and its loop round the teardrop island by 027 to 030 with a short lane west toward 023 and 024, and the loop round the teardrop at the end of the east road by 032 to 035. The spine road past 001 to 015 and the road to 016 to 022 are OpenStreetMap's, on their bands; no lane shows plainly to 038 to 042 on the east point, which with 026 are the 6 of 42 sites more than 40 m from a drawn road."
   },
   "232745": {
    "call": "usable",
@@ -241,8 +241,8 @@
    "note": "Unchanged: only the road through the middle is drawn, and 01 to 19 in the west and 33 to 46 in the east sit 40 to 100 m from it on clearings in the woods. Over the photo the lanes between the clearings are hidden by the canopy, and the lidar relief shows only scattered short crowned pieces, not a network that can be placed to 3 m, so nothing was traced."
   },
   "233417": {
-   "call": "unsure",
-   "note": "The roads along the north shore, the middle ridge and the south shore are drawn and the sites line them, but under full canopy the photo can't confirm the lanes; 13 to 18, 36 to 41, 62 to 66 and 75 to 84 sit 20 to 40 m off them."
+   "call": "usable",
+   "note": "Replaced: the lidar intensity shows every road as a plain asphalt band with its pull-ins, and OpenStreetMap's coarse lines ran up to 15 m off them; the entrance road, the road north and round past 01 to 17 to the end by 10, the middle ridge road past 19 to 41 to the turnaround by 29, the south shore road past 42 to 61 to the boat-ramp lot and the spur to 72 to 74 with its end loop are redrawn on the bands. Only 61 and 75 to 77 (southeast of the spur, no lane showing) are more than 40 m from a drawn road; the pull-ins aren't drawn."
   },
   "233429": {
    "call": "usable",
