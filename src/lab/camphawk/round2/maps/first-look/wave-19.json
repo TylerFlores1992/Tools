@@ -329,8 +329,8 @@
    "note": "The lidar intensity shows every lane of the north cluster (01 to 38) as a plain asphalt band. Replaced the roads: traced the road north from the turnaround, the road past 01 and 02 to the east loop (07 to 14), the teardrop loop (19 to 24), the lane by 05 and 18, and the two lanes past 26 to 35 with the cross lane by 31; kept OpenStreetMap's entry road, highway and south loop (39 to 57), which sit on their bands, and dropped its resort and office-area roads, 4 to 10 m off theirs. Only 29 and 53 are more than 40 m from a road; the pull-ins and inner lanes aren't drawn."
   },
   "233690": {
-   "call": "unsure",
-   "note": "Three areas under heavy canopy. Zoomed, the middle (001 to 040) and east (041 to 109) lanes follow the visible gravel where it shows, but many sites sit 20 to 40 m off them under the trees; the west-end sites (101 to 106) are boat-in sites on a far shore with no road."
+   "call": "usable",
+   "note": "The lidar intensity shows the middle area's lanes (001 to 040) as plain bands under the trees: the campground loop and the diagonal lane through it ran 5 to 10 m off them and are redrawn on their middles, and the east area's loops (041 to 100) already sat on their bands; the rest is copied from OpenStreetMap. Only the boat-in sites 101 to 106 across the water and 059 and 060 (41 to 45 m) are more than 40 m from a drawn road."
   },
   "233697": {
    "call": "hold",

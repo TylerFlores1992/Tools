@@ -34,7 +34,7 @@
   },
   "231983": {
    "call": "unsure",
-   "note": "Full canopy: the pin sits on the drawn loop in dense forest, and no group site clearing shows."
+   "note": "The lidar survey here (a topobathymetric one) has almost no ground points over the campground (0.02 per square meter, 8% of the frame covered), so the ground layers are blank at the pin and along the drawn loop; nothing can be checked under the canopy. Nothing traced."
   },
   "232237": {
    "call": "good",
@@ -42,7 +42,7 @@
   },
   "232240": {
    "call": "unsure",
-   "note": "The pin is under the trees between the highway and a drawn lane, and no group site clearing shows plainly at it; small clearings with buildings show 50 to 100 m northeast."
+   "note": "The lidar intensity confirms the highway and the drawn dirt lane on their bands, but shows nothing at the pin, which is under the trees between them; the photo's clearings with tents and cars lie 40 to 70 m northeast, reached by undrawn dirt spurs off the lane, and which of them (if any) is the group site isn't plain. Nothing traced."
   },
   "232342": {
    "call": "usable",
@@ -66,7 +66,7 @@
   },
   "233252": {
    "call": "unsure",
-   "note": "The pin is under the trees inside the drawn loop, between the station's several buildings (one 25 m northwest, another 40 m south), and which is the guard station isn't plain."
+   "note": "The lidar is sparse here (1.6 ground points per square meter) and its relief shows only the west lane and the loop at the north end of the drawn loop; the pin is under the trees between the station's several buildings (one 10 m northwest, a white-roofed one 45 m south), and nothing in the photo or the lidar says which is the guard station. Nothing traced."
   },
   "233322": {
    "call": "usable",
@@ -98,7 +98,7 @@
   },
   "233997": {
    "call": "unsure",
-   "note": "Full canopy: the pin is on a drawn Census road in dense forest above the lakeshore, and no group site clearing shows. The listing's own point, 1.5 km west, is in the lake."
+   "note": "The lidar relief shows NFS Rd 4818 plainly as a crowned band with its ditches, and the drawn Census line runs 15 to 30 m west of it past the pin (the pin sits on the drawn line, not on the road); neither layer shows a group site clearing or pad near the pin, and the listing's own point is in the lake, so where the site is can't be told. Nothing traced: redrawing the road wouldn't place the site."
   },
   "234006": {
    "call": "hold",
@@ -186,7 +186,7 @@
   },
   "234306": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under the trees on the point above the river, inside a drawn trail loop, and no group site clearing shows; the paved loop and lot 50 m south are the nearest open ground."
+   "note": "The lidar survey is sparse here (0.47 ground points per square meter, and it misses the river edge); its relief shows the paved loop and lot by the highway and a level bench above them where the pin sits, with a faint path round its rim 5 to 15 m from the drawn trail loop, but no group site clearing or lane onto the bench shows plainly. Nothing traced."
   },
   "234316": {
    "call": "good",
@@ -201,8 +201,8 @@
    "note": "The pin is on the cabin's light roof in a small clearing in the forest, but the nearest drawn road is 60 m south, and the drawn Census spur toward it ends short; no lane to the cabin shows plainly through the trees."
   },
   "234372": {
-   "call": "unsure",
-   "note": "The pin is at the end of the drawn track among a few trees in the open grassland, and no cabin shows plainly under them."
+   "call": "usable",
+   "note": "The drawn track ends at the pin, where the photo shows a small light roof beside a vehicle among the trees and the lidar shows a bright levelled patch (a gravel or bare pad in the intensity, flat in the relief) about 20 m across; that reads as the cabin's yard, though the roof is too small to be plainly the cabin. Nothing traced."
   },
   "234387": {
    "call": "good",
@@ -250,7 +250,7 @@
   },
   "234458": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under dense pines inside a drawn loop above the meadow, and no cabin shows."
+   "note": "The photo shows the east side of the drawn loop as a dirt track up from Big Meadows Road, and the lidar intensity a lighter gravel patch under the pines south of the pin, but neither layer shows the west side of the loop as a lane, nor a cabin or a plain pad at the pin (the relief there is only a faintly levelled area). Nothing traced."
   },
   "234462": {
    "call": "good",
@@ -322,7 +322,7 @@
   },
   "234784": {
    "call": "unsure",
-   "note": "Full canopy in deep shadow: the pin is under the trees beside a drawn loop by the river, and no group site clearing shows."
+   "note": "The lidar relief shows the campground lane as a smooth band from Icicle Road down the west side of the loop, and the drawn lane follows it within a few meters; the pin sits on a wooded mound inside the loop, with a large level open area (bright in the intensity) 15 to 60 m south of it. Which of these is the group site can't be told, so the pin isn't plainly right. Nothing traced."
   },
   "250012": {
    "call": "good",
@@ -350,7 +350,7 @@
   },
   "272098": {
    "call": "unsure",
-   "note": "The pin is under the trees among the ranger station's scattered buildings (the nearest 25 m south), and which is the cabin isn't plain; the drawn lanes pass 40 m south."
+   "note": "The lidar intensity shows the ranger station's lanes as grey gravel bands, and the drawn lanes follow them within a few meters; but the pin is under the trees between the station's scattered buildings (a white-roofed one 20 m southwest, a brown-roofed one 40 m southeast), and neither the photo nor the lidar says which is the cabin. Nothing traced."
   },
   "273779": {
    "call": "unsure",

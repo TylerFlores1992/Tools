@@ -90,7 +90,7 @@
   },
   "234126": {
    "call": "unsure",
-   "note": "The pin is in shadowed conifer forest beside the drawn Census road, and only a faint light patch shows where a building might be."
+   "note": "The lidar intensity shows N Fork Teanaway Road as a plain asphalt band, and the Census line ran up to 22 m east of it past the guard station, so the road is redrawn on the band from the bend by the river to the frame's south edge. At the pin the relief shows only a levelled clearing at the forest edge and the photo a small white roof 20 m east, neither plainly the guard station, and the pin is now 40 m from the road."
   },
   "234138": {
    "call": "good",
@@ -150,7 +150,7 @@
   },
   "234335": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in unbroken dark forest with no building or clearing, and the nearest drawn road is 640 m away (a drawn trail is 90 m off)."
+   "note": "The lidar layers show the pin on a flat terrace between the forks of Fox Creek (their channels plain in both layers), with no lane, trail or levelled pad leading to it and nothing that marks a cabin; the nearest drawn road is still 640 m away. Nothing traced."
   },
   "234340": {
    "call": "good",
@@ -162,7 +162,7 @@
   },
   "234350": {
    "call": "unsure",
-   "note": "The pin is under the trees at the lakeshore, 10 m from where the drawn lane ends, and no cabin shows plainly."
+   "note": "The drawn lane follows the gravel patches the photo shows between the trees, and the lidar relief shows a faint line along its northeast half, but neither layer shows a cabin, a roof or a levelled pad at the pin by the lakeshore (the intensity is mottled under the firs), so it can't be told whether the cabin sits there. Nothing traced."
   },
   "234356": {
    "call": "good",
@@ -190,7 +190,7 @@
   },
   "234377": {
    "call": "unsure",
-   "note": "The pin is under burned and standing forest 15 m past the end of a short drawn spur off the road, and no cabin shows plainly."
+   "note": "The lidar survey stops about 10 m east of the pin (it covers only the west half of the frame, at 0.95 ground points per square meter), and its relief shows neither the road nor a pad near the pin; the photo shows a small dark shape at the end of the drawn spur, 15 m northeast of the pin, that can't be told for the cabin. Nothing traced."
   },
   "234383": {
    "call": "hold",
@@ -230,7 +230,7 @@
   },
   "234410": {
    "call": "unsure",
-   "note": "The pin is on a small building under the trees between two drawn Census lanes, but several cabins sit nearby and none is plainly this one; the drawn lanes run up to 20 m off the visible ones."
+   "note": "The pin is on a cabin with its own gravel parking clearing, and a short lane runs north from the clearing to the meadow by the green-roofed building, but nothing plainly joins it to the campground lane that shows in the open 45 to 60 m east; the drawn Census spur to the cabin crosses trees where no lane shows. The lidar is too sparse here (1.1 ground points per square meter) to place a lane under the trees. Nothing traced."
   },
   "234413": {
    "call": "good",
@@ -341,8 +341,8 @@
    "note": "The pin is on the guard station's buildings in the yard by the canyon road, and the drawn drive off the road reaches it."
   },
   "251905": {
-   "call": "unsure",
-   "note": "Full canopy: the pin is in larch and fir forest between the drawn river road and a drawn lane 20 m north, and no yurt shows through the trees."
+   "call": "usable",
+   "note": "Under the larch and fir the lidar relief shows a levelled clearing about 25 m across at the pin, with a short drive up to Whitetail Camp Road, and the intensity shows the camp road as a dark band that the drawn lane follows within a few meters, 18 m north of the pin. The yurt itself doesn't show in either layer or the photo. Nothing traced."
   },
   "253500": {
    "call": "good",
@@ -353,8 +353,8 @@
    "note": "The pin is on the lodge above the lakeshore. The drawn campground road passed 75 m west, so the gravel lane from it past the lodge, plain in the open, is traced."
   },
   "251709": {
-   "call": "unsure",
-   "note": "The pin is under the cottonwoods beside the dirt clearing where the drawn park road ends 35 m northeast, and the group site's pads can't be seen through the trees."
+   "call": "usable",
+   "note": "Under the cottonwoods the lidar intensity shows a mown lawn about 40 m across at the pin, beside the dirt parking clearing where the drawn park road ends 30 m northeast; that reads as the group site with its parking, though no pads or shelter show. Nothing traced."
   }
  }
 }
