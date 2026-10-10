@@ -1856,11 +1856,11 @@
   },
   {
    "wave": 18,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 90,
    "summary": {
-    "ready": 50,
-    "review": 38,
+    "ready": 46,
+    "review": 42,
     "notDrawn": 2,
     "failed": 0
    },
@@ -2266,11 +2266,11 @@
   },
   {
    "wave": 22,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 63,
    "summary": {
-    "ready": 34,
-    "review": 29,
+    "ready": 33,
+    "review": 30,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2344,11 +2344,11 @@
   },
   {
    "wave": 23,
-   "built": "2026-10-09",
+   "built": "2026-10-10",
    "count": 63,
    "summary": {
-    "ready": 38,
-    "review": 24,
+    "ready": 36,
+    "review": 26,
     "notDrawn": 1,
     "failed": 0
    },

@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-233947",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -82.2261714,
+     35.7465711
+    ],
+    [
+     -82.2262709,
+     35.7465666
+    ],
+    [
+     -82.2263704,
+     35.7465441
+    ],
+    [
+     -82.2264588,
+     35.746499
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the short gravel spur from the loop west into the clearing by Poplar: the photo shows the pale strip and the lidar intensity shows the clearing joined to the loop."
+}

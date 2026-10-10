@@ -6,27 +6,27 @@
  "looks": {
   "231850": {
    "call": "usable",
-   "note": "The loops follow the visible gravel along the river, and Sites 001 to 006 and 008 to 019 sit beside them. A line drawn west of the middle, from 013 down to 014, runs through the trees where no lane shows, and 007 sits off any drawn road."
+   "note": "Replaced to drop OpenStreetMap's line west of the middle loop from 013 down to 014, where neither the lidar relief nor the intensity shows a lane and the photo shows only trees; the loops by 009 to 013, 001 to 008, 014 to 016 and 017 to 019 follow the gravel bands on the photo and the lidar within about 2 m and are kept. Every site is within 40 m of a drawn road; 007 sits on its own pad below the east lane."
   },
   "231851": {
    "call": "usable",
-   "note": "The upper loop (001 to 021) follows the visible lanes among the pines, and the group site GOJ sits by its own loop to the east. The lower loops by the river (022 to 041) are drawn under the trees where the lanes barely show; nothing visible disagrees. One site has no point."
+   "note": "The upper loop (001 to 021), the GOJ group loop and the roads across the open slope follow plain bands on the lidar intensity and the photo. Under the trees by the river the survey is noisy (about 2.8 ground points per m², mottled intensity and faceted relief), so the lower loops past 022 to 041 can't be checked to the lidar; they follow the pale gaps the photo shows and nothing disagrees. Nothing traced."
   },
   "231858": {
    "call": "good",
    "note": "The loop round the gravel clearing follows the visible gravel, and Sites 001 to 006 sit on pads round its edge."
   },
   "231859": {
-   "call": "unsure",
-   "note": "Under spruce and aspen. The loop matches the few pale lanes that show, and Sites 002 to 016 sit beside it, but the photo can't confirm most of the loop or the pads; 011 to 013 sit together at its west end."
+   "call": "usable",
+   "note": "The lidar intensity shows the campground loop past 002 to 010 and both stretches of West Chicago Creek Road as plain bands under the spruce and aspen, and OpenStreetMap's lines follow them within about 2 m; every site is within 40 m of a drawn road. The pads off the loop and the short spur to 011 to 013 at its west end are not drawn. Nothing traced."
   },
   "231867": {
    "call": "good",
    "note": "The loop and the turnaround at its east end follow the visible gravel, and Sites 001 to 019 sit on pads beside them; 003 to 005 and 014 sit on short pull-outs that show."
   },
   "231876": {
-   "call": "unsure",
-   "note": "Under pines throughout. The drawn loop matches the few pale gaps (by 011 to 013, 006, 015), and Sites 001 to 017 sit near it, but the photo can't confirm the east side of the loop or the pads for 002 and 004."
+   "call": "usable",
+   "note": "The lidar intensity shows the loop's south-east leg past 001 to 007 as a plain asphalt band, and the relief shows its north-west leg past 015 to 011 and the bend by 009 as a bench cut into the slope; OpenStreetMap's loop follows both within about 2 to 3 m, so the east side the photo couldn't confirm is confirmed. Every site is within 40 m of the loop; the short spurs to the pads (by 004 and 006) aren't drawn. Nothing traced."
   },
   "231878": {
    "call": "good",
@@ -54,7 +54,7 @@
   },
   "232093": {
    "call": "usable",
-   "note": "The road along the slope follows the visible gravel, and Sites 003 to 010 and 012 to 015 sit beside it and its spurs. 001 and 002 sit under the trees west of the road, and 011 sits alone to the north-east, with no lane showing."
+   "note": "The survey is sparse (about 1.5 ground points per m²) but the intensity still shows the campground road along the slope and Saint Charles Road below as bands, and OpenStreetMap's lines follow them within about 2 m (the photo agrees in the clearings by 003 to 008). The dark winding band between them is the creek. Only 011, alone to the north-east, is more than 40 m from a road. Nothing traced."
   },
   "232101": {
    "call": "good",
@@ -70,7 +70,7 @@
   },
   "232155": {
    "call": "hold",
-   "note": "Under dense spruce with the canyon's shadow across it. The Census loops are angular lines through the trees where no lane shows, and Sites 003 to 007 and 013 to 015 sit off them."
+   "note": "The survey is sparse (about 1.9 ground points per m²): the intensity is bright and blotchy under the spruce with no plain band, and the relief shows only faint benches (a possible loop west of 003 by 001, a lane toward 006 to 008) that can't be placed to 3 m. The Census loops stay angular lines through the trees, off whatever lanes there are. Nothing traced."
   },
   "232156": {
    "call": "good",
@@ -165,8 +165,8 @@
    "note": "The loops follow the visible gravel among the spruce, and Sites 002 to 024 sit on pads beside them; 008 and 011 sit on short spurs that show."
   },
   "234684": {
-   "call": "hold",
-   "note": "Only the road above the campground is drawn. Sites 001 to 012 sit in the trees below it along lanes that show only in pieces (by 002, 003 and 006 to 009), so no site has a drawn road."
+   "call": "usable",
+   "note": "The lidar is too sparse here (about 1.3 ground points per m², mottled) to show lanes, but the photo shows the gravel lane below the road plainly, so it is traced from NAIP from the pad by 004 and 005 east past 006 to 009 to the turnaround at the end of the campground road. Only 002 is more than 40 m from a road; the pieces of lane by 002 and 003 show only in a clearing with no visible link to the road and are not drawn."
   },
   "234724": {
    "call": "usable",
@@ -198,7 +198,7 @@
   },
   "254082": {
    "call": "usable",
-   "note": "The road in and the north loop follow the visible gravel, and Sites 001 to 013 sit beside them. The loop drawn round 014 to 016 in the south-west is under full canopy and doesn't show."
+   "note": "Replaced over the lidar intensity, which shows every road as a plain gravel band under the spruce: the campground road, the north loop past 005 to 010 and the south-west loop round 014 to 016 (the one the photo couldn't see) are redrawn on their bands, and Blue Lakes Road and Trinchera Road are moved 3 to 6 m onto theirs. Every site is within 40 m of a drawn road."
   },
   "259557": {
    "call": "usable",

@@ -6,19 +6,19 @@
  "looks": {
   "232008": {
    "call": "unsure",
-   "note": "The road along the river is drawn and 002 to 009 sit near it, but the whole campground is under canopy and 010, 011 and 019 to 021 sit 20 to 40 m off it with no lane showing."
+   "note": "The lidar (about 3 ground points per m², leaf-off 2016) shows the flat river terrace but no plain band: the intensity is faceted and noisy, and the relief shows only a faint bench near the Forest Service road's line and no loop at the west end, so the road and the loop round 017 can't be checked to 3 m. Every site is within 40 m of the drawn road. Nothing traced."
   },
   "232257": {
    "call": "good",
    "note": "Only the road in was drawn; traced the lot, the lane west past Group C, the lane south to the loop around Group B, and the spur toward Group A, all plainly visible."
   },
   "232331": {
-   "call": "unsure",
-   "note": "Under canopy. The drawn loop follows the lane only at its south end by 015 and 017; 05 to 012 sit north and west of it with no lane showing."
+   "call": "hold",
+   "note": "The lidar is sparse here (about 2.1 ground points per m²) and the middle of the campground is a patchwork of interpolated facets, not lanes; the dark diagonal bands across the loop are creek channels (the photo shows the streambed), and the drawn loop's north and west sides follow neither layer. Where 05 to 012 are reached can't be placed, so the loop can't be redrawn. Nothing traced."
   },
   "232434": {
    "call": "usable",
-   "note": "Traced the gravel lot from the end of the road north to the field, where G002 and G003 sit at its edge. G001 sits under canopy east of the lot with no lane showing."
+   "note": "The traced gravel lane from the end of the road north to the field matches the gravel strip on the photo, and the lidar intensity shows the row of parking blocks along it; G002 and G003 sit at the field edge and G001 under canopy east of the lane, all within 40 m. The lidar shows no lane to G001. Nothing traced."
   },
   "232436": {
    "call": "unsure",
@@ -34,11 +34,11 @@
   },
   "232441": {
    "call": "usable",
-   "note": "The road past G02 follows the visible lane, and G02 sits on the tent pads beside it. G01 and G03 sit under canopy 25 m east of the drawn road, where no lane shows."
+   "note": "The lidar intensity shows the group camp's open ground with the tent pads by G01 and G03 as dark squares, and the Park Service road and parking loops along its west and east sides sit on its edges; no other lane shows. All three group sites are within 40 m of a drawn road. Nothing traced."
   },
   "232478": {
    "call": "usable",
-   "note": "The parking lot and its lane follow the visible pavement. Group sites 201 to 203 sit in the trees west and north of the lot, with no lane showing."
+   "note": "Replaced to move the parking lane onto the paved lot: the two Park Service lines sat 6 to 12 m west of it in the trees, while the photo shows the striped lot plainly and the lidar intensity shows it as a bright paved strip. Group sites 201 to 203 sit in the trees a short walk west and north of the lot, all within 40 m; the other roads are kept as drawn."
   },
   "232481": {
    "call": "good",
@@ -49,8 +49,8 @@
    "note": "Unchanged. The road along the river on the south-west edge follows the lidar relief's road bench, but the two half-circle arcs inside are drawn through solid trees. Zoomed on a 5 m grid, only a clearing by 6 and pale patches by 4 and 5 show on the photo, and the lidar relief is a flat terrace with no lane edges, so the camp's lanes can't be placed and nothing was traced."
   },
   "232483": {
-   "call": "unsure",
-   "note": "The lane is drawn through canopy past 001 to 005, but nothing on the photo shows it or the sites."
+   "call": "usable",
+   "note": "The lidar relief shows Straight Fork Road as a plain graded band with the Park Service line on it, the campground lane's curve at the south-west end as a bench, and the levelled horse-trailer pads by 002 to 004; the intensity shows the open ground of the camp. The lane's north side past 001 to 003 shows only faintly, but nothing disagrees and every site is within 40 m of it. Nothing traced."
   },
   "232484": {
    "call": "hold",
@@ -61,36 +61,36 @@
    "note": "The lane follows the visible track, and 001 and 003 sit on the clearings with trailers beside it."
   },
   "232503": {
-   "call": "unsure",
-   "note": "The road ends at the parking lot by the field; the three group sites A001, B001 and C001 sit 100 to 200 m away under full canopy, where no lane shows."
+   "call": "hold",
+   "note": "The road ends at the parking lot by the field, where the photo shows picnic tables and fire rings; the lidar shows the field and a faint track north-west toward C001, but no lane to any of the three group sites, which sit 100 to 230 m away under full canopy (3 of 3 more than 40 m from a road). Which clearing is which group site can't be told, so nothing is moved or traced."
   },
   "232519": {
-   "call": "usable",
-   "note": "The main road and the loops on the middle and north points follow the visible pavement, and 01 to 10, 40 to 54 and 59 to 72 sit beside them. On the south point (11 to 38) the drawn loop only partly follows the lanes under the trees, and 73 to 82 sit off the drawn roads."
+   "call": "unsure",
+   "note": "The survey is very sparse (about 1.1 ground points per m²). The lidar intensity confirms the main road, the parking rows and the loops on the middle and north points past 40 to 54 and 59 to 72, where OpenStreetMap follows the bands, but under the trees on the south point (11 to 38) it is dark and blotchy with no band, so the south loop that only partly follows the lanes on the photo can't be checked or redrawn. Nothing traced."
   },
   "232531": {
    "call": "unsure",
-   "note": "A big campground on several points under trees. The main road and some loops follow the visible pavement, but many sites (13 to 45, 84 to 97) sit off the drawn roads, and the lanes to them show only in pieces."
+   "note": "The survey is very sparse (about 0.5 ground points per m²). The intensity confirms the main road, the parking lots and the loops round 55 to 60 and 68 to 75 as plain bands, but on the south-west arm (21 to 38) and the north-east (84 to 97) the canopy is black mottle with no band, so the lanes there can't be placed and 14 of 97 sites stay more than 40 m from a road. Nothing traced."
   },
   "232578": {
    "call": "unsure",
-   "note": "The roads on each point follow lanes that show through the trees, and many sites line them, but at this size, with 111 sites over 1 km, the photo can't confirm each site sits on a pad."
+   "note": "The survey is the sparsest on the list (about 0.3 ground points per m²): the intensity shows the main roads on each point and the loops by 042 to 048 and 069 to 076 roughly where OpenStreetMap draws them, but at this density nothing can be checked to 3 m, and 21 of 111 sites sit more than 40 m from a road with no lane showing. Nothing traced."
   },
   "232596": {
    "call": "hold",
-   "note": "The road reaches the west and middle points, but the drawn loop on the west point doesn't follow the lanes, and the east point (26 to 34) has only a road on its edge; the lanes to most sites show only faintly under the pines."
+   "note": "The lidar intensity (2025, about 3 ground points per m²) is high-contrast and mottled under the pines: Cardinal Lane, Sparrow Lane and Woodpecker Drive show as smoother bands, and pieces of lanes show on the west point and toward 28 to 33 on the east point, but they can't be followed to 3 m, so the drawn loop on the west point (up to 15 m off) can't be redrawn with confidence and 26 to 32 (7 of 32) stay more than 40 m from a road. Nothing traced."
   },
   "232598": {
    "call": "usable",
    "note": "The main road follows the visible pavement down the point. Now traced from the photo: the middle lane from the north junction down past 38 to the pads in the south-west, the wide lane that branches off it toward the south lot past 37, the lane from the main road past 38, the spurs to 30 and 31, the lanes west to 03 and to 04, and the lane south past 37. 27 to 29 sit on the open slope east of the middle lane, 29 about 50 m from it, and 21 to 24 sit under trees by the north loop."
   },
   "232605": {
-   "call": "unsure",
-   "note": "Under canopy. The A loop's drawn roads follow lanes that show in places, and A01 to A11 sit near them, but A12 to A26 sit in the trees between drawn roads with only pieces of lanes showing."
+   "call": "usable",
+   "note": "Replaced over the lidar intensity, which shows every lane as a plain asphalt band under the trees: Hill Creek Road, the middle road past A14 to A26, the inner loop round A13 and A17 (OpenStreetMap had its south curve about 10 m north of the band) with its east leg up past A08, the west leg past A01 to A07 and the loop past A09 to A12 are redrawn on their bands. Every site is within 40 m of a drawn road; the short pull-ins to A14, A19 to A21 and A03/A04 are not drawn."
   },
   "232625": {
    "call": "usable",
-   "note": "Traced the lane from the river road east through the lot to the loop past 22 to 30, and the B lane north past B11 to B3 (a single lane, plain in the gaps in the canopy). B1 and B2 sit under canopy with no visible lane."
+   "note": "The earlier traced lanes (east through the lot to the loop past 22 to 30, and the B lane north past B11 to B3) follow the bands on the lidar intensity within a couple of meters, as does Sassafras Creek Road past 01 to 21. B1 and B2 sit under canopy north of the B lane's end where neither layer shows a lane, but every site is within 40 m of a drawn road. Nothing traced."
   },
   "232645": {
    "call": "usable",
@@ -101,16 +101,16 @@
    "note": "Unchanged. The roads on the north point (01 to 18) and the west points (25 to 83) follow lanes that show, but the loop road through the middle past 21, 20 and 19A, and its link down past 22 to 24 to the main road, run under full canopy: the photo shows no lane there, and the lidar relief shows only a bench beside a ditch, so they can't be placed to 3 m from the photo and the replace wasn't done. The frame also draws a housing subdivision's streets in the south-east."
   },
   "232687": {
-   "call": "unsure",
-   "note": "A long ridge of pine woods with a drawn spine road; most sites (014 to 069) sit 30 to 100 m off it, and the lanes to them show only faintly under the pines."
+   "call": "hold",
+   "note": "The lidar intensity (about 3.9 ground points per m²) shows Ridge Road, Bath House Road, the north road to 043 to 048, the arc past 050 to 053 and the loops by 054 to 057 as faint gray bands, with OpenStreetMap's Ridge Road 5 to 15 m off its band in the west and middle. But under the pines on the east ridge (014 to 041) and the west point (059 to 069) no lanes show at all, so even redrawn about a third of the 66 sites would stay more than 40 m from a road (32 now). Nothing traced; the redraw is worth doing only once those lanes can be placed."
   },
   "232700": {
    "call": "hold",
-   "note": "The drawn roads only partly follow the lanes. 06 to 15, 26 to 41 and 42 to 46 sit under the pines away from any drawn road, and nothing shows clearly enough to trace."
+   "note": "The survey is sparse (about 0.9 ground points per m²) and the intensity is black mottle under the pines: the main roads show, but no lane shows to 06 to 15, 26 to 41 or 42 to 46, and the drawn loop west of 47 to 55 follows no band. Nothing traced."
   },
   "232707": {
-   "call": "hold",
-   "note": "One straight drawn line crosses the middle; the sites (15 to 31 in the west, 01 to 14 in the east) sit under full canopy with no lanes showing, though the parking lot north shows."
+   "call": "usable",
+   "note": "Replaced over the lidar intensity, which shows the whole network as plain asphalt bands although the survey is sparse (about 1.6 ground points per m²): the west loop round 22, 26 and 28 with 15 to 31 around it, the parking lot and the lane along its north-west side, the entrance roads in the north-east, the road south-west past 12 to 14 and the south loop round 02, 03, 09 and 10, plus the ramp road south of the lot; the photo agrees at the lot and the north-east roads. The Census line across the middle, which matched none of it, is dropped, and every site is now within 40 m of a drawn road; the pull-ins to the pads are not drawn."
   },
   "232737": {
    "call": "good",
@@ -118,7 +118,7 @@
   },
   "232749": {
    "call": "hold",
-   "note": "Two points of pine woods 1.3 km wide with no road drawn on either; the lanes to 001 to 080 show only in pieces through the trees."
+   "note": "Only a stub of Winfield Road is drawn for 79 sites on two points 1.3 km across. The lidar intensity (about 2 ground points per m², mottled under the pines) shows the main lanes on both points as gray bands at the whole-map scale, but in the 150 m boxes they break up in the mottle and can't be followed to 3 m over the roughly 4 km needed. Nothing traced."
   },
   "233120": {
    "call": "good",
@@ -129,20 +129,20 @@
    "note": "The loop around the field follows the visible pavement, and the group sites G1 to G5 sit on the clearings beside it."
   },
   "233176": {
-   "call": "unsure",
-   "note": "Group sites A and B sit under full canopy on either side of a drawn road; nothing on the photo shows where they are."
+   "call": "hold",
+   "note": "The survey is sparse (about 1.9 ground points per m²) and the intensity is mottled under the trees with no lane showing; the relief shows only drainage channels (one runs past B) and a creek to the north, nothing that reads as the drawn road or a lane to A, which stays 59 m from it (1 of 2 sites). Nothing traced."
   },
   "233200": {
-   "call": "usable",
-   "note": "The highway through the middle is drawn and the sites sit in the trees on both sides of it. The gravel lanes to 1 to 9 north of the road and 10 to 20 south of it show only in pieces and aren't drawn."
+   "call": "hold",
+   "note": "The survey is sparse (about 1.2 ground points per m²). At the whole-map scale the intensity hints at the gravel lanes off the highway (north past 1 to 5, and a curve south toward 12 to 17), but in 150 m boxes they break up into mottle and can't be placed to 3 m, so only the highway is drawn and 15 of 20 sites stay more than 40 m from a road. Nothing traced."
   },
   "233308": {
    "call": "unsure",
-   "note": "The road along the creek follows the visible gap in the trees and the sites line it; the loop at the west end is drawn through trees, and the canopy hides any pads."
+   "note": "The lidar intensity for this 2017 survey is blank (almost every pixel near black), so it shows no lanes; the relief (about 2.4 ground points per m²) shows the teardrop loop by 022 to 027 and the valley road past 001 to 019, but among the terraces, ditches and pad cuts on the valley floor neither can be placed to 3 m, and the drawn road runs along the pad cuts rather than a plain band. Nothing traced."
   },
   "233321": {
-   "call": "usable",
-   "note": "Shelter 001 sits on a small clearing at the end of the drawn trail; shelter 002 sits 100 m south under full canopy with no trail showing."
+   "call": "hold",
+   "note": "Shelter 001 sits on the clearing at the end of the drawn track, which the lidar intensity shows as a bright opening; shelter 002, 100 m south under full canopy, is reached only by a narrow line in the relief that reads as a footpath, so nothing is traced and 1 of 2 sites stays more than 40 m from a road. The survey is mottled (about 2.3 ground points per m²)."
   },
   "233333": {
    "call": "good",
@@ -161,8 +161,8 @@
    "note": "The loop follows the visible pavement, and 09 to 24 sit inside it. The paved lane along the shore past 01 to 06, with the spurs to 04, 05 and 06, is now traced from the photo; 26 to 30 sit beside the road by the ramp lot, though 29 and 30 are about 40 m from it, and 07 and 08 sit in the trees east of the shore lane's end with no lane showing."
   },
   "233656": {
-   "call": "usable",
-   "note": "The loops in the north and the road down the east shore follow the visible pavement, and 08 to 30 sit beside them. 01 to 07 sit in the trees north-west of the road with no lane drawn."
+   "call": "good",
+   "note": "Replaced over the lidar intensity, which shows every road as a plain asphalt band and agrees with the photo: Pine Creek Park Road, the north loops past 08 to 18, the lane to 19 to 21, the road down the east shore past 22 to 26 to the turnaround by 27 to 29, the road south to the boat ramp, and the road curving north-west past 05 to 07 and 01 to 04 (undrawn before). The Census diagonals are dropped, and every site is now within 40 m of a drawn road; the faint gravel track across the south field toward 30 is left undrawn."
   },
   "233702": {
    "call": "good",
@@ -178,15 +178,15 @@
   },
   "233814": {
    "call": "hold",
-   "note": "The one drawn road runs through the woods between the B and C loops, following a lane only in part; B01 to B14 and C01 to C16 sit under canopy on lanes that show only in pieces."
+   "note": "The lidar relief (about 8.6 ground points per m²) shows the C loop at the whole-map scale: a crowned lane up the east side past C08 to C13 to the top lane by C15 and C16, with a spur to C10. But in 150 m boxes its edges blur into the grassy ground (half the snap readings find no band) and it can't be placed to 3 m; the intensity shows only mottle. So only the Census road between the B and C loops is drawn and C07 to C16 (10 of 30) stay more than 40 m from it. Nothing traced."
   },
   "233912": {
    "call": "good",
    "note": "The loop around the field follows the visible gravel, and A and C sit beside it; B sits in the trees 20 m off the loop's south-east bend."
   },
   "233947": {
-   "call": "unsure",
-   "note": "Ash sits on a visible lot by the road and Dogwood beside the drawn loop, but the loop's west side runs through solid trees, and Red Oak, Maple, Poplar and Laurel sit under canopy off any drawn lane."
+   "call": "usable",
+   "note": "The lidar intensity shows the open ground by Ash, Dogwood and Poplar as bright clearings, and the loop's west side, which the photo couldn't see, follows a smooth band within a couple of meters. Traced the short gravel spur from the loop west into Poplar's clearing, which both the photo and the intensity show; only Red Oak, 41 m from the road in the trees, is past 40 m."
   },
   "234014": {
    "call": "good",
@@ -197,8 +197,8 @@
    "note": "Both loops follow the visible pavement, and the group sites sit on the clearings inside them; 4 and 5 sit just outside the east loop."
   },
   "234370": {
-   "call": "unsure",
-   "note": "All four group sites sit under full canopy on either side of a drawn lane that doesn't show on the photo."
+   "call": "usable",
+   "note": "The lidar relief shows the lane from the highway as a smooth graded band between the creek and the ditch, with the intensity agreeing faintly, and the Forest Service line follows it within about 3 m; all four group sites sit within 40 m of it on either side. The pull-ins to the group sites aren't drawn. Nothing traced."
   },
   "234513": {
    "call": "good",
@@ -214,11 +214,11 @@
   },
   "234703": {
    "call": "hold",
-   "note": "The road ends at a lot by the north; 019 to 029 sit under full canopy west of it, and the lanes past 023 and 024 show but don't join the drawn road."
+   "note": "The lidar relief shows a gravel loop round 024 and faint lanes north of it toward 020 to 022, and the intensity shows the park road continuing south from the lot, but nothing plainly joins the campground lanes to the drawn road (the lines between are ditches and old tracks), so they would float and aren't traced. 7 of 11 sites stay more than 40 m from a road."
   },
   "234767": {
    "call": "usable",
-   "note": "The road follows the visible pavement through the trees, and 001, 002 and 009 sit by it. The other sites (003 to 008, 010) sit 20 to 50 m off the road under canopy with no lanes showing."
+   "note": "The lidar intensity shows Polk Road 3 as a plain asphalt band and OpenStreetMap's line follows it within about 3 m; the short pull-ins to 001 and 002 show off it. Sites 003 to 008 and 010 sit under canopy with no lanes showing on either layer, but every site is within 40 m of the road. Nothing traced."
   },
   "246895": {
    "call": "good",
@@ -229,8 +229,8 @@
    "note": "Unchanged; nothing to trace. The parking loop by the road is drawn, and the ten group sites sit on their fire-ring pads across the mown field north of it, with no lane or worn track between them on the photo. All but 001 are 60 to 220 m from the lot (004 and 005 the farthest), more than a short walk, so by the roadless-third rule it can't pass as usable; it is a walk-in field and the call is the orchestrator's."
   },
   "251469": {
-   "call": "unsure",
-   "note": "The road up the valley follows the visible gap, and 006 to 010 and 018 to 024 sit beside it in clearings. The lanes to 011 to 017 and 002 to 005 show only in pieces under the trees."
+   "call": "usable",
+   "note": "Curtis Creek Road follows the plain gravel band on the lidar intensity within about 2 m, and 001 to 011 and 018 to 024 sit beside it. The intensity also shows a gravel turnaround loop between 009 and 016 with a lane north from it past 007 and 017, but neither layer shows plainly where that lane meets the road, so it isn't traced (it would float); 013 to 015 (3 of 24) stay more than 40 m from a road. Nothing traced."
   },
   "251908": {
    "call": "hold",
@@ -241,16 +241,16 @@
    "note": "The forest road follows the visible gap in the trees, and the three group sites Red, White and Blue sit beside it."
   },
   "255286": {
-   "call": "unsure",
-   "note": "The loop follows a lane that shows in places through the trees; the sites sit around it under full canopy, 20 to 40 m off, with no lanes showing."
+   "call": "usable",
+   "note": "Although the survey is sparse (about 1.4 ground points per m²), the lidar intensity shows the campground road and its loop as a plain dark band, and OpenStreetMap's line follows it within about 2 m. Short spurs off the loop toward 004 and toward 006 to 008 show too, and every site is within 40 m of the loop. Nothing traced."
   },
   "258667": {
-   "call": "unsure",
-   "note": "Under full canopy. The loops are drawn and many sites line them, but 9, 11, 39 to 45 and 72 sit off the drawn roads, and nothing shows through the trees to check the lanes."
+   "call": "usable",
+   "note": "The lidar relief shows every loop as a benched lane with its pads (the bright bumps) under full canopy: the north loop round 10 to 22, the middle loops past 23 to 38 and 74 to 93, and the south loop round 46 to 70; the Park Service lines follow them within about 2 m. The intensity is too even here to show them. Every site is within 40 m of a drawn road; 9, 11, 39 to 45 and 72 sit on pads a little off the loops. Nothing traced."
   },
   "264886": {
    "call": "usable",
-   "note": "The two loops follow the visible pavement, and 5 to 19 sit beside them. Sites 1 to 4 sit under canopy south of the loops with no lane showing."
+   "note": "The lower and upper loops follow the plain bands on the lidar intensity and the photo within a couple of meters, and every site is within 40 m of a drawn road. Sites 1 to 4 sit under canopy south of the lower loop, where the intensity shows only a lane running on south-west past 3, not to the sites. Nothing traced."
   },
   "273780": {
    "call": "hold",
@@ -269,12 +269,12 @@
    "note": "Split listing, now shown as 2 areas, each frame holding one cluster: Sites 3 to 17 in the woods north of the road, and Sites 18 to 22 on a lot by the water 800 m south-east. The first area's lanes show only in pieces under the trees, and the second has no drawn road at all."
   },
   "10050257": {
-   "call": "hold",
-   "note": "No road is drawn, and Sites 1 to 12 sit under full canopy along a lane that shows only by Site 9 and at the south edge; too little to trace."
+   "call": "usable",
+   "note": "The lidar intensity shows the campground lane as a plain asphalt band under full canopy, with the pads off it, and the photo agrees by Site 9 and at the south edge. Traced from the south-west past Sites 1 to 5, round the bend past 6 to 9 and west past 10 to the frame edge; every site is now within 40 m of it. The pull-ins to the pads and the short spurs to 11 and 12 are not drawn."
   },
   "10052157": {
-   "call": "unsure",
-   "note": "The road in is drawn only to the edge of the campground. The dirt lanes past 1 to 5 and 6 to 12 show in pieces through the trees but too unclearly to trace, and the sites sit on clearings beside them."
+   "call": "usable",
+   "note": "The lidar intensity shows both dirt lanes as plain gray bands, and the photo agrees in the gaps. Traced the west lane past 1 to 5, continuing OpenStreetMap's road in (which stopped at the edge of the campground), and the east lane past 6 to 12. Only 8 (41 m) is past 40 m; the short tracks into the clearings by 7 to 9 and 10 to 12 are not drawn."
   },
   "10052192": {
    "call": "hold",
@@ -302,7 +302,7 @@
   },
   "10158892": {
    "call": "unsure",
-   "note": "The loop's west and south sides follow the visible lane past 05 to 08. Its east side runs through solid trees, and 01, 04 and 09 sit under canopy inside the loop with no lane showing."
+   "note": "The lidar intensity (about 3.5 ground points per m²) shows the loop's west, north and north-east sides as a plain band, with the Census line 2 to 5 m off it, but the south-east side past 09 shows only as a faint smear in the mottle and can't be checked to 3 m. Every placed site is within 40 m of the loop. Nothing traced."
   },
   "10163100": {
    "call": "good",
@@ -325,8 +325,8 @@
    "note": "All 8 sites share one point in the trees by a parking area, so the check can't draw it."
   },
   "10238165": {
-   "call": "unsure",
-   "note": "The road is drawn through the trees across the point; H1 and H3 sit beside it, H2 and H4 under canopy. The gravel lot on the shore shows but isn't on the drawn road."
+   "call": "usable",
+   "note": "The lidar intensity (a sparse 2024 survey, about 2.2 ground points per m², but the lane shows) puts the road across the point on a dark band within a couple of meters of OpenStreetMap's line, so H1 and H3 sit beside it and H2 and H4 within 40 m. Traced the lane from the road by H1 north into the gravel lot on the shore, which the photo shows plainly."
   },
   "10238170": {
    "call": "hold",
@@ -345,12 +345,12 @@
    "note": "The outer road follows the visible pavement, and 13 to 17 sit on the south loops. Sites 2 to 8 sit in the woods inside the loop with no lane showing, and the lane to 9 and 10 in the west shows but isn't drawn."
   },
   "10322686": {
-   "call": "unsure",
-   "note": "The road through the middle follows a visible lane, but the drawn loops are rings through solid trees; most sites (06 to 26, 33 to 44) sit under canopy and no lanes to them show."
+   "call": "usable",
+   "note": "The lidar intensity shows Putnam Beach Road, both rings (round 16 to 26 and round 6 to 14) and the loops past 27 to 44 as plain asphalt bands under the trees, with the relief agreeing, so the rings the photo couldn't see are real lanes; OpenStreetMap's lines follow them within 2 to 3 m. Every site is within 40 m of a drawn road; the inner lanes by 10 and the west loop's east leg past 1 to 5 show only faintly and are left as drawn. Nothing traced."
   },
   "10322742": {
    "call": "hold",
-   "note": "The sites (1 to 5) sit under full canopy south of a drawn ring that follows nothing on the photo; the lot to the north shows, but no lane to the sites."
+   "note": "The survey is sparse (about 1.2 ground points per m²). The intensity shows the parking lot to the north-east and a bright gravel arc about 10 m inside the drawn ring's north side, but the arc fades out before reaching the sites and no lane shows to 1 to 5 under the canopy; the Forest Service ring still follows nothing. Nothing traced."
   },
   "10341416": {
    "call": "hold",
@@ -361,8 +361,8 @@
    "note": "The road along the river and the loops follow the visible lanes, and the sites sit on the clearings beside them: 1 to 10 in the north-west, 13 to 24 and 54 to 58 in the middle, 26 to 53 down the east shore."
   },
   "10380295": {
-   "call": "unsure",
-   "note": "Sites 1 to 6 sit under canopy around the cove; the drawn lanes end short of them, and no lane to 1 to 4 or 6 shows."
+   "call": "usable",
+   "note": "The lidar intensity shows the lane round the cove as a plain asphalt band ending by Sites 3 and 4, and the loop by Site 6, and OpenStreetMap's lines follow them within 1 to 2 m. Site 2 (43 m) is the only site past 40 m; no lane to it or to Site 1 shows on either layer. Nothing traced."
   }
  }
 }

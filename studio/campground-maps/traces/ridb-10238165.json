@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "map": "ridb-10238165",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -76.3970419,
+     38.3080001
+    ],
+    [
+     -76.3970304,
+     38.3080199
+    ],
+    [
+     -76.3970076,
+     38.308065
+    ],
+    [
+     -76.3969847,
+     38.30811
+    ],
+    [
+     -76.3969504,
+     38.3081641
+    ],
+    [
+     -76.3969046,
+     38.3082181
+    ],
+    [
+     -76.396836,
+     38.3082541
+    ],
+    [
+     -76.3967445,
+     38.3082541
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the lane from the road by H1 north into the gravel lot on the shore: the lot shows on the photo, and the lidar intensity shows the lane as a dark band curving up to it under the trees."
+}

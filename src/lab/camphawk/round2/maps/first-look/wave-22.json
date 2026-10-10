@@ -9,8 +9,8 @@
    "note": "The west loop (013 to 019), the road past 001 to 011 and the loop round 006 to 010 follow the visible lanes; the angular loop OpenStreetMap drew round 021 to 023 followed nothing and was dropped (a full replace keeping the other lines). The lanes to 021 to 023, 032 and 024 to 031 under the trees south of the bluff can't be placed from the photo or the lidar, so 10 of 32 sites are over 40 m from a road."
   },
   "231852": {
-   "call": "unsure",
-   "note": "Under pines throughout. The main road and the loop at the east end match pale gaps, but the lanes among 008 to 024 and 026 to 032 can't be told on the photo, and several sites sit between drawn lanes."
+   "call": "usable",
+   "note": "Replaced over the lidar intensity, which shows every lane as a plain asphalt band under the pines: the campground road, the Bear Loop round 008 to 024, the south loop past 026 to 032, the small west loop and the day-use loop are redrawn on their bands (OpenStreetMap had them 3 to 8 m off in places). Every site is within 40 m of a drawn road; the pull-ins to the pads are not drawn."
   },
   "231853": {
    "call": "usable",
@@ -110,7 +110,7 @@
   },
   "232306": {
    "call": "usable",
-   "note": "The west loop (001 to 006) and the east loop (008, 013 to 018) follow the visible gravel, and those sites sit beside them. Sites 009 to 012 sit under the spruce east of the east loop, where no lane shows."
+   "note": "The lidar intensity shows the west loop (001 to 006), the east loop (008, 013 to 018) and Guanella Pass Road as plain bands, and OpenStreetMap's lines follow them within about 2 m. Sites 010 to 012 east of the east loop (3 of 17 more than 40 m from a road) are reached by a narrow raised track that shows only in relief, likely a footpath, so it is not drawn. Nothing traced."
   },
   "232329": {
    "call": "usable",
@@ -138,7 +138,7 @@
   },
   "232381": {
    "call": "usable",
-   "note": "Both loops follow the visible lanes through the lodgepole, and Sites 001 to 026 and 032 to 047 sit beside them. Sites 027 to 031 east of the east loop sit under the trees with no lane showing."
+   "note": "The lidar intensity and relief show both loops (Lupine round 002 to 023, Mariposa East round 024 to 047) as smooth gravel bands under the lodgepole, and OpenStreetMap's lines follow them within about 2 m. Sites 027 to 031 east of the east loop (4 of 46 more than 40 m from a road) have no lane showing on either layer. Nothing traced."
   },
   "232385": {
    "call": "good",
@@ -210,7 +210,7 @@
   },
   "234510": {
    "call": "usable",
-   "note": "The pull-through lane by 001 to 006 and the parking loop follow the visible pavement. Sites 008 to 015 sit among the trees by the river west of the parking loop, reached on foot, with no lane drawn."
+   "note": "The lidar intensity shows the upper loop past 001 to 006 with its pull-throughs, the lower parking loop and Highway 14 as plain asphalt bands, and OpenStreetMap's lines follow them within about 2 m. Sites 008 to 015 sit by the river on foot from the lower parking loop, all within 40 m of it. Nothing traced."
   },
   "234512": {
    "call": "usable",
