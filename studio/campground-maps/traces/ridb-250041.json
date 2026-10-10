@@ -1,0 +1,72 @@
+{
+ "version": 1,
+ "map": "ridb-250041",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-12)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -106.9419343,
+     44.194447
+    ],
+    [
+     -106.9419718,
+     44.194357
+    ],
+    [
+     -106.9420219,
+     44.194267
+    ],
+    [
+     -106.9420594,
+     44.194177
+    ],
+    [
+     -106.9420969,
+     44.194069
+    ],
+    [
+     -106.9421469,
+     44.193961
+    ],
+    [
+     -106.9422095,
+     44.193907
+    ],
+    [
+     -106.9423221,
+     44.193844
+    ],
+    [
+     -106.9424472,
+     44.193781
+    ],
+    [
+     -106.9425597,
+     44.193718
+    ],
+    [
+     -106.9426598,
+     44.193655
+    ],
+    [
+     -106.9427474,
+     44.19361
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "sites": [
+  {
+   "name": "Pole Creek Cabin",
+   "at": [
+    -106.9428224,
+    44.193592
+   ]
+  }
+ ],
+ "note": "Moved the pin 58 m south-west onto the green roof the photo shows under the trees, where the lidar relief shows a building-sized gap in the ground returns, and traced the track to it from the road, plain in the photo at the road and in the lidar intensity under the trees."
+}

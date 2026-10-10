@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-232000",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-12)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -92.4920487,
+     48.1702149
+    ],
+    [
+     -92.4922235,
+     48.1702149
+    ],
+    [
+     -92.4923983,
+     48.170188
+    ],
+    [
+     -92.4925059,
+     48.170161
+    ],
+    [
+     -92.4925597,
+     48.170125
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane to the group site 021, plain in the lidar relief. The short pull-ins to 018, 019, 022 and 004 aren't drawn."
+}

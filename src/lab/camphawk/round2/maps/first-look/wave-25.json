@@ -6,15 +6,15 @@
  "looks": {
   "232141": {
    "call": "unsure",
-   "note": "Full canopy over the campground on both Forest Service photos (2016 and 2019): the loop and the middle lane drawn from OpenStreetMap can't be seen, so 002 to 024 can't be checked against them."
+   "note": "The lidar relief shows the outer loop (past 007 to 017) and the small east loop (002 to 005) as flat gravel bands under the spruce, and OpenStreetMap's lines follow them within about 3 to 5 m. The middle lane past 019 to 024 can't be placed: zoomed in, the sparse survey (1.1 ground points per m²) shows only broken strips 3 to 8 m either side of the drawn line, and the intensity is mottled. Nothing traced."
   },
   "232324": {
    "call": "usable",
    "note": "Unchanged. The two lanes and the east link follow the visible pavement within about 3 m, and all 19 sites are within 40 m of them; zoomed on a 5 m grid, the undrawn pieces are the short paved pull-throughs to the pads (006 to 038), not lanes of their own, so nothing was traced."
   },
   "232330": {
-   "call": "unsure",
-   "note": "Full canopy on both Forest Service photos (2016 and 2019): only the entrance off the highway shows, where the drawn road leaves it; the loop and 001 to 019 can't be seen. The existing note's 001, 003, 016 and 014, 20 to 30 m off the loop, still can't be checked."
+   "call": "usable",
+   "note": "The lidar relief shows the entrance road from Revilla Road and the loop past 005 to 018 as flat gravel bands with ditches under the spruce, and OpenStreetMap's lines follow them within about 3 to 4 m; every site is within 16 m of a drawn road. A band across the loop's middle (from 005 toward 010) may be a lane but can't be told from the ditch beside it, so it isn't drawn; the intensity is mottled. Nothing traced."
   },
   "232352": {
    "call": "good",
@@ -70,7 +70,7 @@
   },
   "251356": {
    "call": "unsure",
-   "note": "Full canopy on both Forest Service photos (2008 and 2019): the loop and lanes can't be seen, only cars on the loop's east side near 004 and a track off the top-left corner that the drawn entrance doesn't follow. 001 to 011 can't be checked."
+   "note": "The lidar relief shows the east road and a lane across the south of the loop as faint crowned bands, but the survey is sparse (1.9 ground points per m²) and the ground is faceted under the spruce, so the Forest Service's loop, which runs 3 to 13 m off those bands, can't be checked or redrawn to 3 m; the intensity is mottled. Nothing traced."
   },
   "251861": {
    "call": "unsure",

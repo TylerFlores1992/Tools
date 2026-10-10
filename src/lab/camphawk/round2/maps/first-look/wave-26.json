@@ -54,7 +54,7 @@
   },
   "233402": {
    "call": "unsure",
-   "note": "The pin is under oak and pine canopy where no building shows; the drawn road ends in a small clearing 50 m south, which may be the cabin's spot."
+   "note": "The lidar relief shows level ground with no building-shaped gap at the pin; the nearest gap is a round one about 10 m across, 60 m east, ringed by a bank, which reads as a tank or pond more than a cabin. The drawn road ends in the clearing 50 m south, which the relief shows as a turnaround. Nothing is plainly the cabin, so nothing moved or traced."
   },
   "233726": {
    "call": "good",
@@ -62,11 +62,11 @@
   },
   "233740": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under firs 120 m east of the visible road along the river; the drawn Forest Service spur to it doesn't show on the photo."
+   "note": "The lidar relief and intensity show a flat, smooth patch about 25 m across at the pin, at the end of the drawn spur, which may be the cabin's clearing, but no building-shaped gap or roof, so the pin can't be confirmed. Redrew the river road past it (from the junction 120 m west to the bend 340 m south) onto the band the relief shows and the photo shows in the open, where the Forest Service line ran 10 to 25 m west of it."
   },
   "233743": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest 20 m below the drawn road, and no building shows."
+   "note": "The lidar relief shows NFS Rd 2510 as a crowned band 60 m north of the pin, while the Census line ran 10 to 30 m south of it past the cabin; redrew the road from 230 m west to 200 m east of the pin onto the band (dropping the duplicate Duckabush Rd lines). At the pin the relief shows a smoother patch of ground but no building-shaped gap or pad that is plainly the cabin, so the pin isn't moved."
   },
   "233888": {
    "call": "good",
@@ -82,7 +82,7 @@
   },
   "234092": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under lodgepole pines between two drawn roads, and no cabin shows."
+   "note": "The lidar relief shows only forest floor at the pin, with no building-shaped gap, pad or clearing within 40 m, and the photo shows unbroken lodgepole pines, so the cabin can't be placed. The forest road to the north shows as a band 5 to 8 m south of its drawn line, and the drawn road south of the pin shows only as a faint strip 8 m off. Nothing traced, since the pin itself is unconfirmed."
   },
   "234131": {
    "call": "good",
@@ -173,8 +173,8 @@
    "note": "The pin is on the cabin by the river, and the drawn Census road from the north follows the visible lane to it within about 8 m. The Census line on south of the cabin crosses open ground where no road shows, and the gravel lane east to the river isn't drawn."
   },
   "234338": {
-   "call": "unsure",
-   "note": "The pin is under mixed forest and aspen 60 m east of where the drawn road ends, and no cabin shows through the trees."
+   "call": "usable",
+   "note": "The lidar relief shows a small raised, levelled rectangle 3 to 10 m north of the pin with a gap in the ground returns in the intensity, and the photo a pale roof there through a gap in the trees, so the pin reads as the cabin. The drawn Giefer Creek Road ends 75 m west, and no lane to the cabin shows plainly in either layer. Nothing traced."
   },
   "234342": {
    "call": "good",
@@ -190,7 +190,7 @@
   },
   "234351": {
    "call": "unsure",
-   "note": "The pin is in a dark, shadowed burn by the creek where no building shows; the drawn road is 130 m north across the creek, with only a trail closer."
+   "note": "The lidar relief shows the pin on the edge of the creek bottom, with only a small rounded mound about 6 m across 25 m south-west that may be a building but could as well be a rock or root mass; no pad, lane or plain building gap shows, and the photo shows only the shadowed burn. The drawn trail is 130 m north across the creek. Nothing traced."
   },
   "234352": {
    "call": "good",
@@ -198,7 +198,7 @@
   },
   "234353": {
    "call": "unsure",
-   "note": "The pin is under the trees 15 m below the drawn road, and no cabin shows clearly; a small opening just east may be it."
+   "note": "The lidar relief shows a levelled patch about 8 m across right by the pin, beside a crowned lane that passes its west side and meets the forest road 15 m north, but no plain building gap, and the photo shows only a small opening there; it may be the cabin's pad, but can't be confirmed. West of the pin the drawn Forest Service road runs 15 to 30 m north of the band the relief shows. Nothing traced, since the pin itself is unconfirmed."
   },
   "234355": {
    "call": "good",
@@ -270,7 +270,7 @@
   },
   "234431": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense conifers between the highway and a drawn forest road, and no cabin shows."
+   "note": "The lidar survey stops about 100 m west of the pin (only the highway is covered), so the layers can't show the cabin or a lane to it. On the photo the pin sits in a small opening in the conifers with a pale patch beside it, but nothing is plainly the cabin. Nothing traced."
   },
   "234448": {
    "call": "good",
@@ -306,19 +306,19 @@
   },
   "234565": {
    "call": "unsure",
-   "note": "The pin is under the trees 50 m south of the drawn highway, and no cabin shows; nothing in the frame is plainly the cabin."
+   "note": "The lidar relief shows the pin on a broad flat bench between US 12 and the creek, 50 m south of the highway, with no building-shaped gap or levelled pad on it and no lane down from the road; the photo shows only conifers there. Nothing is plainly the cabin. Nothing traced."
   },
   "234607": {
    "call": "usable",
    "note": "The pin is beside the cabin and its outbuilding at the meadow's edge, but the nearest drawn road is 300 m away. A dirt track runs from the cabin 250 m northwest across the meadow and fades out before any drawn road, so it isn't traced."
   },
   "234654": {
-   "call": "unsure",
-   "note": "The pin is in open pine forest 70 m east of the drawn road, and no cabin shows at it; the buildings along the road to the west may include it."
+   "call": "usable",
+   "note": "The lidar relief shows a building-sized gap in the ground returns 2 to 8 m north of the pin, and the photo a small dark roof there at the east end of a bare clearing, so the pin reads as the guard cabin. The drawn road passes 60 m north-west; light bands toward the clearing show in the intensity but none plainly as a lane, so nothing is traced."
   },
   "234673": {
    "call": "unsure",
-   "note": "No road is drawn; the pin sits on a faint trail in dense forest, and no cabin shows through the trees."
+   "note": "The lidar relief shows no building-shaped gap in the ground returns, pad or clearing at the pin or within 40 m, only unbroken forest floor; the trail the photo shows through the pin shows in the relief only to its south-west. Nothing in the frame is plainly the cabin, and no road reaches it. Nothing traced."
   },
   "234675": {
    "call": "good",
@@ -337,8 +337,8 @@
    "note": "The pin is on the residence building beside the highway, and the drawn drive off the highway reaches it."
   },
   "250041": {
-   "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest 60 m south of the drawn road, and no cabin shows."
+   "call": "usable",
+   "note": "The photo shows a green roof under the trees 58 m south-west of the listed point, where the lidar relief shows a building-sized gap in the ground returns, and the lidar intensity shows a track to it from the spur off the forest road. Moved the pin onto the roof and traced the track from the road; the rebuild re-centered the frame, so the ground layers need remaking before they can be read again."
   },
   "251769": {
    "call": "good",
