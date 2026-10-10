@@ -41,8 +41,9 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 Alaska maps stay off; canopy: "find a solution to get done correctly").** All 17 photo batches are
 done and checked; the canopy answer is the USGS lidar point clouds (`studio/campground-maps/pointcloud/`,
 `docs/design/campground-maps-canopy-brief.md`). Results: the completion plan's "The fix-after
-campaign: results". Still to do: the canopy batches for waves 8 to 39 as their layers are made
-(two layer runs at a time, 40 maps each, under the 2-hour background limit), then the 12 maps
+campaign: results". Canopy batches 1–10 are recorded (463 maps; 283 pass). Still to do: the canopy
+batches for the rest of waves 16 to 39 as their layers are made (layer runs of 12 maps, since some
+maps take 20–30 minutes and a run must finish inside the 2-hour background limit), then the 12 maps
 waiting for a full road replace (`replace-later.json` in the session's scratchpad: 234381, 232792,
 231918, 232186, 232311, 232346, 232267, 234488, 10124445, 10064730, 231981, 233267, 232210).
 

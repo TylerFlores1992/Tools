@@ -137,13 +137,20 @@ maps over the layer, by the orchestrating session before any decision was record
   - Of the 379 maps that started held, 112 now pass.
   - About 60 that had passed as usable were found below the bar and are now held. Most have a
     drawn road off the lane, or a third or more of their sites more than 40 m from a drawn road.
-- **Canopy batches 1–3 (126 maps):** 70 pass and 52 are held. More canopy batches are running as
-  the point-cloud layers are made (667 canopy maps have USGS point clouds).
-- **Delegated waves now:** 1,703 pass and 1,258 are held (were 1,577 and 1,384).
+- **Canopy batches 1–10 (463 maps, 153 traced over the layers):** 283 pass (10 good, 273 usable)
+  and 180 are held (103 unsure, 77 hold). Batches 11 and 12 are running, and about 108 canopy maps
+  are waiting for their layers (667 canopy maps have USGS point clouds).
+  - Intensity made almost every trace possible. The commonest fix was a full replace: OpenStreetMap,
+    Forest Service and Census roads 5 to 80 m off the lanes, some of them park outlines.
+  - Most of the unsure calls are sparse surveys (under about 1.4 ground points per m²) or mottled
+    layers. Density alone isn't a cut-off: surveys at 0.67 to 2 points per m² have still shown lanes.
+- **Delegated waves now:** 1,851 pass and 1,118 are held (were 1,577 and 1,384 before the campaign).
 - **Rules made explicit on the way:**
   - a site counts as roadless more than 40 m from any drawn road or lot, walk-ins included;
   - lanes that would be drawn unconnected to any road hold a map;
-  - a trace keeps every earlier tracer's credit (fixed, tested).
+  - a trace keeps every earlier tracer's credit (fixed, tested);
+  - a build stopped mid-cut no longer leaves an empty OpenStreetMap cut that later builds read as
+    cached (fixed, tested).
 - **What stays held, mostly:** lanes no photo or layer places to 3 m (dense canopy on sparse
   surveys, faint dirt lanes); walk-in or boat-in sites far from any road; stacked or misplaced
   sites with no pad to tell them apart; first-come pins with no campground near them.
