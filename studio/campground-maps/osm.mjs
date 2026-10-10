@@ -11,7 +11,7 @@
 // osmSource() picks; the build records which (`sources.osmFrom`).
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { getText } from "./geo.mjs";
 
@@ -157,6 +157,8 @@ export function mergeOsm(docs) {
 }
 
 const cutFile = (key) => join(CUT_DIR, createHash("sha1").update(key).digest("hex") + ".osm");
+/** A cut counts as cached only when it has content: an osmium run killed mid-cut leaves an empty file. */
+export const cachedCut = (file) => existsSync(file) && statSync(file).size > 0;
 const cutKey = (x, box) => `${x.file}|${x.osmTimestamp}|${box}`;
 const boxKey = (bboxArr) => bboxArr.map((v) => v.toFixed(6)).join(",");
 
@@ -175,7 +177,7 @@ export function prefetchOsm(boxes, mode = "auto", list = extracts(), batch = 100
     if (src.from !== "extract") { if (mode !== "api") uncovered++; continue; }
     for (const x of src.files) {
       const key = cutKey(x, boxKey(bboxArr));
-      if (existsSync(cutFile(key))) continue;
+      if (cachedCut(cutFile(key))) continue;
       (todo.get(x.file) ?? todo.set(x.file, { x, boxes: [] }).get(x.file)).boxes.push(bboxArr);
     }
   }
@@ -196,12 +198,14 @@ export function prefetchOsm(boxes, mode = "auto", list = extracts(), batch = 100
 
 function osmiumXml(args, key) {
   const file = cutFile(key);
-  if (existsSync(file)) return readFileSync(file, "utf8");
+  if (cachedCut(file)) return readFileSync(file, "utf8");
   // A wave cuts every box first (prefetchOsm); a cut here reads a whole extract, so say so.
   if (args[0] === "extract") console.warn(`  OSM: cutting ${args[2]} alone (not prefetched; about a minute)`);
   const xml = execFileSync("osmium", [...args, "-f", "osm", "-o", "-"], { maxBuffer: 1 << 30 }).toString();
   mkdirSync(CUT_DIR, { recursive: true });
-  writeFileSync(file, xml);
+  // Written aside, then renamed, so a build stopped mid-write never leaves a half cut behind.
+  writeFileSync(`${file}.${process.pid}.tmp`, xml);
+  renameSync(`${file}.${process.pid}.tmp`, file);
   return xml;
 }
 
