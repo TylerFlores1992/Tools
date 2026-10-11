@@ -17,8 +17,8 @@
    "note": "The road round the gravel lot follows what shows, and Sites 01 to 10 line the west edge of the lot and 11 to 17 the pull-ins on the east side."
   },
   "10191054": {
-   "call": "hold",
-   "note": "The check doesn't draw it: both sites are on one spot under full canopy by the road, and nothing shows."
+   "call": "unsure",
+   "note": "Unchanged. Both sites (Standard 1 and 2) share one point under full canopy just off the gravel road, with nothing showing beneath the trees, so neither could be placed."
   },
   "255180": {
    "call": "usable",
@@ -54,7 +54,7 @@
   },
   "10047913": {
    "call": "unsure",
-   "note": "Snow and conifers: the loop is plausible and Sites 7 to 16 and 22 to 32 sit near it, but 1, 2, 4, 6, 17, 18, 20, 33, 34 and 36 sit 25 to 50 m off it, and the spurs can't be seen under the snow and trees. Sites 38 to 44 at the south loop fit; one site has no point."
+   "note": "The lidar (4.21 ground points per square meter) settles the north part under the snow and pines: the main loop shows as a plain crowned band in the relief and a pale band in the intensity, and the drawn loop follows it within about 3 m, with sites 1 to 37 all within 24 m of it and short pull-ins showing to several of them. But the south B loop by 38 to 44 shows only as faint arcs in the relief, one of them wider than the drawn loop to the east, and the photo shows only a faint ring in the snow, so that loop can't be checked to 3 m; 45/46 is unplaced. Nothing was traced."
   },
   "10077501": {
    "call": "hold",
@@ -106,27 +106,27 @@
   },
   "10377487": {
    "call": "unsure",
-   "note": "Full canopy: the lane and its turnaround match the gap in the trees and Sites 1 and 3 sit on them, but 2 and 4 sit 20 to 25 m off them where nothing shows."
+   "note": "The photo shows the gravel turnaround by 1 and the lane east of the junction, which the drawn lanes fit, but the lidar relief (Oregon DOGAMI) is broken triangles under the firs and shows neither the road in from the north nor the lane east to 3 plainly, so they can't be checked to 3 m. 2 and 4 sit 20 to 25 m off the lane with nothing showing. Not traced."
   },
   "10377492": {
    "call": "unsure",
-   "note": "Full canopy: the lane through the firs is plausible and Sites 1, 3, 5 and 6 sit near it, but 2, 4 and 7 sit 25 to 60 m off it and nothing shows."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway and, in the south-west, a smooth band the drawn lane follows toward 1, but past 1 the bench is broken triangles under the firs and shows no lane past 3 to 6 or to 2, 4 and 7, which sit 25 to 60 m off the drawn lane. Not traced."
   },
   "10377502": {
    "call": "hold",
    "note": "Unchanged. The loop by 01 to 05 is under full fir canopy on the photo, and the lidar here shows the treetops, not the ground, so no lane there can be placed and a full replace isn't possible. By 06 to 09 the visible gravel lane runs from the highway northwest to the pad by 07 with a branch north past 09, 5 to 10 m east of the drawn lane, which cuts across the trees."
   },
   "10377515": {
-   "call": "hold",
-   "note": "The drawn ring is twice the size of the visible gravel turnaround and its north half runs through the trees; Sites 1 and 2 sit 25 to 30 m outside it. Site 3 across the highway sits by the end of the drawn lane, on a clearing."
+   "call": "usable",
+   "note": "The photo shows the gravel turnaround, the lane to it and the lane south across the highway to a clearing, and the lidar relief (Oregon DOGAMI) shows the lanes and highway as plain bands. Replaced the roads: the Forest Service ring was twice the size of the turnaround, so traced the turnaround, both lanes and the highway through. 3 sits by the south clearing; 1 and 2 sit 12 to 16 m east and west of the turnaround under trees, where no pads show."
   },
   "10377519": {
-   "call": "hold",
-   "note": "Traced the short dirt lane to Sites 2 and 3 and the restroom. Site 1 (one of three) still has no road: its lane to the west only partly shows under the trees."
+   "call": "usable",
+   "note": "The earlier traced dirt lane to 2, 3 and the restroom follows the track the photo shows, and South Umpqua Road follows the pavement. The lane west to 1 shows only as broken dirt patches under the trees, and the lidar relief (Oregon DOGAMI) is mottled there and doesn't place it, so it stays undrawn; 1 is about 25 m from the road, so every site is within 40 m of a drawn road."
   },
   "10377523": {
-   "call": "unsure",
-   "note": "Full canopy: the Forest Service lane is plausible and Sites 01 to 09 sit near it, but 10 to 13 sit 20 to 50 m west of it, and nothing shows under the firs."
+   "call": "usable",
+   "note": "The lidar relief (Oregon DOGAMI) shows the campground lane plainly under the firs as a long narrow loop: a crowned band with a ditch on its east side running north from the forest road past 01 to 09 and round the end by 14, with a return arm back toward 06. Replaced the roads: the Forest Service line ran along the ditch 5 to 9 m east of the lane and ended in a box, so traced the loop and the forest road on their bands. 01 to 09 and 14 sit beside the loop; 10 to 13 sit 20 to 45 m west of it with no lane showing (only 11 is past 40 m)."
   },
   "10377551": {
    "call": "usable",
@@ -166,7 +166,7 @@
   },
   "10406480": {
    "call": "hold",
-   "note": "The check doesn't draw it: each pole holds several sites on one spot (Pole 1 to 20, 57 sites in all). The poles line the two rows of the snowy lot, but one drawn line runs between the rows rather than on the lot's lanes."
+   "note": "Unchanged. The 20 poles line the two rows of the snowy RV lot correctly, but each pole lists three sites on its one point (Site 2, 4 and 6 at Pole 1, and so on), and the lot under snow shows no marked stalls, so the three sites at a pole can't be placed apart and nothing was moved. The one drawn line runs down the lot's middle aisle."
   },
   "231921": {
    "call": "usable",
@@ -210,7 +210,7 @@
   },
   "232398": {
    "call": "hold",
-   "note": "The check doesn't draw it: all four sites are on one spot on a forested slope, 80 m from the only road, with nothing visible."
+   "note": "Unchanged. All four sites share one point on a forested slope 80 m from the only road, with no clearing, corral or pad at it, so there is nothing to move them onto."
   },
   "232803": {
    "call": "hold",
@@ -218,7 +218,7 @@
   },
   "232804": {
    "call": "hold",
-   "note": "The check doesn't draw it: 8 of 11 sites share points (FS1-301 to 409 shown). The small drawn loop sits on the visible gravel, and the points line its east side."
+   "note": "Unchanged. FS1-401 to 409 sit in a 30 m line along the small loop's east side, in pairs on one point (402 and 403, 404 and 405, 406 and 407, 408 and 409), on open gravel flats with no separate pads showing, so no pair member could be told from the other and nothing was moved."
   },
   "232811": {
    "call": "hold",
@@ -266,7 +266,7 @@
   },
   "232909": {
    "call": "hold",
-   "note": "The check doesn't draw it: Sites A, C, D, E and F share one spot on the drawn road and G sits beside them; B is 60 m east in the trees. The points don't place the sites."
+   "note": "Unchanged. Group sites A, C, D, E and F sit within a few metres of one point on the drawn gravel road and G beside them; B is 60 m east in the trees. The open ground around shows no separate group camps to tell apart, so nothing was moved."
   },
   "233218": {
    "call": "usable",
@@ -318,11 +318,11 @@
   },
   "251940": {
    "call": "unsure",
-   "note": "Full canopy: the lanes are plausible where gaps show, and 09 sits on the visible lot, but 02 to 07 sit 25 to 60 m off any drawn road under the firs."
+   "note": "The photo shows the gravel ring round the lot at 09 and short stretches of dirt lane through gaps, and the lidar relief (Oregon DOGAMI) shows the paved road plainly, but inside the campground the relief is mottled with only broken light strands near the drawn lanes, not bands that place them to 3 m. The lanes to 02 to 07, which sit 20 to 40 m off the drawn ones, don't show. Not traced."
   },
   "252035": {
    "call": "unsure",
-   "note": "Full canopy: the lane is plausible and Sites 002 to 005 and 007 sit near it, but 001, 003 and 006 sit 20 to 30 m off any drawn road, and nothing shows under the pines."
+   "note": "The photo shows dirt patches and the clearing by 004 and 005 along the drawn campground lane, but the lidar relief (Oregon DOGAMI) shows that lane only as a faint smooth strip, and nothing to 001, 003 and 006. It does show a straight raised band with ditches running south 10 to 40 m east of the drawn Forest Service road, which may be the real road or an old grade; the photo shows only canopy there, so neither line can be settled to 3 m. Not traced."
   },
   "267076": {
    "call": "hold",

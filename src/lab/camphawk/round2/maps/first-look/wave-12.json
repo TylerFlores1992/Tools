@@ -42,11 +42,11 @@
   },
   "233153": {
    "call": "hold",
-   "note": "Sites C001 to C010 and the group area sit under full canopy 40 to 90 m east of the only drawn road, on a lane that doesn't show through the firs. Nothing reaches them on the map, and there's nothing visible to trace."
+   "note": "The lidar relief (Oregon DOGAMI) shows Bullock Road as a plain raised band about 25 m north-east of where OpenStreetMap draws it, and a narrow crowned lane running south-east from near the group area between C008 and C009 toward C005, but the lane's link to the road is lost among creek channels and it fades south of C005, so it can't be traced as a joined lane. Not traced; all 11 sites stay 40 to 90 m from the one drawn road, which is itself off its band."
   },
   "233154": {
    "call": "hold",
-   "note": "Split listing: the family sites and the group area are two places 1.1 km apart, now two areas. In Loop C only the highway was drawn; traced its loops from the photo (main loop, ring round C001, spurs to C008, C010 and C011, the lane past C007), and C003 to C006 still sit under the firs. The group area is the problem: its pin sits on a burned slope with no camp, and the drawn road there cuts straight across the slope instead of following the visible curving road."
+   "note": "Unchanged; the two areas (Loop C and the group area 1.1 km north-east) are the right split. Loop C's traced lanes (rollout west-d) still follow the photo. The group area holds it: its pin sits on a burned, replanted slope with no camp, lot or pad near it, so there is nothing to move it onto, and the drawn road there cuts straight across the slope above the visible curving road."
   },
   "10040022": {
    "call": "hold",
@@ -114,7 +114,7 @@
   },
   "232068": {
    "call": "hold",
-   "note": "The check doesn't draw it: both sites are on one spot, beside the building at the end of the drawn road. It looks like a group lodge, not two sites."
+   "note": "Unchanged. Both sites share one point at a large lodge building with a pool beside the road's end; it reads as a group lodge, and nothing on the photo shows two separate sites to place them on."
   },
   "232070": {
    "call": "usable",
@@ -157,8 +157,8 @@
    "note": "Neither lidar layer shows a band under the drawn road's arc round the north side, so it can't be checked; the relief shows the creek crossing the campground and a lane looping south of it (dark in the intensity) that isn't drawn. Group Site 2 sits about 50 m inside the arc, north of the creek, with no lane showing: one of the two sites. Nothing traced."
   },
   "232307": {
-   "call": "hold",
-   "note": "Snow on the photo. Site 002 sits at the building near the end of the east spur; 001 sits among the trees 30 m west of the road with no lane showing. Held under the clarified bar: one of the two sites has no road."
+   "call": "usable",
+   "note": "The dense lidar (22.62 ground points per square meter) shows the road in as a plain sunken band, with the drawn road within about 3 m of its middle, and the east spur and the north road follow their bands. 002 sits on a levelled pad by the building at the end of the east spur, 16 m from it; 001 sits in an open grassy clearing (bright in the intensity) 31 m west of the road, with no lane to it showing, so nothing was traced."
   },
   "232313": {
    "call": "usable",
@@ -277,8 +277,8 @@
    "note": "Unchanged. The three paved loops (west, north and south) follow the visible pavement, and no other lane shows that isn't drawn. Group Sites 001 to 003 still sit 60 to 120 m outside them on open hillside; each loop likely is one group site, and each point is nearest a different loop (003 the west, 002 the north, 001 the south), but the photo carries no number, so nothing was moved on proximity alone."
   },
   "234530": {
-   "call": "unsure",
-   "note": "The loop follows the visible dirt lane through the chaparral, but Sites 002, 003, 005, 006 and 008 sit 30 to 60 m outside it, and 001 and 004 inside it, among a web of faint tracks. The photo doesn't show which pads they are."
+   "call": "hold",
+   "note": "Unchanged. Zoomed on a 5 m grid, the drawn loop follows the visible dirt lane through the chaparral, and 6 of 8 sites are within 40 m of it. But 002, 003, 006 and 008 sit in the scrub 30 to 60 m outside it, off the web of faint tracks and with no corral or pad at their points, so they look misplaced and the photo doesn't say which pads are theirs; nothing was traced or moved."
   },
   "234546": {
    "call": "usable",
@@ -298,7 +298,7 @@
   },
   "234720": {
    "call": "unsure",
-   "note": "Under the firs the Forest Service loop doesn't match the lanes that show inside it, and Group Sites A and B sit 20 to 30 m outside it. The photo can't settle where the camps are."
+   "note": "The lidar relief (Oregon DOGAMI) is coarse triangles under the firs and shows only the road on the east, nothing of the campground's lanes; the photo shows dirt lanes inside the drawn Forest Service loop that don't match it, but only in broken stretches. Group Sites A and B can't be placed on a lane; not traced."
   },
   "234728": {
    "call": "usable",
@@ -329,8 +329,8 @@
    "note": "The lidar survey covers only the west half (008 to 023 fall outside it) and is sparse (1.27 ground points per m²). In the covered part a faint curved lane runs from by 028 southwest past 034 toward 001, where no road is drawn, while the drawn Forest Service loops cross mottled ground with no band under them; nothing is plain enough to trace. Nothing traced."
   },
   "254094": {
-   "call": "unsure",
-   "note": "Under the pines the loop is plausible, but Sites 03 to 05, 08, 09, 12 to 17, 34, 36, 40, 43, 45, 48 and 50 sit 20 to 60 m inside it, on lanes that only glimmer through the trees and aren't drawn."
+   "call": "usable",
+   "note": "The lidar relief (Oregon DOGAMI) shows the campground loop plainly as a crowned band with its ditch under the pines, and the photo agrees where the gravel shows. Replaced the roads: re-centered the loop on its band (OpenStreetMap's ran 3 to 8 m off it in stretches), keeping the service road south-west. Every site is within 40 m of the loop; 03 to 05, 08, 09, 12 to 17, 34, 36, 40, 43, 45, 48 and 50 sit 15 to 35 m inside or outside it, where the relief shows only drainage channels and no spur lanes, so none were drawn."
   },
   "256348": {
    "call": "usable",
@@ -346,7 +346,7 @@
   },
   "272097": {
    "call": "hold",
-   "note": "Split listing, shown as 2 areas 3 km apart along the highway. In area 1, Sites 001 to 013 sit in the pines with no road drawn into them (only a lane past Brushfire 2 at the top), and the Equestrian Group sits alone at a lot in area 2."
+   "note": "Unchanged, and no split call: the family loop (001 to 013, Brundrett 2) and the Equestrian Group lot 1.8 km south along the highway are two real places. Zoomed on a 5 m grid, the ground among 001 to 013 is open pine forest where the long tree shadows make diagonal stripes of light ground; a few pull-ins with trailers show (by 002, 007 and 009), but the lanes joining them can't be told from the gaps between shadows, so nothing was traced and all 13 sites still have no drawn road."
   },
   "10124953": {
    "call": "good",

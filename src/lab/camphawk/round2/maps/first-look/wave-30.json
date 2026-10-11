@@ -6,7 +6,7 @@
  "looks": {
   "231885": {
    "call": "unsure",
-   "note": "The pin sits in open pine meadow 57 m south of the drawn road, with no pad, lane or fire ring to show it is the group site; a trail is drawn 190 m away."
+   "note": "The Forest Service's point, 165 m east of the pin, is in open pine meadow 55 m south of the drawn road, like the pin itself; neither shows a pad, lane, toilet or fire ring that marks the group site. Not moved."
   },
   "231887": {
    "call": "hold",
@@ -18,7 +18,7 @@
   },
   "231892": {
    "call": "hold",
-   "note": "The pin sits in unbroken conifer forest 540 m from the nearest drawn road, with no clearing at it; only the creek-side trail passes 130 m east."
+   "note": "The pin moved 778 m south-southeast onto the gravel pad of the group loop the photo shows in a meadow at the end of Holy Ghost Road, by the Forest Service's point. Once re-framed, the map draws OpenStreetMap's loop there, but its west arm runs up to 14 m out over the grass and its east arm about 5 m off the lane, so it stays held for a road trace (a trace of the loop alone would only double it)."
   },
   "231952": {
    "call": "good",
@@ -54,7 +54,7 @@
   },
   "232072": {
    "call": "unsure",
-   "note": "The lidar is noisy here (1.34 ground points per square meter): the drawn loop shows only as a faint lighter line in the intensity at its north end, by the small clearing on the photo, and neither layer shows the rest of the loop or a pad at the pin, so neither can be checked. Nothing traced."
+   "note": "Under closed canopy inside the drawn loop, neither the photo nor the noisy ground relief shows a pad at the pin or at the Forest Service's point 28 m west-southwest. Not moved."
   },
   "232124": {
    "call": "good",
@@ -66,15 +66,15 @@
   },
   "232373": {
    "call": "unsure",
-   "note": "The lidar intensity shows the river road as a plain paved band with the drawn road on it and the pin on the road; south of it a bright winding strip 40 to 70 m off reads as a meadow or wet ground rather than a camp, and the relief shows no levelled pad or clearing at or near the pin, so the group camp can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 558 m east, is under canopy beside an undrawn lane that forks off the river road, and the ground relief shows no plain group pad there; the pin is still on the road itself. Not moved."
   },
   "232377": {
    "call": "unsure",
-   "note": "The lidar intensity shows the highway north of the pin plainly with the drawn road on it, but south of it both layers are noisy (0.89 ground points per square meter) and show neither the drawn lot 25 m north of the pin nor any lane, pad or clearing at the pin; the listing's own point is 14.5 km away. Nothing traced."
+   "note": "The Forest Service's point, 3.1 km west, is under closed canopy beside a river bar with no clearing or pad, and the pin still shows nothing of the group camp. Not moved."
   },
   "232379": {
    "call": "unsure",
-   "note": "The lidar relief shows the highway and the drawn side road leaving it as graded bands, with the drawn lines on them, and the pin sits on the side road just past the junction; but neither layer shows a pad, lot or clearing at or near the pin (a creek channel runs southwest from it), and the photo shows only a few small bare patches under the pines. Nothing traced."
+   "note": "The Forest Service's point 67 m northeast falls on a smoother flat bench east of the drawn side road in the ground relief, but neither layer shows a plain group pad, lot or loop there or at the pin. Not moved."
   },
   "232777": {
    "call": "good",
@@ -89,16 +89,16 @@
    "note": "The pin sits in open pines with bare ground and a small structure beside it, but the drawn spur stops 35 m west of it; no lane to the pin shows to trace."
   },
   "232896": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy 40 m off a drawn road, with no clearing at it; the restrooms drawn 200 m east are the only sign of the camp."
+   "call": "good",
+   "note": "The pin stays on the levelled clearing the lidar shows west of the North Fork campground lane, reached by the spur traced earlier today. The Forest Service's point (one \"North Fork GCG\" for both the Bear and Beaver group camps), 225 m northeast, is in forest beside the lane's bend with no clearing, so it is the one that's off. Not moved."
   },
   "232897": {
    "call": "unsure",
-   "note": "The lidar intensity shows a bright patch about 30 m across at the pin and the relief a flat terrace east of it, which may be the camp's clearing, but no lane, pad or edge shows plainly, the drawn road west of the pin runs beside a creek channel rather than on a band, and the listing's own point is 370 m away. Nothing traced."
+   "note": "The Forest Service's point (\"North Fork GCG\", shared with the Bear group camp's listing), 185 m south-southwest of the pin, is on a small knoll beside a graded lane the ground relief shows under the canopy, with no pad or loop; the pin stays on the flat smooth patch the relief shows at the lane's north end, which may be the camp's clearing but has no plain edges. The drawn roads don't follow the lane. Not moved."
   },
   "232898": {
    "call": "unsure",
-   "note": "The lidar shows the road west of the pin as a plain graded band with the drawn road on it, but at the pin both layers show only forest floor between creek channels, with no lane, pad or clearing; the nearest open ground is a bright patch in the intensity 120 m south by the other drawn road, which can't be told for the group camp. Nothing traced."
+   "note": "The Forest Service's point, 304 m south, is under closed canopy, and the ground relief shows only rough forest floor there between a graded lane and a creek, no group pad; the pin still shows nothing either. Not moved."
   },
   "232918": {
    "call": "good",
@@ -129,8 +129,8 @@
    "note": "The pin is on the gravel clearing off the highway, and the drawn spur runs through it."
   },
   "233221": {
-   "call": "hold",
-   "note": "The pin sits on an undrawn dirt track in a dry wash with nothing at it that could be the camp, 160 m from the drawn road, and the listing's own point is 2 km away."
+   "call": "usable",
+   "note": "Moved the pin about 2 km east onto the group camp ground among oaks, with its toilet building and tables, at the Forest Service's point; the drawn dirt road passes 10 m away on the visible lane. Called usable rather than good at the final check: a group area this open has no one pad to pin."
   },
   "233230": {
    "call": "good",
@@ -138,11 +138,11 @@
   },
   "233259": {
    "call": "unsure",
-   "note": "The pin sits under trees between the river and the drawn loop, and neither the loop nor a pad shows through the canopy."
+   "note": "The lidar here is too thin on the terrace to read (1.74 ground points per square meter): inside the Breitenbush bend both layers are mostly interpolation facets, and neither shows the drawn loop or its entrance as a band, so the roads can't be checked to 3 m. The photo shows bare dirt patches beside the pin, 12 m west of the loop, but nothing plainly the group site; nothing was traced."
   },
   "233285": {
    "call": "unsure",
-   "note": "Wentworth Springs Road ran 8 to 35 m west of the paved road on the photo (down the dam face) and is retraced on its middle from the campground turn over the dam crest, and the spur north of the pin is retraced on the lane the lidar intensity shows into the gravel lot (a levelled half-circle in the relief, with cars on the photo). The pin sits under pines 25 m south of that lot with nothing at it, and the listing's own point is 3.6 km away, so it can't be told whether the lot is this group site."
+   "note": "The Forest Service's point 87 m east-northeast is under pines beside the traced spur with nothing at it, and the pin under pines 25 m south of the gravel lot; neither marks the group site plainly. Not moved; the earlier road trace stays."
   },
   "233288": {
    "call": "unsure",
@@ -194,11 +194,11 @@
   },
   "233879": {
    "call": "unsure",
-   "note": "The pin is on the drawn loop under open pines, but no clearing or pad at it marks the group site among the scattered lanes."
+   "note": "The Forest Service's point 83 m west-southwest lands on a junction of the drawn lanes, and the pin beside the loop to the east; neither shows a group site's pad in the photo. Not moved."
   },
   "233894": {
    "call": "unsure",
-   "note": "The pin is on a drawn lane among open pines where tents and cars are scattered, a dispersed area; nothing at the pin itself marks the unit."
+   "note": "The Forest Service point matched here is the Ochoco ranger station's rental cabin, a different unit from this group shelter, so it was not used; the pin, on a drawn lane among scattered tents and cars, still shows nothing that is plainly the shelter. Not moved."
   },
   "233903": {
    "call": "usable",
@@ -221,8 +221,8 @@
    "note": "The pin is on the cabin's roof beside the drawn spur up from the highway."
   },
   "234133": {
-   "call": "hold",
-   "note": "The pin sits in open juniper scrub 410 m from the nearest drawn road, with no clearing, lane or pad at it that could be the campground."
+   "call": "unsure",
+   "note": "The Forest Service's point, 1.7 km south-southeast, lands on a paved lane of a campground in the pines, but no single pad or loop there is plainly the group site, so the pin wasn't moved; it is still in open scrub 410 m from any drawn road."
   },
   "234146": {
    "call": "good",
@@ -242,7 +242,7 @@
   },
   "234218": {
    "call": "hold",
-   "note": "The pin sits in forest on the river's floodplain 45 m from the drawn road, with no clearing, lane or pad at it."
+   "note": "Neither the pin on the forested floodplain nor the Forest Service's point 73 m northeast, under trees beside the drawn road, shows a group pad or loop in the photo or the lidar relief. Not moved."
   },
   "234261": {
    "call": "good",
@@ -257,8 +257,8 @@
    "note": "The pin is on the guard station's buildings in the clearing, and the drawn loop off the road reaches them."
   },
   "234285": {
-   "call": "unsure",
-   "note": "The pin sits in a small snowy gap in the forest 18 m north of the drawn road; a round roof that may be the yurt shows 60 m southwest beside the road, so the photo can't confirm the pin."
+   "call": "good",
+   "note": "The pin, moved by units-01 onto the yurt, sits on its round roof and platform, which the photo shows in a small clearing and the dense lidar relief (9.73 ground points per square meter) shows as a levelled pad. The drawn road follows its sunken band within about 3 m and passes 14 m west of the yurt; nothing further was traced or moved."
   },
   "234286": {
    "call": "good",
@@ -266,7 +266,7 @@
   },
   "234310": {
    "call": "unsure",
-   "note": "The lidar intensity shows a narrow dark paved line (2 to 3 m wide) about 15 m north of the drawn campground road, which itself shows no band in either layer, and the drawn lakeshore road through the pin shows no band either; the photo shows two vehicles 30 m west of the pin but no pad or clearing at it. The narrow line reads more like a path than a road, so nothing is redrawn, and the group unit can't be placed."
+   "note": "Neither the pin on the drawn lakeshore road nor the Forest Service's point 12 m south (trees and grass by the shore) shows a group pad in the photo or the ground relief; the pale pads 25 to 45 m west are the campground's other sites. Not moved."
   },
   "234314": {
    "call": "good",
@@ -297,8 +297,8 @@
    "note": "The pin is on the guard station cabin at the end of the drawn road up the meadow. The listing's own point is 2.3 km away, but the photo shows the station here."
   },
   "234573": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest 65 m west of the road, and the listing's own point, 2.2 km southeast, is in unbroken forest too; nothing nearby is plainly the group site."
+   "call": "usable",
+   "note": "The pin moved 1.1 km south onto the gravel group pads the photo shows off the canyon road, with their shelter 25 m south, beside the Forest Service's point. OpenStreetMap's lane into the pads now reaches the pin, but under the trees it can't be checked, and the drawn canyon road runs 5 to 8 m west of the paved one."
   },
   "234605": {
    "call": "good",
@@ -306,7 +306,7 @@
   },
   "234705": {
    "call": "unsure",
-   "note": "The pin sits under full canopy 35 m south of the end of the drawn spur; nothing at it shows through the trees."
+   "note": "The lidar (4.56 ground points per square meter) shows the pin on forest floor beside a ditched lane that carries on south-east from the end of the drawn road, 15 to 20 m east of the pin, toward the river; neither layer nor the photo shows a pad, clearing or loop that is plainly the group site, and the intensity here is a uniform mottle. With the site unplaced, the undrawn lane was not traced."
   },
   "234732": {
    "call": "unsure",
@@ -322,15 +322,15 @@
   },
   "234780": {
    "call": "unsure",
-   "note": "The pin is at the end of the drawn spur off the highway, under open forest; a bare patch shows north of it, but nothing at the pin marks the group site."
+   "note": "The Forest Service's point, 315 m east, is in deep shadow under conifers where nothing can be seen, and the pin at the end of the drawn spur still shows no group site. Not moved."
   },
   "234781": {
    "call": "unsure",
-   "note": "The lidar is too sparse to read (0.26 ground points per square meter, flown 2009): the intensity is speckle, and the relief shows only a few faint curving banks that the drawn roads don't follow (the straight drawn road south of the pin shows no band at all). Nothing at the pin shows the group site, and no road can be checked or traced. Nothing traced."
+   "note": "The Forest Service's point, 258 m east, is under closed conifers on the river's south bank with no clearing or pad, and the pin still shows nothing of the group site; the lidar is too sparse to help. Not moved."
   },
   "238333": {
    "call": "hold",
-   "note": "The pin sits on the highway's shoulder on a bare slope at the river bend, with nothing that could be a group camp; the campground's loops are drawn 150 m southwest."
+   "note": "The pin is still on the highway's shoulder with nothing that could be a group camp; the Forest Service's point 242 m west lands on a paved junction by a big parking lot and a restroom, and no group pad can be told there. Not moved."
   },
   "251360": {
    "call": "good",
@@ -349,8 +349,8 @@
    "note": "The lidar intensity shows the park road's paved loop plainly under the trees, and its north side and hairpin, which OpenStreetMap had 5 to 14 m off, are retraced on the band from the bend nearest the pin to the parking lot at the west end. The pin sits 25 m east of the hairpin on plain forest floor, with no pad, shelter or clearing in either layer or on the photo, so the group area can't be placed."
   },
   "251711": {
-   "call": "unsure",
-   "note": "The pin sits on the edge of a snow-covered stand at the end of the drawn spur; no building shows under the trees and snow, so the photo can't confirm the guard station."
+   "call": "usable",
+   "note": "The pin stays on the east corner of the square levelled block the ground relief shows at the end of the drawn spur; the Forest Service's point, 120 m northeast, is on the spur's junction with the highway, where nothing is built, so it is the one that's off. Not moved."
   },
   "251836": {
    "call": "hold",

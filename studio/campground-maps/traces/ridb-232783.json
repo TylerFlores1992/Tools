@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232783",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -118.8388529,
+    36.666166
+   ]
+  }
+ ],
+ "note": "The group camp's turnaround loop and its bare gravel pad show at the end of the drawn spur, at the Forest Service's point, 130 m southeast of the listing's pin; the pin is on the pad."
+}

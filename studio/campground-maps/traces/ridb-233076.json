@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233076",
+ "traced": "2026-10-11",
+ "by": "Claude (final check, owner's delegation)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "W12",
+   "at": [
+    -132.3661747,
+    56.5759233
+   ]
+  }
+ ],
+ "note": "The cabin's gray gabled roof shows 25 m south-southwest of the Forest Service's point, at the forest edge above the tidal flat, with a boardwalk along its west side; OpenStreetMap maps Garnet Ledge Cabin here too. Moved at the final check: past the batch's 15 m rule, but the roof is plain and three sources agree."
+}

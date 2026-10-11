@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "map": "ridb-233505",
+ "traced": "2026-10-11",
+ "by": "Claude (fix fix-18)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -93.7786451,
+     37.5921687
+    ],
+    [
+     -93.7784866,
+     37.5922047
+    ],
+    [
+     -93.7783167,
+     37.5922498
+    ],
+    [
+     -93.7781469,
+     37.5922858
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane from loop C out to the lots by C17 and C18, from the photo."
+}

@@ -210,8 +210,8 @@
    "id": "234080",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look unsure."
   },
   {
    "id": "234081",
@@ -504,8 +504,8 @@
    "id": "233603",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (lidar-01): first look unsure."
   },
   {
    "id": "233639",

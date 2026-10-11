@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234664",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Aspen Leaf",
+   "at": [
+    -108.6741885,
+    38.6497105
+   ]
+  }
+ ],
+ "note": "Units-03: the cabin moved onto the roof that the Forest Service's point lands on, in the building cluster at the end of the drawn road."
+}

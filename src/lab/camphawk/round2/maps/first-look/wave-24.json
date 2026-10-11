@@ -69,12 +69,12 @@
    "note": "Unchanged. The north loops, the long lane south and the south loop follow the visible lanes, and all 124 sites are within 40 m of a drawn road. Zoomed on a 5 m grid, the ground between the two north arms (064 to 068, 075 to 078) shows pads and short drives rather than a continuous lane, so nothing was traced."
   },
   "233644": {
-   "call": "usable",
-   "note": "Split listing, shown as 3 areas that match the photo's clusters along the peninsula (01 to 08, 09 to 18, 19 to 64). The north and middle sites line the drawn road; at the south end the drawn roads run around the loops while 29 to 50 sit on paved lanes inside them that are only partly drawn."
+   "call": "unsure",
+   "note": "The lane through the south loop past 42 to 50 is traced on the photo, but OpenStreetMap's outer loop round the south area runs through the trees on both sides, where the photo shows no lane, and its west side cuts across the woods from the 29 to 40 area to 42. Whether it follows real lanes under the canopy can't be told. Final check: unsure, not usable."
   },
   "233652": {
-   "call": "hold",
-   "note": "Split listing, shown as 2 areas. The main area's lanes past 01 to 55 and 57 to 86 are drawn, but the lettered sites A to X have no drawn lane, and Loop P (P01 to P16, across the bay) has no road at all (median 93 m away)."
+   "call": "usable",
+   "note": "The split needs no new call: the main campground and Loop P across the bay are the two areas. Traced the lettered loop A to X from the photo, its lane from the park road round past E, H, J and L and down past M, O, Q and S back to the road, the lane past N to X and the spurs to the pads, so every site there is within 40 m of a road. Loop P (P01 to P16) are hike-to sites in the woods 75 to 140 m from the highway, reached on foot, with only faint tracks among them."
   },
   "233676": {
    "call": "usable",
@@ -142,7 +142,7 @@
   },
   "272174": {
    "call": "hold",
-   "note": "001 to 022 and 044 line the drawn lanes by the river, but 023 to 043 sit along a web of paved lanes to the southeast. Zoomed for tracing, those lanes are blurred and broken under the budding trees and their joins to the drawn roads can't be seen, so nothing was traced. The Kiski group site sits 300 m away in the woods with no lane."
+   "note": "001 to 022 and 044 line the drawn lanes by the river. The lidar relief shows the web of lanes past 023 to 043 as smooth curving strips between raised tree islands, but the survey is sparse (1.7 per m²), the intensity shows the strips only faintly, and smooth strips there can't be told from mown lawn, so the lanes' middles can't be placed within a few metres. The Kiski group site still sits 300 m away with no lane. Nothing traced."
   },
   "273778": {
    "call": "usable",

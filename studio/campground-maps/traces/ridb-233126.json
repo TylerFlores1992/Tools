@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233126",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -115.6340853,
+    46.2457718
+   ]
+  }
+ ],
+ "note": "Units-03: the lookout cabin moved onto the main building the photo shows in the summit clearing, by the Forest Service's point."
+}

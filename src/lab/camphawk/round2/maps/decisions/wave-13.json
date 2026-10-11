@@ -28,8 +28,8 @@
    "id": "10191054",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look unsure."
   },
   {
    "id": "255180",
@@ -91,8 +91,8 @@
    "id": "10047913",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (lidar-02): first look unsure."
   },
   {
    "id": "10077501",
@@ -182,15 +182,15 @@
    "id": "10377487",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "10377492",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "10377502",
@@ -201,24 +201,24 @@
   },
   {
    "id": "10377515",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (oregon-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10377519",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (oregon-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10377523",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (oregon-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "10377551",
@@ -287,8 +287,8 @@
    "id": "10406480",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look hold."
   },
   {
    "id": "231921",
@@ -364,8 +364,8 @@
    "id": "232398",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look hold."
   },
   {
    "id": "232803",
@@ -378,8 +378,8 @@
    "id": "232804",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look hold."
   },
   {
    "id": "232811",
@@ -462,8 +462,8 @@
    "id": "232909",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look hold."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (fix-18): first look hold."
   },
   {
    "id": "233218",
@@ -553,15 +553,15 @@
    "id": "251940",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "252035",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "267076",

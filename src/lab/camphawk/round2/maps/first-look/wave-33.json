@@ -26,47 +26,47 @@
   },
   "232935": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on open water with no shore in the 300 m around it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The pin is on open water. The Forest Service's point, 205 m west, is under closed spruce 25 m back from a small cove where a skiff is moored off a gravel beach, so the cabin may be near, but no roof shows through the canopy. Not moved."
   },
   "232938": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in the glacial river's gravel bed, with no cabin or clearing near it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 81 m away."
+   "note": "The pin is in the river's gravel bed, where no cabin could be, and the Forest Service's point 65 m northwest is in the spruce beside a small opening with no roof or building outline. Not moved."
   },
   "232939": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water near the outlet; no cabin shows on the shores near it. On the map: the pin is 0 m from the listing's own point, with a drawn road 482 m away."
+   "note": "The pin is on the lake's open water, and the Forest Service's point 92 m west-southwest is on the shore meadow by the forest edge, with a dock and a boardwalk nearby but no roof in the photo. Not moved."
   },
   "232940": {
    "call": "good",
    "note": "Zoomed in, a red-roofed cabin shows plainly 95 m southwest of the pin at the end of the boardwalk across the muskeg; the pin was in open muskeg and now sits on the cabin."
   },
   "232941": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin or clearing shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 149 m away."
+   "call": "usable",
+   "note": "Moved the pin 190 m southwest, from unbroken forest onto the cabin beside the trail: a gray gabled roof about 10 by 8 m, on which the Forest Service's point sits, with a green-roofed building 10 m east and a boardwalk and steps running south. The trail is not drawn to it."
   },
   "232942": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the forest edge above a log jam at the lake's end; no cabin shows through the trees. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "hold",
+   "note": "The pin is on the log jam at the lake's west end, with no building. A cabin plainly shows 185 m south-southwest of the pin, on a rocky point of the lake's south shore: a gray roof about 4 by 9 m with a float moored beside it. It is 85 m west of the Forest Service's point (wooded, no roof) and past 150 m from the pin, so it was not moved; a person who can confirm it is the west cabin could move it there."
   },
   "232943": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, which here is taken over snow: the pin is on a snow-covered flat (likely the frozen lake) by a rocky shore, so no cabin can be seen. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Moved the pin at the final check, about 5 km west, from the lake ice onto the cabin: a brown roof at the forest edge on Turner Lake's shore with a path to the beach, the only building in view, 28 m west of the Forest Service's East Turner Lake point; no road or trail is drawn to it (fly-in)."
   },
   "232944": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin or clearing shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Neither the pin, under closed spruce, nor the Forest Service's point 100 m west, at the edge of the shore meadow behind the beach, shows a cabin roof or a cleared landing in the photo. Not moved."
   },
   "232945": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the glacial lake's water just off a wooded point; no cabin shows on the shore near it. On the map: the pin is 0 m from the listing's own point, with a drawn road 196 m away."
+   "note": "The pin is on the lake's open water, and the Forest Service's point 56 m south-southwest, under spruce on the wooded point, shows no roof or clearing in the photo. Not moved."
   },
   "232946": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in the river's channel and gravel bars; the railway passes 120 m north-west, and no caboose shows near the pin. On the map: the pin is 0 m from the listing's own point, with a drawn trail 149 m away."
+   "note": "The pin is on the river's gravel bars and channel, where no caboose can be. The Forest Service's point, 200 m west, is under closed forest 15 m south of the railway, just past a small pale clearing at the track's edge; no car body or roof shows there or along the visible track. Not moved."
   },
   "232947": {
    "call": "unsure",
-   "note": "The lidar here is far too sparse to read (0.14 ground points per square meter, flown 2013): both layers are scattered speckle at the pin, 140 m in from the beach, and the Forest Service photo shows only forest canopy there, so no cabin or clearing can be placed. Nothing traced."
+   "note": "Both the pin and the Forest Service's point 243 m north, 60 m back from the shore, are under closed forest with no roof or clearing in the photo. Not moved."
   },
   "232948": {
    "call": "good",
@@ -82,27 +82,27 @@
   },
   "232953": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy on a wooded point; no cabin shows. On the map: the pin is 130 m from the listing's own point, with a drawn road 194 m away."
+   "note": "Both the pin and the Forest Service's point, 215 m northwest at the shaded shore of the bay, are under closed spruce; no roof or landing shows at either, nor on the sand spit between them. Not moved."
   },
   "232959": {
    "call": "unsure",
    "note": "The lidar is thin here (1.3 ground points per square meter): both layers are speckle at the pin just inside the forest at the head of the bay, with no levelled pad, building footprint or clearing, and the photo shows only canopy, so the cabin can't be placed. Nothing traced."
   },
   "232963": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is in open muskeg with no building or clearing that could be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "The pin moved 246 m west onto the cabin's roof the photo shows at the forest edge of the grassy point, where the paths across it meet, on the Forest Service's point. No drawn road or trail reaches it (boat- or fly-in)."
   },
   "232968": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full canopy in shadow above the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Under closed spruce, neither the pin nor the Forest Service's point 69 m south-southeast, just above the beach, shows a roof or clearing in the photo. Not moved."
   },
   "232972": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 25 m east of the drawn road; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 23 m away."
+   "note": "The Forest Service's point, 120 m southwest of the pin, is under closed spruce just south of the drawn trail near the highway, and the pin is under closed canopy; no roof shows at either. A pale edge on the river bank 115 m south of the pin is too blurred to call a building. Not moved."
   },
   "232974": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is in an open meadow with no building or clearing that could be the cabin. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Moved the pin about 100 m southwest, from the open meadow onto the cabin's pale roof at the forest edge, at the Forest Service's point; no road or trail is drawn to it (boat-in)."
   },
   "232975": {
    "call": "hold",
@@ -110,19 +110,19 @@
   },
   "232978": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is under forest canopy just above the shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The Forest Service's point, 378 m north-northeast, is under spruce across the island's narrow wooded strip with no roof or clearing, and the pin still shows no cabin. Not moved."
   },
   "232983": {
    "call": "usable",
    "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the cabin's red roof plainly shows 40 m west of the pin, which is on the lake shore; nothing drawn reaches it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
   },
   "232987": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on open alpine ground with no cabin, which would show there; the drawn road is 140 m east. On the map: the pin is 2 m from the listing's own point, with a drawn road 140 m away."
+   "call": "usable",
+   "note": "Moved the pin 165 m northwest, from open alpine ground onto the cabin: a brown roof about 6 by 5 m on the knoll above the lake, with a white outbuilding 10 m west, where the Forest Service puts Crow Pass cabin."
   },
   "232988": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 100 m in from the shore; no cabin shows. On the map: the pin is 104 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Under closed spruce, neither the pin nor the Forest Service's point 65 m southeast shows a roof or clearing in the photo. Not moved."
   },
   "232989": {
    "call": "unsure",
@@ -133,12 +133,12 @@
    "note": "Zoomed in, a small building casting a shadow stands in the lakeside meadow 65 m northwest of the pin, 25 m from the shore, the only structure in view; the pin was at a forest edge and now sits on it."
   },
   "232994": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is on the lagoon's open water east of a gravel spit; no cabin shows near it. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "unsure",
+   "note": "The pin is on the lagoon's open water, and the Forest Service's point, 105 m southwest in the forest on the point, shows only the end of a narrow pale clearing among spruce, no roof; a pale square on the spit's tip 100 m north of that point could be a rock as easily as a building. Not moved."
   },
   "232995": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo (2010, 0.6 m), the pin is under forest canopy; no cabin shows. On the map: the pin is 6 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Under closed spruce, neither the pin nor the Forest Service's point 58 m north-northeast shows a roof or clearing; a white object on the shore 30 m beyond the point looks like a boat. Not moved."
   },
   "232998": {
    "call": "usable",
@@ -154,15 +154,15 @@
   },
   "233002": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the edge of the trees above an open meadow; no cabin shows at it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 12 m away."
+   "note": "Neither the pin at the forest edge above the meadow nor the Forest Service's point 31 m northwest under the spruce shows a roof or clearing in the photo. Not moved."
   },
   "233004": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the forest edge by the river's mouth; no cabin shows at it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 40 m away."
+   "note": "No cabin shows at the pin, on the forest edge above the river mouth, or at the Forest Service's point 12 m south-southwest under spruce; neither has a roof or cleared landing in the photo. Not moved."
   },
   "233005": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the open grass of a tidal spit with no building, which would show there. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "unsure",
+   "note": "The pin is on open grass with no building, and the Forest Service's point 63 m northwest is under the spit's spruce stand, where a small pinkish patch 17 m from it may be a piece of roof but isn't plain. Not moved."
   },
   "233006": {
    "call": "unsure",
@@ -198,7 +198,7 @@
   },
   "233019": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the river's sand bar at a bend, with no cabin on it or on the meadow banks. On the map: the pin is 0 m from the listing's own point, with a drawn trail 96 m away."
+   "note": "The pin is on the river's sand bar, and the Forest Service's point 89 m west-northwest is in spruce above the bank, where a brownish patch 13 m from it looks more like a dead tree crown than a roof. Not moved."
   },
   "233020": {
    "call": "good",
@@ -210,7 +210,7 @@
   },
   "233022": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 40 m above the lake shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 81 m away."
+   "note": "Neither the pin under spruce nor the Forest Service's point 68 m west-northwest, in shadow at the lake's edge, shows a roof; a small pinkish patch 20 m south of the point may be one but isn't plain. Not moved."
   },
   "233023": {
    "call": "unsure",
@@ -222,7 +222,7 @@
   },
   "233025": {
    "call": "unsure",
-   "note": "The lidar is thin under the spruce here (1.22 ground points per square meter): both layers are speckle at the pin just inside the forest edge above the shore, with no levelled pad, building footprint or clearing, and the photo shows only canopy, so the cabin can't be placed. Nothing traced."
+   "note": "Neither the pin under spruce nor the Forest Service's point 95 m west-northwest, at the forest edge above the shore, shows a roof in the photo or a building-shaped gap or pad in the ground relief. Not moved."
   },
   "233026": {
    "call": "good",
@@ -230,7 +230,7 @@
   },
   "233027": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy above the cove; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 239 m away."
+   "note": "Both the pin and the Forest Service's point, 105 m southwest, are under closed spruce above the cove's grassy beach flat; no roof or clearing shows at either. Not moved."
   },
   "233028": {
    "call": "good",
@@ -241,20 +241,20 @@
    "note": "Zoomed on the Forest Service photo, the pin is on the cabin in the open meadow, and the drawn trail passes 10 m from it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 10 m away."
   },
   "233031": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the open beach at the forest edge, with no cabin there, which would show. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "unsure",
+   "note": "The pin is on the open beach, and the Forest Service's point, 110 m west, is on the grassy strip at the forest edge above the beach, with no roof there; a pale, ragged patch 20 m west of that point is not plainly a building. Not moved."
   },
   "233037": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the marshy lake edge with no building; the cabin and its float dock plainly show about 60 m north-east (about where the listing's own point is). On the map: the pin is 58 m from the listing's own point, with a drawn road 664 m away."
+   "call": "usable",
+   "note": "Checked as built: units-01 (running at the same time) already moved the pin 55 m north-east onto the cabin's roof by its float dock, where the Forest Service's point falls, and the rebuilt map shows it there. No road or trail reaches it (boat or float-plane access), which is right as drawn. Nothing more done here."
   },
   "233038": {
    "call": "unsure",
-   "note": "Both lidar layers (5.74 ground points per square meter, flown 2023) show only the forest floor and the long ridges of old beach lines at the pin, with no levelled pad, building footprint or clearing within 250 m, and the photo shows only canopy; the pin is 185 m from the listing's own point, so the cabin can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 185 m northwest of the pin, and the spot where OpenStreetMap maps the cabin, 230 m west near the beach, are both under closed spruce, and the dense ground relief shows only forest floor and old beach ridges at all three, no building gap or pad. Not moved."
   },
   "233039": {
    "call": "unsure",
-   "note": "Both lidar layers (2.27 ground points per square meter, flown 2023) are mottled forest floor at the pin, 40 m in from the beach, with no levelled pad, roof gap or clearing within 300 m; the Forest Service photo shows only canopy there, so the cabin can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 175 m northwest of the pin and 35 m inside the forest behind the beach, is under closed spruce, and the ground relief there is broken into canopy gaps and a creek's banks, with no building shape; the pin shows nothing either. Not moved."
   },
   "233040": {
    "call": "unsure",
@@ -262,43 +262,43 @@
   },
   "233041": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 60 m from the lake; no cabin shows. On the map: the pin is 215 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both the pin and the Forest Service's point, 210 m west, are under closed spruce on the lake's steep south shore in deep shadow; a narrow pale strip at the shore 35 m north of the point (a beach or landing) has no roof beside it. Not moved."
   },
   "233045": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service's older three-band photo (2013, 0.8 m, the only one here), the pin is in a tidal channel between wooded banks; no cabin shows near it. On the map: the pin is 133 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The pin is still in a tidal channel, and the Forest Service's point 246 m west is under closed forest with no roof or clearing in the blurry three-band photo, so the cabin can't be placed. Not moved."
   },
   "233046": {
    "call": "unsure",
-   "note": "No public-domain aerial photo covers this place (NAIP never flew Alaska; the Forest Service's Alaska photos don't reach here), so the pin can't be checked. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "No public-domain photo covers this place, and the only lidar here is a coarse elevation model with no buildings in it, so neither the pin nor the Forest Service's point, 155 m west on the shore, can be checked. Not moved."
   },
   "233047": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 40 m above the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "No cabin shows at the pin under spruce above the beach or at the Forest Service's point 227 m southwest at the beach's west end, also under forest. Not moved."
   },
   "233048": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 40 m in from the beach; no cabin shows. On the map: the pin is 159 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both the pin and the Forest Service's point, 140 m west behind the corner of the beach, are under closed spruce; no roof or clearing shows at either, nor along the beach's forest edge between them. Not moved."
   },
   "233049": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 60 m in from the cove; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The Forest Service's point, 781 m southeast, is under closed spruce back from another stretch of shore, and neither it nor the pin shows a roof or clearing. Not moved."
   },
   "233050": {
    "call": "unsure",
-   "note": "At the pin, on the terrace edge above the creek, both lidar layers (3.47 ground points per square meter) show only forest floor, with no levelled pad, building footprint or clearing, and the photo shows only canopy; the pale patches in the intensity 200 m northeast are wet muskeg, not a cabin. The drawn trail roads follow their banks, but the cabin can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 135 m south-southwest of the pin, is under spruce just above a bare landing at the head of the beach, where the photo shows a blue tarp-like shape about 6 m long at the trees' edge; the ground relief shows a smooth level terrace there but no building outline, so the cabin is not plain. Not moved."
   },
   "233051": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 217 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both the pin and the Forest Service's point, 155 m west near the beach, are under closed spruce; a footpath runs in from the beach 40 m west of the point, and a brownish patch 4 m across at the forest edge beside it is not plainly a roof. Not moved."
   },
   "233052": {
    "call": "unsure",
-   "note": "The only photo here is the older blurred three-band one: the pin is in forest on a point, and the pale spot 80 m north-east in a small clearing can't be told apart from rock or a clearing, so nothing is plainly the cabin."
+   "note": "On the blurred photo, the Forest Service's point 78 m west-southwest sits at the shore where a pale strip runs into the water and a small blue patch shows nearby, but no roof is plain there or at the pin in the forest. Not moved."
   },
   "233053": {
-   "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in open muskeg with no building, which would show there. On the map: the pin is 300 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "unsure",
+   "note": "The Forest Service's point, 295 m west, is the springs' bath house, a different structure; one pale-roofed building with a deck shows beside it at the top of the beach, but whether that is the cabin or the bath house can't be told. Not moved; the pin is still in open muskeg."
   },
   "233055": {
    "call": "good",
@@ -310,7 +310,7 @@
   },
   "233058": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the river's open water, with no cabin on the banks near it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 98 m away."
+   "note": "Both the pin and the Forest Service's point 24 m west-southwest are on the river's open water, and no cabin shows on the gravel banks near them. Not moved."
   },
   "233059": {
    "call": "usable",
@@ -318,11 +318,11 @@
   },
   "233062": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the lake's open water, 70 m from the nearest shore; no cabin shows on it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The pin is on the lake's open water. The Forest Service's point, 150 m west on the wooded point's south shore, is under spruce; a small brown square about 4 m across 17 m northeast of it could be a roof but reads as easily as a dead crown, so the cabin is not plain and the pin was not moved."
   },
   "233064": {
    "call": "unsure",
-   "note": "At the pin, under the spruce above the creek flats, both lidar layers (2.22 ground points per square meter) are mottled forest floor with no levelled pad, building footprint or clearing, and the meadow 100 m south shows only creek channels; the photo shows only canopy at the pin, so the cabin can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 165 m southeast of the pin at the forest edge above the creek meadow, is under spruce, and neither the photo nor the ground relief shows a roof, gap or pad there or at the pin. Not moved."
   },
   "233065": {
    "call": "unsure",
@@ -330,39 +330,39 @@
   },
   "233068": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy between the slough's channels; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 133 m away."
+   "note": "Under closed spruce between the slough's channels, neither the pin nor the Forest Service's point 80 m southwest shows a roof or clearing in the photo. Not moved."
   },
   "233070": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the river's open water, 20 m off the wooded bank; no cabin shows near it. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The pin is on the river's open water, and the Forest Service's point 94 m west is in spruce and brush behind the bank with no roof in the photo, only a pale log on the shore. Not moved."
   },
   "233076": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 80 m in from the tidal flat; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "Moved the pin at the final check, about 240 m south-southwest, from closed forest onto the cabin: a gray gabled roof with a boardwalk above the tidal flat, 25 m from the Forest Service's point, where OpenStreetMap also maps Garnet Ledge Cabin; no road or trail is drawn to it (boat-in)."
   },
   "233078": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both the pin and the Forest Service's point, 125 m west near the forest edge above the tidal meadow, are under closed spruce; no roof or clearing shows at either, nor on the meadow and shore beyond. Not moved."
   },
   "233079": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 276 m away."
+   "note": "The Forest Service's point, 115 m west of the pin, is under spruce at the edge of the grassy flat behind the bay's rocky shore, and the pin is under closed canopy; no roof or cleared landing shows at either. Not moved."
   },
   "233082": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 187 m away."
+   "call": "usable",
+   "note": "Moved the pin at the final check, about 180 m northwest, from closed forest onto the cabin: a brown roof with two skylights and a deck above a cove with a beached skiff, the only building on this shore, 33 m west of the Forest Service's point; no road or trail is drawn to it (boat-in)."
   },
   "233105": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 70 m above the lake, with a dock on the shore to the south-west; no cabin plainly shows. On the map: the pin is 44 m from the listing's own point, with a drawn road 157 m away."
+   "note": "The Forest Service's point, 200 m southeast of the pin and 25 m back from the lakeshore, is under closed spruce with a pale ragged patch beside it (dead crowns or windfall, not a roof); the pin, above the dock on the north shore, shows only canopy too. Not moved."
   },
   "233171": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is on the open tidal flat between the river channel and the trees, with no cabin, which would show there. On the map: the pin is 92 m from the listing's own point, with a drawn road 232 m away."
+   "note": "The pin is on the open tidal flat, where no cabin stands. The Forest Service's point, 145 m south-southwest at the forest edge, is under spruce; a footpath crosses the meadow toward a brownish patch with pale objects 10 m southwest of the point, which may be the cabin's roof partly under trees, but it is too blurred to call. Not moved."
   },
   "233179": {
    "call": "unsure",
-   "note": "The lidar relief shows the drawn campground loop on its graded band, 20 m northeast of the pin, but at the pin both layers show only the speckle of dense spruce (2.96 ground points per square meter), with no roof, levelled pad or drive that could be the cabin; the photo shows only canopy. Nothing traced."
+   "note": "Under closed spruce, neither the photo nor the ground relief shows the cabin at the pin or at the Forest Service's point 11 m southwest; no roof gap or levelled pad at either. Not moved."
   },
   "233401": {
    "call": "usable",
@@ -382,7 +382,7 @@
   },
   "10300370": {
    "call": "hold",
-   "note": "Zoomed on the Forest Service photo, the pin is in unbroken forest above the lake with no cabin or clearing; the campground's drawn loop is 80 m east. On the map: the pin is 256 m from the listing's own point, with a drawn road 79 m away."
+   "note": "The pin and the Forest Service's point 21 m southwest are both in unbroken forest above the lake beach, with no cabin, clearing or path in the photo. Not moved."
   }
  }
 }

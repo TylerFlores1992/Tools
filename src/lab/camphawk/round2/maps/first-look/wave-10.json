@@ -6,7 +6,7 @@
  "looks": {
   "119190": {
    "call": "unsure",
-   "note": "Under full canopy: the inner loop can't be seen through the firs. Most sites sit within 20 m of it, but 06, 07, 09 and 10 sit outside it with no lane showing."
+   "note": "The lidar relief (Oregon DOGAMI) shows the paved road on the east and the lane along the south as plain bands, but it is coarse triangles under the firs inside the campground: the drawn loop past 02 to 16 can't be checked to 3 m, and no lane shows to 06, 07, 09 and 10 outside it. Not traced."
   },
   "231897": {
    "call": "usable",
@@ -37,8 +37,8 @@
    "note": "The lidar relief shows the lanes plainly under the pines, and the drawn south loop is off them: its west side runs 8 to 12 m east of the dirt lane the photo shows past 011 to 015, and its east side lies between the middle lane and the east lane past 017 and 018. In the south the relief's curving lanes and the photo's straight dirt strips toward 020 and 021 don't agree well enough to redraw the loop to 3 m, so nothing was traced."
   },
   "232063": {
-   "call": "hold",
-   "note": "A winter photo, under snow. Lodgepole Grove sits by the drawn lanes, but Pine Grove sits 60 m south in a round clearing with no lane drawn, and Limber and Ponderosa Groves sit 26 to 33 m from them: three of the four group sites."
+   "call": "usable",
+   "note": "The lidar relief (10.18 ground points per square meter) shows the lanes, lots and group-site pads plainly under the snow and pines, and the drawn roads follow them within about 3 m. Lodgepole Grove sits by its spur, Limber Grove on a levelled pad 30 m past the end of the road by the parking, Ponderosa Grove on an open pad 26 m north of the east loop, and Pine Grove on a round levelled pad 49 m south of the west cul-de-sac, reached by the drawn trail; no vehicle lane to Pine Grove shows (two drainage ditches run beside the trail), so nothing was traced."
   },
   "232192": {
    "call": "hold",
@@ -61,8 +61,8 @@
    "note": "The loop follows the visible dirt lane, and the sites sit at the ends of the spurs off it (005 and 008 27 to 29 m out along their spurs)."
   },
   "232411": {
-   "call": "unsure",
-   "note": "A spring photo, part snow, under pines. The road along the lake and the north-east loop fit what shows, but the lane drawn diagonally to the west loop can't be seen, and 004 and GP3 sit between lanes with no pads showing."
+   "call": "usable",
+   "note": "The lidar (3.4 ground points per square meter) shows the lanes under the pines and snow: the road along the lake, the north-east loop and the diagonal lane to the west loop all show as gray bands in the intensity and crowned lanes in the relief, and the drawn roads follow them within about 3 to 4 m (the west loop and the diagonal sit a little north-west of their bands). 004 and GP3 sit on the pale gravel pads by the central parking that the photo and the relief show, and every site is within 16 m of a drawn road; nothing was traced."
   },
   "232414": {
    "call": "usable",
@@ -86,7 +86,7 @@
   },
   "232828": {
    "call": "hold",
-   "note": "The check can't draw it, and the photo agrees: the 14 sites sit stacked in one small knot under the trees, not on separate pads, inside a coarse polygon that isn't a road."
+   "note": "Unchanged. The 14 sites sit in a small knot under the pines (005 with 020, 008 with B on one point), inside an angular OpenStreetMap outline that isn't a road; the photo shows a lane only along the north edge and no pads beneath the trees, so nothing was moved."
   },
   "232859": {
    "call": "hold",
@@ -94,7 +94,7 @@
   },
   "232863": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loop is a coarse outline that can't be seen through the firs, and the horse sites sit around its outside edge (008 to 010 at the meadow's edge, 26 to 29 m out)."
+   "note": "The lidar relief (Oregon DOGAMI) is sparse here, coarse triangles with a seam across the middle of the loop, and shows only a faint strip running north-south through the loop's middle, not the drawn Forest Service loop; the photo shows only dirt patches by 003, 004 and 005. The coarse loop can't be checked or replaced to 3 m; not traced."
   },
   "233118": {
    "call": "usable",
@@ -137,8 +137,8 @@
    "note": "The loop and the road in follow the visible dirt lanes. Traced the dirt lane south-west from the bottom of the loop past 004; 007 and 008 west of the loop and 009 to 012 south-east of it still sit 22 to 37 m out on spurs that don't show plainly through the pines."
   },
   "233819": {
-   "call": "unsure",
-   "note": "A winter photo, under snow and pines: the loop and the road in can't be confirmed under the trees, and 002, 004, 012 and 015 to 017 sit 20 to 34 m from them with no pads showing."
+   "call": "usable",
+   "note": "The lidar intensity (11.52 ground points per square meter) shows the paved road and loop as a plain dark band under the snow and pines, and the OpenStreetMap road follows it within about 2 m. Traced over it: the pull-in spurs to 002, 003 to 006, 008 to 010, 013 to 015 and 017, and the lane around the island south of the east loop; several pins (001, 003, 004, 010, 011 and 016) sit 15 to 20 m from the nearest spur end, and 012 has no spur showing."
   },
   "233821": {
    "call": "usable",
@@ -290,7 +290,7 @@
   },
   "251570": {
    "call": "unsure",
-   "note": "Under full canopy: the loop can't be seen through the firs, and the sites sit both inside and outside it (015 47 m in) with no lanes or pads showing."
+   "note": "The lidar relief (Oregon DOGAMI) shows the road along the river and the open meadow in the loop's east half, but under the firs it is broken triangles cut by narrow channels, with no band that is the drawn loop or a lane to 005 to 008 west of it or 015 inside it. The loop can't be checked to 3 m; not traced, and 010 still has no point."
   },
   "251834": {
    "call": "good",

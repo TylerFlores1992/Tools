@@ -58,11 +58,11 @@
   },
   "251438": {
    "call": "unsure",
-   "note": "The loop is drawn round 05 and 08 to 16, but the sites sit on clearings inside and outside it under bare trees where the lanes don't show clearly; 06, 07 and 09 to 12 sit north of the loop with no lane drawn."
+   "note": "The lidar layers don't settle it: the survey is sparse (2 ground points per m²), the intensity shows no lane band inside or north of the loop, and the relief shows only the creek-side banks and a faint raised strip north of the loop that the trailers in the photo don't follow. The lanes to 06, 07 and 09 to 12 and inside the loop past 13 to 16 can't be placed. Nothing traced."
   },
   "10001451": {
-   "call": "hold",
-   "note": "Split listing, now two areas 700 m apart (tent sites 01 to 26 on the river meadow in the west, horse sites 27 to 39 by the road in the east), and they follow the real places. The tent sites' lane along the meadow shows and isn't drawn, and the horse sites sit 10 to 20 m off the drawn road. Held: the tent area, two thirds of the sites, has no drawn road."
+   "call": "usable",
+   "note": "The split needs no new call: tent sites 01 to 26 on the river meadow and horse sites 27 to 39 by the road 700 m east are the two areas. Zoomed, the tent sites are walk-in pads on the open meadow beside the long gravel parking strip, which the drawn road follows; no vehicle lane runs to them, so the 9 sites over 40 m from the line are a short walk from the lot. Traced the dirt lane on south from the lot's end past 24 to 26."
   },
   "233241": {
    "call": "unsure",
@@ -129,12 +129,12 @@
    "note": "The road along the creek follows the visible pavement, and the sites (001 to 060) line both sides of it on the pull-ins; the road ends at the turnaround by 024 to 027 with 055 to 060 up the lane north of it."
   },
   "232558": {
-   "call": "hold",
-   "note": "The drawn loops run through the woods while the sites sit on clearings off them: 18 to 30 along the river lane, 11 to 16 by the east lane and 02 to 09 west of the south loop, all 20 to 40 m off any drawn road where the lanes show only in pieces."
+   "call": "usable",
+   "note": "The lidar intensity (7 points per m²) shows every lane as a plain band under the trees, and the drawn river lane, the middle loops and the south loop follow them within a few metres; the sites sit on pull-ins off them, all within 40 m. Traced the spur east from the south loop to 16 and the forked spur south to 10, 11 and 12; the short pull-ins to 02, 04 to 09 and 18 to 30 are left out."
   },
   "232560": {
    "call": "hold",
-   "note": "Split listing, now two areas (the point, 08 to 69, and 01 to 07 across the marina 600 m south), and they follow the real places. On the point the drawn lines cut through the trees beside the visible lanes (past 24 to 42, 55 to 68), and 01 to 07 sit in the woods with no road. Held: drawn roads off the visible lanes."
+   "note": "Unchanged; the two areas (the point, 08 to 69, and 01 to 07 across the marina) follow the real places, so no split call. On the point the drawn OpenStreetMap lines still cut through the trees between the lanes (a ring in the middle woods past 11 to 14 and the lines past 08 to 17 and 20 to 23 follow no lane that shows), and under that canopy the real lanes can't be placed to 3 m; 01 to 07 sit in the woods with no lane visible."
   },
   "232570": {
    "call": "usable",
@@ -174,7 +174,7 @@
   },
   "232685": {
    "call": "hold",
-   "note": "Not traced: zoomed in, the lanes round 33 to 49 and 37 to 43 show only in pieces between the pines (one short stub north of 36) and the photo is too soft to place them within a few metres, so the 16 west sites can't get a trustworthy road. Held: drawn roads off the visible lanes, real ones under canopy."
+   "note": "The drawn roads are coarse straight lines off the real lanes. The lidar intensity shows an asphalt lane west from the parking lot and the turnaround by 38, plus bright concrete strips running north-east past 33 to 36 and 45, but the survey is sparse (1.9 per m²) and the relief shows only broken ditches, so the strips can't be told from pads and the lanes past 37, 39 to 49 can't be placed within a few metres. Nothing traced."
   },
   "232688": {
    "call": "hold",
@@ -249,12 +249,12 @@
    "note": "Replace trace: the source's lines were field and park outlines, so every lane was traced from the photo: the park road, the north loop past 01 to 06 with its middle lane, the lane down past 08 to 14 and its loop round 20 to 22, the east lane past 07, the south loop past 26 to 43 with its middle lane, branches and pull-ins, and the lanes to 15 to 19 and 23. Every site but 10 (41 m, in the trees between two lanes) now sits within 40 m of a drawn road."
   },
   "233436": {
-   "call": "hold",
-   "note": "Split listing, now two areas 1 km apart across the bay (01 to 62 on the west points, 63 to 75 on the east point), and they follow the real places. The loops in each follow the visible pavement, but the whole west-shore row (29 to 48) sits 20 to 40 m off the drawn loop along a shore lane that shows and isn't drawn, and 22 to 28 are bunched on one spot. Held: a whole row has no drawn road."
+   "call": "usable",
+   "note": "The split needs no new call: the west points (01 to 62) and the east point (63 to 75) are the two areas. Traced the west shore's paved spurs from the photo: the lane north-west toward 42 and 43, and the lanes to 41, 37, 32, 31 and to 29 and 30, so the shore row now has drawn roads beside it; only 39, 46 to 48 (on mown grass with faint tracks) and 58 sit over 40 m from a road. The drawn loops follow the visible pavement, and 22 to 28 sit in a row along the east road."
   },
   "233446": {
    "call": "hold",
-   "note": "Split listing, now two areas 1 km apart (01 to 27 on the east point, 28 to 72 on the west point), and they follow the real places. In the west area the shore rows sit 20 to 40 m off the one drawn road, and in the east area 01 to 18 have no lane drawn; under full canopy the lanes don't show. Held: over a third of the sites have no drawn road."
+   "note": "Unchanged; the two areas (the west point 28 to 72, the east point 01 to 27) follow the real places, so no split call. The east area is under unbroken canopy: the lidar relief shows its crowned lanes plainly (an oval loop past 05 to 10 and a lane south-west to 19 and 20, which the drawn road follows only roughly), but the photo shows none of them, so they weren't traced, and 19 of its 27 sites have no drawn road. A candidate for the lidar point-cloud tracing."
   },
   "233409": {
    "call": "usable",
@@ -273,8 +273,8 @@
    "note": "Unchanged: the drawn lines on the west point are mostly area outlines that cut across the trees and the beach. Zoomed on a 5 m grid, some lanes show plainly (the lane up to 108 and 109, the gravel lane past 096 and 097 to the hub by 098), but the lanes the 084 to 095 rows and the 099 to 107 rows sit on run under the oaks in short pieces that don't join up, so the full replace the map needs can't be placed to 3 m and nothing was traced."
   },
   "233448": {
-   "call": "hold",
-   "note": "Split listing, two areas (loop A north, loop B on the point 600 m south). Not traced: loop A's east lanes (A20 to A40) show plainly, but its west half (A01 to A19, A24, A42) is dirt pads joined under canopy, and B05 to B10 sit on open grass with no lane, so over a third of the sites would still have no road."
+   "call": "usable",
+   "note": "The split needs no new call: loop A in the north and loop B on the point 600 m south. Traced loop A's visible gravel lanes from the photo: the loop round the open lawn past A25 to A31 with its branches to A29, A28 and A26, the lane past the trailer pads, the lane south to A21 with the loop on the point, the spur to A23 and the lane west past A19 to A15 (left unjoined where it enters the trees). 10 of 52 sites (A03 to A10, A12 to A14 under the canopy of the west half) still sit over 40 m from a drawn road."
   },
   "233500": {
    "call": "hold",
@@ -285,8 +285,8 @@
    "note": "The lidar intensity shows the road along the ridge and both areas' lanes as plain bands, with the spurs to the pads branching off them, and OpenStreetMap's roads follow them (median offset about 1.5 m): the west area's lane and loop past 01 to 31, and the east area's road past 32 to 41 and its loop past 42 to 59. Every site is within 40 m of a drawn road; the spurs, and the lane north past 60 and 61, aren't drawn. Nothing traced."
   },
   "233511": {
-   "call": "hold",
-   "note": "Split listing, now three areas either side of the highway causeway (loop N on the north point, loop S on the south point, loop E on the east point), and they follow the real places. The loops follow the visible lanes, but S01 to S17 sit on the open point with no lane drawn among them and N05 to N13 sit off the drawn lanes under trees. Held: about a third of the sites have no drawn road."
+   "call": "usable",
+   "note": "The split needs no new call: loops N, S and E are the three areas either side of the causeway. Traced loop S's gravel lanes from the photo: the lane from the park road down to S09, the lane south past S06 to S08, the lane east to S01 and S02, and the lane from the west road past S17; now all but 8 of 73 sites are within 40 m of a drawn road. N07, N08 and N12 sit under trees just over 40 m off the drawn lanes, and S05, S11, S30 and S31 have lanes too faint to trace."
   },
   "233515": {
    "call": "hold",
@@ -298,7 +298,7 @@
   },
   "233584": {
    "call": "hold",
-   "note": "Split listing, now three areas round the cove (loops L and M in the north-west, loop N in the west, loops F and O in the east), and they follow the real places. Loops N and O follow the visible lanes, but the whole L row (L01 to L11) sits along a shore lane that shows and isn't drawn, M02 to M04 sit 20 m off the road, and a drawn ring in the middle woods follows no lane. Held: a whole row has no drawn road."
+   "note": "Traced from the photo the paved lane from the boat-ramp road north past the lot and west along the shore past L01 to L11, its spurs to L07, L08 and the open ground by L03 to L06, and loop M's teardrop with its spurs to M02 and M04; all but L02 of 41 sites are now within 40 m of a drawn road, and the three areas follow the real points. Still held for one drawn road: the OpenStreetMap ring in the middle woods (south of the lot) follows no lane the photo shows."
   },
   "233578": {
    "call": "usable",
@@ -358,7 +358,7 @@
   },
   "251355": {
    "call": "hold",
-   "note": "Split listing, now two areas 500 m apart along the river (001 to 024 in the north, 025 to 045 in the south), and they follow the real places. The visible lanes in both aren't drawn: only a line cutting across the north lawn and the park road. Held: most sites have no drawn road."
+   "note": "The drawn line across the north lawn turned out to follow the central gravel lane; added from the photo the lane south-east past 001 to 008 to the parking loop, the short spurs to 013 to 024, and in the south the paved loop past 037 to 045 with its spurs, so 36 of 44 sites now have a drawn road. Still held: the middle cluster 028 to 035 sits 45 to 70 m from the park road among trees, and its lanes are too faint to trace."
   },
   "232621": {
    "call": "usable",

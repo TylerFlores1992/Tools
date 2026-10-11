@@ -121,8 +121,8 @@
    "note": "The lidar intensity shows both lanes as light gravel bands through the meadow, with the relief showing the flat between them; the west lane is redrawn on its band (OpenStreetMap's line ran 2 to 6 m west of it in the middle), and the east lane past 01 to 11 and Iron Mountain Road are copied, as they sit on theirs. Every site is within 40 m of a drawn road; 16 and 17 share one point (the listing's) west of the lane, and no pad shows to tell them apart."
   },
   "234080": {
-   "call": "usable",
-   "note": "Split into two areas across the bay: the west loops and the east point. On the point the outer rows (X20 to X34 and 019 to 033) sit 20 to 40 m off any drawn road under the trees."
+   "call": "unsure",
+   "note": "Unchanged; the two areas (the west loops 050 to 070 and the east point 002 to 049) follow the real places, so no split call. Zoomed, and over the lidar relief, the point and the west loops are under full canopy: the drawn loops are coarse rings, and neither they nor the lanes to the outer rows (X20 to X34, 023 to 033) can be confirmed, so nothing was traced; 11 of 69 sites sit over 40 m from a drawn road."
   },
   "234081": {
    "call": "good",
@@ -289,8 +289,8 @@
    "note": "Split into two areas along the river: the north loops (001 to 026) and the south lane (027 to 041). The drawn lanes follow the gravel and the sites line them; 024 to 026 sit 20 to 80 m off the road."
   },
   "233603": {
-   "call": "usable",
-   "note": "The road along the river follows the visible lane, and 019 to 025 sit beside it. 004 to 018 sit 30 to 60 m south of it toward the bank on lanes that show only in gaps, and 007 to 009 between the roads."
+   "call": "unsure",
+   "note": "The lidar survey is sparse (1.6 ground points per m²) and has wide gaps: the relief is broken into noise in two strips over 008 to 016 and 021 to 022, and the intensity shows no lane bands at all. The lanes south toward the bank to 004 to 018 can't be placed. Nothing traced."
   },
   "233639": {
    "call": "good",

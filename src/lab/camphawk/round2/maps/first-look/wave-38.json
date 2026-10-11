@@ -60,8 +60,8 @@
    "note": "The pin sits at the edge of the open gravel clearing on the point, and the drawn lane reaches the clearing."
   },
   "234235": {
-   "call": "hold",
-   "note": "The lidar relief shows unbroken forest floor at the pin, with no building-shaped gap in the ground returns, pad or lane within 50 m, so the pin isn't on the cabin; nothing that could be the cabin shows within 150 m either, and the nearest drawn road is 150 m south-east. Nothing traced."
+   "call": "unsure",
+   "note": "Under full hardwood canopy, neither the pin nor the Forest Service's point 100 m northeast, beside a trail the ground relief shows running north along the lake, shows the cabin: the relief has no building-shaped gap or levelled pad at either. Not moved."
   },
   "234273": {
    "call": "good",
@@ -69,7 +69,7 @@
   },
   "234678": {
    "call": "unsure",
-   "note": "The lidar intensity shows the drawn spur from the road as a light gravel band past the pin, and a gravel clearing 45 to 95 m south of the pin beside the spur, where the photo shows a couple of small blue objects under the trees; that clearing may be the horse camp, but nothing shows it plainly, and the listing's own point is 1.7 km away. Nothing traced or moved."
+   "note": "The Forest Service's point (\"Hungerford Trail Camp\"), 100 m west of the pin, is under full canopy on the drawn trail, and neither the photo nor the ground relief shows a clearing, pad or loop there; the pin shows nothing plainly either. Not moved."
   },
   "234679": {
    "call": "good",
@@ -124,8 +124,8 @@
    "note": "The pin sits on the building beside the pond, which is plainly the house, but the drawn road ends 30 m short of it; a short track along the pond's edge shows but isn't drawn."
   },
   "10177496": {
-   "call": "unsure",
-   "note": "Under full canopy: the pin sits in the forest between two drawn roads, 60 m from each, by a faint opening that may be the group site; no lane to it shows."
+   "call": "usable",
+   "note": "The dense lidar (9.07 ground points per square meter) shows a levelled clearing about 45 by 35 m at the pin in the relief and a bright open patch in the intensity, and the photo shows a faint opening there, so the pin is on the group site. A narrow straight band, a footpath, runs about 60 m from the drawn road by the Dunbar Beach parking lot to its north-west corner; no drawn road or trail reaches the site, and nothing was traced."
   },
   "10294670": {
    "call": "good",

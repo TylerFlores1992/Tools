@@ -34,7 +34,7 @@
   },
   "231983": {
    "call": "unsure",
-   "note": "The lidar survey here (a topobathymetric one) has almost no ground points over the campground (0.02 per square meter, 8% of the frame covered), so the ground layers are blank at the pin and along the drawn loop; nothing can be checked under the canopy. Nothing traced."
+   "note": "Under closed canopy, neither the pin on the drawn west lane nor the Forest Service's point 98 m north-northeast beside the east lane shows a clearing or pad, and the ground layer is nearly empty here. Not moved."
   },
   "232237": {
    "call": "good",
@@ -42,7 +42,7 @@
   },
   "232240": {
    "call": "unsure",
-   "note": "The lidar intensity confirms the highway and the drawn dirt lane on their bands, but shows nothing at the pin, which is under the trees between them; the photo's clearings with tents and cars lie 40 to 70 m northeast, reached by undrawn dirt spurs off the lane, and which of them (if any) is the group site isn't plain. Nothing traced."
+   "note": "The Forest Service's point 42 m northeast lands beside an undrawn spur near a trailer pad, but several clearings with tents and cars spread around it and which one is the group site isn't plain; the pin is on a small pale square under the trees. Not moved."
   },
   "232342": {
    "call": "usable",
@@ -66,7 +66,7 @@
   },
   "233252": {
    "call": "unsure",
-   "note": "The lidar is sparse here (1.6 ground points per square meter) and its relief shows only the west lane and the loop at the north end of the drawn loop; the pin is under the trees between the station's several buildings (one 10 m northwest, a white-roofed one 45 m south), and nothing in the photo or the lidar says which is the guard station. Nothing traced."
+   "note": "The Forest Service's point 64 m southeast lands on the drawn loop's lane under trees, 20 m from the white-roofed building, and the pin is among the station's other buildings; nothing shows which one is the guard station. Not moved."
   },
   "233322": {
    "call": "usable",
@@ -82,7 +82,7 @@
   },
   "233962": {
    "call": "unsure",
-   "note": "The pin is on a bare river flat inside a bend, 70 m from the drawn road, with no building plainly at it. The listing's own point, 1.5 km south, is in forest between two dirt tracks, also with nothing plain on it."
+   "note": "At the Forest Service's point, 2.5 km north, the photo shows a dirt drive ending under pines with no roof; a grey-roofed building 30 m northeast might be the cabin, but it is past the 15 m the move rule allows and can't be told from a shed or garage. Not moved; the pin is still on a bare river flat."
   },
   "233966": {
    "call": "good",
@@ -98,11 +98,11 @@
   },
   "233997": {
    "call": "unsure",
-   "note": "The lidar relief shows NFS Rd 4818 plainly as a crowned band with its ditches, and the drawn Census line runs 15 to 30 m west of it past the pin (the pin sits on the drawn line, not on the road); neither layer shows a group site clearing or pad near the pin, and the listing's own point is in the lake, so where the site is can't be told. Nothing traced: redrawing the road wouldn't place the site."
+   "note": "The Forest Service's point, 701 m southwest, is under conifers on a lakeside bench where the ground relief shows undrawn lanes nearby but no plain group pad, and the pin still shows no site. Not moved."
   },
   "234006": {
-   "call": "hold",
-   "note": "The pin is in unbroken pine forest on a slope, 200 m from any drawn road, with no cabin or clearing. The listing's own point, 590 m northwest, is in forest too, so neither is confirmed."
+   "call": "unsure",
+   "note": "The Forest Service's point, 363 m east-southeast, shows a shaded grey patch between pines that might be a roof but isn't plain, and the pin is still in unbroken forest. Not moved."
   },
   "234123": {
    "call": "good",
@@ -125,8 +125,8 @@
    "note": "The pin is on the guard station's cabin, and a drawn Forest Service spur reaches it. But the spur connects to nothing: the gravel road up the valley, plain on the photo, isn't drawn, and neither is the dirt lane from it to the spur."
   },
   "234165": {
-   "call": "unsure",
-   "note": "The pin is under the trees 60 m east of the drawn road. The station's open meadow with a building and fence lies 50 to 100 m northwest, but nothing at the pin is plainly the station."
+   "call": "usable",
+   "note": "Moved the pin about 110 m north-west onto the one building at the station's meadow: a gray roof on the photo, and a square-cornered levelled block in the lidar relief (Oregon DOGAMI); no other building shows within 400 m. No drawn road reaches it (a dirt track runs north-west from it but doesn't show plainly to its end), so usable, not good."
   },
   "234168": {
    "call": "usable",
@@ -186,7 +186,7 @@
   },
   "234306": {
    "call": "unsure",
-   "note": "The lidar survey is sparse here (0.47 ground points per square meter, and it misses the river edge); its relief shows the paved loop and lot by the highway and a level bench above them where the pin sits, with a faint path round its rim 5 to 15 m from the drawn trail loop, but no group site clearing or lane onto the bench shows plainly. Nothing traced."
+   "note": "The Forest Service's point 56 m south-southwest lands on the paved loop by the highway, and the pin is on the wooded bench above; neither the photo nor the sparse lidar shows which is the group site, so the pin isn't moved."
   },
   "234316": {
    "call": "good",
@@ -250,7 +250,7 @@
   },
   "234458": {
    "call": "unsure",
-   "note": "The photo shows the east side of the drawn loop as a dirt track up from Big Meadows Road, and the lidar intensity a lighter gravel patch under the pines south of the pin, but neither layer shows the west side of the loop as a lane, nor a cabin or a plain pad at the pin (the relief there is only a faintly levelled area). Nothing traced."
+   "note": "The Forest Service's point 91 m east-southeast shows only a small gray-white spot among the pines and rocks, too small to be the cabin, while at the pin a pale rectangular outline in the shade may be a building but isn't plain. Not moved."
   },
   "234462": {
    "call": "good",
@@ -286,7 +286,7 @@
   },
   "234531": {
    "call": "hold",
-   "note": "The pin is in an empty wet meadow; 270 m northeast, where the drawn spur ends, a dark-roofed building with parked vehicles stands at the edge of trees and another structure shows under them, so which one is the guard station isn't plain."
+   "note": "The Forest Service's point lands on a gravel road junction 304 m northeast with no building, and the pin is still in an empty wet meadow; which of the structures at the spur's end is the guard station still isn't plain. Not moved."
   },
   "234566": {
    "call": "usable",
@@ -297,8 +297,8 @@
    "note": "The pin sits on the drawn road through the middle of the station's buildings, 10 to 40 m from each; which building is the guard station isn't plain."
   },
   "234570": {
-   "call": "hold",
-   "note": "The pin is in open grassland above the drawn loop; several small structures line the drawn road 30 to 170 m east, and none is plainly the guard station."
+   "call": "good",
+   "note": "Moved the pin 170 m east, from open grassland onto the larger of two gray gabled roofs beside the drawn road, the one the Forest Service's point sits on; the road passes 8 m north of it."
   },
   "234582": {
    "call": "good",
@@ -313,8 +313,8 @@
    "note": "No road reaches it, but the pin is on the lookout's small structure in the rocky summit clearing, with a drawn trail 16 m off; the nearest drawn road ends 120 m north."
   },
   "234630": {
-   "call": "unsure",
-   "note": "The pin is at the forest edge by a meadow, and no building shows at it. A drawn spur ends 100 m west under the trees, where nothing shows either."
+   "call": "hold",
+   "note": "The pin is at the forest edge beside the open meadow, and neither the photo nor the lidar relief (Oregon DOGAMI) shows a building, levelled pad or clearing at it or anywhere within 150 m; the drawn spur ends 100 m west in the forest with nothing at its end either. The station can't be placed."
   },
   "234750": {
    "call": "usable",
@@ -342,7 +342,7 @@
   },
   "264686": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under dense trees inside a drawn loop by the river, and the group site's clearing doesn't show plainly."
+   "note": "The 2010 lidar is too sparse to read here (0.41 ground points per square meter): the relief is mostly gaps, and the intensity shows only patchy bright ground on the river bank west of the drawn loop and inside it, with no plain pad, lane or clearing at the pin. The photo shows dense trees, so the group site can't be placed and the loop can't be checked; nothing was traced."
   },
   "266135": {
    "call": "usable",
@@ -350,11 +350,11 @@
   },
   "272098": {
    "call": "unsure",
-   "note": "The lidar intensity shows the ranger station's lanes as grey gravel bands, and the drawn lanes follow them within a few meters; but the pin is under the trees between the station's scattered buildings (a white-roofed one 20 m southwest, a brown-roofed one 40 m southeast), and neither the photo nor the lidar says which is the cabin. Nothing traced."
+   "note": "The Forest Service's point 97 m west-northwest lands on the edge of a large white-roofed building that looks more like a shop than a cabin, among the ranger station's several buildings; which one is the rental cabin isn't plain from the photo. Not moved."
   },
   "273779": {
-   "call": "unsure",
-   "note": "The pin is at the end of a drawn drive in the open ponderosa, between several houses 20 to 60 m away, and which is the Leopold House isn't plain."
+   "call": "usable",
+   "note": "Moved the pin 14 m northwest onto the house's roof, where the Forest Service's point for the Aldo Leopold house falls; the old pin was on the open yard. The drawn drive ends in that yard about 25 m short of the house."
   },
   "233754": {
    "call": "good",

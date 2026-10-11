@@ -26,7 +26,7 @@
   },
   "231864": {
    "call": "hold",
-   "note": "Rebuilt with the stray point rule (024, 259 km away, left off). Several sites still share spots and the west loops are drawn coarsely through the trees."
+   "note": "The stray 024 is now left off, so the map shows the place: the west loops (002 to 034) and the north-east shore group (043 to 053), and the OpenStreetMap roads now drawn follow the visible gravel lanes in both. Still held: 023, 029 and 051 share one point on the north-east loop by a restroom, and the open ground shows several unmarked pull-ins there, so which is which can't be told and nothing was moved."
   },
   "231866": {
    "call": "usable",
@@ -222,7 +222,7 @@
   },
   "234648": {
    "call": "hold",
-   "note": "Under pines throughout, with several loops whose sites reuse the same numbers (001 to 017 appear four times), so a camper can't tell which 005 is theirs. The drawn loops are coarse and the photo can't tell whether they follow the lanes."
+   "note": "Unchanged, with no split call: the four loops (B, C, D and W) touch each other within 500 m, and each reuses the numbers 001 to 017, so areas cut from the points would carry the same number ranges and still not tell a camper which 005 is theirs (that needs the loop name, which the site names lack). The drawn OpenStreetMap loops are coarse polygons under the pines and only partly follow the lanes that show."
   },
   "234686": {
    "call": "usable",

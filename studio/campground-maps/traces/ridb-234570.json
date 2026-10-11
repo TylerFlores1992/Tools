@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234570",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -110.423258,
+    43.215892
+   ]
+  }
+ ],
+ "note": "The guard station's gray roof shows beside the drawn road, under the Forest Service's point, 170 m east of the listing's pin; a smaller building stands 15 m west."
+}

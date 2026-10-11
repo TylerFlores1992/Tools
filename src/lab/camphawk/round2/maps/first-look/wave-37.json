@@ -14,7 +14,7 @@
   },
   "231994": {
    "call": "unsure",
-   "note": "The pin sits on the drawn road under full canopy; only a light patch by the road shows, nothing plainly a group camp. The listing's own point is 1.3 km away."
+   "note": "The Forest Service's point, 1.7 km east-southeast, is under closed hardwoods on a bench between creek channels, where neither the photo nor the lidar relief shows a group pad or lane, and the pin still shows no camp. Not moved."
   },
   "232216": {
    "call": "good",
@@ -34,7 +34,7 @@
   },
   "233109": {
    "call": "hold",
-   "note": "The lidar is dense here (6.79 ground points per square meter) and shows the pin on an unbroken wooded hillside 150 m east of the drawn Avery Creek Road, with no lane, levelled pad or clearing at it or leading to it. The only openings nearby are a meadow and the cabin clearings along the lane 200 to 250 m west, none plainly the group camp, so the pin wasn't moved and nothing was traced."
+   "note": "The pin is on an unbroken wooded hillside with nothing at it. The Forest Service's point, 220 m southwest, is under canopy on a flat creek terrace beside the drawn Avery Creek lane, 30 to 50 m south of two small pale roofs; the ground relief shows the terrace as smooth and level, but no edges of a pad, loop or parking that plainly make it the group camp. Not moved."
   },
   "233122": {
    "call": "good",
@@ -62,7 +62,7 @@
   },
   "233990": {
    "call": "unsure",
-   "note": "The lidar layers show only faint old tracks west of the pin and a light strip 60 to 100 m north that matches the photo's grassy gap; at the pin they show no pad, lane or building that is plainly the group camp, and no road is drawn in the frame. Nothing traced."
+   "note": "The Forest Service's point (named for the whole Gatewood campground) lands on the drawn lane 249 m south-southwest, where the photo and ground relief show only the lane and its ditch in hardwoods; neither spot shows the group pad. Not moved."
   },
   "234051": {
    "call": "usable",
@@ -85,12 +85,12 @@
    "note": "The pin sits by the cabin in its clearing, and the drawn lane ends at it."
   },
   "234313": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy 75 m from the nearest drawn road; no clearing or cabin shows. The listing's own point is 2.5 km away."
+   "call": "usable",
+   "note": "The pin moved 2.6 km east onto the grassy field beside Swan Cabin's pale roof, by the Forest Service's point, where the listing says groups camp. A drawn road ends 12 m north of it under the trees, where the lane can't be checked."
   },
   "234450": {
    "call": "unsure",
-   "note": "The pin sits under trees 35 m north of the end of a drawn lane; only a faint light patch shows at the pin, nothing plainly a camp."
+   "note": "The 2020 lidar is thin here (1.63 ground points per square meter) but shows the end of Rhoda Branch Road plainly: it turns south-west about 60 m east of the pin, so the road drawn running west to a point 33 m south of the pin was on no band. Replaced the roads to follow the lane's band; the pin sits on the south-east edge of a raised flat terrace by the creek, about 55 m from the lane, and neither layer nor the photo plainly shows a camp or a lane to it."
   },
   "234514": {
    "call": "good",
@@ -125,8 +125,8 @@
    "note": "The pin sits on the cabin's roof in a clearing by the lake, and the drawn lane ends 25 m south of it."
   },
   "234743": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy inside a bend of the drawn road; no clearing shows."
+   "call": "hold",
+   "note": "The dense lidar (7.29 ground points per square meter) shows the pin on an unbroken wooded slope inside the bend of the drawn road, which follows its band well; neither layer shows a levelled area, horse-trailer parking or a lane to the pin within 150 m, and the photo shows only canopy. The camp can't be placed, so nothing was traced or moved."
   },
   "250024": {
    "call": "good",
@@ -137,8 +137,8 @@
    "note": "The pin sits on the big paved lot between the dorms, gym and dining hall of the camp, and the drawn roads run around it. The listing's own point is 3.6 km away, but the photo agrees with the unit's point."
   },
   "251820": {
-   "call": "unsure",
-   "note": "The pin sits under trees on a wooded point; a lane along the shore shows 30 m south-east but no clearing or camp is plain at the pin."
+   "call": "usable",
+   "note": "The pin, moved by canopy-16 onto the paved camping lot about 100 m north of the shore point, sits on it beside the picnic shelter and parked campers; the lidar intensity (1.41 ground points per square meter) shows the paved lot and its turnaround circle as smooth gray, and the drawn road runs down the lot's east side within it. The turnaround loop at the south end isn't drawn; nothing further was traced or moved."
   },
   "251902": {
    "call": "good",
@@ -146,7 +146,7 @@
   },
   "251903": {
    "call": "unsure",
-   "note": "The pin sits on the drawn lane by its junction with the forest road, under pines; no clearing shows that is plainly the group site."
+   "note": "The Forest Service's point, 480 m north-northeast, is under closed canopy with no clearing or pad, and the pin on the drawn lane still shows nothing plainly the group site. Not moved."
   },
   "10145639": {
    "call": "unsure",

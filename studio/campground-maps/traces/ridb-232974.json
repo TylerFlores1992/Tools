@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232974",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C10",
+   "at": [
+    -147.8878498,
+    59.8017104
+   ]
+  }
+ ],
+ "note": "The cabin's roof shows at the forest edge by the meadow, at the Forest Service's point, about 100 m southwest of the listing's pin."
+}

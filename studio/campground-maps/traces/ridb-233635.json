@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "map": "ridb-233635",
+ "traced": "2026-10-11",
+ "by": "Claude (lidar lidar-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -93.7304461,
+     38.2938246
+    ],
+    [
+     -93.7303318,
+     38.2938336
+    ],
+    [
+     -93.7302632,
+     38.2937886
+    ],
+    [
+     -93.7302403,
+     38.2937165
+    ],
+    [
+     -93.7302632,
+     38.2936444
+    ],
+    [
+     -93.7303432,
+     38.2935994
+    ],
+    [
+     -93.7304461,
+     38.2935904
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from the NAIP photo: the turnaround loop by A16 to A19 east of the A loop. The drawn roads were checked against the photo and the lidar intensity and follow the visible lanes; the short pull-ins to A01 to A09, A55 to A64, B02 to B14 and B07, B09 are left out."
+}

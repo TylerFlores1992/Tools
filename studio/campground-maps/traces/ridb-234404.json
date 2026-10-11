@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234404",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -122.9256977,
+    40.2356114
+   ]
+  }
+ ],
+ "note": "Units-03: the guard station moved onto the larger grey roof the photo shows by the Forest Service's point, in a clearing in burned pine; a small shed stands 17 m south."
+}

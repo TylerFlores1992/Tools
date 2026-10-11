@@ -13,8 +13,8 @@
    "note": "The loops and the parking spurs follow the visible pavement, and Sites 01 to 38 sit on their pads; Walk In A to C and Campsites D and E sit on open ground by the upper loop."
   },
   "262754": {
-   "call": "unsure",
-   "note": "Only the day-use lane by the highway is drawn. Sites 01 to 15 sit 40 to 80 m east of it under full canopy toward the river, with no lanes showing; they may be walk-in sites."
+   "call": "hold",
+   "note": "The drawn day-use lane and its two lots follow what the photo shows by the highway. The lidar relief (Oregon DOGAMI) is coarse triangles here and shows no lane or pads east of it, and the photo shows only canopy, so sites 01 to 15 (probably walk-in) can't be reached by any traced lane; 7 of 15 sit more than 40 m from a drawn road."
   },
   "10107666": {
    "call": "good",
@@ -154,7 +154,7 @@
   },
   "232767": {
    "call": "usable",
-   "note": "The two loops follow lanes that show through the pines, and the sites inside them sit by them. The row on the lake side (012 to 035, west) sits on a lane that shows in gaps and isn't drawn, as do 039, 040 and 042 east of the south loop."
+   "note": "The lidar intensity shows every paved lane plainly under the pines, and every site, the lake-side row 012 to 035 included, sits at the end of a short pull-in off the two loops, all within 40 m; there's no separate lake-side lane. Replaced the roads: traced the road in, the north loop, the lane between the loops and the south loop, since the drawn ones ran 4 to 8 m off the bands on the north loop's west side and the south loop's east side. The pull-ins are left out."
   },
   "232825": {
    "call": "usable",
@@ -314,7 +314,7 @@
   },
   "251364": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loops are drawn and the sites line them roughly, but no lanes show to confirm them, and the middle loop has no sites."
+   "note": "The lidar relief (Oregon DOGAMI) shows the river terraces and the road in from the north, but inside the campground only terrace edges and mottled forest floor: no band that is plainly the west lane past 006 to 016 or the south loop past 017 to 025, so the Forest Service loops can't be checked to 3 m. Not traced."
   },
   "251436": {
    "call": "good",
@@ -338,7 +338,7 @@
   },
   "256344": {
    "call": "usable",
-   "note": "The small loop by 025 and 026 follows the visible gravel. 014 to 024 sit 20 to 40 m outside it, by a wider dirt lane round the loop that shows faintly and isn't drawn."
+   "note": "The lidar intensity shows every lane as a plain dark band under the pines: the campground is one loop with short spurs out to the sites, not a wider outer lane. Replaced the roads: traced the forest roads in, the loop and its spurs to 015, 016, 018 to 024 and 026, since the drawn loop ran 4 to 5 m outside the band and the road in a few metres off it. Every site is within 40 m of a drawn road; the spur to 025 is left out."
   },
   "267079": {
    "call": "unsure",
@@ -350,7 +350,7 @@
   },
   "272092": {
    "call": "hold",
-   "note": "Only the road along the south shore is drawn. Looked at again for tracing: the lanes into the peninsula past 010 to 026 run under the trees and show only as faint tracks, so they can't be placed and most sites sit 50 to 150 m from any drawn road."
+   "note": "The lidar relief (Oregon DOGAMI) shows the shore road, the gravel parking area north of it and the peninsula's lake banks, but inside the peninsula only mottled ground and terrace edges, with no lane that leads to 010 to 026; the photo shows only faint dirt tracks between the trees. Nothing could be traced, and 15 of 25 sites stay more than 40 m from a drawn road."
   },
   "272096": {
    "call": "usable",

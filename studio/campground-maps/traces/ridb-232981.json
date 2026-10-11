@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232981",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C15",
+   "at": [
+    -144.6454519,
+    60.2035926
+   ]
+  }
+ ],
+ "note": "Units-03: the cabin moved onto the pale rectangular roof the photo shows at the forest edge above the grass flats, 10 m from the Forest Service's point."
+}

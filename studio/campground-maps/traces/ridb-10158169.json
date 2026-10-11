@@ -1,0 +1,108 @@
+{
+ "version": 1,
+ "map": "ridb-10158169",
+ "traced": "2026-10-11",
+ "by": "Claude (lidar lidar-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -96.9237275,
+     36.6951529
+    ],
+    [
+     -96.9237275,
+     36.6949187
+    ],
+    [
+     -96.9237275,
+     36.6947385
+    ],
+    [
+     -96.9237331,
+     36.6946485
+    ],
+    [
+     -96.9237443,
+     36.6945133
+    ],
+    [
+     -96.9237443,
+     36.6942882
+    ],
+    [
+     -96.9237443,
+     36.694108
+    ],
+    [
+     -96.9237611,
+     36.6939278
+    ],
+    [
+     -96.9237611,
+     36.6937477
+    ],
+    [
+     -96.9237219,
+     36.6936666
+    ],
+    [
+     -96.9236323,
+     36.6936216
+    ],
+    [
+     -96.923498,
+     36.6936081
+    ],
+    [
+     -96.9233637,
+     36.6936216
+    ],
+    [
+     -96.9232741,
+     36.6936666
+    ],
+    [
+     -96.9232125,
+     36.6937477
+    ],
+    [
+     -96.9231958,
+     36.6939278
+    ],
+    [
+     -96.9231958,
+     36.694108
+    ],
+    [
+     -96.9231958,
+     36.6942882
+    ],
+    [
+     -96.9232013,
+     36.6944683
+    ],
+    [
+     -96.9232517,
+     36.6945764
+    ],
+    [
+     -96.9233525,
+     36.6946395
+    ],
+    [
+     -96.923498,
+     36.6946485
+    ],
+    [
+     -96.9237331,
+     36.6946485
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Traced over the lidar intensity, which shows the paved road in and the campground loop as one plain dark band under the trees; the relief agrees. The road drawn before stopped by the restroom near 3. The back-in pull-ins are left out."
+}

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232987",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "G01",
+   "at": [
+    -149.1197069,
+    61.0529982
+   ]
+  }
+ ],
+ "note": "The cabin's brown roof shows on the knoll above the lake, 2 m from the Forest Service's point and 165 m northwest of the listing's pin."
+}

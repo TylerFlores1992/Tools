@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233093",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2006-2018, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Y07",
+   "at": [
+    -138.4507785,
+    59.1993374
+   ]
+  }
+ ],
+ "note": "Units-03: the cabin moved onto the white roof the photo shows at the forest edge above the river flats, 19 m east of the Forest Service's point."
+}

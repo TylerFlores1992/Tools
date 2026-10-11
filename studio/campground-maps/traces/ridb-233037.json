@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233037",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "S07",
+   "at": [
+    -135.1067293,
+    57.4037596
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the cabin's roof by its float dock, 55 m northeast, where the Forest Service's point for Lake Eva cabin falls (units-01)."
+}

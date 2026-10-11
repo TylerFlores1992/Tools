@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-232655",
+ "traced": "2026-10-11",
+ "by": "Claude (fix fix-18)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -82.8722545,
+     34.5963067
+    ],
+    [
+     -82.8722981,
+     34.5961895
+    ],
+    [
+     -82.8723635,
+     34.5960813
+    ],
+    [
+     -82.8724508,
+     34.5959912
+    ],
+    [
+     -82.8725162,
+     34.5959101
+    ],
+    [
+     -82.8725925,
+     34.5958199
+    ],
+    [
+     -82.8726797,
+     34.5957388
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -82.8672177,
+     34.5977852
+    ],
+    [
+     -82.8674794,
+     34.5977761
+    ],
+    [
+     -82.867741,
+     34.5977401
+    ],
+    [
+     -82.8680245,
+     34.597686
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved spur from the south-west loop's end down to the tip past 04 to 07, and the paved spur west to 19 and 20, from the photo."
+}

@@ -1,8 +1,8 @@
 {
  "version": 1,
  "map": "ridb-233786",
- "traced": "2026-10-09",
- "by": "Claude (canopy canopy-09)",
+ "traced": "2026-10-11",
+ "by": "Claude (canopy canopy-09); Claude (agency pilot)",
  "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
@@ -44,24 +44,20 @@
      38.6138609
     ],
     [
-     -89.3372514,
-     38.6138897
+     -89.337248,
+     38.613869
     ],
     [
-     -89.3373892,
-     38.6138636
+     -89.3373972,
+     38.6138735
     ],
     [
-     -89.3374696,
-     38.613833
+     -89.337535,
+     38.6139005
     ],
     [
-     -89.3375614,
-     38.613896
-    ],
-    [
-     -89.3376981,
-     38.6139564
+     -89.3376958,
+     38.6139546
     ],
     [
      -89.3379197,
@@ -644,5 +640,5 @@
  ],
  "points": [],
  "replace": true,
- "note": "Redrew the road north of the west area and its turnaround loop (by 43 to 46), and the main road through the east area, onto the bands in the lidar intensity; copied the rest of the Census roads. The north loop of the east area (21 to 31) is a dirt lane that shows in neither layer, so it is left as the Census draws it and can't be checked."
+ "note": "Redrew the road north of the west area and its turnaround loop (by 43 to 46), and the main road through the east area, onto the bands in the lidar intensity; copied the rest of the Census roads. The north loop of the east area (21 to 31) is a dirt lane that shows in neither layer, so it is left as the Census draws it and can't be checked. The agency pilot then took the kink out of the north loop by 26 (it sat about 6 m off the intensity band); the Corps' 2010 map confirms the north loop's layout, and the band (intensity in the west half, the crowned lane in the relief on the east leg) shows it, so it is no longer a guess."
 }

@@ -125,8 +125,8 @@
    "note": "The road along the river and the loops at each end follow the visible gravel, and Sites 001 to 018 sit beside them: 001 to 005 round the west loop and 006 to 018 round the east one, 400 m apart. Split call added: it now shows as two areas, one round each loop."
   },
   "233833": {
-   "call": "usable",
-   "note": "Three sites in the lodgepole: the group site sits on the clearing at the west end of the drawn lanes, and 057 and 058 sit 30 to 40 m east of the drawn road on small clearings where faint spurs show and aren't drawn."
+   "call": "unsure",
+   "note": "The lidar relief (8.51 ground points per square meter) shows the ring at the east loop by 058 and the main lane roughly where they are drawn, and the group site sits by the north road on its clearing. But in the south-west, the drawn loop doesn't match what the relief shows: a J-shaped raised bank with a ditch runs inside it, 5 to 8 m east of the drawn west side, with a second curved bank along the south, and it can't be told whether these are the lanes or berms; the dirt lanes are faint on the photo, and the spurs to 057 and 058 don't show. Nothing was traced."
   },
   "233845": {
    "call": "usable",
@@ -210,7 +210,7 @@
   },
   "10122789": {
    "call": "hold",
-   "note": "The check can't draw it (42% of sites share a spot), and the photo agrees: Sites 001 to 008, 013 and 020 sit in neat rows across an open gravel lot, as if placed on a grid rather than on pads. The lanes to 009 to 019 follow the visible gravel."
+   "note": "Unchanged. The points sit on a coarse grid (pairs 007 and 008, 010 and 011, 016 and 017, 018 and 019 each on one spot) across an open gravel lot and the lane edges, and the lot shows no separate pads, so no site could be placed from the photo. The drawn lanes to 009 to 019 follow the visible gravel."
   },
   "10122834": {
    "call": "good",
@@ -221,8 +221,8 @@
    "note": "Unchanged. The two loops follow the visible gravel; 001 to 008 sit on the open ground just west of the north loop, and 015 to 022 on the gravel lots beside the south loop, so all 22 sites are within 40 m of a drawn road and no vehicle lane to them is missing beyond the open lot surfaces."
   },
   "10165180": {
-   "call": "hold",
-   "note": "Three groups of sites strung 1 km along the creek: 01 to 05 by a short lane in the south, 07 to 12 beside the valley road, and 13 to 19 round a loop in the north. The north loop is drawn as an angular outline 10 to 20 m off the visible lane, so it can't guide anyone there. Split call added: it now shows as three areas, one round each group, each frame holding one place."
+   "call": "usable",
+   "note": "The split (three areas strung along the creek) needs no new call. Replaced the roads: the north loop's angular outline is now the lane on the photo round the open field past 13 to 18, with the spur to 19; the lane from the north loop down the valley past 07 to 12 (which ran 5 to 10 m east) and the west lane to the north loop are traced too. The south area's lanes and the valley roads are kept from the Census; an angular ring by 05 and a wedge by 12 that followed no lane were dropped. All 18 sites are within 40 m of a drawn road."
   },
   "10165225": {
    "call": "usable",

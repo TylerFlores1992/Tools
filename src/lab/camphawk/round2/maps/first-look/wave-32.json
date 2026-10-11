@@ -5,12 +5,12 @@
  "on": "2026-10-08",
  "looks": {
   "118990": {
-   "call": "hold",
-   "note": "The pin is in open sagebrush between two drawn roads; the station's buildings stand 180 to 190 m south along the drawn road (a large tan-roofed building, a small one beside it, a shed to the east, trailers to the west), and nothing says which is the rental."
+   "call": "usable",
+   "note": "Moved the pin 190 m south, from open sagebrush onto the station's large tan roof (about 13 by 9 m), the building the Forest Service's point touches; a smaller building stands 8 m north of it. The drawn road passes about 40 m north, past an undrawn parking area."
   },
   "231968": {
    "call": "unsure",
-   "note": "The pin sits on open ground among junipers inside a bend of the drawn road, 11 m from it, with no pad or clearing that marks the group camp; the listing's own point is 86 km away (a bad listing point)."
+   "note": "The Forest Service's point, 588 m northwest, is among junipers and faint tracks with no pad or loop that marks a group camp, and the pin still shows none either. Not moved."
   },
   "232030": {
    "call": "usable",
@@ -22,15 +22,15 @@
   },
   "232348": {
    "call": "hold",
-   "note": "The pin sits in the trees of the island inside the paved lakeside parking loop, with no building at it; nothing there could be the chalet."
+   "note": "The Forest Service's point names the Loon Lake equestrian group camp, a different place from the chalet, so it can't place this unit; it sits on a camp lane among trailers 145 m southeast. The pin is in the trees inside the paved parking loop with no building that could be the chalet. Not moved."
   },
   "232790": {
    "call": "hold",
-   "note": "The pin sits on an open hillside above a housing tract, 130 m from any drawn road, with nothing at it that could be a campground; the listing's own point is 640 m away."
+   "note": "The pin is still on an open hillside with nothing that could be a campground; the Forest Service's point, 685 m east-southeast, is at a campground's entrance by the highway, with drawn loops beside it, but which pad or loop is the Live Oak group site can't be told. Not moved."
   },
   "233126": {
    "call": "hold",
-   "note": "The pin sits in forest on a slope 130 m from the nearest drawn road, with no building, tower or clearing at it."
+   "note": "The pin moved 1.2 km south onto the lookout cabin's roof the photo shows in the summit clearing, beside the Forest Service's point. The drawn road cuts straight across the clearing's grass and then through forest 10 to 20 m off the visible summit loop and track, so the map stays held for a road trace."
   },
   "233183": {
    "call": "hold",
@@ -54,11 +54,11 @@
   },
   "233988": {
    "call": "hold",
-   "note": "The pin sits in unbroken forest across the river from the road, 180 m from any drawn road, with no clearing at it."
+   "note": "The pin is in unbroken forest and the Forest Service's point 68 m north is on the river's open gravel bar; neither shows a group site's pad, tables or road. Not moved."
   },
   "234144": {
-   "call": "unsure",
-   "note": "The pin is on a small opening on the drawn road in the forest; no building shows at it or nearby, so the photo can't confirm the guard station."
+   "call": "good",
+   "note": "Moved the pin 78 m east, from the empty turnaround onto the larger of two dark roofs at the end of the drawn spur, the guard station; the spur ends 14 m from it. The Forest Service's point is 40 m further east, in the trees, so it was not used as the spot."
   },
   "234157": {
    "call": "good",
@@ -66,11 +66,11 @@
   },
   "234160": {
    "call": "hold",
-   "note": "The pin sits in a burned stand of standing dead trees 315 m from the nearest drawn road, with no cabin or clearing at it."
+   "note": "Both the pin and the Forest Service's point 295 m north-northwest are in a burned stand of standing dead trees, open enough that a cabin would show, and neither has a roof or clearing. Not moved."
   },
   "234161": {
    "call": "hold",
-   "note": "The pin sits on a brushy slope 300 m below the drawn road, with no tower or building at it; the lookout is likely on the summit by the road's end."
+   "note": "The Forest Service's point, 594 m north, is beside a gravel patch on the burned summit by the road's end, but no tower, cab or tower shadow shows there, so the lookout can't be placed; the pin is still on a brushy slope with nothing. Not moved."
   },
   "234170": {
    "call": "good",
@@ -78,7 +78,7 @@
   },
   "234224": {
    "call": "unsure",
-   "note": "The pin sits under oaks and pines 30 m east of the drawn road; a roof may show under the trees beside it, but the photo can't confirm the cabin, and the listing's own point is 490 m away."
+   "note": "The dense lidar (14.73 ground points per square meter) shows a building footprint on a levelled pad by the pin, and the photo shows its blue-gray roof under the oaks. Re-centered Old Stage Drive past it onto the pavement, which OpenStreetMap drew 6 to 12 m east of the road for about 200 m; it now follows the road within about 3 m, 34 m west of the pin. But the listing's own point, 490 m north-east, sits on a cluster of small buildings at the end of a drawn road, so which is the guard station cabin can't be told; nothing was moved."
   },
   "234281": {
    "call": "good",
@@ -90,11 +90,11 @@
   },
   "234321": {
    "call": "unsure",
-   "note": "The lidar relief shows the drawn track down the meadow as a pair of wheel ruts, with the drawn line beside them, ending near the pin, but neither layer shows a roof, levelled pad or clearing edge at the pin (the meadow is open grass there), and the photo shows only the forest's shadow. Nothing traced."
+   "note": "The Forest Service's point, 263 m southeast, is under conifers just inside the meadow's edge, and neither the photo nor the ground relief shows a roof or pad there; the pin still sits on open grass. Not moved."
   },
   "234326": {
    "call": "unsure",
-   "note": "The pin is at the end of the drawn track in a snow-covered meadow beside a band of trees; the snow hides any cabin, so the photo can't confirm it."
+   "note": "The dense lidar (8.48 ground points per square meter) shows the pin in a meadow at the end of the drawn track, with only a small raised patch about 3 by 5 m 4 m west of it in the relief and nothing plainly a cabin footprint or levelled pad; the photo shows snow with a small dark shape 5 m north that may be a roof or a shadow. The cabin can't be confirmed, so nothing was traced or moved."
   },
   "234395": {
    "call": "good",
@@ -114,7 +114,7 @@
   },
   "234482": {
    "call": "unsure",
-   "note": "The pin sits on an open rocky slope 20 m from the end of a drawn trail; no cabin shows plainly at it."
+   "note": "The Forest Service's point (\"Cold Springs Peak Lookout\"), 110 m north of the pin up the open crest, shows bare ground, two small trees and pale rock in the photo, and the dense ground relief shows no building gap or levelled pad there; the pin on the scarp top shows none either. Not moved."
   },
   "234601": {
    "call": "good",
@@ -159,9 +159,9 @@
    "as": "firstcome"
   },
   "10165200": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in an open meadow between two roads with no pads or loops near it. The nearest mapped restroom is about 600 m away.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in an open meadow between the highway and a side road with no pads or loops near it; the only campground-like spot, a small loop with a restroom 600 m south, may be another site and isn't plainly Caribou, so the pin wasn't moved."
   },
   "10165205": {
    "call": "usable",
@@ -181,7 +181,7 @@
   "10165305": {
    "as": "firstcome",
    "call": "hold",
-   "note": "Unchanged. The pin is in unbroken forest about 250 m northwest of Waldo Road, and neither Gold Lake nor any campground, loop or clearing shows anywhere in the 1.4 km frame, so there's nothing to move it to."
+   "note": "The Forest Service point matched here is the Gold Lake shelter, not the campground, and it shows only closed forest 150 m south of the lake with no campground loop or pads, so there is still nothing to move the pin to; it stays in unbroken forest. Not moved."
   },
   "10165320": {
    "as": "firstcome",
@@ -204,9 +204,9 @@
    "as": "firstcome"
   },
   "10165430": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in dense forest south of the river. The nearest thing like a campground is a small road loop about 80 m northwest, which may be a different campground.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in dense forest beside the river road; two small road loops on the river bench lie 80 m and 400 m north-west, and with an Upper O'Brien campground on the same stretch the photo can't say which loop is Lower O'Brien, so the pin wasn't moved."
   },
   "10165470": {
    "call": "good",
@@ -259,9 +259,9 @@
    "note": "Unchanged. The pin is in the shallow south arm of Scott Lake; Forest Road 4200-260 runs past under full canopy to a trailhead lot about 450 m west, and the only sign of camping is a couple of cars along the road south of the lake, so no campground plainly shows to move it to."
   },
   "10165626": {
-   "call": "unsure",
-   "note": "The outline is a narrow strip along a road by the creek near a bridge, and the point is inside it, but the trees hide any pads, so the photo can't confirm a campground. The listing is marked closed.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "The lidar relief (2.21 ground points per square meter) shows a graded lane, a smooth band with levelled benches beside it, running about 200 m along the terrace between the road and the creek from the bridge, and OpenStreetMap's narrow outline holds it with the drawn inner lane along it; the point sits inside the outline on its creek-side edge. Pads can't be told apart under the trees, and the listing says the campground is closed. Nothing traced."
   },
   "10165631": {
    "as": "firstcome",
@@ -294,9 +294,9 @@
    "note": "Moved the pin about 245 m west from the meadow east of Rock Creek Road into the wide gravel camping loop west of the road, beside its toilet, with trailers parked around its edge (RIDB's own Diamondfield Jack entry also sits by it). There's no outline, so the map shows the pin there."
   },
   "10191075": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline holds loops with pads on the north shore of the lake, about 85 m east of the point, but a second outlined campground sits on the lake's southwest shore. For a listing named West Side, the map may be showing the wrong one.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: the map takes the outline OpenStreetMap names Lake Cleveland Campground on the north shore, 85 m east of the point, which holds two loops (west and east) with pads. A second, unnamed outline with a lane and restroom sits at the lake's south-west end. For a listing named West Side, the photo can't say whether that is the north campground's west loop or the south-west camp, so nothing was moved."
   },
   "10191090": {
    "as": "firstcome",
@@ -349,19 +349,19 @@
    "as": "firstcome"
   },
   "10215904": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in scrub between two dirt roads. Nothing near it shows pads, a loop or campers.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in mesquite scrub between the highway and a dirt road along the river; no pads, loop or campers show anywhere near it in the frame, so there is nothing to move it onto."
   },
   "10215919": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in scrub between two dirt roads above the river. One small structure about 70 m south isn't enough to show a campground.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in scrub on the dirt loop above the river; one small structure and a cleared lot 250 m west by the road aren't enough to show a campground, and no pads or campers show near the pin, so it wasn't moved."
   },
   "10221637": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The point is in a creekside strip, and the nearest outline, about 45 m south, is the loop OpenStreetMap names South Fork Campground, which is another listing. The map would show a different campground.",
-   "as": "firstcome"
+   "note": "Rebuilt with the outline-name check: the map no longer takes South Fork's outline and shows the pin 'About here' instead. But the pin is in the creekside trees just north of South Fork Campground, and nothing across the creek or nearby plainly shows a separate Davis Flat camp (the open flat to the east has only scattered oaks and tracks), so the pin would still send a camper to South Fork's loops; nothing was moved."
   },
   "10221647": {
    "call": "usable",

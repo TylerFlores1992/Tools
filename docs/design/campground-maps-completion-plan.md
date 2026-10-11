@@ -160,6 +160,62 @@ maps over the layer, by the orchestrating session before any decision was record
   surveys, faint dirt lanes); walk-in or boat-in sites far from any road; stacked or misplaced
   sites with no pad to tell them apart; first-come pins with no campground near them.
 
+## The agency-map pilot (2026-10-11, owner: "try it on 20 unsure maps")
+Brief: `campground-maps-agency-pilot-brief.md`. The agencies' own campground maps were used only to
+settle which lidar bands are lanes, never traced from.
+- **Found:** 14 of 20 had a map. 10 could be used: 6 Forest Service, 2 Park Service, 2 Corps of
+  Engineers. 4 couldn't: a concessionaire's, a county's, and two with no maker credit.
+- **No map for 6:** three Corps sites (every `usace.army.mil` district site answers 403 from here),
+  a Forest Service link that now 404s, and two with no map on the agency's pages.
+- **Effect:** one call changed (McNair, unsure to usable). On 4 more the map settled a reading (a
+  creek, a trail, drainage, which loop a row is on) without changing the call.
+- **Why so little:** where no layer shows the lanes, the map only confirms the layout already drawn;
+  and maps not drawn to scale can't say which of two parallel bands is the lane.
+- **Speed:** median 6.5 minutes per map.
+- **Verdict:** not worth running across the other ~260 held canopy maps. A narrower pass might pay
+  (dense surveys of 2.5 or more ground points per m², with a RIDB "Print Facility Map" link). Two
+  maps it found need a full replace onto the relief: Lake Michigan at Manistee (233714) and
+  Big Creek (234086).
+
+## The held maps no batch had touched (2026-10-11, owner: "finish everything")
+About 480 held maps had never been through a fix batch: single units with nothing at the pin, maps
+with no lane under canopy, photo-unfit maps, splits, points and outlines, and Oregon canopy maps.
+Eight more batches covered them. Each was checked over the photo, or the layer, before any decision
+was recorded.
+- **Results (pass is good or usable, as recorded):**
+
+  | batch | what | maps | pass | held |
+  |---|---|---|---|---|
+  | units-01, 02, 03 | units vs the Forest Service's own points (`campground-maps-units-brief.md`) | 258 | 41 | 217 |
+  | lidar-01, 02 | no-lane, photo-unfit and canopy maps over the point clouds | 67 | 36 | 31 |
+  | fix-18 | splits, stacked and stray points, first-come outlines | 79 | 16 | 63 |
+  | oregon-01 | Oregon canopy maps over DOGAMI's 1 m relief | 39 | 9 | 30 |
+  | canopy-16 | the last canopy batch | 15 | 6 | 9 |
+
+- **Delegated waves now:** 2,011 pass and 950 are held (were 1,921 and 1,048 after the
+  fix-after campaign).
+- **The Forest Service's points** (INFRA recreation sites, public domain) matched 258 held units.
+  The unit showed at or near the point on about a quarter of them.
+  - Most of the rest are canopy, a soft photo, or a point that lands on open ground where a building
+    would show if it were there.
+  - About 7 matched another site of the same name: a picnic area, a bath house, a different camp.
+  - The brief allowed a move only within 15 m of the point. At the final check, 4 cabins with one
+    plain roof 25 to 40 m from their point were moved too: Avoss Lake, Anan Bay, Garnet Ledge and
+    Turner Lake East.
+  - Two stay held for a person: Turner Lake West, where nothing says which cabin the roof is, and
+    Barber Flat, where the grey roof may be a shed.
+- **DOGAMI relief** made 7 of 39 Oregon maps usable (about 1 in 5), all paved or graded loops in
+  open pine. It fails under dense fir, on river terraces, and for lone cabins.
+- **What can't be done from public data:**
+  - 11 maps have no USGS point cloud;
+  - 3 surveys have no ground points;
+  - 234313's survey is too large to cut here (1.6 GB, out of memory);
+  - Amity (232513) stays roadless, because wave 15's split call blocks the gap;
+  - Gut Island 1 and 2 (233073, 233086) share one roof, and nothing says which cabin it is.
+- **For a person, if anyone wants to:** two Oregon road problems the relief raised but couldn't
+  settle, Eagleview (233153, Bullock Road about 25 m north-east of where it's drawn) and Fourbit
+  Ford (252035, a raised band 10 to 40 m east of the Forest Service road).
+
 ## Decisions for the owner
 **Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
 them for good nor publish them half drawn; research below); (2) dispersed listings: keep them off;

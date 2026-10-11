@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234285",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -109.7597982,
+    40.7908818
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the round yurt roof (central dome showing) beside the road, 64 m southwest, at the Forest Service's point for the Carter Military Trail yurt (units-01)."
+}

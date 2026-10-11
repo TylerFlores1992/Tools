@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234144",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C01",
+   "at": [
+    -122.6408102,
+    43.580953
+   ]
+  }
+ ],
+ "note": "The guard station's roof shows at the end of the drawn spur, 78 m east of the listing's pin and 40 m west of the Forest Service's point; a smaller roof 10 m east is an outbuilding."
+}

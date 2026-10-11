@@ -18,7 +18,7 @@
   },
   "10132085": {
    "call": "unsure",
-   "note": "The pin is at the end of the drawn road on the open slope, and no lookout building shows plainly at it."
+   "note": "Neither the pin at the end of the drawn road nor the Forest Service's point 20 m east-northeast shows a lookout building in the photo, and the lidar relief shows no plain summit pad. Not moved."
   },
   "10156120": {
    "call": "good",
@@ -30,7 +30,7 @@
   },
   "118991": {
    "call": "unsure",
-   "note": "The pin sits on the drawn road across the open summit meadow, and no lookout building shows at it or nearby in the zoom."
+   "note": "The Forest Service's point (matched by Recreation.gov id), 180 m north of the pin, is on the summit's rocky crest among small trees, and a small pale square 7 m south of it is too small and blurred to call the lookout; a dark square about 4 m across at the end of the summit lane, 30 m southeast of the point, might be the lookout's roof or a vehicle. Neither is plain, so the pin stays on the drawn road. Not moved."
   },
   "232292": {
    "call": "good",
@@ -110,11 +110,11 @@
   },
   "234175": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest 15 m east of a drawn Forest Service road that doesn't show on the photo, and no cabin shows."
+   "note": "The pin is in dense forest; the photo shows only a small dirt patch about 15 m west of it and no cabin, and the lidar relief (Oregon DOGAMI) shows no levelled pad or building there. The relief does show the paved road plainly about 50 m west of the pin, and the drawn Forest Service road beside the pin runs 20 to 30 m east of that band, so the road is off too; not traced, since no cabin can be placed."
   },
   "234179": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest at the end of a drawn lane, and no building shows."
+   "note": "The lidar relief (Oregon DOGAMI) shows the drawn lane as a plain band ending about 12 m south-east of the pin, and a smooth patch at the lane's end where the pin sits, but no square-cornered pad or building; the photo shows only canopy there. The station can't be confirmed at the pin, so the call stays unsure."
   },
   "234185": {
    "call": "good",
@@ -122,7 +122,7 @@
   },
   "234268": {
    "call": "hold",
-   "note": "The pin is on an open grassy slope with no building, above the canyon road. Nothing in the zoom is plainly the guard station."
+   "note": "The pin is on an open slope with no building, and the Forest Service's point 89 m west is under trees with no roof; white shapes 25 to 40 m from that point by the drawn lane may be buildings or trailers but aren't plainly the guard station. Not moved."
   },
   "234269": {
    "call": "good",
@@ -150,7 +150,7 @@
   },
   "234335": {
    "call": "unsure",
-   "note": "The lidar layers show the pin on a flat terrace between the forks of Fox Creek (their channels plain in both layers), with no lane, trail or levelled pad leading to it and nothing that marks a cabin; the nearest drawn road is still 640 m away. Nothing traced."
+   "note": "The Forest Service's point, 140 m west of the pin across the forks of Fox Creek, is under closed conifers on a creek bank, and neither the photo nor the dense ground relief shows a roof, building gap or levelled pad there; the pin's terrace shows none either. Not moved."
   },
   "234340": {
    "call": "good",
@@ -162,7 +162,7 @@
   },
   "234350": {
    "call": "unsure",
-   "note": "The drawn lane follows the gravel patches the photo shows between the trees, and the lidar relief shows a faint line along its northeast half, but neither layer shows a cabin, a roof or a levelled pad at the pin by the lakeshore (the intensity is mottled under the firs), so it can't be told whether the cabin sits there. Nothing traced."
+   "note": "The Forest Service's point, 232 m east-northeast, is on open meadow at the forest edge with nothing built (photo and ground relief alike), and the pin by the lakeshore still shows no cabin under the firs. Not moved."
   },
   "234356": {
    "call": "good",
@@ -190,11 +190,11 @@
   },
   "234377": {
    "call": "unsure",
-   "note": "The lidar survey stops about 10 m east of the pin (it covers only the west half of the frame, at 0.95 ground points per square meter), and its relief shows neither the road nor a pad near the pin; the photo shows a small dark shape at the end of the drawn spur, 15 m northeast of the pin, that can't be told for the cabin. Nothing traced."
+   "note": "The Forest Service's point, 820 m southeast, is under closed conifers with no clearing or roof and outside the lidar, and the dark shape at the end of the drawn spur near the pin still can't be told for the cabin. Not moved."
   },
   "234383": {
    "call": "hold",
-   "note": "The pin is in unbroken forest with snow patches, and the listing's own point, 860 m northwest, is on an open, partly snow-covered ridge with no lookout plainly shown; nothing on the photo is the lookout."
+   "note": "The Forest Service's point, 869 m west-southwest, is on the snowy summit ridge where a lookout and its shadow would show and none does, and the pin is still in unbroken forest. Not moved."
   },
   "234386": {
    "call": "good",
@@ -217,12 +217,12 @@
    "note": "The pin is on the cabin at the meadow's edge, and the drawn spur off the Census road comes within 30 m of it."
   },
   "234404": {
-   "call": "hold",
-   "note": "The pin is in open, burned pine forest 120 m from the drawn road, and a 1 km view shows no building or clearing that could be the guard station."
+   "call": "usable",
+   "note": "The pin moved 776 m west-southwest onto the larger grey roof of the two the photo shows in a clearing by the Forest Service's point (a small shed stands 17 m south). After the rebuild a drawn road ends 12 m southeast of it, but its line runs under trees where the lane can't be checked."
   },
   "234405": {
    "call": "hold",
-   "note": "The pin is on a bare gravel flat beside the highway and river; several small buildings stand within 120 m on both sides of the river, and nothing marks which, if any, is the guard station."
+   "note": "The Forest Service's point (\"Forest Glen Guard Station (historical)\"), 155 m south of the pin across the river, is under trees with no roof, and the pin is on the bare gravel flat by the river; several small buildings stand around (one 50 m southeast of the point, two across the highway), and nothing marks which is the guard station. Not moved."
   },
   "234409": {
    "call": "good",
@@ -254,7 +254,7 @@
   },
   "234423": {
    "call": "unsure",
-   "note": "The pin is on the open summit inside the drawn switchback, but no lookout structure shows plainly at it; the drawn Census switchbacks run up to 15 m off the visible track."
+   "note": "The Forest Service's point 29 m south-southwest is on bare summit ground with nothing built on it, and the pin, at the north rim, is beside a small pale object that may be the lookout but isn't plain. Not moved."
   },
   "234425": {
    "call": "usable",
@@ -286,7 +286,7 @@
   },
   "234461": {
    "call": "hold",
-   "note": "The pin is in an open meadow between the station's buildings, one 55 m north by the highway and a red-roofed one 130 m southeast by the drawn loop; nothing says which is the bunkhouse."
+   "note": "The Forest Service's point 40 m west is on the meadow's edge beside a gravel patch, not on a building, and the station's several buildings (a small pale roof 30 m north of it, a gray-roofed one by the highway) give no sign which is the bunkhouse. Not moved."
   },
   "234506": {
    "call": "good",
@@ -302,7 +302,7 @@
   },
   "234609": {
    "call": "hold",
-   "note": "The pin is in an empty field between private-looking houses, and the listing's own point, 600 m west, is a small clearing with vehicles and tents at the end of a drawn lane; neither plainly shows the guard station."
+   "note": "The Forest Service's point, 524 m west-southwest, is in brush beside a drawn dirt road with no building, and the pin is still in an empty field; neither shows the guard station. Not moved."
   },
   "234659": {
    "call": "good",

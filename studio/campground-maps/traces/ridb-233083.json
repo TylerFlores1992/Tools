@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233083",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "W21",
+   "at": [
+    -131.8853959,
+    56.1249465
+   ]
+  }
+ ],
+ "note": "The cabin's gray roof shows at the lakeshore with a landing in front, 113 m northwest of the listing's pin and 40 m northeast of the Forest Service's point; it is the only building in view."
+}

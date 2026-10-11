@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234673",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -118.4891206,
+    48.5736003
+   ]
+  }
+ ],
+ "note": "The cabin's pale roof shows in a clearing at the end of the trail, 5 m east of the Forest Service's point and 180 m northeast of the listing's pin, where OpenStreetMap also maps Snow Peak Cabin."
+}

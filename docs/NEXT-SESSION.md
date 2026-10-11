@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-11 (campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -36,6 +36,20 @@ that `/private`, every lab page and its old URL land on the sign-in page, privat
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
 ## Campground site maps (PR #19 2026-10-07, PR #22 2026-10-08, both merged and live)
+
+**2026-10-11: every held map with a fix public data allows has been through a batch (owner:
+"finish everything").**
+- **Batches:** the agency-map pilot (20 maps; 1 call changed, so it isn't worth scaling), canopy-16,
+  three batches of units against the Forest Service's own points, two lidar batches, fix-18 (splits,
+  points, outlines) and oregon-01 (DOGAMI relief).
+- **Results:** delegated waves now stand at **2,011 passed and 950 held**. Per batch, and what can't
+  be done from public data, see the completion plan's "The held maps no batch had touched".
+- **What's left is the owner's decision 5:** the canopy maps no layer shows, published with only
+  the visible roads or kept hidden. Plus a few person-only calls named in that section: Turner Lake
+  West, Barber Flat, Gut Island, Eagleview and Fourbit Ford.
+- **Tool:** `refresh-manifest` in the session scratchpad rebuilds a wave's manifest entries from the
+  committed maps. Concurrent builds in one wave overwrite each other's entries, and it fixes that.
+  It isn't in the repo, so a later session running parallel builds needs the same step.
 
 **2026-10-09 (later): the fix-after campaign ran (owner: "all of them"; dispersed and the no-photo
 Alaska maps stay off; canopy: "find a solution to get done correctly").** All 17 photo batches are

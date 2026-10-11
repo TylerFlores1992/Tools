@@ -74,7 +74,7 @@
   },
   "251431": {
    "call": "hold",
-   "note": "The check can't draw it (48% of sites share a spot), and the photo shows why: most sites are listed twice, once with the loop letter and once without (013 and B013 on one pad). The loops and spurs themselves follow the visible pavement."
+   "note": "Unchanged. The loops and spurs follow the visible pavement, but nearly every site is listed twice on one pad (A020 and 020, B013 and 013, C005 and 005: two loop names for the same spot in the listing), so the stack is a listing duplicate, not misplaced points, and no move can separate them."
   },
   "246892": {
    "call": "good",
@@ -82,7 +82,7 @@
   },
   "253730": {
    "call": "hold",
-   "note": "Backcountry permit sites spread 14.6 km down the island (Hickory Hill, Yankee Paradise, the beach sites), several sharing a spot, with no roads: not a site map."
+   "note": "Unchanged. Backcountry permit sites spread 14.6 km down the island; the wilderness camps (Hickory Hill, Brickhill Bluff, Yankee Paradise) each list sites 1 to 4 on one point, and their tent pads don't show under the live oaks, so nothing could be moved. Not a site map: it waits for the dispersed-area design."
   },
   "250796": {
    "call": "good",
@@ -166,7 +166,7 @@
   },
   "232595": {
    "call": "unsure",
-   "note": "The survey is sparse (0.95 ground points per m²) and the intensity is mottled: the main road shows where it's drawn, but the lane down the west loop past 13 to 22 shows only as a soft grey band that may sit 5 to 10 m east of the drawn line, and the lanes round 52 to 59 and 70 to 77 can't be checked to 3 m. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey shows the main road where it's drawn, but the lane down the west loop past 13 to 22 and the lanes round 52 to 59 and 70 to 77 can't be checked to 3 m. No agency map was found to settle which soft bands are lanes. Nothing traced."
   },
   "232630": {
    "call": "good",
@@ -189,8 +189,8 @@
    "note": "Unchanged, nothing moved: 066 to 075 still sit in a tight row on the east road by the entrance, and no row of pads near them or elsewhere in the frame can be told apart as theirs, so they can't be placed from the photo. The north sites (016 to 054) also still have no lane drawn among them."
   },
   "232655": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (22, 16 km away, left off). The drawn roads run through the middle of each point while the sites line the shores 30 to 40 m off them, under canopy."
+   "call": "usable",
+   "note": "The stray 22 is now left off, so it is one map of the point. Traced the paved spur from the south-west loop's end down to the tip past 04 to 07, and the paved spur west past 19 and 20; every site but 14 is now within 40 m of a drawn road. The north row (32 to 37) and the middle loop cross trees where the lanes show only in pieces, but where they show the drawn roads follow them."
   },
   "232654": {
    "call": "usable",
@@ -254,7 +254,7 @@
   },
   "232743": {
    "call": "unsure",
-   "note": "The lidar intensity is mottled under the trees: the main road and the north loop show as faint bands where they're drawn, but the lanes to the rows 001 to 007, 027 to 041 and 049 to 061 show only in short pieces and can't be placed to 3 m. Nothing traced."
+   "note": "OpenStreetMap's loops are the three the Corps' map shows: Loop 1 past 001 to 019, Loop 2 with 020 to 026 on its north side, 027 to 041B on its south and 034 and 036 inside, and Loop 3 past 042 to 061. The intensity shows Loop 2's west and east ends as light bands about 5 m inside the drawn loop, but its long sides by 020 to 026 and 031 to 041 show only in pieces, and the spur to 057 to 061 shows on neither layer, so they can't be placed to 3 m. Nothing traced."
   },
   "232752": {
    "call": "hold",
@@ -330,11 +330,11 @@
   },
   "233703": {
    "call": "hold",
-   "note": "Rebuilt with the stray point rule (E21, 27 km away, left off). Still two areas with lanes showing through the trees but not drawn; a trace candidate."
+   "note": "Unchanged. The stray E21 is already left off and the two areas (loops A to C, loops D, E and G) follow the shore. Loops A and B line the drawn roads, but zoomed, the lanes among C01 to C21, D01 to D43 and E01 to E22 show only in short pieces between the trees and the sites sit irregularly off them, so they couldn't be traced to 3 m; over half the sites still have no drawn road."
   },
   "233099": {
    "call": "hold",
-   "note": "Split listing, shown as three areas along 1.8 km of the river below the dam, and they follow the real clusters. But no lane is drawn to sites 13 to 37 or 38 to 59 (the drawn roads pass 30 to 70 m away), and under the trees the lanes don't show; 01 to 12 sit by a drawn road."
+   "note": "Unchanged; the split needs no call, as the three areas (01 to 12, 13 to 37, 38 to 59) follow the real clusters along the river. Zoomed on the photo and over the lidar relief, the lanes among 13 to 37 and 38 to 59 don't show under the full canopy, so nothing was traced and over half the sites still have no drawn road."
   },
   "233653": {
    "call": "good",

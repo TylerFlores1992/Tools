@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234165",
+ "traced": "2026-10-11",
+ "by": "Claude (oregon oregon-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C1",
+   "at": [
+    -122.3334266,
+    42.7044522
+   ]
+  }
+ ],
+ "note": "Moved the pin about 110 m north-west onto the one building in the station's meadow: a gray roof on the photo, and a square-cornered levelled block in the lidar relief (Oregon DOGAMI). No other building shows within 400 m. Not traced: the dirt track that runs north-west from the building doesn't show plainly to its end."
+}

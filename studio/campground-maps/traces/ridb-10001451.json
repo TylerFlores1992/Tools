@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "map": "ridb-10001451",
+ "traced": "2026-10-11",
+ "by": "Claude (fix fix-18)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -93.3463061,
+     36.0385434
+    ],
+    [
+     -93.3463172,
+     36.0384082
+    ],
+    [
+     -93.3463283,
+     36.038282
+    ],
+    [
+     -93.3463505,
+     36.0381558
+    ],
+    [
+     -93.3463838,
+     36.0380296
+    ],
+    [
+     -93.3464171,
+     36.0379394
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The dirt lane on south from the end of the gravel lot past 24 to 26, from the photo."
+}

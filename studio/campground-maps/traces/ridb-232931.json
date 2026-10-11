@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232931",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C01",
+   "at": [
+    -132.8571226,
+    55.5402878
+   ]
+  }
+ ],
+ "note": "The cabin's roof shows in a clearing behind the lake beach, 145 m northwest of the listing's pin and 65 m southwest of the Forest Service's point; it is the only building in view."
+}

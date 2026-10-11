@@ -1,0 +1,161 @@
+{
+ "version": 1,
+ "map": "ridb-10377515",
+ "traced": "2026-10-11",
+ "by": "Claude (oregon oregon-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); Oregon Department of Geology and Mineral Industries (DOGAMI) lidar (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -123.0273316,
+     42.8170655
+    ],
+    [
+     -123.0270747,
+     42.817061
+    ],
+    [
+     -123.0268791,
+     42.8170565
+    ],
+    [
+     -123.0265856,
+     42.8170295
+    ],
+    [
+     -123.026341,
+     42.8169845
+    ],
+    [
+     -123.0259986,
+     42.8169035
+    ],
+    [
+     -123.0256073,
+     42.8168044
+    ],
+    [
+     -123.0253504,
+     42.8167324
+    ]
+   ],
+   "through": true
+  },
+  {
+   "coords": [
+    [
+     -123.0263532,
+     42.8170025
+    ],
+    [
+     -123.026341,
+     42.8170835
+    ],
+    [
+     -123.026341,
+     42.8171555
+    ],
+    [
+     -123.026341,
+     42.8172276
+    ],
+    [
+     -123.026341,
+     42.8172726
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -123.026341,
+     42.8172726
+    ],
+    [
+     -123.0263899,
+     42.8173086
+    ],
+    [
+     -123.0264144,
+     42.8173536
+    ],
+    [
+     -123.0263899,
+     42.8174076
+    ],
+    [
+     -123.026341,
+     42.8174346
+    ],
+    [
+     -123.0262676,
+     42.8174436
+    ],
+    [
+     -123.0262065,
+     42.8174256
+    ],
+    [
+     -123.0261698,
+     42.8173896
+    ],
+    [
+     -123.0261698,
+     42.8173446
+    ],
+    [
+     -123.0262065,
+     42.8173086
+    ],
+    [
+     -123.0262676,
+     42.8172861
+    ],
+    [
+     -123.026341,
+     42.8172726
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -123.0263532,
+     42.8169755
+    ],
+    [
+     -123.0263777,
+     42.8169215
+    ],
+    [
+     -123.0264144,
+     42.8168494
+    ],
+    [
+     -123.0264511,
+     42.8167594
+    ],
+    [
+     -123.0265,
+     42.8166694
+    ],
+    [
+     -123.0265244,
+     42.8165794
+    ],
+    [
+     -123.0265244,
+     42.8164893
+    ],
+    [
+     -123.0265122,
+     42.8163993
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Traced over the NAIP photo, where the gravel turnaround, the lane to it and the lane south across the highway to the clearing show plainly, checked against the lidar relief (Oregon DOGAMI), which shows both lanes and the highway as plain bands. The Forest Service ring was about twice the size of the turnaround; replaced it, and drew the highway through. Left out: the dirt tracks west of the south clearing."
+}

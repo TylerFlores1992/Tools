@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234573",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "01",
+   "at": [
+    -111.0727227,
+    45.5695488
+   ]
+  }
+ ],
+ "note": "Units-03: the group site moved onto the gravel pads the photo shows off the canyon road, with a long shelter roof 25 m south, by the Forest Service's point."
+}

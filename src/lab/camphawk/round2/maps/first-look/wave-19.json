@@ -29,8 +29,8 @@
    "note": "The lidar intensity shows little here, but the relief shows both loops and the lane between them as crowned lanes under the canopy, and OpenStreetMap draws them within a few meters of their middles. The outer row (013 to 024, 035 to 043) sits 20 to 35 m outside the loops on pull-ins that don't show, and an undrawn cross lane runs through the north loop by 007; nothing traced."
   },
   "233714": {
-   "call": "unsure",
-   "note": "The lidar intensity is noisy in this sparse 2017 survey and shows only the main road; the relief shows the main road, the 026 to 049 loop and the 051 to 075 loop as crowned lanes where they're drawn, and the photo agrees by 069 to 071. The empty loops to the north (drawn with no sites) run 3 to 10 m off faint relief lanes that can't be placed to 3 m, and the west row (061 to 072) shows no lane of its own. Nothing traced."
+   "call": "usable",
+   "note": "Every road was replaced onto the lidar relief, each lane centered between the ditches it shows: the Orchid loop (026 to 050) and its cross lane past 047 and 049, the Oak loop (051 to 075) and its link, West Forest Trail Road and the FS 5629 and 5972 loops to the north; OpenStreetMap had Orchid 3 to 6 m outside its crowned lane, and the photo agrees with the road where it opens to the south. The empty Hemlock loop shows only one ditch in places in this sparse 2017 survey (1.43 ground points per square meter; the intensity shows nothing), so it was left out; the west row 061 to 073 sits off Oak's west side with no lane of its own (the band there is the dunes trail), and only 034 is over 40 m from a drawn road."
   },
   "234526": {
    "call": "hold",
@@ -66,7 +66,7 @@
   },
   "256367": {
    "call": "hold",
-   "note": "Not drawn, and rightly: backcountry sites along 42 km of the Lakeshore Trail, most sharing a spot with their group site. Waits for the dispersed-area design."
+   "note": "Unchanged. Backcountry camps along 42 km of the Lakeshore Trail, each camp's 3 to 6 sites listed on one point (Chapel Beach 1 to 6, Beaver Creek 1 to 6 and the rest); individual tent pads in the forest don't show on the photo, so nothing could be moved, and it waits for the dispersed-area design."
   },
   "232516": {
    "call": "usable",
@@ -129,8 +129,8 @@
    "note": "Two areas: zoomed, the A, B, H, M, Q and R loops follow the visible lanes and the sites sit on their pull-outs; the F loop sits 1.6 km east on its own point."
   },
   "233441": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (A029, 9 km away, left off). Every lane of the A, B and C loops shows plainly on the open point but none is drawn: a trace candidate."
+   "call": "usable",
+   "note": "Unchanged. The stray A029 is now left off, so the map is the open point, and the Census roads now drawn follow the visible lanes of loops A, B and C to within a few metres (zoomed on loop B), with all 145 sites within 40 m of a drawn road. A few short pull-in spurs (past B024, B030, B033) aren't drawn."
   },
   "233449": {
    "call": "good",
@@ -185,8 +185,8 @@
    "note": "The loops follow the visible lanes and 02 to 63 sit beside them. Traced the lane from the east loop's end into the clearing of the south cluster (64 to 73); 28, 30 and 32 below the west loop sit on pads with no lane of their own showing, a short walk from the drawn road."
   },
   "233505": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (B19, 31 km away, left off). Still two areas, with the lanes in the trees not drawn."
+   "call": "usable",
+   "note": "The stray B19 is now left off, so the two areas are loops A and B on the north point and loop C 2 km south, and they follow the real places. Loops A and B follow the visible shore lanes; traced the short lane from loop C out to the lots by C17 and C18, so all 44 placed sites are within 40 m of a drawn road. The west loop past B21 to B23 and the north side of loop C run under trees and are kept from OpenStreetMap, unconfirmed."
   },
   "233510": {
    "call": "hold",
@@ -202,7 +202,7 @@
   },
   "233518": {
    "call": "unsure",
-   "note": "Rebuilt with the stray point rule (the group campground's point, 2.2 km away, left off). Three areas under full canopy."
+   "note": "Split call added (gap 100 m): the middle loops 096 to 177 are now one area instead of two overlapping frames, beside the west end (001 to 095) and two areas of hike-in sites (HI05 to HI20) in the forest to the east. The middle and west areas are under full canopy: zoomed and over the lidar relief, only the entrance road shows, so whether the drawn loops follow the lanes past 123 to 177 and 130 to 166 can't be told."
   },
   "233522": {
    "call": "good",
@@ -210,7 +210,7 @@
   },
   "233535": {
    "call": "unsure",
-   "note": "The lidar ground layer covers only the strip along the lake south of the sites (the survey reaches 17% of the frame), so none of OpenStreetMap's lanes or the rows between them (24 to 52, 32 to 43, 65 to 79) can be checked under the canopy. Nothing traced."
+   "note": "OpenStreetMap's lanes connect the way the Corps' brochure shows them: the west loop with 31 to 44 either side of its south lane, the middle lanes past 45 to 60, and the east loop past 61 to 75. The lidar covers only the strip along the lake and the photo shows the lanes only where cars or gaps break the canopy, so none of them can be checked to 3 m. Nothing traced."
   },
   "233542": {
    "call": "usable",
@@ -293,16 +293,16 @@
    "note": "Split into four areas: the B and L loops, the W point, the S point and the West group camp, each one place. OpenStreetMap draws the lanes on each point and the sites line them; 3 sites have no point."
   },
   "233635": {
-   "call": "usable",
-   "note": "The A and B loops follow the visible gravel and most sites sit on their pull-ins. A01 to A09, A16 to A21 and A60 to A64 sit 20 to 30 m outside the drawn loops on lanes that show only in part, and B02 to B14 on the B area's outer lane, which isn't drawn."
+   "call": "hold",
+   "note": "The turnaround loop by A16 to A19 is traced on the photo, but the rest of the drawn roads are OpenStreetMap's rough outlines: in the A area they cut across the trees between the gravel lanes the photo shows to A31 to A47, and in the B area a straight line runs through the grass from B47 to B39 where no lane shows. Final check: hold until the A and B lanes are replaced from the photo."
   },
   "233648": {
    "call": "usable",
    "note": "The lidar intensity shows the campground loop and its cross lane from 39 as plain bands under the canopy. Replaced the roads to put them on their bands (the loop's east side sat about 5 m west of it); every site is within 40 m of a road, and the faint lanes among the north sites (by 26 and 40HOST) aren't drawn."
   },
   "233651": {
-   "call": "usable",
-   "note": "Split into three areas: the north loop (079 to 098), the point and river lanes (034 to 131) and the south loop (001 to 028). The west row (099 to 131) sits on a loop drawn too far east."
+   "call": "hold",
+   "note": "Unchanged; the split needs no new call: the three areas (north loop 079 to 098, the middle with the river lane 034 to 078 and the loop 099 to 131, the south loop 001 to 028) each hold one cluster, and every site is within 40 m of a drawn road. Zoomed and over the lidar relief, the middle loop's west side (past 114 to 124) runs 5 to 10 m east of the gravel that shows in pieces between the trees and can't be placed to 3 m, so it stays held for that road."
   },
   "233657": {
    "call": "good",
@@ -317,8 +317,8 @@
    "note": "Checked zoomed: the north loop, the bluff road past 22 to 45, the spur past 50 to 60B down to its cul-de-sac and the east loop (61 to 80) all follow the visible lanes, and every site sits on a pad within about 40 m of them, so nothing needed tracing. Only the bluff road's east side between 41 and 36 runs under the trees and can't be checked closely."
   },
   "233671": {
-   "call": "usable",
-   "note": "The W40 to W60 loop, the W61 to W89 lanes and the W19 to W33 loop follow the visible pavement, and the sites sit on their pull-ins. The W01 to W15 loop is drawn around them in the forest, 20 to 30 m off the lane that shows, and W34 to W38 sit by a lane that doesn't show."
+   "call": "hold",
+   "note": "The W40 to W89 lanes, the W19 to W33 loop and the roads in follow the visible pavement. The loop drawn round W01 to W15 runs through forest west of the sites, and neither lidar layer shows a plain lane there: the intensity is mottled under the trees and the relief shows only faint arcs and old terraces, so the lanes to W01 to W15 and the drawn loop by W34 to W38 can't be placed. Nothing traced."
   },
   "233672": {
    "call": "hold",
@@ -334,15 +334,15 @@
   },
   "233697": {
    "call": "hold",
-   "note": "Not drawn, and rightly: half the sites share a spot (the Lower Area listings). Where points exist, 0001 to 0073 sit on OpenStreetMap's lanes in the north and middle loops."
+   "note": "Unchanged. 0001 to 0073 sit on their pads by the drawn north and middle loops, but the Lower Area's L001 to L060 are listed on two points (Green Lake and Riverside, about 30 each) and the Boathouse Area's B001 to B010 on one, along a shore lane where the photo shows no numbered pads, so which site is which can't be told and nothing was moved."
   },
   "233699": {
    "call": "usable",
    "note": "The loops on the point and the lane past 01 to 07 follow the visible pavement and 01 to 66 sit beside them. The lone site 1 km north-east is the Ruark Bluff group camp, whose listed point sits on a mown clearing by the lane on the next point, so it wasn't moved; the loop drawn round it ran 12 to 15 m west of the lane on its west side and was retraced onto it."
   },
   "233786": {
-   "call": "unsure",
-   "note": "Replaced the Census roads: redrew the road north of the west area and its turnaround loop (by 43 to 46) and the main road through the east area onto the asphalt bands in the lidar intensity, and kept the west loop (35 to 42) and the 1 to 20 loop, which follow their lanes within a few meters. The east area's north loop (21 to 31) is a dirt lane that shows in neither the intensity nor the relief, so it stays as the Census draws it and can't be checked."
+   "call": "usable",
+   "note": "Kept the canopy pass's roads and took the kink out of the east area's north loop by 26, where it sat about 6 m off the lane. The loop past 21 to 31 now follows a continuous band in the lidar intensity on its west half and a crowned lane in the relief on its east leg down to the main road, with the levelled pads of 21 to 23 and 29 to 31 along it, and every site is within 40 m of a drawn road."
   },
   "255134": {
    "call": "usable",

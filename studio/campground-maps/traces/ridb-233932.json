@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233932",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "01",
+   "at": [
+    -105.1111575,
+    38.0987328
+   ]
+  }
+ ],
+ "note": "Units-03: the ranch cabin moved onto the metal roof the photo shows in a fenced yard beside the ranch road, by the Forest Service's point."
+}
