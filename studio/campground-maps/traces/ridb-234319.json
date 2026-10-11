@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234319",
+ "traced": "2026-10-11",
+ "by": "Claude (canopy canopy-14)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -111.5534013,
+    45.15603
+   ]
+  }
+ ],
+ "note": "Canopy canopy-14: the pin is moved 43 m east-southeast onto the only building near the listed point, a long gray roof among the trees south of the trailhead lot (the lidar relief shows its footprint as a levelled patch beside it). No road is traced: no lane to it shows in the photo or the lidar."
+}

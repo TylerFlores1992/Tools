@@ -141,16 +141,16 @@
    "note": "No road is drawn, but the pin is on a small structure at the top of the open rocky butte, with a drawn trail 15 m off."
   },
   "233132": {
-   "call": "unsure",
-   "note": "The pin is under dense firs inside a drawn loop, 40 to 80 m from the station's buildings to the north, and nothing at it is plainly the ranger station."
+   "call": "good",
+   "note": "Under the firs the lidar relief shows a building's square footprint, about 12 m across, at the pin (the listing's own point is 4 m away), with the loop drive around its west and south sides plain in the intensity. OpenStreetMap had the loop's southeast side bowing 10 to 15 m off its band; it is retraced on the band from the cabin to the work center spur, and the other roads are OpenStreetMap's, unchanged and on their bands."
   },
   "233143": {
    "call": "unsure",
-   "note": "The pin sits on a drawn road through burned and standing forest, and no cabin shows plainly at it."
+   "note": "Both lidar layers show the two drawn roads along the river as plain graded bands with the lines on them, and the pin sits on the upper road itself; neither layer nor the photo shows a roof, levelled pad or clearing beside it that could be the cabin. Nothing traced."
   },
   "233222": {
    "call": "unsure",
-   "note": "The pin is under the oak canopy at the end of a drawn spur, and no group area clearing shows plainly; the open lanes nearby don't match the drawn lines."
+   "note": "The lidar relief (11 ground points per square meter) shows the forks of Peppersauce Wash as deep channels around the pin, and the pale strips on the photo are their dry beds, not lanes; the intensity is mottled under the oaks. Neither layer shows a graded lane under the drawn spurs or a pad or clearing at the pin, so the group area can't be placed. Nothing traced."
   },
   "233223": {
    "call": "usable",
@@ -178,11 +178,11 @@
   },
   "233938": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest near the end of a short drawn spur, and no group site clearing shows. The listing's own point, 460 m northwest, is in forest by the drawn roads, with nothing plain either."
+   "note": "The lidar intensity shows the highway north of the pin as a plain paved band with the drawn road on it, but around the pin and along the drawn spur both layers show only an even, lightly mottled forest floor, with no lane, pad or clearing that marks the group site, and the photo shows only canopy. Nothing traced."
   },
   "233940": {
-   "call": "unsure",
-   "note": "Full canopy in deep shadow: the pin is in dense forest beside the drawn lakeside lanes, and no group site clearing shows."
+   "call": "usable",
+   "note": "Under the dense firs the lidar intensity shows the campground's paved lanes as plain bands with the drawn roads on them, and the drawn spur south of the pin ends on a paved lot about 50 m by 12 m, 20 m from the pin, which reads as the group site's parking; the ground at the pin itself shows no pad. Nothing traced."
   },
   "233942": {
    "call": "usable",
@@ -262,7 +262,7 @@
   },
   "234284": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest at the end of a drawn spur, beside a small clearing, and no cabin shows."
+   "note": "The lidar intensity shows the drawn spur's lane as a faint band down from the meadow, ending 15 m west of the pin, but at the pin neither layer shows a roof, a levelled pad or a clearing (only two small pits in the relief), and the photo shows only fir canopy. Nothing traced."
   },
   "234315": {
    "call": "good",
@@ -294,7 +294,7 @@
   },
   "234498": {
    "call": "unsure",
-   "note": "Full canopy in deep shadow: the pin is in dense forest by the lakeshore at the end of a drawn spur, and no group site clearing shows."
+   "note": "By the lakeshore the lidar relief shows a smoother patch around the pin and the intensity a faint darker strip near the drawn spur's south hook, but neither is plain enough to read as the group site's pad or to check the spur against (3.12 ground points per square meter under dense cedar), and the photo shows only canopy. Nothing traced."
   },
   "234503": {
    "call": "unsure",

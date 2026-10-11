@@ -90,7 +90,7 @@
   },
   "234321": {
    "call": "unsure",
-   "note": "The pin is at the end of the drawn track down the meadow, in the shadow of the forest edge; no cabin shows clearly in the shade, so the photo can't confirm it."
+   "note": "The lidar relief shows the drawn track down the meadow as a pair of wheel ruts, with the drawn line beside them, ending near the pin, but neither layer shows a roof, levelled pad or clearing edge at the pin (the meadow is open grass there), and the photo shows only the forest's shadow. Nothing traced."
   },
   "234326": {
    "call": "unsure",
@@ -134,7 +134,7 @@
   },
   "10038994": {
    "call": "unsure",
-   "note": "The pin is inside the drawn loop under full canopy; neither the loop nor a clearing shows, and the listing's own point is about 1,690 km away (a bad listing point)."
+   "note": "The lidar relief shows the road to the southwest as a plain graded band with the drawn road on it, but neither layer shows the drawn loop or a pad or clearing at the pin inside it (the intensity is only a smoother gray patch among the tree crowns, and the relief even forest floor); the listing's own point is about 1,690 km away. Nothing traced."
   },
   "10116515": {
    "call": "good",
@@ -184,9 +184,9 @@
    "note": "Unchanged. The pin is in unbroken forest about 250 m northwest of Waldo Road, and neither Gold Lake nor any campground, loop or clearing shows anywhere in the 1.4 km frame, so there's nothing to move it to."
   },
   "10165320": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "There's no outline. The pin sits inside a road loop with short spurs and parked vehicles under the trees, and a mapped restroom is about 90 m away, so it reads as the campground's loop.",
-   "as": "firstcome"
+   "note": "There's no outline. The lidar intensity shows the campground's gravel roads as bright bands under the trees, with the drawn roads on them, and the pin sits 60 m east of the loop road where the photo shows parked vehicles and pull-ins; the restroom is about 90 m away, so it reads as the campground. Nothing traced."
   },
   "10165360": {
    "as": "firstcome",
@@ -214,9 +214,9 @@
    "as": "firstcome"
   },
   "10165485": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "The outline holds the campground's loop road with pads under the trees, plus a good deal of extra forest to the west and south. The point is inside it, near the road in.",
-   "as": "firstcome"
+   "note": "The lidar intensity shows the campground loop and its pull-in pads plainly under the trees, with the drawn loop on them; OpenStreetMap's outline holds it plus a good deal of extra forest and the lakeside road to the west, and the point sits on the outline's northeast edge, near the road in. Nothing traced."
   },
   "10165490": {
    "call": "good",
@@ -304,9 +304,9 @@
    "note": "Moved the pin about 135 m northwest from the meadow east of Rock Creek Road onto the lane OpenStreetMap names Pettit Campground, west of the road, whose spurs, pads and Spur A loop show among the trees; Diamondfield Jack is 1.3 km off. There's no outline, so the map shows the pin there."
   },
   "10191095": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "There's no outline. The pin is about 30 m from a small loop road off the highway with pull-ins under the trees by the creek, which reads as the campground.",
-   "as": "firstcome"
+   "note": "There's no outline. The photo and both lidar layers show the campground's gravel loop and lanes off the highway by the creek, with the drawn lanes on them within a few meters, and the pin sits in the bare ground between the loop and the highway, within 30 m of them, so it reads as the campground. Nothing traced."
   },
   "10191100": {
    "as": "firstcome",
@@ -324,9 +324,9 @@
    "as": "firstcome"
   },
   "10192037": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "There's no outline. The pin is inside a small road loop with spur roads and clearings under the trees, which reads as a campground loop, though the trees hide most pads.",
-   "as": "firstcome"
+   "note": "There's no outline. The lidar relief shows the campground's lanes and spur loops as crowned bands under the pines, with the drawn roads on or within about 5 m of them, and the pin sits in a hollow beside the small east loop, inside the road network, so it reads as the campground; the intensity is too mottled to add anything, and the loop around the pin can't be checked closely enough to redraw. Nothing traced."
   },
   "10192067": {
    "as": "firstcome",
@@ -339,9 +339,9 @@
    "as": "firstcome"
   },
   "10215854": {
+   "as": "firstcome",
    "call": "usable",
-   "note": "There's no outline. The pin is on the road beside a strip of clearings and pull-ins along the creek under the trees, which reads as the campground, within about 50 m.",
-   "as": "firstcome"
+   "note": "There's no outline. The photo shows the campground's dirt pull-ins and a small building in the open strip along the creek, and the pin sits at its east edge beside the paved road, which the lidar intensity shows as a dark band with the drawn road within a few meters of it; it reads as the campground. Nothing traced."
   },
   "10215884": {
    "call": "usable",
