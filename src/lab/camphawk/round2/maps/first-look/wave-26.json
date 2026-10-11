@@ -54,7 +54,7 @@
   },
   "233402": {
    "call": "unsure",
-   "note": "The lidar relief shows level ground with no building-shaped gap at the pin; the nearest gap is a round one about 10 m across, 60 m east, ringed by a bank, which reads as a tank or pond more than a cabin. The drawn road ends in the clearing 50 m south, which the relief shows as a turnaround. Nothing is plainly the cabin, so nothing moved or traced."
+   "note": "The Forest Service's point, 110 m southeast of the pin, is under closed oak and pine beside a trail the ground relief shows; neither the photo nor the relief shows a roof or building gap there or at the pin. The one gap nearby, 55 m east of the pin (mapped as a building in OpenStreetMap), is round and ringed by a ditch with an outlet, which reads as a tank. Not moved."
   },
   "233726": {
    "call": "good",
@@ -198,7 +198,7 @@
   },
   "234353": {
    "call": "unsure",
-   "note": "The lidar relief shows a levelled patch about 8 m across right by the pin, beside a crowned lane that passes its west side and meets the forest road 15 m north, but no plain building gap, and the photo shows only a small opening there; it may be the cabin's pad, but can't be confirmed. West of the pin the drawn Forest Service road runs 15 to 30 m north of the band the relief shows. Nothing traced, since the pin itself is unconfirmed."
+   "note": "The Forest Service's point, 185 m north of the pin, is on a forested slope just above an undrawn graded road the photo and ground relief both show, with no building or pad. The pin stays by the levelled patch beside the lane off the drawn forest road, where the relief shows a faceted flat about 8 m across but no plain roof. Not moved."
   },
   "234355": {
    "call": "good",
@@ -317,8 +317,8 @@
    "note": "The lidar relief shows a building-sized gap in the ground returns 2 to 8 m north of the pin, and the photo a small dark roof there at the east end of a bare clearing, so the pin reads as the guard cabin. The drawn road passes 60 m north-west; light bands toward the clearing show in the intensity but none plainly as a lane, so nothing is traced."
   },
   "234673": {
-   "call": "unsure",
-   "note": "The lidar relief shows no building-shaped gap in the ground returns, pad or clearing at the pin or within 40 m, only unbroken forest floor; the trail the photo shows through the pin shows in the relief only to its south-west. Nothing in the frame is plainly the cabin, and no road reaches it. Nothing traced."
+   "call": "usable",
+   "note": "Moved the pin 180 m northeast, from the trail in unbroken forest onto the cabin: a pale gray roof about 9 by 4 m in a small clearing where the trail ends, 5 m from the Forest Service's point and where OpenStreetMap maps Snow Peak Cabin; no road reaches it (hike-in)."
   },
   "234675": {
    "call": "good",

@@ -2522,11 +2522,11 @@
   },
   {
    "wave": 26,
-   "built": "2026-10-10",
+   "built": "2026-10-11",
    "count": 89,
    "summary": {
-    "ready": 70,
-    "review": 19,
+    "ready": 69,
+    "review": 20,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2732,8 +2732,8 @@
    "built": "2026-10-11",
    "count": 89,
    "summary": {
-    "ready": 69,
-    "review": 20,
+    "ready": 68,
+    "review": 21,
     "notDrawn": 0,
     "failed": 0
    },
@@ -2836,8 +2836,8 @@
    "built": "2026-10-11",
    "count": 88,
    "summary": {
-    "ready": 63,
-    "review": 25,
+    "ready": 62,
+    "review": 26,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3043,8 +3043,8 @@
    "built": "2026-10-11",
    "count": 88,
    "summary": {
-    "ready": 53,
-    "review": 35,
+    "ready": 52,
+    "review": 36,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3146,8 +3146,8 @@
    "built": "2026-10-11",
    "count": 89,
    "summary": {
-    "ready": 54,
-    "review": 35,
+    "ready": 52,
+    "review": 37,
     "notDrawn": 0,
     "failed": 0
    },
@@ -3250,8 +3250,8 @@
    "built": "2026-10-11",
    "count": 95,
    "summary": {
-    "ready": 48,
-    "review": 47,
+    "ready": 45,
+    "review": 50,
     "notDrawn": 0,
     "failed": 0
    },

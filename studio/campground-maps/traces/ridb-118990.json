@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-118990",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "001",
+   "at": [
+    -106.388511,
+    41.5247152
+   ]
+  }
+ ],
+ "note": "The ranger station's large tan roof shows south of the drawn road's parking area, under the Forest Service's point, 190 m south of the listing's pin."
+}

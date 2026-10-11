@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233074",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "W10",
+   "at": [
+    -132.4352415,
+    56.5887256
+   ]
+  }
+ ],
+ "note": "The cabin's gray roof shows in the muskeg at the forest edge with a path to its outhouse, 93 m southwest of the listing's pin, where OpenStreetMap maps Koknuk Cabin; the Forest Service's point is 90 m further west on open muskeg."
+}

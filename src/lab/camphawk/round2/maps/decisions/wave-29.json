@@ -208,17 +208,17 @@
   },
   {
    "id": "232783",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the pin-move pass: first look hold."
+   "note": "Passed after the fix-after campaign (units-02): first look good, checked over the photo (2026-10-09)."
   },
   {
    "id": "232822",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "233101",
@@ -232,7 +232,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (canopy-13): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "233128",
@@ -253,7 +253,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (canopy-14): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "233222",
@@ -294,8 +294,8 @@
    "id": "233933",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "233937",
@@ -456,7 +456,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (canopy-14): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "234315",
@@ -512,7 +512,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (canopy-14): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "234503",
@@ -554,21 +554,21 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (fix-16): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "234627",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (fix-16): first look unsure."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "234632",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Still held after the pin-move pass: first look hold."
+   "note": "Held after the fix-after campaign (units-02): first look unsure."
   },
   {
    "id": "234663",

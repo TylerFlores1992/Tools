@@ -5,8 +5,8 @@
  "on": "2026-10-08",
  "looks": {
   "118990": {
-   "call": "hold",
-   "note": "The pin is in open sagebrush between two drawn roads; the station's buildings stand 180 to 190 m south along the drawn road (a large tan-roofed building, a small one beside it, a shed to the east, trailers to the west), and nothing says which is the rental."
+   "call": "usable",
+   "note": "Moved the pin 190 m south, from open sagebrush onto the station's large tan roof (about 13 by 9 m), the building the Forest Service's point touches; a smaller building stands 8 m north of it. The drawn road passes about 40 m north, past an undrawn parking area."
   },
   "231968": {
    "call": "unsure",
@@ -22,7 +22,7 @@
   },
   "232348": {
    "call": "hold",
-   "note": "The pin sits in the trees of the island inside the paved lakeside parking loop, with no building at it; nothing there could be the chalet."
+   "note": "The Forest Service's point names the Loon Lake equestrian group camp, a different place from the chalet, so it can't place this unit; it sits on a camp lane among trailers 145 m southeast. The pin is in the trees inside the paved parking loop with no building that could be the chalet. Not moved."
   },
   "232790": {
    "call": "hold",
@@ -57,8 +57,8 @@
    "note": "The pin is in unbroken forest and the Forest Service's point 68 m north is on the river's open gravel bar; neither shows a group site's pad, tables or road. Not moved."
   },
   "234144": {
-   "call": "unsure",
-   "note": "The pin is on a small opening on the drawn road in the forest; no building shows at it or nearby, so the photo can't confirm the guard station."
+   "call": "good",
+   "note": "Moved the pin 78 m east, from the empty turnaround onto the larger of two dark roofs at the end of the drawn spur, the guard station; the spur ends 14 m from it. The Forest Service's point is 40 m further east, in the trees, so it was not used as the spot."
   },
   "234157": {
    "call": "good",
@@ -114,7 +114,7 @@
   },
   "234482": {
    "call": "unsure",
-   "note": "The dense lidar (9.49 ground points per square meter) puts the pin on the crest of the ridge at the top of the rocky east scarp, with faint trail lines converging from the west, but neither layer shows a gap or levelled pad that is plainly the cabin, and among the rock outcrops on the photo none is plainly a roof. Nothing traced or moved."
+   "note": "The Forest Service's point (\"Cold Springs Peak Lookout\"), 110 m north of the pin up the open crest, shows bare ground, two small trees and pale rock in the photo, and the dense ground relief shows no building gap or levelled pad there; the pin on the scarp top shows none either. Not moved."
   },
   "234601": {
    "call": "good",

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233042",
+ "traced": "2026-10-11",
+ "by": "Claude (final check, owner's delegation)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "S13",
+   "at": [
+    -134.9262073,
+    56.7043082
+   ]
+  }
+ ],
+ "note": "The cabin's green roof shows at the forest edge 40 m southwest of the Forest Service's point, with a pale shed beside it and a boardwalk running northeast; it is the only building at the lake. Moved at the final check: the 40 m is past the batch's 15 m rule, but the roof is plain and the name, the Forest Service's point and the photo agree."
+}

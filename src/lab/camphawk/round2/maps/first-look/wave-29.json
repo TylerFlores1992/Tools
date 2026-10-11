@@ -121,12 +121,12 @@
    "note": "The pin is on the reservoir's bare bank 15 m east of the drawn loop at the end of the spur, and nothing at it is plainly the group site; the drawn loop is in the trees beside it."
   },
   "232783": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest on a slope; the small drawn turnaround loop 100 m southeast has a little clearing but no pads or structure that plainly mark the group site."
+   "call": "good",
+   "note": "Moved the pin 130 m southeast, from unbroken forest onto the bare gravel pad on the east side of the drawn turnaround loop at the end of the spur from the highway, where the Forest Service puts Cove Group; it is the only developed spot near the listing."
   },
   "232822": {
    "call": "unsure",
-   "note": "The pin is in mixed open and dense pines between two drawn roads, 90 m from each, with no clearing or structure plainly at it."
+   "note": "The Forest Service's point, 220 m east of the pin, is on the wet meadow itself, where no group camp can be; the pin, in pines and open ground between the drawn roads, shows no pad or structure either. Not moved."
   },
   "233101": {
    "call": "good",
@@ -134,7 +134,7 @@
   },
   "233114": {
    "call": "unsure",
-   "note": "The sparse lidar survey (1.1 ground points per square meter) shows a smooth graded band with ditches running east-west 10 to 20 m south of the drawn Forest Service road, which reads as the real road, but no clearing or pads show at the pin on the riverbank, and the photo is unbroken forest, so the group camp can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 100 m east of the pin on the drawn road along the river, shows only a small pale fleck and a patch of bare ground 30 m west of it among trees, nothing plainly a group pad; the ground relief shows no levelled loop at either spot. Not moved."
   },
   "233128": {
    "call": "good",
@@ -146,7 +146,7 @@
   },
   "233143": {
    "call": "unsure",
-   "note": "Both lidar layers show the two drawn roads along the river as plain graded bands with the lines on them, and the pin sits on the upper road itself; neither layer nor the photo shows a roof, levelled pad or clearing beside it that could be the cabin. Nothing traced."
+   "note": "The Forest Service's point (\"Cottonwood Guard Station\"), 140 m southeast of the pin on the bench beside the drawn spur, shows a level bench in the relief but no roof; a bright white oblong about 5 by 8 m sits 28 m southeast of the point, too far and too plain-white (a trailer or tarp as easily as a roof) to call the cabin. The pin on the upper road shows nothing. Not moved."
   },
   "233222": {
    "call": "unsure",
@@ -170,7 +170,7 @@
   },
   "233933": {
    "call": "unsure",
-   "note": "The pin is among the scattered buildings and lanes of an old camp in the pines, and which building is the Quaking Aspen cabin isn't plain; the drawn Forest Service lanes run up to 20 m off the visible ones."
+   "note": "The Forest Service's point is for the Quaking Aspen group campground, not the cabin, and sits in the open meadow 180 m southwest of the pin with no building; the pin is among the old camp's scattered buildings, and which is the cabin isn't plain. Not moved."
   },
   "233937": {
    "call": "usable",
@@ -262,7 +262,7 @@
   },
   "234284": {
    "call": "unsure",
-   "note": "The lidar intensity shows the drawn spur's lane as a faint band down from the meadow, ending 15 m west of the pin, but at the pin neither layer shows a roof, a levelled pad or a clearing (only two small pits in the relief), and the photo shows only fir canopy. Nothing traced."
+   "note": "The Forest Service's point, 125 m east of the pin and 30 m from the drawn road to the southeast, is under closed fir, and the dense ground relief shows only smooth forest floor there, no building gap or levelled pad; the pin by the drawn spur shows two small pits but no building either. Not moved."
   },
   "234315": {
    "call": "good",
@@ -294,7 +294,7 @@
   },
   "234498": {
    "call": "unsure",
-   "note": "By the lakeshore the lidar relief shows a smoother patch around the pin and the intensity a faint darker strip near the drawn spur's south hook, but neither is plain enough to read as the group site's pad or to check the spur against (3.12 ground points per square meter under dense cedar), and the photo shows only canopy. Nothing traced."
+   "note": "The Forest Service's point, 130 m northwest, is on the highway at the spur's turnoff, which is the entrance, not the group site; the pin stays on the smooth flat by the lakeshore at the spur's end, which the relief shows as level ground but not as a plainly shaped pad, and the photo is canopy. Not moved."
   },
   "234503": {
    "call": "unsure",
@@ -318,15 +318,15 @@
   },
   "234626": {
    "call": "unsure",
-   "note": "Unchanged. Zoomed on a 5 m grid, the pin is at the south edge of a bare rocky clearing in the pines beside the drawn road, and no pads, tables, shelter or parking show that would tell Lower Twilight's spot from Upper Twilight's (25 m away in the same clearing), so it wasn't moved."
+   "note": "The Forest Service's point (one \"Twilight Group Site\" shared with Upper Twilight), 215 m northwest of the pin, is under pines beside the drawn road with no clearing, pad or parking; the pin stays at the south edge of the bare rocky clearing by the road, where nothing tells this site from Upper Twilight's. Not moved."
   },
   "234627": {
    "call": "unsure",
-   "note": "Unchanged. The pin is in the same bare rocky clearing as Lower Twilight's, 25 m apart, beside the drawn road; zoomed on a 5 m grid nothing marks either group site's own pad, so neither was moved."
+   "note": "The Forest Service's point (one \"Twilight Group Site\" for both the upper and lower listings), 210 m northwest of the pin, is under pines just south of the drawn road with no clearing, pad or parking; the pin stays in the bare rocky clearing by the road that it shares with Lower Twilight, where nothing marks either site. Not moved."
   },
   "234632": {
-   "call": "hold",
-   "note": "The pin is in unbroken forest 30 m west of a drawn road; the only bright object nearby, 130 m south on a gravel pad by the lake, is long and white like a parked trailer, not plainly a kitchen shelter."
+   "call": "unsure",
+   "note": "The Forest Service's point (\"Swan Lake\" group campground), 140 m south of the pin by the lakeshore, is under trees with no pad or shelter; 15 m north of it the gravel pad by the drawn road holds a long white object like a trailer, not plainly the kitchen shelter. The pin is in unbroken forest. Not moved."
   },
   "234663": {
    "call": "good",

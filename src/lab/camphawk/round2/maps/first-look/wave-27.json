@@ -30,7 +30,7 @@
   },
   "118991": {
    "call": "unsure",
-   "note": "The pin sits on the drawn road across the open summit meadow, and no lookout building shows at it or nearby in the zoom."
+   "note": "The Forest Service's point (matched by Recreation.gov id), 180 m north of the pin, is on the summit's rocky crest among small trees, and a small pale square 7 m south of it is too small and blurred to call the lookout; a dark square about 4 m across at the end of the summit lane, 30 m southeast of the point, might be the lookout's roof or a vehicle. Neither is plain, so the pin stays on the drawn road. Not moved."
   },
   "232292": {
    "call": "good",
@@ -109,8 +109,8 @@
    "note": "The pin is on the lookout's site at the end of the drawn spur, in a gravel clearing with buildings beside it."
   },
   "234175": {
-   "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest 15 m east of a drawn Forest Service road that doesn't show on the photo, and no cabin shows."
+   "call": "hold",
+   "note": "The pin is right: it sits on a pale gray roof about 7 m long in a small clearing, where OpenStreetMap also maps the guard station; the Forest Service's point, 110 m east, is on a creek channel in the forest. But the drawn Forest Service road runs 15 to 25 m east of the paved road the photo and lidar show, so the map stays held for that road. Not moved."
   },
   "234179": {
    "call": "unsure",
@@ -150,7 +150,7 @@
   },
   "234335": {
    "call": "unsure",
-   "note": "The lidar layers show the pin on a flat terrace between the forks of Fox Creek (their channels plain in both layers), with no lane, trail or levelled pad leading to it and nothing that marks a cabin; the nearest drawn road is still 640 m away. Nothing traced."
+   "note": "The Forest Service's point, 140 m west of the pin across the forks of Fox Creek, is under closed conifers on a creek bank, and neither the photo nor the dense ground relief shows a roof, building gap or levelled pad there; the pin's terrace shows none either. Not moved."
   },
   "234340": {
    "call": "good",
@@ -222,7 +222,7 @@
   },
   "234405": {
    "call": "hold",
-   "note": "The pin is on a bare gravel flat beside the highway and river; several small buildings stand within 120 m on both sides of the river, and nothing marks which, if any, is the guard station."
+   "note": "The Forest Service's point (\"Forest Glen Guard Station (historical)\"), 155 m south of the pin across the river, is under trees with no roof, and the pin is on the bare gravel flat by the river; several small buildings stand around (one 50 m southeast of the point, two across the highway), and nothing marks which is the guard station. Not moved."
   },
   "234409": {
    "call": "good",

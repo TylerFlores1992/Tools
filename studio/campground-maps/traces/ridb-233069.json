@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233069",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "W03",
+   "at": [
+    -132.2689685,
+    56.6971947
+   ]
+  }
+ ],
+ "note": "The cabin's dark roof shows at the head of a mowed clearing above the beach, 21 m north of the Forest Service's point and 115 m southwest of the listing's pin."
+}

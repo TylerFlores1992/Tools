@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233161",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "G1",
+   "at": [
+    -122.8450965,
+    39.7373517
+   ]
+  }
+ ],
+ "note": "The group camp's levelled pad with a row of picnic tables and a toilet shows at the end of the drawn loop, 6 m from the Forest Service's point and 165 m southeast of the listing's pin."
+}
