@@ -194,7 +194,7 @@
   },
   "232849": {
    "call": "hold",
-   "note": "Only one loop is drawn, and about a dozen sites sit 25 to 50 m outside it: 010, 011, 013, 014, 016 and 017 toward the lake, and 019, 021, 023, 025 and 026 to the east, where no second lane shows under the trees. 003 to 009, 012, 015, 018, 020, 022, 024, 027 and 028 fit the drawn loop."
+   "note": "The lidar relief (Oregon DOGAMI) shows the drawn loop's ditched lanes, and the drawn loop follows them within a few meters. It also shows a second, outer lane on the lake side (a ditch line past 013, 011, 010, 008, 007, 005 and 004, where the photo shows dirt tracks and pads) and dirt tracks north past 016, 017 and 019, but these show only in broken stretches and can't be traced to 3 m. Left as it was: a dozen sites still sit 20 to 50 m outside the one drawn loop with their lanes missing."
   },
   "232861": {
    "call": "usable",

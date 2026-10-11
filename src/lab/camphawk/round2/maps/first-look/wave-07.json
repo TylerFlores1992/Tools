@@ -166,7 +166,7 @@
   },
   "232854": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loop is drawn but no lanes show through the firs, and 005 to 014 sit 20 to 40 m south of it toward the river, with 018 and 019 north of it."
+   "note": "The lidar relief (Oregon DOGAMI) shows the road in and the river bench, and old channels crossing the flat, but no lane band inside it: the drawn Forest Service loop can't be checked to 3 m, and no lane shows to 005 to 014 toward the river or 018 and 019 north of the loop. Not traced."
   },
   "232875": {
    "call": "hold",
@@ -314,7 +314,7 @@
   },
   "251471": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loops are drawn but no lanes show to confirm them, and 001, 002, 004, 006, 018, 023, 025, 026 and 029 sit 20 to 40 m outside them."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway and the river benches the campground sits on, and a smooth strip along the foot of the bench from the entrance toward 017 and 016, but inside the loops only mottled forest floor: nothing plainly places the drawn west and east loops or the lanes to 001, 002, 004, 006, 018, 023, 025 and 026. The drawn loops can't be checked to 3 m; not traced."
   },
   "251538": {
    "call": "unsure",
@@ -378,7 +378,7 @@
   },
   "10132176": {
    "call": "unsure",
-   "note": "Under full canopy: the lanes are drawn and 4 and 9 sit on them, but no lanes show through the firs, and 1 to 3, 5 to 8, 10 to 15 and 19 to 24 sit 20 to 60 m off any drawn road; 19 to 24 sit near the shore."
+   "note": "At full-map scale the lidar relief (Oregon DOGAMI) hints at a web of narrow lanes under the firs, including an arc south of the drawn loop toward 19 to 24 and a lane between 4 and 6, and it doesn't plainly match the drawn OpenStreetMap lanes; zoomed in, those lanes dissolve into the mottled forest floor and can't be placed to 3 m. Not traced; the drawn lanes can't be confirmed and 8 of 24 sites (11, 14, 19 to 24) are more than 40 m from them."
   }
  }
 }

@@ -125,8 +125,8 @@
    "note": "The pin is on the guard station's cabin, and a drawn Forest Service spur reaches it. But the spur connects to nothing: the gravel road up the valley, plain on the photo, isn't drawn, and neither is the dirt lane from it to the spur."
   },
   "234165": {
-   "call": "unsure",
-   "note": "The Forest Service's point 84 m northeast shows only conifers and a fallen log, while just north of the pin a gray roof-like shape under the shade may be a building but isn't plainly the station. Not moved."
+   "call": "usable",
+   "note": "Moved the pin about 110 m north-west onto the one building at the station's meadow: a gray roof on the photo, and a square-cornered levelled block in the lidar relief (Oregon DOGAMI); no other building shows within 400 m. No drawn road reaches it (a dirt track runs north-west from it but doesn't show plainly to its end), so usable, not good."
   },
   "234168": {
    "call": "usable",
@@ -313,8 +313,8 @@
    "note": "No road reaches it, but the pin is on the lookout's small structure in the rocky summit clearing, with a drawn trail 16 m off; the nearest drawn road ends 120 m north."
   },
   "234630": {
-   "call": "unsure",
-   "note": "Neither the pin at the forest edge by the meadow nor the Forest Service's point 16 m north-northwest shows a roof or yard in the photo, only brush and fallen logs. Not moved."
+   "call": "hold",
+   "note": "The pin is at the forest edge beside the open meadow, and neither the photo nor the lidar relief (Oregon DOGAMI) shows a building, levelled pad or clearing at it or anywhere within 150 m; the drawn spur ends 100 m west in the forest with nothing at its end either. The station can't be placed."
   },
   "234750": {
    "call": "usable",

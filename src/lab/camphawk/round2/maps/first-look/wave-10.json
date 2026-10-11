@@ -6,7 +6,7 @@
  "looks": {
   "119190": {
    "call": "unsure",
-   "note": "Under full canopy: the inner loop can't be seen through the firs. Most sites sit within 20 m of it, but 06, 07, 09 and 10 sit outside it with no lane showing."
+   "note": "The lidar relief (Oregon DOGAMI) shows the paved road on the east and the lane along the south as plain bands, but it is coarse triangles under the firs inside the campground: the drawn loop past 02 to 16 can't be checked to 3 m, and no lane shows to 06, 07, 09 and 10 outside it. Not traced."
   },
   "231897": {
    "call": "usable",
@@ -94,7 +94,7 @@
   },
   "232863": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loop is a coarse outline that can't be seen through the firs, and the horse sites sit around its outside edge (008 to 010 at the meadow's edge, 26 to 29 m out)."
+   "note": "The lidar relief (Oregon DOGAMI) is sparse here, coarse triangles with a seam across the middle of the loop, and shows only a faint strip running north-south through the loop's middle, not the drawn Forest Service loop; the photo shows only dirt patches by 003, 004 and 005. The coarse loop can't be checked or replaced to 3 m; not traced."
   },
   "233118": {
    "call": "usable",
@@ -290,7 +290,7 @@
   },
   "251570": {
    "call": "unsure",
-   "note": "Under full canopy: the loop can't be seen through the firs, and the sites sit both inside and outside it (015 47 m in) with no lanes or pads showing."
+   "note": "The lidar relief (Oregon DOGAMI) shows the road along the river and the open meadow in the loop's east half, but under the firs it is broken triangles cut by narrow channels, with no band that is the drawn loop or a lane to 005 to 008 west of it or 015 inside it. The loop can't be checked to 3 m; not traced, and 010 still has no point."
   },
   "251834": {
    "call": "good",

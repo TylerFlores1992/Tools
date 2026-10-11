@@ -18,7 +18,7 @@
   },
   "251353": {
    "call": "unsure",
-   "note": "The whole campground is under tall conifer canopy beside the river; neither the drawn lane past 001 to 015 nor any pads show on the photo."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway and the river terraces plainly, but on the campground's terrace it shows only broken light strips and old channels, nothing that is plainly the lane past 011 to 015 or the lane and turnaround past 001 to 010. The drawn lanes can't be checked to 3 m, so it stays unsure, not traced."
   },
   "273785": {
    "call": "good",
@@ -310,7 +310,7 @@
   },
   "251548": {
    "call": "unsure",
-   "note": "Under the pines the drawn loops (01 to 20 north, A and B south) run where gaps show, and the sites on their edges line them. 10, 12 and 13 sit outside the north loop, and the middle of loop A (A05 to A17) and of loop B (B13 to B19) sit 25 to 35 m from any drawn lane, with no lane showing."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway plainly but is mottled by the forest floor inside the campground: only a faint smooth strip along the west side of the north loop by 04 to 07, and nothing that places the loops A and B or settles the lanes to 10, 12, 13 and the middle of A and B. The drawn loops can't be checked to 3 m, so it stays as it was, not traced."
   },
   "251580": {
    "call": "hold",
@@ -318,7 +318,7 @@
   },
   "251907": {
    "call": "unsure",
-   "note": "Under a full canopy only a short stretch of the B loop's east side shows, where the drawn road fits it. Many sites (A01 to A03, A08 to A10, B01 to B04, B12, B13) sit 20 to 30 m outside the drawn loops, and the photo can't confirm them."
+   "note": "The lidar relief (Oregon DOGAMI) confirms the road along the lake and the diagonal lane from it past A13 to A17 to the B loop, which the drawn road follows within a few meters, and hints at a lane running east from the junction by A11. But it is mottled under the firs elsewhere and doesn't place the B loop's sides past B01 to B15 or the A loop's east side past A03 to A10, so those drawn lanes can't be checked to 3 m; not traced."
   },
   "251964": {
    "call": "good",

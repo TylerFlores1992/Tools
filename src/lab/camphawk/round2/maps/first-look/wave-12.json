@@ -42,7 +42,7 @@
   },
   "233153": {
    "call": "hold",
-   "note": "Sites C001 to C010 and the group area sit under full canopy 40 to 90 m east of the only drawn road, on a lane that doesn't show through the firs. Nothing reaches them on the map, and there's nothing visible to trace."
+   "note": "The lidar relief (Oregon DOGAMI) shows Bullock Road as a plain raised band about 25 m north-east of where OpenStreetMap draws it, and a narrow crowned lane running south-east from near the group area between C008 and C009 toward C005, but the lane's link to the road is lost among creek channels and it fades south of C005, so it can't be traced as a joined lane. Not traced; all 11 sites stay 40 to 90 m from the one drawn road, which is itself off its band."
   },
   "233154": {
    "call": "hold",
@@ -298,7 +298,7 @@
   },
   "234720": {
    "call": "unsure",
-   "note": "Under the firs the Forest Service loop doesn't match the lanes that show inside it, and Group Sites A and B sit 20 to 30 m outside it. The photo can't settle where the camps are."
+   "note": "The lidar relief (Oregon DOGAMI) is coarse triangles under the firs and shows only the road on the east, nothing of the campground's lanes; the photo shows dirt lanes inside the drawn Forest Service loop that don't match it, but only in broken stretches. Group Sites A and B can't be placed on a lane; not traced."
   },
   "234728": {
    "call": "usable",
@@ -329,8 +329,8 @@
    "note": "The lidar survey covers only the west half (008 to 023 fall outside it) and is sparse (1.27 ground points per m²). In the covered part a faint curved lane runs from by 028 southwest past 034 toward 001, where no road is drawn, while the drawn Forest Service loops cross mottled ground with no band under them; nothing is plain enough to trace. Nothing traced."
   },
   "254094": {
-   "call": "unsure",
-   "note": "Under the pines the loop is plausible, but Sites 03 to 05, 08, 09, 12 to 17, 34, 36, 40, 43, 45, 48 and 50 sit 20 to 60 m inside it, on lanes that only glimmer through the trees and aren't drawn."
+   "call": "usable",
+   "note": "The lidar relief (Oregon DOGAMI) shows the campground loop plainly as a crowned band with its ditch under the pines, and the photo agrees where the gravel shows. Replaced the roads: re-centered the loop on its band (OpenStreetMap's ran 3 to 8 m off it in stretches), keeping the service road south-west. Every site is within 40 m of the loop; 03 to 05, 08, 09, 12 to 17, 34, 36, 40, 43, 45, 48 and 50 sit 15 to 35 m inside or outside it, where the relief shows only drainage channels and no spur lanes, so none were drawn."
   },
   "256348": {
    "call": "usable",

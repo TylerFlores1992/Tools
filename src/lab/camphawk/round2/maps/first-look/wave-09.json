@@ -6,7 +6,7 @@
  "looks": {
   "119240": {
    "call": "unsure",
-   "note": "Under canopy, and the west ring drawn around 02 to 06 doesn't show on the photo. Sites 26 to 30 sit 33 to 64 m east of any drawn road; 07 to 14 line a lane along the south-west that shows through the trees."
+   "note": "The lidar relief (Oregon DOGAMI) is sparse here, broken into coarse triangles under the pines: it shows the road in from the north as a smooth band but nothing that places the west ring round 02 to 06, the lane past 07 to 14, or lanes to 26 to 30, which sit 40 to 65 m from any drawn road. Not traced; 19 (Host) still has no point."
   },
   "231836": {
    "call": "good",
@@ -314,7 +314,7 @@
   },
   "272093": {
    "call": "unsure",
-   "note": "Under full canopy. 01 to 08, 14 and 15 sit along the drawn lane by the river, but 09 to 13 and 16 sit nearer the highway than the lane, and no pads or lanes show through the firs to place them."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway and the river bench, but no plain lane band on the bench: the drawn lane's north half runs near a smooth strip along the river past 03 and 05, but its south half is a straight line across the open meadow past 14 with no track under it on the photo or the relief. No pads show for 09 to 13 and 16 between the lane and the highway. The lane can't be checked to 3 m; not traced."
   },
   "273799": {
    "call": "good",
@@ -365,8 +365,8 @@
    "note": "Unchanged. The loop around the paved lot follows the visible pavement, with every site within about 20 m of it. Zoomed on 5 and 10 m grids, the strip past 5D, 7D and 9D on the west side is a blur of pads, shade and pale ground with no edges to place a lane within 3 m, so nothing was traced."
   },
   "10165415": {
-   "call": "unsure",
-   "note": "Zoomed: the forest road along the lake follows the visible gravel, and 1 to 9 sit in the open pines beside it; 10 sits 61 m above it with nothing showing. The small loop drawn at the north-east (11 to 15) doesn't show under the trees."
+   "call": "usable",
+   "note": "The lidar relief (Oregon DOGAMI) shows Forest Road 835 as a plain crowned band with its ditch along the whole shore, and the photo agrees where the gravel shows by 1 to 5. Replaced the roads: traced the forest road on its band (the OpenStreetMap line ran 5 to 20 m off it in places) and the small loop by 11 to 15, which shows as a worn dirt lane in both layers. 1 to 9, 11, 12 and 15 sit by the road or loop; 10 sits 60 m up the slope and 13 and 14 about 50 m off with no lane showing to them."
   },
   "10169589": {
    "call": "hold",

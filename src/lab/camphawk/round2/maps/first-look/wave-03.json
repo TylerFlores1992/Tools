@@ -57,8 +57,8 @@
    "note": "Under the solid canopy the lidar intensity shows the gravel loops as light bands and the relief as smooth crowned lanes, and the drawn loops follow them. Inside the west and north loops only short faint pull-ins show, so 039, 042, 043 and 082 to 086 (8 of 98) stay 40 to 67 m from a drawn road; 2 sites still have no point. Nothing traced."
   },
   "232868": {
-   "call": "unsure",
-   "note": "The relief shows the drawn loops as smooth bands, but the forest floor is noisy and no lane shows to A to H or to 017 to 027. Nothing traced."
+   "call": "usable",
+   "note": "The lidar relief (Oregon DOGAMI) shows the lanes plainly under the firs as crowned bands with ditches: the road in, the lakeside loop past 003 to 016, 019, 022 and 023, and the west loop past 029 to 042, and the drawn roads follow them within a few meters. 017, 018, 020, 021, 024, 025 and 027 sit 15 to 30 m south of the loop with no lane drawn to them, and A to H sit 60 to 130 m into unbroken forest where neither the photo nor the relief shows a lane or pad (8 of 49 sites more than 40 m from a road)."
   },
   "232890": {
    "call": "good",
@@ -369,8 +369,8 @@
    "note": "The lidar intensity shows both loops as asphalt bands under the trees. Replaced the roads: redrew the west side of the west loop (by 049 to 056) and the north and west sides of the east loop (by 009 to 026), which were 5 to 15 m off their bands, and copied the rest; every site is within 40 m of a drawn road. A faint inner lane in the east loop (by 007 and 028) isn't drawn."
   },
   "233623": {
-   "call": "hold",
-   "note": "Traced from the photo where lanes show in the meadow, and the relief agrees: the lane past 061 to 059, the lane past 047 to 051, and a short lane south toward 082. Still held: under the forest the relief is speckled, so 052 to 058, 067 to 082 and the northwest sites have no road."
+   "call": "usable",
+   "note": "The photo shows the park's gravel lanes in the clearings, and the lidar relief (Oregon DOGAMI) agrees where it shows them. Added to the earlier trace: in the north the lane from the shelter lot past 014 to the park road and the loop past 015, 016D and 018D; by the river the lot by 044D, the lane round past 040 and 038D on past 032, the lane past 025, 037, 026 and 033, the lanes past 028 to 030 to the restroom, and short spurs to 031 and 032. 13 of 64 sites are still more than 40 m from a drawn road: the forest loops past 067 to 081 and 003D to 008 show no lane in the photo or the relief, so they aren't drawn."
   },
   "233692": {
    "call": "hold",

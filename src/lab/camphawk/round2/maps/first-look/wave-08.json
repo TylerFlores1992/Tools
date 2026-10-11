@@ -13,8 +13,8 @@
    "note": "The roads round the camp follow the visible gravel, and the screen cabins Sumner, Bradley, Beaman and Howland Brothers each sit by their own building on a drawn road."
   },
   "262756": {
-   "call": "unsure",
-   "note": "Only the highway and the lot are drawn. 02 to 10 sit in the trees between the lot and the river with no lanes showing; they may be walk-in tent sites, but the photo can't say."
+   "call": "hold",
+   "note": "The drawn lane and lot by the highway match the gravel lot on the photo. The lidar relief (Oregon DOGAMI) is coarse triangles under the trees and shows no lane or pads toward the river, and the photo shows none, so 02 to 10 (probably walk-in tent sites) can't be reached by a traced lane; 5 of 10 sit more than 40 m from a drawn road."
   },
   "10039993": {
    "call": "hold",
@@ -146,11 +146,11 @@
   },
   "232838": {
    "call": "unsure",
-   "note": "Under full canopy: the lane and loop are drawn but no lanes show to confirm them; 007 to 011 sit 20 to 40 m off any drawn road, and the B group (B-01 to B-05) sits 40 to 60 m west of the lane."
+   "note": "The lidar relief (Oregon DOGAMI) shows the campground on a fan cut by stream channels, and only a faint smooth strip along the drawn lane south from the road; the loop past 005 and 006 and any lanes to 007 to 011 or the B group don't show, and the channels look as lane-like as the lanes. The drawn roads can't be checked to 3 m; not traced."
   },
   "232856": {
    "call": "usable",
-   "note": "The lane into the campground follows the visible gravel, and 002 to 004 and 008 sit by it. 001 sits on the lot's edge, and 005 to 007 sit 20 to 40 m east of the lane's end under trees by the river, where a lane shows faintly and isn't drawn."
+   "note": "The drawn lane follows the gravel lane the photo shows from the lot east past 002 to 004 and 008, within a few meters; 001 sits at the lot's edge. 005 to 007 sit 10 to 25 m past the lane's end under trees by the river, where the photo shows parked cars but no lane plainly, and the lidar relief (Oregon DOGAMI) shows the flat but no lane band, so nothing was added; every site is within 40 m of the lane."
   },
   "232857": {
    "call": "unsure",
@@ -330,7 +330,7 @@
   },
   "251887": {
    "call": "unsure",
-   "note": "Under full canopy: the lane and two small loops are drawn, but no lanes show, and 01 to 09 sit 20 to 60 m north-west of the lane toward the river."
+   "note": "The lidar relief (Oregon DOGAMI) shows the highway, the river and a long bench between them with smooth strips and ditches along it, but nothing that is plainly the drawn lane, its two loops, or lanes out to 01 to 09 on the river side; the smooth strips run parallel to the drawn lane 10 to 20 m off it and could as well be terrace edges. The drawn roads can't be checked to 3 m; not traced."
   },
   "251894": {
    "call": "usable",

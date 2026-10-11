@@ -13,8 +13,8 @@
    "note": "The loops and the parking spurs follow the visible pavement, and Sites 01 to 38 sit on their pads; Walk In A to C and Campsites D and E sit on open ground by the upper loop."
   },
   "262754": {
-   "call": "unsure",
-   "note": "Only the day-use lane by the highway is drawn. Sites 01 to 15 sit 40 to 80 m east of it under full canopy toward the river, with no lanes showing; they may be walk-in sites."
+   "call": "hold",
+   "note": "The drawn day-use lane and its two lots follow what the photo shows by the highway. The lidar relief (Oregon DOGAMI) is coarse triangles here and shows no lane or pads east of it, and the photo shows only canopy, so sites 01 to 15 (probably walk-in) can't be reached by any traced lane; 7 of 15 sit more than 40 m from a drawn road."
   },
   "10107666": {
    "call": "good",
@@ -314,7 +314,7 @@
   },
   "251364": {
    "call": "unsure",
-   "note": "Under full canopy: the Forest Service loops are drawn and the sites line them roughly, but no lanes show to confirm them, and the middle loop has no sites."
+   "note": "The lidar relief (Oregon DOGAMI) shows the river terraces and the road in from the north, but inside the campground only terrace edges and mottled forest floor: no band that is plainly the west lane past 006 to 016 or the south loop past 017 to 025, so the Forest Service loops can't be checked to 3 m. Not traced."
   },
   "251436": {
    "call": "good",
@@ -350,7 +350,7 @@
   },
   "272092": {
    "call": "hold",
-   "note": "Only the road along the south shore is drawn. Looked at again for tracing: the lanes into the peninsula past 010 to 026 run under the trees and show only as faint tracks, so they can't be placed and most sites sit 50 to 150 m from any drawn road."
+   "note": "The lidar relief (Oregon DOGAMI) shows the shore road, the gravel parking area north of it and the peninsula's lake banks, but inside the peninsula only mottled ground and terrace edges, with no lane that leads to 010 to 026; the photo shows only faint dirt tracks between the trees. Nothing could be traced, and 15 of 25 sites stay more than 40 m from a drawn road."
   },
   "272096": {
    "call": "usable",

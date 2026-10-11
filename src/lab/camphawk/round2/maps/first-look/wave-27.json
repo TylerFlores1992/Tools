@@ -109,12 +109,12 @@
    "note": "The pin is on the lookout's site at the end of the drawn spur, in a gravel clearing with buildings beside it."
   },
   "234175": {
-   "call": "hold",
-   "note": "The pin is right: it sits on a pale gray roof about 7 m long in a small clearing, where OpenStreetMap also maps the guard station; the Forest Service's point, 110 m east, is on a creek channel in the forest. But the drawn Forest Service road runs 15 to 25 m east of the paved road the photo and lidar show, so the map stays held for that road. Not moved."
+   "call": "unsure",
+   "note": "The pin is in dense forest; the photo shows only a small dirt patch about 15 m west of it and no cabin, and the lidar relief (Oregon DOGAMI) shows no levelled pad or building there. The relief does show the paved road plainly about 50 m west of the pin, and the drawn Forest Service road beside the pin runs 20 to 30 m east of that band, so the road is off too; not traced, since no cabin can be placed."
   },
   "234179": {
    "call": "unsure",
-   "note": "Neither the Forest Service's point 100 m northeast, under conifers just off the drawn road, nor the pin in dense forest by the end of the drawn lane shows a building in the photo. Not moved."
+   "note": "The lidar relief (Oregon DOGAMI) shows the drawn lane as a plain band ending about 12 m south-east of the pin, and a smooth patch at the lane's end where the pin sits, but no square-cornered pad or building; the photo shows only canopy there. The station can't be confirmed at the pin, so the call stays unsure."
   },
   "234185": {
    "call": "good",

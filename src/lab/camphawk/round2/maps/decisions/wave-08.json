@@ -21,8 +21,8 @@
    "id": "262756",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look hold."
   },
   {
    "id": "10039993",
@@ -252,15 +252,15 @@
    "id": "232838",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "232856",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Final check overrode the first look (usable): held, re-read against its own notes: a drawn road doesn't follow the visible one, sites are misplaced, or about a third or more of the sites have no drawn road."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (oregon-01): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232857",
@@ -574,8 +574,8 @@
    "id": "251887",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (oregon-01): first look unsure."
   },
   {
    "id": "251894",
