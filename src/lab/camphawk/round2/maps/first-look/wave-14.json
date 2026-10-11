@@ -166,7 +166,7 @@
   },
   "232595": {
    "call": "unsure",
-   "note": "The survey is sparse (0.95 ground points per m²) and the intensity is mottled: the main road shows where it's drawn, but the lane down the west loop past 13 to 22 shows only as a soft grey band that may sit 5 to 10 m east of the drawn line, and the lanes round 52 to 59 and 70 to 77 can't be checked to 3 m. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey shows the main road where it's drawn, but the lane down the west loop past 13 to 22 and the lanes round 52 to 59 and 70 to 77 can't be checked to 3 m. No agency map was found to settle which soft bands are lanes. Nothing traced."
   },
   "232630": {
    "call": "good",
@@ -254,7 +254,7 @@
   },
   "232743": {
    "call": "unsure",
-   "note": "The lidar intensity is mottled under the trees: the main road and the north loop show as faint bands where they're drawn, but the lanes to the rows 001 to 007, 027 to 041 and 049 to 061 show only in short pieces and can't be placed to 3 m. Nothing traced."
+   "note": "OpenStreetMap's loops are the three the Corps' map shows: Loop 1 past 001 to 019, Loop 2 with 020 to 026 on its north side, 027 to 041B on its south and 034 and 036 inside, and Loop 3 past 042 to 061. The intensity shows Loop 2's west and east ends as light bands about 5 m inside the drawn loop, but its long sides by 020 to 026 and 031 to 041 show only in pieces, and the spur to 057 to 061 shows on neither layer, so they can't be placed to 3 m. Nothing traced."
   },
   "232752": {
    "call": "hold",

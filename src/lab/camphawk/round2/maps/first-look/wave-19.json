@@ -30,7 +30,7 @@
   },
   "233714": {
    "call": "unsure",
-   "note": "The lidar intensity is noisy in this sparse 2017 survey and shows only the main road; the relief shows the main road, the 026 to 049 loop and the 051 to 075 loop as crowned lanes where they're drawn, and the photo agrees by 069 to 071. The empty loops to the north (drawn with no sites) run 3 to 10 m off faint relief lanes that can't be placed to 3 m, and the west row (061 to 072) shows no lane of its own. Nothing traced."
+   "note": "The relief shows the Oak loop (051 to 075), the Orchid loop (026 to 050) with its cross lane past 041, 047 and 049, and the empty Hemlock loop north of Orchid as crowned lanes, and the Forest Service map confirms all three; the long straight band west of Oak is the trail to the Nordhouse Dunes, not a lane, so 061 to 073 have none of their own and sit off Oak's west side. But OpenStreetMap's Orchid loop runs 5 to 10 m outside the crowned lane on its west side (by 036 to 041), and its Hemlock loop 6 to 10 m outside on its west and south sides, so the map needs a full replace onto the relief before it can pass; not done in this pilot's time. Nothing traced."
   },
   "234526": {
    "call": "hold",
@@ -210,7 +210,7 @@
   },
   "233535": {
    "call": "unsure",
-   "note": "The lidar ground layer covers only the strip along the lake south of the sites (the survey reaches 17% of the frame), so none of OpenStreetMap's lanes or the rows between them (24 to 52, 32 to 43, 65 to 79) can be checked under the canopy. Nothing traced."
+   "note": "OpenStreetMap's lanes connect the way the Corps' brochure shows them: the west loop with 31 to 44 either side of its south lane, the middle lanes past 45 to 60, and the east loop past 61 to 75. The lidar covers only the strip along the lake and the photo shows the lanes only where cars or gaps break the canopy, so none of them can be checked to 3 m. Nothing traced."
   },
   "233542": {
    "call": "usable",
@@ -341,8 +341,8 @@
    "note": "The loops on the point and the lane past 01 to 07 follow the visible pavement and 01 to 66 sit beside them. The lone site 1 km north-east is the Ruark Bluff group camp, whose listed point sits on a mown clearing by the lane on the next point, so it wasn't moved; the loop drawn round it ran 12 to 15 m west of the lane on its west side and was retraced onto it."
   },
   "233786": {
-   "call": "unsure",
-   "note": "Replaced the Census roads: redrew the road north of the west area and its turnaround loop (by 43 to 46) and the main road through the east area onto the asphalt bands in the lidar intensity, and kept the west loop (35 to 42) and the 1 to 20 loop, which follow their lanes within a few meters. The east area's north loop (21 to 31) is a dirt lane that shows in neither the intensity nor the relief, so it stays as the Census draws it and can't be checked."
+   "call": "usable",
+   "note": "Kept the canopy pass's roads and took the kink out of the east area's north loop by 26, where it sat about 6 m off the lane. The loop past 21 to 31 now follows a continuous band in the lidar intensity on its west half and a crowned lane in the relief on its east leg down to the main road, with the levelled pads of 21 to 23 and 29 to 31 along it, and every site is within 40 m of a drawn road."
   },
   "255134": {
    "call": "usable",

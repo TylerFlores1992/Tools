@@ -6,7 +6,7 @@
  "looks": {
   "10156125": {
    "call": "unsure",
-   "note": "The lidar layers can't confirm the lanes: the survey is sparse (2019, 1.4 ground points per m²) and the intensity is mottled everywhere, showing only the creek and the main road in pieces; the relief adds nothing plainer. The loop past 12 to 22 and the road along sites 1 to 11 stay unchecked. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey shows only the creek and the main road in pieces, so the loop past 12 to 22 and the road along sites 1 to 11 can't be checked. No agency campground map was found (the Forest Service's Mulky page has none and the listing's photos aren't maps). Nothing traced."
   },
   "10218892": {
    "call": "hold",
@@ -18,7 +18,7 @@
   },
   "234228": {
    "call": "unsure",
-   "note": "The lidar intensity shows no lanes under the canopy (the gravel reads like the litter around it), and the relief is busy with old channels and terraces. The relief does show the south loop's lane past 058 to 084 with its pads, and the drawn loop runs within a few meters of it, but loop A (001 to 016) and the middle loops can't be checked to 3 m on either layer. Nothing traced."
+   "note": "Unchanged from the lidar pass: the relief shows the south loop's lane past 058 to 084 with its pads where it's drawn, but loop A (001 to 016) and the middle loops read the same as the litter in the intensity and the relief is busy with old channels, so they can't be checked to 3 m. No agency campground map was found (the Forest Service's old brochure link is gone). Nothing traced."
   },
   "232423": {
    "call": "hold",
@@ -26,7 +26,7 @@
   },
   "234362": {
    "call": "unsure",
-   "note": "The lidar intensity (2016, 3.4 ground points per m²) shows the park road along the north and the road on the east point as bands, but under the pines the loops past 015 to 040 and 041 to 052 read the same as the litter around them, so the drawn loops can't be checked; 053 to 056 and C Group in the south-east have no lane on either layer. Nothing traced."
+   "note": "Unchanged from the lidar pass: under the pines the Dogwood and Loblolly loops past 015 to 040 and 041 to 052 read the same as the litter in the intensity and can't be checked, and 053 to 056 and C Group by the old sawmill have no lane on the layers or the photo, which shows a grass field there. Nothing traced."
   },
   "251723": {
    "call": "good",
@@ -46,7 +46,7 @@
   },
   "233284": {
    "call": "unsure",
-   "note": "Neither lidar layer shows the campground's lanes plainly (2017 survey, 6.7 ground points per m², but the gravel loop reads the same as the grass and litter around it in intensity, and the relief shows only faint traces). The entrance road shows as a band, but the loop and its middle lane past 17 to 25 can't be checked to a few meters. Nothing traced."
+   "note": "The Park Service's lanes are drawn the way the park's map shows them: the outer loop with 1 to 11 on its south and east sides and 12 to 19 on its north, and the narrow inner loop past 20 to 27. But the gravel loop reads the same as the litter around it in the lidar intensity and shows only faintly in the relief, and the photo is full canopy, so neither loop can be checked to 3 m. Nothing traced."
   },
   "232505": {
    "call": "good",
@@ -154,7 +154,7 @@
   },
   "232634": {
    "call": "unsure",
-   "note": "The south area's lane (35 to 48, with its turnaround) now shows plainly in the lidar intensity with the pull-ins off it, and the drawn lane follows it within a few meters. The north area (01 to 34) is the problem: the relief shows every pad but its gravel lanes only in pieces, and the drawn lanes past 22 to 28 and 33 to 34 can't be checked to 3 m on either layer or the photo. Nothing traced."
+   "note": "Unchanged from the lidar pass: the south area's lane (35 to 48) follows the intensity band, but in the north area (01 to 34) the relief shows the pads and the gravel lanes only in pieces, so the drawn lanes past 22 to 28 and 33 to 34 can't be checked to 3 m. No agency map was found to join the pieces (the Corps' Little Rock District site refuses the connection). Nothing traced."
   },
   "232651": {
    "call": "hold",
@@ -286,7 +286,7 @@
   },
   "233545": {
    "call": "unsure",
-   "note": "The lidar layers (2017 survey, about 2.3 ground points per m², leaf-on) are mottled under the trees: only the park road on the east and a few pieces of lane by 30 to 38 and 54 to 62 show as bands, and the drawn lanes on the south point (01 to 28, 63 to 66) can't be checked against anything. Nothing traced."
+   "note": "Unchanged from the lidar pass: only the park road on the east and a few pieces of lane by 30 to 38 and 54 to 62 show under the trees, and the drawn lanes on the south point (01 to 28, 63 to 66) can't be checked. No agency map was found to say which pieces are lanes. Nothing traced."
   },
   "233572": {
    "call": "usable",

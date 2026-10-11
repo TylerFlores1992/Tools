@@ -14,7 +14,7 @@
   },
   "10040047": {
    "call": "unsure",
-   "note": "The lidar intensity is mottled pine litter with no lanes, and the relief shows the drawn loops only as faint lines among many drainage cuts and old tracks, so they can't be checked to a few meters. Every site is within 40 m of a drawn road, but the lanes inside the south loop (by 10, 11, 2D) and along the north spur can't be placed. Nothing traced."
+   "note": "The Forest Service's roads are drawn the way the forest's map shows them: the loop past 1 to 14 by the entrance, the middle and north loops past 26 to 56, and the spur to the turnaround for 20 to 25, which follows a smooth strip in the relief within a few meters. The large oval in the relief around 20 to 25 is a pair of drainage channels, not a lane. But the turnaround itself, the lanes inside the middle loop past 50 to 56 and the inner lanes of the north loop show only as faint lines among the drainage cuts, so they can't be placed to 3 m. Every site is within 40 m of a drawn road. Nothing traced."
   },
   "119290": {
    "call": "unsure",
@@ -46,7 +46,7 @@
   },
   "232284": {
    "call": "unsure",
-   "note": "The lidar intensity shows the paved loops plainly and the drawn roads follow them. Around 001 to 005 and 011 in the northeast it shows only a mottle of faint tracks with no lane that leads to the sites, so they stay 50 to 90 m from any drawn road (5 of 30), and nothing there can be placed. Nothing traced."
+   "note": "Unchanged from the lidar pass: the paved loops follow the intensity, but around 001 to 005 and 011 in the northeast the layers show only faint tracks with no lane to the sites, so 5 of 30 stay 50 to 90 m from any drawn road. The only campground map found is the concessionaire's, so it wasn't used. Nothing traced."
   },
   "232801": {
    "call": "hold",
@@ -110,7 +110,7 @@
   },
   "10083831": {
    "call": "unsure",
-   "note": "Neither lidar layer shows the dirt lanes: intensity is uniform pale granite sand and the relief shows only the entry road from 001 to 028 faintly, where it is drawn. The lanes to 014 to 020, 040 to 044 and the north spur to 049 to 055 can't be checked. Nothing traced."
+   "note": "The Park Service's own lanes are drawn, and they connect the way the park's map shows: the 53 to 55 loop, the 45A/45B loop past 46 and 47, the 41 to 43 spur and the 17 to 20 loop. But the lanes are dirt on granite sand that neither lidar layer shows (the relief shows only the creek channels), and the photo shows them only in short pieces by 040 to 043 and the entry road, so they still can't be checked to 3 m. Nothing traced."
   },
   "10083840": {
    "call": "usable",
@@ -166,7 +166,7 @@
   },
   "232489": {
    "call": "unsure",
-   "note": "The lidar intensity shows the outer ring and the cross lanes as dark bands under the pines, and in the north half they sit where they're drawn, with the ring sites (005 to 038) along its outside. In the south half (around 012 to 024) most lanes show as two parallel bands about 8 m apart and the drawn roads run on or between them, so they can't be checked to 3 m; the T-01 to T-12 tent sites show no lane. Nothing traced."
+   "note": "The outer ring and the cross lanes follow the lidar intensity's bands in the north half, and the tent area's gravel lane shows on the photo where it's drawn. In the south half (011 to 024) the ring still shows as two parallel bands about 8 m apart with the drawn road between them, and nothing says which band is the lane, so it can't be checked to 3 m. Nothing traced."
   },
   "232492": {
    "call": "good",

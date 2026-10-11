@@ -50,7 +50,7 @@
   },
   "231935": {
    "call": "unsure",
-   "note": "The 2023 survey is sparse here (2 ground points per square meter): the lidar relief shows the highway and the creek channel, and the campground road only as a faint smooth strip where it is drawn; no spurs or pads show to the clusters 002 to 005, 006 to 010, 011 to 017 and 018 to 027. Every site is within 40 m of the drawn road, but the lanes into the clusters can't be placed. Nothing traced."
+   "note": "The drawn road is the one-way campground road along the American Fork River that the Forest Service's sketch shows, with the clusters 002 to 005, 006 to 010, 011 to 017 and 018 to 027 off it. The sparse survey shows the road only as a faint smooth strip where it's drawn and none of the spurs or pads into the clusters, so they can't be placed. Every site is within 40 m of the drawn road. Nothing traced."
   },
   "231938": {
    "call": "unsure",
@@ -190,7 +190,7 @@
   },
   "233694": {
    "call": "unsure",
-   "note": "The survey is sparse under the dense canopy (0.8 ground points per square meter): the lidar intensity shows the highway and the entry road but none of the campground loops, so the drawn loops and sites 003 to 063 still can't be checked. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey shows the highway and the entry road but none of the campground loops, so the drawn loops and sites 003 to 063 still can't be checked. The only campground map found is Linn County's, so it wasn't used. Nothing traced."
   },
   "233744": {
    "call": "good",
@@ -206,7 +206,7 @@
   },
   "233885": {
    "call": "unsure",
-   "note": "The lidar survey is sparse here (0.85 ground points per square meter): the intensity and relief are mostly gaps and speckle under the coastal forest, so no lane shows to check the A and B loops against (A09, A19, A21, A23 and B01 to B10 still sit away from the drawn roads). Loops C and D are drawn where the layers show nothing either. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey shows no lane under the coastal forest, so the A and B loops (A09, A19, A21, A23 and B01 to B10 still sit away from the drawn roads) and loops C and D can't be checked. Nothing traced."
   },
   "233900": {
    "call": "usable",
@@ -226,7 +226,7 @@
   },
   "234086": {
    "call": "unsure",
-   "note": "The lidar relief and intensity confirm the west and south sides of the drawn loop (by 027 to 029 and 021 to 025). The north and east sides show only faintly, and a smooth band runs past 005 and 006 about 40 m north of the drawn line that could be a lane or the creek terrace, so whether 001 to 006 and 013 to 016 are on the loop can't be told. Nothing traced."
+   "note": "The loop's west and south-west sides (by 026 to 029) follow the lane in both lidar layers, and the Forest Service map puts 001 to 006 on the loop's creek side, so the smooth band 40 m north past 005 and 006 is the creek channel, not a lane. But the relief shows the east side (by 014 and 015) about 8 to 10 m east of the drawn line, the corners where it turns can't be read to 3 m, and the north side (by 007 to 010) shows on neither layer, so the loop still can't be checked. Nothing traced."
   },
   "234114": {
    "call": "hold",
@@ -366,7 +366,7 @@
   },
   "246852": {
    "call": "unsure",
-   "note": "The survey is sparse under the dense canopy (1.5 ground points per square meter) and the lidar intensity shows only the highway, no lanes, so the drawn loops and the sites 15 to 30 m off them (10 to 12, 14, 15, 17) can't be checked. Nothing traced."
+   "note": "Unchanged from the lidar pass: the sparse survey under the dense canopy shows only the highway, so the drawn loops and the sites 15 to 30 m off them (10 to 12, 14, 15, 17) can't be checked. No campground map was found on the park's pages. Nothing traced."
   },
   "251958": {
    "call": "good",
