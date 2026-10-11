@@ -22,7 +22,7 @@
   },
   "232423": {
    "call": "hold",
-   "note": "The check can't draw it (27% of sites share a spot), and the photo agrees: many sites (02 to 26, 53 to 60) sit in the trees between and outside the drawn loops, and the south loop's 38 to 41 have no lane drawn. Two clusters 800 m apart under heavy canopy."
+   "note": "Unchanged. Every point in the listing is rounded to whole arc-seconds (a 30 m grid, visible as the sites' straight rows), so pairs like 12 and 13, 20 and 21 and 45 and 47 share a spot and none sits on a pad; under the heavy canopy the pads don't show, so nothing could be moved."
   },
   "234362": {
    "call": "unsure",
@@ -82,7 +82,7 @@
   },
   "232513": {
    "call": "hold",
-   "note": "Split listing, now five areas on separate fingers of the lake, and they follow the real clusters (63 to 73 share an area with 74 to 84 across a cove). The long point past 37 to 62 has only its base drawn, and 63 to 73 and 85 to 96 have no road, though lanes show in the open."
+   "note": "Traced the lane from the road junction east onto the point past 63 to 66, as far as it shows before the trees. The 63 to 84 area spans a cove (63 to 73 on the east point, 74 to 84 on the west shore); a gap of 120 m would split it, but wave-15 already carries a split call for this listing and a second call for one id fails the wave test, so it was left for whoever owns that call. 67 to 73 (under canopy), 32 to 34, 87 and 89 still have no drawn road, a third of the 63 to 84 area."
   },
   "273848": {
    "call": "hold",
@@ -277,8 +277,8 @@
    "note": "The lidar intensity shows the road down the islands and the loops on the north and east points as bands, and OpenStreetMap's roads follow them. Traced the lanes it shows plainly where the photo agrees through gaps: the west finger's lane past 26 to 32, the lane past 22 and 23, the lot lane past 05 to 08 and the lane east to 03 and 04. Six sites (14 to 18 on the west finger, 27) stay more than 40 m from a drawn road, where no lane shows."
   },
   "233527": {
-   "call": "hold",
-   "note": "Split listing, now three areas either side of the highway bridge (loop F on the west point, loop D on the middle shore, loop C on the east shore), and they follow the real places. Loop D has no lane drawn beside it, and the C sites sit 10 to 30 m off the drawn shore road."
+   "call": "usable",
+   "note": "The split needs no new call: loops F, D and C are the three areas either side of the bridge. Traced loop C's gravel shore lane from the photo, from the park road past C01 to C10 round the oval, and on east past C11 to C26 to the lots by C27 to C31; every C site is now within 40 m of a road. In loop D, D07 and D08 sit just over 40 m from the drawn lane."
   },
   "233534": {
    "call": "usable",
@@ -294,7 +294,7 @@
   },
   "233581": {
    "call": "hold",
-   "note": "Split listing, now two areas 600 m apart across the marina (loop A in the north, 01 to 51 on the south point), and they follow the real places. In both, most visible paved lanes aren't drawn: loop A's inner lanes past A04 to A17 and the shore lane to A27 to A35, and on the south point every lane but two small loops."
+   "note": "Traced the visible lanes the map lacked: in loop A the road north-west to A28 to A35 and its branches, the lane west to A27, the spur north past A12 and A13, the lane past A14 to A15, the lane east past A16 and A17 and the lane to the boat-ramp lot; on the south point the lanes west past 28 to 31, down the west side to 23 to 25, and the hook to 21 and 22. Now all but 7 of 86 sites are within 40 m of a road, but the drawn park road through loop A (past A14 to A22) runs 5 to 10 m west of the pavement, so it stays held for that road."
   },
   "233586": {
    "call": "usable",
@@ -310,7 +310,7 @@
   },
   "233616": {
    "call": "hold",
-   "note": "Split listing: four places (01 to 47 by the marina, 48 to 54 in the west woods 400 m off, 55 to 93 in the east loops, and the 1D-21 shore row). The east loops' drawn lines cross the trees, 48 to 54 have no road, and the 1D-21 row along the beach has none drawn beside it."
+   "note": "Unchanged, and no split call: a split wouldn't fix what holds it. The 21 boat-in sites 1D-21D1 to D21 (loop DISL) are listed on an evenly spaced straight line along the beach, not on any pads (the real boat-in sites can't be found on the photo), 048 to 054 sit in unbroken forest with no lane, and the east loops' drawn lines cross the trees beside the lanes."
   },
   "233617": {
    "call": "usable",

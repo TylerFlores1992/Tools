@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-10165500",
+ "traced": "2026-10-11",
+ "by": "Claude (fix fix-18)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Standard",
+   "at": [
+    -106.759831,
+    38.728691
+   ]
+  }
+ ],
+ "note": "Moved the point 650 m east along the north-bank lane from the highway junction to the entrance of the campground OpenStreetMap names North Bank Campground, whose lane, loops and pull-ins show on the photo."
+}

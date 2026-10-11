@@ -266,7 +266,7 @@
   },
   "10050235": {
    "call": "hold",
-   "note": "Split listing, now shown as 2 areas, each frame holding one cluster: Sites 3 to 17 in the woods north of the road, and Sites 18 to 22 on a lot by the water 800 m south-east. The first area's lanes show only in pieces under the trees, and the second has no drawn road at all."
+   "note": "Unchanged; the two areas (Sites 3 to 17 in the woods north of the road, Sites 18 to 22 on a lot by the water 800 m south-east) follow the real places, so no split call. Zoomed, the one drawn road runs 10 to 25 m north of the visible gravel road past 16 and 17, Sites 3 to 10 sit in unbroken forest with no lane, and the south-east lot's lane (which shows plainly) has no drawn road; with 3 to 10 roadless whatever is traced, the roads were left as they are."
   },
   "10050257": {
    "call": "usable",
@@ -277,8 +277,8 @@
    "note": "The lidar intensity shows both dirt lanes as plain gray bands, and the photo agrees in the gaps. Traced the west lane past 1 to 5, continuing OpenStreetMap's road in (which stopped at the edge of the campground), and the east lane past 6 to 12. Only 8 (41 m) is past 40 m; the short tracks into the clearings by 7 to 9 and 10 to 12 are not drawn."
   },
   "10052192": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (1, 55 km away, left off). No lane is drawn to the sites along the river bank; the drawn lines cross the trees."
+   "call": "usable",
+   "note": "The stray 1 is now left off, so the map is the landing itself, sites 2 to 11 along the river. The source drew one line straight across the lawn and the lot, so it is replaced: traced from the photo the paved lane from the junction past the building lot, down the west side of the lawn past 2 to 5 to the boat ramp, and the east side by the parking lot. 8 of 10 sites are within 40 m of a drawn road; 8 and 11 are on the shore in the trees, 50 and 110 m off, with no lane showing."
   },
   "10052246": {
    "call": "good",
@@ -310,7 +310,7 @@
   },
   "10187111": {
    "call": "hold",
-   "note": "All 11 sites share one point in the trees beside the road, so the check can't draw it."
+   "note": "Unchanged. All 11 sites share one point in the trees beside the shore road, under full canopy with no pads showing, so none could be placed."
   },
   "10234870": {
    "call": "usable",
@@ -322,7 +322,7 @@
   },
   "10236797": {
    "call": "hold",
-   "note": "All 8 sites share one point in the trees by a parking area, so the check can't draw it."
+   "note": "Unchanged. All 8 sites share one point in the trees beside a paved lane, a building and a gravel lot; no row of pads shows within the frame, so none could be placed."
   },
   "10238165": {
    "call": "usable",

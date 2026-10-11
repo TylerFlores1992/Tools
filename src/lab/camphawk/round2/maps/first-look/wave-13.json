@@ -17,8 +17,8 @@
    "note": "The road round the gravel lot follows what shows, and Sites 01 to 10 line the west edge of the lot and 11 to 17 the pull-ins on the east side."
   },
   "10191054": {
-   "call": "hold",
-   "note": "The check doesn't draw it: both sites are on one spot under full canopy by the road, and nothing shows."
+   "call": "unsure",
+   "note": "Unchanged. Both sites (Standard 1 and 2) share one point under full canopy just off the gravel road, with nothing showing beneath the trees, so neither could be placed."
   },
   "255180": {
    "call": "usable",
@@ -166,7 +166,7 @@
   },
   "10406480": {
    "call": "hold",
-   "note": "The check doesn't draw it: each pole holds several sites on one spot (Pole 1 to 20, 57 sites in all). The poles line the two rows of the snowy lot, but one drawn line runs between the rows rather than on the lot's lanes."
+   "note": "Unchanged. The 20 poles line the two rows of the snowy RV lot correctly, but each pole lists three sites on its one point (Site 2, 4 and 6 at Pole 1, and so on), and the lot under snow shows no marked stalls, so the three sites at a pole can't be placed apart and nothing was moved. The one drawn line runs down the lot's middle aisle."
   },
   "231921": {
    "call": "usable",
@@ -210,7 +210,7 @@
   },
   "232398": {
    "call": "hold",
-   "note": "The check doesn't draw it: all four sites are on one spot on a forested slope, 80 m from the only road, with nothing visible."
+   "note": "Unchanged. All four sites share one point on a forested slope 80 m from the only road, with no clearing, corral or pad at it, so there is nothing to move them onto."
   },
   "232803": {
    "call": "hold",
@@ -218,7 +218,7 @@
   },
   "232804": {
    "call": "hold",
-   "note": "The check doesn't draw it: 8 of 11 sites share points (FS1-301 to 409 shown). The small drawn loop sits on the visible gravel, and the points line its east side."
+   "note": "Unchanged. FS1-401 to 409 sit in a 30 m line along the small loop's east side, in pairs on one point (402 and 403, 404 and 405, 406 and 407, 408 and 409), on open gravel flats with no separate pads showing, so no pair member could be told from the other and nothing was moved."
   },
   "232811": {
    "call": "hold",
@@ -266,7 +266,7 @@
   },
   "232909": {
    "call": "hold",
-   "note": "The check doesn't draw it: Sites A, C, D, E and F share one spot on the drawn road and G sits beside them; B is 60 m east in the trees. The points don't place the sites."
+   "note": "Unchanged. Group sites A, C, D, E and F sit within a few metres of one point on the drawn gravel road and G beside them; B is 60 m east in the trees. The open ground around shows no separate group camps to tell apart, so nothing was moved."
   },
   "233218": {
    "call": "usable",

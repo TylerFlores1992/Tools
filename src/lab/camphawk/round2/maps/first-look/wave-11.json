@@ -118,7 +118,7 @@
   },
   "233366": {
    "call": "hold",
-   "note": "The check can't draw it: both group sites share one point in open scrub, with no road anywhere in the frame."
+   "note": "Unchanged. Both group sites share one point in open scrub; sandy tracks wind through it but no lot, pad or road plainly marks the group camp, so neither could be moved."
   },
   "233385": {
    "call": "hold",
@@ -138,7 +138,7 @@
   },
   "233928": {
    "call": "hold",
-   "note": "The check can't draw it: the three group sites share one point in open forest, with no road anywhere in the frame."
+   "note": "Unchanged. The three group sites share one point in open ponderosa forest with no clearing, lane or pad in the frame, so there is nothing to move them onto."
   },
   "233931": {
    "call": "usable",
@@ -226,7 +226,7 @@
   },
   "234598": {
    "call": "hold",
-   "note": "The check can't draw it, and the photo agrees: 004 to 008 and Host sit in full canopy south of the road's end with 005 and Host stacked, and 010 sits 300 m away among houses north-east."
+   "note": "Unchanged. 004 to 008 and Host sit in full canopy south of the road's end (001, 003 and Host on one point, 002 and 007 on another), and 010 sits 300 m north-east among houses; nothing shows under the trees to place them on, and 010 has no campground near it to move to."
   },
   "236938": {
    "call": "hold",

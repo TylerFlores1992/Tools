@@ -46,7 +46,7 @@
   },
   "233154": {
    "call": "hold",
-   "note": "Split listing: the family sites and the group area are two places 1.1 km apart, now two areas. In Loop C only the highway was drawn; traced its loops from the photo (main loop, ring round C001, spurs to C008, C010 and C011, the lane past C007), and C003 to C006 still sit under the firs. The group area is the problem: its pin sits on a burned slope with no camp, and the drawn road there cuts straight across the slope instead of following the visible curving road."
+   "note": "Unchanged; the two areas (Loop C and the group area 1.1 km north-east) are the right split. Loop C's traced lanes (rollout west-d) still follow the photo. The group area holds it: its pin sits on a burned, replanted slope with no camp, lot or pad near it, so there is nothing to move it onto, and the drawn road there cuts straight across the slope above the visible curving road."
   },
   "10040022": {
    "call": "hold",
@@ -114,7 +114,7 @@
   },
   "232068": {
    "call": "hold",
-   "note": "The check doesn't draw it: both sites are on one spot, beside the building at the end of the drawn road. It looks like a group lodge, not two sites."
+   "note": "Unchanged. Both sites share one point at a large lodge building with a pool beside the road's end; it reads as a group lodge, and nothing on the photo shows two separate sites to place them on."
   },
   "232070": {
    "call": "usable",
@@ -277,8 +277,8 @@
    "note": "Unchanged. The three paved loops (west, north and south) follow the visible pavement, and no other lane shows that isn't drawn. Group Sites 001 to 003 still sit 60 to 120 m outside them on open hillside; each loop likely is one group site, and each point is nearest a different loop (003 the west, 002 the north, 001 the south), but the photo carries no number, so nothing was moved on proximity alone."
   },
   "234530": {
-   "call": "unsure",
-   "note": "The loop follows the visible dirt lane through the chaparral, but Sites 002, 003, 005, 006 and 008 sit 30 to 60 m outside it, and 001 and 004 inside it, among a web of faint tracks. The photo doesn't show which pads they are."
+   "call": "hold",
+   "note": "Unchanged. Zoomed on a 5 m grid, the drawn loop follows the visible dirt lane through the chaparral, and 6 of 8 sites are within 40 m of it. But 002, 003, 006 and 008 sit in the scrub 30 to 60 m outside it, off the web of faint tracks and with no corral or pad at their points, so they look misplaced and the photo doesn't say which pads are theirs; nothing was traced or moved."
   },
   "234546": {
    "call": "usable",
@@ -346,7 +346,7 @@
   },
   "272097": {
    "call": "hold",
-   "note": "Split listing, shown as 2 areas 3 km apart along the highway. In area 1, Sites 001 to 013 sit in the pines with no road drawn into them (only a lane past Brushfire 2 at the top), and the Equestrian Group sits alone at a lot in area 2."
+   "note": "Unchanged, and no split call: the family loop (001 to 013, Brundrett 2) and the Equestrian Group lot 1.8 km south along the highway are two real places. Zoomed on a 5 m grid, the ground among 001 to 013 is open pine forest where the long tree shadows make diagonal stripes of light ground; a few pull-ins with trailers show (by 002, 007 and 009), but the lanes joining them can't be told from the gaps between shadows, so nothing was traced and all 13 sites still have no drawn road."
   },
   "10124953": {
    "call": "good",

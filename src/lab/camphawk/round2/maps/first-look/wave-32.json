@@ -159,9 +159,9 @@
    "as": "firstcome"
   },
   "10165200": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in an open meadow between two roads with no pads or loops near it. The nearest mapped restroom is about 600 m away.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in an open meadow between the highway and a side road with no pads or loops near it; the only campground-like spot, a small loop with a restroom 600 m south, may be another site and isn't plainly Caribou, so the pin wasn't moved."
   },
   "10165205": {
    "call": "usable",
@@ -204,9 +204,9 @@
    "as": "firstcome"
   },
   "10165430": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in dense forest south of the river. The nearest thing like a campground is a small road loop about 80 m northwest, which may be a different campground.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in dense forest beside the river road; two small road loops on the river bench lie 80 m and 400 m north-west, and with an Upper O'Brien campground on the same stretch the photo can't say which loop is Lower O'Brien, so the pin wasn't moved."
   },
   "10165470": {
    "call": "good",
@@ -294,9 +294,9 @@
    "note": "Moved the pin about 245 m west from the meadow east of Rock Creek Road into the wide gravel camping loop west of the road, beside its toilet, with trailers parked around its edge (RIDB's own Diamondfield Jack entry also sits by it). There's no outline, so the map shows the pin there."
   },
   "10191075": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The nearest outline holds loops with pads on the north shore of the lake, about 85 m east of the point, but a second outlined campground sits on the lake's southwest shore. For a listing named West Side, the map may be showing the wrong one.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: the map takes the outline OpenStreetMap names Lake Cleveland Campground on the north shore, 85 m east of the point, which holds two loops (west and east) with pads. A second, unnamed outline with a lane and restroom sits at the lake's south-west end. For a listing named West Side, the photo can't say whether that is the north campground's west loop or the south-west camp, so nothing was moved."
   },
   "10191090": {
    "as": "firstcome",
@@ -349,19 +349,19 @@
    "as": "firstcome"
   },
   "10215904": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in scrub between two dirt roads. Nothing near it shows pads, a loop or campers.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in mesquite scrub between the highway and a dirt road along the river; no pads, loop or campers show anywhere near it in the frame, so there is nothing to move it onto."
   },
   "10215919": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "There's no outline, and the pin is in scrub between two dirt roads above the river. One small structure about 70 m south isn't enough to show a campground.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: no outline. The pin is in scrub on the dirt loop above the river; one small structure and a cleared lot 250 m west by the road aren't enough to show a campground, and no pads or campers show near the pin, so it wasn't moved."
   },
   "10221637": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The point is in a creekside strip, and the nearest outline, about 45 m south, is the loop OpenStreetMap names South Fork Campground, which is another listing. The map would show a different campground.",
-   "as": "firstcome"
+   "note": "Rebuilt with the outline-name check: the map no longer takes South Fork's outline and shows the pin 'About here' instead. But the pin is in the creekside trees just north of South Fork Campground, and nothing across the creek or nearby plainly shows a separate Davis Flat camp (the open flat to the east has only scattered oaks and tracks), so the pin would still send a camper to South Fork's loops; nothing was moved."
   },
   "10221647": {
    "call": "usable",

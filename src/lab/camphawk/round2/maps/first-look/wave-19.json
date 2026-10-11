@@ -66,7 +66,7 @@
   },
   "256367": {
    "call": "hold",
-   "note": "Not drawn, and rightly: backcountry sites along 42 km of the Lakeshore Trail, most sharing a spot with their group site. Waits for the dispersed-area design."
+   "note": "Unchanged. Backcountry camps along 42 km of the Lakeshore Trail, each camp's 3 to 6 sites listed on one point (Chapel Beach 1 to 6, Beaver Creek 1 to 6 and the rest); individual tent pads in the forest don't show on the photo, so nothing could be moved, and it waits for the dispersed-area design."
   },
   "232516": {
    "call": "usable",
@@ -129,8 +129,8 @@
    "note": "Two areas: zoomed, the A, B, H, M, Q and R loops follow the visible lanes and the sites sit on their pull-outs; the F loop sits 1.6 km east on its own point."
   },
   "233441": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (A029, 9 km away, left off). Every lane of the A, B and C loops shows plainly on the open point but none is drawn: a trace candidate."
+   "call": "usable",
+   "note": "Unchanged. The stray A029 is now left off, so the map is the open point, and the Census roads now drawn follow the visible lanes of loops A, B and C to within a few metres (zoomed on loop B), with all 145 sites within 40 m of a drawn road. A few short pull-in spurs (past B024, B030, B033) aren't drawn."
   },
   "233449": {
    "call": "good",
@@ -185,8 +185,8 @@
    "note": "The loops follow the visible lanes and 02 to 63 sit beside them. Traced the lane from the east loop's end into the clearing of the south cluster (64 to 73); 28, 30 and 32 below the west loop sit on pads with no lane of their own showing, a short walk from the drawn road."
   },
   "233505": {
-   "call": "hold",
-   "note": "Rebuilt with the stray point rule (B19, 31 km away, left off). Still two areas, with the lanes in the trees not drawn."
+   "call": "usable",
+   "note": "The stray B19 is now left off, so the two areas are loops A and B on the north point and loop C 2 km south, and they follow the real places. Loops A and B follow the visible shore lanes; traced the short lane from loop C out to the lots by C17 and C18, so all 44 placed sites are within 40 m of a drawn road. The west loop past B21 to B23 and the north side of loop C run under trees and are kept from OpenStreetMap, unconfirmed."
   },
   "233510": {
    "call": "hold",
@@ -202,7 +202,7 @@
   },
   "233518": {
    "call": "unsure",
-   "note": "Rebuilt with the stray point rule (the group campground's point, 2.2 km away, left off). Three areas under full canopy."
+   "note": "Split call added (gap 100 m): the middle loops 096 to 177 are now one area instead of two overlapping frames, beside the west end (001 to 095) and two areas of hike-in sites (HI05 to HI20) in the forest to the east. The middle and west areas are under full canopy: zoomed and over the lidar relief, only the entrance road shows, so whether the drawn loops follow the lanes past 123 to 177 and 130 to 166 can't be told."
   },
   "233522": {
    "call": "good",
@@ -301,8 +301,8 @@
    "note": "The lidar intensity shows the campground loop and its cross lane from 39 as plain bands under the canopy. Replaced the roads to put them on their bands (the loop's east side sat about 5 m west of it); every site is within 40 m of a road, and the faint lanes among the north sites (by 26 and 40HOST) aren't drawn."
   },
   "233651": {
-   "call": "usable",
-   "note": "Split into three areas: the north loop (079 to 098), the point and river lanes (034 to 131) and the south loop (001 to 028). The west row (099 to 131) sits on a loop drawn too far east."
+   "call": "hold",
+   "note": "Unchanged; the split needs no new call: the three areas (north loop 079 to 098, the middle with the river lane 034 to 078 and the loop 099 to 131, the south loop 001 to 028) each hold one cluster, and every site is within 40 m of a drawn road. Zoomed and over the lidar relief, the middle loop's west side (past 114 to 124) runs 5 to 10 m east of the gravel that shows in pieces between the trees and can't be placed to 3 m, so it stays held for that road."
   },
   "233657": {
    "call": "good",
@@ -334,7 +334,7 @@
   },
   "233697": {
    "call": "hold",
-   "note": "Not drawn, and rightly: half the sites share a spot (the Lower Area listings). Where points exist, 0001 to 0073 sit on OpenStreetMap's lanes in the north and middle loops."
+   "note": "Unchanged. 0001 to 0073 sit on their pads by the drawn north and middle loops, but the Lower Area's L001 to L060 are listed on two points (Green Lake and Riverside, about 30 each) and the Boathouse Area's B001 to B010 on one, along a shore lane where the photo shows no numbered pads, so which site is which can't be told and nothing was moved."
   },
   "233699": {
    "call": "usable",

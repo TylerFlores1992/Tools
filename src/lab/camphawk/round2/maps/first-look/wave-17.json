@@ -25,8 +25,8 @@
    "note": "The lidar intensity (2020) shows the asphalt lanes by the lake as plain dark bands; OpenStreetMap's loop was cut short and ran a few meters off them. Replaced the roads: the main road down to the junction by 027, the outer lane past 026 round to 022 and 023, the upper lane past 025 and the lower lane past 024, all on their bands. The short spurs to the shore sites (015 to 021) aren't drawn, and 013 and 014 sit in the trees more than 40 m from a road with no lane showing."
   },
   "232258": {
-   "call": "unsure",
-   "note": "Rebuilt with the stray point rule (one of the two sites named 12, 2.3 km away, left off). The lanes are under full canopy."
+   "call": "hold",
+   "note": "The stray 12 is now left off, so the map is the campground strip on the east shore. Unchanged otherwise: under the canopy the drawn road down the strip runs 5 to 15 m east of the pull-ins that show (past 12, 13, 17, 19 and 20), the listing has two series of numbers (01 to 20 twice) mixed along it, and B05 to B08 sit in the forest south of the drawn loop with no lane showing."
   },
   "232384": {
    "as": "areas",
@@ -282,8 +282,8 @@
    "note": "The lidar intensity shows the gravel road in and both sides of the loop as light bands under the trees, and OpenStreetMap draws them along those bands; the photo agrees where it opens by 13 and 16. 18 to 24 sit 10 to 20 m south of the road on pads that show as a light strip, with no separate lane, so every placed site is within 40 m of a road; one site has no point. Nothing traced."
   },
   "10011396": {
-   "call": "hold",
-   "note": "All 11 sites share a few points in one spot under the trees, so the check can't draw it; the OpenStreetMap loop around them follows a lane only where it breaks out of the canopy."
+   "call": "unsure",
+   "note": "Unchanged. All 11 sites share four points within 5 m of each other under full canopy inside the drawn loop; the pads don't show beneath the trees, so none could be placed."
   },
   "10035081": {
    "call": "usable",
@@ -311,7 +311,7 @@
   },
   "10052638": {
    "call": "hold",
-   "note": "All 11 sites share one point in an open field next to a dirt track, so the check can't draw it and the photo shows no campground there."
+   "note": "Unchanged. All 11 sites share one point in an open field beside a dirt track; nothing on the photo near it is a campground or a pad, so there is nowhere to move them."
   },
   "10053729": {
    "call": "good",
@@ -354,8 +354,8 @@
    "note": "The two loops follow the visible lanes and 08 to 10 and 15 to 20 sit beside them, but the east shore past 01 to 07 and the south point by 11 to 14 are open dirt flats with no defined lane; 01, 02, 04, 06, 18 and 19, a third of the sites, sit more than 40 m from any drawn road."
   },
   "10145521": {
-   "call": "unsure",
-   "note": "The east road (03 to 09) follows the visible dirt road and 06 and Group Site 08 sit on clearings beside it. Sites 07 and 11 to 15 sit in the pines off any visible lane, and the west side of the drawn loop follows only a faint track."
+   "call": "hold",
+   "note": "Unchanged. Site 16 has no point in the listing, and nothing on the photo says which clearing it is (the west lane past 12 to 15 shows no further pad), so it couldn't be placed. The rest are within 40 m of the drawn lanes, which follow the visible dirt roads, though 07 and 11 to 15 sit in the pines off them."
   },
   "10158169": {
    "call": "usable",

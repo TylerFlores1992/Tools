@@ -353,8 +353,8 @@
    "note": "Unchanged: under the oak canopy the drawn loops still follow nothing visible, and 015 to 020, 039 to 047, 052 to 056, 059, 061, 063 and 065 sit 30 to 50 m from any drawn road. The lidar relief shows the creek gullies and only faint, broken traces of lanes on the flat between them, not enough to retrace the loops; the south row by the highway (074 to 102) fits."
   },
   "233585": {
-   "call": "hold",
-   "note": "Split listing, now shown as three areas, each holding one cluster: the shoreline sites 01 to 43, the sites 45 to 92 in the trees 200 m southwest, and the A to O group loop 700 m beyond across fields. Only the highway is drawn; the lanes in each area show on the photo but weren't traced, as their joins to the highway aren't clear."
+   "call": "usable",
+   "note": "The split (gap 150) needs no new call: the three areas hold the shoreline sites 01 to 43, sites 45 to 92 200 m southwest and the A to O group loop 700 m beyond. Traced every lane from the photo: the shoreline campground's entrance from the highway, its two lanes through 01 to 43 and the lane north past 17 to 32; the road on to the second campground, its entrance lane, the lot and the lanes past 45 to 92; and the group loop with its entrance. All 94 sites are now within 40 m of a drawn road; the stretch past 53 to 58 runs under trees and is placed from the pieces that show."
   },
   "233587": {
    "call": "good",

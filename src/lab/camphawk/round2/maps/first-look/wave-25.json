@@ -86,7 +86,7 @@
   },
   "10156151": {
    "call": "hold",
-   "note": "The sites are spread across a 4,974 km frame: RV Site 2 to 8 in one place and RV Site 9 to 20 thousands of kilometres east, so the listing's points are wrong; no roads drawn."
+   "note": "Unchanged. The listing's points are spread on a coarse grid across thousands of kilometres (RV Site 2 to 8 in one place, RV Site 9 to 22 and Tent Site 1 to 4 far east), more than the stray rule may drop, so the frame is a continent and the photo can't show where any site is; nothing could be moved. It waits for correct points from the listing."
   },
   "10191011": {
    "call": "unsure",
@@ -122,7 +122,7 @@
   },
   "10382456": {
    "call": "hold",
-   "note": "Not drawn: every Chilkoot Trail camp shares a spot with another, so there is nothing to place. The Forest Service's older photo covers the trail, but there are no points to check on it."
+   "note": "Unchanged. The four Chilkoot Trail camps (Finnegan's Point, Canyon City, Pleasant Camp, Sheep Camp) each list all their sites on one point, 6 to 25 at a time, and the tent platforms can't be told apart on the Forest Service photo, so nothing could be moved; it's a trail of camps, not one campground."
   }
  }
 }

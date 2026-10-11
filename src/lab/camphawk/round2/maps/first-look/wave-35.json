@@ -173,9 +173,9 @@
    "as": "firstcome"
   },
   "10165270": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The outline is mostly a large gravel parking lot with cars by the boat ramp, plus the sage flat between it and the shore with a couple of small structures. The point is in the lot, and no campsites show, so the outline reads as a parking lot.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild. The outline OpenStreetMap names Dexter Point Campground is mostly a large gravel parking lot with cars by the boat ramp, plus the sage flat between it and the shore crossed by tracks; no pads, tables or loops show, so it reads as a day-use lot, and nothing nearby is plainly the campground to move to."
   },
   "10165280": {
    "call": "good",

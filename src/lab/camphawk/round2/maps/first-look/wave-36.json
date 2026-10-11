@@ -36,9 +36,9 @@
    "as": "firstcome"
   },
   "10165145": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The photo shows one campground, loops with pads on the lake's south shore, and the point is about 30 m south of it at a road junction. But OpenStreetMap names that outline Cottonwood Lake Campground, not Big Creek, so the map may be showing a different campground.",
-   "as": "firstcome"
+   "note": "Unchanged after the rebuild: the photo shows one campground, loops with pads on the lake's south shore, with the point 30 m south of it at the road junction, but OpenStreetMap names that outline Cottonwood Lake Campground, so the map shows the pin instead. Either the listing's point or OpenStreetMap's name is wrong, and the photo can't say which, so nothing was moved."
   },
   "10165175": {
    "as": "firstcome",
@@ -101,9 +101,9 @@
    "as": "firstcome"
   },
   "10165315": {
-   "call": "hold",
-   "note": "OpenStreetMap outlines this campground as two small clusters about 450 m apart, and the map takes only the southern one, a small patch in the trees about 100 m from the point. The point is by a small road loop at the main road, so the map would show only part of the campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "Rebuilt with the outline-name check: OpenStreetMap's two outlines are named for campsites GC 1-3 and GC 4-8, not Gothic, so the map no longer shows just the southern patch and shows the pin 'About here' instead. The pin sits at the main road by the small road loop of the campground's southern cluster (GC 1-3, 100 m south in the trees), within about 100 m of the campground, with the second cluster 450 m north-west."
   },
   "10165325": {
    "as": "firstcome",
@@ -166,9 +166,9 @@
    "as": "firstcome"
   },
   "10165500": {
-   "call": "hold",
-   "note": "The nearest outline is a strip between the highway and the river that OpenStreetMap names Granite Tent Campground, about 110 m from the point across the highway. The map would show a different campground.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "The listing's point was at the highway junction 650 m west, so the map took Granite Tent's outline and fell back to a pin. Moved the point east along the north-bank lane to the entrance of the campground OpenStreetMap names North Bank Campground, whose lane, horseshoe pull-ins and toilets show on the photo; the map now takes that outline, and it follows the campground (its lane and pull-ins inside, a little extra ground on the slope)."
   },
   "10165505": {
    "as": "firstcome",

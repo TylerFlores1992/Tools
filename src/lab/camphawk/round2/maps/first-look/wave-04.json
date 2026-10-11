@@ -14,7 +14,7 @@
   },
   "250031": {
    "call": "hold",
-   "note": "Split listing, already shown as four areas, one cluster each. South end (01 to 28) is drawn and the sites line its lanes; at North end the lanes to 06, 07, 09 to 11 aren't drawn; Middle 2 (29 to 45) has no road at all, its lane winds west of the main road under the pines and shows only in pieces."
+   "note": "Unchanged; the four areas follow the real clusters, so no split call. Zoomed on Middle 2 (29 to 45), the lane west of the main road shows only in pieces between the pines, and the lidar relief shows a web of parallel cuts there that can't be told from the lane, so it couldn't be traced to 3 m and 11 of its 17 sites still have no drawn road."
   },
   "251353": {
    "call": "unsure",
@@ -62,7 +62,7 @@
   },
   "231962": {
    "call": "hold",
-   "note": "The drawn roads follow the visible gravel lanes and their loops, but the sites sit right on the road line and many pairs share one spot (003 and 004, 011 and 012, 049 and 050, 067 to 069 and others), so they don't show where each pad is."
+   "note": "Unchanged. The drawn roads follow the visible gravel lanes of loops 1 to 4, but the sites sit on the road line itself, in pairs on one spot (003 and 004, 011 and 012, 049 and 050, 063 and 064, 067 to 069 and more); the pads among the junipers don't show plainly enough to tell which pair member is which, so nothing was moved."
   },
   "231987": {
    "call": "usable",
@@ -73,8 +73,8 @@
    "note": "Despite a sparse 2016 survey (1.2 ground points per square meter) the lidar intensity shows the east loop past 019 to 030 and the entry road as light bands under the firs, and the drawn roads sit on them; the west loop past 004 to 015 shows only in parts, where it agrees. 016, 017 and 019 to 021 sit 20 to 30 m off the roads; every placed site is within 40 m of one, and 1 site has no point. Nothing traced."
   },
   "232039": {
-   "call": "hold",
-   "note": "Many visible gravel lanes aren't drawn: the west loop's inner spurs past 005 to 008 and 026 to 032, the lane west of 020 to 028, the spur north to 057 and the lanes past 044 to 046, 073 to 076 and 080 to 086. Dozens of sites sit 20 to 60 m off the drawn roads, too many to fix with a few traces."
+   "call": "usable",
+   "note": "Unchanged. Zoomed on a 10 m grid, the drawn loops follow the visible gravel lanes where they show between the pines, and by the census only 057 and Wagon Train sit over 40 m from a drawn road (93 of 95 within it). Many inner spurs and pull-ins (past 005 to 008, 023 to 026, 057, 059 to 061) aren't drawn, but they are short and join the drawn loops."
   },
   "232049": {
    "call": "usable",

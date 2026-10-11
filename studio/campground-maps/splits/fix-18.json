@@ -1,0 +1,14 @@
+{
+ "version": 1,
+ "about": "Split calls from the fix-after campaign, batch fix-18 (2026-10-11): split listings whose areas were wrong or overlapped, each read off the aerial photo.",
+ "listings": [
+  {
+   "id": "233518",
+   "split": true,
+   "by": "Claude (fix fix-18)",
+   "on": "2026-10-11",
+   "note": "The middle loops (096 to 177) are one place; at the default gap they were cut down the middle into two overlapping areas, so a gap of 100 m keeps them whole and puts the hike-in sites HI05 to HI20 in the forest to the east in their own areas.",
+   "gap": 100
+  }
+ ]
+}
