@@ -114,7 +114,7 @@
   },
   "233717": {
    "call": "usable",
-   "note": "The road past the group sites (GS1 to GS4) and the two loops follow the visible lanes, and 002, 005, 007 and 013, 014 sit beside them. 001, 003, 004, 006, 08/09 and 10/11 sit 15 to 30 m outside the loops on spurs that show only in part."
+   "note": "The lidar intensity (1.36 ground points per square meter, low but plain here) shows every paved lane as a dark band under the trees. Replaced the roads: re-centered the west loop (drawn 3 to 5 m west of its band) and the east side of the east loop (about 4 m off), kept the rest as drawn, and traced the pull-in spurs to 001 to 005, 007, 08/09, 10/11, 012 to 014 and 016; the group sites GS1 to GS4 sit on their pads by the road, and only 006 has no spur showing (17 m from the road)."
   },
   "233756": {
    "call": "usable",
@@ -169,8 +169,8 @@
    "note": "Only the county roads are drawn, and the survey is very sparse (0.4 ground points per m²). The lidar relief shows the lane from the entrance north to the boat landing as a crowned band, but the lanes past 003 to 008 in the east and 012 to 017 in the west show only as scraps between ditches, so 7 of 16 sites still sit 43 to 73 m from any road. Nothing traced."
   },
   "233983": {
-   "call": "usable",
-   "note": "The two loops and the lane between them follow the visible gravel, and 01 to 05, 12 and 16 sit on them. 07 to 09 sit on the east side of the parking clearing, and 10, 11, 13 and 14 in the forest 30 to 50 m east of any drawn road, where no lane shows."
+   "call": "hold",
+   "note": "The lidar intensity (3.76 ground points per square meter) shows the gravel lanes plainly, and the Forest Service roads are off them: the north loop band runs up the middle of the drawn loop (west side along x -8, east side past 12), not around it; the road in is drawn 6 to 10 m north-west of its band; and an undrawn central lane runs south from the north loop past 08 and 09 to 07. The south loop by 01 to 06 shows in the relief only as a network of smooth bands between raised pads that doesn't match the drawn loop and can't be read to 3 m, so the map wasn't rebuilt; it needs a full replace once the south loop can be placed."
   },
   "234083": {
    "call": "unsure",
@@ -206,7 +206,7 @@
   },
   "240957": {
    "call": "usable",
-   "note": "The two loops and the north lanes follow the lanes that show through the pines, and 1, 3, 6, 8, 11, 13, 18, 20 and 21 sit by them. 4, 5, 7, 9, 10 and 12, 14 to 16 sit 20 to 40 m outside the loop on spurs that show only in part."
+   "note": "The dense lidar (9.18 ground points per square meter) shows every gravel lane as a plain smooth band under the pines. Replaced the roads: re-centered the south loop, drawn 3 to 6 m off its band on the north-west and east sides and across its south-east corner, added the inner lane west of the loop past 4, 5 and 7, and kept the north loop (17 to 21) and the road in as drawn. Every site is within about 20 m of a drawn road; the walk-in sites 9, 10, 14 and 15 sit 11 to 20 m off the loop on paths that weren't traced."
   },
   "249579": {
    "call": "usable",
@@ -214,7 +214,7 @@
   },
   "251536": {
    "call": "usable",
-   "note": "The lane along the north shore follows the visible gravel, and 002 to 005 sit beside it. 001, 006, 007 and 011 sit 20 to 40 m south of it toward the lake, and 009 and 010 sit 20 m east of the west loop, on spurs that show only in part."
+   "note": "The lidar relief (1.56 ground points per square meter) shows the north loop, the road in and the south loop (Spur A) as crowned bands under the trees, and the drawn roads follow them within about 3 m. Traced the gravel lane south from the road to the parking pad by group site 001, plain on the photo; 002 to 007 sit 20 to 26 m south of the north loop toward the lake and 009 to 011 18 to 33 m east of the south loop, where no spur shows in either layer."
   },
   "251568": {
    "call": "unsure",
@@ -270,7 +270,7 @@
   },
   "273349": {
    "call": "usable",
-   "note": "The Forest Service's lanes follow the gravel under the trees, and 001, 002 and 005 sit near them. 003 sits 50 m west of the loop and 004 20 m south-west of it, where no spur shows."
+   "note": "The lidar relief (4.88 ground points per square meter) shows both Forest Service lanes plainly as crowned bands with ditches under the trees, and the drawn lanes follow them within about 3 m, as the gravel on the photo confirms where it opens. 001 and 002 sit by the north end of the loop and 003, 004 and 005 sit 16 to 18 m off the west lane, the south connector and the east lane, but no spur to them shows in either layer (the intensity is mottled under the leaves); nothing was traced."
   },
   "273355": {
    "call": "hold",
@@ -309,8 +309,8 @@
    "note": "Retraced every road (a full replace): the north lane past 7 to 9 now sits on the gravel instead of 5 to 10 m south of it, the park road on the east moved up to 6 m west onto its gravel, and the lane from the north junction past 14, 4, 3, 2 and 1 to the south junction is drawn (two short stretches under trees joined straight), with the loop's west and south sides past 10, 19, 20 and 21. Every site is within 40 m of a road."
   },
   "10064546": {
-   "call": "unsure",
-   "note": "The photo was taken in a flood: the whole park is under water, so neither the roads nor the pads show. The drawn lanes and the sites' layout (1 to 16 in two rows, 17 to 32 along the shore) can't be checked."
+   "call": "hold",
+   "note": "The photo is a flood, but the 2020 lidar (2.5 ground points per square meter) shows the park's lanes plainly, and the drawn roads are off them: the lane through 10, 8, 6, 4 and 2 is drawn on the south pads, 8 to 12 m south of the real central lane, the river lane past 11 to 25 is drawn 10 to 20 m south of its band, and the west roads to 26 to 32 run 15 to 20 m east of theirs. The south block (1 to 10) and the river lane could be traced from the relief and intensity, but the west end (26 to 32), where several bands cross and curve, can't be read to 3 m, so the map wasn't rebuilt; it needs a full replace by hand."
   },
   "10107342": {
    "call": "good",

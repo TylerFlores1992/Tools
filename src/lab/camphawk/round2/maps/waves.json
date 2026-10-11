@@ -997,11 +997,11 @@
   },
   {
    "wave": 10,
-   "built": "2026-10-09",
+   "built": "2026-10-11",
    "count": 94,
    "summary": {
-    "ready": 44,
-    "review": 49,
+    "ready": 43,
+    "review": 50,
     "notDrawn": 1,
     "failed": 0
    },
@@ -1106,11 +1106,11 @@
   },
   {
    "wave": 11,
-   "built": "2026-10-09",
+   "built": "2026-10-11",
    "count": 94,
    "summary": {
-    "ready": 45,
-    "review": 46,
+    "ready": 44,
+    "review": 47,
     "notDrawn": 3,
     "failed": 0
    },
@@ -1856,11 +1856,11 @@
   },
   {
    "wave": 18,
-   "built": "2026-10-10",
+   "built": "2026-10-11",
    "count": 90,
    "summary": {
-    "ready": 46,
-    "review": 42,
+    "ready": 45,
+    "review": 43,
     "notDrawn": 2,
     "failed": 0
    },
@@ -2164,11 +2164,11 @@
   },
   {
    "wave": 21,
-   "built": "2026-10-10",
+   "built": "2026-10-11",
    "count": 87,
    "summary": {
-    "ready": 44,
-    "review": 42,
+    "ready": 41,
+    "review": 45,
     "notDrawn": 1,
     "failed": 0
    },
@@ -3143,7 +3143,7 @@
   },
   {
    "wave": 32,
-   "built": "2026-10-09",
+   "built": "2026-10-11",
    "count": 89,
    "summary": {
     "ready": 54,
@@ -3606,8 +3606,8 @@
    "built": "2026-10-11",
    "count": 41,
    "summary": {
-    "ready": 23,
-    "review": 18,
+    "ready": 22,
+    "review": 19,
     "notDrawn": 0,
     "failed": 0
    },

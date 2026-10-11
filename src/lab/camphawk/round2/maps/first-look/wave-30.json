@@ -89,8 +89,8 @@
    "note": "The pin sits in open pines with bare ground and a small structure beside it, but the drawn spur stops 35 m west of it; no lane to the pin shows to trace."
   },
   "232896": {
-   "call": "usable",
-   "note": "The lidar (2.28 ground points per square meter, flown 2023) shows the pin on a levelled clearing about 20 by 30 m, bright in the intensity, 50 m west of the North Fork campground lane. OpenStreetMap had that lane 8 to 10 m west of its band by the group site and cutting a 60 m corner to the north, so every road was replaced onto the bands (NFS Rd 23 and 55 re-centred, the lane re-traced to the loop at the north); the campground's inner loops and a spur to the river show no plain band and were left out. No drawn road reaches the site itself."
+   "call": "good",
+   "note": "The lidar (2.28 ground points per square meter) shows the pin on a levelled clearing about 20 by 30 m, bright in the intensity, west of the North Fork campground lane, which canopy-16 re-traced onto its band. Added the short gravel spur from the lane to the clearing, a plain bright band in the intensity, so a drawn road now reaches the group site (7 m); the roads follow their bands within about 3 m."
   },
   "232897": {
    "call": "unsure",
@@ -138,7 +138,7 @@
   },
   "233259": {
    "call": "unsure",
-   "note": "The pin is on the river terrace inside the Breitenbush bend, 7 m from the listing's point, and the photo shows bare dirt patches beside it and a dirt strip under the trees roughly along the drawn inner lane. But the lidar here (1.74 ground points per square meter, flown 2022) is mostly interpolation facets on the terrace, and neither layer shows the drawn loop or its entrance as a band, so the roads can't be checked to 3 m. Nothing traced."
+   "note": "The lidar here is too thin on the terrace to read (1.74 ground points per square meter): inside the Breitenbush bend both layers are mostly interpolation facets, and neither shows the drawn loop or its entrance as a band, so the roads can't be checked to 3 m. The photo shows bare dirt patches beside the pin, 12 m west of the loop, but nothing plainly the group site; nothing was traced."
   },
   "233285": {
    "call": "unsure",
@@ -258,7 +258,7 @@
   },
   "234285": {
    "call": "good",
-   "note": "Moved the pin 64 m southwest onto the yurt's round roof in its dirt yard beside the drawn road, where the Forest Service's point for the Carter Military Trail yurt falls; the old pin was in an empty snowy gap in the forest."
+   "note": "The pin, moved by units-01 onto the yurt, sits on its round roof and platform, which the photo shows in a small clearing and the dense lidar relief (9.73 ground points per square meter) shows as a levelled pad. The drawn road follows its sunken band within about 3 m and passes 14 m west of the yurt; nothing further was traced or moved."
   },
   "234286": {
    "call": "good",
@@ -306,7 +306,7 @@
   },
   "234705": {
    "call": "unsure",
-   "note": "The lidar (4.56 ground points per square meter, flown 2023) shows the pin on forest floor beside a ditched lane that carries on south-east from the end of the drawn road, past the pin 15 to 20 m east of it, toward the Chiwawa River; a faint level area shows 50 to 100 m north-east, but neither layer nor the photo shows a pad, clearing or loop that is plainly the group site. With the site unplaced, the undrawn lane was not traced."
+   "note": "The lidar (4.56 ground points per square meter) shows the pin on forest floor beside a ditched lane that carries on south-east from the end of the drawn road, 15 to 20 m east of the pin, toward the river; neither layer nor the photo shows a pad, clearing or loop that is plainly the group site, and the intensity here is a uniform mottle. With the site unplaced, the undrawn lane was not traced."
   },
   "234732": {
    "call": "unsure",
@@ -349,8 +349,8 @@
    "note": "The lidar intensity shows the park road's paved loop plainly under the trees, and its north side and hairpin, which OpenStreetMap had 5 to 14 m off, are retraced on the band from the bend nearest the pin to the parking lot at the west end. The pin sits 25 m east of the hairpin on plain forest floor, with no pad, shelter or clearing in either layer or on the photo, so the group area can't be placed."
   },
   "251711": {
-   "call": "unsure",
-   "note": "The pin sits on the edge of a snow-covered stand at the end of the drawn spur; no building shows under the trees and snow, so the photo can't confirm the guard station."
+   "call": "usable",
+   "note": "The lidar relief (4.51 ground points per square meter) shows a square-cornered levelled block about 15 m across at the end of the drawn spur, the shape a building leaves in the ground points, and the pin sits on its east corner, 12 m from the spur's end; the photo shows only snow and shadow there, so the building itself can't be confirmed. The spur follows its band; nothing was traced or moved."
   },
   "251836": {
    "call": "hold",

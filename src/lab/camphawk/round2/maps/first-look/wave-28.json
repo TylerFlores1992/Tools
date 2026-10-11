@@ -342,7 +342,7 @@
   },
   "264686": {
    "call": "unsure",
-   "note": "The 2010 lidar is too sparse to read here (0.41 ground points per square meter): the relief is mostly gaps, and the intensity shows only patchy bright ground on the river bank around the pin and inside the drawn loop, with no plain pad, lane or clearing. The photo shows only small light patches inside the loop and dense trees at the pin, so the group site can't be placed and the loop can't be checked. Nothing traced."
+   "note": "The 2010 lidar is too sparse to read here (0.41 ground points per square meter): the relief is mostly gaps, and the intensity shows only patchy bright ground on the river bank west of the drawn loop and inside it, with no plain pad, lane or clearing at the pin. The photo shows dense trees, so the group site can't be placed and the loop can't be checked; nothing was traced."
   },
   "266135": {
    "call": "usable",

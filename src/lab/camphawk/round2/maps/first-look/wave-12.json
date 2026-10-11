@@ -157,8 +157,8 @@
    "note": "Neither lidar layer shows a band under the drawn road's arc round the north side, so it can't be checked; the relief shows the creek crossing the campground and a lane looping south of it (dark in the intensity) that isn't drawn. Group Site 2 sits about 50 m inside the arc, north of the creek, with no lane showing: one of the two sites. Nothing traced."
   },
   "232307": {
-   "call": "hold",
-   "note": "Snow on the photo. Site 002 sits at the building near the end of the east spur; 001 sits among the trees 30 m west of the road with no lane showing. Held under the clarified bar: one of the two sites has no road."
+   "call": "usable",
+   "note": "The dense lidar (22.62 ground points per square meter) shows the road in as a plain sunken band, with the drawn road within about 3 m of its middle, and the east spur and the north road follow their bands. 002 sits on a levelled pad by the building at the end of the east spur, 16 m from it; 001 sits in an open grassy clearing (bright in the intensity) 31 m west of the road, with no lane to it showing, so nothing was traced."
   },
   "232313": {
    "call": "usable",

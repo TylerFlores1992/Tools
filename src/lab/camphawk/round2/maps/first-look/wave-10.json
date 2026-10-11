@@ -37,8 +37,8 @@
    "note": "The lidar relief shows the lanes plainly under the pines, and the drawn south loop is off them: its west side runs 8 to 12 m east of the dirt lane the photo shows past 011 to 015, and its east side lies between the middle lane and the east lane past 017 and 018. In the south the relief's curving lanes and the photo's straight dirt strips toward 020 and 021 don't agree well enough to redraw the loop to 3 m, so nothing was traced."
   },
   "232063": {
-   "call": "hold",
-   "note": "A winter photo, under snow. Lodgepole Grove sits by the drawn lanes, but Pine Grove sits 60 m south in a round clearing with no lane drawn, and Limber and Ponderosa Groves sit 26 to 33 m from them: three of the four group sites."
+   "call": "usable",
+   "note": "The lidar relief (10.18 ground points per square meter) shows the lanes, lots and group-site pads plainly under the snow and pines, and the drawn roads follow them within about 3 m. Lodgepole Grove sits by its spur, Limber Grove on a levelled pad 30 m past the end of the road by the parking, Ponderosa Grove on an open pad 26 m north of the east loop, and Pine Grove on a round levelled pad 49 m south of the west cul-de-sac, reached by the drawn trail; no vehicle lane to Pine Grove shows (two drainage ditches run beside the trail), so nothing was traced."
   },
   "232192": {
    "call": "hold",
@@ -61,8 +61,8 @@
    "note": "The loop follows the visible dirt lane, and the sites sit at the ends of the spurs off it (005 and 008 27 to 29 m out along their spurs)."
   },
   "232411": {
-   "call": "unsure",
-   "note": "A spring photo, part snow, under pines. The road along the lake and the north-east loop fit what shows, but the lane drawn diagonally to the west loop can't be seen, and 004 and GP3 sit between lanes with no pads showing."
+   "call": "usable",
+   "note": "The lidar (3.4 ground points per square meter) shows the lanes under the pines and snow: the road along the lake, the north-east loop and the diagonal lane to the west loop all show as gray bands in the intensity and crowned lanes in the relief, and the drawn roads follow them within about 3 to 4 m (the west loop and the diagonal sit a little north-west of their bands). 004 and GP3 sit on the pale gravel pads by the central parking that the photo and the relief show, and every site is within 16 m of a drawn road; nothing was traced."
   },
   "232414": {
    "call": "usable",
@@ -137,8 +137,8 @@
    "note": "The loop and the road in follow the visible dirt lanes. Traced the dirt lane south-west from the bottom of the loop past 004; 007 and 008 west of the loop and 009 to 012 south-east of it still sit 22 to 37 m out on spurs that don't show plainly through the pines."
   },
   "233819": {
-   "call": "unsure",
-   "note": "A winter photo, under snow and pines: the loop and the road in can't be confirmed under the trees, and 002, 004, 012 and 015 to 017 sit 20 to 34 m from them with no pads showing."
+   "call": "usable",
+   "note": "The lidar intensity (11.52 ground points per square meter) shows the paved road and loop as a plain dark band under the snow and pines, and the OpenStreetMap road follows it within about 2 m. Traced over it: the pull-in spurs to 002, 003 to 006, 008 to 010, 013 to 015 and 017, and the lane around the island south of the east loop; several pins (001, 003, 004, 010, 011 and 016) sit 15 to 20 m from the nearest spur end, and 012 has no spur showing."
   },
   "233821": {
    "call": "usable",

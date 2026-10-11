@@ -21,16 +21,16 @@
    "note": "The traced gravel lane from the end of the road north to the field matches the gravel strip on the photo, and the lidar intensity shows the row of parking blocks along it; G002 and G003 sit at the field edge and G001 under canopy east of the lane, all within 40 m. The lidar shows no lane to G001. Nothing traced."
   },
   "232436": {
-   "call": "unsure",
-   "note": "The loop is drawn around the restroom and the four group sites sit around it, but the photo is a blur of bare trees and shows no lanes or pads to check."
+   "call": "usable",
+   "note": "The lidar intensity (2.73 ground points per square meter) shows the paved loop plainly as a continuous gray band under the bare trees, and the Park Service loop and entrance road follow it within about 3 m, with the relief showing the same crowned lane and its inner ditch. GP01 sits on a widened paved pull-off north of the loop and GP02 to GP04 sit 5 to 7 m outside it, but the group tent areas themselves don't show as distinct pads; nothing was traced."
   },
   "232438": {
-   "call": "unsure",
-   "note": "The lane is drawn through bare woods past GP01 to GP03, but the photo is too blurred to show it or the sites."
+   "call": "usable",
+   "note": "The lidar (1.96 ground points per square meter) shows the lane past the group sites plainly: a crowned band with a ditch on its west side in the relief and a gray band in the intensity, and the drawn lane follows it within about 3 m, as do the Cosby loop roads around it. GP01 to GP03 sit 5 to 6 m beside the lane, though the group tent areas themselves don't show as distinct pads; nothing was traced."
   },
   "232440": {
-   "call": "unsure",
-   "note": "The loop and the road west of it are drawn, and G001 and G004 sit on visible clearings. The photo is too blurred under the trees to say whether the lanes follow the drawn roads."
+   "call": "usable",
+   "note": "The lidar intensity (2.64 ground points per square meter) shows the gravel lanes plainly as gray bands under the bare trees: the Park Service's east loop, the exit road south and the road along the west side follow them within about 3 to 4 m. G003 sits in a levelled rectangular field the relief shows plainly west of the loop, G001 and G002 inside the loop and G004 on the open ground in the south, each 26 to 29 m from a drawn road; the short entries into the fields aren't drawn, and nothing was traced."
   },
   "232441": {
    "call": "usable",
@@ -342,7 +342,7 @@
   },
   "10317377": {
    "call": "usable",
-   "note": "The outer road follows the visible pavement, and 13 to 17 sit on the south loops. Sites 2 to 8 sit in the woods inside the loop with no lane showing, and the lane to 9 and 10 in the west shows but isn't drawn."
+   "note": "The lidar intensity (5.2 ground points per square meter) shows every paved lane as a plain dark band. Replaced the roads: kept the outer loop (north side re-centered onto its band), the west parking loop and the turnaround by 13, dropped the loop drawn across the open field south of the road (no lane in either layer or on the photo), and traced the lanes in the north woods to 2 to 5, 7 and 8, the lanes west to 9 and 10, the two paved lanes south to 11 and 12, the spurs to 13 to 15 and 17, and the lane between 15 and 17. Every site is within 22 m of a drawn road; only 6 has no lane showing."
   },
   "10322686": {
    "call": "usable",

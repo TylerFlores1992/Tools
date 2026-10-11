@@ -78,7 +78,7 @@
   },
   "234224": {
    "call": "unsure",
-   "note": "The dense lidar (14.73 ground points per square meter, flown 2022) shows a building footprint on a levelled pad 3 to 5 m north-west of the pin, and the photo shows its blue-grey roof under the oaks, 30 m east of the drawn road, which follows its band. But the listing's own point, 490 m north-east, sits on a cluster of small buildings at the end of a drawn road in the open, so which of the two is the guard station cabin can't be told. Nothing traced or moved."
+   "note": "The dense lidar (14.73 ground points per square meter) shows a building footprint on a levelled pad by the pin, and the photo shows its blue-gray roof under the oaks. Re-centered Old Stage Drive past it onto the pavement, which OpenStreetMap drew 6 to 12 m east of the road for about 200 m; it now follows the road within about 3 m, 34 m west of the pin. But the listing's own point, 490 m north-east, sits on a cluster of small buildings at the end of a drawn road, so which is the guard station cabin can't be told; nothing was moved."
   },
   "234281": {
    "call": "good",
@@ -94,7 +94,7 @@
   },
   "234326": {
    "call": "unsure",
-   "note": "The pin is at the end of the drawn track in a snow-covered meadow beside a band of trees; the snow hides any cabin, so the photo can't confirm it."
+   "note": "The dense lidar (8.48 ground points per square meter) shows the pin in a meadow at the end of the drawn track, with only a small raised patch about 3 by 5 m 4 m west of it in the relief and nothing plainly a cabin footprint or levelled pad; the photo shows snow with a small dark shape 5 m north that may be a roof or a shadow. The cabin can't be confirmed, so nothing was traced or moved."
   },
   "234395": {
    "call": "good",
@@ -114,7 +114,7 @@
   },
   "234482": {
    "call": "unsure",
-   "note": "The dense lidar (9.49 ground points per square meter, flown 2023) puts the pin on the crest of the ridge, at the top of the rocky east scarp, with faint trail lines converging from the west; but neither layer shows a gap or levelled pad that is plainly the 12 by 14 ft cabin, and among the rock outcrops on the photo none is plainly a roof. Nothing at the listing's own point, 227 m north, is a cabin either. Nothing traced or moved."
+   "note": "The dense lidar (9.49 ground points per square meter) puts the pin on the crest of the ridge at the top of the rocky east scarp, with faint trail lines converging from the west, but neither layer shows a gap or levelled pad that is plainly the cabin, and among the rock outcrops on the photo none is plainly a roof. Nothing traced or moved."
   },
   "234601": {
    "call": "good",
@@ -261,7 +261,7 @@
   "10165626": {
    "as": "firstcome",
    "call": "usable",
-   "note": "The lidar (2.21 ground points per square meter, flown 2022) shows a graded lane inside OpenStreetMap's outline, a smooth band with levelled benches beside it, running 200 m along the terrace between the road and the creek from the bridge, where the drawn inner lane follows it within a few meters; the point is inside the outline by the creek bank. Pads can't be told apart under the trees, and the listing says the campground is closed after wildfire damage. Nothing traced."
+   "note": "The lidar relief (2.21 ground points per square meter) shows a graded lane, a smooth band with levelled benches beside it, running about 200 m along the terrace between the road and the creek from the bridge, and OpenStreetMap's narrow outline holds it with the drawn inner lane along it; the point sits inside the outline on its creek-side edge. Pads can't be told apart under the trees, and the listing says the campground is closed. Nothing traced."
   },
   "10165631": {
    "as": "firstcome",

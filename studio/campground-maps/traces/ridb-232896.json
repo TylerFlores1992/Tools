@@ -2,7 +2,7 @@
  "version": 1,
  "map": "ridb-232896",
  "traced": "2026-10-11",
- "by": "Claude (canopy canopy-16)",
+ "by": "Claude (canopy canopy-16); Claude (lidar lidar-02)",
  "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
@@ -840,9 +840,37 @@
      46.4533535
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -121.7907614,
+     46.4509382
+    ],
+    [
+     -121.7908655,
+     46.4510102
+    ],
+    [
+     -121.7909826,
+     46.4510821
+    ],
+    [
+     -121.7910867,
+     46.4511721
+    ],
+    [
+     -121.7911648,
+     46.451262
+    ],
+    [
+     -121.7912169,
+     46.451316
+    ]
+   ]
   }
  ],
  "points": [],
  "replace": true,
- "note": "Replaced onto the lidar: NFS Rd 23 and 55 re-centred on their bands, and the North Fork campground lane re-traced on its band (OpenStreetMap had it 8 to 10 m west by the group site and cutting a 60 m corner to the north). The campground's inner loop roads and the spur south to the river show no plain band and were left out."
+ "note": "Replaced onto the lidar: NFS Rd 23 and 55 re-centred on their bands, and the North Fork campground lane re-traced on its band (OpenStreetMap had it 8 to 10 m west by the group site and cutting a 60 m corner to the north). The campground's inner loop roads and the spur south to the river show no plain band and were left out. Added (lidar-02, over the lidar intensity): the short gravel spur from the campground lane north-west to the group site's clearing, a plain bright band."
 }

@@ -125,8 +125,8 @@
    "note": "The road along the river and the loops at each end follow the visible gravel, and Sites 001 to 018 sit beside them: 001 to 005 round the west loop and 006 to 018 round the east one, 400 m apart. Split call added: it now shows as two areas, one round each loop."
   },
   "233833": {
-   "call": "usable",
-   "note": "Three sites in the lodgepole: the group site sits on the clearing at the west end of the drawn lanes, and 057 and 058 sit 30 to 40 m east of the drawn road on small clearings where faint spurs show and aren't drawn."
+   "call": "unsure",
+   "note": "The lidar relief (8.51 ground points per square meter) shows the ring at the east loop by 058 and the main lane roughly where they are drawn, and the group site sits by the north road on its clearing. But in the south-west, the drawn loop doesn't match what the relief shows: a J-shaped raised bank with a ditch runs inside it, 5 to 8 m east of the drawn west side, with a second curved bank along the south, and it can't be told whether these are the lanes or berms; the dirt lanes are faint on the photo, and the spurs to 057 and 058 don't show. Nothing was traced."
   },
   "233845": {
    "call": "usable",

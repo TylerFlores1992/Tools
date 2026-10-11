@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-251536",
+ "traced": "2026-10-11",
+ "by": "Claude (lidar lidar-02)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -86.6503136,
+     46.2707327
+    ],
+    [
+     -86.6502747,
+     46.2706697
+    ],
+    [
+     -86.6502357,
+     46.2706067
+    ],
+    [
+     -86.6502098,
+     46.2705438
+    ],
+    [
+     -86.6501968,
+     46.2704988
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced the gravel lane from the campground road south to the pad and parking by the group site 001, plain on the photo and as a pale band in the lidar intensity (USGS 3DEP 2015, 1.56 ground points per square meter). The drawn roads follow the bands in the relief within about 3 m and were kept. Not traced: spurs to 002 to 007, 009 to 011, which don't show in either layer."
+}
