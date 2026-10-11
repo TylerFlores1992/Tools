@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232990",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "M14",
+   "at": [
+    -130.820518,
+    55.4273872
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the small brown roof with a path to the lake shore, 82 m southwest, where the Forest Service's point for Winstanley Lake cabin falls (units-01)."
+}

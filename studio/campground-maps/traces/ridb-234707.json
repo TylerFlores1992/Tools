@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234707",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "1",
+   "at": [
+    -106.5276384,
+    37.3521113
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the western of the two matching cabins 75 m south-southeast, whose roof the Forest Service's point for Platoro Cabin 1 falls on (units-01)."
+}

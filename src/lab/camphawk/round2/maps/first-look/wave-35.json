@@ -130,11 +130,11 @@
   },
   "234706": {
    "call": "hold",
-   "note": "Unchanged. Cabins 1 and 2 share one point on open grass beside the road through Platoro; two matching small cabins about 65 m south-southeast (with an OpenStreetMap toilet tag) may be them, but in a village of private cabins the photo can't tell them from others or say which is cabin 2, so neither was moved."
+   "note": "The Forest Service point matched to this map is Cabin 1's (on the western of two matching cabins 75 m south-southeast); the eastern twin may be cabin 2, but no point or sign names it, so the pin stays on the open grass where nothing stands. Not moved."
   },
   "234707": {
-   "call": "hold",
-   "note": "Unchanged. Cabins 1 and 2 share one point on open grass beside the road through Platoro; two matching small cabins about 65 m south-southeast (with an OpenStreetMap toilet tag) may be them, but in a village of private cabins the photo can't tell them from others or say which is cabin 1, so neither was moved."
+   "call": "good",
+   "note": "Moved the pin 75 m south-southeast onto the western of two matching small cabins, whose roof the Forest Service's point for Platoro Cabin 1 falls on; the old pin was on open grass by the road. The drawn lane off the road passes 12 m north of it."
   },
   "234710": {
    "call": "good",

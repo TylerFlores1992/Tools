@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-273779",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Leopold House",
+   "at": [
+    -105.9698148,
+    36.6530232
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the house's roof, which the photo shows 14 m northwest of the old pin, at the Forest Service's point for the Aldo Leopold house (units-01)."
+}

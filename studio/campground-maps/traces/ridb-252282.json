@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-252282",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Guard Station",
+   "at": [
+    -121.9702596,
+    43.501336
+   ]
+  }
+ ],
+ "note": "Moved the pin onto the gray-roofed cabin 33 m northwest, where the Forest Service's point for the guard station falls (units-01)."
+}

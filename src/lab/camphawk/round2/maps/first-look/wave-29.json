@@ -62,7 +62,7 @@
   },
   "231937": {
    "call": "unsure",
-   "note": "The lidar relief shows the pin on a forested slope just below the resort's open lawn, with no levelled pad, stage or seating at it; several of the drawn Census lanes cross the lawn where neither the photo nor the relief shows a lane. Where the site is can't be told from either layer (the survey is sparse, 1.4 ground points per square meter). Nothing traced."
+   "note": "Under shadowed canopy, the ground relief shows only lumpy forest floor at the pin and at the Forest Service's point 46 m east, with no levelled stage or seating that marks the theater. Not moved."
   },
   "231977": {
    "call": "usable",
@@ -86,7 +86,7 @@
   },
   "232209": {
    "call": "unsure",
-   "note": "The pin is in open pine forest 10 m north of a drawn loop, and neither the loop nor a bare patch 45 m north shows pads, tables or a structure; the photo can't say where the group site is."
+   "note": "The Forest Service's point 67 m southeast is at a small dirt opening east of the drawn loop and the pin is in open pines north of it; neither shows pads, tables or a structure that mark the group site. Not moved."
   },
   "232239": {
    "call": "usable",
@@ -158,7 +158,7 @@
   },
   "233305": {
    "call": "unsure",
-   "note": "The pin is under the trees 30 m east of the drawn road at the resort, between its buildings, and none at the pin is plainly the guard station."
+   "note": "The pin is on a small building among the Olallie Lake resort's buildings, and the Forest Service's point 16 m north is under trees beside another dark roof; which of the two is the guard station isn't plain, so the pin isn't moved."
   },
   "233682": {
    "call": "hold",
@@ -198,7 +198,7 @@
   },
   "233985": {
    "call": "unsure",
-   "note": "The lidar intensity shows the lanes as plain dark bands under the trees: the west loop lane past the pin ran 4 to 8 m west of its band and is re-centered, with its north end and Little Naches Road (the rest copied from OpenStreetMap). The pin sits 23 m east of the loop lane on level ground under the trees, with no clearing or pads showing in either layer, so whether the group site is there can't be told."
+   "note": "The Forest Service's point 100 m south-southeast falls on the traced loop lane among small ordinary pads, and the pin is under conifers inside the loop; neither shows a group site's clearing. Not moved; the earlier road trace stays."
   },
   "233986": {
    "call": "unsure",
@@ -209,8 +209,8 @@
    "note": "The pin is beside the group site's small gravel clearing below the highway, with a shelter at it, and the drawn spur off the highway loops into the clearing."
   },
   "234077": {
-   "call": "hold",
-   "note": "The pin is in unbroken oak and pine scrub 50 m east of the drawn road, and nothing within 200 m is plainly the cabin."
+   "call": "unsure",
+   "note": "The Forest Service's point 50 m north shows only scrub and a faint lane, while the pin sits on a bright white square about 4 by 3 m that may be a small roof but is too small to be plainly the cabin. Not moved; the white square needs a second look."
   },
   "234154": {
    "call": "usable",
@@ -222,7 +222,7 @@
   },
   "234184": {
    "call": "unsure",
-   "note": "The pin is at the meadow's edge on a drawn Forest Service loop that doesn't show on the photo, and no guard station building shows at it."
+   "note": "Neither the pin at the meadow's edge nor the Forest Service's point 47 m southeast, on a bare patch under the pines south of the drawn loop, shows a building in the photo. Not moved."
   },
   "234206": {
    "call": "good",
@@ -234,7 +234,7 @@
   },
   "234216": {
    "call": "unsure",
-   "note": "The pin is in a small clearing inside a drawn loop above the river, in burned forest, and no campground pads or structures show plainly."
+   "note": "The Forest Service's point 48 m east-northeast sits under canopy at the loop's junction with the through road, and neither it nor the pin inside the loop shows pads or a clearing in the photo. Not moved."
   },
   "234239": {
    "call": "usable",
@@ -273,8 +273,8 @@
    "note": "The pin is beside a small structure in the open meadow below the dam, and a faint visible track runs from it 40 m to the drawn road, which isn't drawn. The listing's own point, 530 m southeast, is at a road junction in the meadow with nothing on it."
   },
   "234320": {
-   "call": "hold",
-   "note": "The pin is in dense forest on the slope, 64 m from any drawn road, with no building. The drawn loops 80 m north are a campground with parked trailers, and nothing in the zoom is plainly the cabin."
+   "call": "unsure",
+   "note": "The Forest Service's point 41 m northwest shows only a grassy opening under trees, while the pin sits at the corner of a gray rectangle about 10 by 4 m with a faint lane to it, which may be the cabin's roof but could be a gravel pad. Not moved; the roof reading needs a second look."
   },
   "234363": {
    "call": "usable",
@@ -298,7 +298,7 @@
   },
   "234503": {
    "call": "unsure",
-   "note": "The lidar relief shows the drawn spur as the east side of a small loop round a wooded island, its west side 35 m east of the pin (faint in the intensity), and the forest road on its band; but no group site clearing or pads show at the pin in either layer or the photo, so the site can't be placed. Nothing traced."
+   "note": "The Forest Service's point 73 m south lies near the end of the drawn southern road on smooth floodplain, and the pin on the same floodplain to the north; neither the photo's sunlit gaps nor the ground relief shows a plain group pad at either. Not moved."
   },
   "234554": {
    "call": "hold",
@@ -310,7 +310,7 @@
   },
   "234572": {
    "call": "unsure",
-   "note": "The pin is under trees at the forest edge where a drawn track ends; the only structure is a small pale roof about 5 m across 30 m northeast, too small to say it is the station rather than a shed, and trees may hide more."
+   "note": "The Forest Service's point 83 m west-southwest is on a drawn track in open sagebrush with no building, and at the pin the only structure is a small pale roof 25 m north-northeast, too small to say it is the station. Not moved."
   },
   "234581": {
    "call": "good",
@@ -334,11 +334,11 @@
   },
   "234760": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest above the river, 15 m north of a drawn Forest Service road that doesn't show on the photo, and no group camp clearing shows."
+   "note": "Under closed canopy, neither the pin nor the Forest Service's point 23 m south (just below the drawn road, with only small dirt patches) shows a group camp's pad or loop; a bare flat by the river 40 m further southeast isn't plainly it. Not moved."
   },
   "252282": {
-   "call": "hold",
-   "note": "A gray-roofed cabin stands 30 m northwest of the pin under open pines, but a row of other cabins lines the lake shore 60 to 150 m farther west, so nothing says which one is the guard station; the pin stays in the trees."
+   "call": "usable",
+   "note": "Moved the pin 33 m northwest onto the gray-roofed cabin, where the Forest Service's point for the Crescent Lake guard station falls; the old pin was under the pines with nothing at it. No drawn road reaches it (an undrawn drive runs north; the drawn road passes 35 m east)."
   },
   "261791": {
    "call": "good",

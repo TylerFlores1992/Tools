@@ -62,11 +62,11 @@
   },
   "233740": {
    "call": "unsure",
-   "note": "The lidar relief and intensity show a flat, smooth patch about 25 m across at the pin, at the end of the drawn spur, which may be the cabin's clearing, but no building-shaped gap or roof, so the pin can't be confirmed. Redrew the river road past it (from the junction 120 m west to the bend 340 m south) onto the band the relief shows and the photo shows in the open, where the Forest Service line ran 10 to 25 m west of it."
+   "note": "Both the pin and the Forest Service's point 15 m west sit in the same flat clearing the lidar shows at the end of the drawn spur, but no roof or building-shaped gap is plain at either (a smooth patch just east of the pin might be one). Not moved; the earlier river-road trace stays."
   },
   "233743": {
    "call": "unsure",
-   "note": "The lidar relief shows NFS Rd 2510 as a crowned band 60 m north of the pin, while the Census line ran 10 to 30 m south of it past the cabin; redrew the road from 230 m west to 200 m east of the pin onto the band (dropping the duplicate Duckabush Rd lines). At the pin the relief shows a smoother patch of ground but no building-shaped gap or pad that is plainly the cabin, so the pin isn't moved."
+   "note": "The lidar shows a clearing running south from Rd 2510 that holds both the Forest Service's point and, at its edge, the pin 17 m south, but no roof or building-shaped gap is plain in it, so the cabin can't be placed. Not moved; the earlier road trace stays."
   },
   "233888": {
    "call": "good",
@@ -78,11 +78,11 @@
   },
   "234091": {
    "call": "unsure",
-   "note": "Full canopy: the pin is under tall firs where no building shows, and the drawn Census roads can't be checked through the trees."
+   "note": "Under tall firs, neither the pin nor the Forest Service's point 95 m east shows a roof in the photo, and the lidar relief here carries no ground detail. Not moved."
   },
   "234092": {
    "call": "unsure",
-   "note": "The lidar relief shows only forest floor at the pin, with no building-shaped gap, pad or clearing within 40 m, and the photo shows unbroken lodgepole pines, so the cabin can't be placed. The forest road to the north shows as a band 5 to 8 m south of its drawn line, and the drawn road south of the pin shows only as a faint strip 8 m off. Nothing traced, since the pin itself is unconfirmed."
+   "note": "Under lodgepole pines, the ground relief shows no building-shaped gap or pad at the pin or at the Forest Service's point 49 m north-northeast by the forest road. Not moved."
   },
   "234131": {
    "call": "good",
@@ -238,7 +238,7 @@
   },
   "234379": {
    "call": "unsure",
-   "note": "The pin is at the edge of a fenced clearing beside an RV area between two drawn roads, and no building shows plainly at it. The listing's own point, 3.4 km east, is in unbroken forest, so neither point is confirmed."
+   "note": "The Forest Service's point 73 m east is in dense conifers with no roof, while near the pin a rust-colored roof-like patch 15 m northwest and a vehicle-like object beside the RV clearing aren't plainly the cabin. Not moved."
   },
   "234388": {
    "call": "good",
@@ -270,7 +270,7 @@
   },
   "234431": {
    "call": "unsure",
-   "note": "The lidar survey stops about 100 m west of the pin (only the highway is covered), so the layers can't show the cabin or a lane to it. On the photo the pin sits in a small opening in the conifers with a pale patch beside it, but nothing is plainly the cabin. Nothing traced."
+   "note": "The Forest Service's point 56 m northwest is in dense conifers by the highway with no roof or clearing, and at the pin the small opening and an irregular white shape beside it aren't plainly the cabin. Not moved."
   },
   "234448": {
    "call": "good",
@@ -354,7 +354,7 @@
   },
   "269838": {
    "call": "hold",
-   "note": "The pin is on a highway pull-out (parked cars) in the forest, not on a lookout; it looks like the trailhead, and the lookout itself, up the ridge, isn't on the map."
+   "note": "Both the pin, on the highway pull-out where cars park (the trailhead), and the Forest Service's point 24 m northeast in the forest beside it mark the trailhead, not the lookout up the ridge; nothing shows a tower. Not moved."
   },
   "272173": {
    "call": "good",
