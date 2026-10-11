@@ -28,6 +28,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 | The approved brief, sitemap, design spec | `docs/BRIEF.md` |
 | Lessons carried over from CampHawk, and why | `docs/CAMPHAWK-LESSONS.md` |
 | Vercel, domain, CI setup | `docs/SETUP.md` |
+| Bringing the lab look + maps to camphawk.app (hand-off, via a campsite-finder orchestrator) | `docs/design/camphawk-handoff.md` |
 | Where the last session stopped | `docs/NEXT-SESSION.md` |
 
 ## Standing rules (conclusions; the why is in docs/CAMPHAWK-LESSONS.md)
