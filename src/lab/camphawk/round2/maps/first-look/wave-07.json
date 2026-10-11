@@ -49,8 +49,8 @@
    "note": "Not traced: a boat-in campground, and the tracks among the pines by 001 to 008 and 014 to 018 are narrow dirt paths, footpaths rather than lanes, so nothing qualifies to trace. Only a track by the building in the southwest corner is drawn, and nothing on the map shows how the sites are reached from the shore."
   },
   "231918": {
-   "call": "hold",
-   "note": "Not traced. Zoomed, the drawn west end doesn't follow the visible gravel: the photo shows two loops by 040 to 042 (the drawn one is smaller and 10 to 15 m inside the east lane), and the lane from 037 down to them curves 4 to 7 m west of the straight drawn road. Fixing it means replacing every road in a 500 m frame from the photo, too much to do safely in this pass; the loops by 001 to 030 look right."
+   "call": "usable",
+   "note": "Replaced every road over the lidar intensity, where the paved lanes show as plain dark bands, and checked on the photo: the west end now has both loops by 040 to 043 and the lane between them, the lane from 037 down to them follows its curve, and the lanes to 034 to 038 and 041 and 042 are drawn. The loops by 001 to 030, the north loop by 032 and 033, the highway and the boat-ramp roads keep their lines, nudged onto the bands; every site is within 40 m of a drawn road."
   },
   "231919": {
    "call": "good",
@@ -93,8 +93,8 @@
    "note": "The loop follows the visible gravel, and 001, 003, 005, 007, 009 and 012 to 015 now sit by it. Traced: the sandy pull-outs to 012, 013 and 014, the spur to 002, and the lane across the loop past 003; still about a third undrawn, as 004, 006, 008, 010 and 011 sit 20 to 25 m toward the river, where trees break any way in."
   },
   "232186": {
-   "call": "hold",
-   "note": "Not traced. Zoomed, the paved east loop by 014 and 015 is drawn within 4 m of the pavement, but the drawn west lane by 007 to 009 runs 4 to 6 m east of the visible one, and west of the main road 002, 003, 010 and 019 to 026 sit among faint dirt tracks and bare ground with no pads that show, 40 to 150 m from any road, so there's nothing to place."
+   "call": "usable",
+   "note": "Replaced every road over the lidar intensity and the photo: the entrance road past 004 and the paved loop by 005 to 015 now follow the pavement within about 3 m, its west lane by 007 to 009 included. 022 to 026 still sit 85 to 125 m west of any drawn road among faint dirt tracks that neither layer shows plainly (the long band in the relief there is a gully), five of 25 sites; 1Host has no point."
   },
   "232204": {
    "call": "good",
@@ -117,16 +117,16 @@
    "note": "The lidar intensity shows the two loops as faint grey bands near where they are drawn, but too faintly to check them to 3 m; no lanes show toward 02 to 09, 11 and 13 by the river or 18 to 20 north of the east loop, which still sit 20 to 40 m from a drawn road. Nothing traced."
   },
   "232267": {
-   "call": "hold",
-   "note": "Not traced: the photo shows only faint lanes in gaps under the pines, and the lidar relief shows a wide mesh of old tracks across the whole 400 by 600 m frame that the drawn north loop only partly follows. Placing the real lanes to 3 m would mean replacing every road over 60 sites; most of 001 to 034, 056, 058 and 059 still sit 50 to 200 m from a drawn road."
+   "call": "unsure",
+   "note": "The north and south loops are redrawn on the lanes the lidar intensity shows (the beaded dark line through the middle is the creek and is left out), but the middle of the campground doesn't add up: 001 to 003, 007, 008 and 015 to 020 sit in open forest between the loops where neither layer nor the photo shows any lane, so it can't be told whether those pins are misplaced or a lane is missing. Final check: unsure, not usable."
   },
   "232270": {
    "call": "usable",
    "note": "The lidar intensity shows the loop as a plain asphalt band under the pines. Replaced the roads to redraw the loop on its band, which ran 5 to 10 m inside the OpenStreetMap loop along its top and northeast side (by 012 and 11) and 3 to 5 m off along its south side; the rest copied from OpenStreetMap. 001, 002, 016, 019, 07 and 09 sit 20 to 40 m outside the loop where no spurs show."
   },
   "232311": {
-   "call": "hold",
-   "note": "Not traced. Zoomed, the north area by 001 to 008 is a set of separate gravel pull-ins between long tree shadows with no single loop to place, the drawn road runs along its west edge, and the lower loop's west arm by 013 and 014 is drawn 5 to 8 m inside the visible gravel. 009 to 012 sit 30 to 60 m off the road in the meadow to the north."
+   "call": "usable",
+   "note": "Replaced every road from the photo, where the gravel is in the open: the forest road, the lane from the entrance to the lower loop, the lower loop by 013 to 018 on its visible gravel (its west arm by 013 and 014 now on the gravel), the east lane past 019 to 022 with the lot by 022, and the short lane up to 001 and 002. The north area's pull-ins by 003 to 008 between the tree shadows aren't drawn; 005 and 012 sit 51 to 60 m from a drawn road, two of 22."
   },
   "232321": {
    "call": "unsure",
@@ -137,8 +137,8 @@
    "note": "The lidar intensity shows every drawn road as a plain asphalt band, including the B loop under the firs and the C and D lanes, and the drawn roads sit on them. B1, B03, B05, B8, B10 and B11 sit between the B loop and the main road, within 40 m of both, and their pull-ins aren't drawn. Nothing traced."
   },
   "232346": {
-   "call": "hold",
-   "note": "Not traced: the north loop is under full canopy on the photo, and the lidar relief shows its real lanes as a mesh of arcs (one runs north-south by x -141, another curves in from the highway past 001) that the drawn loop around 001 to 003 and 011 doesn't follow, 10 to 20 m off in places. Untangling that needs the lidar and replacing every road; 004 to 010 and 012 still sit off any drawn road."
+   "call": "usable",
+   "note": "Replaced every road over the lidar relief, where the lanes show as plain crowned bands under the full canopy: the north loop around 002 and 003 with its spur to 001, the two pull-in lanes west toward 006 and 007, the curving lane from the loop east to the entrance from US 14, the entrance lane down to the river road past 010 to 012, and the east lane and loop by 014 to 021. Every site is within 40 m of a drawn road; a short cross lane inside the loop and the pull-ins by 011 are left out."
   },
   "232386": {
    "call": "hold",
@@ -157,8 +157,8 @@
    "note": "The loop follows the visible gravel through the firs, and 004, 005, 007, 011 to 013 sit by it. Now traced: the gravel lane south off the loop past 008; 009 and 010 still sit 20 m south and east of the loop with no way in that shows, and 003 and 006 sit inside it."
   },
   "232792": {
-   "call": "hold",
-   "note": "Not traced. Zoomed, the west end is a web of gravel lanes and pull-throughs by 32 to 46 that the drawn loop crosses rather than follows, and the shore loop's south lane past 02 to 04, 06 and 07 isn't drawn. A fix means replacing every road in the 450 m frame from the photo, which this pass didn't attempt; the shore lane by 08 to 24 is right."
+   "call": "usable",
+   "note": "Replaced every road over the lidar intensity, where the paved lanes show as plain dark bands, and checked on the photo: the highway, the entrance, the west area's outer loop with its lanes and pull-ins by 32 to 46, the loop by 34, the island loop by 30 to 32, and the shore loop by 01 to 24 with the pull-ins to 02 and 07. Every placed site is within 40 m of a drawn road; the diagonal pull-throughs between the shore loop's two lanes are left out, and 48 and FS1-40(N) have no point."
   },
   "232833": {
    "call": "usable",
@@ -277,8 +277,8 @@
    "note": "The lane along the river and the two loops follow the visible gravel, and 1 to 28 sit by them; 7, 8 and 10 sit 20 to 30 m off the west end where spurs show."
   },
   "234381": {
-   "call": "hold",
-   "note": "Not traced, though the lanes show plainly. Zoomed: the highway is drawn right, but the lane past 01 to 09 runs 10 to 13 m northeast of the drawn one, the loop by 11 and 12 is drawn 5 m south of the visible arc, its west side runs 8 to 12 m off the lanes to 13 to 16, and the lower loop and gravel lot past GS-1 aren't drawn. It needs every road replaced from the photo, which this pass started and didn't finish."
+   "call": "usable",
+   "note": "Replaced every road. The highway, the lane past 01 to 09 with its turnaround loop at the west end, the entrance, the loop by 11 and 12 with its inner lane by 14 and 15, the east loop and the lane past 18 to 21 to the GS-1 loop now follow the lanes on the photo and the lidar intensity, within about 3 m; the gravel lot south of the loop is drawn as one lane through it. Every site is within 40 m of a drawn road; the short pull-ins to 07 and 13 are left out."
   },
   "234382": {
    "call": "usable",

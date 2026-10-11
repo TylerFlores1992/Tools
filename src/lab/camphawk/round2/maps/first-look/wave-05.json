@@ -53,8 +53,8 @@
    "note": "The lidar intensity shows every lane as a plain dark band under the trees, including the small loop past 016 that the photo hides. Replaced the roads: the north loop (026 to 034) redrawn on its band, whose west side ran 8 to 10 m east of the drawn one, and short lanes added to 015 and 014; the rest copied from OpenStreetMap, which sits on its bands. Every site is within 40 m of a drawn road; the short pull-ins to 013, 017, 019 and 020 aren't drawn."
   },
   "231981": {
-   "call": "hold",
-   "note": "The three long lanes follow the visible gravel within about 5 to 10 m and most sites sit near them, but the short cross road between the west and middle lanes by 043 and 044 and the bypass south of the entry road don't show on the photo. Removing them needs a replacing trace of the whole lane network under the pines, which the photo doesn't show plainly enough, so nothing was changed and the drawn roads hold it."
+   "call": "usable",
+   "note": "Replaced every road from the photo alone (no USGS point cloud covers it), where the gravel lanes show plainly between the pines: the west, middle and east lanes now follow the gravel within about 3 m, the north loops by 015 to 030 and 058 to 060 and the boat-ramp lot road by 018 to 020 are on their lanes, and the cross road by 043 and 044 and the bypass south of the entry road, which don't show on the photo, are gone. Every site is within 40 m of a drawn road."
   },
   "232018": {
    "call": "unsure",
@@ -221,8 +221,8 @@
    "note": "The lidar intensity shows every lane as a plain band under the firs. Replaced the roads: the north loop's east side moved 8 to 10 m west onto its band and carried south past 005 and 004 to the entry road (the drawn diagonal past 022 shows no band), the lanes past 019 and 021 and west past 032, 031, 030 and 028 added, and the entry road's south end moved onto its band; the west triangle to the lake is copied from OpenStreetMap. Every site is now within 40 m of a drawn road."
   },
   "233267": {
-   "call": "hold",
-   "note": "The campground lane is drawn and 011 to 017 line it in the east half. In the west half it runs about 8 to 10 m south of the paved lane by 008 and 009, and the lane's link to the main road is in tree shadow, so a replacing trace couldn't be drawn with confidence; nothing was changed and the off-lane road holds it."
+   "call": "usable",
+   "note": "Replaced every road, tracing the campground lane on the photo: it now runs on the paved lane north of 008 and 009 and on the visible lane past 015 to 017 to the forest road, with the forest roads above kept on their pavement. The lidar intensity is weak here and was only used, with the relief, to confirm that the pale band to the south is the creek channel, which is left out. Every placed site is within 40 m of a drawn road; GS1 has no point."
   },
   "233745": {
    "call": "good",
@@ -337,8 +337,8 @@
    "note": "The lidar intensity shows every lane as a plain band, under the closed canopy of the north loop too. Replaced the roads: the north loop's top and west side (by 86 to 97) moved 3 to 6 m north and west onto their band; the rest copied from OpenStreetMap, which sits on its bands. Sites 01 to 111 sit beside the lanes, all within 40 m."
   },
   "10064730": {
-   "call": "hold",
-   "note": "The north loop past 05 to 25 runs under trees and the sites line it. On the open east side the drawn connector between 04 and 33 runs about 8 m east of the visible pavement and the road past 34 to 37 about 6 m west of it; fixing them needs a replacing trace, which would have to redraw the north loop under the trees, so nothing was changed and the off-lane road holds it."
+   "call": "usable",
+   "note": "Replaced every road over the lidar intensity, where the paved lanes show as dark bands, and checked on the photo where the east side is open: the north loop past 05 to 25, the south lane past 26 to 30, the connector between 04 and 33 and the lane past 34 to 37 now sit on the visible pavement, and the entrance from the road by 25 is drawn. Every site is within 40 m of a drawn road; the back-in pull-ins off the north loop are left out."
   },
   "10064768": {
    "call": "usable",

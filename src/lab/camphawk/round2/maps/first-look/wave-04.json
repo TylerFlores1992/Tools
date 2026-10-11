@@ -249,8 +249,8 @@
    "note": "The survey is sparse (1.3 ground points per square meter) and the lidar intensity shows no lanes under the pines, so it adds nothing to the photo, where the drawn lanes run along the gaps and parked campers by 001 to 015 and 018 to 040. Every site is within 40 m of a drawn road. Nothing traced."
   },
   "234488": {
-   "call": "hold",
-   "note": "Loops E, P, R, S and B follow the visible gravel and their sites sit on the pads, with the earlier trace past B34, B32 and B31. The drawn lane from B36 past B33 still runs about 8 m south of the pavement; a replacing trace would have to redraw the R and S loops under the pines, so nothing was changed and the off-lane road holds it."
+   "call": "usable",
+   "note": "Replaced every road, keeping the first trace's credit: the paved R and S loops, the entrance roads and the highway now sit on the asphalt bands in the lidar intensity, the gravel E loop is retraced on its lane, loop B's north side now follows the pavement from B36 past B34 and B33 to B30, and the P loop and the A and B group loop keep their lines. Every placed site is within 40 m of a drawn road; the short spur lanes inside the R and S loops (by R33, S04 to S07 and S16) are left out."
   },
   "234529": {
    "call": "usable",
@@ -353,8 +353,8 @@
    "note": "The upper lane past Sites 4 to 10, the inner lane past 21 to 37, and the road down the west side past 13 to 20 all follow the visible pavement, and the sites line them."
   },
   "10124445": {
-   "call": "hold",
-   "note": "The inner loop past 19 to 23 and the entrance road past 01 to 03 follow visible lanes. The drawn east loop near 33 and 34 still runs about 7 m north of the visible lane; a replacing trace would have to redraw the west loop past 04 to 12, which is under canopy, so nothing was changed and the off-lane road holds it."
+   "call": "usable",
+   "note": "Replaced every road over the lidar intensity, where the paved lanes show as plain dark bands under the trees: the west loop past 04 to 12, the east loop past 24 to 36 (its north side by 33 and 34 now on the visible pavement), the inner loop past 13 to 23, the entrance road past 01 to 03 and the day-use loop to the south. Every site is within 40 m of a drawn road; the short pull-in spurs are left out."
   },
   "232491": {
    "call": "hold",
