@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "map": "ridb-232119",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.3235247,
+     38.169892
+    ],
+    [
+     -119.3235932,
+     38.169865
+    ],
+    [
+     -119.3236616,
+     38.1698469
+    ],
+    [
+     -119.3237757,
+     38.1698289
+    ],
+    [
+     -119.3238898,
+     38.1698289
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The paved spur west off the inner lane toward 013 to 015, which the lidar intensity shows as a dark band under the pines."
+}

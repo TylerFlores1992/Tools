@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { covers, mergeOsm, osmLayers, osmSource, parsePoly, parseOsm } from "../studio/campground-maps/osm.mjs";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { cachedCut, covers, mergeOsm, osmLayers, osmSource, parsePoly, parseOsm } from "../studio/campground-maps/osm.mjs";
 import { compareLayers, layerIds } from "../studio/campground-maps/osm-compare.mjs";
 
 // osmium's XML, as `osmium extract … -f osm` writes it (attributes from a real Colorado cut,
@@ -95,4 +98,14 @@ test("compareLayers counts what only one read has", () => {
   const c = compareLayers(a, b);
   assert.deepEqual(c.pois, { api: 1, extract: 1, onlyApi: 1, onlyExtract: 1 });
   assert.deepEqual(c.roads, { api: 1, extract: 1, onlyApi: 0, onlyExtract: 0 });
+});
+
+test("an empty OSM cut (left by a cut that was stopped) doesn't count as cached", () => {
+  const dir = mkdtempSync(join(tmpdir(), "osm-cut-"));
+  const f = join(dir, "a.osm");
+  assert.equal(cachedCut(f), false, "missing");
+  writeFileSync(f, "");
+  assert.equal(cachedCut(f), false, "empty");
+  writeFileSync(f, "<osm/>");
+  assert.equal(cachedCut(f), true);
 });

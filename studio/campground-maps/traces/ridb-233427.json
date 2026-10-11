@@ -1,135 +1,159 @@
 {
  "version": 1,
  "map": "ridb-233427",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-10",
+ "by": "Claude (rollout trace-b); Claude (canopy canopy-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
    "coords": [
     [
      -90.4029906,
-     42.2857842
+     42.285786
     ],
     [
-     -90.4030003,
+     -90.4030027,
      42.2856959
     ],
     [
-     -90.4029967,
+     -90.4029906,
      42.2856239
     ],
     [
-     -90.4029845,
+     -90.4029906,
      42.2855428
     ],
     [
      -90.4029785,
-     42.2855113
+     42.2855158
     ],
     [
-     -90.4029603,
-     42.2854393
+     -90.4029664,
+     42.2854438
     ],
     [
-     -90.4029482,
-     42.2853601
+     -90.4029421,
+     42.2853628
     ],
     [
-     -90.4029118,
+     -90.4029178,
      42.2852817
     ],
     [
-     -90.4028596,
-     42.2852295
+     -90.4028572,
+     42.2852277
     ],
     [
-     -90.4027893,
-     42.2851962
+     -90.4027845,
+     42.2851917
     ],
     [
-     -90.4027275,
-     42.2851899
+     -90.4027238,
+     42.2851917
     ],
     [
-     -90.4026571,
-     42.2852034
+     -90.4026511,
+     42.2852007
     ],
     [
-     -90.4025953,
-     42.2852421
+     -90.4025904,
+     42.2852457
     ],
     [
-     -90.4025504,
-     42.285288
+     -90.4025541,
+     42.2852907
     ],
     [
-     -90.4025153,
-     42.2853474
+     -90.4025177,
+     42.2853447
     ]
    ]
   },
   {
    "coords": [
     [
-     -90.4013148,
-     42.2851223
+     -90.401584,
+     42.2852457
     ],
     [
-     -90.4012141,
-     42.2850548
+     -90.401487,
+     42.2852007
     ],
     [
-     -90.4011111,
-     42.2849864
-    ]
-   ]
-  },
-  {
-   "coords": [
+     -90.4013051,
+     42.2850971
+    ],
     [
-     -90.4008746,
-     42.284908
+     -90.4011232,
+     42.2849846
+    ],
+    [
+     -90.4009898,
+     42.2848675
     ],
     [
      -90.4008807,
-     42.2847865
+     42.2847684
     ],
     [
-     -90.4007837,
-     42.2846964
+     -90.4007958,
+     42.2846874
     ],
     [
-     -90.4006745,
-     42.2845884
+     -90.4007109,
+     42.2846064
     ],
     [
-     -90.4005654,
-     42.2845073
+     -90.4006139,
+     42.2845163
     ],
     [
-     -90.4004987,
+     -90.4005412,
      42.2844443
     ],
     [
-     -90.4004745,
-     42.2843767
+     -90.4004926,
+     42.2843722
     ],
     [
      -90.4004926,
+     42.2843092
+    ],
+    [
+     -90.4005412,
+     42.2842642
+    ],
+    [
+     -90.4006139,
+     42.2842372
+    ],
+    [
+     -90.4007352,
+     42.2842282
+    ],
+    [
+     -90.4008807,
+     42.2842552
+    ],
+    [
+     -90.4010262,
+     42.2842912
+    ],
+    [
+     -90.4011838,
      42.2843182
     ],
     [
-     -90.4005533,
-     42.2842687
+     -90.4013415,
+     42.2843362
     ],
     [
-     -90.4006503,
-     42.2842282
+     -90.4014627,
+     42.2843452
     ]
    ]
   }
  ],
  "points": [],
- "note": "Traced the west lane past 01 to 07 from the lot, and the two east lanes: the spur past 37 and the gravel lane past 25 to 36 to the turnaround by 32. Where the east lanes meet the drawn loop is hidden under the trees, so they are drawn unjoined; 26 to 31 sit in the trees between them with no lane showing."
+ "note": "Traced the west lane past 01 to 07 from the lot (rollout trace-b). Over the lidar relief, which shows the east gravel lane as a crowned strip under the trees, the two unjoined east lanes (the spur past 37 and the lane past 25 to 36 to the turnaround by 32) are replaced by the one lane they belong to: from the loop's north-east corner past 37 and 33 to 36, round the turnaround by 32 and back west past 31 to 28 to the loop's south end."
 }

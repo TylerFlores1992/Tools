@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-232458",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -86.1153079,
+     44.7172445
+    ],
+    [
+     -86.1152322,
+     44.7172985
+    ],
+    [
+     -86.1150934,
+     44.7173885
+    ],
+    [
+     -86.1149167,
+     44.7175055
+    ],
+    [
+     -86.1147273,
+     44.7175775
+    ],
+    [
+     -86.1144496,
+     44.7175955
+    ],
+    [
+     -86.1141341,
+     44.7175955
+    ],
+    [
+     -86.1138185,
+     44.7176135
+    ],
+    [
+     -86.113503,
+     44.7176225
+    ],
+    [
+     -86.1132506,
+     44.7176225
+    ],
+    [
+     -86.1129855,
+     44.7175955
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Added the lane through the middle of the 400 loop (424 to 433), plain in the lidar intensity and where the photo opens by 424 to 426. Not traced: the walk-in sites (A, B, C) and group sites, reached by footpaths."
+}

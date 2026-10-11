@@ -105,8 +105,8 @@
    "note": "The loop and the lane south follow the visible roads, and 002, 004 to 006, 010 to 013 and 017 to 020 sit by them. 007 to 009 sit west of the south lane and 014 to 016 east of the loop in patchy pines where pale ground shows in strips but no lane can be followed, so nothing was traced."
   },
   "232210": {
-   "call": "hold",
-   "note": "The north loop and the group loops follow the lanes that show through the pines, and the pull-ins west of the north loop to 011 and 013 are traced. The loop's west side runs up to about 7 m east of the lane the lidar shows by 012 and 014, so it is held until it can be retraced over the lidar point-cloud layer; 008 and 009 sit in clearings outside it with no lane showing."
+   "call": "usable",
+   "note": "Replaced every road over the lidar ground relief, where the lanes show as smooth graded bands under the pines (the intensity is too faint at this density), keeping the earlier trace's credit and its pull-ins to 011 and 013. The north loop's east side by 002 to 004 now runs on its lane, moved about 7 m west, and its west side by 012 and 014 checks out on the band within about 3 m; the group loops by GS1 to GS3 and the highway keep their lines. Every site is within 40 m of a drawn road; 008 and 009 sit in clearings outside the loop with no lane showing."
   },
   "232212": {
    "call": "hold",

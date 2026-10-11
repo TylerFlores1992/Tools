@@ -66,7 +66,7 @@
   },
   "232397": {
    "call": "unsure",
-   "note": "The pin sits under trees on the river bank at the end of a short trail off the road; nothing at it shows through the canopy, and the listing's own point is 300 m away."
+   "note": "The lidar survey covers only 2% of the frame and nothing near the pin (0 ground points per square meter here), so neither layer shows anything; on the photo the pin is under trees on the river bank below the drawn trail, with no clearing, and the listing's own point is 300 m away. Nothing traced."
   },
   "232401": {
    "call": "good",
@@ -74,11 +74,11 @@
   },
   "232407": {
    "call": "unsure",
-   "note": "The pin sits under full canopy between the drawn lane and the highway; nothing at it shows the group site."
+   "note": "The lidar intensity shows the group site's lane plainly under the firs, running south from the campground road to a small turnaround loop; the spur is redrawn on its middle and the loop added. The pin sits 18 m east of the lane, where neither layer nor the photo shows a pad or clearing, so the site itself can't be placed."
   },
   "232763": {
    "call": "unsure",
-   "note": "The pin is where the drawn loop leaves the road, under oaks on the point above the lake; the loop runs under canopy, and nothing at the pin marks the group site. The listing's own point is 730 m away."
+   "note": "Under the oaks the lidar relief shows a crowned lane coming in from the west and a round loop about 35 m across south of the pin; OpenStreetMap's loop ran 10 m outside it on the west and up through the pin on the north, so the lane's last 40 m and the loop are redrawn on the relief. The pin sits 20 m north of the loop with nothing at it, and the listing's own point is 730 m away, so the group site can't be placed."
   },
   "232764": {
    "call": "usable",
@@ -126,7 +126,7 @@
   },
   "233224": {
    "call": "unsure",
-   "note": "The pin sits under pines 15 m north of the drawn loop of the group area; the loop runs under canopy and nothing at the pin marks the site."
+   "note": "The lidar relief shows a faint crowned line along the drawn loop's west side, within a few meters of it, and the intensity a lighter strip there; the rest of the loop and the ground at the pin, 15 m north of it, show only even forest floor in both layers and canopy on the photo, so nothing marks the group area. Nothing traced."
   },
   "233233": {
    "call": "unsure",
@@ -209,8 +209,8 @@
    "note": "The pin is on the drawn loop of the group site on the river bend, under full canopy; a small structure shows 10 m north, but the loop and pads don't show through the trees."
   },
   "234203": {
-   "call": "unsure",
-   "note": "The pin is on the drawn lane below the road junction under thick canopy; a small bare spot shows by it, but nothing plainly marks the group campground."
+   "call": "usable",
+   "note": "Through gaps in the canopy the photo shows the drawn loop's gravel lane, with pale pull-ins off it, and the lidar relief shows the levelled terrace it sits on between the creek channels; the drawn loop follows the gravel within a few meters, and the pin is at the loop's entrance, which reads as the group campground. The intensity is too mottled to add anything. Nothing traced."
   },
   "234215": {
    "call": "good",
@@ -237,8 +237,8 @@
    "note": "The pin sits in sagebrush 50 m east of the drawn loop, in the open between aspen stands; no lane or pad at it shows, and the listing's own point is 730 m away."
   },
   "234319": {
-   "call": "unsure",
-   "note": "The pin sits in conifer forest 45 m south of the drawn loops where trailers park; a dark roof may show 40 m east of it, but nothing at the pin plainly marks the bunkhouse."
+   "call": "usable",
+   "note": "The pin was in plain forest 45 m south of the trailhead lot; it is moved 43 m east-southeast onto the only building near it, a long gray roof the photo shows among the trees, beside a levelled patch in the lidar relief. The drawn lot is 50 m north of it and no lane to the building shows, so nothing else is traced (the frame moved with the pin, so its ground layer is now stale)."
   },
   "234344": {
    "call": "usable",
@@ -314,7 +314,7 @@
   },
   "251847": {
    "call": "unsure",
-   "note": "The pin sits under canopy 25 m south of the drawn lanes at the campground's east end; nothing at it shows the group site."
+   "note": "The drawn spur loop follows the gravel parking strip the photo shows beside the highway within about 3 m, and the pin sits 15 m south of the strip's end, where the lidar intensity shows a lighter patch and the photo faint pale ground under the trees; but neither layer shows a pad or clearing edge plainly enough to read as the group site. Nothing traced."
   },
   "272095": {
    "call": "good",
@@ -337,9 +337,9 @@
    "note": "The pin is at the end of the drawn trail from the small loop off the road, at the edge of the clearing above the creek, with a structure at the loop."
   },
   "10165535": {
+   "as": "firstcome",
    "call": "hold",
-   "note": "The point is in open water on the lake, off a forested shore, and there's no outline. Nothing near the pin shows a campground.",
-   "as": "firstcome"
+   "note": "Unchanged. The point is in open water about 70 m off the island's east shore; zoomed on a 10 m grid the island shows only forest, a bare beach and a grassy flat, with no tents, tables or cleared sites, so there is no campground plainly shown to move the pin onto."
   },
   "10171272": {
    "call": "good",

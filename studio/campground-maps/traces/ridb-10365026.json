@@ -1,0 +1,134 @@
+{
+ "version": 1,
+ "map": "ridb-10365026",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-07)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -119.699673,
+     48.5950885
+    ],
+    [
+     -119.6988189,
+     48.5950885
+    ],
+    [
+     -119.6981411,
+     48.5950795
+    ],
+    [
+     -119.6977344,
+     48.5950795
+    ],
+    [
+     -119.6974632,
+     48.5950795
+    ],
+    [
+     -119.6972599,
+     48.5950615
+    ],
+    [
+     -119.6971514,
+     48.5950345
+    ],
+    [
+     -119.6970565,
+     48.5949806
+    ],
+    [
+     -119.6969481,
+     48.5949086
+    ],
+    [
+     -119.6968396,
+     48.5948187
+    ],
+    [
+     -119.6967447,
+     48.5947288
+    ],
+    [
+     -119.6966498,
+     48.5946388
+    ],
+    [
+     -119.6965142,
+     48.594486
+    ],
+    [
+     -119.6964058,
+     48.5943511
+    ],
+    [
+     -119.696338,
+     48.5942432
+    ]
+   ],
+   "through": true,
+   "name": "Sinlahekin Road"
+  },
+  {
+   "coords": [
+    [
+     -119.6967854,
+     48.5947198
+    ],
+    [
+     -119.6969209,
+     48.5946748
+    ],
+    [
+     -119.6970836,
+     48.5946388
+    ],
+    [
+     -119.6972328,
+     48.5945849
+    ],
+    [
+     -119.6973412,
+     48.5945129
+    ],
+    [
+     -119.6974226,
+     48.594423
+    ],
+    [
+     -119.6974632,
+     48.5943151
+    ],
+    [
+     -119.6974632,
+     48.5942072
+    ],
+    [
+     -119.6974361,
+     48.5940993
+    ],
+    [
+     -119.6973683,
+     48.5939914
+    ],
+    [
+     -119.6972734,
+     48.5938744
+    ],
+    [
+     -119.6971785,
+     48.5937575
+    ],
+    [
+     -119.6971107,
+     48.5936856
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "replace": true,
+ "note": "Traced over the lidar relief from the point clouds, where the road and the campground lane show as graded bands under the trees (the intensity agrees for the road and the lane's south end): moved Sinlahekin Road onto its band (OpenStreetMap drew it 12 to 15 m south-west), and redrew the campground lane from the road past 4, 2 and 3 to the south edge, which was drawn up to 12 m west of its band. Site 1, 100 m west in the trees, has no lane."
+}

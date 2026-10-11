@@ -1,9 +1,9 @@
 {
  "version": 1,
  "map": "ridb-233832",
- "traced": "2026-10-08",
- "by": "Claude (rollout trace-b)",
- "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "traced": "2026-10-10",
+ "by": "Claude (rollout trace-b); Claude (canopy canopy-11)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
  "roads": [
   {
    "coords": [
@@ -128,8 +128,36 @@
      37.6464419
     ]
    ]
+  },
+  {
+   "coords": [
+    [
+     -96.0703547,
+     37.64441
+    ],
+    [
+     -96.0702754,
+     37.6443109
+    ],
+    [
+     -96.0702074,
+     37.6442028
+    ],
+    [
+     -96.0701621,
+     37.6440856
+    ],
+    [
+     -96.0701167,
+     37.6439775
+    ],
+    [
+     -96.0700827,
+     37.6438874
+    ]
+   ]
   }
  ],
  "points": [],
- "note": "Traced the gravel lane past 001 to 005 from the lot to the paved road, its small loop by 002 and 003, and the lane north of the loop past 021, 022, 032 and 033 toward 031. Left out: the spurs to 006 to 009 and the lanes past 023 to 030, which are under full canopy."
+ "note": "Traced the gravel lane past 001 to 005 from the lot to the paved road, its small loop by 002 and 003, and the lane north of the loop past 021, 022, 032 and 033 toward 031 (rollout trace-b). Added: the paved lane south-east off the road toward 006 to 009, which the photo shows between the trees and the lidar relief shows as a strip with its ditch. Left out: the lanes past 023 to 030, where the lidar is too sparse to show a band."
 }

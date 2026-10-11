@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-234684",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-10)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -105.0694257,
+     38.0551641
+    ],
+    [
+     -105.0692889,
+     38.0551371
+    ],
+    [
+     -105.069175,
+     38.0551146
+    ],
+    [
+     -105.0690611,
+     38.0550875
+    ],
+    [
+     -105.0689471,
+     38.055047
+    ],
+    [
+     -105.0688332,
+     38.0549975
+    ],
+    [
+     -105.0687192,
+     38.054966
+    ],
+    [
+     -105.0686053,
+     38.054948
+    ],
+    [
+     -105.0684913,
+     38.0549254
+    ],
+    [
+     -105.0683774,
+     38.0549074
+    ],
+    [
+     -105.0682635,
+     38.0548984
+    ],
+    [
+     -105.0681609,
+     38.0549119
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced from NAIP: the gravel lane from the pad by 004 and 005 east past 006 to 009 to the turnaround at the end of the campground road. Left out: the pieces of lane by 002 and 003, which show only in a clearing with no visible link to the road (the lidar here is too sparse, about 1.3 ground points per m², to show one)."
+}

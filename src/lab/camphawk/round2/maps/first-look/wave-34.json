@@ -46,7 +46,7 @@
   },
   "232933": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is on the creek's shore under forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 6 m away."
+   "note": "The pin is on the creek's north bank where it widens into a pool, and both lidar layers (1.99 ground points per square meter) show only speckled forest floor there, with no levelled pad, building footprint or clearing; the photo shows only canopy and fallen logs in the water, so the cabin can't be placed. Nothing traced."
   },
   "232934": {
    "call": "good",
@@ -54,7 +54,7 @@
   },
   "232936": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "At the pin, 200 m in from the cove, both lidar layers (3.82 ground points per square meter) show only forest floor and rocky knolls, with no levelled pad, building footprint or clearing, and the photo shows only canopy there and along the cove shore, so the cabin can't be placed. Nothing traced."
   },
   "232937": {
    "call": "unsure",
@@ -198,7 +198,7 @@
   },
   "233011": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under a stand of trees in the open meadow; no cabin shows through them. On the map: the pin is 0 m from the listing's own point, with a drawn trail 87 m away."
+   "note": "The pin sits at the east edge of a stand of spruce in the open meadow, where the photo shows a faint footpath through the grass ending at it, but no roof, and the lidar (3.34 ground points per square meter) shows only creek channels and forest floor there, with no levelled pad or building footprint, so the cabin can't be confirmed under the trees. Nothing traced."
   },
   "233012": {
    "call": "unsure",
@@ -214,7 +214,7 @@
   },
   "233030": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 80 m in from the shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 149 m away."
+   "note": "At the pin, 80 m in from the shore, both lidar layers (3.1 ground points per square meter) are mottled forest floor with no levelled pad, building footprint or clearing, and the photo shows only canopy, so the cabin can't be placed. Nothing traced."
   },
   "233032": {
    "call": "unsure",
@@ -254,19 +254,19 @@
   },
   "233056": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The pin is on the lake's east shoreline, and both lidar layers (1.64 ground points per square meter) show only speckled forest floor behind it, with no levelled pad, building footprint or clearing; the photo shows only canopy. A small reddish roof-like square shows in the meadow at the lake's southwest inlet, 530 m away, too far and too uncertain to move the pin to. Nothing traced."
   },
   "233060": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 50 m from the lake; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both lidar layers (2.14 ground points per square meter) are mottled forest floor at the pin, 50 m from the lake, with no levelled pad, building footprint or clearing, and the photo shows only canopy along this shore within 400 m, so the cabin can't be placed. Nothing traced."
   },
   "233061": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the lake shore under the trees above a beach with a dock; no cabin plainly shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 37 m away."
+   "note": "The pin is under the trees just above a sand beach with a small dock on the photo, and the lidar intensity (0.74 ground points per square meter) has a hole of about 6 by 10 m with no ground returns 3 m west of it that may be the cabin's roof, but the survey is too thin to tell a roof from a gap, and the relief shows no levelled pad, so the cabin can't be confirmed. Nothing traced."
   },
   "233063": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 171 m away."
+   "note": "Both lidar layers (1.8 ground points per square meter) are noisy forest floor at the pin, with no levelled pad, building footprint or clearing, and the photo shows only canopy there and no building within 400 m, so the cabin can't be placed. Nothing traced."
   },
   "233066": {
    "call": "unsure",

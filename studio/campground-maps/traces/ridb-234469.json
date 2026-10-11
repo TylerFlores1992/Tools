@@ -1,0 +1,63 @@
+{
+ "version": 1,
+ "map": "ridb-234469",
+ "traced": "2026-10-10",
+ "by": "Claude (canopy canopy-09)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -83.9694783,
+     34.7406992
+    ],
+    [
+     -83.9693723,
+     34.7409039
+    ],
+    [
+     -83.9691725,
+     34.7410986
+    ],
+    [
+     -83.9689847,
+     34.7412924
+    ],
+    [
+     -83.9687728,
+     34.741506
+    ],
+    [
+     -83.968632,
+     34.7416809
+    ],
+    [
+     -83.968443,
+     34.7418369
+    ],
+    [
+     -83.9682312,
+     34.7419721
+    ],
+    [
+     -83.9680194,
+     34.7421082
+    ],
+    [
+     -83.9678785,
+     34.7422254
+    ],
+    [
+     -83.9677606,
+     34.7423218
+    ],
+    [
+     -83.9676535,
+     34.742393
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced over the lidar relief: the crowned road from the junction south of 036 north-east past 021 and 023 to the road by 024, plain in the relief between its ditches. Left out: the pull-ins."
+}

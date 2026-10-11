@@ -1,0 +1,107 @@
+{
+ "version": 1,
+ "map": "ridb-232343",
+ "traced": "2026-10-09",
+ "by": "Claude (canopy canopy-04)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -120.0256569,
+     38.4780907
+    ],
+    [
+     -120.0258402,
+     38.4780727
+    ],
+    [
+     -120.0259548,
+     38.4780457
+    ],
+    [
+     -120.0260351,
+     38.4779917
+    ],
+    [
+     -120.0260809,
+     38.4779196
+    ],
+    [
+     -120.0261153,
+     38.4778296
+    ],
+    [
+     -120.0261267,
+     38.4777395
+    ],
+    [
+     -120.0261382,
+     38.4776495
+    ],
+    [
+     -120.0261497,
+     38.4775594
+    ],
+    [
+     -120.026184,
+     38.4774693
+    ],
+    [
+     -120.0262414,
+     38.4773793
+    ],
+    [
+     -120.0263101,
+     38.4773072
+    ],
+    [
+     -120.0263903,
+     38.4772442
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -120.0250724,
+     38.4778296
+    ],
+    [
+     -120.0250953,
+     38.4777935
+    ],
+    [
+     -120.0251297,
+     38.4777215
+    ],
+    [
+     -120.0251641,
+     38.4776314
+    ],
+    [
+     -120.0251984,
+     38.4775414
+    ],
+    [
+     -120.0252271,
+     38.4774513
+    ],
+    [
+     -120.0252443,
+     38.4773793
+    ],
+    [
+     -120.0252443,
+     38.4773252
+    ],
+    [
+     -120.0252099,
+     38.4772892
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "The lane west from the B loop past 6 and 7, which the lidar relief shows as a crowned band and the intensity as a dark one under the pines, and the lane south from the B loop past 13 to 16 to the south road, a dark band in the intensity. Not traced: anything toward 9, where only drainage shows."
+}

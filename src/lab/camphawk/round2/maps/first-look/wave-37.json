@@ -25,16 +25,16 @@
    "note": "The pin sits on a mown clearing with a cabin, and the drawn lane ends in the clearing."
   },
   "232437": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy at the end of a drawn lane; no clearing shows."
+   "call": "usable",
+   "note": "Under the full canopy the lidar relief (6.49 ground points per square meter) plainly shows a cluster of a dozen levelled tent pads 10 to 60 m west and north of the pin, and the drawn Big Creek Group Camp spur from the campground loop road follows a graded lane between ditches to the pin at the cluster's east edge, within about 4 m of its middle. Nothing traced."
   },
   "233108": {
    "call": "good",
    "note": "The pin sits at the east edge of a large mown clearing with tracks across it, plainly the group field, and the drawn road ends at the pin. The listing's own point is 691 m away."
   },
   "233109": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy; no clearing shows, and the nearest drawn road is 150 m south-west."
+   "call": "hold",
+   "note": "The lidar is dense here (6.79 ground points per square meter) and shows the pin on an unbroken wooded hillside 150 m east of the drawn Avery Creek Road, with no lane, levelled pad or clearing at it or leading to it. The only openings nearby are a meadow and the cabin clearings along the lane 200 to 250 m west, none plainly the group camp, so the pin wasn't moved and nothing was traced."
   },
   "233122": {
    "call": "good",
@@ -106,11 +106,11 @@
   },
   "234584": {
    "call": "unsure",
-   "note": "The pin sits under trees on the point, 30 m from the drawn road; no cabin shows through the canopy. The listing's own point is 44 km away, likely a wrong point in the listing."
+   "note": "The pin is on the wooded knob of the point 30 m east of the drawn road; the lidar relief (3.29 ground points per square meter) shows only forest floor and two drainage gullies there, with no levelled pad, building footprint or drive, and the photo shows only canopy. The drawn road west of the pin runs along the graded band's south ditch, 5 to 8 m off its middle, but with the cabin unplaced nothing was traced."
   },
   "234585": {
    "call": "unsure",
-   "note": "The pin sits under trees on the point, 50 m from the drawn road; no cabin shows through the canopy. The listing's own point is 44 km away, likely a wrong point in the listing."
+   "note": "The lidar relief (3.6 ground points per square meter) shows the drawn road through the point on its graded band, within about 4 m of its middle, 30 m south of the pin, but at the pin both layers show only a drainage gully and forest floor, with no levelled pad, building footprint or drive; the photo shows only canopy there, so the cabin can't be confirmed. Nothing traced."
   },
   "234597": {
    "call": "good",

@@ -66,7 +66,7 @@
   },
   "232947": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 140 m in from the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The lidar here is far too sparse to read (0.14 ground points per square meter, flown 2013): both layers are scattered speckle at the pin, 140 m in from the beach, and the Forest Service photo shows only forest canopy there, so no cabin or clearing can be placed. Nothing traced."
   },
   "232948": {
    "call": "good",
@@ -86,7 +86,7 @@
   },
   "232959": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 60 m in from the bay; no cabin shows. On the map: the pin is 22 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The lidar is thin here (1.3 ground points per square meter): both layers are speckle at the pin just inside the forest at the head of the bay, with no levelled pad, building footprint or clearing, and the photo shows only canopy, so the cabin can't be placed. Nothing traced."
   },
   "232963": {
    "call": "hold",
@@ -150,7 +150,7 @@
   },
   "233001": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 70 m above the shore, where a floatplane is beached; no cabin shows through the trees. On the map: the pin is 0 m from the listing's own point, with a drawn trail 2 m away."
+   "note": "The lidar here is far too sparse to read (0.12 ground points per square meter, flown 2008): both layers are speckle at the pin, 70 m above the beached floatplane, and the Forest Service photo shows only forest canopy there, so no cabin or clearing can be placed. Nothing traced."
   },
   "233002": {
    "call": "unsure",
@@ -166,7 +166,7 @@
   },
   "233006": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 60 m above the lake, where a dark roof may show; nothing is plainly the cabin. On the map: the pin is 0 m from the listing's own point, with a drawn trail 12 m away."
+   "note": "The lidar here is far too sparse to read (0.1 ground points per square meter, flown 2008): both layers are scattered flight-line streaks with nothing at the pin. The Forest Service photo shows only two small light specks 3 to 8 m from the pin, too small to tell for the cabin. Nothing traced."
   },
   "233007": {
    "call": "good",
@@ -222,7 +222,7 @@
   },
   "233025": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy 70 m in from the shore; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "The lidar is thin under the spruce here (1.22 ground points per square meter): both layers are speckle at the pin just inside the forest edge above the shore, with no levelled pad, building footprint or clearing, and the photo shows only canopy, so the cabin can't be placed. Nothing traced."
   },
   "233026": {
    "call": "good",
@@ -250,11 +250,11 @@
   },
   "233038": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 185 m from the listing's own point, with a drawn trail 174 m away."
+   "note": "Both lidar layers (5.74 ground points per square meter, flown 2023) show only the forest floor and the long ridges of old beach lines at the pin, with no levelled pad, building footprint or clearing within 250 m, and the photo shows only canopy; the pin is 185 m from the listing's own point, so the cabin can't be placed. Nothing traced."
   },
   "233039": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under forest canopy 40 m in from the beach; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "note": "Both lidar layers (2.27 ground points per square meter, flown 2023) are mottled forest floor at the pin, 40 m in from the beach, with no levelled pad, roof gap or clearing within 300 m; the Forest Service photo shows only canopy there, so the cabin can't be placed. Nothing traced."
   },
   "233040": {
    "call": "unsure",
@@ -286,7 +286,7 @@
   },
   "233050": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 136 m from the listing's own point, with a drawn road 149 m away."
+   "note": "At the pin, on the terrace edge above the creek, both lidar layers (3.47 ground points per square meter) show only forest floor, with no levelled pad, building footprint or clearing, and the photo shows only canopy; the pale patches in the intensity 200 m northeast are wet muskeg, not a cabin. The drawn trail roads follow their banks, but the cabin can't be placed. Nothing traced."
   },
   "233051": {
    "call": "unsure",
@@ -313,8 +313,8 @@
    "note": "Zoomed on the Forest Service photo, the pin is on the river's open water, with no cabin on the banks near it. On the map: the pin is 0 m from the listing's own point, with a drawn trail 98 m away."
   },
   "233059": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin shows. On the map: the pin is 0 m from the listing's own point, with no drawn road or trail within 700 m (likely fly-in or boat-in)."
+   "call": "usable",
+   "note": "The lidar was too thin to show anything (0.71 ground points per square meter), but the Forest Service photo plainly shows a small red-roofed log cabin with a skiff landing on the lake shore, the only building in the frame, 185 m west-southwest of the listing's rounded point; T08 was moved onto its roof. It's a boat-in or fly-in cabin with no road or trail drawn."
   },
   "233062": {
    "call": "hold",
@@ -322,11 +322,11 @@
   },
   "233064": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy above the creek flats; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 231 m away."
+   "note": "At the pin, under the spruce above the creek flats, both lidar layers (2.22 ground points per square meter) are mottled forest floor with no levelled pad, building footprint or clearing, and the meadow 100 m south shows only creek channels; the photo shows only canopy at the pin, so the cabin can't be placed. Nothing traced."
   },
   "233065": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is at the forest's edge on the lake shore under the trees; no cabin shows. On the map: the pin is 0 m from the listing's own point, with a drawn road 415 m away."
+   "note": "The lidar is thin under the spruce here (1.03 ground points per square meter): both layers are speckle at the pin on the lake shore, with no levelled pad, building footprint or clearing, and the photo shows only canopy and a fallen log in the water 80 m southwest, so the cabin can't be placed. Nothing traced."
   },
   "233068": {
    "call": "unsure",
@@ -362,7 +362,7 @@
   },
   "233179": {
    "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy beside the drawn loop; no cabin shows. On the map: the pin is 18 m from the listing's own point, with a drawn road 20 m away."
+   "note": "The lidar relief shows the drawn campground loop on its graded band, 20 m northeast of the pin, but at the pin both layers show only the speckle of dense spruce (2.96 ground points per square meter), with no roof, levelled pad or drive that could be the cabin; the photo shows only canopy. Nothing traced."
   },
   "233401": {
    "call": "usable",
