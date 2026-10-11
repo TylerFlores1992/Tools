@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233059",
+ "traced": "2026-10-11",
+ "by": "Claude (canopy canopy-15)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "T08",
+   "at": [
+    -133.3223064,
+    56.2400602
+   ]
+  }
+ ],
+ "note": "Moved T08 onto the only building in the frame: a small log cabin with a red roof on the forested lake shore, with a skiff landing beside it, matching the listing's 15 by 17 foot cabin on the shore of Red Bay Lake. It is 185 m west-southwest of the listing's rounded point."
+}
