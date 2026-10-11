@@ -29,8 +29,8 @@
    "note": "The lidar intensity shows little here, but the relief shows both loops and the lane between them as crowned lanes under the canopy, and OpenStreetMap draws them within a few meters of their middles. The outer row (013 to 024, 035 to 043) sits 20 to 35 m outside the loops on pull-ins that don't show, and an undrawn cross lane runs through the north loop by 007; nothing traced."
   },
   "233714": {
-   "call": "unsure",
-   "note": "The relief shows the Oak loop (051 to 075), the Orchid loop (026 to 050) with its cross lane past 041, 047 and 049, and the empty Hemlock loop north of Orchid as crowned lanes, and the Forest Service map confirms all three; the long straight band west of Oak is the trail to the Nordhouse Dunes, not a lane, so 061 to 073 have none of their own and sit off Oak's west side. But OpenStreetMap's Orchid loop runs 5 to 10 m outside the crowned lane on its west side (by 036 to 041), and its Hemlock loop 6 to 10 m outside on its west and south sides, so the map needs a full replace onto the relief before it can pass; not done in this pilot's time. Nothing traced."
+   "call": "usable",
+   "note": "Every road was replaced onto the lidar relief, each lane centered between the ditches it shows: the Orchid loop (026 to 050) and its cross lane past 047 and 049, the Oak loop (051 to 075) and its link, West Forest Trail Road and the FS 5629 and 5972 loops to the north; OpenStreetMap had Orchid 3 to 6 m outside its crowned lane, and the photo agrees with the road where it opens to the south. The empty Hemlock loop shows only one ditch in places in this sparse 2017 survey (1.43 ground points per square meter; the intensity shows nothing), so it was left out; the west row 061 to 073 sits off Oak's west side with no lane of its own (the band there is the dunes trail), and only 034 is over 40 m from a drawn road."
   },
   "234526": {
    "call": "hold",

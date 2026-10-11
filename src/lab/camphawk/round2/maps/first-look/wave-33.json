@@ -41,8 +41,8 @@
    "note": "Zoomed in, a red-roofed cabin shows plainly 95 m southwest of the pin at the end of the boardwalk across the muskeg; the pin was in open muskeg and now sits on the cabin."
   },
   "232941": {
-   "call": "unsure",
-   "note": "Zoomed on the Forest Service photo, the pin is under full forest canopy; no cabin or clearing shows. On the map: the pin is 0 m from the listing's own point, with a drawn trail 149 m away."
+   "call": "hold",
+   "note": "The pin is on unbroken forest under full canopy, and the dense lidar (5.86 ground points per square meter, flown 2023) shows no pad or clearing within 150 m. A cabin with a green roof, its outhouse and boardwalk shows plainly on the photo about 190 m south-west of the pin, beside the drawn trail, but that is past the 150 m the move rule allows, so the pin was not moved; moving it there would fix the map."
   },
   "232942": {
    "call": "unsure",

@@ -78,7 +78,7 @@
   },
   "234224": {
    "call": "unsure",
-   "note": "The pin sits under oaks and pines 30 m east of the drawn road; a roof may show under the trees beside it, but the photo can't confirm the cabin, and the listing's own point is 490 m away."
+   "note": "The dense lidar (14.73 ground points per square meter, flown 2022) shows a building footprint on a levelled pad 3 to 5 m north-west of the pin, and the photo shows its blue-grey roof under the oaks, 30 m east of the drawn road, which follows its band. But the listing's own point, 490 m north-east, sits on a cluster of small buildings at the end of a drawn road in the open, so which of the two is the guard station cabin can't be told. Nothing traced or moved."
   },
   "234281": {
    "call": "good",
@@ -114,7 +114,7 @@
   },
   "234482": {
    "call": "unsure",
-   "note": "The pin sits on an open rocky slope 20 m from the end of a drawn trail; no cabin shows plainly at it."
+   "note": "The dense lidar (9.49 ground points per square meter, flown 2023) puts the pin on the crest of the ridge, at the top of the rocky east scarp, with faint trail lines converging from the west; but neither layer shows a gap or levelled pad that is plainly the 12 by 14 ft cabin, and among the rock outcrops on the photo none is plainly a roof. Nothing at the listing's own point, 227 m north, is a cabin either. Nothing traced or moved."
   },
   "234601": {
    "call": "good",
@@ -259,9 +259,9 @@
    "note": "Unchanged. The pin is in the shallow south arm of Scott Lake; Forest Road 4200-260 runs past under full canopy to a trailhead lot about 450 m west, and the only sign of camping is a couple of cars along the road south of the lake, so no campground plainly shows to move it to."
   },
   "10165626": {
-   "call": "unsure",
-   "note": "The outline is a narrow strip along a road by the creek near a bridge, and the point is inside it, but the trees hide any pads, so the photo can't confirm a campground. The listing is marked closed.",
-   "as": "firstcome"
+   "as": "firstcome",
+   "call": "usable",
+   "note": "The lidar (2.21 ground points per square meter, flown 2022) shows a graded lane inside OpenStreetMap's outline, a smooth band with levelled benches beside it, running 200 m along the terrace between the road and the creek from the bridge, where the drawn inner lane follows it within a few meters; the point is inside the outline by the creek bank. Pads can't be told apart under the trees, and the listing says the campground is closed after wildfire damage. Nothing traced."
   },
   "10165631": {
    "as": "firstcome",

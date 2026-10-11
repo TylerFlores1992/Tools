@@ -159,10 +159,10 @@
   },
   {
    "id": "232896",
-   "decision": "hidden",
+   "decision": "approved",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Passed after the fix-after campaign (canopy-16): first look usable, checked over the photo (2026-10-09)."
   },
   {
    "id": "232897",
@@ -245,8 +245,8 @@
    "id": "233259",
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
-   "on": "2026-10-08",
-   "note": "Held to fix after: first look unsure."
+   "on": "2026-10-09",
+   "note": "Held after the fix-after campaign (canopy-16): first look unsure."
   },
   {
    "id": "233285",
@@ -540,7 +540,7 @@
    "decision": "hidden",
    "by": "Claude (final check, owner's delegation)",
    "on": "2026-10-09",
-   "note": "Held after the fix-after campaign (units-01): first look unsure."
+   "note": "Held after the fix-after campaign (canopy-16): first look unsure."
   },
   {
    "id": "234732",

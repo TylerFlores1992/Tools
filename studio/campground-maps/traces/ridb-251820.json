@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-251820",
+ "traced": "2026-10-11",
+ "by": "Claude (canopy canopy-16)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Boat Gunnel",
+   "at": [
+    -83.5020734,
+    38.1001368
+   ]
+  }
+ ],
+ "note": "The group camp moved from the wooded shore point onto the paved camping lot about 100 m north, where the photo shows campers parked beside the picnic shelter and the turnaround loop."
+}

@@ -226,7 +226,7 @@
   },
   "234086": {
    "call": "unsure",
-   "note": "The loop's west and south-west sides (by 026 to 029) follow the lane in both lidar layers, and the Forest Service map puts 001 to 006 on the loop's creek side, so the smooth band 40 m north past 005 and 006 is the creek channel, not a lane. But the relief shows the east side (by 014 and 015) about 8 to 10 m east of the drawn line, the corners where it turns can't be read to 3 m, and the north side (by 007 to 010) shows on neither layer, so the loop still can't be checked. Nothing traced."
+   "note": "The lidar (3.49 ground points per square meter) shows the loop's west and south sides as smooth graded bands within a few meters of the drawn line, and the east side (by 014 and 015) as a band 8 to 10 m east of it, but the north side between 029 and 012, and the north-west and north-east corners, show no band in either layer, only mottled forest floor, and the band past 001 to 006 is the creek. Since the north side can't be placed to 3 m, a full replace would leave 001 to 013 without a checked lane, so nothing was traced."
   },
   "234114": {
    "call": "hold",
