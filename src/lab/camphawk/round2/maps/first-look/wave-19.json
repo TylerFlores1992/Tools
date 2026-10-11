@@ -293,8 +293,8 @@
    "note": "Split into four areas: the B and L loops, the W point, the S point and the West group camp, each one place. OpenStreetMap draws the lanes on each point and the sites line them; 3 sites have no point."
   },
   "233635": {
-   "call": "usable",
-   "note": "The A and B loops follow the visible gravel and most sites sit on their pull-ins. A01 to A09, A16 to A21 and A60 to A64 sit 20 to 30 m outside the drawn loops on lanes that show only in part, and B02 to B14 on the B area's outer lane, which isn't drawn."
+   "call": "hold",
+   "note": "The turnaround loop by A16 to A19 is traced on the photo, but the rest of the drawn roads are OpenStreetMap's rough outlines: in the A area they cut across the trees between the gravel lanes the photo shows to A31 to A47, and in the B area a straight line runs through the grass from B47 to B39 where no lane shows. Final check: hold until the A and B lanes are replaced from the photo."
   },
   "233648": {
    "call": "usable",
@@ -317,8 +317,8 @@
    "note": "Checked zoomed: the north loop, the bluff road past 22 to 45, the spur past 50 to 60B down to its cul-de-sac and the east loop (61 to 80) all follow the visible lanes, and every site sits on a pad within about 40 m of them, so nothing needed tracing. Only the bluff road's east side between 41 and 36 runs under the trees and can't be checked closely."
   },
   "233671": {
-   "call": "usable",
-   "note": "The W40 to W60 loop, the W61 to W89 lanes and the W19 to W33 loop follow the visible pavement, and the sites sit on their pull-ins. The W01 to W15 loop is drawn around them in the forest, 20 to 30 m off the lane that shows, and W34 to W38 sit by a lane that doesn't show."
+   "call": "hold",
+   "note": "The W40 to W89 lanes, the W19 to W33 loop and the roads in follow the visible pavement. The loop drawn round W01 to W15 runs through forest west of the sites, and neither lidar layer shows a plain lane there: the intensity is mottled under the trees and the relief shows only faint arcs and old terraces, so the lanes to W01 to W15 and the drawn loop by W34 to W38 can't be placed. Nothing traced."
   },
   "233672": {
    "call": "hold",

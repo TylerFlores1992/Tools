@@ -29,8 +29,9 @@
    "note": "Rebuilt with the stray point rule (one of the two sites named 12, 2.3 km away, left off). The lanes are under full canopy."
   },
   "232384": {
+   "as": "areas",
    "call": "unsure",
-   "note": "Shown as areas: two clusters 3 km apart along the same road, 001 to 060 in the north-east and 081 to 088 in the south-west. Both sit under canopy in a photo too dark to show lanes or pads."
+   "note": "Shown as areas. The lidar intensity is mottled everywhere, and in the 001 to 060 area the relief (2.3 ground points per m²) shows the loop's west side as a smooth band near the drawn road but nothing plain under its east side, among many ditches and drainage lines; the lanes to 006 to 008, 036 and 037 don't show. The 081 to 088 areas show nothing more. Nothing traced; 01 and XXX have no point."
   },
   "232468": {
    "call": "good",
@@ -46,7 +47,7 @@
   },
   "232537": {
    "call": "unsure",
-   "note": "No road is drawn, and the photo is too blurred under bare trees to show lanes or pads for 19 to 33."
+   "note": "The lidar relief shows the campground's levelled pads as raised terraces with lanes curving between them, and the intensity a faint gray band along the south edge, but the survey is sparse (2.3 ground points per m²) and striped by flight lines, so the lanes can't be told from the gaps between pads or placed within a few metres. No road is drawn and none was traced."
   },
   "232543": {
    "call": "usable",
@@ -74,7 +75,7 @@
   },
   "232649": {
    "call": "usable",
-   "note": "The B loop and the roads to the A loop follow the visible pavement and the B and A sites line them. The C loop's lanes past C04 to C16 show only in pieces and aren't drawn, and D01 to D12 sit along a gravel lane west of the B loop that isn't drawn."
+   "note": "The lidar intensity shows the lanes plainly under the trees, and the drawn B loop ran 6 to 8 m off its top and east side while the C area had only a line across its blocks. Replaced the roads: traced the B loop, its inner lanes past B04 to B09, the lane north to the C area, the C cross lane past C06 to C15, the lane to C10 to C14 and the lane east of it toward C16 to C18; the roads south and Edgemont Road are kept. All but A04 and C19 sit within 40 m of a drawn road; the C01 to C03 hook and the shore lane by C17 to C19 are left out."
   },
   "232652": {
    "call": "good",
@@ -254,7 +255,7 @@
   },
   "251757": {
    "call": "unsure",
-   "note": "The road and the loop by the creek are drawn, and Host sits inside the loop. Sites 03 to 10 sit 30 to 60 m west of the loop under bare trees, where no lane shows, and 01 sits by a building 40 m south of the road."
+   "note": "The lidar layers don't settle it: the survey is sparse (1.5 ground points per m²). The relief shows SR 133 and the creek's terraced banks, with 03 to 10 strung along the bank, but no graded lane to them and no plain band under the drawn loop's west side, and the intensity is mottled. Nothing traced."
   },
   "251904": {
    "call": "usable",
@@ -290,7 +291,7 @@
   },
   "10035281": {
    "call": "usable",
-   "note": "Traced the paved road in and the loop past 12 to 32, which shows plainly; the sites line it. The gravel lanes to 33 to 42 in the north-east and to 01 to 11 in the south-east show in clearings but only in pieces, and aren't drawn."
+   "note": "The lidar intensity shows the lanes plainly under the trees. Replaced the roads: kept the earlier trace of the road in and the loop past 12 to 32, and traced the road north, the gravel lane round the north-east past 33 to 42, the loop's straight west side by 12 to 14, and in the south-east the loop round 10 and the lane from it to the road by 01 to 03; OpenStreetMap's lines west and north, which show no lane, are dropped. Every site is within 40 m of a drawn road; the short spurs to the sites are left out."
   },
   "10039071": {
    "call": "good",
@@ -337,8 +338,8 @@
    "note": "Unchanged. The road follows the lane that shows through the trees, and the sites sit on both sides of it within about 25 m. Zoomed on a 5 m grid, the spurs to 10 and 15 show only as short pale patches under the canopy, too faint to trace."
   },
   "10082227": {
-   "call": "unsure",
-   "note": "The road in is drawn along the edge of the frame, and nothing inside it: the sites sit under blurred tree cover where a gravel spur shows only by 3 and the clearings north by 8 to 11."
+   "call": "usable",
+   "note": "The lidar intensity and relief both show the gravel loop and its pull-ins plainly under the trees, and the photo agrees where it opens. Replaced the roads: the line drawn round the frame's edge followed no lane, so traced the loop past 1 to 13, the lane from it to the road and the road along the south-west edge. Every site is within 40 m of the loop; the pull-ins are left out."
   },
   "10124956": {
    "call": "hold",
@@ -357,8 +358,8 @@
    "note": "The east road (03 to 09) follows the visible dirt road and 06 and Group Site 08 sit on clearings beside it. Sites 07 and 11 to 15 sit in the pines off any visible lane, and the west side of the drawn loop follows only a faint track."
   },
   "10158169": {
-   "call": "unsure",
-   "note": "The road in is drawn and ends by the restroom near 3. The photo is blurred under the trees, and the lanes south to 4 to 9 and east to 10 to 12 show only as faint clearings, too unclear to trace."
+   "call": "usable",
+   "note": "The lidar intensity shows the paved road in and the campground loop as one plain dark band under the trees, and the photo agrees where it opens. Replaced the road, which stopped by the restroom near 3: traced the road in and the loop past 1 to 12. Every site sits on a pull-in within 10 m of the loop; the pull-ins are left out."
   },
   "10159159": {
    "call": "usable",

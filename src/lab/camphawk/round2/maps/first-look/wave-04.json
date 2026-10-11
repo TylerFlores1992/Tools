@@ -54,7 +54,7 @@
   },
   "231938": {
    "call": "unsure",
-   "note": "Under pine canopy and snow-streaked shadow, only the main lane through the middle and the arc west of 006 to 008 show and agree with the drawn roads. The diagonal through 006 and the south loops by 017 to 028 can't be checked, and 029, 030 and 003 sit well away from any drawn road."
+   "note": "The lidar intensity confirms Timpooneke Road and the main lane, but the campground's dirt lanes don't show in it, and the relief over the south loops by 017 to 028 is broken into triangles under the pines: smooth bands run near the drawn loops but can't be placed within a few metres (one arc sits about 6 m off). The diagonal through 006 and the lanes to 029, 030 and 003 don't show. Nothing traced."
   },
   "231954": {
    "call": "hold",
@@ -121,8 +121,8 @@
    "note": "The lidar intensity here is mottled under the pines and the relief shows no crowned lane, so the drawn outer and inner loops can't be checked to 3 m against a plain band; held until a clearer reading. Every site is within 40 m of a drawn road."
   },
   "232356": {
-   "call": "unsure",
-   "note": "Dense forest over the whole campground and the photo is soft. 008 to 010 and 013 to 018 sit near the drawn road, but 001 to 007 spread 20 to 60 m east of it and most of the northeast loop (047 to 051, 057) sits inside the loop with no lane showing. Five sites have no point."
+   "call": "usable",
+   "note": "The lidar intensity (12 points per m²) shows every paved lane plainly under the forest, and the drawn roads follow them within a few metres: the long lane past 001 to 029, the south loop past 030 to 042, the spur loop by 043 to 045 and the north-east loop past 046 to 065, whose thin inner lines are footpaths. The sites sit at the ends of their pull-ins, all within 40 m of a drawn road. Nothing traced; 003, 023, 050, 053 and 055 have no point."
   },
   "232788": {
    "call": "usable",
@@ -154,7 +154,7 @@
   },
   "233182": {
    "call": "usable",
-   "note": "The two lanes and the north and south loops follow the visible pavement, and the paved spur east to 011 to 013 was traced from the photo. 022, 026, 028, 030 and 006, 007, 029, 031, 032, 034 sit 15 to 25 m off the roads on faint tracks."
+   "note": "The lidar intensity confirms the two roads, the north and south loops and the traced spur to 011 to 013 follow the paved bands. The tracks to 022, 026, 028, 030 and between the roads to 006, 007, 029, 031, 032, 034 don't show as continuous bands in either layer, only as patches of bare dirt, so nothing more was traced; every site is within 40 m of a drawn road."
   },
   "233192": {
    "call": "usable",

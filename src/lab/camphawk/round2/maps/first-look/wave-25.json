@@ -98,7 +98,7 @@
   },
   "10296828": {
    "call": "unsure",
-   "note": "The Forest Service photo covers only the east half: there the drawn road follows the visible one and 16 to 25 sit on its pads, with trailers on 17, 18 and 25. The west loop (1 to 15) is past the photo's edge."
+   "note": "The lidar survey is far too sparse here (0.14 ground points per m², flown 2008): the relief shows the highway and a faint band along the drawn lane in the middle, but nothing that places the west loop past 1 to 15, which is also past the photo's edge. Nothing traced."
   },
   "10300372": {
    "call": "hold",

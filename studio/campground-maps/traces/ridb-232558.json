@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "map": "ridb-232558",
+ "traced": "2026-10-11",
+ "by": "Claude (lidar lidar-01)",
+ "photo": "USDA NAIP via USGS The National Map (public domain); USGS 3D Elevation Program lidar point cloud (public domain)",
+ "roads": [
+  {
+   "coords": [
+    [
+     -94.2285632,
+     34.2023473
+    ],
+    [
+     -94.2284547,
+     34.2022842
+    ],
+    [
+     -94.2283244,
+     34.2022121
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.2289213,
+     34.2011753
+    ],
+    [
+     -94.228943,
+     34.2010671
+    ],
+    [
+     -94.2289539,
+     34.2009589
+    ]
+   ]
+  },
+  {
+   "coords": [
+    [
+     -94.2288779,
+     34.2013286
+    ],
+    [
+     -94.2288236,
+     34.2012204
+    ],
+    [
+     -94.2287802,
+     34.2011122
+    ]
+   ]
+  }
+ ],
+ "points": [],
+ "note": "Traced over the lidar intensity, which shows every lane as a plain band under the trees: the spur east from the south loop to 16, and the forked spur south from the loop to 10, 11 and 12. The drawn loops and the river lane follow the bands; the short pull-ins to 02, 04 to 09 and 18 to 30 are left out."
+}

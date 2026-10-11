@@ -142,7 +142,7 @@
   },
   "272174": {
    "call": "hold",
-   "note": "001 to 022 and 044 line the drawn lanes by the river, but 023 to 043 sit along a web of paved lanes to the southeast. Zoomed for tracing, those lanes are blurred and broken under the budding trees and their joins to the drawn roads can't be seen, so nothing was traced. The Kiski group site sits 300 m away in the woods with no lane."
+   "note": "001 to 022 and 044 line the drawn lanes by the river. The lidar relief shows the web of lanes past 023 to 043 as smooth curving strips between raised tree islands, but the survey is sparse (1.7 per m²), the intensity shows the strips only faintly, and smooth strips there can't be told from mown lawn, so the lanes' middles can't be placed within a few metres. The Kiski group site still sits 300 m away with no lane. Nothing traced."
   },
   "273778": {
    "call": "usable",

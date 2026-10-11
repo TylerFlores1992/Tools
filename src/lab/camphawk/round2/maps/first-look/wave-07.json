@@ -270,7 +270,7 @@
   },
   "234221": {
    "call": "usable",
-   "note": "The roads round the hill and the south loop follow the visible gravel, and 002, 010, 012 to 014, 017 and 021 sit by them. 003 to 009, 011, 018 to 020 sit 20 to 40 m inside the loop on spurs that show in gaps, and 015 and 016 by the creek east of it."
+   "note": "The lidar relief (18 points per m²) shows every graded lane and pull-in plainly: the sites inside and outside the loop, 003 to 011 included, sit at the ends of short pull-ins off the drawn lanes, and 015 and 016 by the creek within 30 m of the road. Replaced the roads, which ran 3 to 5 m off the lanes: traced the road round the hill, Woodrock Road, the lane through the middle to 011, the inner loop past 007 and 010 and the south loop; Forest Route 231 is kept. The pull-ins are left out."
   },
   "234264": {
    "call": "good",
@@ -317,8 +317,8 @@
    "note": "Under full canopy: the Forest Service loops are drawn but no lanes show to confirm them, and 001, 002, 004, 006, 018, 023, 025, 026 and 029 sit 20 to 40 m outside them."
   },
   "251538": {
-   "call": "usable",
-   "note": "The loop follows the lanes that show between the pines, and 004 to 007, 009, 013 and 015 sit by it. 001 to 003, 008, 010 to 012, 014 and 016 to 021 sit 20 to 40 m outside it, where lanes show faintly and aren't drawn."
+   "call": "unsure",
+   "note": "The lidar layers don't settle it: the survey is sparse (2 ground points per m², flown 2009 to 2011). The intensity shows the loop as a soft dark band near the drawn one, but the lanes to 001 to 003, 008, 010 to 012, 014 and 016 to 021 outside it show only as faint arcs in the relief and patches in the intensity, too unclear to place within a few metres. Nothing traced."
   },
   "251566": {
    "call": "usable",
@@ -341,8 +341,8 @@
    "note": "The lidar layers can't settle the loop: the 2011 survey is sparse (1.7 ground points per square meter), the relief inside the drawn loop is flat noise with no crowned lane, and the intensity shows only a few thin dark lines (one from 07 southwest past 05 toward 04, one north-south east of the loop) that don't form a loop or reach the pads. So the drawn loop between the sites can't be checked, and 01, 03 to 06 and 08 to 12 still sit 20 to 50 m either side of it. Nothing traced."
   },
   "266142": {
-   "call": "usable",
-   "note": "The two lanes and the south loop follow the dirt roads that show through the pines, and 001 to 003, 005, 008 to 013 sit by them. 004, 006, 007 and 014 to 019 sit 20 to 50 m between the lanes on spurs that show faintly and aren't drawn."
+   "call": "unsure",
+   "note": "The lidar intensity confirms the two lanes and the south loop where the drawn roads run, but the survey is sparse (2.7 ground points per m², flown 2009 to 2011) and the spurs to 004, 006, 007 and 014 to 019 between the lanes show only as soft, wide patches that can't be told from bare ground; the relief shows nothing there. Nothing traced."
   },
   "267071": {
    "call": "good",

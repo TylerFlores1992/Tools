@@ -58,7 +58,7 @@
   },
   "251438": {
    "call": "unsure",
-   "note": "The loop is drawn round 05 and 08 to 16, but the sites sit on clearings inside and outside it under bare trees where the lanes don't show clearly; 06, 07 and 09 to 12 sit north of the loop with no lane drawn."
+   "note": "The lidar layers don't settle it: the survey is sparse (2 ground points per m²), the intensity shows no lane band inside or north of the loop, and the relief shows only the creek-side banks and a faint raised strip north of the loop that the trailers in the photo don't follow. The lanes to 06, 07 and 09 to 12 and inside the loop past 13 to 16 can't be placed. Nothing traced."
   },
   "10001451": {
    "call": "hold",
@@ -129,8 +129,8 @@
    "note": "The road along the creek follows the visible pavement, and the sites (001 to 060) line both sides of it on the pull-ins; the road ends at the turnaround by 024 to 027 with 055 to 060 up the lane north of it."
   },
   "232558": {
-   "call": "hold",
-   "note": "The drawn loops run through the woods while the sites sit on clearings off them: 18 to 30 along the river lane, 11 to 16 by the east lane and 02 to 09 west of the south loop, all 20 to 40 m off any drawn road where the lanes show only in pieces."
+   "call": "usable",
+   "note": "The lidar intensity (7 points per m²) shows every lane as a plain band under the trees, and the drawn river lane, the middle loops and the south loop follow them within a few metres; the sites sit on pull-ins off them, all within 40 m. Traced the spur east from the south loop to 16 and the forked spur south to 10, 11 and 12; the short pull-ins to 02, 04 to 09 and 18 to 30 are left out."
   },
   "232560": {
    "call": "hold",
@@ -174,7 +174,7 @@
   },
   "232685": {
    "call": "hold",
-   "note": "Not traced: zoomed in, the lanes round 33 to 49 and 37 to 43 show only in pieces between the pines (one short stub north of 36) and the photo is too soft to place them within a few metres, so the 16 west sites can't get a trustworthy road. Held: drawn roads off the visible lanes, real ones under canopy."
+   "note": "The drawn roads are coarse straight lines off the real lanes. The lidar intensity shows an asphalt lane west from the parking lot and the turnaround by 38, plus bright concrete strips running north-east past 33 to 36 and 45, but the survey is sparse (1.9 per m²) and the relief shows only broken ditches, so the strips can't be told from pads and the lanes past 37, 39 to 49 can't be placed within a few metres. Nothing traced."
   },
   "232688": {
    "call": "hold",

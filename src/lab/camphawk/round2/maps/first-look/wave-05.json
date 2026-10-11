@@ -74,7 +74,7 @@
   },
   "232089": {
    "call": "unsure",
-   "note": "The photo was taken in snow and under pines, so the roads barely show. Many sites sit off the drawn roads (023 to 030 west of the west road; 033 to 040 in the south), and 2 sites have no point."
+   "note": "The lidar survey is sparse here (1.6 ground points per m²): the intensity shows the creek but no lane bands, and the relief shows Big Cottonwood Canyon Road but only faint, broken traces near the drawn loops. The lanes to 023 to 030 west of the west road and 033 to 040 in the south can't be placed. Nothing traced; 005 and 006 have no point."
   },
   "232096": {
    "call": "unsure",
@@ -350,7 +350,7 @@
   },
   "232470": {
    "call": "usable",
-   "note": "The road, loop and the spur to G01 follow the visible roads. G02, G03 and G04 sit 20 to 40 m off the loop on open ground with only faint tracks to them, and G06 is beside the entry road by the rocks."
+   "note": "The lidar relief confirms the entry road, the loop and the spur to G01 where the photo shows them. G02, G03 and G04 sit 20 to 40 m off the loop on open desert ground, and neither the relief nor the intensity shows a graded track to them, only the faint wheel marks in the photo; G06 sits beside the entry road by the rocks. Nothing traced."
   },
   "246864": {
    "call": "hold",

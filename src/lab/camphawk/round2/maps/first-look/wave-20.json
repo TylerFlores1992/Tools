@@ -289,8 +289,8 @@
    "note": "Split into two areas along the river: the north loops (001 to 026) and the south lane (027 to 041). The drawn lanes follow the gravel and the sites line them; 024 to 026 sit 20 to 80 m off the road."
   },
   "233603": {
-   "call": "usable",
-   "note": "The road along the river follows the visible lane, and 019 to 025 sit beside it. 004 to 018 sit 30 to 60 m south of it toward the bank on lanes that show only in gaps, and 007 to 009 between the roads."
+   "call": "unsure",
+   "note": "The lidar survey is sparse (1.6 ground points per m²) and has wide gaps: the relief is broken into noise in two strips over 008 to 016 and 021 to 022, and the intensity shows no lane bands at all. The lanes south toward the bank to 004 to 018 can't be placed. Nothing traced."
   },
   "233639": {
    "call": "good",
