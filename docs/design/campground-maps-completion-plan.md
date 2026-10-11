@@ -160,6 +160,23 @@ maps over the layer, by the orchestrating session before any decision was record
   surveys, faint dirt lanes); walk-in or boat-in sites far from any road; stacked or misplaced
   sites with no pad to tell them apart; first-come pins with no campground near them.
 
+## The agency-map pilot (2026-10-11, owner: "try it on 20 unsure maps")
+Brief: `campground-maps-agency-pilot-brief.md`. The agencies' own campground maps were used only to
+settle which lidar bands are lanes, never traced from.
+- **Found:** 14 of 20 had a map. 10 could be used: 6 Forest Service, 2 Park Service, 2 Corps of
+  Engineers. 4 couldn't: a concessionaire's, a county's, and two with no maker credit.
+- **No map for 6:** three Corps sites (every `usace.army.mil` district site answers 403 from here),
+  a Forest Service link that now 404s, and two with no map on the agency's pages.
+- **Effect:** one call changed (McNair, unsure to usable). On 4 more the map settled a reading (a
+  creek, a trail, drainage, which loop a row is on) without changing the call.
+- **Why so little:** where no layer shows the lanes, the map only confirms the layout already drawn;
+  and maps not drawn to scale can't say which of two parallel bands is the lane.
+- **Speed:** median 6.5 minutes per map.
+- **Verdict:** not worth running across the other ~260 held canopy maps. A narrower pass might pay
+  (dense surveys of 2.5 or more ground points per m², with a RIDB "Print Facility Map" link). Two
+  maps it found need a full replace onto the relief: Lake Michigan at Manistee (233714) and
+  Big Creek (234086).
+
 ## Decisions for the owner
 **Answered 2026-10-09:** (1) canopy maps: "Find a solution to get done correctly" (neither hide
 them for good nor publish them half drawn; research below); (2) dispersed listings: keep them off;
