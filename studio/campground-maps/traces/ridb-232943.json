@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232943",
+ "traced": "2026-10-11",
+ "by": "Claude (final check, owner's delegation)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "J10",
+   "at": [
+    -133.791564,
+    58.312521
+   ]
+  }
+ ],
+ "note": "The cabin's brown roof shows at the forest edge on Turner Lake's shore, with a smaller structure and a path to the beach just south; it is the only building in view, 28 m west of the Forest Service's East Turner Lake point. The listing's pin was on the lake ice 5 km east. Moved at the final check: past the batch's 15 m rule, but the roof is plain and the point and the photo agree."
+}

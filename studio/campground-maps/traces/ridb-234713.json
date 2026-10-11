@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234713",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "Cabin",
+   "at": [
+    -113.4696246,
+    37.3782523
+   ]
+  }
+ ],
+ "note": "Units-03: the guard station moved onto the grey roof the photo shows by the Forest Service's point, at the head of a dirt drive from the highway."
+}

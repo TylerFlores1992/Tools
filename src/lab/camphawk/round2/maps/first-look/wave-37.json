@@ -13,8 +13,8 @@
    "note": "The pin sits in a large mown clearing with tracks across it, plainly the group field, and the drawn road ends at its east edge. The listing's own point is 683 m away, where nothing shows."
   },
   "231994": {
-   "call": "hold",
-   "note": "The dense lidar (6.42 ground points per square meter) shows the pin on the gravel road at a sharp bend where a creek comes in, with only a small gravel pullout about 20 m across beside it; neither layer shows a levelled camping area, lane or clearing for a group camp within 150 m, and the photo shows only canopy. The listing's own point is 1.3 km away, outside the frame, so the camp can't be placed; nothing was traced or moved."
+   "call": "unsure",
+   "note": "The Forest Service's point, 1.7 km east-southeast, is under closed hardwoods on a bench between creek channels, where neither the photo nor the lidar relief shows a group pad or lane, and the pin still shows no camp. Not moved."
   },
   "232216": {
    "call": "good",
@@ -62,7 +62,7 @@
   },
   "233990": {
    "call": "unsure",
-   "note": "The lidar layers show only faint old tracks west of the pin and a light strip 60 to 100 m north that matches the photo's grassy gap; at the pin they show no pad, lane or building that is plainly the group camp, and no road is drawn in the frame. Nothing traced."
+   "note": "The Forest Service's point (named for the whole Gatewood campground) lands on the drawn lane 249 m south-southwest, where the photo and ground relief show only the lane and its ditch in hardwoods; neither spot shows the group pad. Not moved."
   },
   "234051": {
    "call": "usable",
@@ -85,8 +85,8 @@
    "note": "The pin sits by the cabin in its clearing, and the drawn lane ends at it."
   },
   "234313": {
-   "call": "unsure",
-   "note": "The pin sits under full canopy 75 m from the nearest drawn road; no clearing or cabin shows. The listing's own point is 2.5 km away."
+   "call": "usable",
+   "note": "The pin moved 2.6 km east onto the grassy field beside Swan Cabin's pale roof, by the Forest Service's point, where the listing says groups camp. A drawn road ends 12 m north of it under the trees, where the lane can't be checked."
   },
   "234450": {
    "call": "unsure",
@@ -146,7 +146,7 @@
   },
   "251903": {
    "call": "unsure",
-   "note": "The pin sits on the drawn lane by its junction with the forest road, under pines; no clearing shows that is plainly the group site."
+   "note": "The Forest Service's point, 480 m north-northeast, is under closed canopy with no clearing or pad, and the pin on the drawn lane still shows nothing plainly the group site. Not moved."
   },
   "10145639": {
    "call": "unsure",

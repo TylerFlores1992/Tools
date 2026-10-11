@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-251579",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "GA01",
+   "at": [
+    -109.7455977,
+    40.8788543
+   ]
+  }
+ ],
+ "note": "Units-03: the guard station moved onto the dark roof the photo shows on the Forest Service's point, at the edge of a snowy meadow."
+}

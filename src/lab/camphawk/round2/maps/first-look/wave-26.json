@@ -190,7 +190,7 @@
   },
   "234351": {
    "call": "unsure",
-   "note": "The lidar relief shows the pin on the edge of the creek bottom, with only a small rounded mound about 6 m across 25 m south-west that may be a building but could as well be a rock or root mass; no pad, lane or plain building gap shows, and the photo shows only the shadowed burn. The drawn trail is 130 m north across the creek. Nothing traced."
+   "note": "The Forest Service's point, matched by Recreation.gov id and 1.37 km west-southwest, is in dark forest south of a creek where neither the photo nor the lidar relief shows a cabin, pad or lane; the pin's possible building mound is still unconfirmed. Not moved."
   },
   "234352": {
    "call": "good",
@@ -234,7 +234,7 @@
   },
   "234378": {
    "call": "unsure",
-   "note": "The pin is at the foot of the bare slope just north of the drawn highway, where no cabin shows clearly; the buildings nearest it are across the highway in the trees."
+   "note": "The Forest Service's point, 461 m south-southwest, is in a small clearing high on a forested slope with a faint path and a grey patch that might be a roof, but no building plainly shows there; the pin by the highway still shows no cabin. Not moved."
   },
   "234379": {
    "call": "unsure",
@@ -305,8 +305,8 @@
    "note": "The pin is on the cabin in its lawn clearing beside the river road, which is drawn 50 m east. The listing's own point, 1.8 km south, is in unbroken forest."
   },
   "234565": {
-   "call": "unsure",
-   "note": "The lidar relief shows the pin on a broad flat bench between US 12 and the creek, 50 m south of the highway, with no building-shaped gap or levelled pad on it and no lane down from the road; the photo shows only conifers there. Nothing is plainly the cabin. Nothing traced."
+   "call": "hold",
+   "note": "The Forest Service's point, 1.9 km east, lands on the paved highway at a bridge with no cabin, and the pin still shows no building on its bench by the creek. Not moved."
   },
   "234607": {
    "call": "usable",
@@ -325,8 +325,8 @@
    "note": "The pin is on the rental's building among the trees, and a drawn spur off the road ends 30 m west of it."
   },
   "234713": {
-   "call": "hold",
-   "note": "The pin is on the campground road among parked trailers by the reservoir, and the listing's own point, 490 m east, is beside the highway in trees with only a faint spot by a small loop; no building in either place is plainly the guard station."
+   "call": "usable",
+   "note": "The pin moved 526 m east onto the guard station's grey roof the photo shows beside the Forest Service's point, at the head of a short dirt drive off the highway. The drive isn't drawn; the highway passes 25 m south."
   },
   "234793": {
    "call": "good",

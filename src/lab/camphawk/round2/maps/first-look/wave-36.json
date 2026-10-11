@@ -9,8 +9,8 @@
    "note": "The pin sits on the cabin's roof in its clearing, and the drawn road passes 10 m east of it."
   },
   "234664": {
-   "call": "hold",
-   "note": "The pin is on open scrub with no building; the listing's own point, 490 m north, is in trees beside a cluster of six or more buildings on a drawn road, and nothing says which, if any, is the cabin."
+   "call": "usable",
+   "note": "The pin moved 391 m southeast onto the small grey-roofed building that the Forest Service's point lands on, at the west side of the gravel yard in the cluster of buildings at the road's end. The drawn road ends 15 m short of it and runs 5 to 7 m east of the visible gravel lane, so it isn't counted as reaching it."
   },
   "234666": {
    "call": "good",

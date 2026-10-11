@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232992",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "G04",
+   "at": [
+    -147.8717334,
+    61.080028
+   ]
+  }
+ ],
+ "note": "Units-03: the cabin moved onto the pale roof the photo shows in a small clearing at the forest edge, with a worn path down to the shore, on the Forest Service's point."
+}

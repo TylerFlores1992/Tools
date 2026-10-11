@@ -70,7 +70,7 @@
   },
   "231984": {
    "call": "unsure",
-   "note": "The lidar is sparse here (1.4 ground points per square meter): the relief shows the highway and a curving terrace or lane north of the pin that the drawn camp road runs 5 to 15 m north of, but the intensity is mottled and neither layer shows a group site clearing or pads at the pin, so neither the lane nor the site can be placed. Nothing traced."
+   "note": "The Forest Service's point, 267 m east, sits on the camp's entrance lane just off the highway (the relief shows the lane about 5 m east of the drawn one), not on a group clearing, and the pin still shows no site. Not moved."
   },
   "232116": {
    "call": "good",
@@ -98,11 +98,11 @@
   },
   "232314": {
    "call": "unsure",
-   "note": "The 2009 lidar survey is sparse here (0.24 ground points per square meter): its relief shows Forest Road 2032 as a crowned band 5 to 10 m north of the drawn line past the pin, but nothing at the pin itself, no clearing, pad or lane; with the listing's own point 2 km away, the site can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 2 km east, is under closed conifers south of the river with no clearing, building or lane, and the pin still shows nothing of the organization camp. Not moved."
   },
   "232374": {
    "call": "unsure",
-   "note": "Full canopy: the pin is in dense forest between the drawn road and the river, and no group camp clearing shows."
+   "note": "The Forest Service's point, 957 m east-southeast, is under closed canopy beside a shadowed band that may be a lane, with no clearing or pad in the photo and a featureless lidar relief, and the pin still shows no camp. Not moved."
   },
   "232378": {
    "call": "good",
@@ -150,7 +150,7 @@
   },
   "233222": {
    "call": "unsure",
-   "note": "The lidar relief (11 ground points per square meter) shows the forks of Peppersauce Wash as deep channels around the pin, and the pale strips on the photo are their dry beds, not lanes; the intensity is mottled under the oaks. Neither layer shows a graded lane under the drawn spurs or a pad or clearing at the pin, so the group area can't be placed. Nothing traced."
+   "note": "The Forest Service's point, 363 m east, is on a levelled terrace under oaks with a small shelter at its west end, but it sits against a cluster of buildings that may be a separate camp or homes, so it can't be told as this group area; the pin is still between wash channels with no pad. Not moved."
   },
   "233223": {
    "call": "usable",
@@ -166,7 +166,7 @@
   },
   "233775": {
    "call": "hold",
-   "note": "The pin is in unbroken scrub and pine on a slope; the listing's own point, 1.1 km west, is beside a paved campground loop with several sites, and nothing there marks which part is the group site."
+   "note": "The Forest Service's point, 1.1 km west-northwest and named for the whole Pines campground, is in pine forest on a faint track with no pad or loop, and the pin is still in unbroken scrub; neither shows the group site. Not moved."
   },
   "233933": {
    "call": "unsure",
@@ -202,7 +202,7 @@
   },
   "233986": {
    "call": "unsure",
-   "note": "The lidar intensity shows the drawn loop by the river as a faint grey ring, its south side up to 8 m south of the drawn line at the west end, but too faintly to redraw it to 3 m, and the access road from the west doesn't show plainly at all; no group site clearing or pads show at the pin, and the listing's own point is 590 m west. Nothing traced."
+   "note": "The Forest Service's point, 583 m west, lands on the highway at a spur junction, where the ground relief shows no group pad, and the pin by the river loop still shows none. Not moved."
   },
   "233987": {
    "call": "good",

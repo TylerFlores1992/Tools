@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-232963",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "U.S. Forest Service Alaska Region orthophotos, 2009-2024, via the Interdepartmental Imagery Publication Platform (public domain, CC0)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C01",
+   "at": [
+    -146.4425458,
+    60.4661467
+   ]
+  }
+ ],
+ "note": "Units-03: the cabin moved onto the roof the photo shows at the forest edge of the grassy point, where the paths meet, at the Forest Service's point."
+}

@@ -82,7 +82,7 @@
   },
   "233962": {
    "call": "unsure",
-   "note": "The pin is on a bare river flat inside a bend, 70 m from the drawn road, with no building plainly at it. The listing's own point, 1.5 km south, is in forest between two dirt tracks, also with nothing plain on it."
+   "note": "At the Forest Service's point, 2.5 km north, the photo shows a dirt drive ending under pines with no roof; a grey-roofed building 30 m northeast might be the cabin, but it is past the 15 m the move rule allows and can't be told from a shed or garage. Not moved; the pin is still on a bare river flat."
   },
   "233966": {
    "call": "good",
@@ -98,11 +98,11 @@
   },
   "233997": {
    "call": "unsure",
-   "note": "The lidar relief shows NFS Rd 4818 plainly as a crowned band with its ditches, and the drawn Census line runs 15 to 30 m west of it past the pin (the pin sits on the drawn line, not on the road); neither layer shows a group site clearing or pad near the pin, and the listing's own point is in the lake, so where the site is can't be told. Nothing traced: redrawing the road wouldn't place the site."
+   "note": "The Forest Service's point, 701 m southwest, is under conifers on a lakeside bench where the ground relief shows undrawn lanes nearby but no plain group pad, and the pin still shows no site. Not moved."
   },
   "234006": {
-   "call": "hold",
-   "note": "The pin is in unbroken pine forest on a slope, 200 m from any drawn road, with no cabin or clearing. The listing's own point, 590 m northwest, is in forest too, so neither is confirmed."
+   "call": "unsure",
+   "note": "The Forest Service's point, 363 m east-southeast, shows a shaded grey patch between pines that might be a roof but isn't plain, and the pin is still in unbroken forest. Not moved."
   },
   "234123": {
    "call": "good",
@@ -286,7 +286,7 @@
   },
   "234531": {
    "call": "hold",
-   "note": "The pin is in an empty wet meadow; 270 m northeast, where the drawn spur ends, a dark-roofed building with parked vehicles stands at the edge of trees and another structure shows under them, so which one is the guard station isn't plain."
+   "note": "The Forest Service's point lands on a gravel road junction 304 m northeast with no building, and the pin is still in an empty wet meadow; which of the structures at the spur's end is the guard station still isn't plain. Not moved."
   },
   "234566": {
    "call": "usable",

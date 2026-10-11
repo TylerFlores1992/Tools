@@ -162,7 +162,7 @@
   },
   "234350": {
    "call": "unsure",
-   "note": "The drawn lane follows the gravel patches the photo shows between the trees, and the lidar relief shows a faint line along its northeast half, but neither layer shows a cabin, a roof or a levelled pad at the pin by the lakeshore (the intensity is mottled under the firs), so it can't be told whether the cabin sits there. Nothing traced."
+   "note": "The Forest Service's point, 232 m east-northeast, is on open meadow at the forest edge with nothing built (photo and ground relief alike), and the pin by the lakeshore still shows no cabin under the firs. Not moved."
   },
   "234356": {
    "call": "good",
@@ -190,11 +190,11 @@
   },
   "234377": {
    "call": "unsure",
-   "note": "The lidar survey stops about 10 m east of the pin (it covers only the west half of the frame, at 0.95 ground points per square meter), and its relief shows neither the road nor a pad near the pin; the photo shows a small dark shape at the end of the drawn spur, 15 m northeast of the pin, that can't be told for the cabin. Nothing traced."
+   "note": "The Forest Service's point, 820 m southeast, is under closed conifers with no clearing or roof and outside the lidar, and the dark shape at the end of the drawn spur near the pin still can't be told for the cabin. Not moved."
   },
   "234383": {
    "call": "hold",
-   "note": "The pin is in unbroken forest with snow patches, and the listing's own point, 860 m northwest, is on an open, partly snow-covered ridge with no lookout plainly shown; nothing on the photo is the lookout."
+   "note": "The Forest Service's point, 869 m west-southwest, is on the snowy summit ridge where a lookout and its shadow would show and none does, and the pin is still in unbroken forest. Not moved."
   },
   "234386": {
    "call": "good",
@@ -217,8 +217,8 @@
    "note": "The pin is on the cabin at the meadow's edge, and the drawn spur off the Census road comes within 30 m of it."
   },
   "234404": {
-   "call": "hold",
-   "note": "The pin is in open, burned pine forest 120 m from the drawn road, and a 1 km view shows no building or clearing that could be the guard station."
+   "call": "usable",
+   "note": "The pin moved 776 m west-southwest onto the larger grey roof of the two the photo shows in a clearing by the Forest Service's point (a small shed stands 17 m south). After the rebuild a drawn road ends 12 m southeast of it, but its line runs under trees where the lane can't be checked."
   },
   "234405": {
    "call": "hold",
@@ -302,7 +302,7 @@
   },
   "234609": {
    "call": "hold",
-   "note": "The pin is in an empty field between private-looking houses, and the listing's own point, 600 m west, is a small clearing with vehicles and tents at the end of a drawn lane; neither plainly shows the guard station."
+   "note": "The Forest Service's point, 524 m west-southwest, is in brush beside a drawn dirt road with no building, and the pin is still in an empty field; neither shows the guard station. Not moved."
   },
   "234659": {
    "call": "good",

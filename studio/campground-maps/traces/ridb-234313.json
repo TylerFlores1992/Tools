@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-234313",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "C01",
+   "at": [
+    -84.0044524,
+    35.3577905
+   ]
+  }
+ ],
+ "note": "Units-03: the group camp moved onto the grassy field beside Swan Cabin's pale roof, by the Forest Service's point (the listing says groups camp in the field by the cabin)."
+}

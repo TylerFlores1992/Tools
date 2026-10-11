@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "map": "ridb-233221",
+ "traced": "2026-10-11",
+ "by": "Claude (units units-03)",
+ "photo": "USDA NAIP via USGS The National Map (public domain)",
+ "roads": [],
+ "points": [],
+ "sites": [
+  {
+   "name": "1",
+   "at": [
+    -111.0520812,
+    31.3849358
+   ]
+  }
+ ],
+ "note": "Units-03: the group area moved onto the open camp ground the photo shows among the oaks off the highway, with tables and a toilet building, by the Forest Service's point."
+}
