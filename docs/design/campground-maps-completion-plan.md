@@ -137,14 +137,19 @@ maps over the layer, by the orchestrating session before any decision was record
   - Of the 379 maps that started held, 112 now pass.
   - About 60 that had passed as usable were found below the bar and are now held. Most have a
     drawn road off the lane, or a third or more of their sites more than 40 m from a drawn road.
-- **Canopy batches 1–10 (463 maps, 153 traced over the layers):** 283 pass (10 good, 273 usable)
-  and 180 are held (103 unsure, 77 hold). Batches 11 and 12 are running, and about 108 canopy maps
-  are waiting for their layers (667 canopy maps have USGS point clouds).
+- **Canopy batches 1–15 (650 maps, 201 traced over the layers):** 363 pass and 284 are held
+  (3 more are in the owner's waves). Every canopy map with a USGS point cloud has now been looked
+  at, apart from 10 whose layers failed to download (memory, or USGS answering without a size) and
+  3 where no survey has ground points.
   - Intensity made almost every trace possible. The commonest fix was a full replace: OpenStreetMap,
     Forest Service and Census roads 5 to 80 m off the lanes, some of them park outlines.
-  - Most of the unsure calls are sparse surveys (under about 1.4 ground points per m²) or mottled
-    layers. Density alone isn't a cut-off: surveys at 0.67 to 2 points per m² have still shown lanes.
-- **Delegated waves now:** 1,851 pass and 1,118 are held (were 1,577 and 1,384 before the campaign).
+  - Most of the held are sparse surveys (under about 1.4 ground points per m²), mottled layers, and
+    cabins or group sites where nothing at the pin shows a building, pad or clearing (most of the
+    southeast Alaska cabins). Density alone isn't a cut-off: surveys at 0.67 to 2 points per m² have
+    still shown lanes.
+- **Full replaces (replace-01, 13 maps):** the maps an earlier pass held for needing every road
+  redrawn. 12 pass; Red Feather stays held (half its sites sit between the loops where no lane shows).
+- **Delegated waves now:** 1,921 pass and 1,048 are held (were 1,577 and 1,384 before the campaign).
 - **Rules made explicit on the way:**
   - a site counts as roadless more than 40 m from any drawn road or lot, walk-ins included;
   - lanes that would be drawn unconnected to any road hold a map;

@@ -41,11 +41,10 @@ and the hero film is served `immutable`). CI runs `verify` and `e2e` on every pu
 Alaska maps stay off; canopy: "find a solution to get done correctly").** All 17 photo batches are
 done and checked; the canopy answer is the USGS lidar point clouds (`studio/campground-maps/pointcloud/`,
 `docs/design/campground-maps-canopy-brief.md`). Results: the completion plan's "The fix-after
-campaign: results". Canopy batches 1–10 are recorded (463 maps; 283 pass). Still to do: the canopy
-batches for the rest of waves 16 to 39 as their layers are made (layer runs of 12 maps, since some
-maps take 20–30 minutes and a run must finish inside the 2-hour background limit), then the 12 maps
-waiting for a full road replace (`replace-later.json` in the session's scratchpad: 234381, 232792,
-231918, 232186, 232311, 232346, 232267, 234488, 10124445, 10064730, 231981, 233267, 232210).
+campaign: results". Canopy batches 1–15 and the full-replace batch are recorded (650 canopy maps;
+363 pass). Left: 10 canopy maps whose layers failed to download (retry `order-qx.txt` in the
+session scratchpad: large surveys need the machine to themselves), and the owner's call on what to
+do with the ~280 canopy maps public data can't finish (plan's "Decisions for the owner", number 5).
 
 **2026-10-09: finishing every map (owner: "outline-name check; move the Alaska cabin pins; find a
 solution for all of the usable and unusable maps").** The plan, the census of every held map by
