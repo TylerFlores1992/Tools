@@ -1,14 +1,14 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-18 (home hero redesign shipped: the B1 wolf still replaces the film, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
 | What | Where | State |
 |---|---|---|
 | Site | https://tylerflores.dev | Live. Merges to `main` deploy production automatically. |
-| Home hero | `/` | Rebuilt 2026-10-18: B1 wolf still (PR #52); the film is retired. |
+| Home hero | `/` | Live 2026-10-18: the B1 wolf still (PR #52), production smoke 29/29. The film is retired. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
@@ -59,7 +59,11 @@ tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
   Real-ESRGAN x4.
 - **Built 2026-10-18:** `HeroArt.tsx` replaces the film (no client JS); the film's source and skill
   are retired. Shots 8/8 pass, including the measured headline contrast over the image.
-- **Next:** the owner signs off the built hero; after merging, `npm run smoke -- https://tylerflores.dev`.
+- **Live 2026-10-18** (PR #52 merged on the owner's word; production smoke 29/29; the hero
+  image is served AVIF with `immutable` caching).
+- **Open, not blocking:** depth against reference 1 (the critic's remaining gap) would need a
+  different image. $0.825 of Vercel AI Gateway credit is left. The Ultra finals' output terms
+  were never checked, but nothing from them shipped.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
