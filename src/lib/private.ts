@@ -11,6 +11,13 @@ export type PrivateProject = {
 
 export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
   {
+    slug: "mail",
+    name: "Morning Mail",
+    summary: "What came in overnight across Gmail and Yahoo, and what your rules tidied. All code, no AI.",
+    stage: "Daily at 7",
+    href: "/private/mail",
+  },
+  {
     slug: "money",
     name: "Money",
     summary: "Household spending, income and recurring payments, synced daily from the banks.",
