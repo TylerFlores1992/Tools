@@ -27,7 +27,11 @@ const ACTION_WORDS = { trash: "Move to Trash", file: "File in", unsubscribe: "Un
 async function load() {
   if (!isConfigured()) return null;
   try {
-    const [accounts, gmail, rules, runs] = await Promise.all([getAccounts(), getGmailSettings(), listRules(), recentRuns(8)]);
+    // One at a time on purpose: Supabase's pooler stalls pipelined queries (see db.ts).
+    const accounts = await getAccounts();
+    const gmail = await getGmailSettings();
+    const rules = await listRules();
+    const runs = await recentRuns(8);
     return { accounts, gmail, rules, runs };
   } catch {
     return "unreachable" as const;

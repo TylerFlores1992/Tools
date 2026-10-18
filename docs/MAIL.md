@@ -1,7 +1,7 @@
 # Morning Mail (`/private/mail`)
 
 The owner's morning email report, behind the Private password. **All code, no AI.** Built
-2026-10-18 to replace the Claude-written "Morning Mail" artifact (a 7 am `/mail` Claude run on
+2026-10-18 as a trial next to the Claude-written "Morning Mail" artifact (a 7 am `/mail` Claude run on
 the home server, owner's call: "make that all code so Claude isn't involved").
 
 ## How it works
@@ -54,4 +54,4 @@ changing it makes saved Yahoo passwords unreadable, so re-add the accounts).
 ## Owner steps
 1. Accounts & rules → Make my Gmail script → paste into script.google.com → run `setup`.
 2. For each Yahoo account: Yahoo Account Security → Generate app password → add it.
-3. Turn off the old Claude `/mail` run on the home server (its scheduled task there).
+3. **Trial (owner, 2026-10-18): keep the Claude `/mail` run going too** and compare the two. Turn one off once decided.

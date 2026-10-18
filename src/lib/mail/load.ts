@@ -23,15 +23,14 @@ export async function loadMail(date?: string): Promise<MailPage> {
   const today = pacificDate();
   const day = date && /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= today ? date : today;
   try {
-    const [rows, dismissed, unsubscribed, accounts, rules, history, gmail] = await Promise.all([
-      getRows(addDays(day, -(CARRY_DAYS - 1))),
-      getDismissed(),
-      getUnsubscribed(),
-      getAccounts(),
-      listRules(),
-      dayCounts(addDays(today, -13)),
-      getGmailSettings(),
-    ]);
+    // One at a time on purpose: Supabase's pooler stalls pipelined queries (see db.ts).
+    const rows = await getRows(addDays(day, -(CARRY_DAYS - 1)));
+    const dismissed = await getDismissed();
+    const unsubscribed = await getUnsubscribed();
+    const accounts = await getAccounts();
+    const rules = await listRules();
+    const history = await dayCounts(addDays(today, -13));
+    const gmail = await getGmailSettings();
     const covered = new Set(rules.map((r) => (r.matchFrom ?? "").toLowerCase()).filter((f) => f.includes("@")));
     const accountErrors = accounts.filter((a) => a.enabled && a.lastError).map((a) => `${accountLabel(a.id)}: ${a.lastError}`);
     const report = buildReport({ date: day, rows: rows.filter((r) => r.reportDate <= day), dismissed, unsubscribed, ruleCoveredAddrs: covered, accountErrors });
