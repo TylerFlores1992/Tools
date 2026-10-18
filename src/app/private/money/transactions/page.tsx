@@ -7,7 +7,7 @@ import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
 import { CATEGORIES } from "@/tools/money/categorize";
 import { merchantKey } from "@/tools/money/recurring";
-import { isMonth, money, monthName, monthOf, shiftMonth, shortDate } from "@/tools/money/summary";
+import { isMonth, isYear, money, monthName, monthOf, shiftMonth, shortDate } from "@/tools/money/summary";
 import type { Txn } from "@/tools/money/types";
 import { MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
@@ -38,7 +38,7 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
   }
 
   const thisMonth = monthOf(data.today);
-  const month = isMonth(sp.month) ? sp.month : sp.month === "all" ? "all" : thisMonth;
+  const month = isMonth(sp.month) || isYear(sp.month) ? sp.month : sp.month === "all" ? "all" : thisMonth;
   const view = sp.view === "mine" || sp.view === "joint" ? sp.view : "all";
   const ids = accountsFor(data.accounts, view);
   const account = data.accounts.find((a) => a.id === sp.account);
@@ -49,7 +49,7 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
   const rows = data.txns.filter((t) =>
     ids.has(t.accountId) &&
     (!account || t.accountId === account.id) &&
-    (month === "all" || monthOf(t.posted) === month) &&
+    (month === "all" || t.posted.startsWith(month)) &&
     (!category || t.category === category) &&
     (!needle || `${t.description} ${t.payee ?? ""} ${t.memo ?? ""}`.toUpperCase().includes(needle)),
   );
@@ -59,6 +59,7 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
   for (const t of rows) (byDay.get(t.posted) ?? byDay.set(t.posted, []).get(t.posted)!).push(t);
   const names = new Map(data.accounts.map((a) => [a.id, accountLabel(a)]));
   const months = Array.from({ length: 13 }, (_, i) => shiftMonth(thisMonth, -i));
+  const years = [...new Set([thisMonth.slice(0, 4), ...data.txns.map((t) => t.posted.slice(0, 4))])].sort().reverse();
 
   return (
     <MoneyShell current="/private/money/transactions">
@@ -70,7 +71,8 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
         <Field label="Month">
           <select name="month" defaultValue={month} className={SELECT}>
             {months.map((m) => <option key={m} value={m}>{monthName(m)}</option>)}
-            <option value="all">Last 13 months</option>
+            {years.map((y) => <option key={y} value={y}>All of {y}</option>)}
+            <option value="all">Everything loaded</option>
           </select>
         </Field>
         <Field label="Account">

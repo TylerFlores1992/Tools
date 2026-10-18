@@ -7,7 +7,7 @@ import type { Txn } from "./types.ts";
  * counts as money out, and money that arrived from one counts as money in.
  */
 export type MonthSummary = {
-  month: string; // YYYY-MM
+  month: string; // the period: YYYY-MM, or YYYY for a whole year
   moneyIn: number;
   moneyOut: number; // positive number
   net: number;
@@ -19,6 +19,7 @@ export const monthOf = (date: string) => date.slice(0, 7);
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
+/** `month` is YYYY-MM for one month, or YYYY for the whole year. */
 export function summarize(
   txns: readonly Txn[],
   month: string,
@@ -30,7 +31,7 @@ export function summarize(
   let count = 0;
   const cats = new Map<string, { out: number; in: number; count: number }>();
   for (const t of txns) {
-    if (monthOf(t.posted) !== month) continue;
+    if (!t.posted.startsWith(month)) continue;
     if (accountIds && !accountIds.has(t.accountId)) continue;
     const crossing = t.category === TRANSFER ? across?.get(t.id) : undefined;
     if (t.category === TRANSFER && !crossing) continue;
@@ -82,6 +83,19 @@ export function shiftMonth(month: string, delta: number): string {
   const [y, m] = month.split("-").map(Number);
   const d = new Date(Date.UTC(y, m - 1 + delta, 1));
   return d.toISOString().slice(0, 7);
+}
+
+/** True for a plausible YYYY. */
+export const isYear = (s: unknown): s is string => typeof s === "string" && /^20\d{2}$/.test(s);
+
+/** The months of `year` up to and including `thisMonth`, oldest first. */
+export function monthsOf(year: string, thisMonth: string): string[] {
+  const out: string[] = [];
+  for (let m = 1; m <= 12; m++) {
+    const k = `${year}-${String(m).padStart(2, "0")}`;
+    if (k <= thisMonth) out.push(k);
+  }
+  return out;
 }
 
 /** True for a well-formed YYYY-MM. */

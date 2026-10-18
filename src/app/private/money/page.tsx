@@ -6,7 +6,7 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
 import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
-import { isMonth, money, monthName, monthOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross } from "@/tools/money/summary";
+import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross } from "@/tools/money/summary";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type Search = Promise<{ month?: string; view?: string; synced?: string }>;
+type Search = Promise<{ month?: string; year?: string; view?: string; synced?: string }>;
 const VIEWS = [
   { value: "all", label: "Everything" },
   { value: "mine", label: "Mine" },
@@ -38,7 +38,14 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   }
 
   const thisMonth = monthOf(data.today);
+  const thisYear = thisMonth.slice(0, 4);
+  // ?year=2026 is the whole year; otherwise ?month=2026-09, defaulting to this month.
+  const mode: "year" | "month" = isYear(sp.year) && sp.year <= thisYear && !sp.month ? "year" : "month";
   const month = isMonth(sp.month) && sp.month <= thisMonth ? sp.month : thisMonth;
+  const year = mode === "year" ? sp.year! : month.slice(0, 4);
+  const period = mode === "year" ? year : month;
+  const prevPeriod = mode === "year" ? String(Number(year) - 1) : shiftMonth(month, -1);
+  const prevName = mode === "year" ? prevPeriod : monthName(prevPeriod).split(" ")[0];
   const view = VIEWS.some((v) => v.value === sp.view) ? sp.view! : "all";
   const ids = accountsFor(data.accounts, view);
   const txns = data.txns.filter((t) => ids.has(t.accountId));
@@ -48,9 +55,14 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
     const o = ownerOf.get(id);
     return o === "mine" ? "your accounts" : o === "hers" ? "her accounts" : o === "joint" ? "Joint" : "an unassigned account";
   });
-  const s = summarize(txns, month, undefined, across);
-  const prev = summarize(txns, shiftMonth(month, -1), undefined, across);
-  const prevName = monthName(shiftMonth(month, -1)).split(" ")[0];
+  const s = summarize(txns, period, undefined, across);
+  const prev = summarize(txns, prevPeriod, undefined, across);
+  const yearMonths = monthsOf(year, thisMonth).map((m) => summarize(txns, m, undefined, across));
+  const withData = yearMonths.filter((m) => m.count > 0);
+  const avgOut = withData.length ? withData.reduce((n, m) => n + m.moneyOut, 0) / withData.length : 0;
+  const avgIn = withData.length ? withData.reduce((n, m) => n + m.moneyIn, 0) / withData.length : 0;
+  const maxMonthOut = Math.max(1, ...yearMonths.map((m) => m.moneyOut));
+  const firstYear = data.txns.reduce((y, t) => (t.posted.slice(0, 4) < y ? t.posted.slice(0, 4) : y), thisYear);
   const recurring = findRecurring(txns, data.today);
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
   const paychecks = recurring.filter((r) => r.direction === "in" && r.status === "active");
@@ -59,36 +71,71 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const shown = data.accounts.filter((a) => ids.has(a.id));
   const lastRun = data.runs.find((r) => r.ok);
   const maxOut = Math.max(1, ...s.byCategory.map((c) => c.out));
-  const qs = (p: Record<string, string>) => {
-    const u = new URLSearchParams({ ...(month !== thisMonth ? { month } : {}), ...(view !== "all" ? { view } : {}), ...p });
-    for (const [k, v] of [...u.entries()]) if (!v || (k === "month" && v === thisMonth) || (k === "view" && v === "all")) u.delete(k);
+  /** A link to the overview. Pass `month` or `year` to change the period; the view is kept. */
+  const qs = (p: { month?: string; year?: string; view?: string }) => {
+    const u = new URLSearchParams();
+    const v = p.view ?? view;
+    if (p.year) u.set("year", p.year);
+    else if (p.month) { if (p.month !== thisMonth) u.set("month", p.month); }
+    else if (mode === "year") u.set("year", year);
+    else if (month !== thisMonth) u.set("month", month);
+    if (v !== "all") u.set("view", v);
     const str = u.toString();
     return `/private/money${str ? `?${str}` : ""}`;
   };
+  // Stepping a year keeps the same month (clamped to this month) in month mode.
+  const yearHref = (y: string) => (mode === "year" ? qs({ year: y }) : qs({ month: `${y}-${month.slice(5)}` > thisMonth ? thisMonth : `${y}-${month.slice(5)}` }));
 
   return (
     <MoneyShell current="/private/money">
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line-2 pb-6">
         <div>
           <Label>Money</Label>
-          <h1 className="mt-3 text-title font-normal">{monthName(month)}</h1>
+          <h1 className="mt-3 text-title font-normal">{mode === "year" ? year : monthName(month)}</h1>
           <p className="mt-3 text-small text-muted">
             {lastRun ? `Last synced ${new Date(lastRun.startedAt).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}` : "Not synced yet"}
             {" · "}
             <Link href="/private/money/settings" className="underline underline-offset-4 hover:text-ink">Sync settings</Link>
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href={qs({ month: shiftMonth(month, -1) })} className="flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 hover:text-ink">
-            <span aria-hidden="true">←</span><span className="sr-only">Previous month</span><span aria-hidden="true" className="ml-2 hidden sm:inline">{monthName(shiftMonth(month, -1)).split(" ")[0]}</span>
-          </Link>
-          {month < thisMonth && (
-            <Link href={qs({ month: shiftMonth(month, 1) })} className="flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 hover:text-ink">
-              <span aria-hidden="true" className="mr-2 hidden sm:inline">{monthName(shiftMonth(month, 1)).split(" ")[0]}</span><span className="sr-only">Next month</span><span aria-hidden="true">→</span>
-            </Link>
-          )}
+        <div role="group" aria-label="Show a month or a year" className="inline-flex gap-1 rounded-full border border-line bg-surface p-1">
+          <ChoiceLink href={qs({ month: year === thisYear ? (mode === "month" ? month : thisMonth) : `${year}-12` })} on={mode === "month"}>Month</ChoiceLink>
+          <ChoiceLink href={qs({ year })} on={mode === "year"}>Year</ChoiceLink>
         </div>
       </div>
+
+      <nav aria-label={mode === "year" ? "Years" : "Months"} className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+        <span className="flex items-center gap-1">
+          {year > firstYear ? (
+            <Link href={yearHref(String(Number(year) - 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink">
+              <span aria-hidden="true">←</span><span className="sr-only">{Number(year) - 1}</span>
+            </Link>
+          ) : <span className="min-w-11" />}
+          <span className="min-w-[5ch] text-center text-body tabular-nums text-ink">{year}</span>
+          {year < thisYear ? (
+            <Link href={yearHref(String(Number(year) + 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink">
+              <span aria-hidden="true">→</span><span className="sr-only">{Number(year) + 1}</span>
+            </Link>
+          ) : <span className="min-w-11" />}
+        </span>
+        <ul className="flex flex-wrap gap-1">
+          {Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).map((m) => {
+            const label = monthName(m).split(" ")[0].slice(0, 3);
+            const on = mode === "month" && m === month;
+            return (
+              <li key={m}>
+                {m > thisMonth ? (
+                  <span aria-disabled="true" className="flex min-h-10 min-w-12 items-center justify-center rounded-full px-3 text-small text-muted"><span className="sr-only">{monthName(m)}, not yet</span><span aria-hidden="true">{label}</span></span>
+                ) : (
+                  <Link href={qs({ month: m })} aria-current={on ? "true" : undefined} className={on ? "flex min-h-10 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small text-on-primary" : "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small text-ink-2 hover:text-ink"}>
+                    <span className="sr-only">{monthName(m)}</span><span aria-hidden="true">{label}</span>
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
 
       {sp.synced && <p className="mt-6"><State kind="ok">Connected and synced.</State></p>}
       {!data.connected && <div className="mt-8"><NotConnected /></div>}
@@ -98,22 +145,64 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
       </div>
 
       <section aria-label="Totals" className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Total label="Money in" value={`+${money(s.moneyIn)}`} note={delta(s.moneyIn - prev.moneyIn, prevName)} />
-        <Total label="Money out" value={`−${money(s.moneyOut)}`} note={delta(s.moneyOut - prev.moneyOut, prevName)} />
-        <Total label="Net" value={signedMoney(s.net)} note={s.net >= 0 ? "Ahead this month" : "Behind this month"} />
+        <Total label="Money in" value={`+${money(s.moneyIn)}`} note={mode === "year" ? `About ${money(avgIn)} a month` : prev.count ? delta(s.moneyIn - prev.moneyIn, prevName) : `No data for ${prevName}`} />
+        <Total label="Money out" value={`−${money(s.moneyOut)}`} note={mode === "year" ? `About ${money(avgOut)} a month` : prev.count ? delta(s.moneyOut - prev.moneyOut, prevName) : `No data for ${prevName}`} />
+        <Total label="Net" value={signedMoney(s.net)} note={`${s.net >= 0 ? "Ahead" : "Behind"} this ${mode}`} />
       </section>
-      <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out. In the Mine and Joint views, money moved between the two is.</p>
+      <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out. In the Mine and Joint views, money moved between the two is.{mode === "year" && withData.length < yearMonths.length ? ` ${yearMonths.length - withData.length} ${yearMonths.length - withData.length === 1 ? "month has" : "months have"} no data yet; older months can be imported in Settings.` : ""}</p>
+
+      {mode === "year" && (
+        <section aria-labelledby="months" className="mt-10 min-w-0">
+          <h2 id="months" className="text-h2 font-normal">Month by month</h2>
+          <div className="relative mt-4 overflow-x-auto">
+            <table className="w-full text-body">
+              <thead>
+                <tr className="border-b border-line text-left text-small text-ink-2">
+                  <th scope="col" className="py-2 pr-4 font-normal">Month</th>
+                  <th scope="col" className="py-2 pr-3 text-right font-normal sm:pr-4">In</th>
+                  <th scope="col" className="py-2 pr-3 text-right font-normal sm:pr-4">Out</th>
+                  <th scope="col" className="py-2 text-right font-normal sm:pr-4">Net</th>
+                  <td aria-hidden="true" className="hidden sm:table-cell" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {yearMonths.map((m) => (
+                  <tr key={m.month}>
+                    <th scope="row" className="py-2 pr-3 text-left font-normal">
+                      <Link href={qs({ month: m.month })} className="text-ink underline-offset-4 hover:underline"><span className="sm:hidden">{monthName(m.month).slice(0, 3)}</span><span className="hidden sm:inline">{monthName(m.month).split(" ")[0]}</span></Link>
+                    </th>
+                    {m.count === 0 ? (
+                      <td colSpan={4} className="py-2 text-right text-small text-muted sm:text-left">No data</td>
+                    ) : (
+                      <>
+                        <td className="py-2 pr-3 text-right tabular-nums whitespace-nowrap sm:pr-4">+{money(m.moneyIn)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums whitespace-nowrap sm:pr-4">−{money(m.moneyOut)}</td>
+                        <td className="py-2 text-right tabular-nums whitespace-nowrap sm:pr-4">{signedMoney(m.net)}</td>
+                        <td className="hidden w-[30%] py-2 sm:table-cell" aria-hidden="true">
+                          <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
+                            <span className="block h-full rounded-full bg-ice" style={{ width: `${Math.max(2, (m.moneyOut / maxMonthOut) * 100)}%` }} />
+                          </span>
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[3fr_2fr]">
         <section aria-labelledby="cats">
           <h2 id="cats" className="text-h2 font-normal">Where it went</h2>
           {s.byCategory.filter((c) => c.out > 0).length === 0 ? (
-            <p className="mt-4 text-body text-ink-2">No spending recorded for {monthName(month)}.</p>
+            <p className="mt-4 text-body text-ink-2">No spending recorded for {mode === "year" ? year : monthName(month)}.</p>
           ) : (
             <ul className="mt-5 grid gap-3">
               {s.byCategory.filter((c) => c.out > 0).map((c) => (
                 <li key={c.category}>
-                  <Link href={`/private/money/transactions?${new URLSearchParams({ month, category: c.category, ...(view !== "all" ? { view } : {}) })}`} className="group block rounded-btn px-1 py-1 hover:bg-surface-2">
+                  <Link href={`/private/money/transactions?${new URLSearchParams({ month: period, category: c.category, ...(view !== "all" ? { view } : {}) })}`} className="group block rounded-btn px-1 py-1 hover:bg-surface-2">
                     <span className="flex items-baseline justify-between gap-4 text-body">
                       <span className="text-ink group-hover:underline group-hover:underline-offset-4">{c.category}</span>
                       <span className="tabular-nums text-ink">{money(c.out)}</span>
@@ -168,7 +257,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
         ) : (
           <div className="mt-5 grid gap-8 lg:grid-cols-2">
             <RecurringList title="Bills and subscriptions" items={bills} empty="None found yet." />
-            <div className="grid content-start gap-8">
+            <div className="grid min-w-0 content-start gap-8">
               <RecurringList title="Income" items={paychecks} empty="No regular income found yet." />
               {stopped.length > 0 && <RecurringList title="May have stopped" items={stopped} empty="" />}
             </div>
@@ -197,7 +286,7 @@ function Total({ label, value, note }: { label: string; value: string; note: str
 
 function RecurringList({ title, items, empty }: { title: string; items: Recurring[]; empty: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <h3 className="text-h3 font-medium">{title}</h3>
       {items.length === 0 ? (
         <p className="mt-3 text-body text-ink-2">{empty}</p>

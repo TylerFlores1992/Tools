@@ -10,7 +10,7 @@ export type MoneyData =
   | { state: "unreachable" }
   | { state: "ok"; connected: boolean; accounts: Account[]; txns: Txn[]; rules: Rule[]; runs: SyncRun[]; today: string };
 
-/** Everything a money page shows, about 13 months of it (enough for yearly bills). */
+/** Everything a money page shows: 13 months, and at least back to January of last year. */
 export async function loadMoney(): Promise<MoneyData> {
   if (!isConfigured()) return { state: "not-configured" };
   const today = toLocalDate(Date.now() / 1000);
@@ -18,7 +18,9 @@ export async function loadMoney(): Promise<MoneyData> {
     // One at a time on purpose: see the pipelining note in db.ts.
     const conn = await getConnection();
     const accounts = await getAccounts();
-    const txns = await getTransactions(addDays(today, -400));
+    const lastJan = `${Number(today.slice(0, 4)) - 1}-01-01`;
+    const from = addDays(today, -400) < lastJan ? addDays(today, -400) : lastJan;
+    const txns = await getTransactions(from);
     const rules = await getRules();
     const runs = await getSyncRuns(10);
     return { state: "ok", connected: conn.connected, accounts, txns, rules, runs, today };

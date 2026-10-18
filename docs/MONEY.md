@@ -35,6 +35,17 @@ Chase, U.S. Bank ──► SimpleFIN Bridge (~$1.50/mo, owner's account)
 - **Recurring:** `src/tools/money/recurring.ts` groups by merchant key and fits weekly,
   every 2 weeks, twice a month, monthly (≥3 seen), quarterly, yearly (≥2). Amounts must stay
   within 50% of the median; >15% swing shows "≈".
+- **Older history (CSV import, 2026-10-18).** SimpleFIN only reaches back 90 days (Actual Budget's
+  SimpleFIN docs say the same), so months before that come from each bank's own CSV download,
+  imported per account on Settings (`src/tools/money/csv.ts` reads columns by header name;
+  `src/lib/money/import.ts` stores them). Rows dated on or after the account's first synced
+  transaction are skipped, so overlap can't double anything; ids are `csv:` + a row hash, so a
+  repeat import adds nothing; "Undo import" deletes only that account's `csv:` rows. The header
+  names for Chase and U.S. Bank were written from the documented formats, not from a real file:
+  if a real export is refused, the error names the columns it wanted.
+- **Month and year (2026-10-18).** Overview takes `?month=YYYY-MM` or `?year=YYYY`, with month
+  chips for the year and a year stepper. The year view has a month-by-month table and "about $X a
+  month" averages over months that have data. Pages load at least back to January of last year.
 - **Views:** Everything / Mine / Joint, from each account's owner (Settings). Hidden accounts
   count nowhere.
 

@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePrivate } from "@/lib/money/guard";
-import { deleteRule, manualSyncsToday, saveAccessUrl, setCategory, updateAccount } from "@/lib/money/store";
+import { importRows, undoImport } from "@/lib/money/import";
+import { deleteRule, getAccounts, manualSyncsToday, saveAccessUrl, setCategory, updateAccount } from "@/lib/money/store";
 import { runSync } from "@/lib/money/sync";
 import { CATEGORIES } from "@/tools/money/categorize";
+import { readBankCsv } from "@/tools/money/csv";
 import { merchantKey } from "@/tools/money/recurring";
 import { SimpleFinError, claimAccessUrl } from "@/tools/money/simplefin";
 import type { Owner } from "@/tools/money/types";
@@ -86,3 +88,43 @@ export async function removeRule(form: FormData): Promise<void> {
   if (pattern) await deleteRule(pattern);
   revalidatePath("/private/money", "layout");
 }
+
+/** A bank's CSV export, for history older than SimpleFIN's 90 days (src/lib/money/import.ts). */
+export async function importStatement(prev: FormState, form: FormData): Promise<FormState> {
+  await requirePrivate("/private/money/settings");
+  const attempt = prev.attempt + 1;
+  const accountId = String(form.get("account") ?? "");
+  const file = form.get("file");
+  const accounts = await getAccounts();
+  const account = accounts.find((a) => a.id === accountId);
+  if (!account) return { error: "Pick the account this file is from.", attempt };
+  if (!(file instanceof File) || file.size === 0) return { error: "Choose the CSV file you downloaded from the bank.", attempt };
+  if (file.size > 900_000) return { error: "That file is too big. Download a shorter date range (a few months at a time).", attempt };
+  const parsed = readBankCsv(await file.text(), form.get("flip") === "on");
+  if (parsed.error) return { error: parsed.error, attempt };
+  try {
+    const r = await importRows(account.id, parsed.rows);
+    revalidatePath("/private/money", "layout");
+    const parts = [
+      r.added
+        ? `Added ${r.added} ${r.added === 1 ? "transaction" : "transactions"}${r.from && r.to ? `, ${dayLabel(r.from)} to ${dayLabel(r.to)}` : ""}.`
+        : "Nothing new to add.",
+    ];
+    if (r.overlap) parts.push(`${r.overlap} ${r.overlap === 1 ? "was" : "were"} already in from the bank sync and skipped.`);
+    if (r.repeat) parts.push(`${r.repeat} ${r.repeat === 1 ? "was" : "were"} already imported.`);
+    if (parsed.skipped) parts.push(`${parsed.skipped} ${parsed.skipped === 1 ? "line wasn’t" : "lines weren’t"} a transaction.`);
+    return { done: parts.join(" "), attempt };
+  } catch (e) {
+    console.error("money import failed", e instanceof Error ? e.name : "unknown");
+    return { error: "The import failed. Nothing was added.", attempt };
+  }
+}
+
+export async function undoStatement(form: FormData): Promise<void> {
+  await requirePrivate("/private/money/settings");
+  const accountId = String(form.get("account") ?? "");
+  if (accountId) await undoImport(accountId);
+  revalidatePath("/private/money", "layout");
+}
+
+const dayLabel = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
