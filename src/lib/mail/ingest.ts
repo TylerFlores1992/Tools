@@ -1,0 +1,105 @@
+import "server-only";
+import { classify, pickRule } from "@/tools/mail/classify";
+import { clip, parseFrom, parseUnsubscribe } from "@/tools/mail/headers";
+import { planAction, safeUnsubscribeUrl } from "@/tools/mail/plan";
+import { addDays } from "@/tools/mail/report";
+import type { IncomingMail, MailRow, Rule } from "@/tools/mail/types";
+import { insertMessage, knownIds, recordUnsubscribed, setActionStatus, unactionedFrom } from "./store";
+
+/** What a source must do to its mailbox next. "trash" always means the account's own Trash. */
+export type MailboxOp = { id: string; op: "trash" | "file"; folder: string | null };
+
+export const pacificDate = (d = new Date()) =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+
+/**
+ * Presses a one-click (RFC 8058) unsubscribe: a POST with the body the standard specifies, no
+ * cookies, no redirects followed, 10 s. Anything but a 2xx is a failure we report, never retry.
+ */
+export async function oneClickUnsubscribe(url: string | null): Promise<{ ok: boolean; note: string }> {
+  const u = safeUnsubscribeUrl(url);
+  if (!u) return { ok: false, note: "The unsubscribe link was not one a server can safely press." };
+  try {
+    const res = await fetch(u, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "MorningMail/1 (one-click unsubscribe)" },
+      body: "List-Unsubscribe=One-Click",
+      redirect: "manual",
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (res.status >= 200 && res.status < 400) return { ok: true, note: "Unsubscribed with the sender's one-click link." };
+    return { ok: false, note: `The sender's unsubscribe link answered ${res.status}.` };
+  } catch {
+    return { ok: false, note: "The sender's unsubscribe link did not answer." };
+  }
+}
+
+/** Mailbox op for a row whose action is still pending, or null if it needs none. */
+export function opFor(row: Pick<MailRow, "id" | "action" | "actionFolder" | "actionStatus">): MailboxOp | null {
+  if (row.actionStatus !== "pending") return null;
+  if (row.action === "trash" || row.action === "unsubscribe") return { id: row.id, op: "trash", folder: null };
+  if (row.action === "file") return { id: row.id, op: "file", folder: row.actionFolder };
+  return null;
+}
+
+/**
+ * Classifies and stores new mail, presses one-click unsubscribes the owner's rules ask for, and
+ * returns the mailbox moves the source must make. Mail already stored is skipped.
+ */
+export async function ingest(mails: IncomingMail[], rules: readonly Rule[], reportDate = pacificDate()): Promise<{ stored: number; ops: MailboxOp[] }> {
+  const known = await knownIds(mails.map((m) => m.id));
+  const ops: MailboxOp[] = [];
+  let stored = 0;
+  for (const m of mails) {
+    if (known.has(m.id)) continue;
+    const sender = parseFrom(m.from);
+    const rule = pickRule(rules, m.from, m.subject);
+    const c = classify(m, rule);
+    const p = planAction(m, rule);
+    const u = parseUnsubscribe(m.listUnsubscribe, m.listUnsubscribePost);
+    let status = p.status;
+    let note = p.note;
+    if (p.action === "unsubscribe" && p.status === "pending") {
+      const r = await oneClickUnsubscribe(u.http);
+      note = r.note;
+      if (r.ok) {
+        if (sender.addr) await recordUnsubscribed(sender.addr, "one-click");
+      } else status = "failed";
+    }
+    const inserted = await insertMessage({
+      id: m.id, accountId: m.accountId, reportDate, receivedAt: m.receivedAt, fromName: sender.name, fromAddr: sender.addr,
+      subject: clip(m.subject || "(no subject)", 200), snippet: clip(m.snippet, 400), unsubHttp: u.http, unsubMailto: u.mailto, oneClick: u.oneClick,
+      bucket: c.bucket, level: c.level, title: c.title, detail: c.detail, ruleId: rule?.id ?? null, action: p.action,
+      actionFolder: p.folder, actionStatus: status, actionNote: note,
+    });
+    if (!inserted) continue;
+    stored++;
+    const op = opFor({ id: m.id, action: p.action, actionFolder: p.folder, actionStatus: status });
+    if (op) ops.push(op);
+  }
+  return { stored, ops };
+}
+
+/** A rule made from the report applies to that sender's mail from the last two days too. */
+export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<number> {
+  const rows = await unactionedFrom(fromAddr, addDays(pacificDate(), -2));
+  for (const r of rows) {
+    const mail: IncomingMail = {
+      id: r.id, accountId: r.accountId, receivedAt: r.receivedAt, from: r.fromAddr ?? "", subject: r.subject, snippet: r.snippet,
+      listUnsubscribe: [r.unsubHttp, r.unsubMailto].filter(Boolean).map((x) => `<${x}>`).join(", ") || null,
+      listUnsubscribePost: r.oneClick ? "List-Unsubscribe=One-Click" : null,
+    };
+    const p = planAction(mail, rule);
+    let status = p.status;
+    let note = p.note;
+    if (p.action === "unsubscribe" && p.status === "pending") {
+      const res = await oneClickUnsubscribe(r.unsubHttp);
+      note = res.note;
+      if (res.ok) await recordUnsubscribed(fromAddr, "one-click");
+      else status = "failed";
+    }
+    if (p.action && status) await setActionStatus(r.id, status, note, p.action, p.folder);
+  }
+  return rows.length;
+}
