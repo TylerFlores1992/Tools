@@ -12,7 +12,7 @@
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
-| Money tracker | `/private/money` | Built 2026-10-18 (`docs/MONEY.md`). Chase + U.S. Bank via SimpleFIN, daily sync, categories, recurring. Waiting on the owner to connect SimpleFIN. |
+| Money tracker | `/private/money` | Live 2026-10-18 (#54, `docs/MONEY.md`). Chase + U.S. Bank via SimpleFIN, daily sync, categories, recurring. Database answers in production. Waiting on the owner to connect SimpleFIN. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
 | ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
 | ↳ **Campground page** | `/private/camphawk/golden-hour/campground` | Live. CampHawk's campground page in the same look, with every real state. Now shows whichever campground Explore opened (`?id=`). Critic 7/10, findings fixed. |
@@ -36,7 +36,7 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
 
-## Money tracker (built 2026-10-18)
+## Money tracker (live 2026-10-18, #54)
 Start at `docs/MONEY.md`. Waiting on the owner: sign up at SimpleFIN Bridge, add Chase and U.S.
 Bank, paste the setup token at `/private/money/settings`, set each account's owner. After the
 first real sync, review what landed in Uncategorized and add keywords or rules.

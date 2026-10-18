@@ -66,6 +66,16 @@ No Supabase from the workspace (pooler host not resolvable). Use a throwaway Pos
 locally, stub the two `next/font/google` calls in `src/app/private/camphawk/layout.tsx`, build,
 then restore the file by copy (CI builds the real thing).
 
+## Status (2026-10-18)
+- Merged as #54 and deployed. `/api/money/health` reads `ok` in production, and `/private/money`
+  lands on the sign-in page when signed out.
+- `MONEY_DATABASE_URL` and `CRON_SECRET` are set in Vercel (Production + Preview, Sensitive). The
+  `money_app` password was generated in a session, so rotate it if that matters (above).
+- **Not yet connected to SimpleFIN.** The first real sync happens when the owner pastes a setup
+  token on Settings. Until then the daily cron logs "Not connected to SimpleFIN yet."
+- Nothing here calls an AI model at run time: the sync, categories and recurring detection are
+  plain code. Claude can read the data on request through the Supabase connector (`money` schema).
+
 ## Ideas not built yet
 Budgets per category with a monthly target · weekly summary email · CSV export · splitting a
 transaction · a spending-over-time chart.
