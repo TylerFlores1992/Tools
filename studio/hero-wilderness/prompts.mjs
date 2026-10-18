@@ -21,6 +21,13 @@ export const DIRECTIONS = {
     `Wildlife photograph style, a wolf standing among dark pines on the right, side light from below, delicate glowing circuit patterns woven through its thick winter fur, ${EYE}. Mist hangs low, tiny sparks drift up from the ground. ${NIGHT}. ${LEFT}. Realistic, restrained, premium.`,
     `Extreme detail portrait of a wolf at the right edge of a wide frame, fur rendered hair by hair, faint cool-white circuitry glowing beneath the fur on the muzzle and around the eyes, ${EYE}. Background a soft-focus misty forest in deep blue-teal. ${LEFT}. Realistic, cinematic, low key.`,
   ],
+  // C (owner's pick 2026-10-18): a-wide-klein-12's setting with b-wide-klein-01's realism.
+  c: [
+    `Cinematic night wildlife photograph in a dense forest, tall dark trunks receding into blue fog, a pale winding dirt path glowing softly as it curves away between the trees, moss lit by a cool glow. Thin pale-cyan circuit traces are etched into the bark of the nearest trunks like glowing wiring. In the right foreground a real grey wolf, head and shoulders, three-quarter view facing left, thin luminous pale-blue circuit lines running through the fur of its brow and neck, ${EYE}. A few tiny warm sparks drift in the air. ${LEFT}. Photorealistic, fur hair by hair, shallow depth of field.`,
+    `Photorealistic night forest, low camera, a soft-lit winding path leading into misty blue trees, small floating motes of light. A grey wolf stands close in the lower right corner, partly cropped by the frame, looking left down the path, fine glowing white-blue circuit patterns traced through the fur on its face, ${EYE}. Faint cyan circuitry glows in the bark of the trunk behind it. ${NIGHT}. ${LEFT}. Natural fur detail, cinematic lighting, premium.`,
+    `Wide cinematic photograph, deep blue-teal night woodland, fog between straight dark trunks, a pale path winding through glowing moss toward the distance. On the right, a realistic wolf emerges from behind a tree trunk, head lowered, delicate glowing circuit lines along its brow and cheek, ${EYE}. The tree trunk carries thin cyan circuit traces. Tiny amber sparks drift up. ${LEFT}. Shot on a full-frame camera, shallow depth of field.`,
+    `Moody night wildlife photography, a forest path lit by soft cool light from the ground, misty blue forest beyond with soft bokeh. In the right third of the frame, a close realistic grey wolf in profile facing left, ears up, luminous pale-blue circuitry flowing with the fur on its forehead and neck, ${EYE}, a few warm sparks floating near it. Faint glowing circuit marks in the bark of nearby trunks. ${LEFT}. Highly detailed, restrained, cinematic.`,
+  ],
 };
 
 // Wide master and a portrait cut composed for phones (multiples of 16).
@@ -28,3 +35,7 @@ export const SIZES = {
   wide: { width: 1536, height: 864 },
   tall: { width: 864, height: 1536 },
 };
+
+// The finals' wording of c[0]. Flux 1.1 Ultra overdoes "luminous" and "glowing wiring" (thick neon
+// lines, a glowing road), so this keeps the composition and asks for restraint in what IS there.
+export const FINAL_C = `Cinematic night wildlife photograph in a dense forest, tall dark trunks receding into blue fog, a pale winding dirt path curving away between the trees, faintly lit, moss in soft cool light. In the right foreground a real grey wolf, head and shoulders, three-quarter view facing left. Hairline-thin, faint pale-cyan circuit traces follow the grain of the fur on its brow and down its neck, subtle like fine engraving that barely glows. One eye glows a warm amber-orange ember, the only warm colour in the image. Two or three tiny dim warm sparks in the air. The left half of the frame is deep, quiet, near-black blue shadow between distant trunks, empty and calm. Muted natural colour grade, deep shadows, photorealistic, fur hair by hair, shallow depth of field.`;

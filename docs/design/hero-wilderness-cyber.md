@@ -13,9 +13,49 @@ its drafts are next. Nothing is built yet.*
    are watermarked stock and one is someone's painting. A new container needs them attached again.
 3. Gate 3 drafts done 2026-10-18: 16 per direction (12 wide, 4 tall) on FLUX.2 klein 4B, about
    5,000 neurons estimated, all free. Shown to the owner as two sheets beside the references
-   (session only; regenerate the sheets from `out/`). **Waiting on the owner's pick.**
-4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1, keep the $1.43
-   for them). Then build (§5) and critique (Gate 6).
+   (session only; regenerate the sheets from `out/`).
+   **Owner's pick (2026-10-18): "A12 setting with a B1 realistic vibe."** That's direction C in
+   `prompts.mjs`: 12 wide + 6 tall drafted (~2,800 neurons). Strongest: c-wide 01, 05, 09 (path,
+   wolf right, circuits in the fur) and 03, 07, 11 (wolf at a wired trunk); tall 01, 05.
+   Owner picked **C09 wide + C05 tall** for the finals.
+4. **Finals made 2026-10-18** (`studio/hero-wilderness/final.mjs`, Flux 1.1 Ultra on the Vercel
+   credit, the picked draft passed in as BFL's image prompt): **`wide-ultra-03`** (2752 x 1536) and
+   **`tall-ultra-05`** (1536 x 2752), in `out/finals/` (git-ignored; copy them into `public/` at
+   build time). 10 images, $0.60; **$0.825 left**. Lessons:
+   - Ultra overdoes "luminous" / "glowing wiring" (thick neon lines, a glowing road). The finals use
+     `FINAL_C`, the same scene asking for hairline-thin, faint traces and a muted grade.
+   - Image-prompt strength 0.5 loses the draft's restraint; 0.85 (wide) and 0.95 (tall) keep it.
+   - Every tall cut floats a few circuit fragments in the air. tall-ultra-05 has one, at the left
+     middle: retouch it (or a $0.04 Kontext edit) before it ships, and record that as an edit.
+   **Owner, 2026-10-18: dislikes both finals and the C blend.** "The original art and original
+   detailed I chose to merge both look the best before the merge." So the candidates are the
+   drafts themselves, **a-wide-klein-12** and **b-wide-klein-01**, used as-is at 1536 px (owner's
+   call; no upscale). Both were mocked into the real home page beside the current film (session
+   only). Lesson: re-running a picked draft on a "better" model lost what made it good; when the
+   owner picks a draft, ship that draft. **Owner chose B1**, then "a free enhanced version": Real-ESRGAN x4plus (BSD-3, run locally on
+   CPU), brought back to 3072 x 1728; the owner picked it over the x2 model.
+5. **Built 2026-10-18** (§5): `src/components/HeroArt.tsx` replaces the film (no client JS); cuts
+   from `studio/hero-wilderness/encode.mjs` in `public/media/hero/<hash>/` (wide 960/1600/2560,
+   portrait 720/1080, AVIF + WebP; 1600 AVIF 54 KB). The film's source
+   (`studio/film/`) and skill `hero-film` are retired; git history keeps them.
+6. **Gate 6, critic round 1: 6/10, "fix then ship".** Fixed in one batch:
+   - **Face under the type on tablet/phone** → portrait art fills the top 72% and fades to night.
+   - **Full-width bottom scrim muddied the wolf and left ember specks by "teeth."** → a left
+     scrim under the type, plus a short floor into the footer.
+   - **The 36 s zoom softened the upscale**, and over 5 s it needs a pause control (WCAG 2.2.2,
+     from the UI audit) → dropped; only the 2.4 s settle remains.
+   - **Not taken, outside the brief:** B's parallax and rising sparks (more motion would need a
+     pause control); a solid nav pill and the footer's gutter (shared site chrome).
+   **Round 2: 7/10, "fix then ship"** (desktop and phone rated ship quality). Last fixes, then
+   stopped at the two-round ceiling:
+   - Tablets in portrait were hard-cropped (ears gone, upscale smear magnified) → the tall cut is
+     now only for phone-shaped screens (`tall` variant, `max-aspect-ratio: 2/3`); tablets get the
+     wide cut, whole head.
+   - Stray warm specks from the art near the type → the left scrim is darker in the middle, and
+     phones get a thin left-edge scrim, so the eye stays the one warm highlight.
+   - Gap the critic named that's out of scope: depth against reference 1 (one subject on bokeh,
+     no foreground). That's the image the owner picked.
+5. Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
 - **Scope: the hero, plus backgrounds.** Replace the code-drawn wolf and woods with generated art.
@@ -195,7 +235,9 @@ open owner decision.
 
 | File (shipped) | Model · licence | Prompt (or `prompts.mjs` key + seed) | Date | Cost | Edits |
 |---|---|---|---|---|---|
-| *nothing ships yet* | | | | | |
+| **`public/media/hero/<hash>/hero-*.{avif,webp}`** (shipped) | `@cf/black-forest-labs/flux-2-klein-4b` on Cloudflare Workers AI · Apache 2.0 | `prompts.mjs` `b[0]`, seed 1691169373, 1536 x 864 (`b-wide-klein-01.jpg`) | 2026-10-18 | ~156 neurons (free tier) | Real-ESRGAN x4plus upscale (BSD-3, weights `RealESRGAN_x4plus.pth` sha256 `4fa0d389…`) → Lanczos to 3072 x 1728 → `encode.mjs`: wide resized; portrait cropped (9:16 from x = 42.3 %), AVIF q50 / WebP q74 |
+| ~~`wide-ultra-03.jpeg`~~ (rejected by the owner) | `bfl/flux-pro-1.1-ultra` via Vercel AI Gateway, raw · BFL API terms, **output terms not yet checked** | `prompts.mjs` `FINAL_C`; image prompt `c-wide-klein-09.jpg` (FLUX.2 klein 4B, Apache 2.0, `c[0]`, seed 524737910) at strength 0.85; 16:9 | 2026-10-18 | $0.06 free credit (+ ~156 free neurons for the draft) | none yet; resize/encode at build |
+| ~~`tall-ultra-05.jpeg`~~ (rejected by the owner) | same | `FINAL_C`; image prompt `c-tall-klein-05.jpg` (klein 4B, `c[0]`, seed 1051260080) at strength 0.95; 9:16 | 2026-10-18 | $0.06 free credit (+ ~156 neurons) | stray circuit fragment to retouch (left middle) |
 
 ## 5. Build notes (when the art is picked)
 - **The headline stays the LCP element.** The image is a background with explicit dimensions:

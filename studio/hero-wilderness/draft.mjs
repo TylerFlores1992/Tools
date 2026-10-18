@@ -1,5 +1,5 @@
 // Drafts hero art on Cloudflare Workers AI, free tier only (docs/design/hero-wilderness-cyber.md §4.2).
-// Usage: CLOUDFLARE_ACCOUNT_ID=<id> node studio/hero-wilderness/draft.mjs <a|b> [count] [wide|tall] [klein|schnell]
+// Usage: CLOUDFLARE_ACCOUNT_ID=<id> node studio/hero-wilderness/draft.mjs <a|b|c> [count] [wide|tall] [klein|schnell]
 // No dependencies. Output and a provenance log go to studio/hero-wilderness/out/ (gitignored).
 // Never overwrites; stops before the day's estimated neurons pass BUDGET.
 import { appendFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
@@ -20,7 +20,7 @@ const [dir, n = "4", size = "wide", modelKey = "klein"] = process.argv.slice(2);
 const prompts = DIRECTIONS[dir];
 const model = MODELS[modelKey];
 const { width, height } = SIZES[size] ?? {};
-if (!prompts || !model || !width) throw new Error("usage: draft.mjs <a|b> [count] [wide|tall] [klein|schnell]");
+if (!prompts || !model || !width) throw new Error("usage: draft.mjs <a|b|c> [count] [wide|tall] [klein|schnell]");
 
 // Estimates from the price table (512 x 512 tiles); read the real figure in the dashboard.
 const tiles = Math.ceil(width / 512) * Math.ceil(height / 512);

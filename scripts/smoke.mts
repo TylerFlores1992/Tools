@@ -44,8 +44,8 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/camphawk/maps/ridb-10085626.json", status: 401, contains: "This area is private.", absent: "facilityId" },
   { path: "/private/camphawk/hero-bg.webp", status: 401, contains: "This area is private." },
   { path: "/private/camphawk/round2/c1-loop-dusk-900.webp", status: 401, contains: "This area is private." },
-  // The hero film's folder is versioned by content, so it may be cached for good.
-  { path: `${HERO_MEDIA}/hero-poster.webp`, status: 200, contains: "", cache: "immutable" },
+  // The hero art's folder is versioned by content, so it may be cached for good.
+  { path: `${HERO_MEDIA}/hero-1600.webp`, status: 200, contains: "", cache: "immutable" },
 ];
 
 let failed = 0;

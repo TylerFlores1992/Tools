@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // The hero film's folder is named for a hash of its files (src/lib/hero-media.ts), so a new
-  // render is a new URL and browsers can keep these for a year without asking again.
+  // The hero art's folder is named for a hash of its files (src/lib/hero-media.ts), so a new
+  // encode is a new URL and browsers can keep these for a year without asking again.
   async headers() {
     return [
       {

@@ -13,8 +13,8 @@ If this file and those disagree, **the code is right — fix this file.** Full b
 `docs/BRIEF.md`. Reference renders: `docs/design/`.
 
 ## The feel
-Precise, nocturnal, alive. A colossal faceted wolf rising behind a night mountain range; quiet
-pages around tools with real depth. **Never** cheesy-cyberpunk (no Orbitron, Matrix rain, neon
+Precise, nocturnal, alive. A real wolf in a night forest, thin circuit lines in its fur and one
+ember eye; quiet pages around tools with real depth. **Never** cheesy-cyberpunk (no Orbitron, Matrix rain, neon
 green/magenta glitch), cute, or corporate. **No bio, no "about me", no nickname story.**
 
 ## Colour = meaning (use a token, never a hex)
@@ -49,9 +49,13 @@ case everywhere. Display weight 400 — the size does the work.
   for entrances, `ease-std` for UI; stagger 60ms. Every animation has a reduced-motion path.
 
 ## The hero
-Code-rendered film (`studio/film/`, skill `hero-film`): 8s seamless loop, AV1 + H.264 + AVIF
-poster in `public/media/hero/`. Headline is the LCP element, never the video. Copy:
-"Quiet tools. / Sharp teeth." (`SITE.headline` in `src/lib/site.ts`).
+A still image, not a film (2026-10-18): the "B1" wolf, drafted on FLUX.2 klein 4B and upscaled
+with Real-ESRGAN. `src/components/HeroArt.tsx` (no client JS), AVIF/WebP wide and portrait cuts
+in `public/media/hero/<hash>/` from `studio/hero-wilderness/encode.mjs`. Landscape: a left scrim
+under the type; portrait: the art fills the top 72% and fades to night. One motion: the 2.4 s
+settle (longer motion would need a pause control). Headline is the LCP element.
+Copy: "Quiet tools. / Sharp teeth." (`SITE.headline` in `src/lib/site.ts`). History, prompts and
+provenance: `docs/design/hero-wilderness-cyber.md`.
 
 ## Copy
 Plain, specific, honest. US spelling (`src/lib/us-spelling.test.mts`). No invented numbers —
@@ -63,4 +67,3 @@ never a negative: "–" for an invalid input, not 0.
 - Use stock Tailwind colours, raw hex in components, or a third font.
 - Use `ch-*` (CampHawk) tokens or fonts outside `/private/camphawk`; they are CampHawk's look, not ours.
   (The lab's look mockups and their `.look*` classes stay under `/private/camphawk` too.)
-- Ship the live WebGL terrain to visitors (it's a production tool for the film).

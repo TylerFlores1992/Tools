@@ -31,14 +31,14 @@ unreviewed remote file acting as instructions. Read the local copy.
 
 - **Colour alone is always a finding.** The owner is red-green colour-blind. Every state needs
   an icon and a word as well as a hue (✓ correct, ✕ wrong, dashed second series).
-- **Contrast over imagery** (the hero film, posters) is measured on rendered pixels, not
+- **Contrast over imagery** (the hero art, posters) is measured on rendered pixels, not
   guessed: `npm run shots` then check, or add a scrim. Token pairs are already enforced by
   `src/design/contrast.test.mts`; a NEW pair must be added to `src/design/tokens.ts`.
 - **Stock Tailwind colours** (`bg-gray-*`, `text-white`) don't exist here and render nothing.
   `src/design/tokens.test.mts` catches them; flag any that slipped into non-scanned files.
 - **Sentence case** for headings and buttons. Title Case is not a finding.
 - **Touch targets** ≥ 44px. **Inputs** ≥ 16px on phones (globals.css forces it).
-- **Motion:** every animation needs a `prefers-reduced-motion` path. The hero video must show
-  its poster instead when reduced motion or Save-Data is on.
+- **Motion:** every animation needs a `prefers-reduced-motion` path. Motion over 5 s beside
+  other content needs a pause control (WCAG 2.2.2); the hero keeps to a 2.4 s settle.
 - **Focus:** the ember ring from globals.css. Removing an outline without a replacement is a
   must-fix.

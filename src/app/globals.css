@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Phone-shaped screens (taller than 2:3). Tablets in portrait are squarer and keep the wide hero
+   cut; only these get the tall one (src/components/HeroArt.tsx). */
+@custom-variant tall (@media (max-aspect-ratio: 2/3));
+
 /*
  * DESIGN TOKENS — the only palette. Meanings live in .claude/skills/flores-design/SKILL.md.
  *
@@ -615,6 +619,9 @@ p { text-wrap: pretty; }
 }
 .hero-poster {
   animation: settle 2400ms var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-poster { animation: none; }
 }
 
 /* Route transitions (React <ViewTransition>, see src/components/PageTransition.tsx). */

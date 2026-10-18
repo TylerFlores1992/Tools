@@ -8,7 +8,7 @@
 | What | Where | State |
 |---|---|---|
 | Site | https://tylerflores.dev | Live. Merges to `main` deploy production automatically. |
-| Home hero | `/` | Live. Signed off by the owner. |
+| Home hero | `/` | Rebuilt 2026-10-18: B1 wolf still (PR #52); the film is retired. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
@@ -51,7 +51,15 @@ tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
   `studio/hero-wilderness/draft.mjs`, logs provenance per image.
 - **Drafted:** 16 per direction on Cloudflare (free, ~5,000 neurons), shown beside the
   references. Account ID and how to run it: the doc's "Pick up here".
-- **Next:** the owner picks a direction and 1–3 drafts; finals on the Vercel credit.
+- **Picked and made:** direction C (A12's setting, B1's realism); finals `wide-ultra-03` and
+  `tall-ultra-05` on Flux 1.1 Ultra ($0.60 of credit; $0.825 left). Images are git-ignored in
+  `studio/hero-wilderness/out/finals/`, gone with the container: regenerate with `final.mjs` or
+  have the owner keep copies.
+- **Owner rejected the finals and the blend**, chose the B1 draft, upscaled for free with
+  Real-ESRGAN x4.
+- **Built 2026-10-18:** `HeroArt.tsx` replaces the film (no client JS); the film's source and skill
+  are retired. Shots 8/8 pass, including the measured headline contrast over the image.
+- **Next:** the owner signs off the built hero; after merging, `npm run smoke -- https://tylerflores.dev`.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
