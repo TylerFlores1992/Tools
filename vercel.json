@@ -4,10 +4,6 @@
     {
       "path": "/api/money/sync",
       "schedule": "13 14 * * *"
-    },
-    {
-      "path": "/api/mail/run",
-      "schedule": "2 14 * * *"
     }
   ]
 }
