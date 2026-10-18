@@ -1,4 +1,5 @@
 import { TRANSFER, matchTransfers } from "./categorize.ts";
+import { merchantKey } from "./merchant.ts";
 import type { Txn } from "./types.ts";
 
 /**
@@ -77,6 +78,33 @@ export function transfersAcross(
   }
   return out;
 }
+
+export type IncomeSource = { key: string; name: string; amount: number; count: number; category: string };
+
+/**
+ * Money in for a period, grouped by who paid it (payroll company, check deposits, a transfer from
+ * the other owner's accounts), largest first. Gig income comes from many payrolls on no fixed
+ * schedule, so this, not the Recurring list, is where income shows up.
+ */
+export function incomeSources(txns: readonly Txn[], period: string, across?: ReadonlyMap<string, string>): IncomeSource[] {
+  const map = new Map<string, IncomeSource>();
+  for (const t of [...txns].sort((a, b) => a.posted.localeCompare(b.posted))) {
+    if (t.amount <= 0 || t.pending || !t.posted.startsWith(period)) continue;
+    const crossing = t.category === TRANSFER ? across?.get(t.id) : undefined;
+    if (t.category === TRANSFER && !crossing) continue;
+    let key = crossing ?? merchantKey(t.payee || t.description);
+    let name = crossing ?? (t.payee || t.description).trim();
+    if (!crossing && /\bDEPOSIT\b/.test(key) && /\b(CHECK|REMOTE|ONLINE|MOBILE)\b/.test(normalizeKey(t.description))) { key = "check deposits"; name = "Check deposits"; }
+    const row = map.get(key) ?? { key, name, amount: 0, count: 0, category: crossing ? TRANSFER : t.category ?? "" };
+    row.amount = round(row.amount + t.amount);
+    row.count++;
+    row.name = name;
+    map.set(key, row);
+  }
+  return [...map.values()].sort((a, b) => b.amount - a.amount);
+}
+
+const normalizeKey = (s: string) => s.toUpperCase();
 
 /** YYYY-MM plus `delta` months. */
 export function shiftMonth(month: string, delta: number): string {

@@ -4,7 +4,7 @@ import { categorize } from "@/tools/money/categorize";
 import type { CsvRow } from "@/tools/money/csv";
 import { sql } from "./db";
 import { getRules } from "./store";
-import { repairTransfers } from "./sync";
+import { refileAll } from "./sync";
 
 /**
  * History from a bank's own CSV export, for months older than SimpleFIN's 90 days.
@@ -42,7 +42,7 @@ export async function importRows(accountId: string, rows: readonly CsvRow[]): Pr
         on conflict (id) do nothing`;
       added += res.count;
     }
-    await repairTransfers(tx);
+    await refileAll(tx, rules);
   });
   const dates = keep.map((r) => r.posted).sort();
   return { added, overlap, repeat: keep.length - added, from: dates[0] ?? null, to: dates[dates.length - 1] ?? null };

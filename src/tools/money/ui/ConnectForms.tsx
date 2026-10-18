@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { Arrow, Button } from "@/components/Button";
 import { State } from "@/components/State";
-import { connect, importStatement, syncNow, type FormState } from "@/app/private/money/actions";
+import { connect, importStatement, refileNow, syncNow, type FormState } from "@/app/private/money/actions";
 
 const INITIAL: FormState = { attempt: 0 };
 
@@ -81,6 +81,22 @@ export function ImportForm({ accounts }: { accounts: Array<{ id: string; label: 
       <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">
         {pending ? "Importing…" : "Import"}
       </Button>
+    </form>
+  );
+}
+
+/** Re-run the automatic categories over all history (no bank request). */
+export function RefileForm() {
+  const [state, action, pending] = useActionState(refileNow, INITIAL);
+  return (
+    <form action={action} className="grid gap-3">
+      <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">
+        {pending ? "Re-filing…" : "Re-file categories"}
+      </Button>
+      <p aria-live="polite" className="min-h-6 text-small">
+        {state.error && <State kind="wrong">{state.error}</State>}
+        {state.done && <State kind="ok">{state.done}</State>}
+      </p>
     </form>
   );
 }

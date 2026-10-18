@@ -32,9 +32,21 @@ Chase, U.S. Bank ──► SimpleFIN Bridge (~$1.50/mo, owner's account)
   his own checking stays a transfer everywhere, because the card's purchases already count
   (`transfersAcross` in `summary.ts`). Marcus (Goldman Sachs Bank) transfers are transfers; once
   Marcus is connected and set to Mine, savings moves count as neither in Mine.
+- **Keywords match whole words** (2026-10-18): "MOBIL" used to file US Mobile as Gas and
+  "WATER" filed Stillwater Insurance as Utilities. The list was rebuilt from the owner's real
+  merchants; new categories Loans, Savings & investing, Paid to people (Zelle/Venmo out, which
+  used to vanish as Transfer). Every sync, import and the Settings "Re-file categories" button
+  re-files all history that wasn't set by hand. "Always file this way" is ticked by default.
+  On the owner's data: Uncategorized 119 → 15 of 362.
 - **Recurring:** `src/tools/money/recurring.ts` groups by merchant key and fits weekly,
-  every 2 weeks, twice a month, monthly (≥3 seen), quarterly, yearly (≥2). Amounts must stay
-  within 50% of the median; >15% swing shows "≈".
+  every 2 weeks, twice a month, monthly (≥3 seen, or 2 of the same amount), every 2 months,
+  quarterly, yearly (≥2). Amounts must stay within 50% of the median; >15% swing shows "≈".
+  Bill categories (Utilities, Software, Phone & internet, Subscriptions, Insurance, Housing,
+  Loans) may vary in amount and count after two monthly charges, and one name can hold two bills
+  (Spectrum internet + mobile). Dining, Groceries, Gas, Shopping and Fees are never bills.
+- **Income** is irregular gig pay from several payrolls plus check deposits, so it is shown as
+  "Where it came from" (money in by payer; check deposits grouped) rather than relying on the
+  Recurring list.
 - **Older history (CSV import, 2026-10-18).** SimpleFIN only reaches back 90 days (Actual Budget's
   SimpleFIN docs say the same), so months before that come from each bank's own CSV download,
   imported per account on Settings (`src/tools/money/csv.ts` reads columns by header name;

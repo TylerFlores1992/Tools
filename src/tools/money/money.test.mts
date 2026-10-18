@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { CATEGORIES, OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs, keywordCategory, matchTransfers, ruleCategory } from "./categorize.ts";
 import { addDays, findRecurring, merchantKey, monthlyEquivalent } from "./recurring.ts";
 import { SimpleFinError, claimAccessUrl, claimUrlFromSetupToken, fetchAccounts, parseAccountSet, splitAccessUrl, syncWindows, toLocalDate } from "./simplefin.ts";
-import { isMonth, isYear, money, monthsOf, shiftMonth, signedMoney, summarize, transfersAcross } from "./summary.ts";
+import { incomeSources, isMonth, isYear, money, monthsOf, shiftMonth, signedMoney, summarize, transfersAcross } from "./summary.ts";
 import type { Txn } from "./types.ts";
 
 let n = 0;
@@ -101,6 +101,26 @@ test("Marcus (Goldman Sachs Bank) transfers are transfers", () => {
   assert.equal(keywordCategory("GOLDMAN SACHS BA TRANSFER 000300005964662 WEB ID: 1234"), TRANSFER);
 });
 
+test("keywords match whole words: US Mobile isn't gas, Stillwater isn't water, TST* still matches", () => {
+  assert.equal(keywordCategory("US MOBILE NEW YORK NY"), "Phone & internet");
+  assert.equal(keywordCategory("STILLWATER INSURANCE"), "Insurance");
+  assert.equal(keywordCategory("GOLDEN STATE WATER COMPANY"), "Utilities");
+  assert.equal(keywordCategory("EXXONMOBIL 4567"), "Gas");
+  assert.equal(keywordCategory("TST*JC AND SONS INC"), "Dining");
+  assert.equal(keywordCategory("CARLS JR 8150 NORTH HOLLYWO CA 08/11"), "Dining");
+  assert.equal(keywordCategory("WENDYS #123"), "Dining");
+  assert.equal(keywordCategory("CURRENT BALANCE ADJ"), null); // "RENT" inside a word
+  assert.equal(keywordCategory("Web Authorized Pmt Valon"), "Housing");
+  assert.equal(keywordCategory("LOGIX FCU LOGIX PPD ID: 0956044941"), "Loans");
+  assert.equal(keywordCategory("FID BKG SVC LLC MONEYLINE"), "Savings & investing");
+  assert.equal(keywordCategory("ZELLE PAYMENT TO RACHEL"), "Paid to people");
+  assert.equal(keywordCategory("REMOTE ONLINE DEPOSIT # 1"), "Income");
+});
+
+test("a waived fee files under Fees, so the fee and its refund cancel out", () => {
+  assert.equal(categorize(txn({ posted: "2026-10-01", amount: 12, description: "Monthly Maintenance Fee Waived" }), []).category, "Fees");
+});
+
 // ---- recurring ----
 
 test("merchant key drops dates, digits and card noise", () => {
@@ -153,8 +173,12 @@ test("recurring: a store you visit often is not a subscription", () => {
   assert.deepEqual(findRecurring(shop, "2026-10-05"), []);
 });
 
-test("recurring: two charges aren't enough for a monthly series", () => {
-  assert.deepEqual(findRecurring(monthly("HULU", -9.99, ["2026-09-01", "2026-10-01"]), "2026-10-05"), []);
+test("recurring: two charges are enough only if they're the same amount (or a known bill)", () => {
+  // Only 90 days of history, so a monthly bill is often seen twice (owner: bills were missing).
+  assert.equal(findRecurring(monthly("HULU", -9.99, ["2026-09-01", "2026-10-01"]), "2026-10-05").length, 1);
+  const two = monthly("SALSA AND BEER", -30, ["2026-09-01", "2026-10-01"]);
+  two[1].amount = -72;
+  assert.deepEqual(findRecurring(two, "2026-10-05"), []);
 });
 
 test("recurring: one that hasn't come in a while is marked stopped", () => {
@@ -325,6 +349,42 @@ test("summary: a whole year, and the months of a year so far", () => {
   assert.deepEqual(monthsOf("2026", "2026-03"), ["2026-01", "2026-02", "2026-03"]);
   assert.equal(monthsOf("2025", "2026-03").length, 12);
   assert.ok(isYear("2026") && !isYear("1999") && !isYear("2026-01") && !isYear(undefined));
+});
+
+test("bills: a metered bill seen twice counts; a shop visited twice a month apart doesn't", () => {
+  const t = (d: string, a: number, desc: string, category: string) => txn({ posted: d, amount: a, description: desc, category });
+  const txns = [
+    t("2026-08-25", -6.62, "FLY.IO", "Software"), t("2026-09-25", -9.57, "FLY.IO", "Software"),
+    t("2026-08-02", -31, "SALSA AND BEER", "Uncategorized"), t("2026-09-01", -72, "SALSA AND BEER", "Uncategorized"),
+    t("2026-08-03", -339.09, "LOGIX FCU", "Loans"), t("2026-09-03", -339.09, "LOGIX FCU", "Loans"),
+    t("2026-07-28", -60.28, "WASTE MANAGEMENT", "Utilities"), t("2026-09-24", -60.28, "WASTE MANAGEMENT", "Utilities"),
+    // Everyday spending isn't a bill however regular.
+    ...["2026-08-02", "2026-08-09", "2026-08-16", "2026-08-23", "2026-08-30"].map((d) => t(d, -150, "VONS.COM", "Groceries")),
+  ];
+  const r = findRecurring(txns, "2026-10-05");
+  const names = r.map((x) => `${x.name} ${x.cadence}`).sort();
+  assert.deepEqual(names, ["FLY.IO monthly", "LOGIX FCU monthly", "WASTE MANAGEMENT every 2 months"]);
+});
+
+test("bills: one name, two bills (Spectrum internet and mobile) are found separately", () => {
+  const txns = [
+    ...["2026-07-22", "2026-08-24", "2026-09-22"].map((d) => txn({ posted: d, amount: -271.95, description: "SPECTRUM", category: "Phone & internet" })),
+    ...["2026-07-29", "2026-08-31", "2026-09-29"].map((d) => txn({ posted: d, amount: -60, description: "SPECTRUM", category: "Phone & internet" })),
+  ];
+  const r = findRecurring(txns, "2026-10-01").map((x) => x.typical).sort((a, b) => a - b);
+  assert.deepEqual(r, [60, 271.95]);
+});
+
+test("income by source: payrolls separately, check deposits together, transfers left out", () => {
+  const txns = [
+    txn({ posted: "2026-09-03", amount: 953.86, description: "CAST AND CREW PAYROLL", payee: "Cast and Crew Payroll", category: "Income" }),
+    txn({ posted: "2026-09-10", amount: 1315.08, description: "CAST AND CREW PAYROLL", payee: "Cast and Crew Payroll", category: "Income" }),
+    txn({ posted: "2026-09-03", amount: 1595.59, description: "REMOTE ONLINE DEPOSIT # 1", payee: "Online Deposit Check #1", category: "Income" }),
+    txn({ posted: "2026-09-21", amount: 1323.77, description: "ONLINE DEPOSIT", payee: "Online Deposit", category: "Income" }),
+    txn({ posted: "2026-09-21", amount: 3950, description: "ELECTRONIC DEPOSIT JPMORGAN CHASE", category: TRANSFER }),
+  ];
+  const s = incomeSources(txns, "2026-09");
+  assert.deepEqual(s.map((x) => [x.name, x.amount, x.count]), [["Check deposits", 2919.36, 2], ["Cast and Crew Payroll", 2268.94, 2]]);
 });
 
 test("months and money formatting", () => {

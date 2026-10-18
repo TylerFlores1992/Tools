@@ -164,7 +164,7 @@ function Row({ t, account }: { t: Txn; account: string }) {
           </label>
           {merchant.length >= 3 ? (
             <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
-              <input type="checkbox" name="always" className="size-5 accent-ink" />
+              <input type="checkbox" name="always" defaultChecked className="size-5 accent-ink" />
               <span>Always file “{merchant}” this way</span>
             </label>
           ) : <span />}

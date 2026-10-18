@@ -6,7 +6,7 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
 import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
-import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross } from "@/tools/money/summary";
+import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross, incomeSources } from "@/tools/money/summary";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -63,6 +63,10 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const avgIn = withData.length ? withData.reduce((n, m) => n + m.moneyIn, 0) / withData.length : 0;
   const maxMonthOut = Math.max(1, ...yearMonths.map((m) => m.moneyOut));
   const firstYear = data.txns.reduce((y, t) => (t.posted.slice(0, 4) < y ? t.posted.slice(0, 4) : y), thisYear);
+  // At least the last three years, so an older year can be picked (and filled by an import).
+  const years = Array.from({ length: Number(thisYear) - Math.min(Number(firstYear), Number(thisYear) - 2) + 1 }, (_, i) => String(Math.min(Number(firstYear), Number(thisYear) - 2) + i));
+  const sources = incomeSources(txns, period, across);
+  const sourcesTotal = sources.reduce((n, x) => n + x.amount, 0);
   const recurring = findRecurring(txns, data.today);
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
   const paychecks = recurring.filter((r) => r.direction === "in" && r.status === "active");
@@ -104,38 +108,50 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
         </div>
       </div>
 
-      <nav aria-label={mode === "year" ? "Years" : "Months"} className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <span className="flex items-center gap-1">
-          {year > firstYear ? (
-            <Link href={yearHref(String(Number(year) - 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink">
-              <span aria-hidden="true">←</span><span className="sr-only">{Number(year) - 1}</span>
-            </Link>
-          ) : <span className="min-w-11" />}
-          <span className="min-w-[5ch] text-center text-body tabular-nums text-ink">{year}</span>
-          {year < thisYear ? (
-            <Link href={yearHref(String(Number(year) + 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink">
-              <span aria-hidden="true">→</span><span className="sr-only">{Number(year) + 1}</span>
-            </Link>
-          ) : <span className="min-w-11" />}
-        </span>
-        <ul className="flex flex-wrap gap-1">
-          {Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).map((m) => {
-            const label = monthName(m).split(" ")[0].slice(0, 3);
-            const on = mode === "month" && m === month;
-            return (
-              <li key={m}>
-                {m > thisMonth ? (
-                  <span aria-disabled="true" className="flex min-h-10 min-w-12 items-center justify-center rounded-full px-3 text-small text-muted"><span className="sr-only">{monthName(m)}, not yet</span><span aria-hidden="true">{label}</span></span>
-                ) : (
-                  <Link href={qs({ month: m })} aria-current={on ? "true" : undefined} className={on ? "flex min-h-10 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small text-on-primary" : "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small text-ink-2 hover:text-ink"}>
-                    <span className="sr-only">{monthName(m)}</span><span aria-hidden="true">{label}</span>
-                  </Link>
-                )}
+      {mode === "year" ? (
+        <nav aria-label="Years" className="mt-6">
+          <ul className="flex flex-wrap gap-1">
+            {years.map((y) => (
+              <li key={y}>
+                <Link href={qs({ year: y })} aria-current={y === year ? "true" : undefined} className={y === year ? CHIP_ON : CHIP}>{y}</Link>
               </li>
-            );
-          })}
-        </ul>
-      </nav>
+            ))}
+          </ul>
+        </nav>
+      ) : (
+        <nav aria-label="Months" className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <span className="flex items-center gap-1">
+            {year > years[0] ? (
+              <Link href={yearHref(String(Number(year) - 1))} className={STEP}>
+                <span aria-hidden="true">←</span><span className="sr-only">{Number(year) - 1}</span>
+              </Link>
+            ) : <span className="min-w-11" />}
+            <span className="min-w-[5ch] text-center text-body tabular-nums text-ink">{year}</span>
+            {year < thisYear ? (
+              <Link href={yearHref(String(Number(year) + 1))} className={STEP}>
+                <span aria-hidden="true">→</span><span className="sr-only">{Number(year) + 1}</span>
+              </Link>
+            ) : <span className="min-w-11" />}
+          </span>
+          <ul className="flex flex-wrap gap-1">
+            {Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).map((m) => {
+              const label = monthName(m).split(" ")[0].slice(0, 3);
+              const on = m === month;
+              return (
+                <li key={m}>
+                  {m > thisMonth ? (
+                    <span aria-disabled="true" className="flex min-h-10 min-w-12 items-center justify-center rounded-full px-3 text-small text-muted"><span className="sr-only">{monthName(m)}, not yet</span><span aria-hidden="true">{label}</span></span>
+                  ) : (
+                    <Link href={qs({ month: m })} aria-current={on ? "true" : undefined} className={on ? CHIP_ON : CHIP}>
+                      <span className="sr-only">{monthName(m)}</span><span aria-hidden="true">{label}</span>
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
 
       {sp.synced && <p className="mt-6"><State kind="ok">Connected and synced.</State></p>}
       {!data.connected && <div className="mt-8"><NotConnected /></div>}
@@ -194,7 +210,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
       )}
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[3fr_2fr]">
-        <section aria-labelledby="cats">
+        <section aria-labelledby="cats" className="min-w-0">
           <h2 id="cats" className="text-h2 font-normal">Where it went</h2>
           {s.byCategory.filter((c) => c.out > 0).length === 0 ? (
             <p className="mt-4 text-body text-ink-2">No spending recorded for {mode === "year" ? year : monthName(month)}.</p>
@@ -220,7 +236,27 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
           )}
         </section>
 
-        <section aria-labelledby="accts">
+        <section aria-labelledby="income" className="min-w-0 lg:col-start-1">
+          <h2 id="income" className="text-h2 font-normal">Where it came from</h2>
+          {sources.length === 0 ? (
+            <p className="mt-4 text-body text-ink-2">No money in recorded for {mode === "year" ? year : monthName(month)}.</p>
+          ) : (
+            <ul className="mt-5 divide-y divide-line rounded-card border border-line bg-surface">
+              {sources.slice(0, 12).map((x) => (
+                <li key={x.key} className="flex items-center justify-between gap-4 px-4 py-3">
+                  <span className="min-w-0">
+                    <span className="block truncate text-body text-ink">{x.name}</span>
+                    <span className="mt-1 block text-small text-muted">{x.count} {x.count === 1 ? "deposit" : "deposits"} · {Math.round((x.amount / sourcesTotal) * 100)}%{x.category && x.category !== "Income" ? ` · ${x.category === "Transfer" ? "moved in" : x.category}` : ""}</span>
+                  </span>
+                  <span className="shrink-0 text-right text-body tabular-nums">+{money(x.amount)}</span>
+                </li>
+              ))}
+              {sources.length > 12 && <li className="px-4 py-3 text-small text-muted">{sources.length - 12} smaller sources not shown</li>}
+            </ul>
+          )}
+        </section>
+
+        <section aria-labelledby="accts" className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <h2 id="accts" className="text-h2 font-normal">Accounts</h2>
           {shown.length === 0 ? (
             <p className="mt-4 text-body text-ink-2">{data.accounts.length ? "No accounts in this view. Set owners in Settings." : "No accounts yet."}</p>
@@ -267,6 +303,10 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
     </MoneyShell>
   );
 }
+
+const CHIP = "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small tabular-nums text-ink-2 hover:text-ink";
+const CHIP_ON = "flex min-h-10 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small tabular-nums text-on-primary";
+const STEP = "flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink";
 
 /** "$188.39 less than August": words, not a sign the reader has to decode. */
 function delta(n: number, prevMonth: string) {
