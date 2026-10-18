@@ -1,6 +1,6 @@
 # Home hero: "wilderness cyber" redesign (brief, references, image sources)
 
-*Started 2026-10-18. Owner: "a slight redesign of our dev page. I like the idea. Wilderness cyber
+*Started and shipped 2026-10-18 (PR #52; live, production smoke 29/29). Owner: "a slight redesign of our dev page. I like the idea. Wilderness cyber
 tech feel. But our wolf drawing and woods background you created are not great." Process: skill
 `design-direction`. Gates 1 (brief) and 2 (references) are done here. Gate 3's written directions are in §3;
 its drafts are next. Nothing is built yet.*
