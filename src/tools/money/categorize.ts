@@ -13,70 +13,122 @@ import type { CategorySource, Rule, Txn } from "./types.ts";
 export const TRANSFER = "Transfer";
 export const UNCATEGORIZED = "Uncategorized";
 export const OTHER_INCOME = "Other income";
+export const PEOPLE = "Paid to people";
+export const INVESTING = "Savings & investing";
 
 /** Categories offered in the picker, in display order. */
 export const CATEGORIES = [
   "Income", OTHER_INCOME, "Groceries", "Dining", "Gas", "Auto", "Shopping", "Subscriptions",
-  "Software", "Utilities", "Phone & internet", "Housing", "Insurance", "Health", "Travel & camping",
-  "Entertainment", "Pets", "Fees", "Cash", TRANSFER, UNCATEGORIZED,
+  "Software", "Utilities", "Phone & internet", "Housing", "Loans", "Insurance", "Health", "Travel & camping",
+  "Entertainment", "Pets", "Fees", "Cash", PEOPLE, INVESTING, TRANSFER, UNCATEGORIZED,
 ] as const;
 
-// Keyword → category. Matched against the normalized description (upper case, single spaces).
-// First match wins, so more specific entries come before broader ones.
+// Keyword → category. Matched as whole words against the normalized description and payee
+// (upper case, single spaces), so "MOBIL" no longer matches "US MOBILE" and "WATER" no longer
+// matches "STILLWATER" (both real misfilings, 2026-10-18). A keyword also matches with a
+// trailing S or 'S ("WENDY" → "WENDY'S"). First match wins, so specific lists come first.
+// Built from the owner's real merchants (2026-10-18) plus common US chains.
 const KEYWORDS: ReadonlyArray<readonly [category: string, words: readonly string[]]> = [
+  // Before Transfer: Zelle's payee reads "Zelle Transfer to …", but paying a person is spending.
+  [PEOPLE, ["ZELLE PAYMENT TO", "ZELLE TO", "VENMO PAYMENT", "VENMO", "CASH APP", "SQUARE CASH", "APPLE CASH SENT"]],
   [TRANSFER, [
-    "ONLINE TRANSFER", "TRANSFER TO", "TRANSFER FROM", "XFER", "INTERNAL TRANSFER",
+    "ONLINE TRANSFER", "TRANSFER TO", "TRANSFER FROM", "XFER", "INTERNAL TRANSFER", "ONLINE REALTIME TRANSFER",
     "PAYMENT TO CHASE CARD", "CHASE CREDIT CRD", "AUTOPAY PAYMENT", "CRCARDPMT", "CARD PAYMENT",
     "PAYMENT THANK YOU", "MOBILE PAYMENT - THANK YOU", "U.S. BANK CREDIT", "USBANK CARD",
+    "WEB AUTHORIZED PMT U.S. BANK",
     // Marcus savings is Goldman Sachs Bank: "GOLDMAN SACHS BA TRANSFER …" on the Chase side.
     "GOLDMAN SACHS BA", "MARCUS",
   ]],
-  ["Income", ["PAYROLL", "DIRECT DEP", "DIR DEP", "SALARY", "STRIPE TRANSFER", "STRIPE PAYOUT", "IRS TREAS", "TAX REF"]],
+  ["Income", [
+    "PAYROLL", "DIRECT DEP", "DIR DEP", "SALARY", "STRIPE TRANSFER", "STRIPE PAYOUT", "IRS TREAS", "TAX REF",
+    // Paper paychecks deposited from a phone (U.S. Bank: "ONLINE DEPOSIT", Chase: "REMOTE ONLINE DEPOSIT").
+    "REMOTE ONLINE DEPOSIT", "ONLINE DEPOSIT", "MOBILE DEPOSIT", "CHECK DEPOSIT", "INTEREST PAID",
+  ]],
+  [INVESTING, ["FIDELITY", "FID BKG", "ROBINHOOD", "VANGUARD", "SCHWAB", "ACORNS", "BETTERMENT", "WEALTHFRONT", "COINBASE", "E*TRADE", "ETRADE"]],
+  ["Loans", ["LOGIX", "FCU", "CREDIT UNION", "AUTO LOAN", "LOAN PMT", "LOAN PAYMENT", "NAVIENT", "NELNET", "MOHELA", "SOFI", "AFFIRM", "UPSTART"]],
+  ["Housing", ["VALON", "MORTGAGE", "MR COOPER", "ROCKET MORTGAGE", "LOANCARE", "RENT", "RENT PAYMENT", "HOA", "PROPERTY TAX", "HOME DEPOT", "LOWE", "LOWES"]],
+  ["Insurance", ["GEICO", "PROGRESSIVE", "STATE FARM", "ALLSTATE", "INSURANCE", "LEMONADE", "FARMERS INS", "STILLWATER", "MERCURY INS", "USAA"]],
   ["Software", [
-    "ANTHROPIC", "CLAUDE.AI", "OPENAI", "CHATGPT", "VERCEL", "SUPABASE", "GITHUB", "CLOUDFLARE",
-    "APPLE DEVELOPER", "GOOGLE *CLOUD", "GOOGLE CLOUD", "TWILIO", "RESEND", "NAMECHEAP", "SENTRY",
+    "ANTHROPIC", "CLAUDE.AI", "OPENAI", "CHATGPT", "VERCEL", "SUPABASE", "GITHUB", "CLOUDFLARE", "FLY.IO", "FLY IO",
+    "APPLE DEVELOPER", "GOOGLE *CLOUD", "GOOGLE CLOUD", "GOOGLE *GSUITE", "GOOGLE WORKSPACE", "TWILIO", "RESEND",
+    "NAMECHEAP", "SENTRY", "CANVA", "SIMPLEFIN", "LINK.COM* SIMPLEFIN", "TESTERS COMMUNITY", "CAMPHAWK", "CODEMAGIC",
+    "REVENUECAT", "EXPO", "NOTION", "FIGMA", "ADOBE", "DROPBOX", "1PASSWORD",
   ]],
   ["Subscriptions", [
     "NETFLIX", "SPOTIFY", "HULU", "DISNEY PLUS", "DISNEYPLUS", "YOUTUBE", "APPLE.COM/BILL", "PARAMOUNT",
     "MAX.COM", "HBO", "PEACOCK", "AUDIBLE", "PATREON", "AMAZON PRIME", "PRIME VIDEO", "SIRIUSXM", "ICLOUD",
+    "TIVIMATE", "SMARTERS", "GOOGLE *PLAY", "GOOGLE PLAY", "CRUNCHYROLL", "APPLE MUSIC", "APPLE TV",
+  ]],
+  ["Phone & internet", [
+    "COMCAST", "XFINITY", "AT&T", "ATT*", "VERIZON", "T-MOBILE", "TMOBILE", "SPECTRUM", "MINT MOBILE", "STARLINK",
+    "GOOGLE FI", "US MOBILE", "USMOBILE", "FLUME", "CRICKET", "BOOST MOBILE", "VISIBLE", "FRONTIER", "COX",
+  ]],
+  ["Utilities", [
+    "PG&E", "PGE", "EDISON", "SDG&E", "WATER", "SEWER", "WASTE MGMT", "WASTE MANAGEMENT", "REPUBLIC SERVICES",
+    "SOCALGAS", "SO CAL GAS", "SOCAL GAS", "SOUTHERN CALIFORNIA GAS", "SOUTHERN CALIFRONIA GAS", "ELECTRIC", "SUNRUN",
   ]],
   ["Groceries", [
-    "SAFEWAY", "TRADER JOE", "WHOLE FOODS", "WHOLEFDS", "KROGER", "RALPHS", "VONS", "ALBERTSONS",
-    "SPROUTS", "WINCO", "FOOD 4 LESS", "SMART & FINAL", "GROCERY", "SAVE MART", "RALEY", "ALDI", "COSTCO WHSE",
-    "WAL-MART SUPERCENTER", "WALMART SUPERCENTER",
+    "SAFEWAY", "TRADER JOE", "WHOLE FOODS", "WHOLEFDS", "KROGER", "RALPHS", "VONS", "VONS.COM", "ALBERTSONS",
+    "SPROUTS", "WINCO", "FOOD 4 LESS", "SMART & FINAL", "SMART FINAL", "GROCERY", "SAVE MART", "RALEY", "ALDI",
+    "COSTCO WHSE", "WAL-MART SUPERCENTER", "WALMART SUPERCENTER", "STATER BROS", "GELSON", "PAVILIONS",
+    "NORTHGATE", "VALLARTA", "H MART", "99 RANCH", "MARKET", "SUPERMARKET", "INSTACART",
   ]],
   ["Dining", [
-    "DOORDASH", "UBER EATS", "UBEREATS", "GRUBHUB", "STARBUCKS", "DUTCH BROS", "MCDONALD", "CHIPOTLE",
-    "TACO BELL", "IN-N-OUT", "IN N OUT", "CHICK-FIL-A", "SUBWAY", "PANERA", "WENDY", "BURGER KING",
-    "RESTAURANT", "CAFE", "COFFEE", "PIZZA", "TST*", "SQ *", "GRILL", "TAQUERIA", "BAR & GRILL", "DENNY",
+    "DOORDASH", "UBER EATS", "UBEREATS", "GRUBHUB", "POSTMATES", "STARBUCKS", "DUTCH BROS", "PEET", "COFFEE BEAN",
+    "MCDONALD", "CHIPOTLE", "TACO BELL", "IN-N-OUT", "IN N OUT", "CHICK-FIL-A", "SUBWAY", "PANERA", "WENDY",
+    "BURGER KING", "CARL'S JR", "CARLS JR", "JACK IN THE BOX", "DEL TACO", "EL POLLO LOCO", "PANDA EXPRESS",
+    "WINGSTOP", "DOMINO", "PAPA JOHN", "LITTLE CAESAR", "FIVE GUYS", "SHAKE SHACK", "JERSEY MIKE", "JIMMY JOHN",
+    "RUBIO", "RAISING CANE", "POPEYES", "KFC", "ARBY", "SONIC DRIVE", "DAIRY QUEEN", "BASKIN", "COLD STONE",
+    "COLDSTONE", "YOGURTLAND", "HANDEL", "JAMBA", "DENNY", "IHOP", "CHILI", "APPLEBEE", "OLIVE GARDEN",
+    "CHEESECAKE", "BUFFALO WILD", "DAVE & BUSTERS", "TOMMY", "7-ELEVEN", "AMPM",
+    "RESTAURANT", "CAFE", "COFFEE", "PIZZA", "PIZZERIA", "TST*", "SQ *", "GRILL", "TAQUERIA", "TACO", "TACOS",
+    "BURRITO", "BURRITOS", "MEXICAN FOOD", "SUSHI", "RAMEN", "PHO", "THAI", "BBQ", "BURGER", "WINGS", "DELI",
+    "DINER", "BISTRO", "EATERY", "KITCHEN", "STEAKHOUSE", "TAVERN", "PUB", "SALOON", "CANTINA", "BREWING",
+    "BREWERY", "BREWS", "BAR", "BAKERY", "DONUT", "BAGEL", "BOBA", "ICE CREAM", "CREAMERY", "GELATO", "YOGURT",
+    "SMOOTHIE", "JUICE", "TEA", "FOOD",
   ]],
-  ["Gas", ["SHELL", "CHEVRON", "ARCO", "EXXON", "MOBIL", "VALERO", "76 ", "CIRCLE K", "SINCLAIR", "COSTCO GAS", "FUEL"]],
-  ["Auto", ["AUTOZONE", "O'REILLY", "OREILLY", "NAPA", "JIFFY LUBE", "DMV", "CARWASH", "CAR WASH", "TESLA SUPERCHARGER", "PARKING", "FASTRAK"]],
-  ["Phone & internet", ["COMCAST", "XFINITY", "AT&T", "ATT*", "VERIZON", "T-MOBILE", "TMOBILE", "SPECTRUM", "MINT MOBILE", "STARLINK", "GOOGLE FI"]],
-  ["Utilities", ["PG&E", "PGE", "EDISON", "SDG&E", "WATER", "SEWER", "WASTE MGMT", "REPUBLIC SERVICES", "SOCALGAS", "SO CAL GAS", "ELECTRIC"]],
-  ["Housing", ["RENT", "MORTGAGE", "HOA", "PROPERTY TAX", "HOME DEPOT", "LOWE'S", "LOWES"]],
-  ["Insurance", ["GEICO", "PROGRESSIVE", "STATE FARM", "ALLSTATE", "INSURANCE", "LEMONADE", "FARMERS INS"]],
+  ["Gas", ["SHELL", "CHEVRON", "ARCO", "EXXON", "EXXONMOBIL", "MOBIL", "VALERO", "76", "CIRCLE K", "SINCLAIR", "COSTCO GAS", "FUEL", "SPEEDWAY", "MARATHON"]],
+  ["Auto", ["AUTOZONE", "O'REILLY", "OREILLY", "NAPA", "JIFFY LUBE", "DMV", "CARWASH", "CAR WASH", "TESLA SUPERCHARGER", "PARKING", "AUTO PARKS", "FASTRAK", "PEP BOYS", "DISCOUNT TIRE"]],
   ["Health", ["CVS", "WALGREENS", "PHARMACY", "RITE AID", "KAISER", "MEDICAL", "DENTAL", "VISION", "CLINIC", "HOSPITAL"]],
   ["Travel & camping", [
     "RECREATION.GOV", "RECREATION GOV", "RESERVECALIFORNIA", "RESERVE CALIFORNIA", "KOA", "HIPCAMP",
-    "AIRBNB", "HOTEL", "MARRIOTT", "HILTON", "SOUTHWEST", "UNITED AIR", "DELTA AIR", "ALASKA AIR",
-    "CAMPGROUND", "RV PARK", "STATE PARK", "NATL PARK", "CAMPING WORLD", "REI ",
+    "AIRBNB", "HOTEL", "MARRIOTT", "HILTON", "LARKSPUR LANDING", "SOUTHWEST", "UNITED AIR", "DELTA AIR", "ALASKA AIR",
+    "CAMPGROUND", "RV PARK", "STATE PARK", "NATL PARK", "YOSEMITE", "CAMPING WORLD", "REI",
   ]],
-  ["Pets", ["PETCO", "PETSMART", "CHEWY", "VETERINARY", "VET ", "ANIMAL HOSP", "BANFIELD"]],
-  ["Entertainment", ["STEAM", "PLAYSTATION", "XBOX", "NINTENDO", "AMC ", "REGAL", "CINEMA", "TICKETMASTER", "EVENTBRITE"]],
-  ["Shopping", ["AMAZON", "AMZN", "TARGET", "WALMART", "WAL-MART", "BEST BUY", "EBAY", "ETSY", "IKEA", "COSTCO", "HARBOR FREIGHT", "JOANN", "MICHAELS", "HOBBY LOBBY"]],
-  ["Fees", ["OVERDRAFT", "SERVICE FEE", "MONTHLY FEE", "MAINTENANCE FEE", "INTEREST CHARGE", "LATE FEE", "ATM FEE", "FOREIGN TRANSACTION"]],
+  ["Pets", ["PETCO", "PETSMART", "CHEWY", "VETERINARY", "VET", "ANIMAL HOSP", "BANFIELD"]],
+  ["Entertainment", [
+    "STEAM", "PLAYSTATION", "XBOX", "NINTENDO", "AMC", "REGAL", "CINEMA", "TICKETMASTER", "EVENTBRITE",
+    "GOLF", "GLF*", "GC", "TOPGOLF", "GSPRO", "RAPSODO", "BOWL", "BOWLING", "U7BUY",
+  ]],
+  ["Shopping", [
+    "AMAZON", "AMZN", "TARGET", "WALMART", "WAL-MART", "BEST BUY", "EBAY", "ETSY", "IKEA", "COSTCO", "HARBOR FREIGHT",
+    "JOANN", "MICHAELS", "HOBBY LOBBY", "ROSS", "ROSS STORES", "MARSHALLS", "TJ MAXX", "TJMAXX", "HOMEGOODS", "KOHL",
+    "OLD NAVY", "NORDSTROM", "MACY", "APPLE.COM/US", "APPLE STORE", "GAMESTOP", "DOLLAR TREE", "99 CENTS", "NIKE",
+    "SHEIN", "TEMU", "ALIEXPRESS", "OFFICE DEPOT", "STAPLES", "THRIFTY",
+  ]],
+  ["Fees", ["FEE WAIVED", "FEE REIMBURSEMENT", "OVERDRAFT", "SERVICE FEE", "MONTHLY FEE", "MAINTENANCE FEE", "INTEREST CHARGE", "LATE FEE", "ATM FEE", "FOREIGN TRANSACTION"]],
   ["Cash", ["ATM WITHDRAWAL", "ATM W/D", "CASH WITHDRAWAL", "WITHDRAWAL AT"]],
 ];
+
+const esc = (w: string) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const alnum = (ch: string) => /[A-Z0-9]/.test(ch);
+/** A keyword as a whole word: word edges only where the keyword itself starts or ends with a
+ *  letter or digit ("TST*" must still match "TST*JC AND SONS"), plus an optional S or 'S. */
+const word = (w: string) => {
+  const k = w.trim();
+  const lead = alnum(k[0]) ? "(?<![A-Z0-9])" : "";
+  const tail = alnum(k[k.length - 1]) ? "(?:'?S)?(?![A-Z0-9])" : "";
+  return `${lead}${esc(k)}${tail}`;
+};
+/** One regex per category: any of its keywords. */
+const MATCHERS: ReadonlyArray<readonly [string, RegExp]> = KEYWORDS.map(([c, words]) => [c, new RegExp(words.map(word).join("|"))]);
 
 export { normalize };
 
 /** The keyword category for a description, or null if nothing matches. */
 export function keywordCategory(description: string): string | null {
-  const d = ` ${normalize(description)} `;
-  for (const [category, words] of KEYWORDS) {
-    if (words.some((w) => d.includes(w.endsWith(" ") ? ` ${w}` : w))) return category;
-  }
+  const d = normalize(description);
+  for (const [category, re] of MATCHERS) if (re.test(d)) return category;
   return null;
 }
 
@@ -107,7 +159,8 @@ export function categorize(
   if (ruled) return { category: ruled, categorySource: "rule" };
   const auto = keywordCategory(text);
   // A keyword like "COFFEE" on a deposit is a refund or a sale, not dining income.
-  if (auto && !(t.amount > 0 && auto !== "Income" && auto !== TRANSFER)) return { category: auto, categorySource: "auto" };
+  // A fee waived is a Fees refund, so the two cancel out under Fees.
+  if (auto && !(t.amount > 0 && auto !== "Income" && auto !== TRANSFER && auto !== "Fees")) return { category: auto, categorySource: "auto" };
   return { category: t.amount > 0 ? OTHER_INCOME : UNCATEGORIZED, categorySource: "auto" };
 }
 

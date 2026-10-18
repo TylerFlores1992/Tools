@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePrivate } from "@/lib/money/guard";
 import { importRows, undoImport } from "@/lib/money/import";
-import { deleteRule, getAccounts, manualSyncsToday, saveAccessUrl, setCategory, updateAccount } from "@/lib/money/store";
-import { runSync } from "@/lib/money/sync";
+import { sql } from "@/lib/money/db";
+import { deleteRule, getAccounts, getRules, manualSyncsToday, saveAccessUrl, setCategory, updateAccount } from "@/lib/money/store";
+import { refileAll, runSync } from "@/lib/money/sync";
 import { CATEGORIES } from "@/tools/money/categorize";
 import { readBankCsv } from "@/tools/money/csv";
 import { merchantKey } from "@/tools/money/recurring";
@@ -128,3 +129,18 @@ export async function undoStatement(form: FormData): Promise<void> {
 }
 
 const dayLabel = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+/** Re-runs the automatic categories over all history, without asking SimpleFIN for anything. */
+export async function refileNow(prev: FormState): Promise<FormState> {
+  await requirePrivate("/private/money/settings");
+  const attempt = prev.attempt + 1;
+  try {
+    const rules = await getRules();
+    const n = await sql().begin((tx) => refileAll(tx, rules));
+    revalidatePath("/private/money", "layout");
+    return { done: n ? `Re-filed ${n} ${n === 1 ? "transaction" : "transactions"}.` : "Everything was already filed.", attempt };
+  } catch (e) {
+    console.error("money refile failed", e instanceof Error ? e.name : "unknown");
+    return { error: "Re-filing failed. Nothing was changed.", attempt };
+  }
+}

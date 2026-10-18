@@ -92,7 +92,7 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
         else updatedTxns++;
       }
 
-      await repairTransfers(tx);
+      await refileAll(tx, rules);
     });
 
     return finish({
@@ -129,4 +129,32 @@ export async function repairTransfers(tx: Tx): Promise<void> {
   if (pairs.length) {
     await tx`update money.transactions set category = ${TRANSFER}, category_source = 'auto', updated_at = now() where id in ${tx(pairs)}`;
   }
+}
+
+/**
+ * Re-files every transaction not set by hand with today's keyword list and rules, then re-pairs
+ * transfers. Runs on every sync, import and "Re-file now", so an improved keyword list reaches
+ * old months without anyone re-categorizing them. A few hundred rows: one read, one batched write.
+ */
+export async function refileAll(tx: Tx, rules: Awaited<ReturnType<typeof getRules>>): Promise<number> {
+  const rows = await tx<{ id: string; description: string; payee: string | null; amount: number; category: string | null; category_source: CategorySource | null }[]>`
+    select id, description, payee, amount, category, category_source from money.transactions
+    where category_source is distinct from 'manual'`;
+  const changed: Array<{ id: string; category: string; source: CategorySource }> = [];
+  for (const r of rows) {
+    const c = categorize({ description: r.description, payee: r.payee, amount: r.amount, category: r.category, categorySource: r.category_source }, rules);
+    // A pair the matcher filed as Transfer stays one until the re-pair below says otherwise.
+    if (r.category === TRANSFER && r.category_source === "auto" && (c.category === UNCATEGORIZED || c.category === OTHER_INCOME)) continue;
+    if (c.category !== r.category || c.categorySource !== r.category_source) changed.push({ id: r.id, category: c.category, source: c.categorySource });
+  }
+  if (changed.length) {
+    await tx`
+      update money.transactions t set category = v.category, category_source = v.source, updated_at = now()
+      from (select unnest(${changed.map((c) => c.id)}::text[]) as id,
+                   unnest(${changed.map((c) => c.category)}::text[]) as category,
+                   unnest(${changed.map((c) => c.source)}::text[]) as source) v
+      where t.id = v.id`;
+  }
+  await repairTransfers(tx);
+  return changed.length;
 }

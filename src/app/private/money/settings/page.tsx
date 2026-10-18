@@ -6,7 +6,7 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, loadMoney } from "@/lib/money/load";
 import { MoneyShell, OWNER_LABEL } from "@/tools/money/ui/MoneyShell";
-import { ConnectForm, ImportForm, SyncNowForm } from "@/tools/money/ui/ConnectForms";
+import { ConnectForm, ImportForm, RefileForm, SyncNowForm } from "@/tools/money/ui/ConnectForms";
 import { importedByAccount } from "@/lib/money/import";
 import { shortDate } from "@/tools/money/summary";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
@@ -150,7 +150,8 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
 
           <section aria-labelledby="rules">
             <h2 id="rules" className="text-h2 font-normal">Your rules</h2>
-            <p className="mt-2 max-w-[60ch] text-body text-ink-2">Made when you tick “Always file this way” on a transaction. They beat the automatic categories; a category you set by hand beats both.</p>
+            <p className="mt-2 max-w-[60ch] text-body text-ink-2">Made when you leave “Always file this way” ticked on a transaction. They beat the automatic categories; a category you set by hand beats both. Every sync re-files the history; “Re-file categories” does it now without asking the bank.</p>
+            <div className="mt-4"><RefileForm /></div>
             {data.rules.length === 0 ? (
               <p className="mt-4 text-body text-ink-2">No rules yet.</p>
             ) : (
