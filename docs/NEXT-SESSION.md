@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -34,6 +34,22 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29/29 on production after #19 merged, 2026-10-07, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
+
+## Home hero redesign, "wilderness cyber" (started 2026-10-18)
+Owner: the wolf drawing and the woods behind it "are not great"; they want a wilderness cyber
+tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
+- **Agreed so far:**
+  - scope: the hero and backgrounds;
+  - a still image with subtle CSS motion replaces the film;
+  - the "cyber" side is in the art itself.
+- **References:** three, described in the doc and not committed. Ask the owner to attach them again.
+- **Image sources:**
+  - Cloudflare Workers AI, free (FLUX.2 klein 4B and FLUX.1 schnell, both Apache 2.0), for drafts;
+  - the last $1.43 of Vercel AI Gateway credit, for finals.
+- **Next:**
+  - check `CLOUDFLARE_API_TOKEN` (added 2026-10-18; it only loads in a new session);
+  - write directions A and B;
+  - draft both, then show the owner.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
