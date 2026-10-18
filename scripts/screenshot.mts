@@ -84,7 +84,7 @@ for (const route of routes) {
 }
 
 /**
- * Text over imagery (the hero film) can't be checked from tokens, so measure it: for each
+ * Text over imagery (the hero art) can't be checked from tokens, so measure it: for each
  * element marked data-contrast-check, hide all text, take the 98th-percentile luminance of the
  * pixels behind it, and compare with the text colour. Large text (≥24px) needs 3:1, else 4.5:1.
  */

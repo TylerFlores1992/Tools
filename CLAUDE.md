@@ -23,8 +23,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 | How it should look, tokens, type, motion, copy | skill `flores-design` |
 | New look, redesign, mockups, "make it high-end" (process + taste) | skill `design-direction` |
 | Accessibility / UI review before merge | skill `ui-audit` |
-| The hero film (terrain, wolf, encode) | skill `hero-film` · `studio/film/` |
-| Hero redesign "wilderness cyber" (generated art replaces the film; brief, refs, free image sources) | `docs/design/hero-wilderness-cyber.md` |
+| The home hero art (B1 wolf; drafts, finals, encode, provenance) | `docs/design/hero-wilderness-cyber.md` · `studio/hero-wilderness/` |
 | Campground site maps: "complete the maps" (plan, rules, loop) | skill `campground-maps` · `docs/design/campground-maps-playbook.md` |
 | The approved brief, sitemap, design spec | `docs/BRIEF.md` |
 | Lessons carried over from CampHawk, and why | `docs/CAMPHAWK-LESSONS.md` |
@@ -53,7 +52,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `src/app/` routes · `src/components/` primitives (Phase 4) · `src/design/` tokens + tests
 - `src/lib/` site facts, tool list · `src/fonts/` OFL woff2, subset (`scripts/subset-fonts.sh`)
 - `src/tools/<slug>/` each tool's maths (tested) + UI · `src/og/` share-image assets
-- `scripts/` screenshot, smoke, doc guards · `studio/film/` hero film source
+- `scripts/` screenshot, smoke, doc guards · `studio/hero-wilderness/` hero art (draft, final, encode)
 - `src/app/private/` the Private tab: password-only sign-in, `src/proxy.ts` guards `/private/*`
   (`LAB_PASSWORD`, `src/lib/private-auth.ts`; docs/SETUP.md) · projects listed in `src/lib/private.ts`
 - `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
@@ -68,7 +67,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   plan, research and the 50-campground Rec.gov sample in `docs/design/campground-maps.md`; its
   review queue (admin mock) is `/private/camphawk/golden-hour/admin/site-maps` (`round2/admin/`). **State Parks' campsite
   data is local-only (`public/lab-local/`, git-ignored) until they approve: never commit it**
-- `public/media/hero/<hash>/` rendered film + posters, cached immutable (`src/lib/hero-media.ts`)
+- `public/media/hero/<hash>/` hero art (AVIF/WebP cuts), cached immutable (`src/lib/hero-media.ts`)
 
 ## End of every session
 Update `docs/NEXT-SESSION.md` (what's done, what's next, what's blocked) and this router if a

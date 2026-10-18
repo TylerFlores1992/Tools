@@ -32,7 +32,14 @@ its drafts are next. Nothing is built yet.*
    drafts themselves, **a-wide-klein-12** and **b-wide-klein-01**, used as-is at 1536 px (owner's
    call; no upscale). Both were mocked into the real home page beside the current film (session
    only). Lesson: re-running a picked draft on a "better" model lost what made it good; when the
-   owner picks a draft, ship that draft. **Waiting on the owner's choice between A12 and B1.**
+   owner picks a draft, ship that draft. **Owner chose B1**, then "a free enhanced version": Real-ESRGAN x4plus (BSD-3, run locally on
+   CPU), brought back to 3072 x 1728; the owner picked it over the x2 model.
+5. **Built 2026-10-18** (§5): `src/components/HeroArt.tsx` replaces the film (no client JS); cuts
+   from `studio/hero-wilderness/encode.mjs` in `public/media/hero/<hash>/` (wide 960/1600/2560,
+   portrait 720/1080, AVIF + WebP; 1600 AVIF 54 KB). Motion: `.hero-drift`, a 36 s push toward
+   the eye after the settle, none under reduced motion. It isn't paused off-screen: it's one
+   compositor transform, and the hero is the top of the page. The film's source
+   (`studio/film/`) and skill `hero-film` are retired; git history keeps them.
 5. Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
@@ -213,6 +220,7 @@ open owner decision.
 
 | File (shipped) | Model · licence | Prompt (or `prompts.mjs` key + seed) | Date | Cost | Edits |
 |---|---|---|---|---|---|
+| **`public/media/hero/<hash>/hero-*.{avif,webp}`** (shipped) | `@cf/black-forest-labs/flux-2-klein-4b` on Cloudflare Workers AI · Apache 2.0 | `prompts.mjs` `b[0]`, seed 1691169373, 1536 x 864 (`b-wide-klein-01.jpg`) | 2026-10-18 | ~156 neurons (free tier) | Real-ESRGAN x4plus upscale (BSD-3, weights `RealESRGAN_x4plus.pth` sha256 `4fa0d389…`) → Lanczos to 3072 x 1728 → `encode.mjs`: wide resized; portrait cropped (9:16 from x = 42.3 %), AVIF q50 / WebP q74 |
 | ~~`wide-ultra-03.jpeg`~~ (rejected by the owner) | `bfl/flux-pro-1.1-ultra` via Vercel AI Gateway, raw · BFL API terms, **output terms not yet checked** | `prompts.mjs` `FINAL_C`; image prompt `c-wide-klein-09.jpg` (FLUX.2 klein 4B, Apache 2.0, `c[0]`, seed 524737910) at strength 0.85; 16:9 | 2026-10-18 | $0.06 free credit (+ ~156 free neurons for the draft) | none yet; resize/encode at build |
 | ~~`tall-ultra-05.jpeg`~~ (rejected by the owner) | same | `FINAL_C`; image prompt `c-tall-klein-05.jpg` (klein 4B, `c[0]`, seed 1051260080) at strength 0.95; 9:16 | 2026-10-18 | $0.06 free credit (+ ~156 neurons) | stray circuit fragment to retouch (left middle) |
 

@@ -11,7 +11,7 @@
 | Home | Hero only: the faceted wolf rising behind a night mountain range, headline, one line, **Enter the workshop**. No tools, no bio. Slim footer. |
 | Brand | "Cyber Wolf" wordmark with an ember diamond. Domain `flores.tools`. No name, bio, about page or nickname story. |
 | Feel | Precise, nocturnal, alive. Never cheesy-cyberpunk, cute or corporate. |
-| Hero media | A **code-rendered film loop** (below) with an AVIF poster. No Higgsfield or any paid tool. The live WebGL terrain is the production tool for the film; it's never shipped to visitors. |
+| Hero media | *Superseded 2026-10-18: a generated still with a slow CSS drift, see `docs/design/hero-wilderness-cyber.md`.* Originally a **code-rendered film loop** (below) with an AVIF poster. No Higgsfield or any paid tool. The live WebGL terrain is the production tool for the film; it's never shipped to visitors. |
 
 ## Sitemap (revised: no About)
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HeroFilm } from "@/components/HeroFilm";
+import { HeroArt } from "@/components/HeroArt";
 import { PageTransition } from "@/components/PageTransition";
 import { Arrow, LinkButton } from "@/components/Button";
 import { Label } from "@/components/Label";
@@ -18,8 +18,8 @@ export default function Home() {
   return (
     <div className="theme-night bg-bg text-ink">
       <main id="main" className="relative isolate flex min-h-svh flex-col overflow-hidden">
-        <HeroFilm />
-        {/* Scrims: text sits on these, never straight on the film (contrast is checked in screenshots). */}
+        <HeroArt />
+        {/* Scrims: text sits on these, never straight on the art (contrast is checked in screenshots). */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[62%] bg-linear-to-b from-transparent via-bg/60 to-bg/95" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-linear-to-b from-bg/70 to-transparent" />
 

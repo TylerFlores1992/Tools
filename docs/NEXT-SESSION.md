@@ -8,7 +8,7 @@
 | What | Where | State |
 |---|---|---|
 | Site | https://tylerflores.dev | Live. Merges to `main` deploy production automatically. |
-| Home hero | `/` | Live. Signed off by the owner. |
+| Home hero | `/` | Rebuilt 2026-10-18: B1 wolf still (PR #52); the film is retired. |
 | Bridle calculator | `/workshop/bridle-calculator` | Live. Signed off by the owner. |
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
@@ -55,9 +55,11 @@ tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
   `tall-ultra-05` on Flux 1.1 Ultra ($0.60 of credit; $0.825 left). Images are git-ignored in
   `studio/hero-wilderness/out/finals/`, gone with the container: regenerate with `final.mjs` or
   have the owner keep copies.
-- **Owner rejected the finals and the blend**: the drafts a-wide-klein-12 and b-wide-klein-01
-  are the candidates, as-is at 1536 px. Both mocked into the home page.
-- **Next:** the owner picks A12 or B1; record its provenance row; build the hero (doc §5) and critique.
+- **Owner rejected the finals and the blend**, chose the B1 draft, upscaled for free with
+  Real-ESRGAN x4.
+- **Built 2026-10-18:** `HeroArt.tsx` replaces the film (no client JS); the film's source and skill
+  are retired. Shots 8/8 pass, including the measured headline contrast over the image.
+- **Next:** the owner signs off the built hero; after merging, `npm run smoke -- https://tylerflores.dev`.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
