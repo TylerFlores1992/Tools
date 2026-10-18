@@ -44,6 +44,9 @@ next-env.d.ts
 /screenshots/
 /studio/film/frames/
 /studio/camphawk-round2/out/
+/studio/hero-wilderness/out/
+# the owner's hero references: stock and someone else's painting, never committed
+/studio/hero-wilderness/ref/
 /studio/*/node_modules/
 
 # State Parks campsite data, pending their permission: built locally, never committed

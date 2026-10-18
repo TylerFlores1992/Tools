@@ -46,10 +46,13 @@ tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
 - **Image sources:**
   - Cloudflare Workers AI, free (FLUX.2 klein 4B and FLUX.1 schnell, both Apache 2.0), for drafts;
   - the last $1.43 of Vercel AI Gateway credit, for finals.
-- **Next:**
-  - check `CLOUDFLARE_API_TOKEN` (added 2026-10-18; it only loads in a new session);
-  - write directions A and B;
-  - draft both, then show the owner.
+- **Done 2026-10-18 (second session):** token verified (valid, active); directions A "The wired
+  wood" and B "Circuit fur" written as contracts (§3); a free drafting script,
+  `studio/hero-wilderness/draft.mjs`, logs provenance per image.
+- **Blocked:** `GET /accounts` is empty with this token, so there's no account ID to call Workers
+  AI. The owner needs to add `CLOUDFLARE_ACCOUNT_ID`, or Account Settings Read on the token.
+  References re-attached by the owner (kept in the git-ignored `studio/hero-wilderness/ref/`).
+- **Next:** draft 10–20 per direction, show them beside the references, the owner picks.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
