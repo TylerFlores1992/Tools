@@ -93,7 +93,7 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
       </form>
 
       <p className="mt-5 text-small tabular-nums text-ink-2" aria-live="polite">
-        {rows.length} {rows.length === 1 ? "transaction" : "transactions"} · {`−${money(outTotal)}`} out · {`+${money(inTotal)}`} in
+        {rows.length} {rows.length === 1 ? "transaction" : "transactions"} · {`−${money(outTotal)}`} out · {`+${money(inTotal)}`} in, transfers included
         {(category || q || account || month !== thisMonth) && (
           <> · <Link href="/private/money/transactions" className="underline underline-offset-4 hover:text-ink">Clear filters</Link></>
         )}

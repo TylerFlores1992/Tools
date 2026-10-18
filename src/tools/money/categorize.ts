@@ -62,7 +62,7 @@ const KEYWORDS: ReadonlyArray<readonly [category: string, words: readonly string
   ]],
   ["Pets", ["PETCO", "PETSMART", "CHEWY", "VETERINARY", "VET ", "ANIMAL HOSP", "BANFIELD"]],
   ["Entertainment", ["STEAM", "PLAYSTATION", "XBOX", "NINTENDO", "AMC ", "REGAL", "CINEMA", "TICKETMASTER", "EVENTBRITE"]],
-  ["Shopping", ["AMAZON", "AMZN", "TARGET", "WALMART", "WAL-MART", "BEST BUY", "EBAY", "ETSY", "IKEA", "COSTCO", "JOANN", "MICHAELS", "HOBBY LOBBY"]],
+  ["Shopping", ["AMAZON", "AMZN", "TARGET", "WALMART", "WAL-MART", "BEST BUY", "EBAY", "ETSY", "IKEA", "COSTCO", "HARBOR FREIGHT", "JOANN", "MICHAELS", "HOBBY LOBBY"]],
   ["Fees", ["OVERDRAFT", "SERVICE FEE", "MONTHLY FEE", "MAINTENANCE FEE", "INTEREST CHARGE", "LATE FEE", "ATM FEE", "FOREIGN TRANSACTION"]],
   ["Cash", ["ATM WITHDRAWAL", "ATM W/D", "CASH WITHDRAWAL", "WITHDRAWAL AT"]],
 ];

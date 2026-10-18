@@ -44,6 +44,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const txns = data.txns.filter((t) => ids.has(t.accountId));
   const s = summarize(txns, month);
   const prev = summarize(txns, shiftMonth(month, -1));
+  const prevName = monthName(shiftMonth(month, -1)).split(" ")[0];
   const recurring = findRecurring(txns, data.today);
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
   const paychecks = recurring.filter((r) => r.direction === "in" && r.status === "active");
@@ -91,8 +92,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
       </div>
 
       <section aria-label="Totals" className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Total label="Money in" value={`+${money(s.moneyIn)}`} note={`${signedDelta(s.moneyIn - prev.moneyIn)} vs last month`} />
-        <Total label="Money out" value={`−${money(s.moneyOut)}`} note={`${signedDelta(s.moneyOut - prev.moneyOut)} vs last month`} />
+        <Total label="Money in" value={`+${money(s.moneyIn)}`} note={delta(s.moneyIn - prev.moneyIn, prevName)} />
+        <Total label="Money out" value={`−${money(s.moneyOut)}`} note={delta(s.moneyOut - prev.moneyOut, prevName)} />
         <Total label="Net" value={signedMoney(s.net)} note={s.net >= 0 ? "Ahead this month" : "Behind this month"} />
       </section>
       <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out.</p>
@@ -172,9 +173,10 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   );
 }
 
-function signedDelta(n: number) {
-  if (Math.abs(n) < 0.005) return "Same";
-  return `${n > 0 ? "+" : "−"}${money(n)}`;
+/** "$188.39 less than August": words, not a sign the reader has to decode. */
+function delta(n: number, prevMonth: string) {
+  if (Math.abs(n) < 0.005) return `Same as ${prevMonth}`;
+  return `${money(n)} ${n > 0 ? "more" : "less"} than ${prevMonth}`;
 }
 
 function Total({ label, value, note }: { label: string; value: string; note: string }) {

@@ -46,6 +46,12 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/camphawk/round2/c1-loop-dusk-900.webp", status: 401, contains: "This area is private." },
   // The hero art's folder is versioned by content, so it may be cached for good.
   { path: `${HERO_MEDIA}/hero-1600.webp`, status: 200, contains: "", cache: "immutable" },
+  // Money: bank data behind the same lock; the cron endpoint refuses anyone without the secret;
+  // health says only whether the database answers.
+  { path: "/private/money", status: 200, contains: "Enter the password", absent: "Money in" },
+  { path: "/private/money/transactions", status: 200, contains: "Enter the password", absent: "Change category" },
+  { path: "/api/money/sync", status: 401, contains: "Unauthorized" },
+  { path: "/api/money/health", status: 200, contains: "\"database\":\"ok\"" },
 ];
 
 let failed = 0;

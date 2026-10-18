@@ -55,10 +55,15 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
                   <li>Choose <span className="text-ink">New app connection</span>, copy the setup token, paste it below.</li>
                 </ol>
               )}
-              <div className={data.connected ? "mt-6 border-t border-line pt-6" : "mt-6"}>
-                {data.connected && <p className="mb-3 text-small text-muted">Added a bank or revoked the connection? Paste a new setup token.</p>}
-                <ConnectForm reconnect={data.connected} />
-              </div>
+              {data.connected ? (
+                <details className="mt-6 border-t border-line pt-6">
+                  <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-btn text-body text-ink-2 hover:text-ink">Replace the connection</summary>
+                  <p className="mb-3 mt-2 text-small text-muted">Added a bank or revoked the connection? Paste a new setup token.</p>
+                  <ConnectForm reconnect />
+                </details>
+              ) : (
+                <div className="mt-6"><ConnectForm reconnect={false} /></div>
+              )}
               {data.connected && (
                 <form action={disconnect} className="mt-6 border-t border-line pt-6">
                   <p className="mb-3 text-small text-muted">Forget the SimpleFIN connection on this site. To cut access entirely, also remove the app connection in SimpleFIN Bridge.</p>

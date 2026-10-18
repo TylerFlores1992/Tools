@@ -26,7 +26,8 @@ export function sql(): Sql {
     max: 1,
     idle_timeout: 20,
     connect_timeout: 10,
-    ssl: "require",
+    // Supabase requires TLS. `sslmode=disable` is only for the local test database (scripts/).
+    ssl: /[?&]sslmode=disable\b/.test(url) ? false : "require",
     types: { numeric: { to: 1700, from: [1700], serialize: (x: number) => String(x), parse: (x: string) => Number(x) } },
   });
   return g.__moneySql;
