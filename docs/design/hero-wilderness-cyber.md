@@ -6,17 +6,14 @@ tech feel. But our wolf drawing and woods background you created are not great."
 its drafts are next. Nothing is built yet.*
 
 ## Pick up here (next session)
-1. **Blocked on the Cloudflare account ID.** The token verifies ("valid and active", checked
-   2026-10-18), but `GET /accounts` returns an empty list: the "Workers AI" template doesn't grant
-   Account Settings Read. Ask the owner to add `CLOUDFLARE_ACCOUNT_ID` to the environment (dashboard
-   → Workers AI → "Use REST API" shows it), or to add "Account Settings: Read" to the token.
+1. Cloudflare works. The token verifies, but it can't list accounts, so pass the account ID
+   (from the owner's dashboard URL, not a secret): `CLOUDFLARE_ACCOUNT_ID=942122fe5e7400a73c200ada08e544fb`.
 2. References: the owner re-attached all three on 2026-10-18; they match §2. They live in
    `studio/hero-wilderness/ref/` (git-ignored, gone when the container is). Never commit them: two
    are watermarked stock and one is someone's painting. A new container needs them attached again.
-3. Gate 3: directions A and B are written (§3). Draft 10–20 each:
-   `node studio/hero-wilderness/draft.mjs a 12 wide` (then `a 6 tall`, `b 12 wide`, `b 6 tall`).
-   Read the real neuron cost in the dashboard after the first few. Show them on a sheet beside the
-   references.
+3. Gate 3 drafts done 2026-10-18: 16 per direction (12 wide, 4 tall) on FLUX.2 klein 4B, about
+   5,000 neurons estimated, all free. Shown to the owner as two sheets beside the references
+   (session only; regenerate the sheets from `out/`). **Waiting on the owner's pick.**
 4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1, keep the $1.43
    for them). Then build (§5) and critique (Gate 6).
 
