@@ -2,18 +2,20 @@
 
 *Started 2026-10-18. Owner: "a slight redesign of our dev page. I like the idea. Wilderness cyber
 tech feel. But our wolf drawing and woods background you created are not great." Process: skill
-`design-direction`. Gates 1 (brief) and 2 (references) are done here. Gate 3 (written directions)
-is next. Nothing is built yet.*
+`design-direction`. Gates 1 (brief) and 2 (references) are done here. Gate 3's written directions are in §3;
+its drafts are next. Nothing is built yet.*
 
 ## Pick up here (next session)
-1. Check the Cloudflare token works (§4.2). It was added to the environment on 2026-10-18, but the
-   session that wrote this file couldn't see it, because environment settings load at session start.
-2. Re-read §2. **Ask the owner to attach the three reference images again.** They weren't committed:
-   two are watermarked stock and one is someone's painting.
-3. Gate 3: write the two directions (§3) into this file, then draft 10–20 images each on Cloudflare
-   (free) and show them side by side with the references.
-4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1). Then build
-   (§5) and critique (Gate 6).
+1. Cloudflare works. The token verifies, but it can't list accounts, so pass the account ID
+   (from the owner's dashboard URL, not a secret): `CLOUDFLARE_ACCOUNT_ID=942122fe5e7400a73c200ada08e544fb`.
+2. References: the owner re-attached all three on 2026-10-18; they match §2. They live in
+   `studio/hero-wilderness/ref/` (git-ignored, gone when the container is). Never commit them: two
+   are watermarked stock and one is someone's painting. A new container needs them attached again.
+3. Gate 3 drafts done 2026-10-18: 16 per direction (12 wide, 4 tall) on FLUX.2 klein 4B, about
+   5,000 neurons estimated, all free. Shown to the owner as two sheets beside the references
+   (session only; regenerate the sheets from `out/`). **Waiting on the owner's pick.**
+4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1, keep the $1.43
+   for them). Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
 - **Scope: the hero, plus backgrounds.** Replace the code-drawn wolf and woods with generated art.
@@ -59,20 +61,75 @@ never name the images or their makers.
 **Colour-blind check:** red or ember against blue-teal stays distinct for a deuteranope. The
 headline must never depend on the red.
 
-## 3. Directions (Gate 3, to write next)
-Two candidates the owner has seen named. Write each as a contract per `design-direction`: thesis,
-world, first viewport, signature moment, assets, self-check.
-- **A, painterly:** close to reference 1. A painted night forest with ground light and mist. The
-  wolf half in shadow on one side, with faint circuit glow in the bark, roots and grass, as if the
-  forest is wired. Ember eye.
-- **B, detailed:** between references 2 and 3. A realistic wolf with fine circuit lines through its
-  fur and an ember eye, in a misty blue forest with a few drifting sparks. No armour.
+## 3. Directions (Gate 3, written 2026-10-18)
+Both keep the layout, type, tokens and copy (§1 Fixed). They differ in **what the image is**
+(a scene you look into vs. an animal that looks at you) and so in where the headline sits and how
+the motion works. Draft prompts: `studio/hero-wilderness/prompts.mjs`; drafting:
+`studio/hero-wilderness/draft.mjs` (Cloudflare, free; output in its `out/`, gitignored).
 
-**Composition for both:**
-- the wolf on the right, or its head at upper right;
-- dark, quiet space on the left for "Quiet tools. / Sharp teeth.";
-- a wide master (about 2560 x 1440), plus a portrait cut composed for phones (not a crop);
-- a separate mist or spark layer, if the model can give one, for the CSS motion.
+**Shared composition:** the wolf on the right, or its head at upper right; dark, quiet space on the
+left for "Quiet tools. / Sharp teeth."; a wide master (about 2560 x 1440) plus a portrait cut
+composed for phones, not a crop; a separate mist or spark layer if the model gives one.
+
+### A. "The wired wood" (painterly)
+- **Thesis:** the forest is the machine. The tech isn't worn by the wolf; it grows through the
+  bark and roots like veins, and the wolf is something you *find* in it. Refuses the category
+  default of a hero animal posing centre-frame on a gradient.
+- **World:** restrained. `bg` #05070e and `surface` #0b1222 carry the painting's shadows; `ice`
+  #8fb4ff is the circuit and ground glow (the cool family, never meaning); `ink` #f3f5fa for the
+  headline; `ember` #ffb27a only in the eye. Type unchanged: Mona Sans display, JetBrains Mono labels.
+- **First viewport (1440):**
+  ```
+  ┌───────────────────────────────────────────────────────────────┐
+  │ nav                                                           │
+  │                                         ╱ gnarled trunk ╲     │
+  │  Quiet tools.          (deep shadow,     roots ≈ glowing      │
+  │  Sharp teeth.           mist drifts)     circuit veins   ●←eye│
+  │  sub line                                 wolf half-hidden    │
+  │  [Primary] [Secondary]           ░░ ground light ░░░░░░░░░░░  │
+  └───────────────────────────────────────────────────────────────┘
+  ```
+  An hour later someone describes: "a painted night forest with glowing roots, and a wolf's eye
+  watching from the trees."
+- **Signature moment:** the mist layer drifts slowly (30–40 s) across the gap between the
+  headline and the wolf, so the eye seems to come and go. Reduced motion: a still frame.
+- **Assets:** one painted master (wide) + portrait cut, one transparent or screen-blended mist plate.
+  Drafts on FLUX.2 klein 4B; final on Flux 1.1 Ultra (Vercel credit).
+- **Self-check (`tells.md` Defaults):** "camping → pines and mountains" is avoided: no peaks, no
+  sky, the light is from the ground. Risk: "near-black with one neon accent and glowing edges";
+  held off by painterly texture, the ice glow staying faint, and ember kept to one small point.
+
+### B. "Circuit fur" (realistic)
+- **Thesis:** the animal *is* the interface. A real-looking wolf, close, with fine circuitry
+  following the grain of its fur and one ember eye looking past the headline. Refuses both the
+  toy-robot wolf (armour plating) and the city-neon portrait.
+- **World:** restrained, cooler and sharper than A. `bg` and `surface` as the fog and bokeh;
+  `ink-2` #c2c9d8 / `ice` for the fur circuitry (white-blue, thin); `ember` in the eye and a few
+  sparks only. Type unchanged.
+- **First viewport (1440):**
+  ```
+  ┌───────────────────────────────────────────────────────────────┐
+  │ nav                                                           │
+  │                                          ╭──── wolf head ───╮ │
+  │  Quiet tools.        soft blue bokeh,    │ circuit lines in  │ │
+  │  Sharp teeth.        fog                 │ fur      ● ember  │ │
+  │  sub line                    · spark     ╰── shoulders ─────╯ │
+  │  [Primary] [Secondary]                  ·        · spark      │
+  └───────────────────────────────────────────────────────────────┘
+  ```
+  An hour later: "a close-up of a wolf with glowing circuits in its fur and an orange eye."
+- **Signature moment:** a slow parallax (the head plate moves a few px against the fog plate on
+  scroll or over 20–30 s) with 3–5 sparks rising. Reduced motion: still, no sparks.
+- **Assets:** one realistic master + portrait cut, a fog/background plate, a spark sprite (CSS
+  dots are fine: geometry, not a picture). Drafts on klein 4B; final on Flux 1.1 Ultra.
+- **Self-check:** risk is stock-photo sameness (reference 3's look). Held off by: wilderness not
+  city, the circuitry thin and following the fur rather than a pasted pattern, ember not magenta,
+  and the head cropped by the frame edge rather than centred.
+
+### How the owner chooses
+10–20 drafts each, wide and tall, beside the three references (sheet in the session, not
+committed). Pick a direction and the 1–3 drafts whose composition is closest; the finals re-run
+those prompts on the Vercel credit.
 
 ## 4. Image sources (checked 2026-10-18)
 
@@ -132,6 +189,13 @@ For each file that ships, record in a table in this doc:
 
 The CampHawk lab's art has no licence or provenance note, which its hand-off had to flag as an
 open owner decision.
+
+`draft.mjs` writes every field below (model, licence, prompt, seed, size, date, cost) to
+`studio/hero-wilderness/out/log.jsonl`; copy the row in when a file is picked.
+
+| File (shipped) | Model · licence | Prompt (or `prompts.mjs` key + seed) | Date | Cost | Edits |
+|---|---|---|---|---|---|
+| *nothing ships yet* | | | | | |
 
 ## 5. Build notes (when the art is picked)
 - **The headline stays the LCP element.** The image is a background with explicit dimensions:
