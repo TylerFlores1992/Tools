@@ -28,6 +28,8 @@ const KEYWORDS: ReadonlyArray<readonly [category: string, words: readonly string
     "ONLINE TRANSFER", "TRANSFER TO", "TRANSFER FROM", "XFER", "INTERNAL TRANSFER",
     "PAYMENT TO CHASE CARD", "CHASE CREDIT CRD", "AUTOPAY PAYMENT", "CRCARDPMT", "CARD PAYMENT",
     "PAYMENT THANK YOU", "MOBILE PAYMENT - THANK YOU", "U.S. BANK CREDIT", "USBANK CARD",
+    // Marcus savings is Goldman Sachs Bank: "GOLDMAN SACHS BA TRANSFER …" on the Chase side.
+    "GOLDMAN SACHS BA", "MARCUS",
   ]],
   ["Income", ["PAYROLL", "DIRECT DEP", "DIR DEP", "SALARY", "STRIPE TRANSFER", "STRIPE PAYOUT", "IRS TREAS", "TAX REF"]],
   ["Software", [
@@ -111,28 +113,34 @@ export function categorize(
 
 /**
  * Matches money that left one household account and arrived in another (same amount, opposite
- * sign, within `days` days) and returns the ids of both sides. Used to mark transfers the
- * keyword list missed, so moving $500 from Chase to U.S. Bank isn't counted as spending.
- * Each transaction pairs at most once.
+ * sign, within `days` days) and returns each side's counterpart. Bank-to-bank transfers can
+ * take four calendar days to land (Chase → U.S. Bank, measured 2026-10-18), hence 5. Each
+ * transaction pairs at most once, with the nearest-dated match.
  */
-export function findTransferPairs(txns: readonly Txn[], days = 3): Set<string> {
-  const out = new Set<string>();
+export function matchTransfers(txns: readonly Txn[], days = 5): Map<string, string> {
+  const out = new Map<string, string>();
   const outs = txns.filter((t) => t.amount < 0 && !t.pending).sort((a, b) => a.posted.localeCompare(b.posted));
   const ins = txns.filter((t) => t.amount > 0 && !t.pending);
   const used = new Set<string>();
   for (const o of outs) {
-    const match = ins.find((i) =>
-      !used.has(i.id) &&
-      i.accountId !== o.accountId &&
-      Math.abs(i.amount + o.amount) < 0.005 &&
-      Math.abs(dayDiff(i.posted, o.posted)) <= days,
-    );
-    if (match) {
-      used.add(match.id);
-      out.add(o.id).add(match.id);
+    let best: Txn | undefined;
+    for (const i of ins) {
+      if (used.has(i.id) || i.accountId === o.accountId || Math.abs(i.amount + o.amount) >= 0.005) continue;
+      const gap = Math.abs(dayDiff(i.posted, o.posted));
+      if (gap > days) continue;
+      if (!best || gap < Math.abs(dayDiff(best.posted, o.posted))) best = i;
+    }
+    if (best) {
+      used.add(best.id);
+      out.set(o.id, best.id).set(best.id, o.id);
     }
   }
   return out;
+}
+
+/** The ids of both sides of every matched transfer. */
+export function findTransferPairs(txns: readonly Txn[], days = 5): Set<string> {
+  return new Set(matchTransfers(txns, days).keys());
 }
 
 export function dayDiff(a: string, b: string): number {

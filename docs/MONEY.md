@@ -23,8 +23,15 @@ Chase, U.S. Bank ──► SimpleFIN Bridge (~$1.50/mo, owner's account)
   `money.rules`, matched on raw text *and* merchant key) > keyword list
   (`src/tools/money/categorize.ts`). Re-syncs never overwrite manual.
 - **Transfers** between the household's own accounts don't count as money in/out: keyword list,
-  plus same-amount/opposite-sign pairs within 3 days across accounts (only for rows still
-  Uncategorized / Other income, so a real purchase is never hidden).
+  plus same-amount/opposite-sign pairs within 5 days across accounts (Chase → U.S. Bank takes up
+  to 4). Only auto-filed rows still Uncategorized / Other income / Transfer are paired, so a real
+  purchase is never hidden; every sync re-pairs the whole history.
+- **Owner's rule (2026-10-18): Mine → Joint is spending.** In the Mine view a transfer to a Joint
+  account counts as money out ("Transfer to Joint"); in the Joint view it is money in. Everything
+  still counts it as neither, or the bills it pays would be counted twice. Paying his own card from
+  his own checking stays a transfer everywhere, because the card's purchases already count
+  (`transfersAcross` in `summary.ts`). Marcus (Goldman Sachs Bank) transfers are transfers; once
+  Marcus is connected and set to Mine, savings moves count as neither in Mine.
 - **Recurring:** `src/tools/money/recurring.ts` groups by merchant key and fits weekly,
   every 2 weeks, twice a month, monthly (≥3 seen), quarterly, yearly (≥2). Amounts must stay
   within 50% of the median; >15% swing shows "≈".
@@ -82,6 +89,11 @@ reads with `Promise.all` on a one-connection pool, postgres.js pipelined them, a
 transaction pooler stalls a pipelined connection. Local Postgres has no pooler, so local tests
 passed. Fixed with `max: 8` in `db.ts` and sequential reads in `load.ts`.
 `/api/money/health?parallel=1` probes it, and `npm run smoke` checks it.
+
+## Gotcha: the owner picker showed the old value after Save (2026-10-18)
+React resets a form after its Server Action, and a reset `<select>` shows the value it was first
+rendered with, not the new `defaultValue`. The save had worked; the picker lied. Each account's form
+is keyed on its saved values so it remounts. Reproduced and fixed in a real browser locally.
 
 ## Ideas not built yet
 Budgets per category with a monthly target · weekly summary email · CSV export · splitting a

@@ -4,10 +4,10 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CATEGORIES, OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs, keywordCategory, ruleCategory } from "./categorize.ts";
+import { CATEGORIES, OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs, keywordCategory, matchTransfers, ruleCategory } from "./categorize.ts";
 import { addDays, findRecurring, merchantKey, monthlyEquivalent } from "./recurring.ts";
 import { SimpleFinError, claimAccessUrl, claimUrlFromSetupToken, fetchAccounts, parseAccountSet, splitAccessUrl, syncWindows, toLocalDate } from "./simplefin.ts";
-import { isMonth, money, shiftMonth, signedMoney, summarize } from "./summary.ts";
+import { isMonth, money, shiftMonth, signedMoney, summarize, transfersAcross } from "./summary.ts";
 import type { Txn } from "./types.ts";
 
 let n = 0;
@@ -71,7 +71,7 @@ test("the picker offers every category the keyword list can produce", () => {
   }
 });
 
-test("transfer pairs: same amount, opposite sign, different accounts, within 3 days", () => {
+test("transfer pairs: same amount, opposite sign, different accounts, within 5 days", () => {
   const out = txn({ accountId: "chase", posted: "2026-10-01", amount: -500, description: "ZELLE TO JOINT" });
   const inn = txn({ accountId: "usbank", posted: "2026-10-03", amount: 500, description: "ZELLE FROM TYLER" });
   const far = txn({ accountId: "usbank", posted: "2026-10-09", amount: 500, description: "DEPOSIT" });
@@ -85,6 +85,20 @@ test("transfer pairs: each side pairs once", () => {
   const b = txn({ accountId: "chase", posted: "2026-10-01", amount: -100, description: "Y" });
   const c = txn({ accountId: "usbank", posted: "2026-10-01", amount: 100, description: "Z" });
   assert.equal(findTransferPairs([a, b, c]).size, 2);
+});
+
+test("transfer pairs: a Chase → U.S. Bank transfer that lands four days later still pairs, nearest first", () => {
+  const out = txn({ accountId: "chase", posted: "2026-09-17", amount: -3950, description: "ONLINE TRANSFER TO US BANK" });
+  const early = txn({ accountId: "usbank", posted: "2026-09-12", amount: 3950, description: "ELECTRONIC DEPOSIT" });
+  const landed = txn({ accountId: "usbank", posted: "2026-09-21", amount: 3950, description: "ELECTRONIC DEPOSIT JPMORGAN CHASE" });
+  const m = matchTransfers([out, early, landed]);
+  assert.equal(m.get(out.id), landed.id);
+  assert.equal(m.get(landed.id), out.id);
+  assert.equal(m.has(early.id), false);
+});
+
+test("Marcus (Goldman Sachs Bank) transfers are transfers", () => {
+  assert.equal(keywordCategory("GOLDMAN SACHS BA TRANSFER 000300005964662 WEB ID: 1234"), TRANSFER);
 });
 
 // ---- recurring ----
@@ -266,6 +280,38 @@ test("summary: can be limited to some accounts", () => {
     txn({ accountId: "usbank", posted: "2026-10-02", amount: -30, description: "B", category: "Dining" }),
   ];
   assert.equal(summarize(txns, "2026-10", new Set(["usbank"])).moneyOut, 30);
+});
+
+test("Mine → Joint is money out of Mine and into Joint, and neither in Everything", () => {
+  const owner: Record<string, string> = { chase: "mine", card: "mine", usbank: "joint" };
+  const name = (id: string) => (owner[id] === "joint" ? "Joint" : "your accounts");
+  const txns = [
+    txn({ accountId: "chase", posted: "2026-10-02", amount: -1000, description: "ONLINE TRANSFER TO US BANK", category: TRANSFER }),
+    txn({ accountId: "usbank", posted: "2026-10-05", amount: 1000, description: "ELECTRONIC DEPOSIT", category: TRANSFER }),
+    // Paying his own card from his own checking: the card's purchases already count.
+    txn({ accountId: "chase", posted: "2026-10-09", amount: -300, description: "PAYMENT TO CHASE CARD", category: TRANSFER }),
+    txn({ accountId: "card", posted: "2026-10-09", amount: 300, description: "PAYMENT THANK YOU", category: TRANSFER }),
+    txn({ accountId: "card", posted: "2026-10-03", amount: -300, description: "SAFEWAY", category: "Groceries" }),
+    txn({ accountId: "usbank", posted: "2026-10-10", amount: -900, description: "PG&E", category: "Utilities" }),
+  ];
+  const mine = new Set(["chase", "card"]);
+  const joint = new Set(["usbank"]);
+  const all = new Set(["chase", "card", "usbank"]);
+  const inView = (ids: Set<string>) => txns.filter((t) => ids.has(t.accountId));
+
+  const m = summarize(inView(mine), "2026-10", undefined, transfersAcross(txns, mine, name));
+  assert.equal(m.moneyOut, 1300);
+  assert.equal(m.moneyIn, 0);
+  assert.ok(m.byCategory.some((c) => c.category === "Transfer to Joint" && c.out === 1000));
+
+  const j = summarize(inView(joint), "2026-10", undefined, transfersAcross(txns, joint, name));
+  assert.equal(j.moneyIn, 1000);
+  assert.equal(j.moneyOut, 900);
+  assert.ok(j.byCategory.some((c) => c.category === "Transfer from your accounts" && c.in === 1000));
+
+  const e = summarize(txns, "2026-10", undefined, transfersAcross(txns, all, name));
+  assert.equal(e.moneyOut, 1200);
+  assert.equal(e.moneyIn, 0);
 });
 
 test("months and money formatting", () => {

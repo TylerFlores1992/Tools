@@ -6,7 +6,7 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
 import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
-import { isMonth, money, monthName, monthOf, shiftMonth, shortDate, signedMoney, summarize } from "@/tools/money/summary";
+import { isMonth, money, monthName, monthOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross } from "@/tools/money/summary";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -42,8 +42,14 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const view = VIEWS.some((v) => v.value === sp.view) ? sp.view! : "all";
   const ids = accountsFor(data.accounts, view);
   const txns = data.txns.filter((t) => ids.has(t.accountId));
-  const s = summarize(txns, month);
-  const prev = summarize(txns, shiftMonth(month, -1));
+  // Mine → Joint counts as money out of Mine and into Joint (owner's rule, docs/MONEY.md).
+  const ownerOf = new Map(data.accounts.map((a) => [a.id, a.owner]));
+  const across = view === "all" ? undefined : transfersAcross(data.txns, ids, (id) => {
+    const o = ownerOf.get(id);
+    return o === "mine" ? "your accounts" : o === "hers" ? "her accounts" : o === "joint" ? "Joint" : "an unassigned account";
+  });
+  const s = summarize(txns, month, undefined, across);
+  const prev = summarize(txns, shiftMonth(month, -1), undefined, across);
   const prevName = monthName(shiftMonth(month, -1)).split(" ")[0];
   const recurring = findRecurring(txns, data.today);
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
@@ -96,7 +102,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
         <Total label="Money out" value={`−${money(s.moneyOut)}`} note={delta(s.moneyOut - prev.moneyOut, prevName)} />
         <Total label="Net" value={signedMoney(s.net)} note={s.net >= 0 ? "Ahead this month" : "Behind this month"} />
       </section>
-      <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out.</p>
+      <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out. In the Mine and Joint views, money moved between the two is.</p>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[3fr_2fr]">
         <section aria-labelledby="cats">

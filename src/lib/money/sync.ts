@@ -89,15 +89,19 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
         else updatedTxns++;
       }
 
-      // Money moved between the household's own accounts that no keyword caught. Only
-      // transactions still in a catch-all bucket are eligible, so a real purchase is never hidden.
+      // Money moved between the household's own accounts that no keyword caught, or caught on
+      // one side only (Chase says "Online Transfer to US Bank", U.S. Bank says "Electronic Deposit
+      // Jpmorgan Chase"). Only auto-filed rows in a catch-all bucket or already Transfer are
+      // eligible, so a real purchase is never hidden. The whole history is re-matched: it is a few
+      // hundred rows, and it means a fix to the matcher reaches old months on the next sync.
       const recent = await tx<{ id: string; account_id: string; posted: string; amount: number; category: string | null; category_source: CategorySource | null }[]>`
         select id, account_id, to_char(posted, 'YYYY-MM-DD') as posted, amount, category, category_source
-        from money.transactions where posted >= ${since}::date - 7 and not pending`;
+        from money.transactions where not pending`;
       const eligible = recent
-        .filter((r) => r.category_source === "auto" && (r.category === UNCATEGORIZED || r.category === OTHER_INCOME))
+        .filter((r) => r.category_source === "auto" && (r.category === UNCATEGORIZED || r.category === OTHER_INCOME || r.category === TRANSFER))
         .map((r) => ({ id: r.id, accountId: r.account_id, posted: r.posted, amount: r.amount, description: "", payee: null, memo: null, pending: false, category: r.category, categorySource: r.category_source }));
-      const pairs = [...findTransferPairs(eligible)];
+      const already = new Set(eligible.filter((r) => r.category === TRANSFER).map((r) => r.id));
+      const pairs = [...findTransferPairs(eligible)].filter((id) => !already.has(id));
       if (pairs.length) {
         await tx`update money.transactions set category = ${TRANSFER}, category_source = 'auto', updated_at = now() where id in ${tx(pairs)}`;
       }
