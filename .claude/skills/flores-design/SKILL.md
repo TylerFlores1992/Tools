@@ -51,8 +51,9 @@ case everywhere. Display weight 400 — the size does the work.
 ## The hero
 A still image, not a film (2026-10-18): the "B1" wolf, drafted on FLUX.2 klein 4B and upscaled
 with Real-ESRGAN. `src/components/HeroArt.tsx` (no client JS), AVIF/WebP wide and portrait cuts
-in `public/media/hero/<hash>/` from `studio/hero-wilderness/encode.mjs`. One motion: a slow
-push toward the eye (`.hero-drift`), none under reduced motion. Headline is the LCP element.
+in `public/media/hero/<hash>/` from `studio/hero-wilderness/encode.mjs`. Landscape: a left scrim
+under the type; portrait: the art fills the top 72% and fades to night. One motion: the 2.4 s
+settle (longer motion would need a pause control). Headline is the LCP element.
 Copy: "Quiet tools. / Sharp teeth." (`SITE.headline` in `src/lib/site.ts`). History, prompts and
 provenance: `docs/design/hero-wilderness-cyber.md`.
 

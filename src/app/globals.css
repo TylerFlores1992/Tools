@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Phone-shaped screens (taller than 2:3). Tablets in portrait are squarer and keep the wide hero
+   cut; only these get the tall one (src/components/HeroArt.tsx). */
+@custom-variant tall (@media (max-aspect-ratio: 2/3));
+
 /*
  * DESIGN TOKENS — the only palette. Meanings live in .claude/skills/flores-design/SKILL.md.
  *
@@ -616,18 +620,8 @@ p { text-wrap: pretty; }
 .hero-poster {
   animation: settle 2400ms var(--ease-out) both;
 }
-/* The hero art's one motion: after it settles, a slow push toward the wolf's eye and back
-   (transform only, on the compositor, no layout shift). None under reduced motion. */
-@keyframes drift {
-  from { transform: none; }
-  to { transform: scale(1.05) translate(-1%, -0.6%); }
-}
-.hero-drift {
-  animation: settle 2400ms var(--ease-out) both, drift 36s ease-in-out 2400ms infinite alternate;
-  transform-origin: 62% 40%;
-}
 @media (prefers-reduced-motion: reduce) {
-  .hero-poster, .hero-drift { animation: none; }
+  .hero-poster { animation: none; }
 }
 
 /* Route transitions (React <ViewTransition>, see src/components/PageTransition.tsx). */

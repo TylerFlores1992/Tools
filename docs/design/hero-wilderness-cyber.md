@@ -36,10 +36,25 @@ its drafts are next. Nothing is built yet.*
    CPU), brought back to 3072 x 1728; the owner picked it over the x2 model.
 5. **Built 2026-10-18** (§5): `src/components/HeroArt.tsx` replaces the film (no client JS); cuts
    from `studio/hero-wilderness/encode.mjs` in `public/media/hero/<hash>/` (wide 960/1600/2560,
-   portrait 720/1080, AVIF + WebP; 1600 AVIF 54 KB). Motion: `.hero-drift`, a 36 s push toward
-   the eye after the settle, none under reduced motion. It isn't paused off-screen: it's one
-   compositor transform, and the hero is the top of the page. The film's source
+   portrait 720/1080, AVIF + WebP; 1600 AVIF 54 KB). The film's source
    (`studio/film/`) and skill `hero-film` are retired; git history keeps them.
+6. **Gate 6, critic round 1: 6/10, "fix then ship".** Fixed in one batch:
+   - **Face under the type on tablet/phone** → portrait art fills the top 72% and fades to night.
+   - **Full-width bottom scrim muddied the wolf and left ember specks by "teeth."** → a left
+     scrim under the type, plus a short floor into the footer.
+   - **The 36 s zoom softened the upscale**, and over 5 s it needs a pause control (WCAG 2.2.2,
+     from the UI audit) → dropped; only the 2.4 s settle remains.
+   - **Not taken, outside the brief:** B's parallax and rising sparks (more motion would need a
+     pause control); a solid nav pill and the footer's gutter (shared site chrome).
+   **Round 2: 7/10, "fix then ship"** (desktop and phone rated ship quality). Last fixes, then
+   stopped at the two-round ceiling:
+   - Tablets in portrait were hard-cropped (ears gone, upscale smear magnified) → the tall cut is
+     now only for phone-shaped screens (`tall` variant, `max-aspect-ratio: 2/3`); tablets get the
+     wide cut, whole head.
+   - Stray warm specks from the art near the type → the left scrim is darker in the middle, and
+     phones get a thin left-edge scrim, so the eye stays the one warm highlight.
+   - Gap the critic named that's out of scope: depth against reference 1 (one subject on bokeh,
+     no foreground). That's the image the owner picked.
 5. Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
