@@ -1,7 +1,11 @@
-import { TRANSFER } from "./categorize.ts";
+import { TRANSFER, matchTransfers } from "./categorize.ts";
 import type { Txn } from "./types.ts";
 
-/** Totals for a month. Transfers between the household's own accounts count as neither. */
+/**
+ * Totals for a month. Transfers between the household's own accounts count as neither, except
+ * those in `across` (see transfersAcross): money that left the view for another owner's account
+ * counts as money out, and money that arrived from one counts as money in.
+ */
 export type MonthSummary = {
   month: string; // YYYY-MM
   moneyIn: number;
@@ -15,7 +19,12 @@ export const monthOf = (date: string) => date.slice(0, 7);
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
-export function summarize(txns: readonly Txn[], month: string, accountIds?: ReadonlySet<string>): MonthSummary {
+export function summarize(
+  txns: readonly Txn[],
+  month: string,
+  accountIds?: ReadonlySet<string>,
+  across?: ReadonlyMap<string, string>,
+): MonthSummary {
   let moneyIn = 0;
   let moneyOut = 0;
   let count = 0;
@@ -23,9 +32,10 @@ export function summarize(txns: readonly Txn[], month: string, accountIds?: Read
   for (const t of txns) {
     if (monthOf(t.posted) !== month) continue;
     if (accountIds && !accountIds.has(t.accountId)) continue;
-    if (t.category === TRANSFER) continue;
+    const crossing = t.category === TRANSFER ? across?.get(t.id) : undefined;
+    if (t.category === TRANSFER && !crossing) continue;
     count++;
-    const c = t.category ?? "Uncategorized";
+    const c = crossing ?? t.category ?? "Uncategorized";
     const row = cats.get(c) ?? { out: 0, in: 0, count: 0 };
     if (t.amount < 0) {
       moneyOut += -t.amount;
@@ -41,6 +51,30 @@ export function summarize(txns: readonly Txn[], month: string, accountIds?: Read
     .map(([category, r]) => ({ category, out: round(r.out), in: round(r.in), count: r.count }))
     .sort((a, b) => b.out - a.out || b.in - a.in);
   return { month, moneyIn: round(moneyIn), moneyOut: round(moneyOut), net: round(moneyIn - moneyOut), byCategory, count };
+}
+
+/**
+ * Transfers that cross the edge of a view: one side in `inView`, the other in a household account
+ * outside it (Mine → Joint, say). Owner's rule (2026-10-18): money he moves into the joint account
+ * pays the bills, so in the Mine view it is money out, and in the Joint view money in. Everything
+ * still counts it as neither, or it would be counted twice (once moved, once spent). Returns
+ * transaction id → the category to show, e.g. "Transfer to Joint". Unmatched transfers (the
+ * other side isn't a connected account) stay uncounted.
+ */
+export function transfersAcross(
+  all: readonly Txn[],
+  inView: ReadonlySet<string>,
+  ownerName: (accountId: string) => string,
+): Map<string, string> {
+  const byId = new Map(all.map((t) => [t.id, t]));
+  const out = new Map<string, string>();
+  for (const [id, otherId] of matchTransfers(all.filter((t) => t.category === TRANSFER))) {
+    const t = byId.get(id)!;
+    const o = byId.get(otherId)!;
+    if (!inView.has(t.accountId) || inView.has(o.accountId)) continue;
+    out.set(id, `Transfer ${t.amount < 0 ? "to" : "from"} ${ownerName(o.accountId)}`);
+  }
+  return out;
 }
 
 /** YYYY-MM plus `delta` months. */

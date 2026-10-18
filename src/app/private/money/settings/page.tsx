@@ -82,7 +82,10 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
               <ul className="mt-4 grid max-w-[720px] gap-3">
                 {data.accounts.map((a) => (
                   <li key={a.id}>
-                    <form action={saveAccount} className="grid gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:grid-cols-[1fr_10rem] sm:items-end">
+                    {/* Keyed on the saved values: React resets a form after its action runs, and a
+                        reset <select> fell back to "Not set" instead of the value just saved. A new
+                        key remounts the form with the new defaults. */}
+                    <form key={`${a.owner ?? ""}|${a.displayName ?? ""}|${a.hidden}`} action={saveAccount} className="grid gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:grid-cols-[1fr_10rem] sm:items-end">
                       <input type="hidden" name="id" value={a.id} />
                       <p className="text-small text-muted sm:col-span-2">{[a.orgName, a.name].filter(Boolean).join(" · ")}</p>
                       <label className="grid gap-1.5">
