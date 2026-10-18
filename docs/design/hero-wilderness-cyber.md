@@ -13,7 +13,11 @@ its drafts are next. Nothing is built yet.*
    are watermarked stock and one is someone's painting. A new container needs them attached again.
 3. Gate 3 drafts done 2026-10-18: 16 per direction (12 wide, 4 tall) on FLUX.2 klein 4B, about
    5,000 neurons estimated, all free. Shown to the owner as two sheets beside the references
-   (session only; regenerate the sheets from `out/`). **Waiting on the owner's pick.**
+   (session only; regenerate the sheets from `out/`).
+   **Owner's pick (2026-10-18): "A12 setting with a B1 realistic vibe."** That's direction C in
+   `prompts.mjs`: 12 wide + 6 tall drafted (~2,800 neurons). Strongest: c-wide 01, 05, 09 (path,
+   wolf right, circuits in the fur) and 03, 07, 11 (wolf at a wired trunk); tall 01, 05.
+   **Waiting on the owner's pick of C drafts.**
 4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1, keep the $1.43
    for them). Then build (§5) and critique (Gate 6).
 
