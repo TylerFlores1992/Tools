@@ -52,6 +52,8 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/money/transactions", status: 200, contains: "Enter the password", absent: "Change category" },
   { path: "/api/money/sync", status: 401, contains: "Unauthorized" },
   { path: "/api/money/health", status: 200, contains: "\"database\":\"ok\"" },
+  // Pages read several queries at once; Supabase's pooler stalls a pipelined connection (2026-10-18).
+  { path: "/api/money/health?parallel=1", status: 200, contains: "\"parallel\":\"ok\"" },
 ];
 
 let failed = 0;

@@ -76,6 +76,13 @@ then restore the file by copy (CI builds the real thing).
 - Nothing here calls an AI model at run time: the sync, categories and recurring detection are
   plain code. Claude can read the data on request through the Supabase connector (`money` schema).
 
+## Gotcha: Supabase's pooler and pipelining (2026-10-18)
+Every money page hung for 300 s in production while `/api/money/health` answered: the pages ran
+reads with `Promise.all` on a one-connection pool, postgres.js pipelined them, and Supavisor's
+transaction pooler stalls a pipelined connection. Local Postgres has no pooler, so local tests
+passed. Fixed with `max: 8` in `db.ts` and sequential reads in `load.ts`.
+`/api/money/health?parallel=1` probes it, and `npm run smoke` checks it.
+
 ## Ideas not built yet
 Budgets per category with a monthly target · weekly summary email · CSV export · splitting a
 transaction · a spending-over-time chart.

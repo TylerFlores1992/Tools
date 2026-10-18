@@ -15,9 +15,12 @@ export async function loadMoney(): Promise<MoneyData> {
   if (!isConfigured()) return { state: "not-configured" };
   const today = toLocalDate(Date.now() / 1000);
   try {
-    const [conn, accounts, txns, rules, runs] = await Promise.all([
-      getConnection(), getAccounts(), getTransactions(addDays(today, -400)), getRules(), getSyncRuns(10),
-    ]);
+    // One at a time on purpose: see the pipelining note in db.ts.
+    const conn = await getConnection();
+    const accounts = await getAccounts();
+    const txns = await getTransactions(addDays(today, -400));
+    const rules = await getRules();
+    const runs = await getSyncRuns(10);
     return { state: "ok", connected: conn.connected, accounts, txns, rules, runs, today };
   } catch (e) {
     console.error("money load failed", e instanceof Error ? e.name : "unknown");
