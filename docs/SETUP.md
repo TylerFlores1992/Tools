@@ -4,8 +4,10 @@
 - **Vercel project:** `tylerflores-dev` (Hobby, scope `tyler-flores1992`), linked to
   `TylerFlores1992/Tools`, framework Next.js. Production deploys from `main` automatically;
   other branches get preview URLs.
-- **Environment variables:** one, `LAB_PASSWORD` (Production, Sensitive), set by the owner on
+- **Environment variables:** `LAB_PASSWORD` (Production, Sensitive), set by the owner on
   2026-10-02. It is the Private tab's password; see "Private area password" below.
+  `MONEY_DATABASE_URL` and `CRON_SECRET` for the money tracker: see `docs/MONEY.md`.
+- **Cron:** `vercel.json` runs `/api/money/sync` once a day (Hobby allows daily crons).
 - **Domains on the project:** `tylerflores.dev` (primary) and `www.tylerflores.dev` (308 → apex).
 - **DNS** is at Cloudflare (registrar + nameservers `aldo`/`aleena.ns.cloudflare.com`), added
   2026-10-02, **Proxy status: DNS only** (grey cloud): `A @ → 76.76.21.21`,
