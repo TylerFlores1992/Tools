@@ -1,0 +1,10 @@
+{
+  "name": "hero-wilderness-art",
+  "private": true,
+  "type": "module",
+  "description": "Generates the home hero finals through Vercel AI Gateway. Not part of the site build.",
+  "dependencies": {
+    "@ai-sdk/gateway": "4.0.103",
+    "ai": "7.0.127"
+  }
+}

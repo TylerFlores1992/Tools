@@ -35,3 +35,7 @@ export const SIZES = {
   wide: { width: 1536, height: 864 },
   tall: { width: 864, height: 1536 },
 };
+
+// The finals' wording of c[0]. Flux 1.1 Ultra overdoes "luminous" and "glowing wiring" (thick neon
+// lines, a glowing road), so this keeps the composition and asks for restraint in what IS there.
+export const FINAL_C = `Cinematic night wildlife photograph in a dense forest, tall dark trunks receding into blue fog, a pale winding dirt path curving away between the trees, faintly lit, moss in soft cool light. In the right foreground a real grey wolf, head and shoulders, three-quarter view facing left. Hairline-thin, faint pale-cyan circuit traces follow the grain of the fur on its brow and down its neck, subtle like fine engraving that barely glows. One eye glows a warm amber-orange ember, the only warm colour in the image. Two or three tiny dim warm sparks in the air. The left half of the frame is deep, quiet, near-black blue shadow between distant trunks, empty and calm. Muted natural colour grade, deep shadows, photorealistic, fur hair by hair, shallow depth of field.`;

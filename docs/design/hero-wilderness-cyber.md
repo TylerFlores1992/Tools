@@ -17,9 +17,18 @@ its drafts are next. Nothing is built yet.*
    **Owner's pick (2026-10-18): "A12 setting with a B1 realistic vibe."** That's direction C in
    `prompts.mjs`: 12 wide + 6 tall drafted (~2,800 neurons). Strongest: c-wide 01, 05, 09 (path,
    wolf right, circuits in the fur) and 03, 07, 11 (wolf at a wired trunk); tall 01, 05.
-   **Waiting on the owner's pick of C drafts.**
-4. The owner picks. The finals go on the remaining Vercel AI Gateway credit (§4.1, keep the $1.43
-   for them). Then build (§5) and critique (Gate 6).
+   Owner picked **C09 wide + C05 tall** for the finals.
+4. **Finals made 2026-10-18** (`studio/hero-wilderness/final.mjs`, Flux 1.1 Ultra on the Vercel
+   credit, the picked draft passed in as BFL's image prompt): **`wide-ultra-03`** (2752 x 1536) and
+   **`tall-ultra-05`** (1536 x 2752), in `out/finals/` (git-ignored; copy them into `public/` at
+   build time). 10 images, $0.60; **$0.825 left**. Lessons:
+   - Ultra overdoes "luminous" / "glowing wiring" (thick neon lines, a glowing road). The finals use
+     `FINAL_C`, the same scene asking for hairline-thin, faint traces and a muted grade.
+   - Image-prompt strength 0.5 loses the draft's restraint; 0.85 (wide) and 0.95 (tall) keep it.
+   - Every tall cut floats a few circuit fragments in the air. tall-ultra-05 has one, at the left
+     middle: retouch it (or a $0.04 Kontext edit) before it ships, and record that as an edit.
+   **Waiting on the owner's OK of the two finals**, then build (§5) and critique (Gate 6).
+5. Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
 - **Scope: the hero, plus backgrounds.** Replace the code-drawn wolf and woods with generated art.
@@ -199,7 +208,8 @@ open owner decision.
 
 | File (shipped) | Model · licence | Prompt (or `prompts.mjs` key + seed) | Date | Cost | Edits |
 |---|---|---|---|---|---|
-| *nothing ships yet* | | | | | |
+| `wide-ultra-03.jpeg` (final, not shipped yet) | `bfl/flux-pro-1.1-ultra` via Vercel AI Gateway, raw · BFL API terms, **output terms not yet checked** | `prompts.mjs` `FINAL_C`; image prompt `c-wide-klein-09.jpg` (FLUX.2 klein 4B, Apache 2.0, `c[0]`, seed 524737910) at strength 0.85; 16:9 | 2026-10-18 | $0.06 free credit (+ ~156 free neurons for the draft) | none yet; resize/encode at build |
+| `tall-ultra-05.jpeg` (final, not shipped yet) | same | `FINAL_C`; image prompt `c-tall-klein-05.jpg` (klein 4B, `c[0]`, seed 1051260080) at strength 0.95; 9:16 | 2026-10-18 | $0.06 free credit (+ ~156 neurons) | stray circuit fragment to retouch (left middle) |
 
 ## 5. Build notes (when the art is picked)
 - **The headline stays the LCP element.** The image is a background with explicit dimensions:
