@@ -48,10 +48,10 @@ Chase, U.S. Bank ──► SimpleFIN Bridge (~$1.50/mo, owner's account)
 - `/api/money/health` says only `ok` / `not set` / `unreachable`.
 - Never log transactions, the access URL or the DB URL. Errors are logged by name only.
 
-## Environment variables (Vercel, Production + Preview, Sensitive)
+## Environment variables (Vercel, Production + Preview, Sensitive; set 2026-10-18)
 | Name | What |
 |---|---|
-| `MONEY_DATABASE_URL` | `postgresql://money_app.<project-ref>:<password>@<pooler-host>:6543/postgres` (transaction pooler; Vercel can't reach Supabase's IPv6-only direct host) |
+| `MONEY_DATABASE_URL` | `postgresql://money_app.<project-ref>:<password>@aws-1-us-west-2.pooler.supabase.com:6543/postgres` (transaction pooler; Vercel can't reach Supabase's IPv6-only direct host; `aws-0-…` answers "unreachable" for this project) |
 | `CRON_SECRET` | Any long random string; Vercel Cron sends it |
 | `LAB_PASSWORD` | Already set: the Private password (wife uses the same one) |
 
