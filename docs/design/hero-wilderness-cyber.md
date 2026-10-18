@@ -27,7 +27,12 @@ its drafts are next. Nothing is built yet.*
    - Image-prompt strength 0.5 loses the draft's restraint; 0.85 (wide) and 0.95 (tall) keep it.
    - Every tall cut floats a few circuit fragments in the air. tall-ultra-05 has one, at the left
      middle: retouch it (or a $0.04 Kontext edit) before it ships, and record that as an edit.
-   **Waiting on the owner's OK of the two finals**, then build (§5) and critique (Gate 6).
+   **Owner, 2026-10-18: dislikes both finals and the C blend.** "The original art and original
+   detailed I chose to merge both look the best before the merge." So the candidates are the
+   drafts themselves, **a-wide-klein-12** and **b-wide-klein-01**, used as-is at 1536 px (owner's
+   call; no upscale). Both were mocked into the real home page beside the current film (session
+   only). Lesson: re-running a picked draft on a "better" model lost what made it good; when the
+   owner picks a draft, ship that draft. **Waiting on the owner's choice between A12 and B1.**
 5. Then build (§5) and critique (Gate 6).
 
 ## 1. Brief (owner-confirmed 2026-10-18)
@@ -208,8 +213,8 @@ open owner decision.
 
 | File (shipped) | Model · licence | Prompt (or `prompts.mjs` key + seed) | Date | Cost | Edits |
 |---|---|---|---|---|---|
-| `wide-ultra-03.jpeg` (final, not shipped yet) | `bfl/flux-pro-1.1-ultra` via Vercel AI Gateway, raw · BFL API terms, **output terms not yet checked** | `prompts.mjs` `FINAL_C`; image prompt `c-wide-klein-09.jpg` (FLUX.2 klein 4B, Apache 2.0, `c[0]`, seed 524737910) at strength 0.85; 16:9 | 2026-10-18 | $0.06 free credit (+ ~156 free neurons for the draft) | none yet; resize/encode at build |
-| `tall-ultra-05.jpeg` (final, not shipped yet) | same | `FINAL_C`; image prompt `c-tall-klein-05.jpg` (klein 4B, `c[0]`, seed 1051260080) at strength 0.95; 9:16 | 2026-10-18 | $0.06 free credit (+ ~156 neurons) | stray circuit fragment to retouch (left middle) |
+| ~~`wide-ultra-03.jpeg`~~ (rejected by the owner) | `bfl/flux-pro-1.1-ultra` via Vercel AI Gateway, raw · BFL API terms, **output terms not yet checked** | `prompts.mjs` `FINAL_C`; image prompt `c-wide-klein-09.jpg` (FLUX.2 klein 4B, Apache 2.0, `c[0]`, seed 524737910) at strength 0.85; 16:9 | 2026-10-18 | $0.06 free credit (+ ~156 free neurons for the draft) | none yet; resize/encode at build |
+| ~~`tall-ultra-05.jpeg`~~ (rejected by the owner) | same | `FINAL_C`; image prompt `c-tall-klein-05.jpg` (klein 4B, `c[0]`, seed 1051260080) at strength 0.95; 9:16 | 2026-10-18 | $0.06 free credit (+ ~156 neurons) | stray circuit fragment to retouch (left middle) |
 
 ## 5. Build notes (when the art is picked)
 - **The headline stays the LCP element.** The image is a background with explicit dimensions:

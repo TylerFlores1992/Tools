@@ -55,8 +55,9 @@ tech feel. **Start at `docs/design/hero-wilderness-cyber.md`.**
   `tall-ultra-05` on Flux 1.1 Ultra ($0.60 of credit; $0.825 left). Images are git-ignored in
   `studio/hero-wilderness/out/finals/`, gone with the container: regenerate with `final.mjs` or
   have the owner keep copies.
-- **Next:** the owner OKs the finals; check BFL's output terms; retouch the tall cut's stray
-  fragment; then build the hero (doc §5) and critique.
+- **Owner rejected the finals and the blend**: the drafts a-wide-klein-12 and b-wide-klein-01
+  are the candidates, as-is at 1536 px. Both mocked into the home page.
+- **Next:** the owner picks A12 or B1; record its provenance row; build the hero (doc §5) and critique.
 
 ## Bringing the lab to camphawk.app: the hand-off is written (2026-10-11)
 Owner: "Write the handoff, but all will go through an orchestrator session to then disperse as
