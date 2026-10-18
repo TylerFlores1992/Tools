@@ -15,7 +15,9 @@
     "e2e": "tsx scripts/e2e.mts"
   },
   "dependencies": {
+    "imapflow": "2.5.4",
     "lucide-react": "1.22.0",
+    "mailparser": "3.9.45",
     "next": "16.3.8",
     "postgres": "3.4.9",
     "react": "19.2.8",
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@tailwindcss/node": "4.3.3",
     "@tailwindcss/postcss": "4.3.3",
+    "@types/mailparser": "3.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
