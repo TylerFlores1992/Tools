@@ -6,9 +6,11 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, loadMoney } from "@/lib/money/load";
 import { MoneyShell, OWNER_LABEL } from "@/tools/money/ui/MoneyShell";
-import { ConnectForm, SyncNowForm } from "@/tools/money/ui/ConnectForms";
+import { ConnectForm, ImportForm, SyncNowForm } from "@/tools/money/ui/ConnectForms";
+import { importedByAccount } from "@/lib/money/import";
+import { shortDate } from "@/tools/money/summary";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
-import { disconnect, removeRule, saveAccount } from "../actions";
+import { disconnect, removeRule, saveAccount, undoStatement } from "../actions";
 
 export const metadata: Metadata = {
   title: "Settings · Money",
@@ -28,6 +30,8 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
   await requirePrivate("/private/money/settings");
   const sp = await searchParams;
   const data = await loadMoney();
+  // After loadMoney, not beside it: the pooler stalls queries sent at once (src/lib/money/db.ts).
+  const imported = data.state === "ok" ? await importedByAccount().catch(() => new Map<string, { n: number; from: string; to: string }>()) : new Map<string, { n: number; from: string; to: string }>();
 
   return (
     <MoneyShell current="/private/money/settings">
@@ -38,7 +42,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
       {data.state === "unreachable" && <div className="mt-8"><Unreachable /></div>}
 
       {data.state === "ok" && (
-        <div className="mt-8 grid gap-10">
+        <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10">
           <section aria-labelledby="conn">
             <h2 id="conn" className="text-h2 font-normal">Bank connection</h2>
             <Card className="mt-4 max-w-[720px]">
@@ -108,6 +112,39 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
                   </li>
                 ))}
               </ul>
+            )}
+          </section>
+
+          <section aria-labelledby="older">
+            <h2 id="older" className="text-h2 font-normal">Older history</h2>
+            <p className="mt-2 max-w-[60ch] text-body text-ink-2">The bank sync only reaches back 90 days. For earlier months, download a CSV from each bank’s website and import it here, one account at a time.</p>
+            <ol className="mt-3 grid max-w-[60ch] list-decimal gap-1.5 pl-5 text-small text-ink-2 marker:text-muted">
+              <li><span className="text-ink">Chase:</span> open the account, choose Download account activity, pick the dates, file type CSV.</li>
+              <li><span className="text-ink">U.S. Bank:</span> open the account, choose Download transactions, pick the dates, format CSV.</li>
+            </ol>
+            <p className="mt-3 max-w-[60ch] text-small text-muted">Dates the sync already has are skipped, so a file that overlaps is fine. Importing the same file twice adds nothing.</p>
+            {data.accounts.length === 0 ? (
+              <p className="mt-4 text-body text-ink-2">Connect the bank sync first, so the accounts exist.</p>
+            ) : (
+              <Card className="mt-4 max-w-[720px]">
+                <ImportForm accounts={data.accounts.filter((a) => !a.hidden).map((a) => ({ id: a.id, label: accountLabel(a) }))} />
+                {imported.size > 0 && (
+                  <ul className="mt-6 divide-y divide-line border-t border-line">
+                    {data.accounts.filter((a) => imported.has(a.id)).map((a) => {
+                      const i = imported.get(a.id)!;
+                      return (
+                        <li key={a.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-small">
+                          <span className="text-ink-2"><span className="text-ink">{accountLabel(a)}</span> · {i.n} imported, {shortDate(i.from)} {i.from.slice(0, 4)} to {shortDate(i.to)} {i.to.slice(0, 4)}</span>
+                          <form action={undoStatement}>
+                            <input type="hidden" name="account" value={a.id} />
+                            <Button type="submit" variant="ghost">Undo import<span className="sr-only"> for {accountLabel(a)}</span></Button>
+                          </form>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </Card>
             )}
           </section>
 

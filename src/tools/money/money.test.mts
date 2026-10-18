@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { CATEGORIES, OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs, keywordCategory, matchTransfers, ruleCategory } from "./categorize.ts";
 import { addDays, findRecurring, merchantKey, monthlyEquivalent } from "./recurring.ts";
 import { SimpleFinError, claimAccessUrl, claimUrlFromSetupToken, fetchAccounts, parseAccountSet, splitAccessUrl, syncWindows, toLocalDate } from "./simplefin.ts";
-import { isMonth, money, shiftMonth, signedMoney, summarize, transfersAcross } from "./summary.ts";
+import { isMonth, isYear, money, monthsOf, shiftMonth, signedMoney, summarize, transfersAcross } from "./summary.ts";
 import type { Txn } from "./types.ts";
 
 let n = 0;
@@ -312,6 +312,19 @@ test("Mine → Joint is money out of Mine and into Joint, and neither in Everyth
   const e = summarize(txns, "2026-10", undefined, transfersAcross(txns, all, name));
   assert.equal(e.moneyOut, 1200);
   assert.equal(e.moneyIn, 0);
+});
+
+test("summary: a whole year, and the months of a year so far", () => {
+  const txns = [
+    txn({ posted: "2026-01-15", amount: -10, description: "A", category: "Dining" }),
+    txn({ posted: "2026-10-02", amount: -30, description: "B", category: "Dining" }),
+    txn({ posted: "2025-12-31", amount: -99, description: "C", category: "Dining" }),
+  ];
+  assert.equal(summarize(txns, "2026").moneyOut, 40);
+  assert.equal(summarize(txns, "2025").moneyOut, 99);
+  assert.deepEqual(monthsOf("2026", "2026-03"), ["2026-01", "2026-02", "2026-03"]);
+  assert.equal(monthsOf("2025", "2026-03").length, 12);
+  assert.ok(isYear("2026") && !isYear("1999") && !isYear("2026-01") && !isYear(undefined));
 });
 
 test("months and money formatting", () => {

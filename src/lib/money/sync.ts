@@ -2,7 +2,10 @@ import "server-only";
 import { OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs } from "@/tools/money/categorize";
 import { SimpleFinError, fetchAccounts, parseAccountSet, syncWindows, toLocalDate, type ParsedAccount, type ParsedTxn } from "@/tools/money/simplefin";
 import type { CategorySource } from "@/tools/money/types";
+import type { TransactionSql } from "postgres";
 import { sql } from "./db";
+
+type Tx = TransactionSql<Record<string, never>>;
 import { getAccessUrl, getRules } from "./store";
 
 /**
@@ -89,22 +92,7 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
         else updatedTxns++;
       }
 
-      // Money moved between the household's own accounts that no keyword caught, or caught on
-      // one side only (Chase says "Online Transfer to US Bank", U.S. Bank says "Electronic Deposit
-      // Jpmorgan Chase"). Only auto-filed rows in a catch-all bucket or already Transfer are
-      // eligible, so a real purchase is never hidden. The whole history is re-matched: it is a few
-      // hundred rows, and it means a fix to the matcher reaches old months on the next sync.
-      const recent = await tx<{ id: string; account_id: string; posted: string; amount: number; category: string | null; category_source: CategorySource | null }[]>`
-        select id, account_id, to_char(posted, 'YYYY-MM-DD') as posted, amount, category, category_source
-        from money.transactions where not pending`;
-      const eligible = recent
-        .filter((r) => r.category_source === "auto" && (r.category === UNCATEGORIZED || r.category === OTHER_INCOME || r.category === TRANSFER))
-        .map((r) => ({ id: r.id, accountId: r.account_id, posted: r.posted, amount: r.amount, description: "", payee: null, memo: null, pending: false, category: r.category, categorySource: r.category_source }));
-      const already = new Set(eligible.filter((r) => r.category === TRANSFER).map((r) => r.id));
-      const pairs = [...findTransferPairs(eligible)].filter((id) => !already.has(id));
-      if (pairs.length) {
-        await tx`update money.transactions set category = ${TRANSFER}, category_source = 'auto', updated_at = now() where id in ${tx(pairs)}`;
-      }
+      await repairTransfers(tx);
     });
 
     return finish({
@@ -119,5 +107,26 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
     const message = e instanceof SimpleFinError ? e.message : "The sync failed. Nothing was changed.";
     if (!(e instanceof SimpleFinError)) console.error("money sync failed", e instanceof Error ? e.name : "unknown");
     return finish({ ok: false, accounts: 0, newTxns: 0, updatedTxns: 0, errors: [], message });
+  }
+}
+
+/**
+ * Money moved between the household's own accounts that no keyword caught, or caught on one side
+ * only (Chase says "Online Transfer to US Bank", U.S. Bank says "Electronic Deposit Jpmorgan
+ * Chase"). Only auto-filed rows in a catch-all bucket or already Transfer are eligible, so a real
+ * purchase is never hidden. The whole history is re-matched: it is a few hundred rows, and it
+ * means a fix to the matcher, or an imported statement, reaches old months straight away.
+ */
+export async function repairTransfers(tx: Tx): Promise<void> {
+  const recent = await tx<{ id: string; account_id: string; posted: string; amount: number; category: string | null; category_source: CategorySource | null }[]>`
+    select id, account_id, to_char(posted, 'YYYY-MM-DD') as posted, amount, category, category_source
+    from money.transactions where not pending`;
+  const eligible = recent
+    .filter((r) => r.category_source === "auto" && (r.category === UNCATEGORIZED || r.category === OTHER_INCOME || r.category === TRANSFER))
+    .map((r) => ({ id: r.id, accountId: r.account_id, posted: r.posted, amount: r.amount, description: "", payee: null, memo: null, pending: false, category: r.category, categorySource: r.category_source }));
+  const already = new Set(eligible.filter((r) => r.category === TRANSFER).map((r) => r.id));
+  const pairs = [...findTransferPairs(eligible)].filter((id) => !already.has(id));
+  if (pairs.length) {
+    await tx`update money.transactions set category = ${TRANSFER}, category_source = 'auto', updated_at = now() where id in ${tx(pairs)}`;
   }
 }
