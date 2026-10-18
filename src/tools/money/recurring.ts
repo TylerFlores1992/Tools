@@ -1,4 +1,7 @@
-import { TRANSFER, dayDiff, normalize } from "./categorize.ts";
+import { TRANSFER, dayDiff } from "./categorize.ts";
+import { merchantKey } from "./merchant.ts";
+
+export { merchantKey };
 import type { Txn } from "./types.ts";
 
 /**
@@ -37,24 +40,6 @@ const CADENCES: ReadonlyArray<{ cadence: Cadence; min: number; max: number; minC
   { cadence: "quarterly", min: 85, max: 97, minCount: 2 },
   { cadence: "yearly", min: 350, max: 380, minCount: 2 },
 ];
-
-// Words that vary between charges from the same merchant, or carry no identity.
-const NOISE = /\b(POS|PURCHASE|DEBIT|CREDIT|CARD|CHECKCARD|RECURRING|PAYMENT|PMT|ACH|WEB|ID|PPD|CCD|WEB ID|ONLINE|AUTH|ON|REF|TRACE|XX+\d*|DES|INDN|CO ID)\b/g;
-
-/** The grouping key: letters only, noise removed, first four words. */
-export function merchantKey(description: string): string {
-  return normalize(description)
-    .replace(/https?:\/\/\S+/g, " ")
-    .replace(/\d+/g, " ")
-    .replace(/[^A-Z&' ]+/g, " ")
-    .replace(NOISE, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(" ")
-    .filter((w) => w.length > 1)
-    .slice(0, 4)
-    .join(" ");
-}
 
 const median = (xs: number[]) => {
   const s = [...xs].sort((a, b) => a - b);

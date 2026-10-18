@@ -43,6 +43,12 @@ test("rules: case-insensitive contains, longest pattern wins", () => {
   assert.equal(ruleCategory("Target", rules), null);
 });
 
+test("rules saved from a merchant key match next month's raw description", () => {
+  const pattern = merchantKey("NETFLIX.COM 866-579-7172 CA 09/05");
+  assert.equal(ruleCategory("NETFLIX.COM 866-579-7172 CA 10/05", [{ pattern, category: "Entertainment" }]), "Entertainment");
+  assert.equal(ruleCategory("SPOTIFY USA", [{ pattern, category: "Entertainment" }]), null);
+});
+
 test("categorize: manual beats rule beats keyword; re-sync keeps manual", () => {
   const rules = [{ pattern: "SAFEWAY", category: "Shopping" }];
   const t = txn({ posted: "2026-10-01", amount: -40, description: "SAFEWAY #1" });
@@ -185,15 +191,15 @@ test("claim: POSTs once and returns the access URL; a used token says so", async
 });
 
 test("fetchAccounts: sends Basic auth and the date range, without credentials in the URL", async () => {
-  let seen: { url: string; auth: string | null } | null = null;
+  const seen: Array<{ url: string; auth: string | null }> = [];
   const f = (async (url: string, init?: RequestInit) => {
-    seen = { url, auth: new Headers(init?.headers).get("Authorization") };
+    seen.push({ url, auth: new Headers(init?.headers).get("Authorization") });
     return Response.json({ errors: [], accounts: [] });
   }) as typeof fetch;
   await fetchAccounts("https://u:p@bridge.example/simplefin", 1000, 2000, f);
-  assert.ok(seen);
-  assert.equal(seen!.url, "https://bridge.example/simplefin/accounts?start-date=1000&end-date=2000&pending=1");
-  assert.equal(seen!.auth, `Basic ${b64("u:p")}`);
+  assert.equal(seen.length, 1);
+  assert.equal(seen[0].url, "https://bridge.example/simplefin/accounts?start-date=1000&end-date=2000&pending=1");
+  assert.equal(seen[0].auth, `Basic ${b64("u:p")}`);
   const revoked = (async () => new Response("", { status: 403 })) as typeof fetch;
   await assert.rejects(fetchAccounts("https://u:p@bridge.example/simplefin", 0, 1, revoked), (e: unknown) => e instanceof SimpleFinError && e.kind === "auth");
 });

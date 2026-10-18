@@ -1,3 +1,5 @@
+import { merchantKey } from "./merchant.ts";
+import { normalize } from "./normalize.ts";
 import type { CategorySource, Rule, Txn } from "./types.ts";
 
 /**
@@ -65,9 +67,7 @@ const KEYWORDS: ReadonlyArray<readonly [category: string, words: readonly string
   ["Cash", ["ATM WITHDRAWAL", "ATM W/D", "CASH WITHDRAWAL", "WITHDRAWAL AT"]],
 ];
 
-export function normalize(s: string): string {
-  return s.toUpperCase().replace(/\s+/g, " ").trim();
-}
+export { normalize };
 
 /** The keyword category for a description, or null if nothing matches. */
 export function keywordCategory(description: string): string | null {
@@ -78,13 +78,18 @@ export function keywordCategory(description: string): string | null {
   return null;
 }
 
-/** Owner rules: case-insensitive "description contains". Longest pattern wins (most specific). */
+/**
+ * Owner rules: case-insensitive "contains", checked against the description as written and its
+ * merchant key (so a rule saved as "NETFLIX COM" matches "NETFLIX.COM 866-579-7172").
+ * Longest pattern wins (most specific).
+ */
 export function ruleCategory(description: string, rules: readonly Rule[]): string | null {
   const d = normalize(description);
+  const k = merchantKey(description);
   let best: Rule | null = null;
   for (const r of rules) {
     const p = normalize(r.pattern);
-    if (p && d.includes(p) && (!best || p.length > normalize(best.pattern).length)) best = r;
+    if (p && (d.includes(p) || k.includes(p)) && (!best || p.length > normalize(best.pattern).length)) best = r;
   }
   return best?.category ?? null;
 }
