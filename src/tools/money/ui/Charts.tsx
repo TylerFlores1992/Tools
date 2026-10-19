@@ -33,7 +33,7 @@ function Swatch({ kind }: { kind: "in" | "out" | "out-solid" }) {
 export type MonthPoint = { month: string; label: string; moneyIn: number; moneyOut: number; current?: boolean; empty?: boolean };
 
 /** Money in vs money out by month: paired columns on one axis. */
-export function InOutChart({ points, title }: { points: MonthPoint[]; title: string }) {
+export function InOutChart({ points, title, labels = { in: "Money in", out: "Money out" } }: { points: MonthPoint[]; title: string; labels?: { in: string; out: string } }) {
   const W = 640;
   const H = 220;
   const left = 44;
@@ -51,9 +51,9 @@ export function InOutChart({ points, title }: { points: MonthPoint[]; title: str
     <figure className="grid gap-3">
       <figcaption className="flex flex-wrap items-baseline justify-between gap-3">
         <span className="text-h3 font-medium">{title}</span>
-        <Legend items={[{ label: "Money in", kind: "in" }, { label: "Money out", kind: "out" }]} />
+        <Legend items={[{ label: labels.in, kind: "in" }, { label: labels.out, kind: "out" }]} />
       </figcaption>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`${title}: money in and money out by month. The same numbers are in the table below.`}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`${title}: ${labels.in.toLowerCase()} and ${labels.out.toLowerCase()} by month. The same numbers are in the table below.`}>
         <defs>
           <pattern id="hatch-out" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <rect width="6" height="6" className="fill-surface" />
@@ -73,10 +73,10 @@ export function InOutChart({ points, title }: { points: MonthPoint[]; title: str
               {!p.empty && (
                 <>
                   <rect x={cx - bar - 1} y={y(p.moneyIn)} width={bar} height={Math.max(0, top + plotH - y(p.moneyIn))} rx={3} className="fill-ice">
-                    <title>{`${p.label}: money in ${money(p.moneyIn)}`}</title>
+                    <title>{`${p.label}: ${labels.in.toLowerCase()} ${money(p.moneyIn)}`}</title>
                   </rect>
                   <rect x={cx + 1} y={y(p.moneyOut)} width={bar} height={Math.max(0, top + plotH - y(p.moneyOut))} rx={3} fill="url(#hatch-out)" className="stroke-series-2" strokeWidth={1}>
-                    <title>{`${p.label}: money out ${money(p.moneyOut)}`}</title>
+                    <title>{`${p.label}: ${labels.out.toLowerCase()} ${money(p.moneyOut)}`}</title>
                   </rect>
                 </>
               )}

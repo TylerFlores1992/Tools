@@ -13,6 +13,7 @@
 | ETCP rigger study | `/workshop/etcp-rigger-study` | Live. Practice tests A/B (25 each) and C (50, exam-weighted), 73 flashcards, formula reference. |
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | Morning Mail | `/private/mail` | Code version, on trial (owner, 2026-10-18): runs alongside the Claude `/mail` run; owner decides which stays (`docs/MAIL.md`). Removed once (#57) and restored. Yahoo untested against a real server. |
+| Money → Income | `/private/money/income` | Built 2026-10-19 (`docs/MONEY.md#income`): stub/W-2 photos read by AI, deposit matching, calendar script, pending pay, health hours, withholding and W-2 checks. Needs the owner to make the calendar script and add real stubs. |
 | Money tracker | `/private/money` | Live 2026-10-18 (#54, `docs/MONEY.md`). Chase + U.S. Bank via SimpleFIN, daily sync, categories, recurring. Database answers in production. Waiting on the owner to connect SimpleFIN. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
 | ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
