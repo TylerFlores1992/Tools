@@ -1,5 +1,5 @@
 import "server-only";
-import { OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findTransferPairs } from "@/tools/money/categorize";
+import { OTHER_INCOME, TRANSFER, UNCATEGORIZED, categorize, findRefunds, findTransferPairs } from "@/tools/money/categorize";
 import { SimpleFinError, fetchAccounts, parseAccountSet, syncWindows, toLocalDate, type ParsedAccount, type ParsedTxn } from "@/tools/money/simplefin";
 import type { CategorySource } from "@/tools/money/types";
 import type { TransactionSql } from "postgres";
@@ -141,8 +141,19 @@ export async function refileAll(tx: Tx, rules: Awaited<ReturnType<typeof getRule
     select id, description, payee, amount, category, category_source from money.transactions
     where category_source is distinct from 'manual'`;
   const changed: Array<{ id: string; category: string; source: CategorySource }> = [];
+  // Refunds of charges nothing recognized: matched against every charge, including hand-filed ones.
+  const all = await tx<{ id: string; account_id: string; posted: string; description: string; payee: string | null; amount: number; category: string | null; category_source: CategorySource | null }[]>`
+    select id, account_id, to_char(posted, 'YYYY-MM-DD') as posted, description, payee, amount, category, category_source
+    from money.transactions where not pending`;
+  const fresh = new Map(rows.map((r) => [r.id, categorize({ description: r.description, payee: r.payee, amount: r.amount, category: r.category, categorySource: r.category_source }, rules)]));
+  const refunds = findRefunds(all.map((r) => {
+    const f = fresh.get(r.id);
+    return { id: r.id, accountId: r.account_id, posted: r.posted, amount: r.amount, description: r.description, payee: r.payee, memo: null, pending: false, category: f?.category ?? r.category, categorySource: f?.categorySource ?? r.category_source };
+  }));
   for (const r of rows) {
-    const c = categorize({ description: r.description, payee: r.payee, amount: r.amount, category: r.category, categorySource: r.category_source }, rules);
+    const base = fresh.get(r.id)!;
+    const refundOf = base.categorySource === "auto" ? refunds.get(r.id) : undefined;
+    const c = refundOf ? { category: refundOf, categorySource: "auto" as const } : base;
     // A pair the matcher filed as Transfer stays one until the re-pair below says otherwise.
     if (r.category === TRANSFER && r.category_source === "auto" && (c.category === UNCATEGORIZED || c.category === OTHER_INCOME)) continue;
     if (c.category !== r.category || c.categorySource !== r.category_source) changed.push({ id: r.id, category: c.category, source: c.categorySource });

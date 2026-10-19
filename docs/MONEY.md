@@ -44,6 +44,23 @@ Chase, U.S. Bank ──► SimpleFIN Bridge (~$1.50/mo, owner's account)
   Bill categories (Utilities, Software, Phone & internet, Subscriptions, Insurance, Housing,
   Loans) may vary in amount and count after two monthly charges, and one name can hold two bills
   (Spectrum internet + mobile). Dining, Groceries, Gas, Shopping and Fees are never bills.
+- **Refunds (2026-10-18, owner):** money in under a spending category is a refund and is taken
+  off that category's spending, never counted as income (GSPro and Rapsodo charged and refunded).
+  Keyword merchants keep their category on a refund; for unknown merchants `findRefunds` matches
+  money in to an earlier charge from the same merchant of at least that amount within 120 days.
+  Income is only the Income and Other income categories (plus Joint receiving from Mine).
+- **Transfer to joint is a bill** in the Mine view ("Transfer to Joint", monthly); Everything
+  leaves it out, since the bills it pays are already there.
+- **Budget (`/private/money/budget`, `src/tools/money/budget.ts`):** needed each month = bills
+  (active recurring, monthly equivalent) + everyday spending (everything else out, net of
+  refunds, averaged over up to three full months the history covers). Savings & investing are
+  kept apart; left over = money in − needed − saving. Cash on hand sums the view's balances (cards
+  count against it); the 30-day list runs cash down by each expected bill.
+- **Charts:** money in vs out by month on the overview (year or last 12 months), and in vs needed
+  on the budget. In = solid ice, out = hatched series-2, legend in words, a tooltip per bar, and a
+  table of the same numbers. Validated with the dataviz script: CVD separation passes in both
+  themes; the dark theme's two hues sit above the lightness band, which the hatching and labels
+  cover.
 - **Income** is irregular gig pay from several payrolls plus check deposits, so it is shown as
   "Where it came from" (money in by payer; check deposits grouped) rather than relying on the
   Recurring list.

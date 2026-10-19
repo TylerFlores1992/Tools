@@ -1,6 +1,7 @@
 import "server-only";
 import { addDays } from "@/tools/money/recurring";
 import { toLocalDate } from "@/tools/money/simplefin";
+import { transfersAcross } from "@/tools/money/summary";
 import type { Account, Rule, Txn } from "@/tools/money/types";
 import { isConfigured } from "./db";
 import { getAccounts, getConnection, getRules, getSyncRuns, getTransactions, type SyncRun } from "./store";
@@ -36,3 +37,13 @@ export function accountsFor(accounts: readonly Account[], view: string): Set<str
 }
 
 export const accountLabel = (a: Account) => a.displayName || [a.orgName, a.name].filter(Boolean).join(" · ");
+
+/** Transfers that cross the edge of a view (Mine → Joint), labeled; none for Everything. */
+export function acrossFor(accounts: readonly Account[], txns: readonly Txn[], view: string, ids: ReadonlySet<string>): Map<string, string> | undefined {
+  if (view === "all") return undefined;
+  const ownerOf = new Map(accounts.map((a) => [a.id, a.owner]));
+  return transfersAcross(txns, ids, (id) => {
+    const o = ownerOf.get(id);
+    return o === "mine" ? "your accounts" : o === "hers" ? "her accounts" : o === "joint" ? "Joint" : "an unassigned account";
+  });
+}

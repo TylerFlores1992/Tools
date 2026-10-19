@@ -16,6 +16,10 @@ export const OTHER_INCOME = "Other income";
 export const PEOPLE = "Paid to people";
 export const INVESTING = "Savings & investing";
 
+/** Categories that are money earned. Money in under any other category is a refund (or a
+ *  friend paying back), and is netted against that category's spending, not counted as income. */
+export const INCOME_CATEGORIES: ReadonlySet<string> = new Set(["Income", OTHER_INCOME]);
+
 /** Categories offered in the picker, in display order. */
 export const CATEGORIES = [
   "Income", OTHER_INCOME, "Groceries", "Dining", "Gas", "Auto", "Shopping", "Subscriptions",
@@ -159,8 +163,9 @@ export function categorize(
   if (ruled) return { category: ruled, categorySource: "rule" };
   const auto = keywordCategory(text);
   // A keyword like "COFFEE" on a deposit is a refund or a sale, not dining income.
-  // A fee waived is a Fees refund, so the two cancel out under Fees.
-  if (auto && !(t.amount > 0 && auto !== "Income" && auto !== TRANSFER && auto !== "Fees")) return { category: auto, categorySource: "auto" };
+  // Money in with a spending keyword is a refund ("AMAZON MKTPLACE PMTS +$327"): it keeps the
+  // category and nets against it. Money coming back out of savings or a loan, or sent by a person, is still money in.
+  if (auto && !(t.amount > 0 && (auto === INVESTING || auto === "Loans" || auto === PEOPLE))) return { category: auto, categorySource: "auto" };
   return { category: t.amount > 0 ? OTHER_INCOME : UNCATEGORIZED, categorySource: "auto" };
 }
 
@@ -194,6 +199,34 @@ export function matchTransfers(txns: readonly Txn[], days = 5): Map<string, stri
 /** The ids of both sides of every matched transfer. */
 export function findTransferPairs(txns: readonly Txn[], days = 5): Set<string> {
   return new Set(matchTransfers(txns, days).keys());
+}
+
+/**
+ * Refunds nothing recognized by keyword: money in from the same merchant as an earlier charge of
+ * at least that much, within `days` days (GSPro −$250 then +$250). Returns refund id → the
+ * charge's category. Only money in still filed as Other income / Uncategorized is considered.
+ */
+export function findRefunds(txns: readonly Txn[], days = 120): Map<string, string> {
+  const out = new Map<string, string>();
+  const charges = new Map<string, Txn[]>();
+  for (const t of txns) {
+    if (t.amount >= 0 || t.pending) continue;
+    const k = merchantKey(t.payee || t.description);
+    if (k) (charges.get(k) ?? charges.set(k, []).get(k)!).push(t);
+  }
+  const used = new Set<string>();
+  for (const t of [...txns].sort((a, b) => a.posted.localeCompare(b.posted))) {
+    if (t.amount <= 0 || t.pending || (t.category !== OTHER_INCOME && t.category !== UNCATEGORIZED)) continue;
+    const list = charges.get(merchantKey(t.payee || t.description));
+    if (!list) continue;
+    const c = list
+      .filter((x) => !used.has(x.id) && x.posted <= t.posted && dayDiff(t.posted, x.posted) <= days && -x.amount >= t.amount - 0.005)
+      .sort((a, b) => Math.abs(a.amount + t.amount) - Math.abs(b.amount + t.amount) || b.posted.localeCompare(a.posted))[0];
+    if (!c) continue;
+    used.add(c.id);
+    out.set(t.id, c.category && c.category !== TRANSFER ? c.category : UNCATEGORIZED);
+  }
+  return out;
 }
 
 export function dayDiff(a: string, b: string): number {
