@@ -9,7 +9,7 @@ import { READ_PROMPT, READ_SCHEMA, type ReadResult } from "@/tools/money/income/
  * Only the document goes to the model. Its answer is a proposal: the owner reviews every field.
  */
 
-export const STUB_MODEL = process.env.MONEY_STUB_MODEL || "anthropic/claude-sonnet-5";
+export const STUB_MODEL = process.env.MONEY_STUB_MODEL || "google/gemini-2.5-flash";
 
 export class ReadFailed extends Error {}
 

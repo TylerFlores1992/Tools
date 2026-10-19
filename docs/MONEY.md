@@ -142,7 +142,11 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   cap, `serverActions.bodySizeLimit` 4.5 MB) → stored in `money.stub_files` (bytea, private route
   `/income/stubs/<id>/file`) → read by a vision model through **Vercel AI Gateway**
   (`src/lib/money/income/read-document.ts`, model `MONEY_STUB_MODEL`, default
-  `anthropic/claude-sonnet-5`; auth is the deployment's OIDC token, or `AI_GATEWAY_API_KEY`).
+  `google/gemini-2.5-flash`; auth is the deployment's OIDC token, or `AI_GATEWAY_API_KEY`).
+  **The team's gateway is on the FREE tier, which refuses Claude Sonnet 5, Claude Haiku 5.5 and
+  Gemini 2.5 Pro** ("Free tier users do not have access to this model", 2026-10-19); Gemini 2.5
+  Flash is allowed and read the probe stub exactly. With paid credit, set `MONEY_STUB_MODEL`.
+  Probe any model: `/api/money/health?ai=<MONEY_PROBE_KEY>&model=<provider/model>` (text stub).
   Owner's call (2026-10-19): use AI. **Nothing counts until the owner saves the review screen.**
   Text shaped like an SSN or account number is blanked in every stored field (`noSsn`); the photo
   itself keeps whatever is printed (stubs show the last 4), and can be deleted after saving.
