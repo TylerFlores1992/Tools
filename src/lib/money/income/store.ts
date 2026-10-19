@@ -52,6 +52,12 @@ export async function createStub(kind: "stub" | "w2", mime: string, bytes: Buffe
   });
 }
 
+/** A stub whose stored file is byte-for-byte this one (the same PDF or photo added twice). */
+export async function findStubByFile(bytes: Buffer): Promise<string | null> {
+  const [r] = await sql()<{ stub_id: string }[]>`select stub_id from money.stub_files where md5(bytes) = md5(${bytes}::bytea) limit 1`;
+  return r?.stub_id ?? null;
+}
+
 export type StubFields = Omit<Stub, "id" | "createdAt" | "depositTxnId" | "depositMatch" | "readError"> & { readError?: string | null };
 
 export async function writeStub(id: string, f: StubFields, model?: string | null): Promise<void> {
