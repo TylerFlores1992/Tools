@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pay stub photos and PDFs are uploaded through a Server Action (Money → Income). Photos are
+  // shrunk in the browser first; the action itself refuses anything over 4 MB.
+  experimental: { serverActions: { bodySizeLimit: "4.5mb" } },
   // The hero art's folder is named for a hash of its files (src/lib/hero-media.ts), so a new
   // encode is a new URL and browsers can keep these for a year without asking again.
   async headers() {

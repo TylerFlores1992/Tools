@@ -135,6 +135,51 @@ React resets a form after its Server Action, and a reset `<select>` shows the va
 rendered with, not the new `defaultValue`. The save had worked; the picker lied. Each account's form
 is keyed on its saved values so it remounts. Reproduced and fixed in a real browser locally.
 
+## Income (`/private/money/income`, built 2026-10-19) {#income}
+The owner is a stagehand paid weekly by several payroll companies, mostly on paper checks, and kept
+his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income ties the three together.
+- **Stubs and W-2s:** photo or PDF on `/income/add` (shrunk to 2200 px JPEG in the browser, 4 MB
+  cap, `serverActions.bodySizeLimit` 4.5 MB) → stored in `money.stub_files` (bytea, private route
+  `/income/stubs/<id>/file`) → read by a vision model through **Vercel AI Gateway**
+  (`src/lib/money/income/read-document.ts`, model `MONEY_STUB_MODEL`, default
+  `google/gemini-2.5-flash`; auth is the deployment's OIDC token, or `AI_GATEWAY_API_KEY`).
+  **The team's gateway is on the FREE tier, which refuses Claude Sonnet 5, Claude Haiku 5.5 and
+  Gemini 2.5 Pro** ("Free tier users do not have access to this model", 2026-10-19); Gemini 2.5
+  Flash is allowed and read the probe stub exactly. With paid credit, set `MONEY_STUB_MODEL`.
+  Probe any model: `/api/money/health?ai=<MONEY_PROBE_KEY>&model=<provider/model>` (text stub).
+  Owner's call (2026-10-19): use AI. **Nothing counts until the owner saves the review screen.**
+  Text shaped like an SSN or account number is blanked in every stored field (`noSsn`); the photo
+  itself keeps whatever is printed (stubs show the last 4), and can be deleted after saving.
+- **Checks on every stub** (`checks.ts`): gross − taxes − deductions = net; lines add up to gross;
+  hours × rate per line; OT at 1.5× / 2× the straight rate; rate below the owner's; SS 6.2%,
+  Medicare 1.45%, CA SDI 1.3% (2026); year-to-date carries on from the last stub (a gap = a
+  missing stub). Words, never colour.
+- **Deposits** (`match.ts`): net pay to the cent, −3 to +30 days of the pay date (paper checks get
+  deposited late), one stub per deposit, a deposit naming the payroll company wins. Runs on save
+  and after every bank sync. The owner can pick another or say "no deposit".
+- **Calendar:** an Apps Script in the owner's account (`calendar-script.ts`, made on
+  `/income/settings`, key stored as SHA-256) posts work days daily to `/api/money/calendar` and
+  recolours an event Tomato when every day of it is paid (owner: "Recolor for me"). Same reason as
+  Morning Mail's Gmail script: an unverified OAuth app's token dies every 7 days.
+  Day status (`workdays.ts`): scheduled / waiting (late after `payLagDays`) / stub in / paid /
+  marked (already Tomato, from before this). A stub claims days via its "work days" ticks, which
+  default to the calendar days in its pay period.
+- **Expected pay** for waiting days: the owner's hourly rate (per employer/show/title, or usual)
+  × usual hours a day, with California daily overtime (1.5× after 8, 2× after 12).
+- **Health-plan hours** (`health.ts`): straight + OT hours from saved stubs per period; plan rules
+  are settings (default 400 hours / 6 months from January, like the Motion Picture plan). The
+  plan's own count is the authority. Which plan covers the owner's Local 33 work: not established.
+- **Federal withholding check** (`withholding.ts`): 2026 brackets and standard deduction (IRS Rev.
+  Proc. 2025-32), joint by default, "nothing more this year" vs "at this pace". The no-tax-on-
+  overtime deduction is off by default: it covers FLSA overtime only, not CA daily or union OT.
+  **California is not estimated** (2026 schedule unpublished when built). Not tax advice.
+- **W-2 check:** each saved W-2 against that employer's saved stubs for the year (withholding boxes
+  to the cent; box 1 above gross = a missing stub). Employer matching accepts the payroll company
+  as the W-2 employer of record (`sameEmployer`).
+- **Probe:** `/api/money/health?ai=<MONEY_PROBE_KEY>` reads a made-up stub through the gateway and
+  says ok/failed. The key is a Vercel env var (sensitive); each call costs a little.
+- Tables: `docs/sql/money-income.sql` (stubs, stub_files, work_events, income_settings).
+
 ## Ideas not built yet
 Budgets per category with a monthly target · weekly summary email · CSV export · splitting a
 transaction · a spending-over-time chart.

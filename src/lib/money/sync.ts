@@ -6,6 +6,7 @@ import type { TransactionSql } from "postgres";
 import { sql } from "./db";
 
 type Tx = TransactionSql<Record<string, never>>;
+import { rematchDeposits } from "./income/store";
 import { getAccessUrl, getRules } from "./store";
 
 /**
@@ -94,6 +95,9 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
 
       await refileAll(tx, rules);
     });
+
+    // Pay stubs whose deposit just arrived (Money → Income). Never fails the sync.
+    await rematchDeposits().catch((e) => console.error("money stub match failed", e instanceof Error ? e.name : "unknown"));
 
     return finish({
       ok: true,

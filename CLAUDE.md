@@ -56,7 +56,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `src/app/private/` the Private tab: password-only sign-in, `src/proxy.ts` guards `/private/*`
   (`LAB_PASSWORD`, `src/lib/private-auth.ts`; docs/SETUP.md) · projects listed in `src/lib/private.ts`
 - `src/app/private/money/` household money tracker (SimpleFIN → Supabase `money` schema, daily
-  cron `src/app/api/money/sync`); logic `src/tools/money/`, server `src/lib/money/`; `docs/MONEY.md`
+  cron `src/app/api/money/sync`); logic `src/tools/money/`, server `src/lib/money/`; `docs/MONEY.md`.
+  Income tab: pay stubs/W-2s read by AI (AI Gateway), calendar via Apps Script; `docs/MONEY.md#income`
 - `src/app/private/mail/` Morning Mail, all code (Gmail Apps Script + Yahoo IMAP → `mail` schema,
   rules move mail); logic `src/tools/mail/`, server `src/lib/mail/`; `docs/MAIL.md`
 - `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
