@@ -60,8 +60,8 @@ test("categorize: manual beats rule beats keyword; re-sync keeps manual", () => 
 test("categorize: unknown money in is Other income, unknown money out is Uncategorized", () => {
   assert.equal(categorize(txn({ posted: "2026-10-01", amount: 25, description: "VENMO CASHOUT" }), []).category, OTHER_INCOME);
   assert.equal(categorize(txn({ posted: "2026-10-01", amount: -25, description: "XYZZY LLC" }), []).category, UNCATEGORIZED);
-  // A refund from a coffee shop is not Dining income.
-  assert.equal(categorize(txn({ posted: "2026-10-01", amount: 5, description: "STARBUCKS REFUND" }), []).category, OTHER_INCOME);
+  // A refund from a coffee shop stays Dining, so it nets against Dining instead of counting as income.
+  assert.equal(categorize(txn({ posted: "2026-10-01", amount: 5, description: "STARBUCKS REFUND" }), []).category, "Dining");
 });
 
 test("the picker offers every category the keyword list can produce", () => {

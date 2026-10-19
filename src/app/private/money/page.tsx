@@ -4,9 +4,10 @@ import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
-import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
+import { accountLabel, accountsFor, acrossFor, loadMoney } from "@/lib/money/load";
 import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
-import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, transfersAcross, incomeSources } from "@/tools/money/summary";
+import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, incomeSources } from "@/tools/money/summary";
+import { InOutChart } from "@/tools/money/ui/Charts";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -50,11 +51,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const ids = accountsFor(data.accounts, view);
   const txns = data.txns.filter((t) => ids.has(t.accountId));
   // Mine → Joint counts as money out of Mine and into Joint (owner's rule, docs/MONEY.md).
-  const ownerOf = new Map(data.accounts.map((a) => [a.id, a.owner]));
-  const across = view === "all" ? undefined : transfersAcross(data.txns, ids, (id) => {
-    const o = ownerOf.get(id);
-    return o === "mine" ? "your accounts" : o === "hers" ? "her accounts" : o === "joint" ? "Joint" : "an unassigned account";
-  });
+  const across = acrossFor(data.accounts, data.txns, view, ids);
   const s = summarize(txns, period, undefined, across);
   const prev = summarize(txns, prevPeriod, undefined, across);
   const yearMonths = monthsOf(year, thisMonth).map((m) => summarize(txns, m, undefined, across));
@@ -67,7 +64,15 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   const years = Array.from({ length: Number(thisYear) - Math.min(Number(firstYear), Number(thisYear) - 2) + 1 }, (_, i) => String(Math.min(Number(firstYear), Number(thisYear) - 2) + i));
   const sources = incomeSources(txns, period, across);
   const sourcesTotal = sources.reduce((n, x) => n + x.amount, 0);
-  const recurring = findRecurring(txns, data.today);
+  const recurring = findRecurring(txns, data.today, across);
+  // The chart: the year's months, or the 12 months up to the one shown.
+  const chartMonths = mode === "year"
+    ? Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).filter((m) => m <= thisMonth)
+    : Array.from({ length: 12 }, (_, i) => shiftMonth(month, i - 11));
+  const chart = chartMonths.map((m) => {
+    const x = summarize(txns, m, undefined, across);
+    return { month: m, label: monthName(m).slice(0, 3), moneyIn: x.moneyIn, moneyOut: Math.max(0, x.moneyOut), current: mode === "month" && m === month, empty: x.count === 0 };
+  });
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
   const paychecks = recurring.filter((r) => r.direction === "in" && r.status === "active");
   const stopped = recurring.filter((r) => r.status === "stopped");
@@ -166,6 +171,23 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
         <Total label="Net" value={signedMoney(s.net)} note={`${s.net >= 0 ? "Ahead" : "Behind"} this ${mode}`} />
       </section>
       <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out. In the Mine and Joint views, money moved between the two is.{mode === "year" && withData.length < yearMonths.length ? ` ${yearMonths.length - withData.length} ${yearMonths.length - withData.length === 1 ? "month has" : "months have"} no data yet; older months can be imported in Settings.` : ""}</p>
+
+      <section aria-label="Money in and out by month" className="mt-10 min-w-0">
+        <InOutChart points={chart} title={mode === "year" ? `${year} by month` : "Last 12 months"} />
+        {mode === "month" && (
+          <details className="mt-3">
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show as a table</summary>
+            <table className="mt-2 w-full text-small">
+              <thead><tr className="border-b border-line text-left text-ink-2"><th scope="col" className="py-1.5 font-normal">Month</th><th scope="col" className="py-1.5 text-right font-normal">In</th><th scope="col" className="py-1.5 text-right font-normal">Out</th></tr></thead>
+              <tbody className="divide-y divide-line">
+                {chart.map((c) => (
+                  <tr key={c.month}><th scope="row" className="py-1.5 text-left font-normal">{monthName(c.month)}</th>{c.empty ? <td colSpan={2} className="py-1.5 text-right text-muted">No data</td> : <><td className="py-1.5 text-right tabular-nums">+{money(c.moneyIn)}</td><td className="py-1.5 text-right tabular-nums">−{money(c.moneyOut)}</td></>}</tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        )}
+      </section>
 
       {mode === "year" && (
         <section aria-labelledby="months" className="mt-10 min-w-0">

@@ -7,6 +7,7 @@ import { cx } from "@/components/cx";
 
 const TABS = [
   { href: "/private/money", label: "Overview" },
+  { href: "/private/money/budget", label: "Budget" },
   { href: "/private/money/transactions", label: "Transactions" },
   { href: "/private/money/settings", label: "Settings" },
 ] as const;

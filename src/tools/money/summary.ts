@@ -1,4 +1,4 @@
-import { TRANSFER, matchTransfers } from "./categorize.ts";
+import { INCOME_CATEGORIES, TRANSFER, matchTransfers } from "./categorize.ts";
 import { merchantKey } from "./merchant.ts";
 import type { Txn } from "./types.ts";
 
@@ -42,6 +42,10 @@ export function summarize(
     if (t.amount < 0) {
       moneyOut += -t.amount;
       row.out += -t.amount;
+    } else if (!crossing && !INCOME_CATEGORIES.has(c)) {
+      // A refund: less spent in that category, not money earned.
+      moneyOut -= t.amount;
+      row.out -= t.amount;
     } else {
       moneyIn += t.amount;
       row.in += t.amount;
@@ -92,8 +96,12 @@ export function incomeSources(txns: readonly Txn[], period: string, across?: Rea
     if (t.amount <= 0 || t.pending || !t.posted.startsWith(period)) continue;
     const crossing = t.category === TRANSFER ? across?.get(t.id) : undefined;
     if (t.category === TRANSFER && !crossing) continue;
-    let key = crossing ?? merchantKey(t.payee || t.description);
-    let name = crossing ?? (t.payee || t.description).trim();
+    if (!crossing && !INCOME_CATEGORIES.has(t.category ?? "")) continue; // a refund, not income
+    // Name by the description up to its first reference number ("External Transfer Deposit
+    // F40381ba72d9779" and "… S10c10f9de3147f" are one payer), falling back to the payee.
+    const plain = t.description.split(/\s+/).filter((w, i, all) => !all.slice(0, i + 1).some((x) => /\d/.test(x))).join(" ");
+    let key = crossing ?? (merchantKey(plain) || merchantKey(t.payee || t.description));
+    let name = crossing ?? (merchantKey(plain) ? tidyName(plain) : (t.payee || t.description).trim());
     if (!crossing && /\bDEPOSIT\b/.test(key) && /\b(CHECK|REMOTE|ONLINE|MOBILE)\b/.test(normalizeKey(t.description))) { key = "check deposits"; name = "Check deposits"; }
     const row = map.get(key) ?? { key, name, amount: 0, count: 0, category: crossing ? TRANSFER : t.category ?? "" };
     row.amount = round(row.amount + t.amount);
@@ -101,10 +109,20 @@ export function incomeSources(txns: readonly Txn[], period: string, across?: Rea
     row.name = name;
     map.set(key, row);
   }
-  return [...map.values()].sort((a, b) => b.amount - a.amount);
+  return [...map.values()].filter((x) => x.amount >= 1).sort((a, b) => b.amount - a.amount);
 }
 
 const normalizeKey = (s: string) => s.toUpperCase();
+
+const SMALL = new Set(["and", "of", "the", "for", "to", "a"]);
+/** "CAST AND CREW P PAYROLL PPD ID:" → "Cast and Crew P Payroll". */
+function tidyName(s: string): string {
+  const words = s.replace(/\b(PPD|CCD|WEB|ID|DES|INDN)\b:?/gi, " ").replace(/[:#*]+/g, " ").trim().split(/\s+/);
+  const upper = s === s.toUpperCase();
+  return words
+    .map((w, i) => (upper ? (i > 0 && SMALL.has(w.toLowerCase()) ? w.toLowerCase() : w[0] + w.slice(1).toLowerCase()) : w))
+    .join(" ");
+}
 
 /** YYYY-MM plus `delta` months. */
 export function shiftMonth(month: string, delta: number): string {

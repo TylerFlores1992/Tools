@@ -1,4 +1,4 @@
-import { TRANSFER, dayDiff } from "./categorize.ts";
+import { INCOME_CATEGORIES, TRANSFER, dayDiff } from "./categorize.ts";
 import { merchantKey } from "./merchant.ts";
 
 export { merchantKey };
@@ -30,6 +30,8 @@ export type Recurring = {
   status: "active" | "stopped";
   category: string | null;
   accountIds: string[];
+  /** The transactions in the series (the budget uses them to tell bills from everyday spending). */
+  txnIds: string[];
 };
 
 const CADENCES: ReadonlyArray<{ cadence: Cadence; min: number; max: number; minCount: number }> = [
@@ -57,12 +59,15 @@ export function addDays(date: string, n: number): string {
  * ignored. A series needs the cadence's minimum count and at least two thirds of its gaps inside
  * the cadence's range.
  */
+/** The category a relabeled cross-owner transfer carries inside the recurring list. */
+export const TRANSFER_BILL = "Moved to another owner";
+
 // Everyday spending isn't a bill even when it's regular (groceries every week, DoorDash on Fridays).
 // A waived monthly bank fee isn't a bill either.
 const NOT_BILLS: ReadonlySet<string> = new Set(["Dining", "Groceries", "Gas", "Shopping", "Fees", TRANSFER]);
 // Bills whose amount follows usage (power, water, cloud services): the schedule is the evidence,
 // so their amounts may swing and two monthly charges are enough.
-const METERED: ReadonlySet<string> = new Set(["Utilities", "Software", "Phone & internet", "Subscriptions", "Insurance", "Housing", "Loans"]);
+const METERED: ReadonlySet<string> = new Set([TRANSFER_BILL, "Utilities", "Software", "Phone & internet", "Subscriptions", "Insurance", "Housing", "Loans"]);
 
 /** Groups amounts within 20% of each other (Spectrum internet vs Spectrum mobile on one name). */
 function byAmount(list: readonly Txn[]): Txn[][] {
@@ -76,10 +81,19 @@ function byAmount(list: readonly Txn[]): Txn[][] {
   return clusters;
 }
 
-export function findRecurring(txns: readonly Txn[], today: string): Recurring[] {
+/**
+ * `across` (from transfersAcross) relabels transfers that leave the view for another owner's
+ * account, e.g. "Transfer to Joint": in the Mine view the monthly transfer to joint is a bill
+ * (owner, 2026-10-18). Other transfers are never recurring bills or income.
+ */
+export function findRecurring(txns: readonly Txn[], today: string, across?: ReadonlyMap<string, string>): Recurring[] {
   const groups = new Map<string, Txn[]>();
-  for (const t of txns) {
+  for (const raw of txns) {
+    const label = raw.category === TRANSFER ? across?.get(raw.id) : undefined;
+    const t = label ? { ...raw, category: TRANSFER_BILL, payee: label, description: label } : raw;
     if (t.pending || NOT_BILLS.has(t.category ?? "")) continue;
+    // Money in is recurring income only when it's income (a refund is not a paycheck).
+    if (t.amount > 0 && !label && t.category && !INCOME_CATEGORIES.has(t.category)) continue;
     const key = merchantKey(t.payee || t.description);
     if (!key) continue;
     const dir = t.amount < 0 ? "out" : "in";
@@ -146,6 +160,7 @@ function fitSeries(id: string, list: readonly Txn[], today: string): Recurring |
     status: overdue > step / 2 ? "stopped" : "active",
     category: lastTxn.category,
     accountIds: [...new Set(series.map((t) => t.accountId))],
+    txnIds: list.map((t) => t.id),
   };
 }
 
