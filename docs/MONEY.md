@@ -150,6 +150,15 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   Owner's call (2026-10-19): use AI. **Nothing counts until the owner saves the review screen.**
   Text shaped like an SSN or account number is blanked in every stored field (`noSsn`); the photo
   itself keeps whatever is printed (stubs show the last 4), and can be deleted after saving.
+- **A year at once** (`/income/add#bulk`, `BulkUploadForm` → `uploadOne`): many PDFs or photos,
+  sent one at a time from the page (each read is its own request, inside the 60 s limit), each
+  landing in "Waiting for you to check". A file byte-for-byte already stored is skipped
+  (`findStubByFile`, md5 in SQL). One stub per file: a PDF holding several stubs is read as one.
+- **Stubs still missing** (`missing.ts`): this year's deposits that look like pay (named payroll
+  companies, generic PAYROLL/PR DEPOSIT wording, phone check deposits; never EDD, tax refunds,
+  transfers, Zelle, Stripe), grouped by payer, minus the ones a saved stub matched. The same
+  deposit in two accounts on the same day counts once (a bank CSV imported into the wrong account
+  would otherwise list it twice).
 - **Checks on every stub** (`checks.ts`): gross − taxes − deductions = net; lines add up to gross;
   hours × rate per line; OT at 1.5× / 2× the straight rate; rate below the owner's; SS 6.2%,
   Medicare 1.45%, CA SDI 1.3% (2026); year-to-date carries on from the last stub (a gap = a

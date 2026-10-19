@@ -7,7 +7,7 @@ import { sha256 } from "@/lib/mail/secret";
 import { requirePrivate } from "@/lib/money/guard";
 import { ReadFailed, readDocument } from "@/lib/money/income/read-document";
 import {
-  createStub, deleteStub, deleteStubFile, failStub, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
+  createStub, deleteStub, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
   rematchDeposits, saveConfig, setCalendarKeyHash, setDeposit, writeStub,
 } from "@/lib/money/income/store";
 import { calendarScript } from "@/tools/money/income/calendar-script";
@@ -32,10 +32,39 @@ export async function uploadDocument(prev: UploadState, form: FormData): Promise
   if (file.size > MAX_BYTES) return { error: "That file is over 4 MB. Take the photo again, or save the PDF smaller.", attempt };
   if (!OK_TYPES.has(file.type)) return { error: "Use a photo (JPEG, PNG) or a PDF.", attempt };
   const bytes = Buffer.from(await file.arrayBuffer());
+  const existing = await findStubByFile(bytes);
+  if (existing) redirect(`/private/money/income/stubs/${existing}`);
   const id = await createStub(kind, file.type, bytes);
   await readInto(id, bytes, file.type, kind);
   revalidatePath("/private/money/income", "layout");
   redirect(`/private/money/income/stubs/${id}`);
+}
+
+export type OneResult =
+  | { ok: true; id: string; status: "review" | "failed"; label: string }
+  | { ok: false; error: string; id?: string };
+
+/**
+ * One file of a batch ("Add a year of stubs"): stores and reads it like `uploadDocument`, but
+ * answers instead of redirecting, so the page can send the next file. The same file twice is
+ * not added again.
+ */
+export async function uploadOne(form: FormData): Promise<OneResult> {
+  await requirePrivate("/private/money/income/add");
+  const kind = form.get("kind") === "w2" ? "w2" : "stub";
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "Empty file." };
+  if (file.size > MAX_BYTES) return { ok: false, error: "Over 4 MB. Save it smaller and add it again." };
+  if (!OK_TYPES.has(file.type)) return { ok: false, error: "Not a photo or PDF." };
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const existing = await findStubByFile(bytes);
+  if (existing) return { ok: false, error: "Already added.", id: existing };
+  const id = await createStub(kind, file.type, bytes);
+  await readInto(id, bytes, file.type, kind);
+  const stub = await getStub(id);
+  revalidatePath("/private/money/income", "layout");
+  const label = [stub?.employer || stub?.payrollCompany, stub?.payDate].filter(Boolean).join(" · ") || "Not read";
+  return { ok: true, id, status: stub?.status === "failed" ? "failed" : "review", label };
 }
 
 /** Runs the AI read and stores what it proposed, for review. */

@@ -7,6 +7,7 @@ import { dayPay, previousStub, sameEmployer, stubChecks, workedHours } from "./c
 import { parseStubForm } from "./form.ts";
 import { healthPeriods } from "./health.ts";
 import { findDeposit, matchDeposits } from "./match.ts";
+import { missingStubs, payerOf } from "./missing.ts";
 import { fromRead, noSsn, type ReadResult } from "./read.ts";
 import { DEFAULT_CONFIG, emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type WorkEvent } from "./types.ts";
 import { federalTax, w2Check, withholdingEstimate } from "./withholding.ts";
@@ -265,4 +266,44 @@ test("review form: money parsed, blank lines skipped, work days kept, SSN blanke
   assert.deepEqual(p.workDays, ["e1|2026-10-06"]);
   assert.equal(p.periodStart, null);
   assert.equal(p.taxYear, 2026);
+});
+
+// ---- stubs still missing ----
+
+test("payers: real bank descriptions name the payroll company; refunds, EDD, transfers never count", () => {
+  const p = (description: string, amount = 100) => payerOf({ description, payee: null, amount })?.name ?? null;
+  assert.match(p("REV BUSINES SRV PAYROLL PPD ID: 843766818")!, /Revolution/);
+  assert.equal(p("GREENSLATE, LLC PAYROLL PPD ID: 7271144329"), "GreenSlate");
+  assert.equal(p("Cast and Crew P Payroll"), "Cast & Crew");
+  assert.equal(p("GEP PAYROLL SVCS DIRECT PAY PPD ID: 1731692325"), "GEP Payroll Services");
+  assert.equal(p("TakeOne E5MXLY3M PAYROLL PPD ID: 9828629003"), "TakeOne");
+  assert.equal(p("NEW CAPS LLC PR DEPOSIT PPD ID: 2274217142"), "New Caps LLC");
+  assert.equal(p("KILLSWITCH INC PAYROLL PPD ID: 9111111101"), "Killswitch INC");
+  assert.match(p("REMOTE ONLINE DEPOSIT # 1")!, /Paper checks/);
+  for (const never of ["IRS TREAS 310 TAX REF PPD ID: 9111736959", "California EDD DI Deposit PPD ID: 364483541",
+    "FRANCHISE TAX BD CASTTAXRFD", "EXTERNAL TRANSFER DEPOSIT 53F8B9BE83AB6BB", "TakeOne 2Y4XTNDT PAYMENTS PPD ID: 9828629003",
+    "Zelle payment from SOMEONE", "Stripe", "Amazon", "EDD UI PAYROLL DEPOSIT", "GREENSLATE PAYROLL REFUND", "ONLINE TRANSFER CHECK DEPOSIT"]) assert.equal(p(never), null, never);
+  assert.equal(p("GREENSLATE, LLC PAYROLL", -50), null, "money out is never pay");
+});
+
+test("missing stubs: unmatched pay deposits by payer; a matched one drops off; a CSV copy in another account counts once", () => {
+  const a = txn({ posted: "2026-06-18", amount: 1960.5, description: "GREENSLATE, LLC PAYROLL PPD ID: 7271144329", accountId: "checking" });
+  const copy = txn({ posted: "2026-06-18", amount: 1960.5, description: "GREENSLATE, LLC PAYROLL PPD ID: 7271144329", accountId: "card" });
+  const b = txn({ posted: "2026-06-25", amount: 1800, description: "GREENSLATE, LLC PAYROLL PPD ID: 7271144329", accountId: "checking" });
+  // Two real checks of the same amount on the same day, in one account: both count.
+  const c1 = txn({ posted: "2026-10-18", amount: 1090.35, description: "Online Deposit", accountId: "checking" });
+  const c2 = txn({ posted: "2026-10-18", amount: 1090.35, description: "Online Deposit", accountId: "checking" });
+  const old = txn({ posted: "2025-12-30", amount: 500, description: "GREENSLATE, LLC PAYROLL", accountId: "checking" });
+  const edd = txn({ posted: "2026-02-01", amount: 900, description: "California EDD DI Deposit", accountId: "checking" });
+  const s = stub({ depositTxnId: b.id, net: 1800 });
+  const out = missingStubs([a, copy, b, c1, c2, old, edd], [s], 2026);
+  const gs = out.find((g) => g.key === "greenslate")!;
+  assert.deepEqual(gs.deposits.map((d) => d.posted), ["2026-06-18"], "one deposit, not two copies; the matched one is gone");
+  assert.equal(gs.total, 1960.5);
+  const checks = out.find((g) => g.key === "checks")!;
+  assert.equal(checks.deposits.length, 2);
+  assert.equal(checks.total, 2180.7);
+  assert.equal(out.length, 2, "last year's and EDD's are not listed");
+  // The stub matched to the CSV copy instead still clears it.
+  assert.equal(missingStubs([a, copy], [stub({ depositTxnId: copy.id })], 2026).length, 0);
 });

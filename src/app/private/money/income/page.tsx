@@ -7,8 +7,10 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { isConfigured } from "@/lib/money/db";
 import { getIncomeSettings, listEvents, listStubs } from "@/lib/money/income/store";
+import { getTransactions } from "@/lib/money/store";
 import { employerKey, sameEmployer, taxTotal, workedHours } from "@/tools/money/income/checks";
 import { healthPeriods } from "@/tools/money/income/health";
+import { missingStubs } from "@/tools/money/income/missing";
 import { TAX_KEYS, TAX_LABEL, type Stub } from "@/tools/money/income/types";
 import { TAX_YEAR, w2Check, withholdingEstimate } from "@/tools/money/income/withholding";
 import { workDays, type WorkDay } from "@/tools/money/income/workdays";
@@ -43,6 +45,10 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const thisYear = Number(today.slice(0, 4));
   const years = [...new Set([thisYear, ...stubs.map(yearOf).filter((y): y is number => !!y)])].sort((a, b) => b - a);
   const year = years.includes(Number(sp.year)) ? Number(sp.year) : thisYear;
+
+  const txns = await getTransactions(`${year}-01-01`);
+  const missing = missingStubs(txns.filter((t) => t.posted <= `${year}-12-31`), stubs, year);
+  const missingCount = missing.reduce((n, g) => n + g.deposits.length, 0);
 
   const saved = stubs.filter((s) => s.status === "saved" && s.kind === "stub" && yearOf(s) === year);
   const w2s = stubs.filter((s) => s.status === "saved" && s.kind === "w2" && (s.w2?.taxYear ?? yearOf(s)) === year);
@@ -118,6 +124,34 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {missingCount > 0 && (
+        <section aria-labelledby="missing" className="mt-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 id="missing" className="text-h2 font-normal">Stubs still missing</h2>
+            <p className="text-body text-ink-2">{missingCount} {missingCount === 1 ? "payment" : "payments"} in the bank with no stub, from {missing.length} {missing.length === 1 ? "payer" : "payers"}</p>
+          </div>
+          <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
+            {missing.map((g) => (
+              <li key={g.key}>
+                <details>
+                  <summary className="flex min-h-11 cursor-pointer flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-surface-2">
+                    <span className="min-w-0">
+                      <span className="block text-body text-ink">{g.name}</span>
+                      <span className="mt-1 block text-small text-muted">{g.deposits.length} {g.deposits.length === 1 ? "payment" : "payments"} · {shortDate(g.deposits[0].posted)}{g.deposits.length > 1 ? ` – ${shortDate(g.deposits[g.deposits.length - 1].posted)}` : ""}</span>
+                    </span>
+                    <span className="text-body tabular-nums">{money(g.total)}</span>
+                  </summary>
+                  <ul className="border-t border-line px-4 py-2 text-small">
+                    {g.deposits.map((d, i) => <li key={`${d.id}-${i}`} className="flex justify-between gap-4 py-1"><span className="text-ink-2">Arrived {shortDate(d.posted)}</span><span className="tabular-nums">{money(d.amount)}</span></li>)}
+                  </ul>
+                </details>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-small text-muted">From your bank deposits: each one drops off when a saved stub&rsquo;s take-home matches it. Dates are when the money arrived, not the pay date. <Link href="/private/money/income/add#bulk" className="underline underline-offset-4 hover:text-ink">Add them all at once</Link>.</p>
         </section>
       )}
 
