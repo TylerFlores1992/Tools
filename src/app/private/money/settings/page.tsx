@@ -5,7 +5,7 @@ import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, loadMoney } from "@/lib/money/load";
-import { MoneyShell, OWNER_LABEL } from "@/tools/money/ui/MoneyShell";
+import { MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { ConnectForm, ImportForm, RefileForm, SyncNowForm } from "@/tools/money/ui/ConnectForms";
 import { importedByAccount } from "@/lib/money/import";
 import { shortDate } from "@/tools/money/summary";
@@ -83,32 +83,45 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             {data.accounts.length === 0 ? (
               <p className="mt-4 text-body text-ink-2">Accounts appear after the first sync.</p>
             ) : (
-              <ul className="mt-4 grid max-w-[720px] gap-3">
+              <ul className="mt-4 max-w-[720px] divide-y divide-line rounded-card border border-line bg-surface">
                 {data.accounts.map((a) => (
                   <li key={a.id}>
-                    {/* Keyed on the saved values: React resets a form after its action runs, and a
-                        reset <select> fell back to "Not set" instead of the value just saved. A new
-                        key remounts the form with the new defaults. */}
-                    <form key={`${a.owner ?? ""}|${a.displayName ?? ""}|${a.hidden}`} action={saveAccount} className="grid gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:grid-cols-[1fr_10rem] sm:items-end">
-                      <input type="hidden" name="id" value={a.id} />
-                      <p className="text-small text-muted sm:col-span-2">{[a.orgName, a.name].filter(Boolean).join(" · ")}</p>
-                      <label className="grid gap-1.5">
-                        <span className="text-small text-ink-2">Name to show</span>
-                        <input name="displayName" defaultValue={a.displayName ?? ""} placeholder={accountLabel({ ...a, displayName: null })} maxLength={60} className={`${FIELD} placeholder:text-muted`} />
-                      </label>
-                      <label className="grid gap-1.5">
-                        <span className="text-small text-ink-2">Whose</span>
-                        <select name="owner" defaultValue={a.owner ?? ""} className={FIELD}>
-                          <option value="">Not set</option>
-                          {(Object.keys(OWNER_LABEL) as Array<keyof typeof OWNER_LABEL>).map((k) => <option key={k} value={k}>{OWNER_LABEL[k]}</option>)}
-                        </select>
-                      </label>
-                      <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
-                        <input type="checkbox" name="hidden" defaultChecked={a.hidden} className="size-5 accent-ink" />
-                        Hide this account
-                      </label>
-                      <Button type="submit" variant="quiet" className="sm:justify-self-end">Save</Button>
-                    </form>
+                    <details className="group">
+                      <summary className="flex min-h-11 cursor-pointer list-none flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-surface-2 [&::-webkit-details-marker]:hidden">
+                        <span className="min-w-0">
+                          <span className="block truncate text-body text-ink">{accountLabel(a)}</span>
+                          {a.displayName && <span className="mt-0.5 block truncate text-small text-muted">{[a.orgName, a.name].filter(Boolean).join(" · ")}</span>}
+                        </span>
+                        <span className="flex items-center gap-2">
+                          {a.hidden && <Tag>Hidden</Tag>}
+                          <Tag>{a.owner ? OWNER_LABEL[a.owner] : "Owner not set"}</Tag>
+                          <span className="text-small text-ink-2 underline underline-offset-4">Edit<span className="sr-only"> {accountLabel(a)}</span></span>
+                        </span>
+                      </summary>
+                      {/* Keyed on the saved values: React resets a form after its action runs, and a
+                          reset <select> fell back to "Not set" instead of the value just saved. A new
+                          key remounts the form with the new defaults. */}
+                      <form key={`${a.owner ?? ""}|${a.displayName ?? ""}|${a.hidden}`} action={saveAccount} className="grid gap-3 border-t border-line p-4 sm:grid-cols-[1fr_10rem] sm:items-end">
+                        <input type="hidden" name="id" value={a.id} />
+                        <p className="text-small text-muted sm:col-span-2">{[a.orgName, a.name].filter(Boolean).join(" · ")}</p>
+                        <label className="grid gap-1.5">
+                          <span className="text-small text-ink-2">Name to show</span>
+                          <input name="displayName" defaultValue={a.displayName ?? ""} placeholder={accountLabel({ ...a, displayName: null })} maxLength={60} className={`${FIELD} placeholder:text-muted`} />
+                        </label>
+                        <label className="grid gap-1.5">
+                          <span className="text-small text-ink-2">Whose</span>
+                          <select name="owner" defaultValue={a.owner ?? ""} className={FIELD}>
+                            <option value="">Not set</option>
+                            {(Object.keys(OWNER_LABEL) as Array<keyof typeof OWNER_LABEL>).map((k) => <option key={k} value={k}>{OWNER_LABEL[k]}</option>)}
+                          </select>
+                        </label>
+                        <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
+                          <input type="checkbox" name="hidden" defaultChecked={a.hidden} className="size-5 accent-ink" />
+                          Hide this account
+                        </label>
+                        <Button type="submit" variant="quiet" className="sm:justify-self-end">Save</Button>
+                      </form>
+                    </details>
                   </li>
                 ))}
               </ul>

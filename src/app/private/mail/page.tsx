@@ -46,7 +46,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
 
   return (
     <MailShell current="/private/mail">
-      <div className="mx-auto max-w-[720px]">
+      <div className="max-w-[760px]">
         <Label>{isToday ? "Today" : "Earlier"}</Label>
         <h1 className="mt-3 text-title font-normal">{longDate(date)}</h1>
         <p className="mt-3 text-small text-muted">

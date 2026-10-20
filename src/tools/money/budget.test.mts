@@ -57,7 +57,7 @@ test("full months: only months the history fully covers, up to three", () => {
 
 test("budget: bills + everyday (bills not counted twice, refunds taken off) vs income", () => {
   const txns = [
-    ...["2026-08-01", "2026-09-01", "2026-10-01"].map((d) => txn({ posted: d, amount: -1000, description: "VALON MORTGAGE", category: "Housing" })),
+    ...["2026-08-01", "2026-09-01", "2026-10-01"].map((d) => txn({ posted: d, amount: -1000, description: "Valon Mortgage", category: "Housing" })),
     txn({ posted: "2026-08-10", amount: -300, description: "VONS", category: "Groceries" }),
     txn({ posted: "2026-09-10", amount: -500, description: "VONS", category: "Groceries" }),
     txn({ posted: "2026-09-12", amount: 100, description: "VONS REFUND", category: "Groceries" }),
@@ -75,5 +75,5 @@ test("budget: bills + everyday (bills not counted twice, refunds taken off) vs i
   assert.equal(b.spare, 1150);
   assert.equal(b.cash, 3500);
   assert.equal(b.monthsCovered, 2.6);
-  assert.deepEqual(b.upcoming.map((u) => [u.name, u.date]), [["VALON MORTGAGE", "2026-11-01"]]);
+  assert.deepEqual(b.upcoming.map((u) => [u.name, u.date]), [["Valon Mortgage", "2026-11-01"]]);
 });

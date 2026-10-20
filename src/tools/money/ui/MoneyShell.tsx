@@ -53,7 +53,7 @@ export function MoneyShell({ current, children }: { current: MoneyTab; children:
 /** A small word tag (owner, pending, cadence). Words, never colour. */
 export function Tag({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <span className={cx("inline-flex items-center rounded-tag border border-line-2 px-2 py-0.5 font-mono text-label uppercase text-ink-2", className)}>
+    <span className={cx("inline-flex shrink-0 items-center whitespace-nowrap rounded-tag border border-line-2 px-2 py-0.5 font-mono text-label uppercase text-ink-2", className)}>
       {children}
     </span>
   );

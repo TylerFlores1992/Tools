@@ -1,5 +1,5 @@
 import { INCOME_CATEGORIES, TRANSFER, dayDiff } from "./categorize.ts";
-import { merchantKey } from "./merchant.ts";
+import { displayName, merchantKey } from "./merchant.ts";
 
 export { merchantKey };
 import type { Txn } from "./types.ts";
@@ -94,7 +94,10 @@ export function findRecurring(txns: readonly Txn[], today: string, across?: Read
     if (t.pending || NOT_BILLS.has(t.category ?? "")) continue;
     // Money in is recurring income only when it's income (a refund is not a paycheck).
     if (t.amount > 0 && !label && t.category && !INCOME_CATEGORIES.has(t.category)) continue;
-    const key = merchantKey(t.payee || t.description);
+    // Keyed on the bank's description, not the payee: the synced feed adds a clean payee
+    // ("Valon") that a CSV import of the same bill never has ("WEB AUTHORIZED PMT Valon"), so a
+    // payee key splits one bill into a "stopped" CSV series and a short synced one.
+    const key = merchantKey(t.description) || merchantKey(t.payee ?? "");
     if (!key) continue;
     const dir = t.amount < 0 ? "out" : "in";
     const id = `${dir}:${key}`;
@@ -149,7 +152,7 @@ function fitSeries(id: string, list: readonly Txn[], today: string): Recurring |
   const overdue = dayDiff(today, next);
   return {
     key: id,
-    name: (lastTxn.payee || lastTxn.description).trim(),
+    name: lastTxn.payee?.trim() || displayName(lastTxn.description),
     direction: id.startsWith("out:") ? "out" : "in",
     cadence: fit.cadence,
     typical: Math.round(typical * 100) / 100,

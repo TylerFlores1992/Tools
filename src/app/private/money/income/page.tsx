@@ -20,6 +20,9 @@ import { workDays, type WorkDay } from "@/tools/money/income/workdays";
 import { toLocalDate } from "@/tools/money/simplefin";
 import { money, monthName, shortDate } from "@/tools/money/summary";
 import { InOutChart } from "@/tools/money/ui/Charts";
+import { isCalMonth } from "@/tools/money/income/calendar";
+import { WorkCalendar } from "@/tools/money/income/ui/WorkCalendar";
+import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured } from "@/tools/money/ui/Setup";
 
@@ -34,7 +37,7 @@ const todayPacific = () => toLocalDate(Date.now() / 1000);
 
 const yearOf = (s: Stub) => s.taxYear ?? (s.payDate ? Number(s.payDate.slice(0, 4)) : null);
 
-export default async function IncomePage({ searchParams }: { searchParams: Promise<{ year?: string; saved?: string }> }) {
+export default async function IncomePage({ searchParams }: { searchParams: Promise<{ year?: string; saved?: string; cal?: string }> }) {
   await requirePrivate("/private/money/income");
   const sp = await searchParams;
   if (!isConfigured()) return <MoneyShell current="/private/money/income"><h1 className="text-title font-normal">Income</h1><div className="mt-8"><NotConfigured /></div></MoneyShell>;
@@ -67,6 +70,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const taxes = saved.reduce((n, s) => n + taxTotal(s), 0);
   const hours = saved.reduce((n, s) => n + workedHours(s), 0);
   const estimatedGross = saved.filter((s) => s.estimated).reduce((n, s) => n + (s.gross ?? 0), 0);
+  const stubMonths = [...paid.reduce((map, x) => { const k = (x.payDate ?? "0000-00").slice(0, 7); (map.get(k) ?? map.set(k, []).get(k)!).push(x); return map; }, new Map<string, Stub[]>())].sort(([a], [b]) => b.localeCompare(a));
   const notInBank = paid.filter((s) => !s.depositTxnId && s.depositMatch !== "none");
 
   const days = workDays(events, stubs, config, today);
@@ -74,6 +78,12 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const owedGroups = groupByEvent(waiting);
   const expectedTotal = waiting.reduce((n, d) => n + (d.expected ?? 0), 0);
   const unknownExpected = waiting.some((d) => d.expected === null);
+  // The work calendar's month: ?cal=YYYY-MM, else this month (or December of a past year).
+  const eventMonths = days.map((d) => d.day.slice(0, 7));
+  const calMin = eventMonths.length ? eventMonths.reduce((a, b) => (a < b ? a : b)) : today.slice(0, 7);
+  const calMax = [today.slice(0, 7), ...eventMonths].reduce((a, b) => (a > b ? a : b));
+  const calMonth = isCalMonth(sp.cal) && sp.cal >= calMin && sp.cal <= calMax ? sp.cal : year === thisYear ? today.slice(0, 7) : `${year}-12`;
+  const calHref = (m: string) => `/private/money/income?${new URLSearchParams({ ...(year !== thisYear ? { year: String(year) } : {}), cal: m })}#calendar`;
 
   // Chart: gross vs taxes by month of pay date.
   const months = Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).filter((m) => m <= today.slice(0, 7));
@@ -121,8 +131,33 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
       {sp.saved && <p className="mt-6"><State kind="ok">Saved.{stubs.find((s) => s.id === sp.saved)?.depositTxnId ? " Its deposit was found in the bank." : ""}</State></p>}
 
+      <section aria-label="Totals" className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatTile label="Gross pay" value={money(gross)} note={`${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
+        <StatTile label="Taxes withheld" value={money(taxes)} note={gross ? `${Math.round((taxes / gross) * 100)}% of gross` : "–"} />
+        <StatTile label="Take-home" value={money(net)} note={notInBank.length ? `${notInBank.length} not in the bank yet` : saved.length ? "All found in the bank" : "–"} />
+        <StatTile label="Hours worked" value={`${round1(hours)} h`} note={hours && gross ? `About ${money(gross / hours)} an hour, gross` : "From the stubs’ pay lines"} />
+      </section>
+
+      <nav aria-label="On this page" className="mt-6 overflow-x-auto">
+        <ul className="flex w-max gap-1 text-small sm:w-auto sm:flex-wrap">
+          {[
+            ...(toReview.length ? [["review", `To check (${toReview.length})`]] : []),
+            ...(missingCount ? [["missing", "Missing stubs"]] : []),
+            ["owed", "Pay still owed"],
+            ...(calendarConnected ? [["calendar", "Work calendar"]] : []),
+            ...(saved.length ? [["by-month", "By month"]] : []),
+            ["emp", "Employers"],
+            ["health", "Health hours"],
+            ...(eddFiled.length || eddUnfiled.length ? [["edd", "EDD"]] : []),
+            ...(estimate ? [["fed", "Withholding"]] : []),
+            ...(w2s.length ? [["w2", "W-2"]] : []),
+            ["stubs", "Stubs"],
+          ].map(([id, label]) => <li key={id}><a href={`#${id}`} className="flex min-h-10 items-center rounded-full border border-line px-3 text-ink-2 hover:text-ink">{label}</a></li>)}
+        </ul>
+      </nav>
+
       {toReview.length > 0 && (
-        <section aria-labelledby="review" className="mt-8">
+        <section aria-labelledby="review" className="mt-8 scroll-mt-6">
           <h2 id="review" className="text-h2 font-normal">Waiting for you to check</h2>
           <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
             {toReview.map((s) => (
@@ -138,7 +173,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
 
       {missingCount > 0 && (
-        <section aria-labelledby="missing" className="mt-8">
+        <section aria-labelledby="missing" className="mt-8 scroll-mt-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h2 id="missing" className="text-h2 font-normal">Stubs still missing</h2>
             <p className="text-body text-ink-2">{missingCount} {missingCount === 1 ? "payment" : "payments"} in the bank with no stub, from {missing.length} {missing.length === 1 ? "payer" : "payers"}</p>
@@ -173,14 +208,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         </section>
       )}
 
-      <section aria-label="Totals" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Tile label="Gross pay" value={money(gross)} note={`${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
-        <Tile label="Taxes withheld" value={money(taxes)} note={gross ? `${Math.round((taxes / gross) * 100)}% of gross` : "–"} />
-        <Tile label="Take-home" value={money(net)} note={notInBank.length ? `${notInBank.length} not in the bank yet` : saved.length ? "All found in the bank" : "–"} />
-        <Tile label="Hours worked" value={`${round1(hours)} h`} note={hours && gross ? `About ${money(gross / hours)} an hour, gross` : "From the stubs’ pay lines"} />
-      </section>
-
-      <section aria-labelledby="owed" className="mt-12">
+      <section aria-labelledby="owed" className="mt-12 scroll-mt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h2 id="owed" className="text-h2 font-normal">Pay still owed</h2>
           {waiting.length > 0 && <p className="text-body text-ink-2">{waiting.length} {waiting.length === 1 ? "day" : "days"} worked{expectedTotal ? <>, about <span className="tabular-nums text-ink">{money(expectedTotal)}</span> gross{unknownExpected ? " (some without a rate)" : ""}</> : ""}</p>}
@@ -195,7 +223,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               <li key={g.eventId} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
                 <span className="min-w-0">
                   <span className="block text-body text-ink">{g.title}</span>
-                  <span className="mt-1 block text-small text-muted">{g.days.length === 1 ? shortDate(g.days[0].day) : `${shortDate(g.days[0].day)} – ${shortDate(g.days[g.days.length - 1].day)}`} · {g.days.length} {g.days.length === 1 ? "day" : "days"} · worked {g.days[g.days.length - 1].ageDays} days ago</span>
+                  <span className="mt-1 block text-small text-muted">{g.days.length === 1 ? shortDate(g.days[0].day) : `${shortDate(g.days[0].day)} – ${shortDate(g.days[g.days.length - 1].day)}`} · {g.days.length} {g.days.length === 1 ? "day" : "days"} · {ago(g.days[g.days.length - 1].ageDays)}</span>
                 </span>
                 <span className="flex items-center gap-3">
                   {g.late && <Tag>Late</Tag>}
@@ -219,8 +247,19 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         {calendarConnected && <p className="mt-2 text-small text-muted">“Late” means no stub {config.payLagDays} days after the day. Amounts are estimates from your rate at {config.defaultHoursPerDay} hours a day, California overtime.</p>}
       </section>
 
+      {calendarConnected && (
+        <section aria-labelledby="calendar" className="mt-12 min-w-0 scroll-mt-6">
+          <h2 id="calendar" className="text-h2 font-normal">Work calendar</h2>
+          <p className="mt-2 max-w-[68ch] text-body text-ink-2">Your work days from Google Calendar, and where each day&rsquo;s pay stands. Tap a paid day to open its stub.</p>
+          <div className="mt-4">
+            <WorkCalendar days={days} month={calMonth} today={today} href={calHref} minMonth={calMin} maxMonth={calMax} />
+          </div>
+        </section>
+      )}
+
       {saved.length > 0 && (
-        <section aria-label="Gross and taxes by month" className="mt-12 min-w-0">
+        <section aria-labelledby="by-month" className="mt-12 min-w-0 scroll-mt-6">
+          <h2 id="by-month" className="sr-only">Gross and taxes by month</h2>
           <InOutChart points={chart} title={`${year} by month`} labels={{ in: "Gross pay", out: "Taxes withheld" }} />
           <details className="mt-3">
             <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show as a table</summary>
@@ -233,11 +272,11 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
 
       <div className="mt-12 grid gap-10 lg:grid-cols-2">
-        <section aria-labelledby="emp" className="min-w-0">
+        <section aria-labelledby="emp" className="min-w-0 scroll-mt-6">
           <h2 id="emp" className="text-h2 font-normal">By employer</h2>
           {employers.length === 0 ? <p className="mt-4 text-body text-ink-2">No saved stubs for {year} yet.</p> : (
             <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
-              {employers.map((e) => {
+              {employers.slice(0, TOP_EMPLOYERS).map((e) => {
                 const t = e.stubs.reduce((n, s) => n + taxTotal(s), 0);
                 const h = e.stubs.reduce((n, s) => n + workedHours(s), 0);
                 return (
@@ -252,14 +291,28 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               })}
             </ul>
           )}
+          {employers.length > TOP_EMPLOYERS && (
+            <details className="mt-2">
+              <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show {employers.length - TOP_EMPLOYERS} more</summary>
+              <ul className="mt-2 divide-y divide-line rounded-card border border-line bg-surface">
+                {employers.slice(TOP_EMPLOYERS).map((e) => (
+                  <li key={e.key} className="flex items-center justify-between gap-4 px-4 py-2.5 text-small">
+                    <span className="min-w-0 truncate text-ink">{e.name} <span className="text-muted">· {e.stubs.length} {e.stubs.length === 1 ? "stub" : "stubs"}</span></span>
+                    <span className="shrink-0 tabular-nums">{money(e.gross)}</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
         </section>
 
-        <section aria-labelledby="health" className="min-w-0">
+        <section aria-labelledby="health" className="min-w-0 scroll-mt-6">
           <h2 id="health" className="text-h2 font-normal">{config.health.name} hours</h2>
           {currentHealth ? (
             <Card className="mt-4">
               <p className="text-small text-ink-2">{currentHealth.label}</p>
-              <p className="mt-1 text-title font-normal tabular-nums">{round1(currentHealth.hours)} <span className="ml-1.5 text-body text-ink-2">of {currentHealth.needed} hours</span></p>
+              <p className="mt-1 text-title font-normal tabular-nums">{round1(currentHealth.hours)}<span className="sr-only"> hours</span></p>
+              <p className="text-body text-ink-2">of {currentHealth.needed} hours needed</p>
               <span aria-hidden="true" className="mt-3 block h-2 overflow-hidden rounded-full bg-surface-2">
                 <span className="block h-full rounded-full bg-ice" style={{ width: `${Math.min(100, (currentHealth.hours / Math.max(1, currentHealth.needed)) * 100)}%` }} />
               </span>
@@ -274,7 +327,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       </div>
 
       {(eddFiled.length > 0 || eddUnfiled.length > 0) && (
-        <section aria-labelledby="edd" className="mt-12 max-w-[860px]">
+        <section aria-labelledby="edd" className="mt-12 max-w-[860px] scroll-mt-6">
           <h2 id="edd" className="text-h2 font-normal">EDD benefits</h2>
           <p className="mt-2 max-w-[68ch] text-body text-ink-2">Paid Family Leave is taxed on your federal return only, with nothing withheld. Disability Insurance usually isn&rsquo;t taxed at all. Neither is taxed by California, and neither is wages. EDD sends a 1099-G for Paid Family Leave.</p>
           {eddTotals.length > 0 && (
@@ -326,7 +379,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
 
       {estimate && (
-        <section aria-labelledby="fed" className="mt-12 max-w-[860px]">
+        <section aria-labelledby="fed" className="mt-12 max-w-[860px] scroll-mt-6">
           <h2 id="fed" className="text-h2 font-normal">Is enough federal tax being withheld?</h2>
           <p className="mt-2 max-w-[68ch] text-body text-ink-2">Each employer withholds as if it were your only job. This adds them up against a rough {TAX_YEAR} federal tax ({config.tax.filing === "joint" ? "married filing jointly" : "single"}, standard deduction{config.tax.otherWages ? `, plus ${money(config.tax.otherWages)} other household wages` : ""}).</p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -350,7 +403,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
 
       {w2s.length > 0 && (
-        <section aria-labelledby="w2" className="mt-12 max-w-[860px]">
+        <section aria-labelledby="w2" className="mt-12 max-w-[860px] scroll-mt-6">
           <h2 id="w2" className="text-h2 font-normal">W-2 check</h2>
           {w2s.map((w) => {
             const mine = saved.filter((s) => sameEmployer(w, s));
@@ -378,25 +431,35 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         </section>
       )}
 
-      <section aria-labelledby="stubs" className="mt-12">
+      <section aria-labelledby="stubs" className="mt-12 scroll-mt-6">
         <h2 id="stubs" className="text-h2 font-normal">Stubs</h2>
         {saved.length === 0 ? <p className="mt-4 text-body text-ink-2">None saved for {year}. <Link href="/private/money/income/add" className="text-ink underline underline-offset-4">Add your first one.</Link></p> : (
-          <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
-            {paid.map((s) => (
-              <li key={s.id}>
-                <Link href={`/private/money/income/stubs/${s.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">
-                  <span className="min-w-0">
-                    <span className="flex items-center gap-2"><span className="truncate text-body text-ink">{s.showName || s.employer || s.payrollCompany || "Stub"}</span>{s.estimated && <Tag>Estimate</Tag>}</span>
-                    <span className="mt-1 block text-small text-muted">Paid {s.payDate ? shortDate(s.payDate) : "?"} · {replaced.has(s.id) ? "reissued later (counted from the reissue)" : `${round1(workedHours(s))} h`} · {s.depositTxnId ? "in the bank" : s.depositMatch === "none" ? "no deposit" : "not in the bank yet"}</span>
-                  </span>
-                  <span className="shrink-0 text-right">
-                    <span className="block text-body tabular-nums">{s.net !== null ? money(s.net) : "–"}</span>
-                    <span className="block text-small tabular-nums text-muted">gross {s.gross !== null ? money(s.gross) : "–"}</span>
-                  </span>
-                </Link>
-              </li>
+          <div className="mt-4 grid gap-3">
+            {stubMonths.map(([m, list], i) => (
+              <details key={m} open={i === 0} className="group rounded-card border border-line bg-surface">
+                <summary className="flex min-h-11 cursor-pointer flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-surface-2">
+                  <span className="text-body text-ink"><span aria-hidden="true" className="mr-2 inline-block text-ink-2 transition-transform group-open:rotate-90">›</span>{monthName(m)}</span>
+                  <span className="text-small tabular-nums text-ink-2">{list.length} {list.length === 1 ? "stub" : "stubs"} · {money(list.reduce((n, x) => n + (x.net ?? 0), 0))} take-home</span>
+                </summary>
+                <ul className="divide-y divide-line border-t border-line">
+                  {list.map((s) => (
+                  <li key={s.id}>
+                    <Link href={`/private/money/income/stubs/${s.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">
+                      <span className="min-w-0">
+                        <span className="flex items-center gap-2"><span className="truncate text-body text-ink">{s.showName || s.employer || s.payrollCompany || "Stub"}</span>{s.estimated && <Tag>Estimate</Tag>}</span>
+                        <span className="mt-1 block text-small text-muted">Paid {s.payDate ? shortDate(s.payDate) : "?"} · {replaced.has(s.id) ? "reissued later (counted from the reissue)" : `${round1(workedHours(s))} h`} · {s.depositTxnId ? "in the bank" : s.depositMatch === "none" ? "no deposit" : "not in the bank yet"}</span>
+                      </span>
+                      <span className="shrink-0 text-right">
+                        <span className="block text-body tabular-nums">{s.net !== null ? money(s.net) : "–"}</span>
+                        <span className="block text-small tabular-nums text-muted">gross {s.gross !== null ? money(s.gross) : "–"}</span>
+                      </span>
+                    </Link>
+                  </li>
+                  ))}
+                </ul>
+              </details>
             ))}
-          </ul>
+          </div>
         )}
         {saved.length > 0 && (
           <details className="mt-3">
@@ -423,15 +486,8 @@ function groupByEvent(days: WorkDay[]) {
   return [...map.values()].sort((a, b) => a.days[0].day.localeCompare(b.days[0].day));
 }
 
-function Tile({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <Card>
-      <p className="font-mono text-label uppercase text-ink-2">{label}</p>
-      <p className="mt-2 text-title font-normal tabular-nums">{value}</p>
-      <p className="mt-1 text-small text-muted">{note}</p>
-    </Card>
-  );
-}
 
+const TOP_EMPLOYERS = 6;
+const ago = (n: number) => (n <= 0 ? "worked today" : n === 1 ? "worked yesterday" : `worked ${n} days ago`);
 const round = (n: number) => Math.round(n * 100) / 100;
 const round1 = (n: number) => Math.round(n * 10) / 10;

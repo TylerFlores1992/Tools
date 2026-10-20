@@ -122,6 +122,10 @@ test("deposits: same amount, near the pay date, unclaimed; a named one wins; two
   assert.equal(findDeposit(s, [early, late, wrong], new Set()), null);
   assert.equal(findDeposit(s, [plain, named], new Set())?.id, named.id);
   assert.equal(findDeposit(s, [plain, named], new Set([named.id]))?.id, plain.id);
+  // A phone deposit still pending is in the bank; a posted one wins over it.
+  const pend = txn({ posted: "2026-09-26", amount: 777.5, pending: true });
+  assert.equal(findDeposit(s, [pend], new Set())?.id, pend.id, "a pending deposit matches");
+  assert.equal(findDeposit(s, [pend, { ...plain, posted: "2026-09-28" }], new Set())?.id, plain.id, "posted beats pending");
   const a = stub({ net: 500, payDate: "2026-10-02", id: "a0000000-0000-0000-0000-000000000000" });
   const b = stub({ net: 500, payDate: "2026-10-09", id: "b0000000-0000-0000-0000-000000000000" });
   const d1 = txn({ posted: "2026-10-03", amount: 500 });
@@ -440,4 +444,30 @@ test("EDD: deposits filed as Paid Family Leave count toward the federal estimate
   assert.equal(withB.withheldSoFar, without.withheldSoFar, "nothing withheld on benefits");
   // 40,000 + 6,268 − 32,200 = 14,068 taxable at 10%; 40,000 − 32,200 = 7,800 at 10%.
   assert.equal(withB.scenarios[0].tax - without.scenarios[0].tax, 626.8);
+});
+
+// ---- work calendar ----
+
+test("calendar: Sunday-first weeks, padded with nulls; months shift across years", async () => {
+  const { monthGrid, shiftCalMonth, isCalMonth, calStatus, monthCounts } = await import("./calendar.ts");
+  const oct = monthGrid("2026-10"); // Oct 1 2026 is a Thursday
+  assert.equal(oct[0].length, 7);
+  assert.deepEqual(oct[0].slice(0, 5), [null, null, null, null, "2026-10-01"]);
+  assert.equal(oct.flat().filter(Boolean).length, 31);
+  assert.equal(oct.flat().length % 7, 0);
+  assert.equal(oct[oct.length - 1].filter(Boolean).pop(), "2026-10-31");
+  assert.deepEqual(monthGrid("2026-02")[0][0], "2026-02-01", "Feb 1 2026 is a Sunday: no padding");
+  assert.equal(monthGrid("2026-02").flat().filter(Boolean).length, 28);
+  const nov = monthGrid("2026-11"); // starts on a Sunday, 30 days: the last week is padded
+  assert.equal(nov.length, 5);
+  assert.deepEqual(nov[4], ["2026-11-29", "2026-11-30", null, null, null, null, null]);
+  assert.equal(shiftCalMonth("2026-01", -1), "2025-12");
+  assert.equal(shiftCalMonth("2026-12", 1), "2027-01");
+  assert.ok(isCalMonth("2026-10") && !isCalMonth("2026-13") && !isCalMonth(undefined) && !isCalMonth("2026-1"));
+  const day = (day: string, status: "paid" | "waiting" | "stub" | "scheduled" | "marked", late = false) => ({ key: day, eventId: "e", day, title: "Show", status, late, ageDays: 0, stubId: null, expected: null });
+  assert.equal(calStatus(day("2026-10-01", "waiting", true)), "late");
+  assert.equal(calStatus(day("2026-10-01", "waiting")), "waiting");
+  assert.equal(calStatus(day("2026-10-01", "paid", true)), "paid", "only a waiting day can be late");
+  assert.deepEqual(monthCounts([day("2026-10-01", "paid"), day("2026-10-02", "marked"), day("2026-10-03", "waiting", true), day("2026-09-30", "paid"), day("2026-10-20", "scheduled")], "2026-10"),
+    [{ status: "paid", count: 2 }, { status: "late", count: 1 }, { status: "scheduled", count: 1 }]);
 });

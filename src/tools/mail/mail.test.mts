@@ -57,6 +57,13 @@ test("security wins over bulk headers (a login alert from a mailing-list sender 
   assert.equal(c.bucket, "security");
 });
 
+test("a newsletter whose body mentions signing in is not security; its subject still counts", () => {
+  const news = classify(mail({ from: "Vercel <news@vercel.com>", subject: "MiniMax M3.1 Flash is free until October 22", snippet: "Sign in to the dashboard to try it", listUnsubscribe: "<https://vercel.com/u>" }), null);
+  assert.equal(news.bucket, "bulk");
+  // The same words from a sender without list headers are still a security email.
+  assert.equal(classify(mail({ from: "Shop <alerts@shop.com>", subject: "Your order", snippet: "New sign-in to your Shop account" }), null).bucket, "security");
+});
+
 test("needs you: bills with amount and due date; failed payment is urgent", () => {
   const sce = classify(mail({ from: "SCE <noreply@sce.com>", subject: "Your SCE bill is ready", snippet: "Amount due $806.67. Due Oct 26, 2026. Annual true-up." }), null);
   assert.equal(sce.bucket, "needs_you");
@@ -75,8 +82,8 @@ test("needs you: expiring plan; 'tomorrow' and 'suspended' are urgent", () => {
 test("needs you: a person writing (no list headers, not a robot address)", () => {
   const c = classify(mail({ from: "Parveen Kasraee <parveen.k@parks.ca.gov>", subject: "Records reply PRA 26-977" }), null);
   assert.equal(c.bucket, "needs_you");
-  assert.equal(c.title, "Email from Parveen Kasraee");
-  assert.equal(c.detail, "Records reply PRA 26-977");
+  assert.equal(c.title, "Records reply PRA 26-977", "the subject leads, like every other row");
+  assert.equal(c.detail, "From Parveen Kasraee");
 });
 
 test("bulk: list headers or marketing; a robot without lists is other", () => {

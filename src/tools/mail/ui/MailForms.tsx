@@ -80,7 +80,7 @@ export function RuleForm() {
   const [state, action, pending] = useActionState(createRule, INITIAL);
   const [act, setAct] = useState("trash");
   return (
-    <form action={action} className="grid gap-3 sm:grid-cols-2">
+    <form action={action} className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
       <label className="grid gap-1.5">
         <span className="text-small text-ink-2">From contains</span>
         <input name="matchFrom" placeholder="zillow.com" className={FIELD} />

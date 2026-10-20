@@ -363,7 +363,7 @@ test("bills: a metered bill seen twice counts; a shop visited twice a month apar
   ];
   const r = findRecurring(txns, "2026-10-05");
   const names = r.map((x) => `${x.name} ${x.cadence}`).sort();
-  assert.deepEqual(names, ["FLY.IO monthly", "LOGIX FCU monthly", "WASTE MANAGEMENT every 2 months"]);
+  assert.deepEqual(names, ["Fly.io monthly", "Logix Fcu monthly", "Waste Management every 2 months"]);
 });
 
 test("bills: one name, two bills (Spectrum internet and mobile) are found separately", () => {
@@ -394,4 +394,29 @@ test("months and money formatting", () => {
   assert.equal(money(-1234.5), "$1,234.50");
   assert.equal(signedMoney(-12), "−$12.00");
   assert.equal(signedMoney(12), "+$12.00");
+});
+
+test("recurring: a bill imported from a CSV and then synced is one series, named cleanly", async () => {
+  const { displayName } = await import("./merchant.ts");
+  // The CSV has the bank's words; the synced feed has the same words in a different case plus a payee.
+  const list = [
+    txn({ posted: "2026-07-01", amount: -4420.02, description: "WEB AUTHORIZED PMT Valon", category: "Housing" }),
+    txn({ posted: "2026-08-01", amount: -4420.02, description: "WEB AUTHORIZED PMT Valon", category: "Housing" }),
+    txn({ posted: "2026-09-01", amount: -4420.02, description: "Web Authorized Pmt Valon", payee: "Valon", category: "Housing" }),
+    txn({ posted: "2026-10-01", amount: -4420.02, description: "Web Authorized Pmt Valon", payee: "Valon", category: "Housing" }),
+  ];
+  const found = findRecurring(list, "2026-10-20");
+  assert.equal(found.length, 1, "one series, not a stopped CSV one and a synced one");
+  assert.equal(found[0].status, "active");
+  assert.equal(found[0].name, "Valon");
+  // A payee that drops words the description keeps ("Spectrum" vs "Spectrum 855-707-7328 MO").
+  const spectrum = ["2026-07-22", "2026-08-22", "2026-09-22", "2026-10-22"].map((d, i) =>
+    txn({ posted: d, amount: -263.2, description: i < 2 ? "Spectrum 855-707-7328 MO" : "Spectrum 855-707-7328 Mo", payee: i < 2 ? null : "Spectrum", category: "Phone & internet" }));
+  const sp = findRecurring(spectrum, "2026-10-23");
+  assert.deepEqual(sp.map((r) => [r.name, r.count, r.status]), [["Spectrum", 4, "active"]]);
+  assert.equal(displayName("Spectrum 855-707-7328 MO"), "Spectrum");
+  assert.equal(displayName("SPOTIFY USA 8775778"), "Spotify USA");
+  assert.equal(displayName("STILLWATER INS PREM PPD ID: 1710900874"), "Stillwater Ins Prem");
+  assert.equal(displayName("PG&E WEB ONLINE"), "PG&E");
+  assert.equal(displayName("12345"), "12345", "nothing left: the original stands");
 });

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
@@ -8,6 +7,7 @@ import { accountLabel, accountsFor, acrossFor, loadMoney } from "@/lib/money/loa
 import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
 import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, incomeSources } from "@/tools/money/summary";
 import { InOutChart } from "@/tools/money/ui/Charts";
+import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -74,8 +74,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
     return { month: m, label: monthName(m).slice(0, 3), moneyIn: x.moneyIn, moneyOut: Math.max(0, x.moneyOut), current: mode === "month" && m === month, empty: x.count === 0 };
   });
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
-  const paychecks = recurring.filter((r) => r.direction === "in" && r.status === "active");
-  const stopped = recurring.filter((r) => r.status === "stopped");
+  // Pay doesn't come on a schedule (freelance work), so recurring is about bills; pay lives on Income.
+  const stopped = recurring.filter((r) => r.status === "stopped" && r.direction === "out");
   const billsPerMonth = bills.reduce((n, r) => n + monthlyEquivalent(r), 0);
   const shown = data.accounts.filter((a) => ids.has(a.id));
   const lastRun = data.runs.find((r) => r.ok);
@@ -166,9 +166,9 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
       </div>
 
       <section aria-label="Totals" className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Total label="Money in" value={`+${money(s.moneyIn)}`} note={mode === "year" ? `About ${money(avgIn)} a month` : prev.count ? delta(s.moneyIn - prev.moneyIn, prevName) : `No data for ${prevName}`} />
-        <Total label="Money out" value={`−${money(s.moneyOut)}`} note={mode === "year" ? `About ${money(avgOut)} a month` : prev.count ? delta(s.moneyOut - prev.moneyOut, prevName) : `No data for ${prevName}`} />
-        <Total label="Net" value={signedMoney(s.net)} note={`${s.net >= 0 ? "Ahead" : "Behind"} this ${mode}`} />
+        <StatTile label="Money in" value={`+${money(s.moneyIn)}`} note={mode === "year" ? `About ${money(avgIn)} a month` : prev.count ? delta(s.moneyIn - prev.moneyIn, prevName) : `No data for ${prevName}`} />
+        <StatTile label="Money out" value={`−${money(s.moneyOut)}`} note={mode === "year" ? `About ${money(avgOut)} a month` : prev.count ? delta(s.moneyOut - prev.moneyOut, prevName) : `No data for ${prevName}`} />
+        <StatTile label="Net" value={signedMoney(s.net)} note={`${s.net >= 0 ? "Ahead" : "Behind"} this ${mode}`} />
       </section>
       <p className="mt-3 text-small text-muted">Transfers between your own accounts aren’t counted as money in or out. In the Mine and Joint views, money moved between the two is.{mode === "year" && withData.length < yearMonths.length ? ` ${yearMonths.length - withData.length} ${yearMonths.length - withData.length === 1 ? "month has" : "months have"} no data yet; older months can be imported in Settings.` : ""}</p>
 
@@ -237,8 +237,9 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
           {s.byCategory.filter((c) => c.out > 0).length === 0 ? (
             <p className="mt-4 text-body text-ink-2">No spending recorded for {mode === "year" ? year : monthName(month)}.</p>
           ) : (
+            <>
             <ul className="mt-5 grid gap-3">
-              {s.byCategory.filter((c) => c.out > 0).map((c) => (
+              {s.byCategory.filter((c) => c.out > 0).slice(0, TOP_CATEGORIES).map((c) => (
                 <li key={c.category}>
                   <Link href={`/private/money/transactions?${new URLSearchParams({ month: period, category: c.category, ...(view !== "all" ? { view } : {}) })}`} className="group block rounded-btn px-1 py-1 hover:bg-surface-2">
                     <span className="flex items-baseline justify-between gap-4 text-body">
@@ -255,6 +256,30 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
                 </li>
               ))}
             </ul>
+            {s.byCategory.filter((c) => c.out > 0).length > TOP_CATEGORIES && (
+              <details className="mt-2">
+                <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show {s.byCategory.filter((c) => c.out > 0).length - TOP_CATEGORIES} more</summary>
+                <ul className="mt-2 grid gap-3">
+                  {s.byCategory.filter((c) => c.out > 0).slice(TOP_CATEGORIES).map((c) => (
+                <li key={c.category}>
+                  <Link href={`/private/money/transactions?${new URLSearchParams({ month: period, category: c.category, ...(view !== "all" ? { view } : {}) })}`} className="group block rounded-btn px-1 py-1 hover:bg-surface-2">
+                    <span className="flex items-baseline justify-between gap-4 text-body">
+                      <span className="text-ink group-hover:underline group-hover:underline-offset-4">{c.category}</span>
+                      <span className="tabular-nums text-ink">{money(c.out)}</span>
+                    </span>
+                    <span className="mt-1.5 flex items-center gap-3">
+                      <span aria-hidden="true" className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                        <span className="block h-full rounded-full bg-ice" style={{ width: `${Math.max(2, (c.out / maxOut) * 100)}%` }} />
+                      </span>
+                      <span className="w-[13ch] text-right text-small tabular-nums text-muted">{Math.round((c.out / s.moneyOut) * 100)}% · {c.count} {c.count === 1 ? "item" : "items"}</span>
+                    </span>
+                  </Link>
+                </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+            </>
           )}
         </section>
 
@@ -283,7 +308,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
           {shown.length === 0 ? (
             <p className="mt-4 text-body text-ink-2">{data.accounts.length ? "No accounts in this view. Set owners in Settings." : "No accounts yet."}</p>
           ) : (
-            <ul className="mt-5 grid gap-3">
+            <ul className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-3">
               {shown.map((a) => (
                 <li key={a.id}>
                   <div className="flex items-center justify-between gap-4 rounded-card border border-line bg-surface p-4 shadow-card">
@@ -316,8 +341,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
           <div className="mt-5 grid gap-8 lg:grid-cols-2">
             <RecurringList title="Bills and subscriptions" items={bills} empty="None found yet." />
             <div className="grid min-w-0 content-start gap-8">
-              <RecurringList title="Income" items={paychecks} empty="No regular income found yet." />
-              {stopped.length > 0 && <RecurringList title="May have stopped" items={stopped} empty="" />}
+              {stopped.length > 0 ? <RecurringList title="May have stopped" items={stopped} empty="" note="Not seen for more than half a cycle." /> : <p className="text-body text-ink-2">Every bill has shown up when expected.</p>}
+              <p className="text-small text-muted">Pay isn&rsquo;t listed here: it doesn&rsquo;t come on a schedule. Stubs, what you&rsquo;ve been paid and pay still owed are on <Link href="/private/money/income" className="underline underline-offset-4 hover:text-ink">Income</Link>.</p>
             </div>
           </div>
         )}
@@ -326,6 +351,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   );
 }
 
+/** Categories shown before "Show more" in Where it went. */
+const TOP_CATEGORIES = 8;
 const CHIP = "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small tabular-nums text-ink-2 hover:text-ink";
 const CHIP_ON = "flex min-h-10 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small tabular-nums text-on-primary";
 const STEP = "flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink";
@@ -336,20 +363,12 @@ function delta(n: number, prevMonth: string) {
   return `${money(n)} ${n > 0 ? "more" : "less"} than ${prevMonth}`;
 }
 
-function Total({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <Card>
-      <p className="font-mono text-label uppercase text-ink-2">{label}</p>
-      <p className="mt-2 text-title font-normal tabular-nums">{value}</p>
-      <p className="mt-1 text-small tabular-nums text-muted">{note}</p>
-    </Card>
-  );
-}
 
-function RecurringList({ title, items, empty }: { title: string; items: Recurring[]; empty: string }) {
+function RecurringList({ title, items, empty, note }: { title: string; items: Recurring[]; empty: string; note?: string }) {
   return (
     <div className="min-w-0">
       <h3 className="text-h3 font-medium">{title}</h3>
+      {note && <p className="mt-1 text-small text-muted">{note}</p>}
       {items.length === 0 ? (
         <p className="mt-3 text-body text-ink-2">{empty}</p>
       ) : (
