@@ -166,6 +166,10 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   them by take-home), or from the saved stubs with the closest take-home. gross − taxes = take-home
   on each. Tagged "Estimate". A real stub that matches the same deposit, or the same take-home
   within two weeks, replaces it (`matchDepositsAndEstimates`, run on every save and bank sync).
+- **EDD benefits** (`benefits.ts`, kind `benefit`): each EDD deposit is filed on Income as Paid
+  Family Leave or Disability Insurance. Per EDD's 1099G FAQ (read 2026-10-20): PFL is taxable on the
+  federal return only, nothing withheld; DI usually not taxable; neither taxed by California;
+  neither is wages. PFL is added to the federal withholding estimate.
 - **Stubs still missing** (`missing.ts`): this year's deposits that look like pay (named payroll
   companies, generic PAYROLL/PR DEPOSIT wording, phone check deposits; never EDD, tax refunds,
   transfers, Zelle, Stripe), grouped by payer, minus the ones a saved stub matched. The same

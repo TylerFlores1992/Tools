@@ -79,3 +79,7 @@ end $$;
 
 -- 2026-10-20: estimated stubs (estimate.ts) for pay that reached the bank without a stub.
 alter table money.stubs add column if not exists estimated boolean not null default false;
+
+-- 2026-10-20: EDD benefits (Paid Family Leave, Disability Insurance) filed from bank deposits (benefits.ts).
+alter table money.stubs drop constraint if exists stubs_kind_check;
+alter table money.stubs add constraint stubs_kind_check check (kind in ('stub', 'w2', 'benefit'));

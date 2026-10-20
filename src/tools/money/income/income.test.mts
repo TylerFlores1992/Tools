@@ -10,6 +10,7 @@ import { findDeposit, matchDeposits } from "./match.ts";
 import { missingStubs, payerOf } from "./missing.ts";
 import { countedStubs, replacedBy } from "./reissue.ts";
 import { estimateFromSimilar, remainingFromYtd, splitByNet } from "./estimate.ts";
+import { benefitsByProgram, DI, PFL, taxableBenefits, unfiledEdd } from "./benefits.ts";
 import { matchDepositsAndEstimates } from "./match.ts";
 import { fromRead, noSsn, type ReadResult } from "./read.ts";
 import { DEFAULT_CONFIG, emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type WorkEvent } from "./types.ts";
@@ -416,4 +417,27 @@ test("estimates: a real stub for the same check takes the deposit and replaces t
   const r3 = matchDepositsAndEstimates([stub({ estimated: true, payDate: "2026-08-27", net: 1595.59 })], [dep]);
   assert.equal(r3.matched.size, 1);
   assert.equal(r3.superseded.length, 0);
+});
+
+// ---- EDD benefits ----
+
+test("EDD: deposits filed as Paid Family Leave count toward the federal estimate; Disability doesn't; neither is wages", () => {
+  const pfl1 = txn({ posted: "2026-05-04", amount: 4477.14, description: "California EDD DI Deposit PPD ID: 364483541" });
+  const pfl2 = txn({ posted: "2026-06-09", amount: 1790.86, description: "California EDD DI Deposit PPD ID: 364483541" });
+  const di = txn({ posted: "2026-01-14", amount: 3362, description: "California EDD DI Deposit PPD ID: 364483541" });
+  const notEdd = txn({ posted: "2026-01-14", amount: 50, description: "Zelle from SOMEONE" });
+  const pending = txn({ posted: "2026-10-20", amount: 100, description: "California EDD DI Deposit", pending: true });
+  const ben = (t: Txn, program: string) => stub({ kind: "benefit", employer: "California EDD", showName: program, payDate: t.posted, taxYear: 2026, gross: t.amount, net: t.amount, taxes: emptyTaxes(), earnings: [], depositTxnId: t.id, depositMatch: "manual" });
+  const wage = stub({ payDate: "2026-03-05", gross: 40000, net: 30000, taxes: { ...emptyTaxes(), federal: 3000 } });
+  const filed = [ben(pfl1, PFL), ben(pfl2, PFL), ben(di, DI)];
+  assert.deepEqual(unfiledEdd([pfl1, pfl2, di, notEdd, pending], [wage, filed[0]]).map((t) => t.id), [di.id, pfl2.id], "unfiled EDD deposits only, oldest first");
+  assert.equal(taxableBenefits([...filed, wage], 2026), 6268);
+  assert.deepEqual(benefitsByProgram(filed, 2026).map((b) => [b.program, b.total, b.federallyTaxable]), [[PFL, 6268, true], [DI, 3362, false]]);
+  const without = withholdingEstimate([wage], cfg({ tax: { ...DEFAULT_CONFIG.tax, filing: "joint", otherWages: 0, otherFederalWithheld: 0 } }), "2026-10-20");
+  const withB = withholdingEstimate([wage, ...filed], cfg({ tax: { ...DEFAULT_CONFIG.tax, filing: "joint", otherWages: 0, otherFederalWithheld: 0 } }), "2026-10-20");
+  assert.equal(withB.wagesSoFar, 40000, "benefits aren't wages");
+  assert.equal(withB.benefits, 6268);
+  assert.equal(withB.withheldSoFar, without.withheldSoFar, "nothing withheld on benefits");
+  // 40,000 + 6,268 − 32,200 = 14,068 taxable at 10%; 40,000 − 32,200 = 7,800 at 10%.
+  assert.equal(withB.scenarios[0].tax - without.scenarios[0].tax, 626.8);
 });

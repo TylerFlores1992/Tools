@@ -1,6 +1,7 @@
 import { workedHours } from "./checks.ts";
 import type { IncomeConfig, Stub, W2 } from "./types.ts";
 import { countedStubs } from "./reissue.ts";
+import { taxableBenefits } from "./benefits.ts";
 
 /**
  * A rough federal check: is enough being withheld across all employers?
@@ -34,6 +35,8 @@ export function federalTax(taxable: number, filing: "single" | "joint"): number 
 
 export type Estimate = {
   wagesSoFar: number;
+  /** Paid Family Leave this year: federal taxable, nothing withheld (benefits.ts). */
+  benefits: number;
   withheldSoFar: number;
   weeksSoFar: number;
   scenarios: Array<{ label: string; wages: number; tax: number; withheld: number; gap: number }>; // gap > 0 = owe
@@ -47,6 +50,7 @@ export function withholdingEstimate(stubs: readonly Stub[], config: IncomeConfig
   const year = Number(today.slice(0, 4));
   const mine = countedStubs(stubs).filter((s) => (s.taxYear ?? Number((s.payDate ?? "").slice(0, 4))) === year);
   const wagesSoFar = round(mine.reduce((n, s) => n + (s.gross ?? 0), 0));
+  const benefits = taxableBenefits(stubs, year);
   const withheldSoFar = round(mine.reduce((n, s) => n + (s.taxes.federal ?? 0), 0));
   const ss = round(mine.reduce((n, s) => n + (s.taxes.socialSecurity ?? 0), 0));
   const overtimePremium = round(mine.reduce((n, s) => n + s.earnings.reduce((m, e) => m + (e.kind === "overtime" ? e.amount / 3 : e.kind === "double_time" ? e.amount / 2 : 0), 0), 0));
@@ -58,13 +62,14 @@ export function withholdingEstimate(stubs: readonly Stub[], config: IncomeConfig
   const { filing, otherWages, otherFederalWithheld, overtimeDeduction } = config.tax;
   const scenario = (label: string, wages: number, withheld: number) => {
     const otDeduction = overtimeDeduction ? Math.min(OT_CAP[filing], overtimePremium * (wages / Math.max(1, wagesSoFar))) : 0;
-    const taxable = Math.max(0, wages + otherWages - STANDARD[filing] - otDeduction);
+    // PFL already received counts once in both scenarios: it isn't paced like wages.
+    const taxable = Math.max(0, wages + otherWages + benefits - STANDARD[filing] - otDeduction);
     const tax = federalTax(taxable, filing);
     const w = round(withheld + otherFederalWithheld);
-    return { label, wages: round(wages + otherWages), tax, withheld: w, gap: round(tax - w) };
+    return { label, wages: round(wages + otherWages + benefits), tax, withheld: w, gap: round(tax - w) };
   };
   return {
-    wagesSoFar, withheldSoFar, weeksSoFar,
+    wagesSoFar, benefits, withheldSoFar, weeksSoFar,
     scenarios: [
       scenario("If you earn nothing more this year", wagesSoFar, withheldSoFar),
       scenario("If the rest of the year goes like it has so far", paceWages, paceWithheld),

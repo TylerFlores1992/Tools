@@ -4,7 +4,7 @@ import { LinkButton } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
-import { markNotPay } from "./actions";
+import { fileEdd, markNotPay, unfileEdd } from "./actions";
 import { requirePrivate } from "@/lib/money/guard";
 import { isConfigured } from "@/lib/money/db";
 import { getIncomeSettings, listEvents, listStubs } from "@/lib/money/income/store";
@@ -13,6 +13,7 @@ import { employerKey, sameEmployer, taxTotal, workedHours } from "@/tools/money/
 import { healthPeriods } from "@/tools/money/income/health";
 import { missingStubs } from "@/tools/money/income/missing";
 import { replacedBy } from "@/tools/money/income/reissue";
+import { benefitsByProgram, isBenefit, PFL, PROGRAMS, unfiledEdd, yearOfBenefit } from "@/tools/money/income/benefits";
 import { TAX_KEYS, TAX_LABEL, type Stub } from "@/tools/money/income/types";
 import { TAX_YEAR, w2Check, withholdingEstimate } from "@/tools/money/income/withholding";
 import { workDays, type WorkDay } from "@/tools/money/income/workdays";
@@ -51,6 +52,9 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const txns = await getTransactions(`${year}-01-01`);
   const missing = missingStubs(txns.filter((t) => t.posted <= `${year}-12-31`), stubs, year);
   const missingCount = missing.reduce((n, g) => n + g.deposits.length, 0);
+  const eddUnfiled = unfiledEdd(txns.filter((t) => t.posted <= `${year}-12-31`), stubs);
+  const eddFiled = stubs.filter((s) => isBenefit(s) && yearOfBenefit(s) === year).sort((a, b) => (a.payDate ?? "").localeCompare(b.payDate ?? ""));
+  const eddTotals = benefitsByProgram(stubs, year);
 
   // A reissued week's first stub still counts as money received, not toward gross/taxes/hours (reissue.ts).
   const replaced = replacedBy(stubs);
@@ -269,6 +273,58 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         </section>
       </div>
 
+      {(eddFiled.length > 0 || eddUnfiled.length > 0) && (
+        <section aria-labelledby="edd" className="mt-12 max-w-[860px]">
+          <h2 id="edd" className="text-h2 font-normal">EDD benefits</h2>
+          <p className="mt-2 max-w-[68ch] text-body text-ink-2">Paid Family Leave is taxed on your federal return only, with nothing withheld. Disability Insurance usually isn&rsquo;t taxed at all. Neither is taxed by California, and neither is wages. EDD sends a 1099-G for Paid Family Leave.</p>
+          {eddTotals.length > 0 && (
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {eddTotals.map((b) => (
+                <li key={b.program}><Card>
+                  <p className="text-small text-ink-2">{b.program} {year}</p>
+                  <p className="mt-2 text-h2 font-normal tabular-nums">{money(b.total)}</p>
+                  <p className="mt-1 text-small text-muted">{b.count} {b.count === 1 ? "payment" : "payments"} · {b.federallyTaxable ? "federal taxable, not California" : "not taxable"}</p>
+                </Card></li>
+              ))}
+            </ul>
+          )}
+          {eddUnfiled.length > 0 && (
+            <>
+              <p className="mt-6 text-body text-ink">EDD deposits to file</p>
+              <ul className="mt-2 divide-y divide-line rounded-card border border-line bg-surface">
+                {eddUnfiled.map((t) => (
+                  <li key={t.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-2">
+                    <span className="text-body">{shortDate(t.posted)} · <span className="tabular-nums">{money(t.amount)}</span></span>
+                    <span className="flex flex-wrap gap-2">
+                      {PROGRAMS.map((p) => (
+                        <form key={p} action={fileEdd}><input type="hidden" name="txn" value={t.id} /><input type="hidden" name="program" value={p} />
+                          <button type="submit" className="min-h-11 rounded-btn border border-line-2 bg-surface px-3 text-small text-ink hover:bg-surface-2">{p === PFL ? "Family leave" : "Disability"}</button>
+                        </form>
+                      ))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {eddFiled.length > 0 && (
+            <details className="mt-4">
+              <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show the {eddFiled.length} filed {eddFiled.length === 1 ? "payment" : "payments"}</summary>
+              <ul className="mt-2 divide-y divide-line text-small">
+                {eddFiled.map((s) => (
+                  <li key={s.id} className="flex flex-wrap items-center justify-between gap-3 py-1">
+                    <span className="text-ink-2">{s.payDate ? shortDate(s.payDate) : "?"} · {s.showName}</span>
+                    <span className="flex items-center gap-3"><span className="tabular-nums">{money(s.gross ?? 0)}</span>
+                      <form action={unfileEdd}><input type="hidden" name="id" value={s.id} /><button type="submit" className="min-h-11 px-2 text-small text-ink-2 underline underline-offset-4 hover:text-ink">Unfile</button></form>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </section>
+      )}
+
       {estimate && (
         <section aria-labelledby="fed" className="mt-12 max-w-[860px]">
           <h2 id="fed" className="text-h2 font-normal">Is enough federal tax being withheld?</h2>
@@ -279,7 +335,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
                 <Card>
                   <p className="text-small text-ink-2">{s.label}</p>
                   <p className="mt-2 text-h2 font-normal tabular-nums">{s.gap > 0 ? `You'd owe ≈ ${money(s.gap)}` : `Refund ≈ ${money(-s.gap)}`}</p>
-                  <p className="mt-1 text-small text-muted">Wages {money(s.wages)} · tax ≈ {money(s.tax)} · withheld {money(s.withheld)}</p>
+                  <p className="mt-1 text-small text-muted">{estimate.benefits ? "Wages and family leave" : "Wages"} {money(s.wages)} · tax ≈ {money(s.tax)} · withheld {money(s.withheld)}</p>
                 </Card>
               </li>
             ))}
@@ -287,6 +343,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           <ul className="mt-3 grid gap-1 text-small text-muted">
             <li>Overtime premium on your stubs this year: {money(estimate.overtimePremium)}. The new “no tax on overtime” deduction covers only overtime federal law requires, not California daily or union overtime, so it isn&rsquo;t counted unless you turn it on in settings.</li>
             {estimate.ssOverWithheld > 0 && <li>Social Security withheld across employers is {money(estimate.ssOverWithheld)} over the {TAX_YEAR} wage-base maximum; that comes back when you file.</li>}
+            {estimate.benefits > 0 && <li>Includes {money(estimate.benefits)} of Paid Family Leave: federal taxable, with nothing withheld on it.</li>}
             <li>California tax isn&rsquo;t estimated: its {TAX_YEAR} schedule wasn&rsquo;t published yet. A guide only, not tax advice.</li>
           </ul>
         </section>
