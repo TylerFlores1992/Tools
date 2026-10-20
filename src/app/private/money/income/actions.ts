@@ -18,27 +18,8 @@ import { defaultLinks } from "@/tools/money/income/workdays";
 
 /** Every action re-checks the session itself; the proxy is the first lock, not the only one. */
 
-export type UploadState = { error?: string; attempt: number };
-
 const MAX_BYTES = 4_000_000;
 const OK_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
-
-export async function uploadDocument(prev: UploadState, form: FormData): Promise<UploadState> {
-  await requirePrivate("/private/money/income/add");
-  const attempt = prev.attempt + 1;
-  const kind = form.get("kind") === "w2" ? "w2" : "stub";
-  const file = form.get("file");
-  if (!(file instanceof File) || file.size === 0) return { error: "Take a photo or choose a file first.", attempt };
-  if (file.size > MAX_BYTES) return { error: "That file is over 4 MB. Take the photo again, or save the PDF smaller.", attempt };
-  if (!OK_TYPES.has(file.type)) return { error: "Use a photo (JPEG, PNG) or a PDF.", attempt };
-  const bytes = Buffer.from(await file.arrayBuffer());
-  const existing = await findStubByFile(bytes);
-  if (existing) redirect(`/private/money/income/stubs/${existing}`);
-  const id = await createStub(kind, file.type, bytes);
-  await readInto(id, bytes, file.type, kind);
-  revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/income/stubs/${id}`);
-}
 
 export type OneResult =
   | { ok: true; id: string; status: "review" | "failed"; label: string }
