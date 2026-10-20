@@ -119,13 +119,6 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         <div>
           <Label>Money</Label>
           <h1 className="mt-3 text-title font-normal">Income {year}</h1>
-          <div className="mt-3 max-w-[60ch] text-small text-muted">
-            {calendarConnected ? (
-              <CalendarRefresh lastRunAt={settings.lastRunAt} pending={refreshPending(settings.lastRunAt, settings.refreshAt)} scriptVersion={scriptVersionOf(settings.lastSummary)}>
-                <Link href="/private/money/settings#income" className="underline underline-offset-4 hover:text-ink">Calendar settings</Link>
-              </CalendarRefresh>
-            ) : <>Calendar not connected · <Link href="/private/money/settings#income" className="underline underline-offset-4 hover:text-ink">Calendar settings</Link></>}
-          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <LinkButton href="/private/money/income/add">Add stubs</LinkButton>
@@ -260,6 +253,11 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         <section aria-labelledby="calendar" className="mt-12 min-w-0 scroll-mt-6">
           <h2 id="calendar" className="text-h2 font-normal">Work calendar</h2>
           <p className="mt-2 max-w-[68ch] text-body text-ink-2">Your work days from your calendar (and any you imported), and where each day&rsquo;s pay stands. Tap a paid day to open its stub.</p>
+          <div className="mt-2 text-small text-muted">
+            <CalendarRefresh lastRunAt={settings.lastRunAt} pending={refreshPending(settings.lastRunAt, settings.refreshAt)} scriptVersion={scriptVersionOf(settings.lastSummary)}>
+              <Link href="/private/money/settings#income" className="underline underline-offset-4 hover:text-ink">Calendar settings</Link>
+            </CalendarRefresh>
+          </div>
           <div className="mt-4">
             <WorkCalendar days={days} month={calMonth} today={today} href={calHref} minMonth={calMin} maxMonth={calMax} />
           </div>
