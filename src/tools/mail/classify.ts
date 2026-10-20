@@ -73,7 +73,12 @@ export function classify(mail: IncomingMail, rule: Rule | null): Classified {
     return { bucket: "needs_you", level: "normal", title: subject, detail: detail(facts ?? clip(mail.snippet, 140)) };
   }
 
-  if (SECURITY.test(text)) {
+  const bulkish = Boolean(unsub.http || unsub.mailto) || MARKETING.test(mail.subject);
+  // A newsletter's body says "sign in" and "log in" all the time; from a mailing list, only a
+  // subject that says so is a security email (a login alert from a list sender still is).
+  const securityText = bulkish ? mail.subject : text;
+
+  if (SECURITY.test(securityText)) {
     // A bare verification code is information: it expires in minutes and was usually asked for.
     const codeOnly = CODE_ONLY.test(text) && !SECURITY_URGENT.test(text);
     return {
@@ -84,8 +89,6 @@ export function classify(mail: IncomingMail, rule: Rule | null): Classified {
     };
   }
 
-  const bulkish = Boolean(unsub.http || unsub.mailto) || MARKETING.test(mail.subject);
-
   if (BILL.test(text)) {
     return { bucket: "needs_you", level: BILL_URGENT.test(text) ? "urgent" : "normal", title: subject, detail: detail(facts) };
   }
@@ -95,7 +98,7 @@ export function classify(mail: IncomingMail, rule: Rule | null): Classified {
 
   // A person, not a machine: no list headers, not a robot address, not marketing.
   if (!bulkish && sender.addr && !ROBOT_ADDR.test(sender.addr)) {
-    return { bucket: "needs_you", level: "normal", title: `Email from ${who}`, detail: subject };
+    return { bucket: "needs_you", level: "normal", title: subject, detail: `From ${who}` };
   }
 
   if (bulkish) return { bucket: "bulk", level: "info", title: subject, detail: detail() };

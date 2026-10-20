@@ -23,7 +23,10 @@ Yahoo ── IMAP, app passwords, Vercel Cron 14:02 UTC (≈7 am PT) ──► /
 - **Classifier** (`src/tools/mail/classify.ts`, pure, tested): owner rules, then security
   (sign-ins, new devices, breaches; a bare verification code is info), then needs you (bills with
   amount and due date, things expiring, a person writing), then bulk (List-Unsubscribe or
-  marketing), else other (counted only). Security is checked before bulk on purpose.
+  marketing), else other (counted only). Security is checked before bulk on purpose, but from a
+  mailing list (List-Unsubscribe, or a marketing subject) only the SUBJECT counts: newsletter
+  bodies say "sign in" constantly (a Vercel AI Gateway promo landed under Security on 2026-10-20).
+  Every row leads with the subject; "From <sender>" is the second line, a person's email included.
 - **Report** (`src/tools/mail/report.ts`): needs-you and security items carry forward up to 7
   days until ticked ✓; codes show only on their day; Done lines per account; unsubscribe by hand;
   still arriving 3+ days after an unsubscribe; couldn't do; mailing lists with one-tap rules.

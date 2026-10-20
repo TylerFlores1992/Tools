@@ -6,7 +6,13 @@ import type { Stub } from "./types.ts";
  * A stub's net pay usually arrives in the bank to the cent: direct deposit a day or two after the
  * pay date, or a paper check deposited from the phone up to a few weeks later. So: money in, same
  * amount, between 3 days before the pay date and 30 days after it, not already claimed by another
- * stub. Ties go to a deposit naming the payroll company or employer, then to the nearest date.
+ * stub. Ties go to a deposit naming the payroll company or employer, then to one that has
+ * posted, then to the nearest date.
+ *
+ * A pending deposit counts: a check deposited from the phone sits pending for a day or two, and
+ * it is in the bank. The sync deletes pending rows and writes them again, which unlinks the stub
+ * (`on delete set null`); the rematch after every sync links it again, to the posted row once
+ * there is one.
  */
 
 const dayDiff = (a: string, b: string) => Math.round((Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) / 86_400_000);
@@ -17,13 +23,14 @@ export function findDeposit(stub: Pick<Stub, "net" | "payDate" | "employer" | "p
   if (stub.net === null || !stub.payDate || stub.net <= 0) return null;
   const names = [...words(stub.payrollCompany), ...words(stub.employer)];
   const candidates = txns.filter((t) =>
-    !t.pending && t.amount > 0 && !taken.has(t.id) &&
+    t.amount > 0 && !taken.has(t.id) &&
     Math.abs(t.amount - stub.net!) < 0.005 &&
     dayDiff(t.posted, stub.payDate!) >= -3 && dayDiff(t.posted, stub.payDate!) <= 30,
   );
   const named = (t: Txn) => names.some((w) => normalize(`${t.description} ${t.payee ?? ""}`).includes(w));
   return candidates.sort((a, b) =>
     Number(named(b)) - Number(named(a)) ||
+    Number(a.pending) - Number(b.pending) ||
     Math.abs(dayDiff(a.posted, stub.payDate!)) - Math.abs(dayDiff(b.posted, stub.payDate!)),
   )[0] ?? null;
 }

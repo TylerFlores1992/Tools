@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountsFor, acrossFor, loadMoney } from "@/lib/money/load";
@@ -8,6 +7,7 @@ import { buildBudget } from "@/tools/money/budget";
 import { findRecurring } from "@/tools/money/recurring";
 import { money, monthName, shortDate, signedMoney } from "@/tools/money/summary";
 import { NeedBar } from "@/tools/money/ui/Charts";
+import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
 
@@ -63,14 +63,14 @@ export default async function MoneyBudget({ searchParams }: { searchParams: Prom
       </div>
 
       <section aria-label="Monthly totals" className="mt-6 grid max-w-[960px] gap-4 sm:grid-cols-2">
-        <Tile label="Needed each month" value={money(b.needPerMonth)} note={`${money(b.billsPerMonth)} bills + ${money(b.everydayPerMonth)} everyday`} />
-        <Tile label="Usually comes in" value={money(b.incomePerMonth)} note="Average money in a month" />
-        <Tile
+        <StatTile label="Needed each month" value={money(b.needPerMonth)} note={`${money(b.billsPerMonth)} bills + ${money(b.everydayPerMonth)} everyday`} />
+        <StatTile label="Usually comes in" value={money(b.incomePerMonth)} note="Average money in a month" />
+        <StatTile
           label={b.spare >= 0 ? "Left over" : "Short"}
           value={signedMoney(b.spare)}
           note={`${b.spare >= 0 ? "A month, on average" : "A month, on average: more goes out than comes in"}${b.savingPerMonth > 0 ? `, after ${money(b.savingPerMonth)} to savings and investing` : ""}`}
         />
-        <Tile
+        <StatTile
           label="Cash on hand"
           value={b.cash === null ? "–" : `${b.cash < 0 ? "−" : ""}${money(b.cash)}`}
           note={b.monthsCovered === null ? "Balances not synced yet" : `Covers about ${b.monthsCovered} ${b.monthsCovered === 1 ? "month" : "months"} of needs (cards count against it)`}
@@ -177,12 +177,3 @@ export default async function MoneyBudget({ searchParams }: { searchParams: Prom
   );
 }
 
-function Tile({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <Card>
-      <p className="font-mono text-label uppercase text-ink-2">{label}</p>
-      <p className="mt-2 text-title font-normal tabular-nums">{value}</p>
-      <p className="mt-1 text-small text-muted">{note}</p>
-    </Card>
-  );
-}

@@ -7,6 +7,7 @@ import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
 import { CATEGORIES } from "@/tools/money/categorize";
 import { merchantKey } from "@/tools/money/recurring";
+import { displayName } from "@/tools/money/merchant";
 import { isMonth, isYear, money, monthName, monthOf, shiftMonth, shortDate } from "@/tools/money/summary";
 import type { Txn } from "@/tools/money/types";
 import { MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
@@ -132,45 +133,46 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function Row({ t, account }: { t: Txn; account: string }) {
   const merchant = merchantKey(t.payee || t.description);
+  // The whole row opens the category editor: one tap target instead of a link under every row.
   return (
-    <li className="px-4 py-3">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="break-words text-body text-ink">{t.payee || t.description}</p>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-muted">
-            <span>{t.category ?? "Uncategorized"}</span>
-            <span aria-hidden="true">·</span>
-            <span className="truncate">{account}</span>
-            {t.pending && <Tag>Pending</Tag>}
-          </p>
-        </div>
-        <p className="shrink-0 text-body tabular-nums text-ink">
-          <span className="sr-only">{t.amount < 0 ? "Money out:" : "Money in:"} </span>
-          {t.amount < 0 ? "−" : "+"}{money(t.amount)}
-        </p>
-      </div>
-      <details className="group mt-2">
-        <summary className="inline-flex min-h-9 cursor-pointer items-center rounded-btn px-1 text-small text-ink-2 hover:text-ink">
-          Change category<span className="sr-only"> for {t.payee || t.description}</span>
+    <li>
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-4 py-3 hover:bg-surface-2 [&::-webkit-details-marker]:hidden">
+          <span className="min-w-0">
+            <span className="block break-words text-body text-ink">{t.payee || displayName(t.description)}</span>
+            <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-muted">
+              <span className="underline decoration-line-2 underline-offset-4 group-hover:decoration-current">{t.category ?? "Uncategorized"}<span className="sr-only">: change category</span></span>
+              <span aria-hidden="true">·</span>
+              <span className="truncate">{account}</span>
+              {t.pending && <Tag>Pending</Tag>}
+            </span>
+          </span>
+          <span className="shrink-0 text-body tabular-nums text-ink">
+            <span className="sr-only">{t.amount < 0 ? "Money out:" : "Money in:"} </span>
+            {t.amount < 0 ? "−" : "+"}{money(t.amount)}
+          </span>
         </summary>
-        <form action={recategorize} className="mt-2 grid gap-3 sm:grid-cols-[minmax(0,16rem)_1fr_auto] sm:items-center">
-          <input type="hidden" name="id" value={t.id} />
-          <input type="hidden" name="description" value={t.payee || t.description} />
-          <label className="grid gap-1">
-            <span className="sr-only">Category</span>
-            <select name="category" defaultValue={t.category ?? ""} className={SELECT}>
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-          {merchant.length >= 3 ? (
-            <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
-              <input type="checkbox" name="always" defaultChecked className="size-5 accent-ink" />
-              <span>Always file “{merchant}” this way</span>
+        <div className="border-t border-line px-4 pb-4 pt-3">
+          {(t.payee || displayName(t.description)) !== t.description && <p className="mb-3 break-words text-small text-muted">Bank says: {t.description}</p>}
+          <form action={recategorize} className="grid gap-3 sm:grid-cols-[minmax(0,16rem)_1fr_auto] sm:items-center">
+            <input type="hidden" name="id" value={t.id} />
+            <input type="hidden" name="description" value={t.payee || t.description} />
+            <label className="grid gap-1">
+              <span className="sr-only">Category</span>
+              <select name="category" defaultValue={t.category ?? ""} className={SELECT}>
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
             </label>
-          ) : <span />}
-          <Button type="submit" variant="quiet">Save</Button>
-        </form>
-        {t.categorySource && <p className="mt-2 text-small text-muted">Current: {SOURCE_WORD[t.categorySource]}.{t.memo ? ` Memo: ${t.memo}` : ""}</p>}
+            {merchant.length >= 3 ? (
+              <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
+                <input type="checkbox" name="always" defaultChecked className="size-5 accent-ink" />
+                <span>Always file “{merchant}” this way</span>
+              </label>
+            ) : <span />}
+            <Button type="submit" variant="quiet">Save</Button>
+          </form>
+          {t.categorySource && <p className="mt-2 text-small text-muted">Current: {SOURCE_WORD[t.categorySource]}.{t.memo ? ` Memo: ${t.memo}` : ""}</p>}
+        </div>
       </details>
     </li>
   );

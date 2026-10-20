@@ -181,7 +181,15 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   missing stub). Words, never colour.
 - **Deposits** (`match.ts`): net pay to the cent, −3 to +30 days of the pay date (paper checks get
   deposited late), one stub per deposit, a deposit naming the payroll company wins. Runs on save
-  and after every bank sync. The owner can pick another or say "no deposit".
+  and after every bank sync. The owner can pick another or say "no deposit". A pending deposit
+  counts (a phone check sits pending a day or two; until 2026-10-20 two cleared NBC checks still
+  read "not in the bank"); a posted one wins over it. The sync deletes and rewrites pending rows,
+  which unlinks the stub (`on delete set null`), and the rematch after the sync links it again.
+- **Work calendar** (`calendar.ts`, `ui/WorkCalendar.tsx`, section `#calendar`): the month of
+  work days from the synced calendar events, each with its status as a word and a glyph (✓ Paid,
+  ◐ Stub in, ○ Waiting, ! Late, ◇ Booked) and a border shape; colour only repeats it. A grid at
+  640 px and up, a list of the month's days on a phone. `?cal=YYYY-MM` picks the month, between the
+  first event and this month (or the last booked one). A paid day links to its stub.
 - **Calendar:** an Apps Script in the owner's account (`calendar-script.ts`, made on
   `/income/settings`, key stored as SHA-256) posts work days daily to `/api/money/calendar` and
   recolours an event Tomato when every day of it is paid (owner: "Recolor for me"). Same reason as
