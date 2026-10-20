@@ -9,6 +9,8 @@ import { healthPeriods } from "./health.ts";
 import { findDeposit, matchDeposits } from "./match.ts";
 import { missingStubs, payerOf } from "./missing.ts";
 import { countedStubs, replacedBy } from "./reissue.ts";
+import { estimateFromSimilar, remainingFromYtd, splitByNet } from "./estimate.ts";
+import { matchDepositsAndEstimates } from "./match.ts";
 import { fromRead, noSsn, type ReadResult } from "./read.ts";
 import { DEFAULT_CONFIG, emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type WorkEvent } from "./types.ts";
 import { federalTax, w2Check, withholdingEstimate } from "./withholding.ts";
@@ -348,3 +350,66 @@ test("reissue: a later stub for the same week that takes back the first check's 
 function federalOf(e: NonNullable<ReturnType<typeof withholdingEstimate>>): number {
   return e.withheldSoFar;
 }
+
+// ---- estimates ----
+
+const taxSum = (t: { taxes: Record<string, number | null> }) => Object.values(t.taxes).reduce<number>((n, v) => n + (v ?? 0), 0);
+
+test("estimates: a later stub's year-to-date gives the missing checks exactly; split by take-home, each balanced", () => {
+  // NBCUniversal, Oct 15 2026: the only stub, with the year's YTD.
+  const latest = stub({ employer: "Universal City Studios LLC", payDate: "2026-10-15", gross: 2268, net: 1585.57, hours: 40,
+    taxes: { ...emptyTaxes(), federal: 332.36, socialSecurity: 140.62, medicare: 32.88, state: 147.09, sdi: 29.48 },
+    earnings: [{ label: "STRAIGHT TIME", kind: "regular", hours: 40, rate: 56.7, amount: 2268 }],
+    ytd: { gross: 16349.94, net: 11776.16, federal: 2170.14, socialSecurity: 1013.7, medicare: 237.07, state: 940.32, sdi: 212.55, hours: 288.6 } });
+  const rest = remainingFromYtd(latest, [latest])!;
+  assert.equal(rest.gross, 14081.94);
+  assert.equal(rest.net, 10190.59);
+  assert.equal(rest.taxes.federal, 1837.78);
+  assert.equal(rest.hours, 248.6);
+  const checks = [713.36, 1590.56, 1595.59, 1050.26, 1323.77, 1595.57, 735.93, 1585.55];
+  assert.equal(Math.round(checks.reduce((n, x) => n + x, 0) * 100) / 100, rest.net, "the bank agrees with the YTD");
+  const parts = splitByNet(rest, checks);
+  for (const p of parts) assert.ok(Math.abs(p.gross - taxSum(p) - p.net) < 0.005, "each estimate adds up");
+  const tot = (f: (t: (typeof parts)[number]) => number) => Math.round(parts.reduce((n, t) => n + f(t), 0) * 100) / 100;
+  assert.equal(tot((t) => t.gross), 14081.94);
+  assert.equal(tot((t) => t.taxes.federal ?? 0), 1837.78);
+  assert.equal(tot((t) => t.taxes.state ?? 0), 793.23);
+  assert.equal(Math.round(tot((t) => t.hours) * 10) / 10, 248.6);
+  // A stub from another employer, or a later one, isn't subtracted.
+  const other = stub({ employer: "Green 16 LLC", payDate: "2026-07-30", gross: 3025, net: 2022.01 });
+  const later = stub({ employer: "Universal City Studios LLC", payDate: "2026-10-22", gross: 2268, net: 1585.57 });
+  assert.equal(remainingFromYtd(latest, [latest, other, later])!.gross, 14081.94);
+});
+
+test("estimates: from the closest saved stubs by take-home, leaving out reissues; gross − taxes = take-home", () => {
+  const near1 = stub({ payDate: "2026-06-25", gross: 2420, net: 1678.26, taxes: { ...emptyTaxes(), federal: 364.15, socialSecurity: 150.04, medicare: 35.09, state: 161, sdi: 31.46 } });
+  const near2 = stub({ payDate: "2026-07-02", gross: 2860, net: 1928.26, taxes: { ...emptyTaxes(), federal: 469.75, socialSecurity: 177.32, medicare: 41.47, state: 206.02, sdi: 37.18 } });
+  const far = stub({ payDate: "2026-04-01", gross: 400, net: 351.12, taxes: { ...emptyTaxes(), federal: 9.04, socialSecurity: 24.8, medicare: 5.8, state: 4.04, sdi: 5.2 } });
+  const e = estimateFromSimilar(1769.22, [far, near1, near2], 2)!;
+  assert.ok(Math.abs(e.gross - taxSum(e) - e.net) < 0.005);
+  const ratio = ((2420 / 1678.26) + (2860 / 1928.26)) / 2;
+  assert.ok(Math.abs(e.gross - 1769.22 * ratio) < 0.05, `gross ${e.gross} from the two nearest`);
+  // A reissue (tiny take-home after taking back the first check) is never a "similar" stub.
+  const orig = stub({ payDate: "2026-04-30", periodStart: "2026-04-19", periodEnd: "2026-04-25", gross: 2054.54, net: 1589.52, taxes: { ...emptyTaxes(), federal: 465.02 } });
+  const reissue = stub({ payDate: "2026-08-14", periodStart: "2026-04-19", periodEnd: "2026-04-25", gross: 2071.98, net: 10.26, taxes: { ...emptyTaxes(), federal: 472.2 }, deductions: [{ label: "NET PRIOR", amount: 1589.52 }] });
+  const small = estimateFromSimilar(18.29, [orig, reissue, far], 1)!;
+  assert.ok(small.gross < 25, `estimated from the $351 stub, not the reissue: ${small.gross}`);
+  assert.equal(estimateFromSimilar(0, [far]), null);
+});
+
+test("estimates: a real stub for the same check takes the deposit and replaces the estimate", () => {
+  const dep = txn({ posted: "2026-09-03", amount: 1595.59, description: "REMOTE ONLINE DEPOSIT # 1" });
+  const est = stub({ estimated: true, payDate: "2026-08-27", net: 1595.59, depositTxnId: dep.id, depositMatch: "auto" });
+  const real = stub({ payDate: "2026-08-27", net: 1595.59 });
+  const r1 = matchDepositsAndEstimates([est, real], [dep]);
+  assert.deepEqual(r1.superseded, [est.id]);
+  assert.equal(r1.matched.get(real.id), dep.id);
+  // An estimate still waiting on a pending deposit goes when the real stub arrives too.
+  const est2 = stub({ estimated: true, payDate: "2026-10-08", net: 1585.55 });
+  const real2 = stub({ payDate: "2026-10-08", net: 1585.55 });
+  assert.deepEqual(matchDepositsAndEstimates([est2, real2], []).superseded, [est2.id]);
+  // Without a real stub, an estimate finds its deposit like any stub.
+  const r3 = matchDepositsAndEstimates([stub({ estimated: true, payDate: "2026-08-27", net: 1595.59 })], [dep]);
+  assert.equal(r3.matched.size, 1);
+  assert.equal(r3.superseded.length, 0);
+});

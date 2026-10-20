@@ -78,6 +78,8 @@ export type Stub = {
   readError: string | null;
   depositTxnId: string | null;
   depositMatch: "auto" | "manual" | "none" | null;
+  /** Not read from a stub: worked out from another stub's year-to-date or similar stubs (estimate.ts). */
+  estimated?: boolean;
   createdAt: string;
 };
 

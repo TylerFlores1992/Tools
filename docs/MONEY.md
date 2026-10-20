@@ -161,6 +161,11 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   deposit; gross, taxes, hours, withholding, the W-2 check and health hours come from the reissue.
   Worked out from the data each time (same period, later pay date, take-back equals the first net,
   to the cent), so nothing is stored.
+- **Estimated stubs** (`estimate.ts`, column `estimated`): for pay with no stub. From a later stub's
+  year-to-date (YTD minus the stubs we have = exactly what the missing checks add to; split across
+  them by take-home), or from the saved stubs with the closest take-home. gross − taxes = take-home
+  on each. Tagged "Estimate". A real stub that matches the same deposit, or the same take-home
+  within two weeks, replaces it (`matchDepositsAndEstimates`, run on every save and bank sync).
 - **Stubs still missing** (`missing.ts`): this year's deposits that look like pay (named payroll
   companies, generic PAYROLL/PR DEPOSIT wording, phone check deposits; never EDD, tax refunds,
   transfers, Zelle, Stripe), grouped by payer, minus the ones a saved stub matched. The same

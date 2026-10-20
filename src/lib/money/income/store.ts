@@ -1,5 +1,5 @@
 import "server-only";
-import { matchDeposits } from "@/tools/money/income/match";
+import { matchDepositsAndEstimates } from "@/tools/money/income/match";
 import { emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type W2, type WorkEvent } from "@/tools/money/income/types";
 import { sql } from "../db";
 import { getTransactions } from "../store";
@@ -11,12 +11,12 @@ type StubRow = {
   pay_date: string | null; period_start: string | null; period_end: string | null; tax_year: number | null;
   gross: number | null; net: number | null; hours: number | null; check_number: string | null;
   taxes: Stub["taxes"]; deductions: Stub["deductions"]; earnings: Stub["earnings"]; ytd: Stub["ytd"]; w2: W2 | null; work_days: string[];
-  notes: string | null; read_error: string | null; deposit_txn_id: string | null; deposit_match: Stub["depositMatch"]; created_at: Date;
+  notes: string | null; read_error: string | null; deposit_txn_id: string | null; deposit_match: Stub["depositMatch"]; estimated: boolean; created_at: Date;
 };
 
 const COLS = `id, kind, status, employer, payroll_company, show_name,
   to_char(pay_date, 'YYYY-MM-DD') as pay_date, to_char(period_start, 'YYYY-MM-DD') as period_start, to_char(period_end, 'YYYY-MM-DD') as period_end,
-  tax_year, gross, net, hours, check_number, taxes, deductions, earnings, ytd, w2, work_days, notes, read_error, deposit_txn_id, deposit_match, created_at`;
+  tax_year, gross, net, hours, check_number, taxes, deductions, earnings, ytd, w2, work_days, notes, read_error, deposit_txn_id, deposit_match, estimated, created_at`;
 
 const toStub = (r: StubRow): Stub => ({
   id: r.id, kind: r.kind, status: r.status, employer: r.employer, payrollCompany: r.payroll_company, showName: r.show_name,
@@ -24,7 +24,7 @@ const toStub = (r: StubRow): Stub => ({
   gross: r.gross, net: r.net, hours: r.hours, checkNumber: r.check_number,
   taxes: { ...emptyTaxes(), ...(r.taxes ?? {}) }, deductions: r.deductions ?? [], earnings: r.earnings ?? [],
   ytd: { ...emptyYtd(), ...(r.ytd ?? {}) }, w2: r.w2, workDays: r.work_days ?? [],
-  notes: r.notes, readError: r.read_error, depositTxnId: r.deposit_txn_id, depositMatch: r.deposit_match, createdAt: r.created_at.toISOString(),
+  notes: r.notes, readError: r.read_error, depositTxnId: r.deposit_txn_id, depositMatch: r.deposit_match, estimated: r.estimated, createdAt: r.created_at.toISOString(),
 });
 
 export async function listStubs(): Promise<Stub[]> {
@@ -94,9 +94,11 @@ export async function rematchDeposits(): Promise<number> {
   if (!stubs.some((s) => s.status === "saved" && !s.depositTxnId)) return 0;
   const since = new Date(Date.now() - 500 * 86_400_000).toISOString().slice(0, 10);
   const txns = await getTransactions(since);
-  const found = matchDeposits(stubs, txns);
-  for (const [stubId, txnId] of found) await setDeposit(stubId, txnId, "auto");
-  return found.size;
+  const { matched, superseded } = matchDepositsAndEstimates(stubs, txns);
+  // A real stub that claims an estimate's deposit replaces the estimate.
+  for (const id of superseded) await deleteStub(id);
+  for (const [stubId, txnId] of matched) await setDeposit(stubId, txnId, "auto");
+  return matched.size;
 }
 
 // ---- settings ----
