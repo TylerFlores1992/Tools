@@ -103,17 +103,18 @@ export async function rematchDeposits(): Promise<number> {
 
 // ---- settings ----
 
-export type IncomeSettings = { config: IncomeConfig; keyHash: string | null; keyCreatedAt: string | null; lastRunAt: string | null; lastSummary: unknown };
+export type IncomeSettings = { config: IncomeConfig; keyHash: string | null; keyCreatedAt: string | null; lastRunAt: string | null; lastSummary: unknown; refreshAt: string | null };
 
 export async function getIncomeSettings(): Promise<IncomeSettings> {
-  const [r] = await sql()<{ config: unknown; calendar_key_hash: string | null; calendar_key_created_at: Date | null; calendar_last_run_at: Date | null; calendar_last_summary: unknown }[]>`
-    select config, calendar_key_hash, calendar_key_created_at, calendar_last_run_at, calendar_last_summary from money.income_settings where id = 1`;
+  const [r] = await sql()<{ config: unknown; calendar_key_hash: string | null; calendar_key_created_at: Date | null; calendar_last_run_at: Date | null; calendar_last_summary: unknown; calendar_refresh_requested_at: Date | null }[]>`
+    select config, calendar_key_hash, calendar_key_created_at, calendar_last_run_at, calendar_last_summary, calendar_refresh_requested_at from money.income_settings where id = 1`;
   return {
     config: withDefaults(r?.config),
     keyHash: r?.calendar_key_hash ?? null,
     keyCreatedAt: r?.calendar_key_created_at?.toISOString() ?? null,
     lastRunAt: r?.calendar_last_run_at?.toISOString() ?? null,
     lastSummary: r?.calendar_last_summary ?? null,
+    refreshAt: r?.calendar_refresh_requested_at?.toISOString() ?? null,
   };
 }
 
@@ -125,6 +126,11 @@ export async function saveConfig(config: IncomeConfig): Promise<void> {
 export async function setCalendarKeyHash(hash: string): Promise<void> {
   await sql()`insert into money.income_settings (id, calendar_key_hash, calendar_key_created_at) values (1, ${hash}, now())
               on conflict (id) do update set calendar_key_hash = excluded.calendar_key_hash, calendar_key_created_at = now(), updated_at = now()`;
+}
+
+/** The Refresh button: the script reads on its next wake (refresh.ts). */
+export async function requestCalendarRefresh(): Promise<void> {
+  await sql()`update money.income_settings set calendar_refresh_requested_at = now(), updated_at = now() where id = 1`;
 }
 
 export async function recordCalendarRun(summary: unknown): Promise<void> {
@@ -144,8 +150,9 @@ export async function listEvents(): Promise<WorkEvent[]> {
 export async function replaceEvents(events: WorkEvent[], from: string, to: string): Promise<void> {
   await sql().begin(async (tx) => {
     const keys = events.map((e) => e.eventId);
-    if (keys.length) await tx`delete from money.work_events where start_day between ${from}::date and ${to}::date and event_id not in ${tx(keys)}`;
-    else await tx`delete from money.work_events where start_day between ${from}::date and ${to}::date`;
+    // Events imported from an .ics file (ids "ics:…", ics.ts) aren't the script's to remove.
+    if (keys.length) await tx`delete from money.work_events where start_day between ${from}::date and ${to}::date and event_id not like 'ics:%' and event_id not in ${tx(keys)}`;
+    else await tx`delete from money.work_events where start_day between ${from}::date and ${to}::date and event_id not like 'ics:%'`;
     for (const e of events) {
       await tx`insert into money.work_events (event_id, title, start_day, end_day, color, seen_at)
                values (${e.eventId}, ${e.title}, ${e.startDay}::date, ${e.endDay}::date, ${e.color}, now())
@@ -153,6 +160,34 @@ export async function replaceEvents(events: WorkEvent[], from: string, to: strin
                  color = excluded.color, seen_at = now()`;
     }
   });
+}
+
+/** Saves events imported from an .ics file (ids from `icsEventId`); the same event twice is one row. */
+export async function importEvents(events: WorkEvent[]): Promise<void> {
+  await sql().begin(async (tx) => {
+    for (const e of events) {
+      await tx`insert into money.work_events (event_id, title, start_day, end_day, color, seen_at)
+               values (${e.eventId}, ${e.title}, ${e.startDay}::date, ${e.endDay}::date, ${e.color}, now())
+               on conflict (event_id) do update set title = excluded.title, start_day = excluded.start_day, end_day = excluded.end_day,
+                 color = excluded.color, seen_at = now()`;
+    }
+  });
+}
+
+/** Removes every imported event, and the stub links to its days. */
+export async function removeImportedEvents(): Promise<number> {
+  return sql().begin(async (tx) => {
+    const gone = await tx`delete from money.work_events where event_id like 'ics:%' returning event_id`;
+    await tx`update money.stubs set work_days = coalesce((select jsonb_agg(x) from jsonb_array_elements_text(work_days) x where x not like 'ics:%'), '[]'::jsonb)
+             where work_days::text like '%ics:%'`;
+    return gone.length;
+  });
+}
+
+/** Adds calendar days to a stub's links (the stub covers them). */
+export async function addWorkDays(stubId: string, keys: string[]): Promise<void> {
+  if (!keys.length) return;
+  await sql()`update money.stubs set work_days = work_days || ${sql().json(keys)}::jsonb, updated_at = now() where id = ${stubId}`;
 }
 
 export async function markRecolored(keys: string[], paidColor: string): Promise<void> {

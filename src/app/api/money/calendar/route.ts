@@ -5,6 +5,7 @@ import { getIncomeSettings, listEvents, listStubs, markRecolored, recordCalendar
 import { toLocalDate } from "@/tools/money/simplefin";
 import type { WorkEvent } from "@/tools/money/income/types";
 import { recolorIds, workDays } from "@/tools/money/income/workdays";
+import { shouldRead } from "@/tools/money/income/refresh";
 
 /**
  * The work-calendar Apps Script (src/tools/money/income/calendar-script.ts) talks to this. Public
@@ -45,7 +46,8 @@ export async function POST(req: Request) {
   switch (p.op) {
     case "hello":
       // The script reads from 00:00 on `from` to 00:00 the day after `to`.
-      return json({ from: `${from}T00:00:00`, to: `${addDays(to, 1)}T00:00:00`, colors: [config.workColor, config.paidColor] });
+      // Version 2+ wakes every minute and reads only when told to (refresh.ts); version 1 ignores `read`.
+      return json({ from: `${from}T00:00:00`, to: `${addDays(to, 1)}T00:00:00`, colors: [config.workColor, config.paidColor], ...shouldRead(settings.lastRunAt, settings.refreshAt, Date.now()) });
     case "events": {
       const raw = Array.isArray(p.events) ? p.events.slice(0, 2000) : [];
       const events: WorkEvent[] = raw

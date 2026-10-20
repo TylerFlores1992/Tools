@@ -83,3 +83,6 @@ alter table money.stubs add column if not exists estimated boolean not null defa
 -- 2026-10-20: EDD benefits (Paid Family Leave, Disability Insurance) filed from bank deposits (benefits.ts).
 alter table money.stubs drop constraint if exists stubs_kind_check;
 alter table money.stubs add constraint stubs_kind_check check (kind in ('stub', 'w2', 'benefit'));
+
+-- 2026-10-20: the Refresh button on Income asks the calendar script for a read now (refresh.ts).
+alter table money.income_settings add column if not exists calendar_refresh_requested_at timestamptz;

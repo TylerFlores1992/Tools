@@ -5,7 +5,7 @@ import { requirePrivate } from "@/lib/money/guard";
 import { accountsFor, acrossFor, loadMoney } from "@/lib/money/load";
 import { buildBudget } from "@/tools/money/budget";
 import { findRecurring } from "@/tools/money/recurring";
-import { money, monthName, shortDate, signedMoney } from "@/tools/money/summary";
+import { money, monthName, shortDate } from "@/tools/money/summary";
 import { NeedBar } from "@/tools/money/ui/Charts";
 import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell } from "@/tools/money/ui/MoneyShell";
@@ -66,9 +66,11 @@ export default async function MoneyBudget({ searchParams }: { searchParams: Prom
         <StatTile label="Needed each month" value={money(b.needPerMonth)} note={`${money(b.billsPerMonth)} bills + ${money(b.everydayPerMonth)} everyday`} />
         <StatTile label="Usually comes in" value={money(b.incomePerMonth)} note="Average money in a month" />
         <StatTile
-          label={b.spare >= 0 ? "Left over" : "Short"}
-          value={signedMoney(b.spare)}
-          note={`${b.spare >= 0 ? "A month, on average" : "A month, on average: more goes out than comes in"}${b.savingPerMonth > 0 ? `, after ${money(b.savingPerMonth)} to savings and investing` : ""}`}
+          label={b.spare >= 0 ? "Left over each month" : "Short each month"}
+          value={money(Math.abs(b.spare))}
+          note={b.savingPerMonth > 0
+            ? `After ${money(b.savingPerMonth)} a month to savings and investing. Without it: ${b.spare + b.savingPerMonth >= 0 ? `${money(b.spare + b.savingPerMonth)} left over` : `${money(-(b.spare + b.savingPerMonth))} short`}.`
+            : b.spare >= 0 ? "On average, after bills and everyday spending" : "On average, more goes out than comes in"}
         />
         <StatTile
           label="Cash on hand"
@@ -98,7 +100,7 @@ export default async function MoneyBudget({ searchParams }: { searchParams: Prom
                   <span className="min-w-0">
                     <span className="block truncate text-body text-ink">{x.name}</span>
                     <span className="mt-1 block text-small text-muted">
-                      {x.cadence[0].toUpperCase() + x.cadence.slice(1)}{x.cadence !== "monthly" ? ` · ${money(x.typical)} each` : ""} · next about {shortDate(x.next)}
+                      {x.cadence[0].toUpperCase() + x.cadence.slice(1)}{x.cadence !== "monthly" ? ` · ${money(x.typical)} each` : ""} · {x.next < data.today ? `expected about ${shortDate(x.next)}, not in yet` : `next about ${shortDate(x.next)}`}
                     </span>
                   </span>
                   <span className="shrink-0 text-right text-body tabular-nums">

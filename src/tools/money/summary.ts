@@ -88,12 +88,13 @@ export type IncomeSource = { key: string; name: string; amount: number; count: n
 /**
  * Money in for a period, grouped by who paid it (payroll company, check deposits, a transfer from
  * the other owner's accounts), largest first. Gig income comes from many payrolls on no fixed
- * schedule, so this, not the Recurring list, is where income shows up.
+ * schedule, so this, not the Recurring list, is where income shows up. Pending deposits count, as
+ * they do in the Money in total (`summarize`), so the shares add up to that total.
  */
 export function incomeSources(txns: readonly Txn[], period: string, across?: ReadonlyMap<string, string>): IncomeSource[] {
   const map = new Map<string, IncomeSource>();
   for (const t of [...txns].sort((a, b) => a.posted.localeCompare(b.posted))) {
-    if (t.amount <= 0 || t.pending || !t.posted.startsWith(period)) continue;
+    if (t.amount <= 0 || !t.posted.startsWith(period)) continue;
     const crossing = t.category === TRANSFER ? across?.get(t.id) : undefined;
     if (t.category === TRANSFER && !crossing) continue;
     if (!crossing && !INCOME_CATEGORIES.has(t.category ?? "")) continue; // a refund, not income

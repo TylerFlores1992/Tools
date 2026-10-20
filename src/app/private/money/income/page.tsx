@@ -22,6 +22,8 @@ import { money, monthName, shortDate } from "@/tools/money/summary";
 import { InOutChart } from "@/tools/money/ui/Charts";
 import { isCalMonth } from "@/tools/money/income/calendar";
 import { WorkCalendar } from "@/tools/money/income/ui/WorkCalendar";
+import { CalendarRefresh } from "@/tools/money/income/ui/CalendarRefresh";
+import { refreshPending } from "@/tools/money/income/refresh";
 import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured } from "@/tools/money/ui/Setup";
@@ -113,10 +115,13 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         <div>
           <Label>Money</Label>
           <h1 className="mt-3 text-title font-normal">Income {year}</h1>
-          <p className="mt-3 text-small text-muted">
-            {calendarConnected ? (settings.lastRunAt ? `Calendar read ${new Date(settings.lastRunAt).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}` : "Calendar connected, not read yet") : "Calendar not connected"}
-            {" · "}<Link href="/private/money/income/settings" className="underline underline-offset-4 hover:text-ink">Income settings</Link>
-          </p>
+          <div className="mt-3 max-w-[60ch] text-small text-muted">
+            {calendarConnected ? (
+              <CalendarRefresh lastRunAt={settings.lastRunAt} pending={refreshPending(settings.lastRunAt, settings.refreshAt)} scriptVersion={scriptVersionOf(settings.lastSummary)}>
+                <Link href="/private/money/income/settings" className="underline underline-offset-4 hover:text-ink">Income settings</Link>
+              </CalendarRefresh>
+            ) : <>Calendar not connected · <Link href="/private/money/income/settings" className="underline underline-offset-4 hover:text-ink">Income settings</Link></>}
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <LinkButton href="/private/money/income/add">Add stubs</LinkButton>
@@ -250,7 +255,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       {calendarConnected && (
         <section aria-labelledby="calendar" className="mt-12 min-w-0 scroll-mt-6">
           <h2 id="calendar" className="text-h2 font-normal">Work calendar</h2>
-          <p className="mt-2 max-w-[68ch] text-body text-ink-2">Your work days from Google Calendar, and where each day&rsquo;s pay stands. Tap a paid day to open its stub.</p>
+          <p className="mt-2 max-w-[68ch] text-body text-ink-2">Your work days from your calendar (and any you imported), and where each day&rsquo;s pay stands. Tap a paid day to open its stub.</p>
           <div className="mt-4">
             <WorkCalendar days={days} month={calMonth} today={today} href={calHref} minMonth={calMin} maxMonth={calMax} />
           </div>
@@ -488,6 +493,8 @@ function groupByEvent(days: WorkDay[]) {
 
 
 const TOP_EMPLOYERS = 6;
+/** The script reports its version in each run's summary; null when it hasn't run yet. */
+const scriptVersionOf = (summary: unknown) => { const v = Number((summary as { scriptVersion?: unknown } | null)?.scriptVersion); return Number.isFinite(v) && v > 0 ? v : null; };
 const ago = (n: number) => (n <= 0 ? "worked today" : n === 1 ? "worked yesterday" : `worked ${n} days ago`);
 const round = (n: number) => Math.round(n * 100) / 100;
 const round1 = (n: number) => Math.round(n * 10) / 10;

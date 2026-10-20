@@ -10,13 +10,14 @@ import { OTHER_INCOME } from "@/tools/money/categorize";
 import { PROGRAMS } from "@/tools/money/income/benefits";
 import { ReadFailed, readDocument } from "@/lib/money/income/read-document";
 import {
-  createStub, deleteStub, fileBenefit, unfileBenefit, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
-  rematchDeposits, saveConfig, setCalendarKeyHash, setDeposit, writeStub,
+  addWorkDays, createStub, deleteStub, importEvents, removeImportedEvents, fileBenefit, unfileBenefit, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
+  rematchDeposits, requestCalendarRefresh, saveConfig, setCalendarKeyHash, setDeposit, writeStub,
 } from "@/lib/money/income/store";
 import { calendarScript } from "@/tools/money/income/calendar-script";
 import { parseMoney, parseStubForm } from "@/tools/money/income/form";
 import { fromRead } from "@/tools/money/income/read";
-import { withDefaults, type IncomeConfig } from "@/tools/money/income/types";
+import { withDefaults, type IncomeConfig, type WorkEvent } from "@/tools/money/income/types";
+import { icsEventId, parseIcs, type IcsEvent } from "@/tools/money/income/ics";
 import { defaultLinks } from "@/tools/money/income/workdays";
 
 /** Every action re-checks the session itself; the proxy is the first lock, not the only one. */
@@ -199,4 +200,83 @@ export async function unfileEdd(form: FormData): Promise<void> {
   const id = String(form.get("id") ?? "");
   if (id) await unfileBenefit(id);
   revalidatePath("/private/money", "layout");
+}
+
+/** Refresh on Income: the calendar script reads on its next one-minute wake (refresh.ts). */
+export async function refreshCalendar(): Promise<void> {
+  await requirePrivate("/private/money/income");
+  await requestCalendarRefresh();
+}
+
+// ---- importing an older calendar (.ics) ----
+
+const ICS_MAX_BYTES = 5_000_000;
+export type IcsPreview = { events?: IcsEvent[]; repeating?: number; canceled?: number; outside?: number; error?: string; from?: string; before?: string; attempt: number };
+
+/**
+ * Step 1: read an .ics file (or a calendar's share link) and list its events in the dates given,
+ * for the owner to tick. Nothing is saved.
+ */
+export async function previewIcs(prev: IcsPreview, form: FormData): Promise<IcsPreview> {
+  await requirePrivate("/private/money/income/settings");
+  const attempt = prev.attempt + 1;
+  const from = String(form.get("from") ?? "");
+  const before = String(form.get("before") ?? "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(before) || from >= before) return { attempt, error: "Pick a start date before the end date." };
+  let text = "";
+  const file = form.get("file");
+  const link = String(form.get("link") ?? "").trim().replace(/^webcal:\/\//i, "https://");
+  try {
+    if (file instanceof File && file.size > 0) {
+      if (file.size > ICS_MAX_BYTES) return { attempt, error: "That file is over 5 MB." };
+      text = await file.text();
+    } else if (link) {
+      if (!/^https:\/\//i.test(link)) return { attempt, error: "The link should start with https:// or webcal://." };
+      const res = await fetch(link, { signal: AbortSignal.timeout(20_000), headers: { Accept: "text/calendar" } });
+      if (!res.ok) return { attempt, error: `The calendar link answered ${res.status}.` };
+      text = (await res.text()).slice(0, ICS_MAX_BYTES);
+    } else return { attempt, error: "Choose the .ics file, or paste the calendar's link." };
+  } catch {
+    return { attempt, error: "Couldn't read that calendar. Try downloading the file and choosing it instead." };
+  }
+  if (!/BEGIN:VCALENDAR/.test(text)) return { attempt, error: "That isn't a calendar file (.ics)." };
+  const r = parseIcs(text, from, before);
+  return { attempt, from, before, ...r, events: r.events.slice(0, 1500) };
+}
+
+/**
+ * Step 2: save the ticked events as work days. Days a saved stub's pay period covers are linked to
+ * that stub; the rest are marked paid (`paid` ticked: weeks from before this tracker) or left
+ * waiting.
+ */
+export async function saveIcs(form: FormData): Promise<void> {
+  await requirePrivate("/private/money/income/settings");
+  const { config } = await getIncomeSettings();
+  const markPaid = form.get("paid") === "on";
+  const picked: WorkEvent[] = [];
+  for (const raw of form.getAll("pick").slice(0, 1500)) {
+    try {
+      const e = JSON.parse(String(raw)) as IcsEvent;
+      const ok = typeof e.uid === "string" && e.uid && typeof e.title === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.startDay) && /^\d{4}-\d{2}-\d{2}$/.test(e.endDay) && e.endDay >= e.startDay;
+      if (ok) picked.push({ eventId: icsEventId(e).slice(0, 400), title: e.title.slice(0, 200) || "Work", startDay: e.startDay, endDay: e.endDay, color: markPaid ? config.paidColor : config.workColor, recoloredAt: null });
+    } catch { /* skip a bad row */ }
+  }
+  if (picked.length) {
+    await importEvents(picked);
+    // Link the new days to the saved stubs whose pay periods cover them.
+    const stubs = (await listStubs()).filter((s) => s.kind === "stub" && s.status === "saved");
+    for (const s of stubs) {
+      const add = defaultLinks(s, picked, stubs).filter((k) => !s.workDays.includes(k));
+      if (add.length) { s.workDays = [...s.workDays, ...add]; await addWorkDays(s.id, add); }
+    }
+  }
+  revalidatePath("/private/money/income", "layout");
+  redirect(`/private/money/income/settings?imported=${picked.length}#import`);
+}
+
+export async function removeImported(): Promise<void> {
+  await requirePrivate("/private/money/income/settings");
+  const n = await removeImportedEvents();
+  revalidatePath("/private/money/income", "layout");
+  redirect(`/private/money/income/settings?removed=${n}#import`);
 }

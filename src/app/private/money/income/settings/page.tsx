@@ -5,10 +5,12 @@ import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
-import { getIncomeSettings } from "@/lib/money/income/store";
+import { getIncomeSettings, listEvents } from "@/lib/money/income/store";
 import { CalendarScriptForm } from "@/tools/money/income/ui/IncomeForms";
+import { IcsImport } from "@/tools/money/income/ui/IcsImport";
+import { isImportedEvent } from "@/tools/money/income/ics";
 import { MoneyShell } from "@/tools/money/ui/MoneyShell";
-import { saveIncomeSettings } from "../actions";
+import { removeImported, saveIncomeSettings } from "../actions";
 
 export const metadata: Metadata = { title: "Income settings · Money", description: "Calendar, rates, health plan and tax profile.", robots: { index: false, follow: false } };
 
@@ -20,13 +22,16 @@ const COLORS: Array<[string, string]> = [
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const FIELD = "field min-h-11 w-full min-w-0 rounded-input border border-control bg-surface px-3 text-body text-ink";
 
-export default async function IncomeSettingsPage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
+export default async function IncomeSettingsPage({ searchParams }: { searchParams: Promise<{ saved?: string; imported?: string; removed?: string }> }) {
   await requirePrivate("/private/money/income/settings");
   const sp = await searchParams;
   const s = await getIncomeSettings();
   const c = s.config;
   const rateRows = [...c.rates, ...Array.from({ length: 3 }, () => null)];
-  const summary = (s.lastSummary ?? null) as { sent?: number; recolored?: number; errors?: number } | null;
+  const summary = (s.lastSummary ?? null) as { sent?: number; recolored?: number; errors?: number; scriptVersion?: string } | null;
+  const imported = (await listEvents()).filter((e) => isImportedEvent(e.eventId));
+  const importedRange = imported.length ? `${imported[0].startDay} to ${imported[imported.length - 1].startDay}` : "";
+  const oldScript = !!s.keyHash && !!summary && Number(summary.scriptVersion ?? 0) < 2;
 
   return (
     <MoneyShell current="/private/money/income">
@@ -38,7 +43,8 @@ export default async function IncomeSettingsPage({ searchParams }: { searchParam
       <section aria-labelledby="cal" className="mt-8 max-w-[760px]">
         <h2 id="cal" className="text-h2 font-normal">Work calendar</h2>
         <Card className="mt-4 grid gap-4">
-          <p className="text-body text-ink-2">A small script in your own Google account reads your work days each morning (events in your work or paid color on your main calendar), and turns an event your paid color once its pay is in the bank. It never creates, moves or deletes events.</p>
+          <p className="text-body text-ink-2">A small script in your own Google account reads your work days (events in your work or paid color on your main calendar) every 15 minutes, and within a minute of pressing Refresh on Income. It turns an event your paid color once its pay is in the bank. It never creates, moves or deletes events.</p>
+          {oldScript && <State kind="note">Your script is the older one that reads once a day. Make a new script below and run setup again for 15-minute reads and Refresh.</State>}
           {s.keyHash ? (
             <State kind={s.lastRunAt ? "ok" : "note"}>
               {s.lastRunAt
@@ -47,6 +53,22 @@ export default async function IncomeSettingsPage({ searchParams }: { searchParam
             </State>
           ) : null}
           <CalendarScriptForm connected={!!s.keyHash} />
+        </Card>
+      </section>
+
+      <section aria-labelledby="import" className="mt-10 max-w-[760px] scroll-mt-6">
+        <h2 id="import" className="text-h2 font-normal">Import an older calendar</h2>
+        <Card className="mt-4 grid gap-4">
+          <p className="text-body text-ink-2">Work days kept in another calendar before this one (a Yahoo calendar, say). Export it as an .ics file, or copy its share link, then pick the events that were work. Imported days show on the work calendar like the Google ones; the script never changes or removes them.</p>
+          {sp.imported && <State kind="ok">Imported {sp.imported} {sp.imported === "1" ? "event" : "events"}.</State>}
+          {sp.removed && <State kind="ok">Removed {sp.removed} imported {sp.removed === "1" ? "event" : "events"}.</State>}
+          {imported.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-btn border border-line px-4 py-3">
+              <span className="text-body text-ink-2">{imported.length} imported {imported.length === 1 ? "event" : "events"}, {importedRange}</span>
+              <form action={removeImported}><Button type="submit" variant="quiet">Remove all imported</Button></form>
+            </div>
+          )}
+          <IcsImport defaultFrom={`${new Date().getFullYear()}-01-01`} defaultBefore="2026-10-05" />
         </Card>
       </section>
 
