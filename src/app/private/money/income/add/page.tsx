@@ -3,12 +3,12 @@ import Link from "next/link";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { requirePrivate } from "@/lib/money/guard";
-import { BulkUploadForm, UploadForm } from "@/tools/money/income/ui/IncomeForms";
+import { BulkUploadForm } from "@/tools/money/income/ui/IncomeForms";
 import { MoneyShell } from "@/tools/money/ui/MoneyShell";
 
 export const metadata: Metadata = {
-  title: "Add a stub · Income",
-  description: "Photograph a pay stub or W-2.",
+  title: "Add stubs · Income",
+  description: "Add pay stubs or W-2s, one or many.",
   robots: { index: false, follow: false },
 };
 
@@ -22,17 +22,11 @@ export default async function AddStub({ searchParams }: { searchParams: Promise<
     <MoneyShell current="/private/money/income">
       <nav aria-label="Breadcrumb" className="text-small text-muted"><Link href="/private/money/income" className="underline-offset-4 hover:text-ink hover:underline">Income</Link> <span aria-hidden="true">/</span> Add</nav>
       <Label className="mt-4">Income</Label>
-      <h1 className="mt-3 text-title font-normal">Add a stub or W-2</h1>
+      <h1 className="mt-3 text-title font-normal">Add stubs or W-2s</h1>
+      <p className="mt-3 max-w-[64ch] text-body text-ink-2">Pick one file or a whole year&rsquo;s worth: PDFs from the payroll sites (OneRevolution, MyCast&amp;Crew, GreenSlate and so on) or photos of paper stubs. <Link href="/private/money/income#missing" className="text-ink underline underline-offset-4">Stubs still missing</Link> lists what the bank says you were paid.</p>
       <Card className="mt-8 max-w-[640px]">
-        <UploadForm kind={sp.kind === "w2" ? "w2" : "stub"} />
+        <BulkUploadForm kind={sp.kind === "w2" ? "w2" : "stub"} />
       </Card>
-      <section aria-labelledby="bulk" className="mt-12 max-w-[640px]">
-        <h2 id="bulk" className="text-h2 font-normal">Add a year&rsquo;s worth at once</h2>
-        <p className="mt-2 text-body text-ink-2">Download each stub as a PDF from the payroll company&rsquo;s site (OneRevolution, MyCast&amp;Crew, GreenSlate and so on), or pick a stack of photos, and add them together. <Link href="/private/money/income#missing" className="text-ink underline underline-offset-4">Stubs still missing</Link> lists what the bank says you were paid.</p>
-        <Card className="mt-5">
-          <BulkUploadForm />
-        </Card>
-      </section>
     </MoneyShell>
   );
 }

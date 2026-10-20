@@ -150,7 +150,8 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   Owner's call (2026-10-19): use AI. **Nothing counts until the owner saves the review screen.**
   Text shaped like an SSN or account number is blanked in every stored field (`noSsn`); the photo
   itself keeps whatever is printed (stubs show the last 4), and can be deleted after saving.
-- **A year at once** (`/income/add#bulk`, `BulkUploadForm` → `uploadOne`): many PDFs or photos,
+- **Adding** (`/income/add`, `BulkUploadForm` → `uploadOne`): one file opens its review screen;
+  several (owner, 2026-10-19: "upload more than one at a time") are
   sent one at a time from the page (each read is its own request, inside the 60 s limit), each
   landing in "Waiting for you to check". A file byte-for-byte already stored is skipped
   (`findStubByFile`, md5 in SQL). One stub per file: a PDF holding several stubs is read as one.

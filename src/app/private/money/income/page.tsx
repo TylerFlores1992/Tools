@@ -99,7 +99,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <LinkButton href="/private/money/income/add">Add a stub</LinkButton>
+          <LinkButton href="/private/money/income/add">Add stubs</LinkButton>
           <LinkButton href="/private/money/income/add?kind=w2" variant="quiet">Add a W-2</LinkButton>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-small text-muted">From your bank deposits: each one drops off when a saved stub&rsquo;s take-home matches it. Dates are when the money arrived, not the pay date. <Link href="/private/money/income/add#bulk" className="underline underline-offset-4 hover:text-ink">Add them all at once</Link>.</p>
+          <p className="mt-2 text-small text-muted">From your bank deposits: each one drops off when a saved stub&rsquo;s take-home matches it. Dates are when the money arrived, not the pay date. <Link href="/private/money/income/add" className="underline underline-offset-4 hover:text-ink">Add them all at once</Link>.</p>
         </section>
       )}
 
