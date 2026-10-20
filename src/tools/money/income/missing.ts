@@ -8,6 +8,9 @@ import type { Stub } from "./types.ts";
  * who paid it. Read from the bank, so it lists money that arrived, not work that was done (pay
  * still owed is the calendar's job).
  *
+ * A deposit the owner filed by hand under any category but "Income" isn't pay (a settlement, a
+ * refund check, a reimbursement): that's what the "Not pay" button does.
+ *
  * A deposit can sit in the data twice when the same bank CSV was imported into two accounts; a
  * copy in another account on the same day, for the same amount and description, counts once.
  */
@@ -66,6 +69,7 @@ export function missingStubs(txns: readonly Txn[], stubs: readonly Stub[], year:
   const sorted = [...txns].filter((t) => !t.pending && t.posted.startsWith(`${year}-`)).sort((a, b) => a.posted.localeCompare(b.posted) || a.id.localeCompare(b.id));
   const pending: { t: Txn; payer: PayerMatch; key: string }[] = [];
   for (const t of sorted) {
+    if (t.categorySource === "manual" && t.category !== "Income") continue;
     const payer = payerOf(t);
     if (!payer) continue;
     const key = `${t.posted}|${t.amount.toFixed(2)}|${normalize(t.description)}`;

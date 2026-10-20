@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sha256 } from "@/lib/mail/secret";
 import { requirePrivate } from "@/lib/money/guard";
+import { setCategory } from "@/lib/money/store";
+import { OTHER_INCOME } from "@/tools/money/categorize";
 import { ReadFailed, readDocument } from "@/lib/money/income/read-document";
 import {
   createStub, deleteStub, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
@@ -172,4 +174,12 @@ export async function newCalendarScript(prev: ScriptState): Promise<ScriptState>
   await setCalendarKeyHash(sha256(key));
   const base = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://tylerflores.dev";
   return { script: calendarScript(`${base}/api/money/calendar`, key), attempt: prev.attempt + 1 };
+}
+
+/** "Not pay": file a deposit as Other income by hand, which takes it off "Stubs still missing". */
+export async function markNotPay(form: FormData): Promise<void> {
+  await requirePrivate("/private/money/income");
+  const id = String(form.get("txn") ?? "");
+  if (id) await setCategory(id, OTHER_INCOME, null);
+  revalidatePath("/private/money", "layout");
 }
