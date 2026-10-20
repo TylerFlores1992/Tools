@@ -1,5 +1,6 @@
 import { workedHours } from "./checks.ts";
 import type { IncomeConfig, Stub, W2 } from "./types.ts";
+import { countedStubs } from "./reissue.ts";
 
 /**
  * A rough federal check: is enough being withheld across all employers?
@@ -44,7 +45,7 @@ const round = (n: number) => Math.round(n * 100) / 100;
 
 export function withholdingEstimate(stubs: readonly Stub[], config: IncomeConfig, today: string): Estimate {
   const year = Number(today.slice(0, 4));
-  const mine = stubs.filter((s) => s.kind === "stub" && s.status === "saved" && (s.taxYear ?? Number((s.payDate ?? "").slice(0, 4))) === year);
+  const mine = countedStubs(stubs).filter((s) => (s.taxYear ?? Number((s.payDate ?? "").slice(0, 4))) === year);
   const wagesSoFar = round(mine.reduce((n, s) => n + (s.gross ?? 0), 0));
   const withheldSoFar = round(mine.reduce((n, s) => n + (s.taxes.federal ?? 0), 0));
   const ss = round(mine.reduce((n, s) => n + (s.taxes.socialSecurity ?? 0), 0));
@@ -80,7 +81,7 @@ export type W2Line = { label: string; w2: number | null; stubs: number | null; d
  * stubs to the cent; box 1 can be lower than gross because pre-tax deductions come off it.
  */
 export function w2Check(w2: W2, stubs: readonly Stub[]): { lines: W2Line[]; stubCount: number } {
-  const s = stubs.filter((x) => x.kind === "stub" && x.status === "saved");
+  const s = countedStubs(stubs);
   const total = (f: (x: Stub) => number | null) => (s.length ? round(s.reduce((n, x) => n + (f(x) ?? 0), 0)) : null);
   const line = (label: string, w: number | null, t: number | null, tol = 0.02): W2Line => ({ label, w2: w, stubs: t, differs: w !== null && t !== null && Math.abs(w - t) > tol });
   return {

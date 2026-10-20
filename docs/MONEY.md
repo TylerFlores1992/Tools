@@ -155,6 +155,12 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   sent one at a time from the page (each read is its own request, inside the 60 s limit), each
   landing in "Waiting for you to check". A file byte-for-byte already stored is skipped
   (`findStubByFile`, md5 in SQL). One stub per file: a PDF holding several stubs is read as one.
+- **Reissued weeks** (`reissue.ts`): payroll re-runs a week (Project Goose's union reissue, Aug 2026)
+  with a stub that recomputes gross and taxes and takes back the first check's take-home ("NET
+  PRIOR"). The first stub is "replaced": its take-home still counts as paid and matches its own
+  deposit; gross, taxes, hours, withholding, the W-2 check and health hours come from the reissue.
+  Worked out from the data each time (same period, later pay date, take-back equals the first net,
+  to the cent), so nothing is stored.
 - **Stubs still missing** (`missing.ts`): this year's deposits that look like pay (named payroll
   companies, generic PAYROLL/PR DEPOSIT wording, phone check deposits; never EDD, tax refunds,
   transfers, Zelle, Stripe), grouped by payer, minus the ones a saved stub matched. The same

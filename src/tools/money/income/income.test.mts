@@ -8,6 +8,7 @@ import { parseStubForm } from "./form.ts";
 import { healthPeriods } from "./health.ts";
 import { findDeposit, matchDeposits } from "./match.ts";
 import { missingStubs, payerOf } from "./missing.ts";
+import { countedStubs, replacedBy } from "./reissue.ts";
 import { fromRead, noSsn, type ReadResult } from "./read.ts";
 import { DEFAULT_CONFIG, emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type WorkEvent } from "./types.ts";
 import { federalTax, w2Check, withholdingEstimate } from "./withholding.ts";
@@ -307,3 +308,43 @@ test("missing stubs: unmatched pay deposits by payer; a matched one drops off; a
   // The stub matched to the CSV copy instead still clears it.
   assert.equal(missingStubs([a, copy], [stub({ depositTxnId: copy.id })], 2026).length, 0);
 });
+
+// ---- reissued weeks ----
+
+test("reissue: a later stub for the same week that takes back the first check's take-home replaces it", () => {
+  const tx = (federal: number, socialSecurity: number, medicare: number, state: number, sdi: number, other: number | null) => ({ ...emptyTaxes(), federal, socialSecurity, medicare, state, sdi, other });
+  // Project Goose, week of Apr 19: original, then the union reissue with a NET PRIOR line.
+  const a1 = stub({ employer: "Momentum Showdowns, LLC", payDate: "2026-04-30", periodStart: "2026-04-19", periodEnd: "2026-04-25", gross: 2054.54, net: 1589.52, taxes: tx(195.88, 114.98, 26.89, 37.16, 24.11, 66) });
+  const a2 = stub({ employer: "Cranetown Media LLC", payDate: "2026-08-14", periodStart: "2026-04-19", periodEnd: "2026-04-25", gross: 2071.98, net: 10.26, taxes: tx(199.72, 116.06, 27.14, 37.94, 24.34, 67), deductions: [{ label: "NET PRIOR", amount: 1589.52 }] });
+  // Week of May 17: the reissue doesn't itemize the take-back; gross − taxes − net equals the first check.
+  const b1 = stub({ payDate: "2026-05-28", periodStart: "2026-05-17", periodEnd: "2026-05-23", gross: 5645.82, net: 3638.35, taxes: tx(1086.78, 325.6, 76.15, 450.67, 68.27, null) });
+  const b2 = stub({ payDate: "2026-08-14", periodStart: "2026-05-17", periodEnd: "2026-05-23", gross: 7735.63, net: 956.59, taxes: tx(1818.21, 455.16, 106.45, 375.43, 95.44, 290), deductions: [] });
+  // Same amounts, different weeks (Schooled, Jun 18 and Jul 30): both real.
+  const c1 = stub({ payDate: "2026-06-18", periodStart: "2026-05-31", periodEnd: "2026-06-06", gross: 3025, net: 2022.01, taxes: tx(509.35, 187.55, 43.86, 222.9, 39.33, null) });
+  const c2 = stub({ payDate: "2026-07-30", periodStart: "2026-07-19", periodEnd: "2026-07-25", gross: 3025, net: 2022.01, taxes: tx(509.35, 187.55, 43.86, 222.9, 39.33, null) });
+  // Same week, a later stub that doesn't take this one back (a separate check): both real.
+  const d1 = stub({ payDate: "2026-09-03", periodStart: "2026-08-23", periodEnd: "2026-08-29", gross: 1000, net: 777.5 });
+  const d2 = stub({ payDate: "2026-09-10", periodStart: "2026-08-23", periodEnd: "2026-08-29", gross: 400, net: 311 , taxes: { ...emptyTaxes(), federal: 89 } });
+  const unsaved = stub({ status: "review", payDate: "2026-08-20", periodStart: "2026-04-19", periodEnd: "2026-04-25", gross: 2071.98, net: 10.26, deductions: [{ label: "NET PRIOR", amount: 1589.52 }] });
+  // A check from another week with the same take-home as a1: the week has to match, not just the amount.
+  const e1 = stub({ payDate: "2026-04-10", periodStart: "2026-03-29", periodEnd: "2026-04-04", gross: 2000, net: 1589.52 });
+  // An earlier stub never "replaces" a later one, even when the amounts line up backwards.
+  const f1 = stub({ payDate: "2026-09-17", periodStart: "2026-09-06", periodEnd: "2026-09-12", gross: 900, net: 400, taxes: emptyTaxes(), deductions: [{ label: "NET PRIOR", amount: 500 }] });
+  const f2 = stub({ payDate: "2026-09-24", periodStart: "2026-09-06", periodEnd: "2026-09-12", gross: 600, net: 500, taxes: { ...emptyTaxes(), federal: 100 } });
+  // The NET PRIOR line alone is enough when gross wasn't read.
+  const g1 = stub({ payDate: "2026-10-01", periodStart: "2026-09-20", periodEnd: "2026-09-26", gross: 800, net: 640 });
+  const g2 = stub({ payDate: "2026-10-15", periodStart: "2026-09-20", periodEnd: "2026-09-26", gross: null, net: 12, deductions: [{ label: "Net Prior", amount: 640 }] });
+  const all = [e1, unsaved, a1, a2, b1, b2, c1, c2, d1, d2, f1, f2, g1, g2];
+  const r = replacedBy(all);
+  assert.deepEqual([...r.entries()].sort(), [[a1.id, a2.id], [b1.id, b2.id], [g1.id, g2.id]].sort());
+  const counted = countedStubs(all).map((s) => s.id);
+  assert.deepEqual(counted.sort(), [e1, a2, b2, c1, c2, d1, d2, f1, f2, g2].map((s) => s.id).sort(), "originals out; a stub still in review never replaces anything");
+  // Withholding counts the reissue's taxes once, not both.
+  const est = withholdingEstimate([a1, a2], cfg(), "2026-10-20");
+  assert.ok(est, "estimate");
+  assert.equal(federalOf(est!), 199.72);
+});
+
+function federalOf(e: NonNullable<ReturnType<typeof withholdingEstimate>>): number {
+  return e.withheldSoFar;
+}

@@ -1,3 +1,4 @@
+import { countedStubs } from "./reissue.ts";
 import { workedHours } from "./checks.ts";
 import type { IncomeConfig, Stub } from "./types.ts";
 
@@ -30,8 +31,7 @@ export function healthPeriods(stubs: readonly Stub[], config: IncomeConfig, toda
     return { from, to, label: `${fmt(from)} – ${fmt(to)}` };
   }).filter((p) => p.from <= today);
   return periods.slice(-count).map((p) => {
-    const hours = stubs
-      .filter((s) => s.kind === "stub" && s.status === "saved")
+    const hours = countedStubs(stubs)
       .filter((s) => { const d = s.periodEnd ?? s.payDate; return !!d && d >= p.from && d <= p.to; })
       .reduce((n, s) => n + workedHours(s), 0);
     return { ...p, hours: Math.round(hours * 10) / 10, needed: hoursPerPeriod, current: today >= p.from && today <= p.to };
