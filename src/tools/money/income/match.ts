@@ -47,3 +47,33 @@ export function matchDeposits(stubs: readonly Stub[], txns: readonly Txn[]): Map
   }
   return out;
 }
+
+/**
+ * `matchDeposits`, with estimates (estimate.ts) in the picture. Real stubs go first and may take a
+ * deposit an estimate was holding: the real stub for that check has arrived, so the estimate is
+ * `superseded` (the caller deletes it). An estimate with no deposit yet is superseded too when a
+ * real stub has its take-home to the cent within two weeks of its pay date. Then estimates
+ * without a deposit are matched to what's left.
+ */
+export function matchDepositsAndEstimates(stubs: readonly Stub[], txns: readonly Txn[]): { matched: Map<string, string>; superseded: string[] } {
+  const real = stubs.filter((s) => !s.estimated);
+  const estimates = stubs.filter((s) => s.estimated && s.kind === "stub" && s.status === "saved");
+  const realMatched = matchDeposits(real, txns);
+  const claimed = new Set([...real.map((s) => s.depositTxnId), ...realMatched.values()].filter((x): x is string => !!x));
+  const realNet = real.filter((s) => s.kind === "stub" && s.status === "saved" && s.net !== null && s.payDate);
+  const superseded = estimates.filter((e) =>
+    (e.depositTxnId && claimed.has(e.depositTxnId)) ||
+    (!e.depositTxnId && e.net !== null && e.payDate && realNet.some((r) => Math.abs(r.net! - e.net!) < 0.005 && Math.abs(dayDiff(r.payDate!, e.payDate!)) <= 14)),
+  ).map((e) => e.id);
+  const gone = new Set(superseded);
+  const kept = estimates.filter((e) => !gone.has(e.id));
+  const taken = new Set([...claimed, ...kept.map((e) => e.depositTxnId).filter((x): x is string => !!x)]);
+  const matched = new Map(realMatched);
+  for (const e of kept.filter((e) => !e.depositTxnId && e.depositMatch !== "none").sort((a, b) => (a.payDate ?? "").localeCompare(b.payDate ?? ""))) {
+    const t = findDeposit(e, txns, taken);
+    if (!t) continue;
+    taken.add(t.id);
+    matched.set(e.id, t.id);
+  }
+  return { matched, superseded };
+}

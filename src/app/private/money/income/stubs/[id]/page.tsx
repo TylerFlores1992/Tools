@@ -62,7 +62,9 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
       <p className="mt-3 flex flex-wrap gap-2">
         <Tag>{stub.status === "saved" ? "Saved" : stub.status === "failed" ? "Couldn’t read" : "Not saved yet"}</Tag>
         {stub.depositTxnId && <Tag>In bank</Tag>}
+        {stub.estimated && <Tag>Estimate</Tag>}
       </p>
+      {stub.estimated && <p className="mt-4 max-w-[64ch] text-body text-ink-2">An estimate, not read from a stub: {stub.notes ?? "worked out from your other stubs."} Add the real stub when you have it; once its take-home matches this one, it replaces the estimate.</p>}
       {reissuedBy && <p className="mt-4 max-w-[64ch] text-body text-ink-2">This week was reissued on <Link href={`/private/money/income/stubs/${reissuedBy.id}`} className="text-ink underline underline-offset-4">check {reissuedBy.checkNumber ?? "(no number)"}</Link>. Its take-home still counts as paid, but gross, taxes and hours come from the reissue.</p>}
       {reissueOf && <p className="mt-4 max-w-[64ch] text-body text-ink-2">A reissue of <Link href={`/private/money/income/stubs/${reissueOf.id}`} className="text-ink underline underline-offset-4">check {reissueOf.checkNumber ?? "(no number)"}</Link>: it takes back that check&rsquo;s take-home, so its own take-home is only the difference.</p>}
       {stub.readError && <p className="mt-4"><State kind="wrong">{stub.readError}</State></p>}

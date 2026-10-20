@@ -61,6 +61,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const net = paid.reduce((n, s) => n + (s.net ?? 0), 0);
   const taxes = saved.reduce((n, s) => n + taxTotal(s), 0);
   const hours = saved.reduce((n, s) => n + workedHours(s), 0);
+  const estimatedGross = saved.filter((s) => s.estimated).reduce((n, s) => n + (s.gross ?? 0), 0);
   const notInBank = paid.filter((s) => !s.depositTxnId && s.depositMatch !== "none");
 
   const days = workDays(events, stubs, config, today);
@@ -160,7 +161,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       )}
 
       <section aria-label="Totals" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Tile label="Gross pay" value={money(gross)} note={`${saved.length} ${saved.length === 1 ? "stub" : "stubs"}`} />
+        <Tile label="Gross pay" value={money(gross)} note={`${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
         <Tile label="Taxes withheld" value={money(taxes)} note={gross ? `${Math.round((taxes / gross) * 100)}% of gross` : "–"} />
         <Tile label="Take-home" value={money(net)} note={notInBank.length ? `${notInBank.length} not in the bank yet` : saved.length ? "All found in the bank" : "–"} />
         <Tile label="Hours worked" value={`${round1(hours)} h`} note={hours && gross ? `About ${money(gross / hours)} an hour, gross` : "From the stubs’ pay lines"} />
@@ -319,7 +320,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               <li key={s.id}>
                 <Link href={`/private/money/income/stubs/${s.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">
                   <span className="min-w-0">
-                    <span className="block truncate text-body text-ink">{s.showName || s.employer || s.payrollCompany || "Stub"}</span>
+                    <span className="flex items-center gap-2"><span className="truncate text-body text-ink">{s.showName || s.employer || s.payrollCompany || "Stub"}</span>{s.estimated && <Tag>Estimate</Tag>}</span>
                     <span className="mt-1 block text-small text-muted">Paid {s.payDate ? shortDate(s.payDate) : "?"} · {replaced.has(s.id) ? "reissued later (counted from the reissue)" : `${round1(workedHours(s))} h`} · {s.depositTxnId ? "in the bank" : s.depositMatch === "none" ? "no deposit" : "not in the bank yet"}</span>
                   </span>
                   <span className="shrink-0 text-right">

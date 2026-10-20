@@ -76,3 +76,6 @@ begin
     execute format('revoke all on money.%I from anon, authenticated', t);
   end loop;
 end $$;
+
+-- 2026-10-20: estimated stubs (estimate.ts) for pay that reached the bank without a stub.
+alter table money.stubs add column if not exists estimated boolean not null default false;
