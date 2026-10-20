@@ -307,6 +307,10 @@ test("missing stubs: unmatched pay deposits by payer; a matched one drops off; a
   assert.equal(checks.deposits.length, 2);
   assert.equal(checks.total, 2180.7);
   assert.equal(out.length, 2, "last year's and EDD's are not listed");
+  // Filed by hand as anything but Income (the "Not pay" button): gone. Filed by hand as Income: still listed.
+  const settled = txn({ posted: "2026-08-14", amount: 101.22, description: "REMOTE ONLINE DEPOSIT # 1", category: "Other income", categorySource: "manual" });
+  const keptPay = txn({ posted: "2026-08-15", amount: 900, description: "REMOTE ONLINE DEPOSIT # 1", category: "Income", categorySource: "manual" });
+  assert.deepEqual(missingStubs([settled, keptPay], [], 2026).flatMap((g) => g.deposits.map((d) => d.amount)), [900]);
   // The stub matched to the CSV copy instead still clears it.
   assert.equal(missingStubs([a, copy], [stub({ depositTxnId: copy.id })], 2026).length, 0);
 });

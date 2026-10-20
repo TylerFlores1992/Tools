@@ -4,6 +4,7 @@ import { LinkButton } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
+import { markNotPay } from "./actions";
 import { requirePrivate } from "@/lib/money/guard";
 import { isConfigured } from "@/lib/money/db";
 import { getIncomeSettings, listEvents, listStubs } from "@/lib/money/income/store";
@@ -150,13 +151,21 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
                     <span className="text-body tabular-nums">{money(g.total)}</span>
                   </summary>
                   <ul className="border-t border-line px-4 py-2 text-small">
-                    {g.deposits.map((d, i) => <li key={`${d.id}-${i}`} className="flex justify-between gap-4 py-1"><span className="text-ink-2">Arrived {shortDate(d.posted)}</span><span className="tabular-nums">{money(d.amount)}</span></li>)}
+                    {g.deposits.map((d, i) => (
+                      <li key={`${d.id}-${i}`} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-1">
+                        <span className="text-ink-2">Arrived {shortDate(d.posted)}</span>
+                        <span className="flex items-center gap-3">
+                          <span className="tabular-nums">{money(d.amount)}</span>
+                          <form action={markNotPay}><input type="hidden" name="txn" value={d.id} /><button type="submit" className="min-h-11 rounded-btn px-2 text-small text-ink-2 underline underline-offset-4 hover:text-ink">Not pay</button></form>
+                        </span>
+                      </li>
+                    ))}
                   </ul>
                 </details>
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-small text-muted">From your bank deposits: each one drops off when a saved stub&rsquo;s take-home matches it. Dates are when the money arrived, not the pay date. <Link href="/private/money/income/add" className="underline underline-offset-4 hover:text-ink">Add them all at once</Link>.</p>
+          <p className="mt-2 text-small text-muted">From your bank deposits: each one drops off when a saved stub&rsquo;s take-home matches it, or when you mark it &ldquo;Not pay&rdquo; (a settlement, a refund check: it&rsquo;s filed as Other income). Dates are when the money arrived, not the pay date. <Link href="/private/money/income/add" className="underline underline-offset-4 hover:text-ink">Add them all at once</Link>.</p>
         </section>
       )}
 
