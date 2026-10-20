@@ -11,6 +11,7 @@ import { getTransactions } from "@/lib/money/store";
 import { employerKey, sameEmployer, taxTotal, workedHours } from "@/tools/money/income/checks";
 import { healthPeriods } from "@/tools/money/income/health";
 import { missingStubs } from "@/tools/money/income/missing";
+import { replacedBy } from "@/tools/money/income/reissue";
 import { TAX_KEYS, TAX_LABEL, type Stub } from "@/tools/money/income/types";
 import { TAX_YEAR, w2Check, withholdingEstimate } from "@/tools/money/income/withholding";
 import { workDays, type WorkDay } from "@/tools/money/income/workdays";
@@ -50,14 +51,17 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const missing = missingStubs(txns.filter((t) => t.posted <= `${year}-12-31`), stubs, year);
   const missingCount = missing.reduce((n, g) => n + g.deposits.length, 0);
 
-  const saved = stubs.filter((s) => s.status === "saved" && s.kind === "stub" && yearOf(s) === year);
+  // A reissued week's first stub still counts as money received, not toward gross/taxes/hours (reissue.ts).
+  const replaced = replacedBy(stubs);
+  const paid = stubs.filter((s) => s.status === "saved" && s.kind === "stub" && yearOf(s) === year);
+  const saved = paid.filter((s) => !replaced.has(s.id));
   const w2s = stubs.filter((s) => s.status === "saved" && s.kind === "w2" && (s.w2?.taxYear ?? yearOf(s)) === year);
   const toReview = stubs.filter((s) => s.status !== "saved");
   const gross = saved.reduce((n, s) => n + (s.gross ?? 0), 0);
-  const net = saved.reduce((n, s) => n + (s.net ?? 0), 0);
+  const net = paid.reduce((n, s) => n + (s.net ?? 0), 0);
   const taxes = saved.reduce((n, s) => n + taxTotal(s), 0);
   const hours = saved.reduce((n, s) => n + workedHours(s), 0);
-  const notInBank = saved.filter((s) => !s.depositTxnId && s.depositMatch !== "none");
+  const notInBank = paid.filter((s) => !s.depositTxnId && s.depositMatch !== "none");
 
   const days = workDays(events, stubs, config, today);
   const waiting = days.filter((d) => d.status === "waiting");
@@ -311,12 +315,12 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         <h2 id="stubs" className="text-h2 font-normal">Stubs</h2>
         {saved.length === 0 ? <p className="mt-4 text-body text-ink-2">None saved for {year}. <Link href="/private/money/income/add" className="text-ink underline underline-offset-4">Add your first one.</Link></p> : (
           <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
-            {saved.map((s) => (
+            {paid.map((s) => (
               <li key={s.id}>
                 <Link href={`/private/money/income/stubs/${s.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">
                   <span className="min-w-0">
                     <span className="block truncate text-body text-ink">{s.showName || s.employer || s.payrollCompany || "Stub"}</span>
-                    <span className="mt-1 block text-small text-muted">Paid {s.payDate ? shortDate(s.payDate) : "?"} · {round1(workedHours(s))} h · {s.depositTxnId ? "in the bank" : s.depositMatch === "none" ? "no deposit" : "not in the bank yet"}</span>
+                    <span className="mt-1 block text-small text-muted">Paid {s.payDate ? shortDate(s.payDate) : "?"} · {replaced.has(s.id) ? "reissued later (counted from the reissue)" : `${round1(workedHours(s))} h`} · {s.depositTxnId ? "in the bank" : s.depositMatch === "none" ? "no deposit" : "not in the bank yet"}</span>
                   </span>
                   <span className="shrink-0 text-right">
                     <span className="block text-body tabular-nums">{s.net !== null ? money(s.net) : "–"}</span>

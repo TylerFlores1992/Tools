@@ -9,6 +9,7 @@ import { requirePrivate } from "@/lib/money/guard";
 import { getIncomeSettings, getStub, getStubFile, listEvents, listStubs } from "@/lib/money/income/store";
 import { getTransactions } from "@/lib/money/store";
 import { previousStub, stubChecks } from "@/tools/money/income/checks";
+import { replacedBy } from "@/tools/money/income/reissue";
 import { EARNING_KINDS, W2_FIELDS, YTD_KEYS } from "@/tools/money/income/form";
 import { TAX_KEYS, TAX_LABEL } from "@/tools/money/income/types";
 import { dayKey, eventDays } from "@/tools/money/income/workdays";
@@ -36,6 +37,9 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
   const txns = await getTransactions(addDays(stub.payDate ?? new Date().toISOString().slice(0, 10), -40));
 
   const checks = stubChecks(stub, previousStub(stub, all), config);
+  const reissues = replacedBy(all);
+  const reissuedBy = all.find((o) => o.id === reissues.get(stub.id)) ?? null;
+  const reissueOf = all.find((o) => reissues.get(o.id) === stub.id) ?? null;
   const taken = new Set(all.filter((s) => s.id !== stub.id && s.depositTxnId).map((s) => s.depositTxnId!));
   const deposit = stub.depositTxnId ? txns.find((t) => t.id === stub.depositTxnId) ?? null : null;
   const candidates = txns
@@ -59,6 +63,8 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
         <Tag>{stub.status === "saved" ? "Saved" : stub.status === "failed" ? "Couldn’t read" : "Not saved yet"}</Tag>
         {stub.depositTxnId && <Tag>In bank</Tag>}
       </p>
+      {reissuedBy && <p className="mt-4 max-w-[64ch] text-body text-ink-2">This week was reissued on <Link href={`/private/money/income/stubs/${reissuedBy.id}`} className="text-ink underline underline-offset-4">check {reissuedBy.checkNumber ?? "(no number)"}</Link>. Its take-home still counts as paid, but gross, taxes and hours come from the reissue.</p>}
+      {reissueOf && <p className="mt-4 max-w-[64ch] text-body text-ink-2">A reissue of <Link href={`/private/money/income/stubs/${reissueOf.id}`} className="text-ink underline underline-offset-4">check {reissueOf.checkNumber ?? "(no number)"}</Link>: it takes back that check&rsquo;s take-home, so its own take-home is only the difference.</p>}
       {stub.readError && <p className="mt-4"><State kind="wrong">{stub.readError}</State></p>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
