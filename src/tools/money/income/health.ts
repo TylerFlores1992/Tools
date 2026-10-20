@@ -7,7 +7,7 @@ import type { IncomeConfig, Stub } from "./types.ts";
  * Plans count "hours worked reported by employers" in fixed periods (the Motion Picture plan:
  * 400 hours per six months to keep coverage, banking up to 450). The plan's own count is the
  * authority: employers report late, and some plans credit guaranteed or travel hours a stub
- * doesn't show. This is a running guide, set up in Income settings.
+ * doesn't show. This is a running guide, set up in Money → Settings.
  */
 
 export type HealthPeriod = { label: string; from: string; to: string; hours: number; needed: number; current: boolean };

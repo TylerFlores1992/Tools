@@ -98,7 +98,8 @@ export type IncomeConfig = {
   defaultHoursPerDay: number;
   rates: Rate[];
   defaultRate: number | null;
-  health: { name: string; hoursPerPeriod: number; periodMonths: number; firstMonth: number; bankCap: number };
+  /** `show`: off by default (owner, 2026-10-20): Local 80, Local 33 and non-union work count differently, so a stub-based count can't be trusted. */
+  health: { show: boolean; name: string; hoursPerPeriod: number; periodMonths: number; firstMonth: number; bankCap: number };
   tax: { filing: "single" | "joint"; otherWages: number; otherFederalWithheld: number; overtimeDeduction: boolean };
 };
 
@@ -110,7 +111,7 @@ export const DEFAULT_CONFIG: IncomeConfig = {
   defaultHoursPerDay: 10,
   rates: [],
   defaultRate: null,
-  health: { name: "Health plan", hoursPerPeriod: 400, periodMonths: 6, firstMonth: 1, bankCap: 450 },
+  health: { show: false, name: "Health plan", hoursPerPeriod: 400, periodMonths: 6, firstMonth: 1, bankCap: 450 },
   tax: { filing: "joint", otherWages: 0, otherFederalWithheld: 0, overtimeDeduction: false },
 };
 

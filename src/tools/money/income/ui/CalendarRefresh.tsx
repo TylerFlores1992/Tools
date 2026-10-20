@@ -51,7 +51,7 @@ export function CalendarRefresh({ lastRunAt, pending, scriptVersion, children }:
         {children ? <><span aria-hidden="true">·</span>{children}</> : null}
       </p>
       <p aria-live="polite">
-        {waiting && old ? "Your script reads once a day; make the new one in Income settings and Refresh works within a minute." : null}
+        {waiting && old ? "Your script reads once a day; make the new one in Settings and Refresh works within a minute." : null}
         {gaveUp ? "No read in two and a half minutes. Open the script at script.google.com and check its last run." : null}
       </p>
     </div>
