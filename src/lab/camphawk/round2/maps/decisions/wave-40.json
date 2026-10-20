@@ -1,0 +1,525 @@
+{
+ "version": 1,
+ "wave": 40,
+ "source": "Owner approval recorded after the fact (2026-10-13): 74 maps the pipeline marked ready with a good or usable first look that had reached no decisions/wave-*.json. They were approved by the owner in chat on 2026-10-13 and shipped in the live export 20261013T220839Z-ffcead0-dirty via an uncommitted wave-40.json; this records them so a clean export reproduces that set.",
+ "decisions": [
+  {
+   "id": "231854",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231860",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231861",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231868",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231880",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231978",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231993",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "231995",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232013",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232017",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232069",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232073",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232077",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232095",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232168",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232173",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232190",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232230",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232249",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232254",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232259",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232269",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232278",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232279",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232282",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232286",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232300",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232387",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232395",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232396",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232433",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232449",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232450",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232459",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232461",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232473",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232508",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232545",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232608",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232683",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232741",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232785",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232866",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "232867",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233098",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233116",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233235",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233384",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233404",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233642",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233683",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233688",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233860",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233957",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "233965",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234015",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234076",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234180",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234290",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234311",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234329",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234330",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234685",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "234762",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "251351",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "256933",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "272245",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "272300",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10086109",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10220612",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10286344",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10305353",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10305438",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look good. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  },
+  {
+   "id": "10305470",
+   "decision": "approved",
+   "by": "Owner (in chat, 2026-10-13)",
+   "on": "2026-10-13",
+   "note": "Passed: first look usable. Approved by the owner in chat (2026-10-13); recorded after the fact so a clean export keeps it."
+  }
+ ]
+}
