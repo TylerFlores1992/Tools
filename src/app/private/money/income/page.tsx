@@ -69,6 +69,9 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const toReview = stubs.filter((s) => s.status !== "saved");
   const gross = saved.reduce((n, s) => n + (s.gross ?? 0), 0);
   const net = paid.reduce((n, s) => n + (s.net ?? 0), 0);
+  // EDD family leave and disability are income too (owner, 2026-10-20): in the totals and the
+  // chart, never in hours, the hourly rate or the share of wages withheld.
+  const benefits = eddFiled.reduce((n, s) => n + (s.gross ?? 0), 0);
   const taxes = saved.reduce((n, s) => n + taxTotal(s), 0);
   const hours = saved.reduce((n, s) => n + workedHours(s), 0);
   const estimatedGross = saved.filter((s) => s.estimated).reduce((n, s) => n + (s.gross ?? 0), 0);
@@ -91,7 +94,8 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const months = Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`).filter((m) => m <= today.slice(0, 7));
   const chart = months.map((m) => {
     const inMonth = saved.filter((s) => (s.payDate ?? "").startsWith(m));
-    return { month: m, label: monthName(m).slice(0, 3), moneyIn: round(inMonth.reduce((n, s) => n + (s.gross ?? 0), 0)), moneyOut: round(inMonth.reduce((n, s) => n + taxTotal(s), 0)), empty: inMonth.length === 0 };
+    const eddIn = eddFiled.filter((s) => (s.payDate ?? "").startsWith(m));
+    return { month: m, label: monthName(m).slice(0, 3), moneyIn: round([...inMonth, ...eddIn].reduce((n, s) => n + (s.gross ?? 0), 0)), moneyOut: round(inMonth.reduce((n, s) => n + taxTotal(s), 0)), empty: inMonth.length + eddIn.length === 0 };
   });
 
   // By employer.
@@ -137,9 +141,9 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       {sp.saved && <p className="mt-6"><State kind="ok">Saved.{stubs.find((s) => s.id === sp.saved)?.depositTxnId ? " Its deposit was found in the bank." : ""}</State></p>}
 
       <section aria-label="Totals" className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <StatTile label="Gross pay" value={money(gross)} note={`${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
-        <StatTile label="Taxes withheld" value={money(taxes)} note={gross ? `${Math.round((taxes / gross) * 100)}% of gross` : "–"} />
-        <StatTile label="Take-home" value={money(net)} note={notInBank.length ? `${notInBank.length} not in the bank yet` : saved.length ? "All found in the bank" : "–"} />
+        <StatTile label="Income, gross" value={money(gross + benefits)} note={benefits ? `${money(gross)} wages + ${money(benefits)} EDD${estimatedGross ? ` · ${money(estimatedGross)} of wages estimated` : ""}` : `${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
+        <StatTile label="Taxes withheld" value={money(taxes)} note={gross ? `${Math.round((taxes / gross) * 100)}% of wages` : "–"} />
+        <StatTile label="Take-home" value={money(net + benefits)} note={`${benefits ? `${money(net)} pay + ${money(benefits)} EDD · ` : ""}${notInBank.length ? `${notInBank.length} not in the bank yet` : saved.length ? "all in the bank" : "–"}`} />
         <StatTile label="Hours worked" value={`${round1(hours)} h`} note={hours && gross ? `About ${money(gross / hours)} an hour, gross` : "From the stubs’ pay lines"} />
       </section>
 
@@ -265,11 +269,11 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
       {saved.length > 0 && (
         <section aria-labelledby="by-month" className="mt-12 min-w-0 scroll-mt-6">
           <h2 id="by-month" className="sr-only">Gross and taxes by month</h2>
-          <InOutChart points={chart} title={`${year} by month`} labels={{ in: "Gross pay", out: "Taxes withheld" }} />
+          <InOutChart points={chart} title={`${year} by month`} labels={{ in: benefits ? "Pay and EDD, gross" : "Gross pay", out: "Taxes withheld" }} />
           <details className="mt-3">
             <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">Show as a table</summary>
             <table className="mt-2 w-full text-small">
-              <thead><tr className="border-b border-line text-left text-ink-2"><th scope="col" className="py-1.5 font-normal">Month</th><th scope="col" className="py-1.5 text-right font-normal">Gross</th><th scope="col" className="py-1.5 text-right font-normal">Taxes</th></tr></thead>
+              <thead><tr className="border-b border-line text-left text-ink-2"><th scope="col" className="py-1.5 font-normal">Month</th><th scope="col" className="py-1.5 text-right font-normal">{benefits ? "Pay and EDD" : "Gross"}</th><th scope="col" className="py-1.5 text-right font-normal">Taxes</th></tr></thead>
               <tbody className="divide-y divide-line">{chart.map((c) => <tr key={c.month}><th scope="row" className="py-1.5 text-left font-normal">{monthName(c.month)}</th><td className="py-1.5 text-right tabular-nums">{money(c.moneyIn)}</td><td className="py-1.5 text-right tabular-nums">{money(c.moneyOut)}</td></tr>)}</tbody>
             </table>
           </details>
