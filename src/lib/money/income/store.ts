@@ -7,7 +7,7 @@ import { getTransactions } from "../store";
 /** Reads and writes for Money → Income. Every query names the `money` schema (docs/sql/money-income.sql). */
 
 type StubRow = {
-  id: string; kind: "stub" | "w2"; status: Stub["status"]; employer: string | null; payroll_company: string | null; show_name: string | null;
+  id: string; kind: Stub["kind"]; status: Stub["status"]; employer: string | null; payroll_company: string | null; show_name: string | null;
   pay_date: string | null; period_start: string | null; period_end: string | null; tax_year: number | null;
   gross: number | null; net: number | null; hours: number | null; check_number: string | null;
   taxes: Stub["taxes"]; deductions: Stub["deductions"]; earnings: Stub["earnings"]; ytd: Stub["ytd"]; w2: W2 | null; work_days: string[];
@@ -158,4 +158,19 @@ export async function replaceEvents(events: WorkEvent[], from: string, to: strin
 export async function markRecolored(keys: string[], paidColor: string): Promise<void> {
   if (!keys.length) return;
   await sql()`update money.work_events set recolored_at = now(), color = ${paidColor} where event_id in ${sql()(keys)}`;
+}
+
+/** File an EDD deposit as Paid Family Leave or Disability Insurance (benefits.ts). Once per deposit. */
+export async function fileBenefit(txnId: string, program: string): Promise<void> {
+  await sql()`
+    insert into money.stubs (kind, status, employer, payroll_company, show_name, pay_date, tax_year, gross, net, taxes, deductions, earnings, ytd, deposit_txn_id, deposit_match)
+    select 'benefit', 'saved', 'California EDD', 'California EDD', ${program}, t.posted, extract(year from t.posted)::int, t.amount, t.amount,
+      '{}'::jsonb, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, t.id, 'manual'
+    from money.transactions t
+    where t.id = ${txnId} and t.amount > 0
+      and not exists (select 1 from money.stubs s where s.kind = 'benefit' and s.deposit_txn_id = t.id)`;
+}
+
+export async function unfileBenefit(id: string): Promise<void> {
+  await sql()`delete from money.stubs where id = ${id} and kind = 'benefit'`;
 }

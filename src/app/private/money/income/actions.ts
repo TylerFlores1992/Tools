@@ -7,9 +7,10 @@ import { sha256 } from "@/lib/mail/secret";
 import { requirePrivate } from "@/lib/money/guard";
 import { setCategory } from "@/lib/money/store";
 import { OTHER_INCOME } from "@/tools/money/categorize";
+import { PROGRAMS } from "@/tools/money/income/benefits";
 import { ReadFailed, readDocument } from "@/lib/money/income/read-document";
 import {
-  createStub, deleteStub, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
+  createStub, deleteStub, fileBenefit, unfileBenefit, deleteStubFile, failStub, findStubByFile, getIncomeSettings, getStub, getStubFile, listEvents, listStubs,
   rematchDeposits, saveConfig, setCalendarKeyHash, setDeposit, writeStub,
 } from "@/lib/money/income/store";
 import { calendarScript } from "@/tools/money/income/calendar-script";
@@ -77,7 +78,7 @@ export async function rereadStub(form: FormData): Promise<void> {
   const id = String(form.get("id") ?? "");
   const stub = await getStub(id);
   const file = stub ? await getStubFile(id) : null;
-  if (stub && file) await readInto(id, file.bytes, file.mime, stub.kind);
+  if (stub && file && stub.kind !== "benefit") await readInto(id, file.bytes, file.mime, stub.kind);
   revalidatePath("/private/money/income", "layout");
   redirect(`/private/money/income/stubs/${id}`);
 }
@@ -181,5 +182,21 @@ export async function markNotPay(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("txn") ?? "");
   if (id) await setCategory(id, OTHER_INCOME, null);
+  revalidatePath("/private/money", "layout");
+}
+
+/** File an EDD deposit as Paid Family Leave or Disability Insurance. */
+export async function fileEdd(form: FormData): Promise<void> {
+  await requirePrivate("/private/money/income");
+  const txn = String(form.get("txn") ?? "");
+  const program = String(form.get("program") ?? "");
+  if (txn && (PROGRAMS as readonly string[]).includes(program)) await fileBenefit(txn, program);
+  revalidatePath("/private/money", "layout");
+}
+
+export async function unfileEdd(form: FormData): Promise<void> {
+  await requirePrivate("/private/money/income");
+  const id = String(form.get("id") ?? "");
+  if (id) await unfileBenefit(id);
   revalidatePath("/private/money", "layout");
 }

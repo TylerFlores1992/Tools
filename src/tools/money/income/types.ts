@@ -55,7 +55,8 @@ export type StubStatus = "reading" | "review" | "saved" | "failed";
 
 export type Stub = {
   id: string;
-  kind: "stub" | "w2";
+  /** "benefit": an EDD payment (Paid Family Leave or Disability Insurance), filed from a bank deposit (benefits.ts). */
+  kind: "stub" | "w2" | "benefit";
   status: StubStatus;
   employer: string | null;
   payrollCompany: string | null;
