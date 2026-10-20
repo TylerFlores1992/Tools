@@ -4,7 +4,7 @@ import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, acrossFor, loadMoney } from "@/lib/money/load";
-import { findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
+import { addDays, findRecurring, monthlyEquivalent, type Recurring } from "@/tools/money/recurring";
 import { isMonth, isYear, money, monthName, monthOf, monthsOf, shiftMonth, shortDate, signedMoney, summarize, incomeSources } from "@/tools/money/summary";
 import { InOutChart } from "@/tools/money/ui/Charts";
 import { StatTile } from "@/tools/money/ui/StatTile";
@@ -75,7 +75,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   });
   const bills = recurring.filter((r) => r.direction === "out" && r.status === "active");
   // Pay doesn't come on a schedule (freelance work), so recurring is about bills; pay lives on Income.
-  const stopped = recurring.filter((r) => r.status === "stopped" && r.direction === "out");
+  // Bills that ended long ago (last seen over four months back) aren't news; recent gaps are.
+  const stopped = recurring.filter((r) => r.status === "stopped" && r.direction === "out" && r.last >= addDays(data.today, -STOPPED_WITHIN_DAYS));
   const billsPerMonth = bills.reduce((n, r) => n + monthlyEquivalent(r), 0);
   const shown = data.accounts.filter((a) => ids.has(a.id));
   const lastRun = data.runs.find((r) => r.ok);
@@ -318,7 +319,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
                     </span>
                     <span className="shrink-0 text-right">
                       <span className="block text-h3 tabular-nums">{a.balance === null ? "–" : `${a.balance < 0 ? "−" : ""}${money(a.balance)}`}</span>
-                      {a.availableBalance !== null && a.availableBalance !== a.balance && (
+                      {/* Savings and cards report $0 available when the bank doesn't give one: not news. */}
+                      {a.availableBalance !== null && a.availableBalance !== 0 && a.availableBalance !== a.balance && (
                         <span className="block text-small tabular-nums text-muted">{money(a.availableBalance)} available</span>
                       )}
                     </span>
@@ -339,9 +341,9 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
           <p className="mt-4 max-w-[60ch] text-body text-ink-2">Nothing found yet. A monthly charge shows up here after it’s been seen three times, so give it a few months of history.</p>
         ) : (
           <div className="mt-5 grid gap-8 lg:grid-cols-2">
-            <RecurringList title="Bills and subscriptions" items={bills} empty="None found yet." />
+            <RecurringList title="Bills and subscriptions" items={bills} empty="None found yet." today={data.today} />
             <div className="grid min-w-0 content-start gap-8">
-              {stopped.length > 0 ? <RecurringList title="May have stopped" items={stopped} empty="" note="Not seen for more than half a cycle." /> : <p className="text-body text-ink-2">Every bill has shown up when expected.</p>}
+              {stopped.length > 0 ? <RecurringList title="May have stopped" items={stopped} empty="" note="Not seen for more than half a cycle, in the last four months." today={data.today} /> : <p className="text-body text-ink-2">Every bill has shown up when expected.</p>}
               <p className="text-small text-muted">Pay isn&rsquo;t listed here: it doesn&rsquo;t come on a schedule. Stubs, what you&rsquo;ve been paid and pay still owed are on <Link href="/private/money/income" className="underline underline-offset-4 hover:text-ink">Income</Link>.</p>
             </div>
           </div>
@@ -351,6 +353,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
   );
 }
 
+/** "May have stopped" lists bills last seen within this many days. */
+const STOPPED_WITHIN_DAYS = 120;
 /** Categories shown before "Show more" in Where it went. */
 const TOP_CATEGORIES = 8;
 const CHIP = "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small tabular-nums text-ink-2 hover:text-ink";
@@ -364,7 +368,7 @@ function delta(n: number, prevMonth: string) {
 }
 
 
-function RecurringList({ title, items, empty, note }: { title: string; items: Recurring[]; empty: string; note?: string }) {
+function RecurringList({ title, items, empty, note, today }: { title: string; items: Recurring[]; empty: string; note?: string; today: string }) {
   return (
     <div className="min-w-0">
       <h3 className="text-h3 font-medium">{title}</h3>
@@ -378,7 +382,7 @@ function RecurringList({ title, items, empty, note }: { title: string; items: Re
               <span className="min-w-0">
                 <span className="block truncate text-body text-ink">{r.name}</span>
                 <span className="mt-1 block text-small text-muted">
-                  {r.cadence[0].toUpperCase() + r.cadence.slice(1)} · {r.status === "active" ? `next about ${shortDate(r.next)}` : `last ${shortDate(r.last)}`}
+                  {r.cadence[0].toUpperCase() + r.cadence.slice(1)} · {r.status === "active" ? (r.next < today ? `expected about ${shortDate(r.next)}, not in yet` : `next about ${shortDate(r.next)}`) : `last ${shortDate(r.last)}`}
                 </span>
               </span>
               <span className="shrink-0 text-right text-body tabular-nums">

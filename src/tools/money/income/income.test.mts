@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import type { Txn } from "../types.ts";
 import { calendarScript, calendarScriptTemplate, KEY_PLACEHOLDER, URL_PLACEHOLDER } from "./calendar-script.ts";
+import { refreshPending, shouldRead } from "./refresh.ts";
 import { dayPay, previousStub, sameEmployer, stubChecks, workedHours } from "./checks.ts";
 import { parseStubForm } from "./form.ts";
 import { healthPeriods } from "./health.ts";
@@ -187,9 +188,12 @@ test("the calendar script sends work-coloured events and recolours what the serv
     setColor: (c: string) => { set[id] = c; },
   });
   const calls: Array<Record<string, unknown>> = [];
+  const triggerEvery: number[] = [];
+  let readNow = true;
   const ctx = {
     console: { log() {} },
-    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => ({ timeBased: () => ({ everyDays: () => ({ atHour: () => ({ create() {} }) }) }) }) },
+    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => ({ timeBased: () => ({ everyMinutes: (n: number) => { triggerEvery.push(n); return { create() {} }; } }) }) },
+    LockService: { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) },
     CalendarApp: { getDefaultCalendar: () => ({ getEvents: () => [mk("w1", "TAC", "6", "2026-09-14", "2026-09-19"), mk("x", "Dentist", "", "2026-09-20", "2026-09-21"), mk("p1", "Uni", "11", "2026-10-12", "2026-10-13")] }) },
     Session: { getScriptTimeZone: () => "UTC" },
     Utilities: { sleep() {}, formatDate: (d: Date) => d.toISOString().slice(0, 10) },
@@ -198,7 +202,7 @@ test("the calendar script sends work-coloured events and recolours what the serv
         const p = JSON.parse(o.payload);
         calls.push(p);
         assert.equal(o.headers.Authorization, "Bearer k3y");
-        const body = p.op === "hello" ? { from: "2026-01-01T00:00:00", to: "2026-12-19T00:00:00", colors: ["6", "11"] } : p.op === "events" ? { recolor: ["w1|2026-09-14", "missing|2026-01-01"], paidColor: "11" } : { ok: true };
+        const body = p.op === "hello" ? { from: "2026-01-01T00:00:00", to: "2026-12-19T00:00:00", colors: ["6", "11"], read: readNow, why: readNow ? "due" : "fresh" } : p.op === "events" ? { recolor: ["w1|2026-09-14", "missing|2026-01-01"], paidColor: "11" } : { ok: true };
         return { getResponseCode: () => 200, getContentText: () => JSON.stringify(body) };
       },
     },
@@ -211,6 +215,29 @@ test("the calendar script sends work-coloured events and recolours what the serv
   assert.deepEqual(set, { w1: "11" });
   assert.deepEqual(calls.at(-1)!.recolored, ["w1|2026-09-14"]);
   assert.equal(summary.recolored, 1);
+  // A wake the server says isn't due sends only the hello; setup forces a read and checks every minute.
+  readNow = false;
+  calls.length = 0;
+  assert.equal(JSON.stringify(vm.runInContext("moneyCalendar()", ctx)), JSON.stringify({ skipped: "fresh" }));
+  assert.deepEqual(calls.map((c) => c.op), ["hello"]);
+  calls.length = 0;
+  vm.runInContext("setup()", ctx);
+  assert.deepEqual(triggerEvery, [1]);
+  assert.ok(calls.some((c) => c.op === "events"), "setup reads even when not due");
+});
+
+test("calendar refresh: read on first run, after Refresh, or when the last read is 15 minutes old", () => {
+  const t0 = Date.parse("2026-10-20T18:00:00Z");
+  const iso = (ms: number) => new Date(ms).toISOString();
+  assert.deepEqual(shouldRead(null, null, t0), { read: true, why: "first" });
+  assert.deepEqual(shouldRead(iso(t0 - 5 * 60_000), null, t0), { read: false, why: "fresh" });
+  assert.deepEqual(shouldRead(iso(t0 - 15 * 60_000), null, t0), { read: true, why: "due" });
+  assert.deepEqual(shouldRead(iso(t0 - 14 * 60_000), null, t0).read, false);
+  assert.deepEqual(shouldRead(iso(t0 - 5 * 60_000), iso(t0 - 60_000), t0), { read: true, why: "refresh" });
+  assert.deepEqual(shouldRead(iso(t0 - 60_000), iso(t0 - 5 * 60_000), t0), { read: false, why: "fresh" }, "a refresh already answered");
+  assert.equal(refreshPending(iso(t0 - 5 * 60_000), iso(t0 - 60_000)), true);
+  assert.equal(refreshPending(iso(t0 - 60_000), iso(t0 - 5 * 60_000)), false);
+  assert.equal(refreshPending(null, null), false);
 });
 
 // ---- health, tax, W-2 ----
@@ -470,4 +497,34 @@ test("calendar: Sunday-first weeks, padded with nulls; months shift across years
   assert.equal(calStatus(day("2026-10-01", "paid", true)), "paid", "only a waiting day can be late");
   assert.deepEqual(monthCounts([day("2026-10-01", "paid"), day("2026-10-02", "marked"), day("2026-10-03", "waiting", true), day("2026-09-30", "paid"), day("2026-10-20", "scheduled")], "2026-10"),
     [{ status: "paid", count: 2 }, { status: "late", count: 1 }, { status: "scheduled", count: 1 }]);
+});
+
+// ---- .ics import ----
+
+test("ics: all-day ends are exclusive, UTC times land on the Pacific day, repeats and cancellations are left out", async () => {
+  const { parseIcs, icsEventId } = await import("./ics.ts");
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "BEGIN:VEVENT", "UID:a1", "SUMMARY:TAC \\, day 1", "DTSTART;VALUE=DATE:20260914", "DTEND;VALUE=DATE:20260917", "END:VEVENT",
+    // 05:00Z on the 20th is 10 PM on the 19th in Pacific (PDT); ends 2 AM Pacific on the 20th.
+    "BEGIN:VEVENT", "UID:n1", "SUMMARY:Night shoot", "DTSTART:20260920T050000Z", "DTEND:20260920T090000Z", "BEGIN:VALARM", "TRIGGER:-PT1H", "END:VALARM", "END:VEVENT",
+    "BEGIN:VEVENT", "UID:t1", "SUMMARY:Load in", "DTSTART;TZID=America/Los_Angeles:20260922T070000", "DTEND;TZID=America/Los_Angeles:20260923T000000", "END:VEVENT",
+    "BEGIN:VEVENT", "UID:r1", "SUMMARY:Gym", "DTSTART;VALUE=DATE:20260901", "RRULE:FREQ=WEEKLY", "END:VEVENT",
+    "BEGIN:VEVENT", "UID:c1", "SUMMARY:Cancelled gig", "STATUS:CANCELLED", "DTSTART;VALUE=DATE:20260925", "END:VEVENT",
+    "BEGIN:VEVENT", "UID:late", "SUMMARY:After the switch", "DTSTART;VALUE=DATE:20261006", "END:VEVENT",
+    "BEGIN:VEVENT", "UID:folded", "SUMMARY:Long", " title", "DTSTART;VALUE=DATE:20260301", "END:VEVENT",
+    // A reminder's own SUMMARY isn't the event's; an end at exactly midnight Pacific (07:00Z) stays on the start day.
+    "BEGIN:VEVENT", "UID:m1", "BEGIN:VALARM", "SUMMARY:Reminder", "END:VALARM", "SUMMARY:Day call", "DTSTART:20260401T150000Z", "DTEND:20260402T070000Z", "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  const r = parseIcs(ics, "2026-01-01", "2026-10-05");
+  assert.deepEqual(r.events.map((e) => [e.uid, e.title, e.startDay, e.endDay]), [
+    ["folded", "Longtitle", "2026-03-01", "2026-03-01"],
+    ["m1", "Day call", "2026-04-01", "2026-04-01"],
+    ["a1", "TAC , day 1", "2026-09-14", "2026-09-16"],
+    ["n1", "Night shoot", "2026-09-19", "2026-09-20"],
+    ["t1", "Load in", "2026-09-22", "2026-09-22"],
+  ]);
+  assert.deepEqual([r.repeating, r.canceled, r.outside], [1, 1, 1]);
+  assert.equal(icsEventId(r.events[2]), "ics:a1|2026-09-14");
 });

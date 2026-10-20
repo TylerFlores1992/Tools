@@ -13,15 +13,16 @@
 // THIS STRING MUST CONTAIN NO BACKTICK AND NO DOLLAR-BRACE: it is a template literal.
 // income.test.mts runs it against a fake CalendarApp.
 
-export const CALENDAR_SCRIPT_VERSION = "1";
+export const CALENDAR_SCRIPT_VERSION = "2";
 export const URL_PLACEHOLDER = "__MONEY_CALENDAR_URL__";
 export const KEY_PLACEHOLDER = "__MONEY_CALENDAR_KEY__";
 
 const SCRIPT = `/**
  * Money: work calendar (version VERSION_HERE)
  *
- * Every morning around 6 this reads your work days (events in your work or paid color) on your
- * main Google Calendar and sends them to the Income page on tylerflores.dev. When a day's pay has
+ * This reads your work days (events in your work or paid color) on your main Google Calendar
+ * and sends them to the Income page on tylerflores.dev: every 15 minutes, and within a minute of
+ * pressing Refresh there. (It wakes every minute and asks first; most wakes read nothing.) When a day's pay has
  * reached your bank, it turns that event your paid color. It never creates, moves, renames or
  * deletes an event. Run "setup" once.
  */
@@ -30,19 +31,30 @@ var MC_URL = '${URL_PLACEHOLDER}';
 var MC_KEY = '${KEY_PLACEHOLDER}';
 var VERSION = 'VERSION_HERE';
 
-/** Run this once. It turns on the daily run and does the first one now. */
+/** Run this once. It turns on the every-minute check and does the first read now. */
 function setup() {
   var existing = ScriptApp.getProjectTriggers();
   for (var i = 0; i < existing.length; i++) {
     if (existing[i].getHandlerFunction() === 'moneyCalendar') ScriptApp.deleteTrigger(existing[i]);
   }
-  ScriptApp.newTrigger('moneyCalendar').timeBased().everyDays(1).atHour(6).create();
-  moneyCalendar();
+  ScriptApp.newTrigger('moneyCalendar').timeBased().everyMinutes(1).create();
+  moneyCalendar(true);
 }
 
-/** The daily run. */
-function moneyCalendar() {
+/** Each wake. The server says whether a read is due (or Refresh was pressed); "force" reads anyway. */
+function moneyCalendar(force) {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(1000)) return { skipped: 'busy' };
+  try {
+    return read_(force === true);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function read_(force) {
   var hello = call_({ op: 'hello', scriptVersion: VERSION });
+  if (!force && hello.read === false) return { skipped: hello.why || 'fresh' };
   var cal = CalendarApp.getDefaultCalendar();
   var events = cal.getEvents(new Date(hello.from), new Date(hello.to));
   var colors = hello.colors || [];

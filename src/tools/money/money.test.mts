@@ -420,3 +420,16 @@ test("recurring: a bill imported from a CSV and then synced is one series, named
   assert.equal(displayName("PG&E WEB ONLINE"), "PG&E");
   assert.equal(displayName("12345"), "12345", "nothing left: the original stands");
 });
+
+test("one gas bill under two spellings is one series; income sources count pending deposits like Money in", async () => {
+  const { incomeSources, summarize } = await import("./summary.ts");
+  const gas = ["2026-06-16", "2026-07-16", "2026-08-17", "2026-09-16"].map((d, i) =>
+    txn({ posted: d, amount: -45, description: i < 2 ? "WEB AUTHORIZED PMT SO CAL GAS" : "WEB AUTHORIZED PMT SoCalGas", category: "Utilities" }));
+  assert.equal(findRecurring(gas, "2026-09-20").length, 1);
+  const ins = [
+    txn({ posted: "2026-10-02", amount: 500, description: "IATSE LOCAL PAYROLL", category: "Income" }),
+    txn({ posted: "2026-10-18", amount: 1585.55, description: "ONLINE DEPOSIT", category: "Income", pending: true }),
+  ];
+  const total = incomeSources(ins, "2026-10").reduce((n, x) => n + x.amount, 0);
+  assert.equal(Math.round(total * 100) / 100, summarize(ins, "2026-10").moneyIn, "the sources add up to Money in");
+});

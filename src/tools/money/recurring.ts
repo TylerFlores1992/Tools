@@ -97,7 +97,8 @@ export function findRecurring(txns: readonly Txn[], today: string, across?: Read
     // Keyed on the bank's description, not the payee: the synced feed adds a clean payee
     // ("Valon") that a CSV import of the same bill never has ("WEB AUTHORIZED PMT Valon"), so a
     // payee key splits one bill into a "stopped" CSV series and a short synced one.
-    const key = merchantKey(t.description) || merchantKey(t.payee ?? "");
+    // Spaces out: one biller writes "SO CAL GAS" one year and "SoCalGas" the next.
+    const key = (merchantKey(t.description) || merchantKey(t.payee ?? "")).replace(/ /g, "");
     if (!key) continue;
     const dir = t.amount < 0 ? "out" : "in";
     const id = `${dir}:${key}`;
