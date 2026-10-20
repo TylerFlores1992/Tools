@@ -50,7 +50,7 @@ export default async function MailSettings() {
       {data === null && <div className="mt-8"><NotConfigured /></div>}
       {data === "unreachable" && <div className="mt-8"><Unreachable /></div>}
       {data && data !== "unreachable" && (
-        <div className="mt-8 grid max-w-[760px] gap-10">
+        <div className="mt-8 grid max-w-[760px] grid-cols-[minmax(0,1fr)] gap-10">
           <section aria-labelledby="gmail">
             <h2 id="gmail" className="text-h2 font-normal">Gmail</h2>
             <Card className="mt-4 grid gap-4">

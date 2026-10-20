@@ -25,7 +25,7 @@ const GLYPH: Record<CalStatus, string> = {
   paid: "text-ice", marked: "text-ice", stub: "text-ice", waiting: "text-ember", late: "text-wrong", scheduled: "text-muted",
 };
 
-function Chip({ d, compact }: { d: WorkDay; compact?: boolean }) {
+function Chip({ d, big }: { d: WorkDay; big?: boolean }) {
   const s = calStatus(d);
   const { word, glyph } = CAL_LABEL[s];
   const body = (
@@ -34,10 +34,10 @@ function Chip({ d, compact }: { d: WorkDay; compact?: boolean }) {
         <span aria-hidden="true" className={cx("shrink-0", GLYPH[s])}>{glyph}</span>
         <span className="truncate">{d.title}</span>
       </span>
-      <span className={cx("block text-ink-2", compact ? "sr-only" : "")}>{word}</span>
+      <span className="block text-ink-2">{word}</span>
     </>
   );
-  const cls = cx("block min-w-0 rounded-tag border px-1.5 py-1 text-label leading-snug", CHIP[s]);
+  const cls = cx("block min-w-0 rounded-tag border tracking-normal", big ? "px-3 py-2 text-small" : "px-1.5 py-1 text-label leading-snug", CHIP[s]);
   const title = `${d.title}: ${word}`;
   return d.stubId ? (
     <Link href={`/private/money/income/stubs/${d.stubId}`} className={cx(cls, "hover:bg-surface")} title={title}>{body}</Link>
@@ -76,8 +76,8 @@ export function WorkCalendar({ days, month, today, href, minMonth, maxMonth }: {
       <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface sm:hidden">
         {inMonth.length === 0 ? <li className="px-4 py-3 text-small text-muted">Nothing booked.</li> : inMonth.map(([day, list]) => (
           <li key={day} className="flex gap-3 px-4 py-3">
-            <span className={cx("w-[9ch] shrink-0 text-small tabular-nums", day === today ? "text-ink" : "text-ink-2")}>{dayLabel(day)}{day === today && <span className="block text-label uppercase">Today</span>}</span>
-            <span className="grid min-w-0 flex-1 gap-1.5">{list.map((d) => <Chip key={d.key} d={d} />)}</span>
+            <span className={cx("w-[11ch] shrink-0 whitespace-nowrap pt-2 text-small tabular-nums", day === today ? "text-ink" : "text-ink-2")}>{dayLabel(day)}{day === today && <span className="block text-label uppercase">Today</span>}</span>
+            <span className="grid min-w-0 flex-1 gap-1.5">{list.map((d) => <Chip key={d.key} d={d} big />)}</span>
           </li>
         ))}
       </ul>
