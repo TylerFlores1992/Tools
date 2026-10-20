@@ -9,7 +9,7 @@ import { shouldRead } from "@/tools/money/income/refresh";
 
 /**
  * The work-calendar Apps Script (src/tools/money/income/calendar-script.ts) talks to this. Public
- * by path; the key (stored as SHA-256 only, made on /private/money/income/settings) is the entire
+ * by path; the key (stored as SHA-256 only, made on /private/money/settings) is the entire
  * access control, and a new key stops the old script. It answers with which events to recolour,
  * never with stored money data.
  */

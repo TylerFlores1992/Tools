@@ -11,10 +11,11 @@ import { importedByAccount } from "@/lib/money/import";
 import { shortDate } from "@/tools/money/summary";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
 import { disconnect, removeRule, saveAccount, undoStatement } from "../actions";
+import { IncomeSettings } from "./IncomeSettings";
 
 export const metadata: Metadata = {
   title: "Settings · Money",
-  description: "Bank connection, accounts and rules.",
+  description: "Bank connection, accounts, rules, and the work calendar, pay and tax settings.",
   robots: { index: false, follow: false },
 };
 
@@ -26,7 +27,7 @@ const when = (iso: string) =>
 
 const FIELD = "field min-h-11 w-full rounded-input border border-control bg-surface px-3 text-body text-ink";
 
-export default async function MoneySettings({ searchParams }: { searchParams: Promise<{ disconnected?: string }> }) {
+export default async function MoneySettings({ searchParams }: { searchParams: Promise<{ disconnected?: string; saved?: string; imported?: string; removed?: string }> }) {
   await requirePrivate("/private/money/settings");
   const sp = await searchParams;
   const data = await loadMoney();
@@ -42,8 +43,18 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
       {data.state === "unreachable" && <div className="mt-8"><Unreachable /></div>}
 
       {data.state === "ok" && (
+        <nav aria-label="On this page" className="mt-6 overflow-x-auto">
+          <ul className="flex w-max gap-1 text-small sm:w-auto sm:flex-wrap">
+            {[["conn", "Bank"], ["accts", "Accounts"], ["income", "Work calendar"], ["import", "Import a calendar"], ["pay", "Pay and taxes"], ["older", "Older bank history"], ["rules", "Category rules"], ["hist", "Recent syncs"]].map(([id, label]) => (
+              <li key={id}><a href={`#${id}`} className="flex min-h-10 items-center rounded-full border border-line px-3 whitespace-nowrap text-ink-2 hover:text-ink">{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {data.state === "ok" && (
         <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10">
-          <section aria-labelledby="conn">
+          <section aria-labelledby="conn" className="scroll-mt-6">
             <h2 id="conn" className="text-h2 font-normal">Bank connection</h2>
             <Card className="mt-4 max-w-[720px]">
               {sp.disconnected && <p className="mb-4"><State kind="note">Disconnected. Transactions already saved are kept.</State></p>}
@@ -77,7 +88,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             </Card>
           </section>
 
-          <section aria-labelledby="accts">
+          <section aria-labelledby="accts" className="scroll-mt-6">
             <h2 id="accts" className="text-h2 font-normal">Accounts</h2>
             <p className="mt-2 max-w-[60ch] text-body text-ink-2">Mark each account as yours or joint so the Mine and Joint views add up. Hidden accounts aren’t counted anywhere.</p>
             {data.accounts.length === 0 ? (
@@ -128,8 +139,12 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             )}
           </section>
 
-          <section aria-labelledby="older">
-            <h2 id="older" className="text-h2 font-normal">Older history</h2>
+          <div id="income" className="grid scroll-mt-6 grid-cols-[minmax(0,1fr)] gap-10 border-t border-line-2 pt-10">
+            <IncomeSettings saved={sp.saved === "income"} imported={sp.imported} removed={sp.removed} />
+          </div>
+
+          <section aria-labelledby="older" className="scroll-mt-6">
+            <h2 id="older" className="text-h2 font-normal">Older bank history</h2>
             <p className="mt-2 max-w-[60ch] text-body text-ink-2">The bank sync only reaches back 90 days. For earlier months, download a CSV from each bank’s website and import it here, one account at a time.</p>
             <ol className="mt-3 grid max-w-[60ch] list-decimal gap-1.5 pl-5 text-small text-ink-2 marker:text-muted">
               <li><span className="text-ink">Chase:</span> open the account, choose Download account activity, pick the dates, file type CSV.</li>
@@ -161,8 +176,8 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             )}
           </section>
 
-          <section aria-labelledby="rules">
-            <h2 id="rules" className="text-h2 font-normal">Your rules</h2>
+          <section aria-labelledby="rules" className="scroll-mt-6">
+            <h2 id="rules" className="text-h2 font-normal">Category rules</h2>
             <p className="mt-2 max-w-[60ch] text-body text-ink-2">Made when you leave “Always file this way” ticked on a transaction. They beat the automatic categories; a category you set by hand beats both. Every sync re-files the history; “Re-file categories” does it now without asking the bank.</p>
             <div className="mt-4"><RefileForm /></div>
             {data.rules.length === 0 ? (
@@ -182,7 +197,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             )}
           </section>
 
-          <section aria-labelledby="hist">
+          <section aria-labelledby="hist" className="scroll-mt-6">
             <h2 id="hist" className="text-h2 font-normal">Recent syncs</h2>
             {data.runs.length === 0 ? (
               <p className="mt-4 text-body text-ink-2">No syncs yet.</p>

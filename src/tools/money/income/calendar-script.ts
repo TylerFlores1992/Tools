@@ -112,7 +112,7 @@ function call_(payload) {
   for (var attempt = 1; attempt <= 3; attempt++) {
     var res = UrlFetchApp.fetch(MC_URL, options);
     var code = res.getResponseCode();
-    if (code === 401) throw new Error('Money did not accept the key. Make a new script on the Income settings page.');
+    if (code === 401) throw new Error('Money did not accept the key. Make a new script on the Money Settings page.');
     if (code >= 200 && code < 300) return JSON.parse(res.getContentText());
     if (code < 500 || attempt === 3) throw new Error('Money answered ' + code);
     Utilities.sleep(2000 * attempt);

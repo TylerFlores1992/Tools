@@ -171,7 +171,7 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
               <fieldset className="grid gap-2">
                 <legend className="mb-2 text-h3 font-medium">Work days this pays for</legend>
                 {days.length === 0 ? (
-                  <p className="text-body text-ink-2">{events.length ? "No calendar work days near this pay period." : "Connect your calendar in Income settings to tick off the days this pays for."}</p>
+                  <p className="text-body text-ink-2">{events.length ? "No calendar work days near this pay period." : "Connect your calendar in Money → Settings to tick off the days this pays for."}</p>
                 ) : (
                   days.map((d) => (
                     <label key={d.key} className="flex min-h-11 items-center gap-3 text-body">

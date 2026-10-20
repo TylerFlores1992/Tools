@@ -129,7 +129,7 @@ export async function chooseDeposit(form: FormData): Promise<void> {
 // ---- settings ----
 
 export async function saveIncomeSettings(form: FormData): Promise<void> {
-  await requirePrivate("/private/money/income/settings");
+  await requirePrivate("/private/money/settings");
   const { config: old } = await getIncomeSettings();
   const num = (k: string, fallback: number) => { const v = Number(String(form.get(k) ?? "").trim()); return Number.isFinite(v) && String(form.get(k) ?? "").trim() !== "" ? v : fallback; };
   const rates: IncomeConfig["rates"] = [];
@@ -149,6 +149,7 @@ export async function saveIncomeSettings(form: FormData): Promise<void> {
     defaultRate: parseMoney(String(form.get("defaultRate") ?? "")),
     rates,
     health: {
+      show: form.get("healthShow") === "on",
       name: String(form.get("healthName") ?? "").trim().slice(0, 60) || old.health.name,
       hoursPerPeriod: Math.max(0, num("healthHours", old.health.hoursPerPeriod)),
       periodMonths: [1, 2, 3, 4, 6, 12].includes(num("healthMonths", old.health.periodMonths)) ? num("healthMonths", old.health.periodMonths) : old.health.periodMonths,
@@ -164,14 +165,14 @@ export async function saveIncomeSettings(form: FormData): Promise<void> {
   });
   await saveConfig(config);
   revalidatePath("/private/money", "layout");
-  redirect("/private/money/income/settings?saved=1");
+  redirect("/private/money/settings?saved=income#pay");
 }
 
 export type ScriptState = { script?: string; attempt: number };
 
 /** A new key: shown once inside the script, stored as SHA-256 only. Stops any older script. */
 export async function newCalendarScript(prev: ScriptState): Promise<ScriptState> {
-  await requirePrivate("/private/money/income/settings");
+  await requirePrivate("/private/money/settings");
   const key = randomBytes(24).toString("base64url");
   await setCalendarKeyHash(sha256(key));
   const base = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://tylerflores.dev";
@@ -218,7 +219,7 @@ export type IcsPreview = { events?: IcsEvent[]; repeating?: number; canceled?: n
  * for the owner to tick. Nothing is saved.
  */
 export async function previewIcs(prev: IcsPreview, form: FormData): Promise<IcsPreview> {
-  await requirePrivate("/private/money/income/settings");
+  await requirePrivate("/private/money/settings");
   const attempt = prev.attempt + 1;
   const from = String(form.get("from") ?? "");
   const before = String(form.get("before") ?? "");
@@ -250,7 +251,7 @@ export async function previewIcs(prev: IcsPreview, form: FormData): Promise<IcsP
  * waiting.
  */
 export async function saveIcs(form: FormData): Promise<void> {
-  await requirePrivate("/private/money/income/settings");
+  await requirePrivate("/private/money/settings");
   const { config } = await getIncomeSettings();
   const markPaid = form.get("paid") === "on";
   const picked: WorkEvent[] = [];
@@ -271,12 +272,12 @@ export async function saveIcs(form: FormData): Promise<void> {
     }
   }
   revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/income/settings?imported=${picked.length}#import`);
+  redirect(`/private/money/settings?imported=${picked.length}#import`);
 }
 
 export async function removeImported(): Promise<void> {
-  await requirePrivate("/private/money/income/settings");
+  await requirePrivate("/private/money/settings");
   const n = await removeImportedEvents();
   revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/income/settings?removed=${n}#import`);
+  redirect(`/private/money/settings?removed=${n}#import`);
 }

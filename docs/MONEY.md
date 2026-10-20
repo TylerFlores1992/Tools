@@ -191,7 +191,8 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   640 px and up, a list of the month's days on a phone. `?cal=YYYY-MM` picks the month, between the
   first event and this month (or the last booked one). A paid day links to its stub.
 - **Calendar:** an Apps Script in the owner's account (`calendar-script.ts`, made on
-  `/income/settings`, key stored as SHA-256) posts work days daily to `/api/money/calendar` and
+  `/private/money/settings#income` since 2026-10-20, where every Money and Income setting now lives;
+  `/income/settings` redirects there; key stored as SHA-256) posts work days to `/api/money/calendar` and
   recolours an event Tomato when every day of it is paid (owner: "Recolor for me"). Same reason as
   Morning Mail's Gmail script: an unverified OAuth app's token dies every 7 days.
   Day status (`workdays.ts`): scheduled / waiting (late after `payLagDays`) / stub in / paid /

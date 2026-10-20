@@ -118,9 +118,9 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           <div className="mt-3 max-w-[60ch] text-small text-muted">
             {calendarConnected ? (
               <CalendarRefresh lastRunAt={settings.lastRunAt} pending={refreshPending(settings.lastRunAt, settings.refreshAt)} scriptVersion={scriptVersionOf(settings.lastSummary)}>
-                <Link href="/private/money/income/settings" className="underline underline-offset-4 hover:text-ink">Income settings</Link>
+                <Link href="/private/money/settings#income" className="underline underline-offset-4 hover:text-ink">Calendar settings</Link>
               </CalendarRefresh>
-            ) : <>Calendar not connected · <Link href="/private/money/income/settings" className="underline underline-offset-4 hover:text-ink">Income settings</Link></>}
+            ) : <>Calendar not connected · <Link href="/private/money/settings#income" className="underline underline-offset-4 hover:text-ink">Calendar settings</Link></>}
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -152,7 +152,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
             ...(calendarConnected ? [["calendar", "Work calendar"]] : []),
             ...(saved.length ? [["by-month", "By month"]] : []),
             ["emp", "Employers"],
-            ["health", "Health hours"],
+            ...(config.health.show ? [["health", "Health hours"]] : []),
             ...(eddFiled.length || eddUnfiled.length ? [["edd", "EDD"]] : []),
             ...(estimate ? [["fed", "Withholding"]] : []),
             ...(w2s.length ? [["w2", "W-2"]] : []),
@@ -219,7 +219,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           {waiting.length > 0 && <p className="text-body text-ink-2">{waiting.length} {waiting.length === 1 ? "day" : "days"} worked{expectedTotal ? <>, about <span className="tabular-nums text-ink">{money(expectedTotal)}</span> gross{unknownExpected ? " (some without a rate)" : ""}</> : ""}</p>}
         </div>
         {!calendarConnected ? (
-          <p className="mt-4 max-w-[64ch] text-body text-ink-2">Connect your Google Calendar in <Link href="/private/money/income/settings" className="text-ink underline underline-offset-4">Income settings</Link> and every work day will show here until its stub and pay arrive.</p>
+          <p className="mt-4 max-w-[64ch] text-body text-ink-2">Connect your Google Calendar in <Link href="/private/money/settings#income" className="text-ink underline underline-offset-4">Settings</Link> and every work day will show here until its stub and pay arrive.</p>
         ) : owedGroups.length === 0 && notInBank.length === 0 ? (
           <p className="mt-4"><State kind="ok">Nothing owed: every work day so far has a stub.</State></p>
         ) : (
@@ -276,7 +276,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
         </section>
       )}
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-2">
+      <div className={`mt-12 grid gap-10 ${config.health.show ? "lg:grid-cols-2" : "max-w-[860px]"}`}>
         <section aria-labelledby="emp" className="min-w-0 scroll-mt-6">
           <h2 id="emp" className="text-h2 font-normal">By employer</h2>
           {employers.length === 0 ? <p className="mt-4 text-body text-ink-2">No saved stubs for {year} yet.</p> : (
@@ -311,6 +311,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           )}
         </section>
 
+        {config.health.show && (
         <section aria-labelledby="health" className="min-w-0 scroll-mt-6">
           <h2 id="health" className="text-h2 font-normal">{config.health.name} hours</h2>
           {currentHealth ? (
@@ -327,8 +328,9 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
               </ul>
             </Card>
           ) : null}
-          <p className="mt-2 text-small text-muted">Counted from your saved stubs (straight, 1.5× and 2× hours). The plan&rsquo;s own count is what decides coverage; set the rules in Income settings.</p>
+          <p className="mt-2 text-small text-muted">Counted from your saved stubs (straight, 1.5× and 2× hours). The plan&rsquo;s own count is what decides coverage; set the rules in <Link href="/private/money/settings#pay" className="underline underline-offset-4 hover:text-ink">Settings</Link>.</p>
         </section>
+        )}
       </div>
 
       {(eddFiled.length > 0 || eddUnfiled.length > 0) && (
