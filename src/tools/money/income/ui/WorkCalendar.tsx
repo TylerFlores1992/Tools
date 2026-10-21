@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cx } from "@/components/cx";
+import { DotsCalendar, Mark } from "@/tools/money/income/ui/PhoneCalendars";
 import { CAL_LABEL, calStatus, monthCounts, monthGrid, shiftCalMonth, type CalStatus } from "@/tools/money/income/calendar";
 import type { WorkDay } from "@/tools/money/income/workdays";
 
@@ -21,17 +22,14 @@ const CHIP: Record<CalStatus, string> = {
   late: "border-2 border-wrong text-ink",
   scheduled: "border-dotted border-line-2 text-ink-2",
 };
-const GLYPH: Record<CalStatus, string> = {
-  paid: "text-ice", marked: "text-ice", stub: "text-ice", waiting: "text-ember", late: "text-wrong", scheduled: "text-muted",
-};
 
 function Chip({ d, big }: { d: WorkDay; big?: boolean }) {
   const s = calStatus(d);
-  const { word, glyph } = CAL_LABEL[s];
+  const { word } = CAL_LABEL[s];
   const body = (
     <>
       <span className="flex items-center gap-1">
-        <span aria-hidden="true" className={cx("shrink-0", GLYPH[s])}>{glyph}</span>
+        <Mark s={s} size={big ? 14 : 11} />
         <span className="truncate">{d.title}</span>
       </span>
       <span className="block text-ink-2">{word}</span>
@@ -72,15 +70,10 @@ export function WorkCalendar({ days, month, today, href, minMonth, maxMonth }: {
         </p>
       </div>
 
-      {/* Phone: a list of the month's work days. */}
-      <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface sm:hidden">
-        {inMonth.length === 0 ? <li className="px-4 py-3 text-small text-muted">Nothing booked.</li> : inMonth.map(([day, list]) => (
-          <li key={day} className="flex gap-3 px-4 py-3">
-            <span className={cx("w-[11ch] shrink-0 whitespace-nowrap pt-2 text-small tabular-nums", day === today ? "text-ink" : "text-ink-2")}>{dayLabel(day)}{day === today && <span className="block text-label uppercase">Today</span>}</span>
-            <span className="grid min-w-0 flex-1 gap-1.5">{list.map((d) => <Chip key={d.key} d={d} big />)}</span>
-          </li>
-        ))}
-      </ul>
+      {/* Phone: a month of marks; tap a day for its jobs (owner's pick, 2026-10-21). */}
+      <div className="mt-4 sm:hidden">
+        <DotsCalendar key={month} days={days} month={month} today={today} counts={false} />
+      </div>
 
       {/* Wider: the month grid. */}
       <table className="mt-4 hidden w-full table-fixed border-separate border-spacing-1 sm:table">
@@ -106,7 +99,7 @@ export function WorkCalendar({ days, month, today, href, minMonth, maxMonth }: {
 
       <ul aria-label="Key" className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-small text-ink-2">
         {(["paid", "stub", "waiting", "late", "scheduled"] as const).map((s) => (
-          <li key={s} className="flex items-center gap-1.5"><span aria-hidden="true" className={cx("inline-block rounded-tag border px-1 text-label", CHIP[s])}><span className={GLYPH[s]}>{CAL_LABEL[s].glyph}</span></span>{CAL_LABEL[s].word}{s === "stub" ? " (money not in the bank yet)" : s === "late" ? " (no stub after the pay lag)" : s === "scheduled" ? " (not worked yet)" : ""}</li>
+          <li key={s} className="flex items-center gap-1.5"><Mark s={s} size={14} />{CAL_LABEL[s].word}{s === "stub" ? " (money not in the bank yet)" : s === "late" ? " (no stub after the pay lag)" : s === "scheduled" ? " (not worked yet)" : ""}</li>
         ))}
       </ul>
     </div>

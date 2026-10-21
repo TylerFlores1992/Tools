@@ -187,8 +187,9 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   which unlinks the stub (`on delete set null`), and the rematch after the sync links it again.
 - **Work calendar** (`calendar.ts`, `ui/WorkCalendar.tsx`, section `#calendar`): the month of
   work days from the synced calendar events, each with its status as a word and a glyph (✓ Paid,
-  ◐ Stub in, ○ Waiting, ! Late, ◇ Booked) and a border shape; colour only repeats it. A grid at
-  640 px and up, a list of the month's days on a phone. `?cal=YYYY-MM` picks the month, between the
+  ◐ Stub in, ○ Waiting, ! Late, ◇ Booked, drawn as SVG marks in `ui/PhoneCalendars.tsx`) and a
+  border shape; colour only repeats it. A grid at 640 px and up; on a phone, a month of marks where
+  tapping a day lists its jobs underneath (owner's pick of five layouts, 2026-10-21). `?cal=YYYY-MM` picks the month, between the
   first event and this month (or the last booked one). A paid day links to its stub.
 - **Calendar:** an Apps Script in the owner's account (`calendar-script.ts`, made on
   `/private/money/settings#income` since 2026-10-20, where every Money and Income setting now lives;

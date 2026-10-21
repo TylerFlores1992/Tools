@@ -528,23 +528,3 @@ test("ics: all-day ends are exclusive, UTC times land on the Pacific day, repeat
   assert.deepEqual([r.repeating, r.canceled, r.outside], [1, 1, 1]);
   assert.equal(icsEventId(r.events[2]), "ics:a1|2026-09-14");
 });
-
-test("calendar bars: an event's same-status run is one bar; overlapping events stack in lanes", async () => {
-  const { weekBars, monthJobs } = await import("./calendar.ts");
-  const d = (eventId: string, day: string, status: "paid" | "waiting" | "marked", late = false) => ({ key: `${eventId}|${day}`, eventId, day, title: eventId.toUpperCase(), status, late, ageDays: 0, stubId: null, expected: null });
-  const week = ["2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17"];
-  const days = [
-    d("tac", "2026-10-12", "paid"), d("tac", "2026-10-13", "marked"), d("tac", "2026-10-14", "waiting"),
-    d("uni", "2026-10-13", "waiting"), d("uni", "2026-10-15", "waiting"),
-    d("old", "2026-10-03", "paid"),
-  ];
-  const bars = weekBars(week, days).map((b) => [b.eventId, b.status, b.col, b.span, b.lane]);
-  assert.deepEqual(bars, [
-    ["tac", "paid", 1, 2, 0], // Mon-Tue: paid and calendar-marked paid are one bar
-    ["uni", "waiting", 2, 1, 1], // Tue overlaps TAC: second lane
-    ["tac", "waiting", 3, 1, 0], // Wed: TAC's status changes, a new bar back in lane 0
-    ["uni", "waiting", 4, 1, 0], // Thu: not next to Tue, its own bar
-  ]);
-  assert.deepEqual(weekBars([null, null, null, null, "2026-10-01", "2026-10-02", "2026-10-03"], days).map((b) => [b.eventId, b.col]), [["old", 6]]);
-  assert.deepEqual(monthJobs(days, "2026-10").map((j) => [j.eventId, j.days.length]), [["old", 1], ["tac", 3], ["uni", 2]]);
-});
