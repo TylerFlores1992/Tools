@@ -53,3 +53,44 @@ export function monthCounts(days: readonly WorkDay[], month: string): { status: 
   }
   return order.filter((s) => counts.get(s)).map((s) => ({ status: s, count: counts.get(s)! }));
 }
+
+/** One bar in a week of the month: a run of days of one event with one status. */
+export type WeekBar = { key: string; eventId: string; title: string; status: CalStatus; col: number; span: number; lane: number; stubId: string | null };
+
+/**
+ * The bars for one week row (Sunday first, nulls outside the month): each event's consecutive
+ * days with the same status become one bar; bars are stacked into lanes so none overlap.
+ */
+export function weekBars(week: readonly (string | null)[], days: readonly WorkDay[]): WeekBar[] {
+  const col = new Map(week.map((d, i) => [d, i] as const).filter(([d]) => d !== null) as [string, number][]);
+  const byEvent = new Map<string, WorkDay[]>();
+  for (const d of days) if (col.has(d.day)) (byEvent.get(d.eventId) ?? byEvent.set(d.eventId, []).get(d.eventId)!).push(d);
+  const runs: Omit<WeekBar, "lane">[] = [];
+  for (const [eventId, list] of byEvent) {
+    const sorted = [...list].sort((a, b) => a.day.localeCompare(b.day));
+    let cur: Omit<WeekBar, "lane"> | null = null;
+    for (const d of sorted) {
+      const c = col.get(d.day)!;
+      const s = calStatus(d) === "marked" ? "paid" : calStatus(d);
+      if (cur && cur.status === s && cur.col + cur.span === c) { cur.span++; continue; }
+      if (cur) runs.push(cur);
+      cur = { key: `${eventId}|${d.day}`, eventId, title: d.title, status: s, col: c, span: 1, stubId: d.stubId };
+    }
+    if (cur) runs.push(cur);
+  }
+  runs.sort((a, b) => a.col - b.col || b.span - a.span || a.title.localeCompare(b.title));
+  const laneEnds: number[] = [];
+  return runs.map((r) => {
+    let lane = laneEnds.findIndex((end) => end <= r.col);
+    if (lane < 0) { lane = laneEnds.length; laneEnds.push(0); }
+    laneEnds[lane] = r.col + r.span;
+    return { ...r, lane };
+  });
+}
+
+/** The work days of a month grouped by event (calendar job), in date order. */
+export function monthJobs(days: readonly WorkDay[], month: string): { eventId: string; title: string; days: WorkDay[] }[] {
+  const map = new Map<string, { eventId: string; title: string; days: WorkDay[] }>();
+  for (const d of days) if (d.day.startsWith(month)) (map.get(d.eventId) ?? map.set(d.eventId, { eventId: d.eventId, title: d.title, days: [] }).get(d.eventId)!).days.push(d);
+  return [...map.values()].map((j) => ({ ...j, days: j.days.sort((a, b) => a.day.localeCompare(b.day)) })).sort((a, b) => a.days[0].day.localeCompare(b.days[0].day));
+}
