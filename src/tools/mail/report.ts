@@ -8,7 +8,7 @@ import type { Level, MailRow } from "./types.ts";
 
 export const CARRY_DAYS = 7;
 
-export type ReportItem = { id: string; level: Level; title: string; detail: string | null; since: string | null; account: string };
+export type ReportItem = { id: string; level: Level; title: string; detail: string | null; since: string | null; account: string; addr: string | null };
 export type DoneLine = { account: string; text: string };
 export type BulkSender = { addr: string; name: string; count: number; sample: string; oneClick: boolean; accounts: string[] };
 export type AccountStatus = { id: string; label: string; ok: boolean | null; lastRunAt: string | null; error: string | null };
@@ -17,6 +17,8 @@ export type Report = {
   date: string;
   needsYou: ReportItem[];
   security: ReportItem[];
+  junk: ReportItem[]; // today's likely spam, from senders no rule handles yet
+  updates: ReportItem[]; // today's receipts, deliveries and notices
   done: DoneLine[];
   unsubscribeByHand: Array<{ id: string; sender: string; note: string; link: string | null }>;
   stillArriving: Array<{ sender: string; since: string; count: number }>;
@@ -54,13 +56,16 @@ export function buildReport(input: {
 
   const toItem = (r: MailRow): ReportItem => ({
     id: r.id, level: r.level, title: r.title, detail: r.detail, account: accountLabel(r.accountId),
-    since: r.reportDate === date ? null : r.reportDate,
+    since: r.reportDate === date ? null : r.reportDate, addr: r.fromAddr,
   });
   const sort = (a: ReportItem, b: ReportItem) => RANK[a.level] - RANK[b.level] || (b.since ?? "9").localeCompare(a.since ?? "9");
 
   const needsYou = rows.filter((r) => r.bucket === "needs_you" && live(r)).map(toItem).sort(sort);
   // A verification code is only worth showing the day it came.
   const security = rows.filter((r) => r.bucket === "security" && live(r) && (r.level !== "info" || r.reportDate === date)).map(toItem).sort(sort);
+
+  const junk = today.filter((r) => r.bucket === "junk" && !r.action && !(r.fromAddr && input.ruleCoveredAddrs.has(r.fromAddr))).map(toItem);
+  const updates = today.filter((r) => r.bucket === "updates" && !r.action).map(toItem);
 
   const byAccount = new Map<string, { trashed: number; filed: Map<string, number>; unsubscribed: number }>();
   for (const r of today) {
@@ -117,6 +122,8 @@ export function buildReport(input: {
     date,
     needsYou,
     security,
+    junk,
+    updates,
     done,
     unsubscribeByHand,
     stillArriving: [...arriving.values()],

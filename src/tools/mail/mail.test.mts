@@ -4,8 +4,8 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { billFacts, classify, pickRule, ruleMatches } from "./classify.ts";
-import { clip, parseFrom, parseUnsubscribe, senderLabel } from "./headers.ts";
+import { billFacts, classify, junkSignals, looksLikePerson, mailFromStored, pickRule, ruleMatches } from "./classify.ts";
+import { clip, parseFrom, parseUnsubscribe, rawHeader, senderLabel } from "./headers.ts";
 import { cleanFolder, planAction, safeUnsubscribeUrl } from "./plan.ts";
 import { addDays, buildReport } from "./report.ts";
 import type { IncomingMail, MailRow, Rule } from "./types.ts";
@@ -89,7 +89,8 @@ test("needs you: a person writing (no list headers, not a robot address)", () =>
 test("bulk: list headers or marketing; a robot without lists is other", () => {
   assert.equal(classify(mail({ from: "Zillow <alerts@zillow.com>", subject: "Your market update", listUnsubscribe: "<https://zillow.com/u>" }), null).bucket, "bulk");
   assert.equal(classify(mail({ from: "Store <hello@store.com>", subject: "40% off everything this weekend" }), null).bucket, "bulk");
-  assert.equal(classify(mail({ from: "Sentry <noreply@sentry.io>", subject: "Weekly report for camphawk" }), null).bucket, "other");
+  assert.equal(classify(mail({ from: "Sentry <noreply@sentry.io>", subject: "New issue in camphawk" }), null).bucket, "other");
+  assert.equal(classify(mail({ from: "Sentry <noreply@sentry.io>", subject: "Weekly report for camphawk" }), null).bucket, "updates");
 });
 
 test("marketing that says 'renew' or 'ends soon' is bulk, not a bill", () => {
@@ -223,4 +224,124 @@ test("report: hidden and trashed items never show as needing you", () => {
 
 test("addDays crosses months", () => {
   assert.equal(addDays("2026-11-01", -1), "2026-10-31");
+});
+
+// ---- junk, updates and the stricter "a person wrote" (2026-10-21: spam was reaching Needs you) ----
+// Every case below is a copy of an email that really arrived, with the names changed where they
+// were a real person's.
+
+const bucket = (p: Partial<IncomingMail> & Pick<IncomingMail, "from" | "subject">) => classify(mail(p), null).bucket;
+
+test("junk: a capital I for an l, in the name or the subject", () => {
+  assert.equal(bucket({ from: '"DeaI Hunters" <healthbeat@guide.purehealthservice.com>', subject: "Oprah + Deal Watchdogs = Crazy Deals" }), "junk");
+  assert.equal(bucket({ from: '"Step Naturally" <news.info@buyprimepath.com>', subject: "WaIk More ComfortabIy Every Day" }), "junk");
+  assert.equal(bucket({ from: '"SmiIe Center" <x@help.homeeaseplus.com>', subject: "Hello" }), "junk");
+  // Real words with a capital I are not that: acronyms, Mc/Mac names, a word that starts with I.
+  assert.deepEqual(junkSignals(mail({ from: '"Ian McIntyre" <ian@studio.com>', subject: "AI notes for the IATSE call, iPhone shots" })), []);
+  assert.deepEqual(junkSignals(mail({ from: '"Ops" <ops@x.com>', subject: "MacIntosh and O'Inn" })), []);
+});
+
+test("junk: underscores or padded spaces in the name, template leftovers", () => {
+  assert.equal(bucket({ from: '"Liver_Support" <a@buysprouthub.com>', subject: "Your liver" }), "junk");
+  assert.equal(bucket({ from: '"cranberry       juice" <levyolois@help.homeeaseplus.com>', subject: "Recurring UTls? Here's what to know.." }), "junk");
+  assert.equal(bucket({ from: '"Ann" <ann@x.com>', subject: "Hi", snippet: "[[PAGE_NAME]] [[PAGE_NAME]]" }), "junk");
+});
+
+test("junk: an order or invoice from a personal address that is not the name on it", () => {
+  assert.equal(bucket({ from: '"KEVIN MOORE" <didfuncon0@gmail.com>', subject: "Thank You for Your Order GL1-CAA~4NLO0C" }), "junk");
+  // A friend selling you something from their own address is still a person.
+  assert.notEqual(bucket({ from: '"Kevin Moore" <kevin.moore@gmail.com>', subject: "Thank you for your order of the tickets" }), "junk");
+  // A company's mail. subdomain is not a personal address (Anthropic's receipts come from one).
+  assert.equal(bucket({ from: '"Anthropic, PBC" <invoice+statements@mail.anthropic.com>', subject: "Your receipt from Anthropic, PBC #2579" }), "updates");
+});
+
+test("junk: a sales pitch from a throwaway subdomain with no unsubscribe link", () => {
+  assert.equal(bucket({ from: '"Imagine" <pachak@em.secureprimehealth.com>', subject: "Imagine a credit line up to $1000" }), "junk");
+  assert.equal(bucket({ from: '"Dental Implant ClearChoice" <honest@smtp1.honestobject.com>', subject: "See if you qualify" }), "junk");
+  // The same pitch from a list with an unsubscribe link is a newsletter, not junk.
+  assert.equal(bucket({ from: '"Imagine" <pachak@em.secureprimehealth.com>', subject: "Imagine a credit line up to $1000", listUnsubscribe: "<https://x.com/u>" }), "bulk");
+  // A bank's own credit-line email is not from a throwaway subdomain.
+  assert.notEqual(bucket({ from: '"Bank" <alerts@notifications.bank.com>', subject: "Your credit line increase" }), "junk");
+});
+
+test("junk wins over security: a scam dressed as an alert does not reach the security list", () => {
+  assert.equal(bucket({ from: '"Account_Security" <x@em.example.com>', subject: "Unusual sign-in detected" }), "junk");
+});
+
+test("updates: receipts, deliveries, feedback, privacy notices, welcomes, weekly summaries", () => {
+  assert.equal(bucket({ from: '"eBay" <ebay@ebay.com>', subject: "📦PACKAGE DELIVERED: Toshiba 1TB External..." }), "updates");
+  assert.equal(bucket({ from: '"eBay" <ebay@ebay.com>', subject: "OUT FOR DELIVERY: 256GB M.2 SATA SSD 2..." }), "updates");
+  assert.equal(bucket({ from: '"eBay" <ebay@ebay.com>', subject: "Tyler, share feedback on your recent purchase" }), "updates");
+  assert.equal(bucket({ from: '"eBay" <ebay@info.ebay.com>', subject: "Updates to our User Privacy Notice 2026" }), "updates");
+  assert.equal(bucket({ from: '"27 Kilobyte AB" <invoice+statements+acct_1@stripe.com>', subject: "Your receipt from 27 Kilobyte AB #2599" }), "updates");
+  assert.equal(bucket({ from: '"Better Stack Weekly" <weekly@weekly.betterstack.com>', subject: "Weekly summary for Your team" }), "updates");
+  assert.equal(bucket({ from: '"AlternativeTo" <support@alternativeto.net>', subject: "Welcome to AlternativeTo, Tyler" }), "updates");
+});
+
+test("a person: a name that reads as a name; brands, one-word campaigns and addresses do not", () => {
+  assert.equal(looksLikePerson(parseFrom('"Tori Rose Teixeira" <torirose11@gmail.com>')), true);
+  assert.equal(looksLikePerson(parseFrom('"Raymond" <raymond@nbcuni.com>')), true);
+  assert.equal(looksLikePerson(parseFrom('"Bing Webmaster Tools" <bingwb@microsoft.com>')), false);
+  assert.equal(looksLikePerson(parseFrom('"Better Stack Weekly" <weekly@x.com>')), false);
+  assert.equal(looksLikePerson(parseFrom('"Imagine" <pachak@em.x.com>')), false);
+  assert.equal(looksLikePerson(parseFrom('"Anthropic, PBC" <a@x.com>')), false);
+  assert.equal(looksLikePerson(parseFrom('"27 Kilobyte AB" <a@x.com>')), false);
+  assert.equal(looksLikePerson(parseFrom("nbcusafe@nbcuni.com")), false);
+  // A brand writing from its own name at its own domain is not a person either.
+  assert.equal(looksLikePerson(parseFrom('"eBay" <ebay@ebay.com>')), false);
+  assert.equal(bucket({ from: '"Tori Rose Teixeira" <torirose11@gmail.com>', subject: "P&T Fool Us S12 // VTR1 10/19 Production Documents" }), "needs_you");
+  assert.equal(bucket({ from: '"Bing Webmaster Tools" <bingwb@microsoft.com>', subject: "Improve the search presence of camphawk.app" }), "other");
+});
+
+test("a request by name still needs you, even from a shared work address", () => {
+  assert.equal(bucket({ from: "nbcusafe@nbcuni.com", subject: "Invitation Request - Raymond Schrefel's Visit" }), "needs_you");
+});
+
+test("security: 'log in' in a body is a footer, not an alert; an alert copy is information", () => {
+  const usb = classify(mail({ from: '"U.S. Bank" <usbank@notifications.usbank.com>', subject: "Your latest credit card statement is ready.", snippet: "Log in to mobile or online banking to view your statement." }), null);
+  assert.equal(usb.bucket, "needs_you");
+  // In a subject it still counts.
+  assert.equal(bucket({ from: '"Bank" <a@bank.com>', subject: "Did you just log in?" }), "security");
+  assert.equal(bucket({ from: '"Yahoo" <no-reply@cc.yahoo.com>', subject: "An app password was created for your Yahoo account" }), "security");
+  const copy = classify(mail({ from: '"Google" <no-reply@accounts.google.com>', subject: "Security alert for t@gmail.com", snippet: "This is a copy of a security alert sent to t@gmail.com." }), null);
+  assert.deepEqual([copy.bucket, copy.level], ["security", "info"]);
+});
+
+test("bills and expiry: 'your X bill' and 'about to expire'; Black Friday is marketing", () => {
+  assert.equal(bucket({ from: '"Sunrun" <noreply@sunrun.com>', subject: "Your Sunrun bill, plus a video explaining how your bill works" }), "needs_you");
+  assert.equal(bucket({ from: '"US Mobile" <hello@usmobile.com>', subject: "One of your US Mobile lines is about to expire" }), "needs_you");
+  assert.equal(bucket({ from: '"Team at US Mobile" <hello@usmobile.com>', subject: "Flash Black Friday: Unlimited from $10/mo" }), "bulk");
+});
+
+test("rawHeader reads a header from mailparser's raw lines, folded lines joined", () => {
+  const lines = [{ key: "from", line: "From: a@b.com" }, { key: "list-unsubscribe", line: "List-Unsubscribe: <https://x.com/u>,\r\n <mailto:u@x.com>" }];
+  assert.equal(rawHeader(lines, "list-unsubscribe"), "<https://x.com/u>, <mailto:u@x.com>");
+  assert.equal(rawHeader(lines, "list-unsubscribe-post"), null);
+  assert.equal(rawHeader(undefined, "list-unsubscribe"), null);
+});
+
+test("a stored row classifies the way the email did when it arrived", () => {
+  const m = mail({ from: '"cranberry       juice" <levyolois@help.homeeaseplus.com>', subject: "Recurring UTls?", listUnsubscribe: "<https://x.com/u>, <mailto:u@x.com>", listUnsubscribePost: "List-Unsubscribe=One-Click" });
+  const s = parseFrom(m.from);
+  const u = parseUnsubscribe(m.listUnsubscribe, m.listUnsubscribePost);
+  const back = mailFromStored({ id: m.id, accountId: m.accountId, receivedAt: null, fromName: s.name, fromAddr: s.addr, subject: m.subject, snippet: m.snippet, unsubHttp: u.http, unsubMailto: u.mailto, oneClick: u.oneClick });
+  assert.deepEqual(classify(back, null), classify(m, null));
+  assert.deepEqual(parseUnsubscribe(back.listUnsubscribe, back.listUnsubscribePost), u);
+});
+
+test("report: today's junk and updates are listed; junk from a sender a rule covers is not", () => {
+  const r = buildReport({
+    date: "2026-10-21",
+    rows: [
+      row({ id: "j1", reportDate: "2026-10-21", bucket: "junk", fromAddr: "spam@em.x.com" }),
+      row({ id: "j2", reportDate: "2026-10-21", bucket: "junk", fromAddr: "ruled@em.x.com" }),
+      row({ id: "j3", reportDate: "2026-10-20", bucket: "junk", fromAddr: "old@em.x.com" }),
+      row({ id: "u1", reportDate: "2026-10-21", bucket: "updates", fromAddr: "ebay@ebay.com" }),
+    ],
+    dismissed: new Set(), unsubscribed: new Map(), ruleCoveredAddrs: new Set(["ruled@em.x.com"]), accountErrors: [],
+  });
+  assert.deepEqual(r.junk.map((i) => i.id), ["j1"]);
+  assert.equal(r.junk[0].addr, "spam@em.x.com");
+  assert.deepEqual(r.updates.map((i) => i.id), ["u1"]);
+  assert.deepEqual(r.needsYou, []);
 });
