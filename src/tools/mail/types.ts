@@ -1,6 +1,6 @@
 // Shapes shared by Morning Mail's pure logic and its server code.
 
-export type Bucket = "needs_you" | "security" | "bulk" | "other";
+export type Bucket = "needs_you" | "security" | "junk" | "updates" | "bulk" | "other";
 export type Level = "urgent" | "normal" | "info";
 export type RuleAction = "trash" | "file" | "unsubscribe" | "hide" | "important";
 export type ActionStatus = "pending" | "done" | "failed" | "manual";

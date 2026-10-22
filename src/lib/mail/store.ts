@@ -144,6 +144,19 @@ export async function unactionedFrom(fromAddr: string, since: string): Promise<A
   return rows.map((r) => ({ ...toRow(r), snippet: r.snippet }));
 }
 
+/** Recent rows no rule acted on, with what re-sorting them needs. */
+export async function recentUnactioned(since: string): Promise<Array<MailRow & { snippet: string }>> {
+  const rows = await sql()<(DbMsg & { snippet: string })[]>`
+    select id, account_id, to_char(report_date, 'YYYY-MM-DD') as report_date, received_at, from_name, from_addr, subject, bucket, level, title, detail,
+      action, action_folder, action_status, action_note, unsub_http, unsub_mailto, one_click, snippet
+    from mail.messages where action is null and report_date >= ${since}::date`;
+  return rows.map((r) => ({ ...toRow(r), snippet: r.snippet }));
+}
+
+export async function setClassification(id: string, c: { bucket: Bucket; level: Level; title: string; detail: string | null }): Promise<void> {
+  await sql()`update mail.messages set bucket = ${c.bucket}, level = ${c.level}, title = ${c.title}, detail = ${c.detail} where id = ${id}`;
+}
+
 export async function getDismissed(): Promise<Set<string>> {
   const rows = await sql()<{ item_id: string }[]>`select item_id from mail.dismissed where at > now() - interval '30 days'`;
   return new Set(rows.map((r) => r.item_id));

@@ -54,3 +54,11 @@ export function clip(s: string, n: number): string {
   const sp = cut.lastIndexOf(" ");
   return `${(sp > n * 0.6 ? cut.slice(0, sp) : cut).trimEnd()}…`;
 }
+
+/** One header's value from mailparser's raw lines (`{ key: "list-unsubscribe", line: "List-Unsubscribe: <…>" }`). */
+export function rawHeader(lines: ReadonlyArray<{ key: string; line: string }> | undefined, name: string): string | null {
+  const hit = (lines ?? []).find((l) => l.key.toLowerCase() === name);
+  if (!hit) return null;
+  const value = hit.line.slice(hit.line.indexOf(":") + 1).replace(/\r?\n\s+/g, " ").trim();
+  return value || null;
+}

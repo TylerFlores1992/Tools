@@ -1,6 +1,7 @@
 import "server-only";
 import { ImapFlow, type ListResponse } from "imapflow";
 import { simpleParser } from "mailparser";
+import { rawHeader } from "@/tools/mail/headers";
 import { cleanFolder } from "@/tools/mail/plan";
 import type { IncomingMail, Rule } from "@/tools/mail/types";
 import { ingest, opFor, type MailboxOp } from "./ingest";
@@ -107,10 +108,16 @@ export async function syncYahoo(account: AccountRow, rules: readonly Rule[]): Pr
             return m ? m[1].replace(/\r?\n\s+/g, " ").trim() : null;
           };
           let snippet = "";
+          // The two header fields imapflow fetched; if Yahoo sent none back, the same lines are in
+          // the first 64 KB of the message itself (no stored Yahoo email had them before this).
+          let listUnsubscribe = header("list-unsubscribe");
+          let listUnsubscribePost = header("list-unsubscribe-post");
           try {
             if (msg.source) {
               const parsed = await simpleParser(msg.source, { skipHtmlToText: false, skipImageLinks: true, skipTextLinks: true });
               snippet = (parsed.text ?? "").slice(0, 600);
+              listUnsubscribe ??= rawHeader(parsed.headerLines, "list-unsubscribe");
+              listUnsubscribePost ??= rawHeader(parsed.headerLines, "list-unsubscribe-post");
             }
           } catch {
             /* a truncated or odd message still gets its headers */
@@ -123,8 +130,8 @@ export async function syncYahoo(account: AccountRow, rules: readonly Rule[]): Pr
             from: from ? `${from.name ? `"${from.name.replace(/"/g, "")}" ` : ""}<${from.address ?? ""}>` : "",
             subject: msg.envelope?.subject ?? "",
             snippet,
-            listUnsubscribe: header("list-unsubscribe"),
-            listUnsubscribePost: header("list-unsubscribe-post"),
+            listUnsubscribe,
+            listUnsubscribePost,
           });
           lastUid = Math.max(lastUid ?? 0, msg.uid);
         }

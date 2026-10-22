@@ -1,10 +1,10 @@
 import "server-only";
-import { classify, pickRule } from "@/tools/mail/classify";
+import { classify, mailFromStored, pickRule } from "@/tools/mail/classify";
 import { clip, parseFrom, parseUnsubscribe } from "@/tools/mail/headers";
 import { planAction, safeUnsubscribeUrl } from "@/tools/mail/plan";
 import { addDays } from "@/tools/mail/report";
 import type { IncomingMail, MailRow, Rule } from "@/tools/mail/types";
-import { insertMessage, knownIds, recordUnsubscribed, setActionStatus, unactionedFrom } from "./store";
+import { insertMessage, knownIds, recordUnsubscribed, recentUnactioned, setActionStatus, setClassification, unactionedFrom } from "./store";
 
 /** What a source must do to its mailbox next. "trash" always means the account's own Trash. */
 export type MailboxOp = { id: string; op: "trash" | "file"; folder: string | null };
@@ -85,11 +85,7 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
 export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<number> {
   const rows = await unactionedFrom(fromAddr, addDays(pacificDate(), -2));
   for (const r of rows) {
-    const mail: IncomingMail = {
-      id: r.id, accountId: r.accountId, receivedAt: r.receivedAt, from: r.fromAddr ?? "", subject: r.subject, snippet: r.snippet,
-      listUnsubscribe: [r.unsubHttp, r.unsubMailto].filter(Boolean).map((x) => `<${x}>`).join(", ") || null,
-      listUnsubscribePost: r.oneClick ? "List-Unsubscribe=One-Click" : null,
-    };
+    const mail = mailFromStored(r);
     const p = planAction(mail, rule);
     let status = p.status;
     let note = p.note;
@@ -102,4 +98,22 @@ export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<n
     if (p.action && status) await setActionStatus(r.id, status, note, p.action, p.folder);
   }
   return rows.length;
+}
+
+/**
+ * Sorts the last week's mail again with today's classifier and rules: what the owner presses after
+ * the sorting improves. Only the bucket, level, title and detail change; nothing in a mailbox
+ * moves, and mail a rule already acted on is left as it is.
+ */
+export async function resortRecent(rules: readonly Rule[], days = 7): Promise<{ checked: number; changed: number }> {
+  const rows = await recentUnactioned(addDays(pacificDate(), -(days - 1)));
+  let changed = 0;
+  for (const r of rows) {
+    const mail = mailFromStored(r);
+    const c = classify(mail, pickRule(rules, mail.from, mail.subject));
+    if (c.bucket === r.bucket && c.level === r.level && c.title === r.title && c.detail === r.detail) continue;
+    await setClassification(r.id, c);
+    if (c.bucket !== r.bucket) changed++; // "moved" means a different section, not a reworded line
+  }
+  return { checked: rows.length, changed };
 }

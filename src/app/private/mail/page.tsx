@@ -10,7 +10,7 @@ import type { ReportItem } from "@/tools/mail/report";
 import { MailShell } from "@/tools/mail/ui/MailShell";
 import { Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
-import { ruleFromSender, toggleDone } from "./actions";
+import { resortMail, ruleFromSender, toggleDone } from "./actions";
 
 export const metadata: Metadata = {
   title: "Morning Mail",
@@ -23,7 +23,7 @@ const shortDate = (d: string) => new Intl.DateTimeFormat("en-US", { month: "shor
 const time = (iso: string) => new Date(iso).toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" });
 const dayTime = (iso: string) => new Date(iso).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string }> }) {
+export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string }> }) {
   await requirePrivate("/private/mail");
   const sp = await searchParams;
   const data = await loadMail(sp.date);
@@ -42,6 +42,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
   const isToday = date === today;
   const noAccounts = data.accounts.length === 0;
   const visible = (items: ReportItem[]) => (showHandled ? items : items.filter((i) => !data.dismissed.has(i.id)));
+  const resorted = /^\d+$/.test(sp.resorted ?? "") ? Number(sp.resorted) : null;
   const handledCount = [...r.needsYou, ...r.security].filter((i) => data.dismissed.has(i.id)).length;
 
   return (
@@ -77,9 +78,15 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
           </Card>
         )}
 
+        {resorted !== null && (
+          <p className="mt-5" role="status">
+            <State kind="ok">Sorted the last week again: {resorted === 0 ? "nothing changed" : `${resorted} ${resorted === 1 ? "email moved" : "emails moved"}`}{/^\d+$/.test(sp.of ?? "") ? ` (of ${sp.of} checked)` : ""}.</State>
+          </p>
+        )}
+
         <div className="mt-8 grid gap-6">
           <Section title="Needs you" count={visible(r.needsYou).filter((i) => !data.dismissed.has(i.id)).length}>
-            <Items items={visible(r.needsYou)} dismissed={data.dismissed} empty="Nothing needs you." canDismiss={isToday} />
+            <Items items={visible(r.needsYou)} dismissed={data.dismissed} empty="Nothing needs you." canDismiss={isToday} canTrash={isToday} />
           </Section>
           <Section title="Security" count={visible(r.security).filter((i) => !data.dismissed.has(i.id)).length}>
             <Items items={visible(r.security)} dismissed={data.dismissed} empty="No new sign-in or breach alerts." canDismiss={isToday} />
@@ -88,6 +95,47 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
             <Link href={showHandled ? "/private/mail" : "/private/mail?handled=1"} className="justify-self-start text-small text-ink-2 underline underline-offset-4 hover:text-ink">
               {showHandled ? "Hide handled" : `Show ${handledCount} handled`}
             </Link>
+          )}
+
+          {r.junk.length > 0 && isToday && (
+            <Section title="Likely junk" count={r.junk.length}>
+              <p className="text-small text-muted">These look like spam (each says why). Nothing was moved. Trash the sender for good, or say it isn&rsquo;t junk and it always goes to Needs you.</p>
+              <ul className="grid gap-4">
+                {r.junk.map((j) => (
+                  <li key={j.id} className="grid gap-2 border-t border-line pt-4 first:border-t-0 first:pt-0">
+                    <div className="min-w-0">
+                      <p className="break-words text-body text-ink">{j.title}</p>
+                      {j.detail && <p className="break-words text-small text-muted">{j.detail} · {j.account}</p>}
+                    </div>
+                    {j.addr && (
+                      <div className="flex flex-wrap gap-2">
+                        <SenderButton addr={j.addr} action="trash" label="Always trash" />
+                        <SenderButton addr={j.addr} action="important" label="Not junk" />
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          {r.updates.length > 0 && (
+            <section className="rounded-card border border-line bg-surface shadow-card">
+              <details>
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-mono text-label uppercase text-ink-2 hover:text-ink [&::-webkit-details-marker]:hidden">
+                  <span>Updates <span className="normal-case text-muted">· receipts, deliveries, notices</span></span>
+                  <span className="tabular-nums">{r.updates.length} <span aria-hidden="true">▾</span></span>
+                </summary>
+                <ul className="grid gap-3 border-t border-line px-5 pb-5 pt-4">
+                  {r.updates.map((u) => (
+                    <li key={u.id} className="min-w-0">
+                      <p className="break-words text-body text-ink">{u.title}</p>
+                      <p className="break-words text-small text-muted">{u.detail ? `${u.detail} · ` : ""}{u.account}</p>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </section>
           )}
 
           <Section title="Done">
@@ -179,7 +227,16 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
           )}
         </div>
 
-        <p className="mt-10 text-small text-muted">
+        {isToday && !noAccounts && (
+          <form action={resortMail} className="mt-10">
+            <button type="submit" className="inline-flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink">
+              Sort the last week again
+            </button>
+            <span className="ml-3 text-small text-muted">Uses your current rules. Nothing in your mailboxes moves.</span>
+          </form>
+        )}
+
+        <p className="mt-6 text-small text-muted">
           Checked every morning at 7{data.accounts.find((a) => a.lastRunAt) ? `, last at ${time(data.accounts.map((a) => a.lastRunAt).filter(Boolean).sort().pop() as string)}` : ""}. All code, no AI. Nothing is ever sent or permanently deleted; mail moves only when one of your rules says so.
         </p>
       </div>
@@ -199,7 +256,7 @@ function Section({ title, count, children }: { title: string; count?: number; ch
   );
 }
 
-function Items({ items, dismissed, empty, canDismiss }: { items: ReportItem[]; dismissed: Set<string>; empty: string; canDismiss: boolean }) {
+function Items({ items, dismissed, empty, canDismiss, canTrash = false }: { items: ReportItem[]; dismissed: Set<string>; empty: string; canDismiss: boolean; canTrash?: boolean }) {
   if (!items.length) return <p className="text-body text-ink-2">{empty}</p>;
   return (
     <ul className="grid gap-4">
@@ -214,6 +271,14 @@ function Items({ items, dismissed, empty, canDismiss }: { items: ReportItem[]; d
               </p>
               {i.detail && <p className="mt-0.5 break-words text-small text-ink-2">{i.detail}</p>}
               <p className="mt-0.5 text-small text-muted">{i.account}{i.since ? ` · since ${shortDate(i.since)}` : ""}</p>
+              {canTrash && !done && i.addr && (
+                <details className="mt-1">
+                  <summary className="inline-flex min-h-10 cursor-pointer list-none items-center text-small text-muted underline underline-offset-4 hover:text-ink [&::-webkit-details-marker]:hidden">Spam?</summary>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <SenderButton addr={i.addr} action="trash" label={`Always trash ${i.addr}`} />
+                  </div>
+                </details>
+              )}
             </div>
             {canDismiss && (
               <form action={toggleDone}>

@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePrivate } from "@/lib/money/guard";
-import { applyRuleToRecent } from "@/lib/mail/ingest";
+import { redirect } from "next/navigation";
+import { applyRuleToRecent, resortRecent } from "@/lib/mail/ingest";
 import { runYahoo } from "@/lib/mail/run";
 import { newKey, sealSecret, sha256 } from "@/lib/mail/secret";
-import { addRule, ensureGmailAccount, deleteRule, removeAccount, setDismissed, setGmailKeyHash, upsertYahoo, recentRuns } from "@/lib/mail/store";
+import { addRule, ensureGmailAccount, deleteRule, getRules, removeAccount, setDismissed, setGmailKeyHash, upsertYahoo, recentRuns } from "@/lib/mail/store";
 import { testYahooLogin } from "@/lib/mail/yahoo";
 import { gmailScript } from "@/tools/mail/gmail-script";
 import { cleanFolder } from "@/tools/mail/plan";
@@ -35,6 +36,14 @@ export async function ruleFromSender(form: FormData): Promise<void> {
   const id = await addRule(rule);
   await applyRuleToRecent({ id, ...rule }, addr);
   revalidatePath("/private/mail", "layout");
+}
+
+/** Sorts the last week's mail again with the current rules and sorting. Nothing in a mailbox moves. */
+export async function resortMail(): Promise<void> {
+  await requirePrivate("/private/mail");
+  const { checked, changed } = await resortRecent(await getRules());
+  revalidatePath("/private/mail", "layout");
+  redirect(`/private/mail?resorted=${changed}&of=${checked}`);
 }
 
 export async function createRule(prev: FormState, form: FormData): Promise<FormState> {
