@@ -38,11 +38,16 @@ export const viewport: Viewport = {
 // system setting. Runs inline in <head>; never read cookies()/headers() in this layout.
 const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
 
+// The launch intro: only when opened as the installed app, once per launch, never with reduced
+// motion. Set before first paint so the page never flashes between Android's launch screen and it.
+const LAUNCH_SCRIPT = `(function(){try{var m=function(q){return window.matchMedia&&matchMedia(q).matches};if(!(m("(display-mode: standalone)")||navigator.standalone))return;if(m("(prefers-reduced-motion: reduce)"))return;if(sessionStorage.getItem("launched"))return;sessionStorage.setItem("launched","1");document.documentElement.setAttribute("data-launch","")}catch(e){}})()`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${mona.variable} ${jetbrains.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: LAUNCH_SCRIPT }} />
       </head>
       <body className="min-h-dvh bg-bg text-ink">
         <a
@@ -52,6 +57,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         {children}
+        {/* Hidden unless the launch script set data-launch; pure CSS, gone after 1.4 s. */}
+        <div className="launch" aria-hidden="true">
+          <div className="launch-art">
+            <span className="launch-eye" />
+          </div>
+        </div>
       </body>
     </html>
   );

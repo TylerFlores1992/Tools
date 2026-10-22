@@ -645,3 +645,66 @@ p { text-wrap: pretty; }
     animation-delay: 0s !important;
   }
 }
+
+/* ---- App launch intro (installed app only; see LAUNCH_SCRIPT in src/app/layout.tsx) ----------
+   Picks up from Android's own launch screen (the icon on the manifest's background colour), so it
+   keeps that night colour in both themes. The eye catches light, the circuits flare, the art
+   opens out into the page. 1.4 s, never shown with reduced motion, never blocks a tap. The art
+   is a CSS background inside a display:none parent, so nobody else downloads it. */
+:root {
+  --launch-night: #05070e;
+  --launch-glow: #ffb27a;
+}
+.launch { display: none; }
+html[data-launch] .launch {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--launch-night);
+  pointer-events: none;
+  animation: launch-out 520ms cubic-bezier(0.4, 0, 0.2, 1) 880ms both;
+}
+.launch-art {
+  position: relative;
+  width: min(52vw, 224px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: url("/icons/launch.webp") center / cover no-repeat;
+  animation:
+    launch-flare 720ms cubic-bezier(0.4, 0, 0.2, 1) 140ms both,
+    launch-open 600ms cubic-bezier(0.4, 0, 1, 1) 820ms both;
+}
+.launch-eye {
+  position: absolute;
+  left: 54%;
+  top: 60%;
+  width: 34%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, var(--launch-glow), transparent);
+  mix-blend-mode: screen;
+  animation: launch-eye 760ms cubic-bezier(0.4, 0, 0.2, 1) 160ms both;
+}
+@keyframes launch-flare {
+  0% { filter: brightness(1) saturate(1); }
+  45% { filter: brightness(1.35) saturate(1.25) contrast(1.08); }
+  100% { filter: brightness(1.1) saturate(1.1); }
+}
+@keyframes launch-eye {
+  0% { opacity: 0; scale: 0.4; }
+  40% { opacity: 0.95; scale: 1; }
+  100% { opacity: 0; scale: 1.6; }
+}
+@keyframes launch-open {
+  to { scale: 2.4; opacity: 0; border-radius: 30%; }
+}
+@keyframes launch-out {
+  to { opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-launch] .launch { display: none; }
+}
