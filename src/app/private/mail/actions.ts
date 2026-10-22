@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requirePrivate } from "@/lib/money/guard";
 import { redirect } from "next/navigation";
 import { applyRuleToRecent, resortRecent } from "@/lib/mail/ingest";
-import { runYahoo } from "@/lib/mail/run";
+import { runYahoo, syncYahooAccounts } from "@/lib/mail/run";
 import { newKey, sealSecret, sha256 } from "@/lib/mail/secret";
 import { addRule, ensureGmailAccount, deleteRule, getRules, removeAccount, setDismissed, setGmailKeyHash, upsertYahoo, recentRuns } from "@/lib/mail/store";
 import { testYahooLogin } from "@/lib/mail/yahoo";
@@ -34,8 +34,15 @@ export async function ruleFromSender(form: FormData): Promise<void> {
   const folder = action === "file" ? cleanFolder(String(form.get("folder") ?? "")) ?? "Misc" : null;
   const rule = { matchFrom: addr, matchSubject: null, action: action as RuleAction, folder };
   const id = await addRule(rule);
-  await applyRuleToRecent({ id, ...rule }, addr);
+  const { touched, accounts } = await applyRuleToRecent({ id, ...rule }, addr);
+  // Yahoo moves happen now rather than at 7 tomorrow; Gmail's script makes its own at its next run.
+  const yahoo = accounts.filter((a) => a.startsWith("yahoo:"));
+  const { problems } = yahoo.length ? await syncYahooAccounts(yahoo) : { problems: [] };
   revalidatePath("/private/mail", "layout");
+  const q = new URLSearchParams({ ruled: addr, did: action, n: String(touched) });
+  if (accounts.some((a) => !a.startsWith("yahoo:"))) q.set("gmail", "1");
+  if (problems.length) q.set("err", "1");
+  redirect(`/private/mail?${q}`);
 }
 
 /** Sorts the last week's mail again with the current rules and sorting. Nothing in a mailbox moves. */

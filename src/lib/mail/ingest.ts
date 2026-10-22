@@ -2,7 +2,7 @@ import "server-only";
 import { classify, mailFromStored, pickRule } from "@/tools/mail/classify";
 import { clip, parseFrom, parseUnsubscribe } from "@/tools/mail/headers";
 import { planAction, safeUnsubscribeUrl } from "@/tools/mail/plan";
-import { addDays } from "@/tools/mail/report";
+import { addDays, CARRY_DAYS } from "@/tools/mail/report";
 import type { IncomingMail, MailRow, Rule } from "@/tools/mail/types";
 import { insertMessage, knownIds, recordUnsubscribed, recentUnactioned, setActionStatus, setClassification, unactionedFrom } from "./store";
 
@@ -81,9 +81,13 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
   return { stored, ops };
 }
 
-/** A rule made from the report applies to that sender's mail from the last two days too. */
-export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<number> {
-  const rows = await unactionedFrom(fromAddr, addDays(pacificDate(), -2));
+/**
+ * A rule made from the report applies to that sender's mail in the report (the last week) too.
+ * Returns how many emails it touched and which accounts now have a mailbox move waiting.
+ */
+export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<{ touched: number; accounts: string[] }> {
+  const rows = await unactionedFrom(fromAddr, addDays(pacificDate(), -(CARRY_DAYS - 1)));
+  const accounts = new Set<string>();
   for (const r of rows) {
     const mail = mailFromStored(r);
     const p = planAction(mail, rule);
@@ -95,9 +99,12 @@ export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<n
       if (res.ok) await recordUnsubscribed(fromAddr, "one-click");
       else status = "failed";
     }
-    if (p.action && status) await setActionStatus(r.id, status, note, p.action, p.folder);
+    if (p.action && status) {
+      await setActionStatus(r.id, status, note, p.action, p.folder);
+      if (status === "pending") accounts.add(r.accountId);
+    }
   }
-  return rows.length;
+  return { touched: rows.length, accounts: [...accounts] };
 }
 
 /**
