@@ -23,7 +23,7 @@ const shortDate = (d: string) => new Intl.DateTimeFormat("en-US", { month: "shor
 const time = (iso: string) => new Date(iso).toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" });
 const dayTime = (iso: string) => new Date(iso).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string }> }) {
+export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string; ruled?: string; did?: string; n?: string; gmail?: string; err?: string }> }) {
   await requirePrivate("/private/mail");
   const sp = await searchParams;
   const data = await loadMail(sp.date);
@@ -43,6 +43,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
   const noAccounts = data.accounts.length === 0;
   const visible = (items: ReportItem[]) => (showHandled ? items : items.filter((i) => !data.dismissed.has(i.id)));
   const resorted = /^\d+$/.test(sp.resorted ?? "") ? Number(sp.resorted) : null;
+  const ruled = ruleNote(sp);
   const handledCount = [...r.needsYou, ...r.security].filter((i) => data.dismissed.has(i.id)).length;
 
   return (
@@ -78,6 +79,11 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
           </Card>
         )}
 
+        {ruled && (
+          <p className="mt-5" role="status">
+            <State kind={sp.err ? "wrong" : "ok"}>{ruled}</State>
+          </p>
+        )}
         {resorted !== null && (
           <p className="mt-5" role="status">
             <State kind="ok">Sorted the last week again: {resorted === 0 ? "nothing changed" : `${resorted} ${resorted === 1 ? "email moved" : "emails moved"}`}{/^\d+$/.test(sp.of ?? "") ? ` (of ${sp.of} checked)` : ""}.</State>
@@ -242,6 +248,23 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
       </div>
     </MailShell>
   );
+}
+
+const RULE_WORD: Record<string, string> = {
+  trash: "goes to Trash", file: "is filed in Misc", unsubscribe: "is unsubscribed from and trashed", hide: "is left out of this page", important: "always shows under Needs you",
+};
+
+/** The line under the date after a sender button: what the new rule does and what it did today. */
+function ruleNote(sp: { ruled?: string; did?: string; n?: string; gmail?: string; err?: string }): string | null {
+  if (!sp.ruled || !sp.did || !RULE_WORD[sp.did]) return null;
+  const n = Number(sp.n) || 0;
+  const moves = sp.did !== "hide" && sp.did !== "important";
+  let text = `Mail from ${sp.ruled.slice(0, 120)} ${RULE_WORD[sp.did]} from now on.`;
+  if (moves && n) {
+    text += ` ${n} ${n === 1 ? "email" : "emails"} from the last week ${n === 1 ? "was" : "were"} handled the same way`;
+    text += sp.err ? ", but Yahoo didn't answer; the move happens at the next run." : sp.gmail ? "; Gmail moves them at its next run." : ".";
+  }
+  return text;
 }
 
 function Section({ title, count, children }: { title: string; count?: number; children: ReactNode }) {

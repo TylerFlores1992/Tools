@@ -218,8 +218,14 @@ test("report: hidden and trashed items never show as needing you", () => {
   const rows = [
     row({ id: "h", reportDate: "2026-10-18", bucket: "needs_you", action: "hide", actionStatus: "done" }),
     row({ id: "t", reportDate: "2026-10-18", bucket: "needs_you", action: "trash", actionStatus: "done" }),
+    // "Always trash" pressed and the move not made yet: handled, so it leaves the list at once.
+    row({ id: "p", reportDate: "2026-10-18", bucket: "needs_you", action: "trash", actionStatus: "pending" }),
+    row({ id: "f", reportDate: "2026-10-18", bucket: "needs_you", action: "file", actionStatus: "pending" }),
   ];
   assert.equal(buildReport({ ...base, date: "2026-10-18", rows }).needsYou.length, 0);
+  // A move that failed is still the owner's to deal with.
+  const failed = [row({ id: "x", reportDate: "2026-10-18", bucket: "needs_you", action: "trash", actionStatus: "failed" })];
+  assert.deepEqual(buildReport({ ...base, date: "2026-10-18", rows: failed }).needsYou.map((i) => i.id), ["x"]);
 });
 
 test("addDays crosses months", () => {

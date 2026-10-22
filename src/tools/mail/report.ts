@@ -28,6 +28,9 @@ export type Report = {
   total: number;
 };
 
+// Mail a rule is moving out of the inbox (or already moved) is handled; a failed move stays listed.
+const MOVING: ReadonlySet<string> = new Set(["trash", "unsubscribe", "file"]);
+
 const RANK: Record<Level, number> = { urgent: 0, normal: 1, info: 2 };
 
 export function addDays(date: string, n: number): string {
@@ -52,7 +55,7 @@ export function buildReport(input: {
   const { date, rows, dismissed } = input;
   const today = rows.filter((r) => r.reportDate === date);
   const earliest = addDays(date, -(CARRY_DAYS - 1));
-  const live = (r: MailRow) => r.reportDate >= earliest && r.reportDate <= date && !dismissed.has(r.id) && r.action !== "hide" && !(r.action === "trash" && r.actionStatus === "done");
+  const live = (r: MailRow) => r.reportDate >= earliest && r.reportDate <= date && !dismissed.has(r.id) && r.action !== "hide" && !(MOVING.has(r.action ?? "") && r.actionStatus !== "failed");
 
   const toItem = (r: MailRow): ReportItem => ({
     id: r.id, level: r.level, title: r.title, detail: r.detail, account: accountLabel(r.accountId),

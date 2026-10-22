@@ -23,3 +23,17 @@ export async function runYahoo(source: "cron" | "manual"): Promise<{ ok: boolean
   await finishRun(runId, ok, message, { accounts: accounts.length, stored, moved });
   return { ok, message };
 }
+
+/** Makes the waiting mailbox moves (and reads new mail) for some Yahoo accounts right now. */
+export async function syncYahooAccounts(ids: readonly string[]): Promise<{ moved: number; problems: string[] }> {
+  const rules = await getRules();
+  const accounts = (await getAccounts()).filter((a) => a.kind === "yahoo" && a.enabled && ids.includes(a.id));
+  let moved = 0;
+  const problems: string[] = [];
+  for (const a of accounts) {
+    const r = await syncYahoo(a, rules);
+    moved += r.moved;
+    if (!r.ok) problems.push(`${a.address}: ${r.error}`);
+  }
+  return { moved, problems };
+}
