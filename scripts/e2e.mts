@@ -1321,6 +1321,7 @@ try {
   await check("vectorworks: the pairing link connects, then leaves the URL (the token stays in this browser)", async () => {
     vw.reset();
     const { ctx, p } = await vwPage();
+    await p.getByText("Not paired with this computer yet.").waitFor(); // the panel is up
     await p.goto(pairLink); // already on the page: only the hash changes
     await p.getByText(/Connected to/).waitFor({ timeout: 15000 });
     assert.equal(new URL(p.url()).hash, "");

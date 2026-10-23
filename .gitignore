@@ -53,3 +53,9 @@ next-env.d.ts
 /public/lab-local/
 /studio/campground-maps/.cache/
 /studio/campground-maps/pointcloud/__pycache__/
+
+# Vectorworks connector (Python)
+/connectors/**/__pycache__/
+/connectors/**/.pytest_cache/
+/connectors/**/.venv/
+/connectors/**/*.egg-info/

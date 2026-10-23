@@ -56,7 +56,7 @@ export function Inspector({
   return (
     <div className="grid gap-5">
       <div>
-        <Label>{one ? one.type.replace(/_/g, " ") : `${items.length} selected`}</Label>
+        <Label>{one ? (one.plugin || one.type.replace(/_/g, " ")) : `${items.length} selected`}</Label>
         <h2 className="mt-2 text-h3 font-medium [overflow-wrap:anywhere]">{one ? labelOf(one) : items.map(labelOf).slice(0, 3).join(", ") + (items.length > 3 ? "…" : "")}</h2>
         {one && <p className="mt-1 text-small text-muted">Layer {one.layer} · Class {one.cls}</p>}
       </div>
@@ -95,11 +95,11 @@ export function Inspector({
         <Button type="submit" variant="quiet" disabled={busy || (dx.v === null && dy.v === null)}>Move</Button>
       </form>
 
-      <div className="flex flex-wrap gap-2">
-        {one && <Button variant="quiet" disabled={busy} onClick={() => actions.rotate(90)} aria-label="Rotate 90 degrees counter-clockwise">Rotate ↺ 90°</Button>}
-        {one && <Button variant="quiet" disabled={busy} onClick={() => actions.rotate(-90)} aria-label="Rotate 90 degrees clockwise">Rotate ↻ 90°</Button>}
-        <Button variant="quiet" disabled={busy} onClick={actions.duplicate}>Duplicate</Button>
-        <Button variant="quiet" disabled={busy} onClick={actions.showInVectorworks}>Select in Vectorworks</Button>
+      <div className="grid grid-cols-2 gap-2">
+        {one && <Button variant="quiet" className="px-3" disabled={busy} onClick={() => actions.rotate(90)} aria-label="Rotate 90 degrees counter-clockwise">Rotate ↺ 90°</Button>}
+        {one && <Button variant="quiet" className="px-3" disabled={busy} onClick={() => actions.rotate(-90)} aria-label="Rotate 90 degrees clockwise">Rotate ↻ 90°</Button>}
+        <Button variant="quiet" className="col-span-2" disabled={busy} onClick={actions.duplicate}>Duplicate</Button>
+        <Button variant="quiet" className="col-span-2" disabled={busy} onClick={actions.showInVectorworks}>Select in Vectorworks</Button>
       </div>
 
       <div className="border-t border-line pt-4">
@@ -128,7 +128,7 @@ function FixtureFields({ fields, busy, onSave }: { fields: Record<string, string
       className="grid gap-3 rounded-input border border-line p-4"
       onSubmit={(e) => { e.preventDefault(); if (Object.keys(changed).length) onSave(changed); }}
     >
-      <p className="text-small font-medium text-ink">Lighting device</p>
+      <p className="text-small font-medium text-ink">Fixture fields</p>
       <div className="grid grid-cols-2 gap-3">
         {FIXTURE_FIELDS.map((f) => (
           <label key={f} className="grid min-w-0 gap-1.5 text-small text-ink-2">

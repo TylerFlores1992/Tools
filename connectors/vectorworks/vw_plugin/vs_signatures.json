@@ -1,0 +1,316 @@
+{
+ "signatures": {
+  "ActLayer": [],
+  "ActiveClass": [],
+  "AddPoint": [
+   "p"
+  ],
+  "AlrtDialog": [
+   "message"
+  ],
+  "ArcByCenter": [
+   "x",
+   "y",
+   "radius",
+   "startAngl",
+   "sweepAngle"
+  ],
+  "BeginPoly": [],
+  "ClassList": [
+   "index"
+  ],
+  "ClassNum": [],
+  "ClosePoly": [],
+  "CreateCustomObjectN": [
+   "objectName",
+   "p",
+   "rotationAngle",
+   "showPref"
+  ],
+  "CreateLayer": [
+   "layerName",
+   "layerType"
+  ],
+  "CreateLayout": [
+   "dialogTitle",
+   "hasHelp",
+   "defaultButtonName",
+   "cancelButtonName"
+  ],
+  "CreateStaticText": [
+   "dialogID",
+   "itemID",
+   "text",
+   "widthInStdChar"
+  ],
+  "CreateText": [
+   "theText"
+  ],
+  "DSelectAll": [],
+  "DelObject": [
+   "h"
+  ],
+  "DeregisterDialogFromTimerEvents": [
+   "dialogID"
+  ],
+  "DialogTimerEventMessageC": [],
+  "DoMenuTextByName": [
+   "subMenu",
+   "index"
+  ],
+  "EndPoly": [],
+  "FInFolder": [
+   "sfHd"
+  ],
+  "FLayer": [],
+  "FSymDef": [],
+  "ForEachObject": [
+   "callback",
+   "c"
+  ],
+  "GetArc": [
+   "h"
+  ],
+  "GetBBox": [
+   "h"
+  ],
+  "GetClass": [
+   "h"
+  ],
+  "GetFName": [],
+  "GetFldName": [
+   "h",
+   "index"
+  ],
+  "GetLName": [
+   "h"
+  ],
+  "GetLayer": [
+   "h"
+  ],
+  "GetLayerByName": [
+   "layerName"
+  ],
+  "GetName": [
+   "h"
+  ],
+  "GetObject": [
+   "name"
+  ],
+  "GetObjectByUuid": [
+   "UUID"
+  ],
+  "GetObjectUuid": [
+   "h"
+  ],
+  "GetObjectVariableInt": [
+   "h",
+   "index"
+  ],
+  "GetParametricRecord": [
+   "h"
+  ],
+  "GetPolyPt": [
+   "objectHd",
+   "index"
+  ],
+  "GetPolylineVertex": [
+   "obj",
+   "vertexNum"
+  ],
+  "GetRField": [
+   "h",
+   "record",
+   "field"
+  ],
+  "GetRecord": [
+   "h",
+   "cnt"
+  ],
+  "GetSegPt1": [
+   "h"
+  ],
+  "GetSegPt2": [
+   "h"
+  ],
+  "GetSymLoc": [
+   "symHd"
+  ],
+  "GetSymName": [
+   "symHd"
+  ],
+  "GetText": [
+   "objectHd"
+  ],
+  "GetTypeN": [
+   "h"
+  ],
+  "GetUnits": [],
+  "GetVersionEx": [],
+  "GetVertNum": [
+   "PolyHd"
+  ],
+  "Group": [],
+  "HCenter": [
+   "h"
+  ],
+  "HDuplicate": [
+   "objectHandle",
+   "x",
+   "y"
+  ],
+  "HMove": [
+   "h",
+   "xOffset",
+   "yOffset"
+  ],
+  "HPerim": [
+   "h"
+  ],
+  "HRotate": [
+   "h",
+   "center",
+   "rotationAngle"
+  ],
+  "IsPolyClosed": [
+   "polyHandle"
+  ],
+  "LNewObj": [],
+  "Layer": [
+   "name"
+  ],
+  "LineTo": [
+   "p"
+  ],
+  "LinearDim": [
+   "startPt",
+   "endPt",
+   "offsetDistance",
+   "dimType",
+   "arrow",
+   "textFlag",
+   "textOffset"
+  ],
+  "MoveTo": [
+   "p"
+  ],
+  "NameClass": [
+   "clasName"
+  ],
+  "NextLayer": [
+   "h"
+  ],
+  "NextSymDef": [
+   "symHd"
+  ],
+  "NumFields": [
+   "h"
+  ],
+  "NumRecords": [
+   "h"
+  ],
+  "NumSelectedObjects": [],
+  "OpenPoly": [],
+  "Oval": [
+   "p1",
+   "p2"
+  ],
+  "ReDrawAll": [],
+  "Rect": [
+   "p1",
+   "p2"
+  ],
+  "RegisterDialogForTimerEvents": [
+   "dialogID",
+   "timerDelayInMilliseconds"
+  ],
+  "ResetObject": [
+   "objectHandle"
+  ],
+  "RunLayoutDialog": [
+   "dialogID",
+   "callback"
+  ],
+  "SetBelowItem": [
+   "dialogID",
+   "srcItemID",
+   "belowtItemID",
+   "indent",
+   "lineSpacing"
+  ],
+  "SetClass": [
+   "h",
+   "clas"
+  ],
+  "SetComponentWidth": [
+   "object",
+   "componentIndex",
+   "width"
+  ],
+  "SetControlText": [
+   "DlogID",
+   "ItemID",
+   "newtext"
+  ],
+  "SetFPat": [
+   "h",
+   "fillPattern"
+  ],
+  "SetFillBack": [
+   "h",
+   "color"
+  ],
+  "SetFirstLayoutItem": [
+   "dialogID",
+   "firstItemID"
+  ],
+  "SetLW": [
+   "h",
+   "lw"
+  ],
+  "SetName": [
+   "h",
+   "name"
+  ],
+  "SetParent": [
+   "obj",
+   "container"
+  ],
+  "SetPenFore": [
+   "h",
+   "color"
+  ],
+  "SetRField": [
+   "h",
+   "record",
+   "field",
+   "value"
+  ],
+  "SetSelect": [
+   "h"
+  ],
+  "SetWallCornerHeights": [
+   "theWall",
+   "startHeightTop",
+   "startHeightBottom",
+   "endHeightTop",
+   "endHeightBottom"
+  ],
+  "Symbol": [
+   "symbolName",
+   "p",
+   "rotationAngle"
+  ],
+  "TextOrigin": [
+   "p"
+  ],
+  "TextSize": [
+   "size"
+  ],
+  "Wall": [
+   "p1",
+   "p2"
+  ]
+ },
+ "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23."
+}

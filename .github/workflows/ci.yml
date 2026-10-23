@@ -20,3 +20,19 @@ jobs:
       - run: npx playwright-core install --with-deps chromium
       - run: echo "CHROMIUM_PATH=$(node -p "require('playwright-core').chromium.executablePath()")" >> "$GITHUB_ENV"
       - run: npm run e2e
+
+  # The Vectorworks connector (Python): every vs call against the official signatures, and
+  # round trips through a strict fake of Vectorworks. See connectors/vectorworks/README.md.
+  connector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: connectors/vectorworks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: pytest -q

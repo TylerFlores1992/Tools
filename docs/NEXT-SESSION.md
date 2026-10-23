@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-23 (Vectorworks: connector + live panel at `/private/vectorworks`, branch `claude/vectorworks-panel`). Earlier: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -14,6 +14,7 @@
 | Private tab | `/private` | Live. Password-only sign-in in the site's design; 30-day session. Lists private projects. |
 | Morning Mail | `/private/mail` | Code version, on trial (owner, 2026-10-18): runs alongside the Claude `/mail` run; owner decides which stays (`docs/MAIL.md`). Removed once (#57) and restored. Yahoo untested against a real server. **2026-10-21 (#81):** new buckets `junk` (each says why; Always trash / Not junk) and `updates` (collapsed); a person needs a name that reads as a name; 'log in' counts as security only in a subject; Yahoo List-Unsubscribe read from the message when the header fetch is empty; "Sort the last week again" re-sorts stored mail (owner presses it; a session may not rewrite rows). Bucket check widened in production. |
 | Money → Income | `/private/money/income` | Live and in use (`docs/MONEY.md#income`). Real stubs read and approved for 2025-26; estimated stubs from YTD; EDD Paid Family Leave and Disability filed; work calendar (#72) from the calendar script (connected 2026-10-20, 7 events). Pending deposits count as paid since #72. **Open:** today's Morning Mail rows keep the old "Email from" titles (rewriting them was refused as a shared-data change); the Vercel promo stays under Security for today. |
+| **Vectorworks** | `/private/vectorworks` · `connectors/vectorworks/` | Built 2026-10-23, branch `claude/vectorworks-panel`. Python connector (MCP server for Claude + `vwmcp-panel` local API) and the live panel page. Tested against a strict fake Vectorworks and in a real browser end to end; **not yet run in a real Vectorworks or on Windows** (the owner doesn't have Vectorworks yet). |
 | Money tracker | `/private/money` | Live 2026-10-18 (#54, `docs/MONEY.md`). Chase + U.S. Bank via SimpleFIN, daily sync, categories, recurring. Database answers in production. Waiting on the owner to connect SimpleFIN. |
 | CampHawk lab | `/private/camphawk` | Live, behind Private. Mockups only: nothing here changes camphawk.app. (`/lab/camphawk` redirects here.) |
 | ↳ **Golden hour (chosen look)** | `/private/camphawk/golden-hour` | Live. The home page in the look the owner picked. Critic 7/10, every finding since fixed. Header badge: the owner's pick "Golden-hour sky" (lab only; camphawk.app keeps its badge). |
@@ -379,6 +380,25 @@ site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync
    The iOS app's webview loads camphawk.app directly (`server.url`), so web changes show in the
    app too.
 
+## Vectorworks (2026-10-23)
+- **What:** Claude draws, measures and edits in Vectorworks through `connectors/vectorworks/`
+  (35 MCP tools, batch + undo journal, lengths like `12'-6"`); the page at `/private/vectorworks`
+  shows the open drawing live from the owner's own computer (select, drag snapped, nudge, measure,
+  fixture fields, undo), pairing via the link `vwmcp-panel` prints. The site never sees the drawing.
+- **Why it's shaped this way:** connector README, "Why it's built this way" (VW 2026 = Python 3.9;
+  a wrong `vs` call opens a blocking Script Errors dialog, so every call is checked against the
+  official signatures in `vw_plugin/vs_signatures.json`; hotkey trigger waits for the person to
+  pause; own undo journal because Ctrl+Z merges scripted runs).
+- **Waiting on the owner:** buy/trial Vectorworks 2026 with Spotlight, then the README's "First run
+  on real Vectorworks" checklist. Expect small fixes in `vwmcp_bridge.py` (field names, arc read-back).
+- **Later:** a see-through overlay on the Vectorworks window (needs screen↔drawing mapping), LAN
+  access for the phone (would need the panel served by the connector itself: an https page can't
+  call a LAN http address), Braceworks loads.
+- **Checks:** `npm run e2e` has 8 `vectorworks:` checks against a Node stand-in for the panel API
+  (`scripts/vectorworks-mock.mts`); CI job `connector` runs the Python tests (75).
+- **Rebuild the download** after changing the connector: `python connectors/vectorworks/make_zip.py`
+  (`connector.test.mts` fails if the page's version and the connector's disagree).
+
 ## Next up (in order)
 0. **CampHawk lab: rounds 6–17 on `ccr-c1332bd1-j9qtgp`** (in a PR for review; PR #16 is merged
    and done). Critics sat at 8.55–8.65 for six rounds of small fixes, so the owner picked "option
@@ -547,6 +567,14 @@ Draggable and keyboard-operable diagram, ft/lb ↔ m/kg, deep links, the math wo
   3.6 s across runs). Use PageSpeed Insights from a real browser.
 
 ## Gotchas
+- No network to Google Fonts in some containers: `next build` fails on the CampHawk lab's Bitter
+  / Nunito Sans. For a local check only: `NEXT_FONT_GOOGLE_MOCKED_RESPONSES=<mock.js> next build
+  --webpack` with a mock that serves `src/fonts/MonaSans-Variable.woff2` (Turbopack won't take a
+  catch-all mock). Never commit that.
+- `pkill -f` matches its own shell whenever the pattern's text is anywhere in your command, even
+  in a heredoc you're writing. Put restarts in a script file and run the file.
+- 2026-10-23: two `lab site-map` e2e checks (waves; a site picked up and moved) fail here on
+  untouched `main` too; likely the git-ignored local State Parks data. Not from the Vectorworks work.
 - `globals.css` collapses every transition to 1ms under reduced motion, and the default
   transition property is `all`: a script that reads computed styles (an outline, a colour) right
   after a change sees the old value. Wait a frame (30-60ms) before reading or screenshotting.
