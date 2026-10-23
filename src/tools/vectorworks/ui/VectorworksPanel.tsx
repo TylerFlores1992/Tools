@@ -64,17 +64,21 @@ export function VectorworksPanel() {
     setNote({ kind: "wrong", text: err.message });
   }, []);
 
-  /** Runs one thing against Vectorworks with the page marked busy, and says how it went. */
+  /**
+   * Runs one thing against Vectorworks with the page marked busy, and says how it went.
+   * A quiet run (re-reading the drawing) leaves the last message alone, so "Undid …" stays
+   * readable after the re-read that follows it.
+   */
   const run = useCallback(
-    async <T,>(fn: (c: PanelClient) => Promise<T>, done?: (r: T) => string | void): Promise<T | undefined> => {
+    async <T,>(fn: (c: PanelClient) => Promise<T>, done?: (r: T) => string | void, opts: { quiet?: boolean } = {}): Promise<T | undefined> => {
       if (!client) return;
       inFlight.current++;
       setBusy(true);
-      setNote({ kind: "note", text: "Waiting for Vectorworks…" });
+      if (!opts.quiet) setNote(null);
       try {
         const r = await fn(client);
         const msg = done?.(r);
-        setNote(msg ? { kind: "ok", text: msg } : null);
+        if (msg) setNote({ kind: "ok", text: msg });
         return r;
       } catch (e) {
         fail(e);
@@ -85,6 +89,21 @@ export function VectorworksPanel() {
     },
     [client, fail],
   );
+
+  // Opening the pairing link while this page is already open only changes the hash.
+  useEffect(() => {
+    const onHash = () => {
+      const p = pairingFromHash(window.location.hash);
+      if (!p) return;
+      savePairing(p);
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      setNote(null);
+      setConn("starting");
+      setPairing(p);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   /** Reads the document and drawing. Call after client.alive() said yes. */
   const load = useCallback(
@@ -99,7 +118,7 @@ export function VectorworksPanel() {
         setReadAt(time());
         if (opts.fit) setFitSignal((n) => n + 1);
         return drawing;
-      }, (drawing) => (drawing.truncated ? `Showing the first ${drawing.count} objects.` : undefined)),
+      }, (drawing) => (drawing.truncated ? `Showing the first ${drawing.count} objects.` : undefined), { quiet: true }),
     [layer, run],
   );
 
@@ -257,7 +276,7 @@ export function VectorworksPanel() {
   }
 
   return (
-    <div className="grid gap-6">
+    <div className="grid min-w-0 grid-cols-1 gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="grid gap-1 text-small" aria-live="polite">
           {conn === "offline" ? (
@@ -265,12 +284,14 @@ export function VectorworksPanel() {
           ) : (
             <State kind="ok">
               Connected{doc ? <> to <b className="font-medium text-ink">{doc.document || "an untitled drawing"}</b></> : null}
-              {doc?.version ? ` · Vectorworks ${doc.version}` : ""}
+              {doc?.version ? ` · Vectorworks ${doc.version.split(" ")[0]}` : ""}
               {` · ${isImperial(units) ? "feet and inches" : units.unit_name.trim() || "metric"}`}
               {readAt ? ` · read ${readAt}` : ""}
             </State>
           )}
-          {note && <span role="status"><State kind={note.kind}>{note.text}</State></span>}
+          <span role="status">
+            {busy ? <State kind="note">Waiting for Vectorworks…</State> : note ? <State kind={note.kind}>{note.text}</State> : null}
+          </span>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="quiet" disabled={busy} onClick={() => refresh()}>Refresh</Button>
@@ -279,8 +300,8 @@ export function VectorworksPanel() {
         </div>
       </div>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <section aria-label="Drawing" className="rounded-card border border-line bg-surface shadow-card">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <section aria-label="Drawing" className="min-w-0 overflow-hidden rounded-card border border-line bg-surface shadow-card">
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3 sm:px-5">
             <Segmented label="Tool" value={tool} onChange={(t) => { setTool(t); setMeasure([]); }} options={[{ value: "select", label: "Select" }, { value: "measure", label: "Measure" }]} />
             <Segmented label="Snap and nudge step" value={stepIndex} onChange={setStepIndex} options={steps.map((s, i) => ({ value: String(i), label: s.label }))} />
@@ -314,12 +335,12 @@ export function VectorworksPanel() {
           </div>
         </section>
 
-        <Card className="lg:sticky lg:top-6">
+        <Card className="min-w-0 lg:sticky lg:top-6">
           <Inspector items={items} units={units} busy={busy} fields={fields} actions={actions} />
         </Card>
       </div>
 
-      <div className={cx("grid gap-6", fixtures.length ? "lg:grid-cols-2" : "")}>
+      <div className={cx("grid grid-cols-1 gap-6 [&>*]:min-w-0", fixtures.length ? "lg:grid-cols-2" : "")}>
         {fixtures.length > 0 && (
           <Card>
             <h2 className="text-h3 font-medium">Lighting devices</h2>

@@ -46,7 +46,7 @@ export default function VectorworksPage() {
           <section id="setup" aria-labelledby="setup-h" className="mt-12 scroll-mt-24">
             <h2 id="setup-h" className="text-h2 font-normal">Set up</h2>
             <p className="mt-2 max-w-[64ch] text-body text-ink-2">Once per computer, about ten minutes. Windows, Vectorworks {CONNECTOR.testedWith} with Spotlight.</p>
-            <ol className="mt-6 grid gap-4 lg:grid-cols-2">
+            <ol className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Step n={1} title="Install the connector">
                 <p>
                   <a href={CONNECTOR.download} className="underline underline-offset-4 hover:text-ink">Download the connector</a> ({CONNECTOR.downloadLabel}), unzip it, and in that folder run:
@@ -92,8 +92,8 @@ vwmcp-install-plugin`}</pre>
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <li>
-      <Card className="h-full">
+    <li className="min-w-0">
+      <Card className="h-full min-w-0">
         <p className="font-mono text-label uppercase text-muted">Step {n}</p>
         <h3 className="mt-2 text-h3 font-medium">{title}</h3>
         <div className="mt-2 grid gap-2 text-body text-ink-2">{children}</div>

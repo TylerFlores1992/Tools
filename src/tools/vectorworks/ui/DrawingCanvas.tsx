@@ -216,16 +216,15 @@ export function DrawingCanvas({
   const cursor = tool === "measure" ? "crosshair" : gesture.kind === "pan" ? "grabbing" : gesture.kind === "drag" ? "move" : hover ? "pointer" : "grab";
 
   return (
-    <div ref={wrap} className="relative w-full overflow-hidden rounded-t-card bg-surface">
+    <div ref={wrap} className="relative w-full min-w-0 overflow-hidden bg-surface">
       <svg
         ref={svgRef}
         role="application"
         aria-label={`Drawing: ${objects.length} objects. ${selected.size} selected. Arrow keys move the selection; F fits the view; plus and minus zoom.`}
         tabIndex={0}
-        width={size.width}
         height={size.height}
         viewBox={`0 0 ${size.width} ${size.height}`}
-        className="block touch-none select-none outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ember"
+        className="block w-full touch-none select-none outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ember"
         style={{ cursor }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -285,11 +284,17 @@ function Shape({ o, S, v, state }: { o: VwObject; S: (p: Pt) => Pt; v: View; sta
   return (
     <g>
       <rect x={a[0]} y={a[1]} width={w} height={h} rx={isFixture ? Math.min(w, h) / 3 : 0} strokeDasharray={isFixture ? undefined : "5 4"} {...common} />
-      {(w > 18 || isFixture) && (
+      {/* Fixture channels sit above the fixture; other names sit under the outline's left end,
+          so a pipe's name never lands on the channels of the fixtures hung on it. */}
+      {isFixture ? (
         <text x={a[0] + w / 2} y={a[1] - 5} textAnchor="middle" fill="currentColor" stroke="none" fontSize={11} className={`${cls} font-mono`} style={{ paintOrder: "stroke", stroke: "var(--fw-surface)", strokeWidth: 4 }}>
-          {isFixture && o.channel ? o.channel : labelOf(o).slice(0, 24)}
+          {o.channel || ""}
         </text>
-      )}
+      ) : w > 40 ? (
+        <text x={a[0]} y={a[1] + h + 13} fill="currentColor" stroke="none" fontSize={11} className={`${cls} font-mono`} style={{ paintOrder: "stroke", stroke: "var(--fw-surface)", strokeWidth: 4 }}>
+          {labelOf(o).slice(0, 32)}
+        </text>
+      ) : null}
     </g>
   );
 }
