@@ -5,6 +5,12 @@
  * The real connector is tested against a strict fake of Vectorworks in its own repo.
  */
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { readFileSync } from "node:fs";
+
+// Real answers recorded from the Python connector against its fake Vectorworks (`--show`: venue
+// steel, two trusses on five hoists, fixtures, scenery, and a referenced audio file with PA points).
+// Re-record with the connector running: see docs/NEXT-SESSION.md (Vectorworks).
+const SHOW = JSON.parse(readFileSync(new URL("./vectorworks-show.fixture.json", import.meta.url), "utf8"));
 
 type Obj = Record<string, unknown> & { id: string; bbox: [[number, number], [number, number]]; geometry: Record<string, unknown> };
 
@@ -24,6 +30,8 @@ function demo(): Obj[] {
 
 export function startVectorworksMock(port: number, allowOrigin: string) {
   let objects = demo();
+  let show = false;
+  const posts: { path: string; body: Record<string, unknown> }[] = [];
   const fields: Record<string, Record<string, string>> = {};
   const calls: { op: string; args: Record<string, unknown> }[] = [];
   const units = { unit_name: '"', square_unit_name: "sq ft", units_per_inch: 1 };
@@ -60,6 +68,7 @@ export function startVectorworksMock(port: number, allowOrigin: string) {
       }
       case "get_object": {
         const o = byId(args.id);
+        if (show) return { ...o, fields: {} };
         return { ...o, fields: { "Inst Type": "Source Four 26deg", Channel: String(o.channel ?? ""), "Unit Number": "1", Purpose: "Front", Color: "R60", Position: "Electric 1", ...fields[o.id] } };
       }
       case "set_record_fields": {
@@ -69,6 +78,8 @@ export function startVectorworksMock(port: number, allowOrigin: string) {
         if (values.Channel) o.channel = values.Channel;
         return { id: o.id, record: args.record, fields: (run("get_object", { id: o.id }) as { fields: Record<string, string> }).fields };
       }
+      case "set_visibility":
+        return { layers: args.layers ?? {}, classes: args.classes ?? {} };
       case "list_objects":
         return { count: 0, truncated: false, units, objects: [] };
       case "undo_last":
@@ -86,8 +97,33 @@ export function startVectorworksMock(port: number, allowOrigin: string) {
     if (req.method === "OPTIONS") return send(res, 204, {}, origin);
     if (url.pathname === "/api/health") return send(res, 200, { ok: true, app: "vwmcp-panel" }, origin);
     if (req.headers.authorization !== `Bearer ${MOCK_TOKEN}`) return send(res, 401, { error: "Wrong or missing pairing token." }, origin);
+    const readBody = async () => {
+      let body = "";
+      for await (const chunk of req) body += chunk;
+      return JSON.parse(body || "{}") as Record<string, unknown>;
+    };
+    if (show) {
+      if (url.pathname === "/api/drawing") return send(res, 200, { ok: true, result: { ...SHOW.drawing, objects } }, origin);
+      if (url.pathname === "/api/survey") return send(res, 200, { ok: true, result: SHOW.survey }, origin);
+      if (url.pathname === "/api/rigging") return send(res, 200, { ok: true, result: SHOW.rigging }, origin);
+      if (url.pathname === "/api/rigging.csv") {
+        if (origin === allowOrigin) res.setHeader("Access-Control-Allow-Origin", origin);
+        res.writeHead(200, { "content-type": "text/csv; charset=utf-8" });
+        return res.end(SHOW.csv);
+      }
+      if ((url.pathname === "/api/setup" || url.pathname === "/api/revision") && req.method === "POST") {
+        const body = await readBody();
+        posts.push({ path: url.pathname, body });
+        if (url.pathname === "/api/revision") {
+          const empty = { added: [], removed: [], moved: [], load_changed: [] };
+          return send(res, 200, { ok: true, result: { ...SHOW.rigging, changes: empty, changes_since: body.label } }, origin);
+        }
+        return send(res, 200, { ok: true, result: { datum: SHOW.drawing.setup, limits: SHOW.drawing.setup.limits } }, origin);
+      }
+    }
     if (url.pathname === "/api/document") {
-      return send(res, 200, { ok: true, result: { document: "E2E Plot.vwx", version: "2026 (31.3.0, build 1)", units, layers: [{ name: "Design Layer-1", type: "design" }, { name: "Lighting", type: "design" }], classes: ["None"], active_layer: "Design Layer-1", active_class: "None" } }, origin);
+      const doc = show ? SHOW.survey.document : "E2E Plot.vwx";
+      return send(res, 200, { ok: true, result: { document: doc, version: "2026 (31.3.0, build 1)", units, layers: [{ name: "Design Layer-1", type: "design" }, { name: "Lighting", type: "design" }], classes: ["None"], active_layer: "Design Layer-1", active_class: "None" } }, origin);
     }
     if (url.pathname === "/api/drawing") {
       const layer = url.searchParams.get("layer");
@@ -95,9 +131,7 @@ export function startVectorworksMock(port: number, allowOrigin: string) {
       return send(res, 200, { ok: true, result: { count: list.length, truncated: false, units, objects: list } }, origin);
     }
     if (url.pathname === "/api/op" && req.method === "POST") {
-      let body = "";
-      for await (const chunk of req) body += chunk;
-      const { op, args = {} } = JSON.parse(body || "{}");
+      const { op, args = {} } = (await readBody()) as { op: string; args?: Record<string, unknown> };
       try {
         return send(res, 200, { ok: true, result: run(op, args) }, origin);
       } catch (e) {
@@ -109,7 +143,10 @@ export function startVectorworksMock(port: number, allowOrigin: string) {
   server.listen(port, "127.0.0.1");
   return {
     calls,
-    reset() { objects = demo(); calls.length = 0; for (const k of Object.keys(fields)) delete fields[k]; },
+    posts,
+    reset() { objects = demo(); show = false; calls.length = 0; posts.length = 0; for (const k of Object.keys(fields)) delete fields[k]; },
+    /** Serve the recorded show instead of the small plot. */
+    useShow() { this.reset(); show = true; objects = SHOW.drawing.objects; },
     close: () => new Promise<void>((r) => server.close(() => r())),
   };
 }

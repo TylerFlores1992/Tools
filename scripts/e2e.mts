@@ -1423,6 +1423,90 @@ try {
     }
   });
 
+  // The show: a rigging file with venue steel, trusses on hoists, and a referenced audio file.
+  await check("vectorworks show: departments toggle in the panel and in Vectorworks; referenced objects are read-only", async () => {
+    vw.useShow();
+    const { ctx, p } = await vwPage({ viewport: { width: 1440, height: 1000 } });
+    await p.goto(pairLink);
+    await p.getByText("Spring Tour - Rigging.vwx").first().waitFor({ timeout: 15000 });
+    await p.getByRole("button", { name: /^Venue: shown/ }).click();
+    await p.getByRole("button", { name: /^Venue: dimmed/ }).click();
+    await p.getByRole("button", { name: /^Venue: hidden/ }).waitFor();
+    await p.getByRole("button", { name: "Same in Vectorworks" }).click();
+    await p.getByText(/Vectorworks now shows the same/).waitFor();
+    const layers = lastCall("set_visibility")?.args.layers as Record<string, string>;
+    assert.equal(layers["Venue Steel"], "hidden");
+    assert.equal(layers["Rigging"], "visible");
+    await p.getByRole("button", { name: /^PA-L/ }).first().click();
+    await p.getByText(/From a referenced file: read-only here/).waitFor();
+    assert.equal(await p.getByRole("button", { name: "Move" }).count(), 0);
+    const labels = await p.locator('[role="application"] text').allTextContents();
+    assert.ok(labels.includes("CL") && labels.includes("PL"), "the datum is drawn and labeled");
+    await ctx.close();
+  });
+
+  await check("vectorworks show: what arrived is named, and datum and limits are saved as typed", async () => {
+    vw.useShow();
+    const { ctx, p } = await vwPage({ viewport: { width: 1440, height: 1000 } });
+    await p.goto(pairLink);
+    await p.getByRole("tab", { name: /Show setup/ }).click();
+    await p.getByRole("button", { name: "Look through the file" }).click();
+    await p.getByText(/2 objects arrive through referenced files/).waitFor();
+    await p.getByText(/Hoist × 5 · read as hoist/).waitFor();
+    await p.getByLabel("Datum X (drawing)").fill("10'");
+    await p.getByLabel("Datum Y (drawing)").fill("-6\"");
+    await p.getByRole("radio", { name: "Down" }).click();
+    await p.getByRole("button", { name: "Save datum" }).click();
+    await p.getByText("Datum saved.").waitFor();
+    const datum = vw.posts.at(-1)!.body.datum as Record<string, unknown>;
+    assert.deepEqual(datum, { origin: [120, -6], upstage: "down", cl_name: "CL", pl_name: "PL" });
+    await p.getByLabel("Per point (lb)").fill("1500");
+    await p.getByRole("button", { name: "Save limits" }).click();
+    await p.getByText("Limits saved.").waitFor();
+    assert.equal((vw.posts.at(-1)!.body.limits as Record<string, unknown>).point_limit, 1500);
+    await ctx.close();
+  });
+
+  await check("vectorworks show: rigging reads worst-first with words, picks a point, downloads the CSV, saves a revision", async () => {
+    vw.useShow();
+    const { ctx, p } = await vwPage({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true });
+    await p.goto(pairLink);
+    await p.getByRole("tab", { name: /^Rigging/ }).click();
+    await p.getByRole("button", { name: "Work out the rigging" }).click();
+    const checks = await p.getByRole("list", { name: "Checks" }).getByRole("listitem").allInnerTexts();
+    assert.match(checks[0], /^✕\s*Danger: Point PA-L/);
+    const row4 = await p.getByRole("row").filter({ has: p.getByRole("button", { name: "4", exact: true }) }).innerText();
+    assert.match(row4, /bridle \(Beam A \/ Beam B\)/);
+    const pa = await p.getByRole("row").filter({ has: p.getByRole("button", { name: "PA-L", exact: true }) }).innerText();
+    assert.match(pa, /no steel overhead\s+nearest: Beam A/);
+    assert.match(pa, /Over a limit/);
+    const dl = p.waitForEvent("download");
+    await p.getByRole("button", { name: "Download point list (CSV)" }).click();
+    assert.match((await dl).suggestedFilename(), /Spring Tour - Rigging - points\.csv$/);
+    await p.getByLabel("Save this point list as a revision").fill("Advance v1");
+    await p.getByRole("button", { name: "Save revision" }).click();
+    await p.getByText("Since “Advance v1”").waitFor();
+    await p.getByText("No points added, removed, moved or changed load.").waitFor();
+    await p.getByRole("table").getByRole("button", { name: "4", exact: true }).click();
+    await p.getByRole("tab", { name: "Drawing", selected: true }).waitFor();
+    await ctx.close();
+  });
+
+  await check("vectorworks show: phone width fits on every tab", async () => {
+    vw.useShow();
+    const { ctx, p } = await vwPage({ viewport: { width: 375, height: 812 } });
+    await p.goto(pairLink);
+    await p.getByText(/Connected to/).waitFor({ timeout: 15000 });
+    for (const t of ["Rigging", "Show setup", "Drawing"]) {
+      await p.getByRole("tab", { name: new RegExp(`^${t}`) }).click();
+      if (t === "Rigging") await p.getByRole("button", { name: "Work out the rigging" }).click();
+      await p.waitForTimeout(300);
+      const over = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(over <= 0, `${t}: ${over}px sideways scroll`);
+    }
+    await ctx.close();
+  });
+
   await vw.close();
 } finally {
   await browser.close();
