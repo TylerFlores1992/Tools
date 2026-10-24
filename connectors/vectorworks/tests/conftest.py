@@ -30,11 +30,19 @@ def clean_home():
         shutil.rmtree(_HOME / sub, ignore_errors=True)
     for f in ("journal.jsonl", "allow_exec", "stop"):
         (_HOME / f).unlink(missing_ok=True)
+    shutil.rmtree(_HOME / "shows", ignore_errors=True)
     yield
 
 
 @pytest.fixture
 def fake_vw():
     stop = fake_vectorworks.start_in_thread(demo=True)
+    yield fake_vectorworks.fake_vs
+    stop.set()
+
+
+@pytest.fixture
+def fake_show():
+    stop = fake_vectorworks.start_in_thread(show=True)
     yield fake_vectorworks.fake_vs
     stop.set()

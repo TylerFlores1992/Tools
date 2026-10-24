@@ -540,7 +540,7 @@ def ping():
 @op
 def get_document_info():
     return {
-        "document": _s(vs.GetFName()), "version": _version(), "units": _units(), "layers": _layers(), "classes": _classes(),
+        "document": _s(vs.GetFName()), "path": _s(vs.GetFPathName()), "version": _version(), "units": _units(), "layers": _layers(), "classes": _classes(),
         "active_layer": _active_layer(), "active_class": _s(vs.ActiveClass()),
         "selected": vs.NumSelectedObjects(),
     }

@@ -27,6 +27,13 @@ class Limits:
     default_hoist_wll: float | None = None  # e.g. 1 ton = 2000 lb
     cable_allowance_per_ft: float = 0.0  # cable weight added along trusses (lb/ft or kg/m)
     truss_weight_per_ft: float = 0.0  # self-weight added along trusses (lb/ft or kg/m)
+    chain_weight_per_ft: float = 0.0  # hoist chain weight (lb/ft or kg/m), counted in the point load
+    dynamic_factor: float = 1.2  # loads on chain hoists are treated as dynamic (PCC, SuperTruss tables)
+    hoist_warn_fraction: float = 0.8  # warn above 80% of a hoist's rating (4Wall guidance)
+    min_point_spacing: float | None = None  # venue minimum between points, drawing units
+    high_steel: float | None = None  # floor to bottom chord of the rigging steel, drawing units
+    steel_tolerance: float | None = None  # a hoist this close to a beam line is a dead hang (drawing units; default 6")
+    beams: dict = field(default_factory=dict)  # beam name -> {"height": .., "limit": ..}
 
 
 @dataclass
@@ -39,6 +46,7 @@ class ShowSetup:
     datum_note: str = "Not set: measuring from the drawing's origin, audience at the bottom."
     datum_set: bool = False
     metric: bool = False
+    x_positive: str = "SL"  # point-list sign convention: +X is stage left (or "SR")
     departments: dict = field(default_factory=dict)  # "layer:<name>" / "class:<name>" -> dept
     limits: Limits = field(default_factory=Limits)
 

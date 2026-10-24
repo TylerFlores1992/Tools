@@ -14,6 +14,8 @@ from mcp.server.mcpserver.exceptions import ToolError
 
 from . import __version__, config
 from .jobs import BridgeError, BridgeTimeout, JobQueue
+from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
+from .service import Show
 from .svg import render_svg
 from .trigger import HotkeyTrigger, TriggerError, make_trigger
 
@@ -35,6 +37,18 @@ Draw in, measure and edit the drawing open in Vectorworks (with Spotlight suppor
   Universe/DMX are written together as UniverseAddress (e.g. "2/101"). Only use symbols that
   list_symbols shows: a missing fixture symbol can damage a file.
 - Unsure of a vs function? `vs_lookup` searches the live API with its signatures.
+
+Working like a head rigger (any mix of files):
+1. `survey_drawing`: what arrived (layers, departments, referenced files, viewports, DWG
+   content, plug-in types and their real field names) and what to sort out first.
+2. Set the datum (`find_reference_lines`, then `set_datum`), departments (`set_departments`),
+   and the venue's limits (`set_limits`: per point, per beam, roof total, steel height...).
+3. `rigging_report`: every point with its load (Braceworks result, statics, or an estimate),
+   dead hang or bridle, checks against hoist and venue limits, beam and roof totals, a mark-out
+   list and a CSV. `save_rigging_revision` before changes; the next report says what moved.
+4. Positions are said the rigger's way ("12'-0" SL of CL, 30'-0" US of PL"): `where_is`.
+- Objects from referenced files are read-only; say so and edit them in their own file.
+- Loads on 3+ pick points are estimates: say so, and point to Braceworks, load cells or an engineer.
 """
 
 
@@ -42,7 +56,14 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     settings = settings or config.load()
     trigger = make_trigger(settings)
     queue = JobQueue(settings, trigger)
+    show = Show(queue, settings.home)
     mcp = MCPServer("vectorworks", instructions=INSTRUCTIONS, version=__version__)
+
+    async def guarded(coro):
+        try:
+            return await coro
+        except (BridgeError, BridgeTimeout, TriggerError, ValueError) as e:
+            raise ToolError(str(e)) from e
 
     async def call(op: str, **args: Any) -> Any:
         try:
@@ -243,6 +264,239 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """Set several record or plug-in fields at once, e.g. record="Lighting Device",
         values={"Channel": "101", "Color": "R60"}. Unknown field names are refused."""
         return await call("set_record_fields", id=id, record=record, values=values)
+
+
+    # ---- the show: any mix of files ------------------------------------------------------
+
+    @mcp.tool()
+    async def survey_drawing() -> dict:
+        """What's in this file and where it came from: layers (department, elevation, visibility,
+        referenced), classes, design layer viewports (referenced or not), objects by source,
+        plug-in types with their real field names, extent and units, plus what to sort out first."""
+        return await guarded(show.survey())
+
+    @mcp.tool()
+    async def get_show_setup() -> dict:
+        """This show's saved settings: datum, sign convention, departments, venue limits."""
+        setup, _ = await guarded(show.setup())
+        return show.public_setup(setup)
+
+    @mcp.tool()
+    async def find_reference_lines() -> dict:
+        """Lines, loci and text that look like CL, PL, DSE, setting line or 0,0, to propose a datum."""
+        return await call("find_reference_lines")
+
+    @mcp.tool()
+    async def set_datum(
+        origin: Point, upstage: Literal["up", "down", "left", "right"] = "up",
+        cl_name: str | None = None, pl_name: str | None = None,
+    ) -> dict:
+        """Set the show's datum: the point where CL meets PL (or DSE, or center of the floor), and
+        which way upstage points on the page. Positions are then said from it."""
+        return await guarded(show.set_datum(origin, upstage, cl_name, pl_name))
+
+    @mcp.tool()
+    async def set_departments(mapping: dict[str, str]) -> dict:
+        """Say which department a layer or class belongs to, overriding the name-based guess:
+        {"layer:Venue DWG": "venue", "class:A-STEEL": "venue"}. Departments: venue, rigging,
+        lighting, audio, video, scenic, staging, other. "auto" removes an override."""
+        return await guarded(show.set_departments(mapping))
+
+    @mcp.tool()
+    async def set_limits(values: dict) -> dict:
+        """Venue limits and rigging assumptions for this show, e.g. {"weight_unit": "lb",
+        "point_limit": 2000, "beam_limit": 4000, "total_limit": 60000, "high_steel": "60'",
+        "beams": {"Beam A": {"height": "62'", "limit": 4000}}, "dynamic_factor": 1.2,
+        "truss_weight_per_ft": 8, "cable_allowance_per_ft": 2, "chain_weight_per_ft": 1.1,
+        "min_point_spacing": "8'", "default_hoist_wll": "1 ton", "max_bridle_angle": 120}.
+        Lengths may be strings with units; weights are in weight_unit."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import parse_length
+
+        def length(v):
+            out = parse_length(v, upi)
+            if out is None:
+                raise ToolError("Can't read the length %r." % v)
+            return out
+
+        vals = dict(values)
+        for k in ("high_steel", "min_point_spacing", "steel_tolerance"):
+            if vals.get(k) is not None:
+                vals[k] = length(vals[k])
+        if "beams" in vals:
+            vals["beams"] = {name: {kk: (length(vv) if kk == "height" else vv) for kk, vv in spec.items()} for name, spec in vals["beams"].items()}
+        return await guarded(show.set_limits(**vals))
+
+    @mcp.tool()
+    async def where_is(target: str | Point) -> dict:
+        """Where an object (id) or point is, the way riggers say it: "12'-0" SL of CL, 30'-0" US of PL"."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import parse_length, stage_position
+
+        if isinstance(target, str):
+            o = await call("get_object", id=target)
+            (x0, y0), (x1, y1) = o["bbox"]
+            p = o.get("location") or [(x0 + x1) / 2, (y0 + y1) / 2]
+        else:
+            p = [parse_length(target[0], upi), parse_length(target[1], upi)]
+        out = stage_position(p, setup.datum(), upi, setup.metric)
+        out["datum"] = setup.datum_note
+        return out
+
+    @mcp.tool()
+    async def get_rigging() -> dict:
+        """Raw rigging inventory: hoists, house points, bridles, truss, loads, hanging positions and
+        fixtures, with every field Spotlight/Braceworks stores and their height (Z)."""
+        return await call("get_rigging", include_fixtures=True)
+
+    @mcp.tool()
+    async def rigging_report(save_csv: bool = True) -> dict:
+        """The head rigger's paperwork from the drawing as it stands: every point (ID, X/Y from
+        the datum, hook height, hoist, capacity, trim, load and where it came from, point load
+        incl. hoist and chain, with dynamic factor), dead hang or bridle (legs, tensions, angle when
+        steel heights are set), truss loads, beam and roof totals against limits, checks in words
+        (danger / warning / info), a mark-out list in walking order, and changes since the last saved
+        revision. Writes a CSV next to the show's settings when save_csv."""
+        rep = await guarded(show.rigging())
+        if save_csv:
+            setup, _ = await guarded(show.setup())
+            path = show.store.path(setup.document).with_suffix(".points.csv")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(show.csv(rep), encoding="utf-8")
+            rep["csv_path"] = str(path)
+        return rep
+
+    @mcp.tool()
+    async def save_rigging_revision(label: str) -> dict:
+        """Remember the point list as it is now (e.g. "Advance v2", "As built Seattle"), so the next
+        report lists what moved, appeared, disappeared or changed load."""
+        rep = await guarded(show.rigging(save_revision=label))
+        return {"saved": label, "points": len(rep["points"])}
+
+    @mcp.tool()
+    async def design_bridle(
+        span: Length, to_apex_from_a: Length, beam_a_height: Length, beam_b_height: Length,
+        apex_height: Length, load: float, weight_unit: Literal["lb", "kg"] = "lb",
+    ) -> dict:
+        """Two-leg bridle: leg lengths (pin to pin), tensions, horizontal force, vertical share per
+        beam, included angle, and suggested steel per leg (longest first, never over length; check
+        against what's on the truck). Heights from the floor; the apex must be below both beams."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import format_length, parse_length
+
+        def ln(v, what):
+            out = parse_length(v, upi)
+            if out is None:
+                raise ToolError("Can't read %s %r." % (what, v))
+            return out
+
+        S, d1 = ln(span, "span"), ln(to_apex_from_a, "to_apex_from_a")
+        ha, hb, apex = ln(beam_a_height, "beam_a_height"), ln(beam_b_height, "beam_b_height"), ln(apex_height, "apex_height")
+        r = solve_bridle(S, float(load), d1, ha - apex, hb - ha)
+        out = r.as_dict()
+        if r.valid:
+            for side, leg in (("left", r.left), ("right", r.right)):
+                ft = leg.length / upi / 12
+                pieces, total, short = leg_parts(ft)
+                out[side]["length_text"] = format_length(leg.length, upi, setup.metric)
+                out[side]["steel_suggestion_ft"] = pieces
+                out[side]["make_up_ft"] = round(short, 3)
+        out["checks"] = []
+        if r.valid and r.included_angle > setup.limits.max_bridle_angle:
+            out["checks"].append("Included angle %.1f° is over %.0f°." % (r.included_angle, setup.limits.max_bridle_angle))
+        if r.valid and min(90 - r.left.angle, 90 - r.right.angle) > 60:
+            out["checks"].append("A leg is flatter than 30° from horizontal: it carries more than the whole load.")
+        out["weight_unit"] = weight_unit
+        return out
+
+    @mcp.tool()
+    async def bridle_from_legs(leg_a: Length, leg_b: Length, span: Length, rise: Length = 0) -> dict:
+        """Where the apex lands for two legs of fixed length (as built from steel), beam B `rise`
+        above beam A. Returns distance from beam A and drop below beam A."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import format_length, parse_length
+
+        vals = [parse_length(v, upi) for v in (leg_a, leg_b, span, rise)]
+        if any(v is None for v in vals):
+            raise ToolError("Write lengths like 15', 17'-6\" or 4.5 m.")
+        res = apex_from_legs(*vals)
+        if res is None:
+            return {"reaches": False, "why": "Those legs can't meet: too short for the span, or one far longer than the other."}
+        x, drop = res
+        return {"reaches": True, "from_a": x, "drop": drop, "from_a_text": format_length(x, upi, setup.metric), "drop_text": format_length(drop, upi, setup.metric)}
+
+    @mcp.tool()
+    async def truss_loads(
+        pick_points: list[Length], loads: list[list] = [], weight_per_length: float = 0.0,
+        truss_start: Length | None = None, truss_end: Length | None = None,
+    ) -> dict:
+        """Load at each pick point of a straight truss. Positions along the truss (any length
+        strings); loads [[position, weight], ...]; weight_per_length spread over truss_start..end
+        (weight per drawing unit; use set_limits for per-foot truss and cable weights in reports).
+        Two picks: exact statics (overhangs included; negative = uplift). Three or more: a
+        continuous-beam ESTIMATE; verify with Braceworks, load cells or an engineer."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import parse_length
+
+        def ln(v):
+            out = parse_length(v, upi)
+            if out is None:
+                raise ToolError("Can't read the length %r." % v)
+            return out
+
+        try:
+            r = truss_reactions([ln(p) for p in pick_points], [(ln(p), float(w)) for p, w in loads], float(weight_per_length),
+                                None if truss_start is None else ln(truss_start), None if truss_end is None else ln(truss_end))
+        except ValueError as e:
+            raise ToolError(str(e)) from e
+        if r["estimate"]:
+            r["warning"] = "Three or more picks: an estimate. Real loads depend on how level the hoists are."
+        return r
+
+    @mcp.tool()
+    async def check_scale(a: str | Point, b: str | Point, should_be: Length) -> dict:
+        """For a PDF or DWG that came in at an unknown scale: measure between two objects/points that
+        should be `should_be` apart (a bay, a door, a stage width) and get the factor to fix it
+        (then scale_objects)."""
+        setup, doc = await guarded(show.setup())
+        upi = doc["units"]["units_per_inch"]
+        from .rigging import format_length, parse_length
+
+        m = await call("measure_distance", a=a, b=b)
+        want = parse_length(should_be, upi)
+        if want is None or want <= 0:
+            raise ToolError("Write the known length like 8'-0\" or 2400mm.")
+        got = m["center_distance"]
+        factor = want / got if got else None
+        return {"measured": got, "measured_text": format_length(got, upi, setup.metric), "should_be_text": format_length(want, upi, setup.metric),
+                "factor": factor, "ok": factor is not None and abs(factor - 1) < 0.002,
+                "hint": None if factor is None or abs(factor - 1) < 0.002 else ("Looks like inches vs mm" if abs(factor - 25.4) < 0.5 or abs(factor - 1 / 25.4) < 0.002 else "Looks like feet vs inches" if abs(factor - 12) < 0.1 or abs(factor - 1 / 12) < 0.001 else None)}
+
+    @mcp.tool()
+    async def scale_objects(ids: list[str], factor: float, center: Point | None = None) -> dict:
+        """Scale 2D objects (a traced PDF, a DWG at the wrong units) by factor about center."""
+        return await call("scale_objects", ids=ids, factor=factor, center=center)
+
+    @mcp.tool()
+    async def import_dwg(path: str) -> dict:
+        """Import a DWG/DXF from this computer without the dialog (Vectorworks' last import settings)
+        and report what arrived: new layers/classes, object count, extent (to catch unit mix-ups).
+        Afterwards: set_departments for its classes, check_scale on a known dimension."""
+        return await call("import_dwg", path=path)
+
+    @mcp.tool()
+    async def show_departments(visibility: dict[str, Literal["visible", "gray", "hidden"]]) -> dict:
+        """Show, gray or hide whole departments in Vectorworks, e.g. {"venue": "gray", "scenic":
+        "hidden"}: every layer of that department changes (classes too, when they decide it)."""
+        sv = await guarded(show.survey())
+        layers = {l["name"]: visibility[l["dept"]] for l in sv["layers"] if l["dept"] in visibility}
+        classes = {c["name"]: visibility[c["dept"]] for c in sv["classes"] if c["objects"] and c["dept"] in visibility and c["dept"] != "other"}
+        return await call("set_visibility", layers=layers, classes=classes)
 
     # ---- looking at it ---------------------------------------------------------------
 
