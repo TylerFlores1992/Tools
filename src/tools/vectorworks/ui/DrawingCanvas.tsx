@@ -6,6 +6,8 @@ import {
   type BBox, type Pt, type View, type VwObject,
 } from "../geometry";
 import { formatLength, snap, type Units } from "../units";
+import { DEPT_STYLE, datumAxes } from "../show";
+import type { Department, Geometry } from "../geometry";
 
 export type Tool = "select" | "measure";
 
@@ -25,7 +27,7 @@ type Gesture =
  * inspector names what's selected.
  */
 export function DrawingCanvas({
-  objects, units, selected, onSelect, onMove, tool, step, fitSignal, measure, onMeasure, busy,
+  objects, units, selected, onSelect, onMove, tool, step, fitSignal, measure, onMeasure, busy, dimmed, datum,
 }: {
   objects: VwObject[];
   units: Units;
@@ -38,6 +40,10 @@ export function DrawingCanvas({
   measure: Pt[];
   onMeasure: (pts: Pt[]) => void;
   busy: boolean;
+  /** Departments drawn faintly (still clickable). Hidden ones are left out by the caller. */
+  dimmed?: ReadonlySet<Department>;
+  /** The show's datum, drawn as its CL and PL lines. */
+  datum?: { origin: Pt; upstage: Pt; cl: string; pl: string } | null;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 800, height: 520 });
@@ -234,9 +240,10 @@ export function DrawingCanvas({
         onKeyDown={onKeyDown}
       >
         <Grid v={v} units={units} />
+        {datum && <Datum v={v} {...datum} />}
         <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
           {shown.map((o) => (
-            <Shape key={o.id} o={o} S={S} v={v} state={selected.has(o.id) ? "selected" : hover === o.id ? "hover" : "idle"} />
+            <Shape key={o.id} o={o} S={S} v={v} state={selected.has(o.id) ? "selected" : hover === o.id ? "hover" : "idle"} dim={!!(o.dept && dimmed?.has(o.dept))} />
           ))}
         </g>
         {selBoxes.map((b, i) => <SelectionFrame key={i} b={b} S={S} />)}
@@ -251,11 +258,28 @@ export function DrawingCanvas({
   );
 }
 
-function Shape({ o, S, v, state }: { o: VwObject; S: (p: Pt) => Pt; v: View; state: "idle" | "hover" | "selected" }) {
-  const g = o.geometry;
-  const cls = state === "idle" ? "text-ink-2" : "text-ink";
-  const sw = state === "selected" ? 2.4 : state === "hover" ? 1.8 : 1.2;
-  const common = { className: cls, strokeWidth: sw, vectorEffect: "non-scaling-stroke" as const };
+function Shape({ o, S, v, state, dim = false, geometry }: { o: VwObject; S: (p: Pt) => Pt; v: View; state: "idle" | "hover" | "selected"; dim?: boolean; geometry?: Geometry }) {
+  const g = geometry ?? o.geometry;
+  // Department decides the line pattern (never colour alone); a selected or hovered object is
+  // drawn solid and heavier so it reads as picked whatever its department.
+  const style = DEPT_STYLE[o.dept ?? "other"];
+  const cls = state !== "idle" ? "text-ink" : dim ? "text-line-2" : o.source && o.source !== "native" ? "text-muted" : "text-ink-2";
+  const sw = state === "selected" ? 2.6 : state === "hover" ? 2 : style.width;
+  const common = { className: cls, strokeWidth: sw, strokeDasharray: state === "idle" ? style.dash : undefined, vectorEffect: "non-scaling-stroke" as const };
+  if (g?.kind === "group") {
+    return <g>{g.parts.map((part, i) => <Shape key={i} o={o} S={S} v={v} state={state} dim={dim} geometry={part} />)}</g>;
+  }
+  if (g?.kind === "wall") {
+    // Both faces of the wall, offset half its thickness either side of the centerline.
+    const [dx, dy] = [g.end[0] - g.start[0], g.end[1] - g.start[1]];
+    const len = Math.hypot(dx, dy) || 1;
+    const half = (g.thickness ?? 0) / 2;
+    const [nx, ny] = [(-dy / len) * half, (dx / len) * half];
+    const faces: [Pt, Pt][] = half > 0
+      ? [[[g.start[0] + nx, g.start[1] + ny], [g.end[0] + nx, g.end[1] + ny]], [[g.start[0] - nx, g.start[1] - ny], [g.end[0] - nx, g.end[1] - ny]]]
+      : [[g.start, g.end]];
+    return <g>{faces.map(([a0, b0], i) => { const [a, b] = [S(a0), S(b0)]; return <line key={i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} {...common} />; })}</g>;
+  }
   if (g?.kind === "line") {
     const [a, b] = [S(g.start), S(g.end)];
     return <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} {...common} />;
@@ -283,7 +307,7 @@ function Shape({ o, S, v, state }: { o: VwObject; S: (p: Pt) => Pt; v: View; sta
   const isFixture = o.plugin === "Lighting Device";
   return (
     <g>
-      <rect x={a[0]} y={a[1]} width={w} height={h} rx={isFixture ? Math.min(w, h) / 3 : 0} strokeDasharray={isFixture ? undefined : "5 4"} {...common} />
+      <rect x={a[0]} y={a[1]} width={w} height={h} rx={isFixture ? Math.min(w, h) / 3 : 0} {...common} />
       {/* Fixture channels sit above the fixture; other names sit under the outline's left end,
           so a pipe's name never lands on the channels of the fixtures hung on it. */}
       {isFixture ? (
@@ -362,4 +386,31 @@ function Grid({ v, units }: { v: View; units: Units }) {
     lines.push(`M0 ${sy}H${v.width}`);
   }
   return <path d={lines.join("")} className="text-line" stroke="currentColor" strokeWidth={1} fill="none" aria-hidden="true" pointerEvents="none" />;
+}
+
+
+/** The show's CL and PL (or DSE) as long center-line dashes through the datum, labeled at the view's edge. */
+function Datum({ v, origin, upstage, cl, pl }: { v: View; origin: Pt; upstage: Pt; cl: string; pl: string }) {
+  const reach = (v.width + v.height) / v.scale;
+  const axes = datumAxes(origin, upstage, reach);
+  const line = ([a0, b0]: [Pt, Pt], label: string) => {
+    const [a, b] = [toScreen(v, a0), toScreen(v, b0)];
+    // label where the line leaves the view, nudged inside
+    const t = [0.02, 0.98].map((k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k] as Pt);
+    const inside = t.map((p) => [Math.min(Math.max(p[0], 14), v.width - 30), Math.min(Math.max(p[1], 14), v.height - 8)] as Pt);
+    return (
+      <g key={label}>
+        <line x1={r2(a[0])} y1={r2(a[1])} x2={r2(b[0])} y2={r2(b[1])} stroke="currentColor" strokeWidth={1} strokeDasharray="14 5 3 5" />
+        <text x={r2(inside[1][0])} y={r2(inside[1][1])} fontSize={11} fill="currentColor" stroke="none" className="font-mono" style={{ paintOrder: "stroke", stroke: "var(--fw-surface)", strokeWidth: 4 }}>{label}</text>
+      </g>
+    );
+  };
+  const o = toScreen(v, origin);
+  return (
+    <g className="text-muted" aria-hidden="true" pointerEvents="none">
+      {line(axes.cl, cl)}
+      {line(axes.pl, pl)}
+      <circle cx={r2(o[0])} cy={r2(o[1])} r={4} fill="none" stroke="currentColor" strokeWidth={1.5} />
+    </g>
+  );
 }

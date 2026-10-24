@@ -6,11 +6,22 @@ import { Card } from "@/components/Card";
 import { Segmented } from "@/components/Segmented";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
-import { PanelClient, PanelError, loadPairing, pairingFromHash, savePairing, type DocInfo, type Pairing } from "../client";
-import { labelOf, type Pt, type VwObject } from "../geometry";
+import { PanelClient, PanelError, loadPairing, pairingFromHash, savePairing, type DocInfo, type Pairing, type SetupChange } from "../client";
+import { DEPARTMENTS, center, labelOf, type Department, type Pt, type VwObject } from "../geometry";
+import { DEPT_LABEL, NEXT_VISIBILITY, type Report, type Setup, type Survey, type Visibility } from "../show";
 import { formatLength, isImperial, nudgeSteps, INCHES, type Units } from "../units";
 import { DrawingCanvas, type Tool } from "./DrawingCanvas";
 import { Inspector } from "./Inspector";
+import { RiggingView } from "./RiggingView";
+import { DeptSwatch, SetupView } from "./SetupView";
+
+type Tab = "drawing" | "rigging" | "setup";
+const TABS: { value: Tab; label: string }[] = [
+  { value: "drawing", label: "Drawing" },
+  { value: "rigging", label: "Rigging" },
+  { value: "setup", label: "Show setup" },
+];
+const VIS_WORD: Record<Visibility, string> = { shown: "shown", dimmed: "dimmed", hidden: "hidden" };
 
 type Conn = "starting" | "unpaired" | "offline" | "ready";
 type Note = { kind: "ok" | "wrong" | "note"; text: string } | null;
@@ -51,6 +62,11 @@ export function VectorworksPanel() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [filter, setFilter] = useState("");
   const [pasted, setPasted] = useState("");
+  const [tab, setTab] = useState<Tab>("drawing");
+  const [setup, setSetup] = useState<Setup | null>(null);
+  const [survey, setSurvey] = useState<Survey | null>(null);
+  const [report, setReport] = useState<Report | null>(null);
+  const [visibility, setVisibility] = useState<Partial<Record<Department, Visibility>>>({});
 
   const client = useMemo(() => (pairing ? new PanelClient(pairing) : null), [pairing]);
   const steps = useMemo(() => nudgeSteps(units), [units]);
@@ -113,6 +129,7 @@ export function VectorworksPanel() {
         setDoc(d);
         setUnits(drawing.units ?? d.units);
         setObjects(drawing.objects);
+        if (drawing.setup) setSetup(drawing.setup);
         setSelected((s) => new Set([...s].filter((id) => drawing.objects.some((o) => o.id === id))));
         setConn("ready");
         setReadAt(time());
@@ -237,6 +254,73 @@ export function VectorworksPanel() {
       return r.objects.length ? `Picked up ${r.objects.length} selected in Vectorworks.` : "Nothing is selected in Vectorworks.";
     });
 
+  const workRigging = () =>
+    run((c) => c.rigging(), (r) => {
+      setReport(r);
+      setSetup(r.setup);
+      return r.summary.danger ? `${r.summary.danger} danger ${r.summary.danger === 1 ? "check" : "checks"} to look at.` : "Rigging worked out.";
+    });
+
+  const lookThrough = () =>
+    run((c) => c.survey(), (sv) => {
+      setSurvey(sv);
+      setSetup(sv.setup);
+    });
+
+  const saveSetup = (change: SetupChange) =>
+    run((c) => c.setup(change), () => {
+      refresh();
+      if (survey && change.departments) void lookThrough();
+      if (report) void workRigging();
+      return change.datum ? "Datum saved." : change.limits ? "Limits saved." : "Departments saved.";
+    });
+
+  const saveRevision = (label: string) =>
+    run((c) => c.saveRevision(label), (r) => {
+      setReport(r);
+      return `Saved “${label}”. The next look lists what changed since.`;
+    });
+
+  const downloadCsv = () =>
+    run((c) => c.riggingCsv(), (blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(doc?.document || "points").replace(/\.vwx$/i, "")} - points.csv`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return "Point list downloaded.";
+    });
+
+  /** From a report row or check: show it in the drawing, selected. */
+  const pick = (id: string) => {
+    setTab("drawing");
+    if (objects.some((o) => o.id === id)) onSelect([id], "replace");
+  };
+
+  // Departments in the drawing, and how each is shown here.
+  const present = DEPARTMENTS.filter((d) => objects.some((o) => (o.dept ?? "other") === d));
+  const visOf = (d: Department): Visibility => visibility[d] ?? "shown";
+  const drawn = objects.filter((o) => visOf(o.dept ?? "other") !== "hidden");
+  const dimmed = new Set(present.filter((d) => visOf(d) === "dimmed"));
+  const sameInVectorworks = () => {
+    // A layer follows its department when all its objects belong to one.
+    const byLayer = new Map<string, Set<Department>>();
+    for (const o of objects) {
+      if (o.source && o.source !== "native") continue;
+      byLayer.set(o.layer, (byLayer.get(o.layer) ?? new Set()).add(o.dept ?? "other"));
+    }
+    const layers: Record<string, "visible" | "gray" | "hidden"> = {};
+    for (const [name, ds] of byLayer) {
+      if (ds.size !== 1) continue;
+      const v = visOf([...ds][0]);
+      layers[name] = v === "shown" ? "visible" : v === "dimmed" ? "gray" : "hidden";
+    }
+    return run((c) => c.op("set_visibility", { layers }), () => `Vectorworks now shows the same: ${Object.keys(layers).length} layers set.`);
+  };
+  const selectedPoint: Pt | null = items.length === 1 ? (items[0].location ?? center(items[0].bbox)) : null;
+  const datum = setup?.datum_set ? { origin: setup.datum_origin, upstage: setup.upstage, cl: setup.cl_name, pl: setup.pl_name } : null;
+
   const fixtures = objects.filter((o) => o.plugin === "Lighting Device").sort((a, b) => (Number(a.channel) || 1e9) - (Number(b.channel) || 1e9));
   const listed = objects.filter((o) => !filter || labelOf(o).toLowerCase().includes(filter.toLowerCase()) || o.type.includes(filter.toLowerCase())).slice(0, 200);
   const measured = measure.length === 2 ? Math.hypot(measure[1][0] - measure[0][0], measure[1][1] - measure[0][1]) : null;
@@ -300,6 +384,37 @@ export function VectorworksPanel() {
         </div>
       </div>
 
+      <div role="tablist" aria-label="Views" className="inline-flex justify-self-start overflow-x-auto rounded-full border border-line bg-surface p-1">
+        {TABS.map((t) => (
+          <button
+            key={t.value}
+            type="button"
+            role="tab"
+            id={`tab-${t.value}`}
+            aria-selected={tab === t.value}
+            aria-controls={`panel-${t.value}`}
+            onClick={() => setTab(t.value)}
+            className="flex min-h-10 items-center gap-2 whitespace-nowrap rounded-full px-4 text-small text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
+          >
+            {tab === t.value && <span aria-hidden="true">✓</span>}
+            {t.label}
+            {t.value === "rigging" && report && report.summary.danger > 0 && <span className="font-mono text-label">· {report.summary.danger} ✕</span>}
+          </button>
+        ))}
+      </div>
+
+      {tab === "rigging" && (
+        <div role="tabpanel" id="panel-rigging" aria-labelledby="tab-rigging">
+          <RiggingView report={report} busy={busy} onRefresh={workRigging} onPick={pick} onSaveRevision={saveRevision} onDownloadCsv={downloadCsv} />
+        </div>
+      )}
+      {tab === "setup" && (
+        <div role="tabpanel" id="panel-setup" aria-labelledby="tab-setup">
+          <SetupView key={JSON.stringify(setup)} survey={survey} setup={setup} units={units} busy={busy} selectedPoint={selectedPoint} onSave={saveSetup} onSurvey={lookThrough} />
+        </div>
+      )}
+
+      {tab === "drawing" && (<div role="tabpanel" id="panel-drawing" aria-labelledby="tab-drawing" className="grid min-w-0 grid-cols-1 gap-6">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <section aria-label="Drawing" className="min-w-0 overflow-hidden rounded-card border border-line bg-surface shadow-card">
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3 sm:px-5">
@@ -316,9 +431,31 @@ export function VectorworksPanel() {
             )}
             <Button variant="ghost" className="ml-auto min-h-10" onClick={() => setFitSignal((n) => n + 1)}>Fit</Button>
           </div>
+          {present.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-2.5 sm:px-5" role="group" aria-label="Departments">
+              {present.map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setVisibility({ ...visibility, [d]: NEXT_VISIBILITY[visOf(d)] })}
+                  aria-label={`${DEPT_LABEL[d]}: ${VIS_WORD[visOf(d)]}. Press to change.`}
+                  className={cx(
+                    "flex min-h-9 items-center gap-2 rounded-full border px-3 text-small transition-colors duration-150 hover:border-control",
+                    visOf(d) === "shown" ? "border-line-2 text-ink" : visOf(d) === "dimmed" ? "border-line text-ink-2" : "border-line text-muted line-through",
+                  )}
+                >
+                  <DeptSwatch dept={d} />
+                  {DEPT_LABEL[d]}
+                  <span className="font-mono text-label uppercase text-muted">{VIS_WORD[visOf(d)]}</span>
+                </button>
+              ))}
+              <Button variant="ghost" className="min-h-9 px-3 text-small" disabled={busy} onClick={sameInVectorworks}>Same in Vectorworks</Button>
+            </div>
+          )}
           <DrawingCanvas
-            objects={objects} units={units} selected={selected} onSelect={onSelect} onMove={moveBy}
+            objects={drawn} units={units} selected={selected} onSelect={onSelect} onMove={moveBy}
             tool={tool} step={step} fitSignal={fitSignal} measure={measure} onMeasure={setMeasure} busy={busy}
+            dimmed={dimmed} datum={datum}
           />
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-3 text-small text-muted sm:px-5">
             {tool === "measure" ? (
@@ -376,6 +513,7 @@ export function VectorworksPanel() {
           </ul>
         </Card>
       </div>
+      </div>)}
     </div>
   );
 }

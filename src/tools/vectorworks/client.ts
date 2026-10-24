@@ -4,7 +4,8 @@
 // the page keeps that token in this browser only (localStorage) and drops it from the URL.
 
 import type { Units } from "./units";
-import type { VwObject } from "./geometry";
+import type { Department, VwObject } from "./geometry";
+import type { Report, Setup, Survey } from "./show";
 
 export type Pairing = { port: number; token: string };
 
@@ -49,7 +50,20 @@ export type DocInfo = {
   active_class: string;
 };
 
-export type Drawing = { count: number; truncated: boolean; units: Units; objects: VwObject[] };
+export type Drawing = {
+  count: number;
+  truncated: boolean;
+  units: Units;
+  objects: VwObject[];
+  setup?: Setup;
+  departments?: { dept: Department; objects: number }[];
+};
+
+export type SetupChange = {
+  datum?: { origin: [number, number]; upstage: "up" | "down" | "left" | "right"; cl_name?: string; pl_name?: string };
+  departments?: Record<string, Department | "auto">;
+  limits?: Record<string, number | string | null>;
+};
 
 /** Why a call failed, in words a person can act on. */
 export class PanelError extends Error {
@@ -118,5 +132,33 @@ export class PanelClient {
 
   op<T = unknown>(op: string, args: Record<string, unknown> = {}) {
     return this.request<T>("/api/op", { method: "POST", body: JSON.stringify({ op, args }) });
+  }
+
+  survey() {
+    return this.request<Survey>("/api/survey");
+  }
+
+  rigging() {
+    return this.request<Report>("/api/rigging", {}, 90_000);
+  }
+
+  setup(change: SetupChange) {
+    return this.request<{ datum?: Setup; limits?: Setup["limits"]; departments?: Record<string, Department> }>("/api/setup", { method: "POST", body: JSON.stringify(change) });
+  }
+
+  saveRevision(label: string) {
+    return this.request<Report>("/api/revision", { method: "POST", body: JSON.stringify({ label }) }, 90_000);
+  }
+
+  /** The point list as a CSV file (fetched with the pairing token, handed back as a Blob). */
+  async riggingCsv(): Promise<Blob> {
+    let res: Response;
+    try {
+      res = await this.fetcher(`http://127.0.0.1:${this.pairing.port}/api/rigging.csv`, { headers: { authorization: `Bearer ${this.pairing.token}` }, signal: AbortSignal.timeout(90_000) });
+    } catch {
+      throw new PanelError("Can't reach the connector on this computer. Is vwmcp-panel running?", "offline");
+    }
+    if (!res.ok) throw new PanelError("Vectorworks didn't give the point list.", "vectorworks");
+    return res.blob();
   }
 }

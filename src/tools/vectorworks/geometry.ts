@@ -11,7 +11,13 @@ export type Geometry =
   | { kind: "oval"; center: Pt; rx: number; ry: number }
   | { kind: "arc"; center: Pt; radius: number; start_angle: number; sweep_angle: number }
   | { kind: "text"; position: Pt; text: string }
+  | { kind: "wall"; start: Pt; end: Pt; thickness: number | null }
+  | { kind: "group"; parts: Geometry[] }
   | { kind: "bbox" };
+
+export const DEPARTMENTS = ["venue", "rigging", "lighting", "audio", "video", "scenic", "staging", "other"] as const;
+export type Department = (typeof DEPARTMENTS)[number];
+export type Source = "native" | "viewport" | "referenced";
 
 export type VwObject = {
   id: string;
@@ -31,6 +37,16 @@ export type VwObject = {
   location?: Pt;
   channel?: string;
   fields?: Record<string, string>;
+  /** Which department it belongs to, and whether a person said so or it was guessed from names. */
+  dept?: Department;
+  dept_how?: "set" | "guessed";
+  /** Where it comes from: this file, a viewport of this file, or a referenced file (read-only). */
+  source?: Source;
+  /** "12'-0" SL of CL, 30'-0" US of PL" from the show's datum. */
+  where?: string;
+  z?: number;
+  z_min?: number;
+  z_max?: number;
 };
 
 /** A short, human label for an object: its name, fixture channel, symbol, or type. */
@@ -129,6 +145,10 @@ export function distanceTo(o: VwObject, p: Pt): number {
   switch (g.kind) {
     case "line":
       return distToSegment(p, g.start, g.end);
+    case "wall":
+      return Math.max(0, distToSegment(p, g.start, g.end) - (g.thickness ?? 0) / 2);
+    case "group":
+      return box();
     case "polygon": {
       const pts = g.points;
       if (g.closed && pts.length > 2 && insidePolygon(p, pts)) return 0;
@@ -193,6 +213,8 @@ export function translated(o: VwObject, dx: number, dy: number): VwObject {
       case "polygon": geometry = { ...g, points: g.points.map(m) }; break;
       case "oval": case "arc": geometry = { ...g, center: m(g.center) }; break;
       case "text": geometry = { ...g, position: m(g.position) }; break;
+      case "wall": geometry = { ...g, start: m(g.start), end: m(g.end) }; break;
+      case "group": geometry = { ...g, parts: g.parts.map((part) => translated({ ...o, geometry: part }, dx, dy).geometry!) }; break;
       default: geometry = g;
     }
   }

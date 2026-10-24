@@ -6,6 +6,7 @@ import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { center, labelOf, unionBounds, type VwObject } from "../geometry";
 import { formatArea, formatLength, type Units } from "../units";
+import { DEPT_LABEL } from "../show";
 import { LengthField } from "./LengthField";
 
 /** Fields a person edits on a lighting device from the panel. */
@@ -30,6 +31,8 @@ export function Inspector({
   const [dy, setDy] = useState({ text: "", v: null as number | null });
   const one = items.length === 1 ? items[0] : null;
   const isFixture = one?.plugin === "Lighting Device";
+  // Objects shown through a viewport or from a referenced file can't be changed from here.
+  const readOnly = items.some((o) => o.source && o.source !== "native");
   const ids = items.map((o) => o.id).join(",");
   // "Really delete?" belongs to the selection it was asked about; a new selection drops it.
   const [confirmFor, setConfirmFor] = useState<string | null>(null);
@@ -59,6 +62,18 @@ export function Inspector({
         <Label>{one ? (one.plugin || one.type.replace(/_/g, " ")) : `${items.length} selected`}</Label>
         <h2 className="mt-2 text-h3 font-medium [overflow-wrap:anywhere]">{one ? labelOf(one) : items.map(labelOf).slice(0, 3).join(", ") + (items.length > 3 ? "…" : "")}</h2>
         {one && <p className="mt-1 text-small text-muted">Layer {one.layer} · Class {one.cls}</p>}
+        {one?.dept && (
+          <p className="mt-1 text-small text-muted">
+            {DEPT_LABEL[one.dept]} <span className="text-muted">({one.dept_how === "set" ? "set by you" : "guessed from its names"})</span>
+          </p>
+        )}
+        {readOnly && (
+          <p className="mt-3 text-small">
+            <State kind="note">
+              {items.some((o) => o.source === "referenced") ? "From a referenced file: read-only here. Change it in its own file." : "Shown through a viewport: read-only here. Change it on its own layer."}
+            </State>
+          </p>
+        )}
       </div>
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-small tabular-nums">
@@ -68,7 +83,9 @@ export function Inspector({
         {one?.perimeter !== undefined && (<><dt className="text-muted">Perimeter</dt><dd className="text-right">{len(one.perimeter)}</dd></>)}
         {one?.area !== undefined && (<><dt className="text-muted">Area</dt><dd className="text-right">{formatArea(one.area, units)}</dd></>)}
         <dt className="text-muted">{one?.location ? "Insertion point" : "Center"}</dt>
-        <dd className="text-right">{len(c[0])}, {len(c[1])}</dd>
+        <dd className="text-right">{one?.where ?? `${len(c[0])}, ${len(c[1])}`}</dd>
+        {one?.z !== undefined && (<><dt className="text-muted">Height</dt><dd className="text-right">{len(one.z)}</dd></>)}
+        {one?.z_min !== undefined && one?.z_max !== undefined && (<><dt className="text-muted">Bottom to top</dt><dd className="text-right">{len(one.z_min)} to {len(one.z_max)}</dd></>)}
         {pair && (
           <>
             <dt className="text-muted">Center to center</dt><dd className="text-right">{len(pair.centers)}</dd>
@@ -77,8 +94,9 @@ export function Inspector({
         )}
       </dl>
 
-      {isFixture && <FixtureFields key={`${one!.id}:${JSON.stringify(fields)}`} fields={fields} busy={busy} onSave={actions.saveFields} />}
+      {readOnly ? null : isFixture && <FixtureFields key={`${one!.id}:${JSON.stringify(fields)}`} fields={fields} busy={busy} onSave={actions.saveFields} />}
 
+      {!readOnly && (<>
       <form
         className="grid gap-3"
         onSubmit={(e) => {
@@ -115,6 +133,7 @@ export function Inspector({
           <Button variant="ghost" disabled={busy} onClick={() => setConfirmDelete(true)}>Delete…</Button>
         )}
       </div>
+      </>)}
     </div>
   );
 }
