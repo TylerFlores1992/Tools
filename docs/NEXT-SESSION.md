@@ -382,20 +382,36 @@ site coordinates. RIDB does, for 84% of bookable sites, and CampHawk's RIDB sync
 
 ## Vectorworks (2026-10-23)
 - **What:** Claude draws, measures and edits in Vectorworks through `connectors/vectorworks/`
-  (35 MCP tools, batch + undo journal, lengths like `12'-6"`); the page at `/private/vectorworks`
+  (52 MCP tools, batch + undo journal, lengths like `12'-6"`); the page at `/private/vectorworks`
   shows the open drawing live from the owner's own computer (select, drag snapped, nudge, measure,
   fixture fields, undo), pairing via the link `vwmcp-panel` prints. The site never sees the drawing.
 - **Why it's shaped this way:** connector README, "Why it's built this way" (VW 2026 = Python 3.9;
   a wrong `vs` call opens a blocking Script Errors dialog, so every call is checked against the
   official signatures in `vw_plugin/vs_signatures.json`; hotkey trigger waits for the person to
   pause; own undo journal because Ctrl+Z merges scripted runs).
+- **Show workflow (head rigger), same day:** files come as one file or separate referenced ones;
+  the connector surveys what arrived (`survey_drawing`: viewports, referenced files, plug-in
+  types), sets a CL×PL datum, sorts layers/classes into departments (panel toggles + "Same in
+  Vectorworks"), stores venue limits per drawing (`~/.vwmcp/shows/`), and works out every point
+  (`report.py`: load source, point load with hoist + chain, dynamic ×1.2, hoist %, dead hang or
+  bridle between opposite beams, checks worst-first, beam/roof totals, mark-out, CSV, revisions
+  with "since"). Panel tabs: Drawing / Rigging / Show setup. Referenced objects are read-only
+  (no script API for referenced files). 3+ picks per truss are a continuous-beam estimate, said
+  on every such point.
 - **Waiting on the owner:** buy/trial Vectorworks 2026 with Spotlight, then the README's "First run
-  on real Vectorworks" checklist. Expect small fixes in `vwmcp_bridge.py` (field names, arc read-back).
+  on real Vectorworks" checklist (items 6-7 cover rigging: plug-in names in `RIGGING_KINDS`, hook
+  heights relative vs absolute, viewport sources, Braceworks field names, DWG import codes).
+  Expect small fixes in `vwmcp_bridge.py`.
 - **Later:** a see-through overlay on the Vectorworks window (needs screen↔drawing mapping), LAN
   access for the phone (would need the panel served by the connector itself: an https page can't
-  call a LAN http address), Braceworks loads.
-- **Checks:** `npm run e2e` has 8 `vectorworks:` checks against a Node stand-in for the panel API
-  (`scripts/vectorworks-mock.mts`); CI job `connector` runs the Python tests (75).
+  call a LAN http address).
+- **Checks:** `npm run e2e` has 12 `vectorworks` checks against a Node stand-in for the panel API
+  (`scripts/vectorworks-mock.mts`); the show checks serve real connector answers recorded in
+  `scripts/vectorworks-show.fixture.json`. Re-record after changing the report's shape: run
+  `python dev/fake_vectorworks.py --show` and `VWMCP_TRIGGER=none vwmcp-panel`, POST a datum
+  (0,0, up) and limits (point 1500, total 60000) to `/api/setup`, then save `/api/survey`,
+  `/api/drawing`, `/api/rigging`, `/api/rigging.csv` under the keys survey/drawing/rigging/csv.
+  CI job `connector` runs the Python tests (145).
 - **Rebuild the download** after changing the connector: `python connectors/vectorworks/make_zip.py`
   (`connector.test.mts` fails if the page's version and the connector's disagree).
 
