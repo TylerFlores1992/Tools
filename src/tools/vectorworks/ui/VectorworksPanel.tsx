@@ -384,7 +384,7 @@ export function VectorworksPanel() {
         </div>
       </div>
 
-      <div role="tablist" aria-label="Views" className="inline-flex justify-self-start overflow-x-auto rounded-full border border-line bg-surface p-1">
+      <div role="tablist" aria-label="Views" className="inline-flex max-w-full justify-self-start overflow-x-auto rounded-full border border-line bg-surface p-1">
         {TABS.map((t) => (
           <button
             key={t.value}
@@ -394,7 +394,7 @@ export function VectorworksPanel() {
             aria-selected={tab === t.value}
             aria-controls={`panel-${t.value}`}
             onClick={() => setTab(t.value)}
-            className="flex min-h-10 items-center gap-2 whitespace-nowrap rounded-full px-4 text-small text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
+            className="flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-small sm:gap-2 sm:px-4 text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
           >
             {tab === t.value && <span aria-hidden="true">✓</span>}
             {t.label}

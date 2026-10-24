@@ -78,7 +78,7 @@ export function SetupView({
         {survey && (
           <div className="mt-4 grid gap-4">
             <p className="text-small text-ink-2 tabular-nums">
-              {survey.counts.native} objects in this file · {survey.counts.viewport} through viewports · {survey.counts.referenced} from referenced files
+              {survey.counts.native} {survey.counts.native === 1 ? "object" : "objects"} in this file · {survey.counts.viewport} through viewports · {survey.counts.referenced} from referenced files
             </p>
             {survey.situation.length > 0 && (
               <ul className="grid gap-1.5 text-small">
@@ -90,7 +90,7 @@ export function SetupView({
                 <p className="text-small font-medium text-ink">Design layer viewports</p>
                 <ul className="mt-1 grid gap-1 text-small text-ink-2">
                   {survey.viewports.map((v) => (
-                    <li key={v.name + v.layer}>{v.name || "(unnamed)"} on {v.layer}: {v.objects} objects · {v.referenced ? "referenced file, read-only" : "this file"}</li>
+                    <li key={v.name + v.layer}>{v.name || "(unnamed)"} on {v.layer}: {v.objects} {v.objects === 1 ? "object" : "objects"} · {v.referenced ? "referenced file, read-only" : "this file"}</li>
                   ))}
                 </ul>
               </div>

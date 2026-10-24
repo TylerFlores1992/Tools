@@ -120,7 +120,11 @@ export function RiggingView({
                   <td className="px-2 py-2 text-ink">{p.point_load_text}</td>
                   <td className="px-2 py-2">{p.dynamic_text}{p.utilization !== null && <span className="block text-muted">{Math.round(p.utilization * 100)}% of hoist</span>}</td>
                   <td className="px-2 py-2">
-                    {p.steel.type}{p.steel.beams.length ? ` (${p.steel.beams.join(" / ")})` : ""}
+                    {p.steel.type === "no steel" ? (
+                      <>no steel overhead{p.steel.beams.length > 0 && <span className="block text-muted">nearest: {p.steel.beams.join(" / ")}</span>}</>
+                    ) : (
+                      <>{p.steel.type}{p.steel.beams.length ? ` (${p.steel.beams.join(" / ")})` : ""}</>
+                    )}
                     {p.steel.bridle && (
                       <span className="block text-muted">legs {p.steel.bridle.leg_a_text} / {p.steel.bridle.leg_b_text} · {Math.round(p.steel.bridle.angle)}°</span>
                     )}

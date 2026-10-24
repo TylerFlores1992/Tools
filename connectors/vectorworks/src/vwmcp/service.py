@@ -73,9 +73,11 @@ class Show:
             c["dept"] = setup.departments.get(key) or classify_department("", c["name"])
         situation = []
         if sv["counts"]["referenced"]:
-            situation.append("%d objects arrive through referenced files (read-only here; edit them in their own files)." % sv["counts"]["referenced"])
+            n = sv["counts"]["referenced"]
+            situation.append("%s through referenced files (read-only here; edit them in their own files)." % ("1 object arrives" if n == 1 else "%d objects arrive" % n))
         if sv["counts"]["viewport"]:
-            situation.append("%d objects show through design layer viewports of this file." % sv["counts"]["viewport"])
+            n = sv["counts"]["viewport"]
+            situation.append("%s through design layer viewports of this file." % ("1 object shows" if n == 1 else "%d objects show" % n))
         if any(l.get("referenced_file") for l in sv["layers"]):
             situation.append("Some layers are imported by reference: " + ", ".join(l["name"] for l in sv["layers"] if l.get("referenced_file")) + ".")
         if any(re.search(r"^[A-Z]-|\b(0|A-)", c["name"]) for c in sv["classes"] if c["objects"]):
