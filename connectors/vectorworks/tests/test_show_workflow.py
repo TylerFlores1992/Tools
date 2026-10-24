@@ -231,3 +231,12 @@ def test_bridle_tools(server):
 def test_truss_loads_tool(server):
     r = call(server, "truss_loads", pick_points=["0'", "20'", "40'"], weight_per_length=25 / 12)
     assert r["estimate"] and r["reactions"][1] == pytest.approx(625, abs=1) and "estimate" in r["warning"]
+
+
+def test_flat_bridle_is_flagged_in_the_report(rigged):
+    # Steel only 2' above the hooks on LX2: a 20' spread with a 2' drop is a ~157 degree bridle.
+    call(rigged, "set_limits", values={"high_steel": "52'"})
+    rep = call(rigged, "rigging_report", save_csv=False)
+    p = rows_by_point(rep)
+    assert p["4"]["steel"]["bridle"]["angle"] == pytest.approx(157.4, abs=0.1)
+    assert any(c["severity"] == "danger" and "included angle 157" in c["text"] and p["4"]["id"] in c["ids"] for c in rep["checks"])

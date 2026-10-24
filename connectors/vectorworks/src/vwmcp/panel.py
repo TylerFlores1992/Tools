@@ -24,6 +24,8 @@ from urllib.parse import parse_qs, urlparse
 
 from . import __version__, config
 from .jobs import BridgeError, BridgeTimeout, JobQueue
+from .rigging import parse_length
+from .service import Show
 from .trigger import TriggerError, make_trigger
 
 PANEL_OPS = frozenset(
@@ -31,7 +33,7 @@ PANEL_OPS = frozenset(
         "ping", "get_document_info", "list_objects", "get_object", "measure_distance",
         "move_objects", "move_object", "rotate_object", "duplicate_objects", "delete_objects",
         "set_object_properties", "select_objects", "clear_selection", "zoom_to", "undo_last",
-        "set_record_fields", "get_lighting_devices", "list_symbols",
+        "set_record_fields", "get_lighting_devices", "list_symbols", "set_visibility", "find_reference_lines",
         "draw_line", "draw_rectangle", "draw_circle", "draw_polygon", "add_text", "add_dimension", "batch",
     }
 )
@@ -59,6 +61,7 @@ def pairing_url(settings: config.Settings, token: str, site: str = "https://tyle
 
 def make_handler(settings: config.Settings, queue: JobQueue, token: str):
     allowed_origins = set(settings.panel_origins)
+    show = Show(queue, settings.home)
 
     class Handler(BaseHTTPRequestHandler):
         server_version = f"vwmcp-panel/{__version__}"
@@ -123,6 +126,25 @@ def make_handler(settings: config.Settings, queue: JobQueue, token: str):
             except (BridgeTimeout, TriggerError) as e:
                 self._send(HTTPStatus.GATEWAY_TIMEOUT, {"ok": False, "error": str(e)})
 
+        def _run_show(self, make) -> None:
+            try:
+                self._send(HTTPStatus.OK, {"ok": True, "result": asyncio.run(make())})
+            except (BridgeError, ValueError) as e:
+                self._send(HTTPStatus.UNPROCESSABLE_ENTITY, {"ok": False, "error": str(e).split("\n\n")[0]})
+            except (BridgeTimeout, TriggerError) as e:
+                self._send(HTTPStatus.GATEWAY_TIMEOUT, {"ok": False, "error": str(e)})
+
+        def _send_csv(self, text: str, name: str) -> None:
+            data = text.encode("utf-8")
+            self.send_response(HTTPStatus.OK)
+            self._cors()
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="%s"' % name)
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
         # ---- routes ------------------------------------------------------------------
 
         def do_OPTIONS(self) -> None:  # CORS preflight
@@ -142,10 +164,18 @@ def make_handler(settings: config.Settings, queue: JobQueue, token: str):
                 return
             q = {k: v[-1] for k, v in parse_qs(url.query).items()}
             if url.path == "/api/drawing":
-                args = {"limit": 5000, "include_geometry": True}
-                if q.get("layer"):
-                    args["layer"] = q["layer"]
-                self._run("list_objects", args)
+                self._run_show(lambda: show.drawing(q.get("layer") or None))
+            elif url.path == "/api/survey":
+                self._run_show(show.survey)
+            elif url.path == "/api/rigging":
+                self._run_show(show.rigging)
+            elif url.path == "/api/rigging.csv":
+                try:
+                    rep = asyncio.run(show.rigging())
+                except (BridgeError, BridgeTimeout, TriggerError, ValueError) as e:
+                    self._send(HTTPStatus.GATEWAY_TIMEOUT, {"ok": False, "error": str(e)})
+                    return
+                self._send_csv(show.csv(rep), "points.csv")
             elif url.path == "/api/document":
                 self._run("get_document_info", {})
             elif url.path == "/api/fixtures":
@@ -156,7 +186,8 @@ def make_handler(settings: config.Settings, queue: JobQueue, token: str):
         def do_POST(self) -> None:
             if not self._guard():
                 return
-            if urlparse(self.path).path != "/api/op":
+            route = urlparse(self.path).path
+            if route not in ("/api/op", "/api/setup", "/api/revision"):
                 self._send(HTTPStatus.NOT_FOUND, {"error": "No such endpoint."})
                 return
             length = int(self.headers.get("Content-Length") or 0)
@@ -165,12 +196,47 @@ def make_handler(settings: config.Settings, queue: JobQueue, token: str):
                 return
             try:
                 body = json.loads(self.rfile.read(length) or b"{}")
-                op, args = body["op"], body.get("args", {})
-                assert isinstance(op, str) and isinstance(args, dict)
+                assert isinstance(body, dict)
             except Exception:
+                self._send(HTTPStatus.BAD_REQUEST, {"error": "Send a JSON object."})
+                return
+            if route == "/api/setup":
+                self._run_show(lambda: self._setup(body))
+                return
+            if route == "/api/revision":
+                label = str(body.get("label") or "").strip()[:80]
+                if not label:
+                    self._send(HTTPStatus.BAD_REQUEST, {"error": "Give the revision a name."})
+                    return
+                self._run_show(lambda: show.rigging(save_revision=label))
+                return
+            op, args = body.get("op"), body.get("args", {})
+            if not isinstance(op, str) or not isinstance(args, dict):
                 self._send(HTTPStatus.BAD_REQUEST, {"error": 'Send {"op": "...", "args": {...}}.'})
                 return
             self._run(op, args)
+
+        async def _setup(self, body: dict) -> dict:
+            """{"datum": {"origin": [x, y], "upstage": "up", "cl_name": .., "pl_name": ..},
+            "departments": {"layer:X": "venue"}, "limits": {"point_limit": 2000, "high_steel": "60'"}}"""
+            out = {}
+            if body.get("datum"):
+                d = body["datum"]
+                out["datum"] = await show.set_datum(d.get("origin"), d.get("upstage", "up"), d.get("cl_name"), d.get("pl_name"))
+            if body.get("departments"):
+                out["departments"] = await show.set_departments(body["departments"])
+            if body.get("limits"):
+                _, doc = await show.setup()
+                upi = doc["units"]["units_per_inch"]
+                vals = dict(body["limits"])
+                for k in ("high_steel", "min_point_spacing", "steel_tolerance"):
+                    if vals.get(k) not in (None, ""):
+                        v = parse_length(vals[k], upi)
+                        if v is None:
+                            raise ValueError("Can't read the length %r." % vals[k])
+                        vals[k] = v
+                out["limits"] = await show.set_limits(**vals)
+            return out
 
     return Handler
 

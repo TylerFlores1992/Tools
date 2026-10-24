@@ -96,3 +96,41 @@ def test_vectorworks_errors_come_back_as_words(panel):
 def test_pairing_link_points_at_the_private_page():
     s = config.load()
     assert pairing_url(s, "tok").endswith("/private/vectorworks#port=7377&token=tok")
+
+
+@pytest.fixture
+def show_panel(monkeypatch, fake_show):
+    monkeypatch.setenv("VWMCP_PANEL_PORT", "0")
+    httpd, token = build_panel(config.load())
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    yield httpd.server_address[1], token
+    httpd.shutdown()
+
+
+def test_drawing_comes_with_departments_and_positions(show_panel):
+    port, token = show_panel
+    status, _, body = req(port, "/api/drawing", token)
+    objs = {o["name"]: o for o in body["result"]["objects"] if o["name"]}
+    assert objs["Beam A"]["dept"] == "venue" and objs["PA-L"]["source"] == "referenced"
+    assert objs["Beam A"]["where"] == "on CL, 20'-0\" US of PL"
+    assert {d["dept"] for d in body["result"]["departments"]} >= {"venue", "rigging", "lighting", "audio", "video", "scenic"}
+
+
+def test_setup_then_rigging_then_csv(show_panel):
+    port, token = show_panel
+    status, _, body = req(port, "/api/setup", token, body={"datum": {"origin": [0, 0], "upstage": "up"}, "limits": {"high_steel": "60'", "point_limit": 400}})
+    assert status == 200 and body["result"]["limits"]["high_steel"] == 720
+    status, _, body = req(port, "/api/rigging", token)
+    assert status == 200 and body["result"]["summary"]["points"] == 7 and body["result"]["markout"]
+    r = urllib.request.Request(f"http://127.0.0.1:{port}/api/rigging.csv", headers={"Host": f"127.0.0.1:{port}", "Authorization": f"Bearer {token}", "Origin": ORIGIN})
+    with urllib.request.urlopen(r, timeout=20) as res:
+        assert res.headers["Content-Type"].startswith("text/csv") and res.headers["Access-Control-Allow-Origin"] == ORIGIN
+        assert res.read().decode().startswith("Point,Kind")
+    status, _, body = req(port, "/api/setup", token, body={"limits": {"high_steel": "very high"}})
+    assert status == 422 and "Can't read" in body["error"]
+
+
+def test_revisions_need_a_name(show_panel):
+    port, token = show_panel
+    assert req(port, "/api/revision", token, body={})[0] == 400
+    assert req(port, "/api/revision", token, body={"label": "Advance v1"})[0] == 200
