@@ -1,0 +1,1906 @@
+{
+ "survey": {
+  "document": "Spring Tour - Rigging.vwx",
+  "path": "C:\\Shows\\Spring Tour\\Spring Tour - Rigging.vwx",
+  "version": "2026 (31.3.0, build 846827)",
+  "units": {
+   "unit_name": "\"",
+   "square_unit_name": "sq ft",
+   "units_per_inch": 1.0,
+   "format": 3
+  },
+  "user_origin": [
+   0.0,
+   0.0
+  ],
+  "extent": [
+   [
+    -600.0,
+    -200.0
+   ],
+   [
+    600.0,
+    600.0
+   ]
+  ],
+  "counts": {
+   "native": 28,
+   "viewport": 1,
+   "referenced": 2
+  },
+  "layers": [
+   {
+    "name": "Design Layer-1",
+    "type": "design",
+    "objects": 0,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "other",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Venue Steel",
+    "type": "design",
+    "objects": 6,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "venue",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Rigging",
+    "type": "design",
+    "objects": 7,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "rigging",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Lighting",
+    "type": "design",
+    "objects": 12,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "lighting",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Scenic",
+    "type": "design",
+    "objects": 2,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "scenic",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Stage Deck",
+    "type": "design",
+    "objects": 1,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "staging",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Audio (referenced)",
+    "type": "design",
+    "objects": 2,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "audio",
+    "dept_how": "guessed"
+   },
+   {
+    "name": "Video",
+    "type": "design",
+    "objects": 1,
+    "visibility": "visible",
+    "elevation": {
+     "base": 0.0,
+     "thickness": 0.0
+    },
+    "scale": 48.0,
+    "referenced_file": null,
+    "dept": "video",
+    "dept_how": "guessed"
+   }
+  ],
+  "classes": [
+   {
+    "name": "None",
+    "objects": 12,
+    "dept": "other"
+   },
+   {
+    "name": "Dimension",
+    "objects": 0,
+    "dept": "other"
+   }
+  ],
+  "viewports": [
+   {
+    "name": "Audio from Spring Tour - Audio.vwx",
+    "layer": "Audio (referenced)",
+    "objects": 2,
+    "referenced": true
+   },
+   {
+    "name": "Video layout",
+    "layer": "Video",
+    "objects": 1,
+    "referenced": false
+   }
+  ],
+  "plugins": [
+   {
+    "count": 5,
+    "kind": "hoist",
+    "fields": [
+     "Hoist ID",
+     "Hoist Name",
+     "Capacity",
+     "Position",
+     "Hoist Weight",
+     "Chain Length",
+     "Trim Height",
+     "ReactionForce"
+    ],
+    "name": "Hoist"
+   },
+   {
+    "count": 12,
+    "kind": "fixture",
+    "fields": [
+     "Inst Type",
+     "Channel",
+     "Unit Number",
+     "Position",
+     "Purpose",
+     "Color",
+     "Wattage",
+     "Weight",
+     "Universe",
+     "DMX Address",
+     "UniverseAddress",
+     "Symbol Name"
+    ],
+    "name": "Lighting Device"
+   },
+   {
+    "count": 2,
+    "kind": "load",
+    "fields": [
+     "Load ID",
+     "Load Name",
+     "Load Category",
+     "Total Weight",
+     "Position"
+    ],
+    "name": "Point Load"
+   },
+   {
+    "count": 2,
+    "kind": "truss",
+    "fields": [
+     "Name",
+     "Truss Type",
+     "Length"
+    ],
+    "name": "Truss"
+   }
+  ],
+  "situation": [
+   "2 objects arrive through referenced files (read-only here; edit them in their own files).",
+   "1 object shows through design layer viewports of this file."
+  ],
+  "setup": {
+   "document": "C:\\Shows\\Spring Tour\\Spring Tour - Rigging.vwx",
+   "datum_origin": [
+    0.0,
+    0.0
+   ],
+   "upstage": [
+    0.0,
+    1.0
+   ],
+   "cl_name": "CL",
+   "pl_name": "PL",
+   "datum_note": "Set: CL x PL at (0, 0), upstage toward the page's up.",
+   "datum_set": true,
+   "metric": false,
+   "x_positive": "SL",
+   "departments": {},
+   "limits": {
+    "weight_unit": "lb",
+    "point_limit": "1500",
+    "beam_limit": null,
+    "total_limit": "60000",
+    "max_bridle_angle": 120.0,
+    "default_hoist_wll": null,
+    "cable_allowance_per_ft": 0.0,
+    "truss_weight_per_ft": 0.0,
+    "chain_weight_per_ft": 0.0,
+    "dynamic_factor": 1.2,
+    "hoist_warn_fraction": 0.8,
+    "min_point_spacing": null,
+    "high_steel": null,
+    "steel_tolerance": null,
+    "beams": {}
+   }
+  }
+ },
+ "drawing": {
+  "count": 31,
+  "truncated": false,
+  "units": {
+   "unit_name": "\"",
+   "square_unit_name": "sq ft",
+   "units_per_inch": 1.0,
+   "format": 3
+  },
+  "objects": [
+   {
+    "id": "{991D02B7-87FE-4B24-8A29-7237F862C391}",
+    "type": "line",
+    "name": "Beam A",
+    "layer": "Venue Steel",
+    "cls": "House-Steel",
+    "bbox": [
+     [
+      -600.0,
+      240.0
+     ],
+     [
+      600.0,
+      240.0
+     ]
+    ],
+    "width": 1200.0,
+    "height": 0.0,
+    "length": 1200.0,
+    "source": "native",
+    "geometry": {
+     "kind": "line",
+     "start": [
+      -600.0,
+      240.0
+     ],
+     "end": [
+      600.0,
+      240.0
+     ]
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{476F9FAE-58AC-4E78-9319-4FBFD3BD05E9}",
+    "type": "line",
+    "name": "Beam B",
+    "layer": "Venue Steel",
+    "cls": "House-Steel",
+    "bbox": [
+     [
+      -600.0,
+      480.0
+     ],
+     [
+      600.0,
+      480.0
+     ]
+    ],
+    "width": 1200.0,
+    "height": 0.0,
+    "length": 1200.0,
+    "source": "native",
+    "geometry": {
+     "kind": "line",
+     "start": [
+      -600.0,
+      480.0
+     ],
+     "end": [
+      600.0,
+      480.0
+     ]
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, 40'-0\" US of PL"
+   },
+   {
+    "id": "{87F8FB19-A1F6-4E98-BF79-985C96940E88}",
+    "type": "rectangle",
+    "name": "Scoreboard",
+    "layer": "Venue Steel",
+    "cls": "House-Obstruction",
+    "bbox": [
+     [
+      -60.0,
+      300.0
+     ],
+     [
+      60.0,
+      420.0
+     ]
+    ],
+    "width": 120.0,
+    "height": 120.0,
+    "area": 14400.0,
+    "perimeter": 480.0,
+    "source": "native",
+    "geometry": {
+     "kind": "polygon",
+     "closed": true,
+     "points": [
+      [
+       -60.0,
+       300.0
+      ],
+      [
+       60.0,
+       300.0
+      ],
+      [
+       60.0,
+       420.0
+      ],
+      [
+       -60.0,
+       420.0
+      ]
+     ]
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{49E54092-3A62-4332-A8AF-BE22ED8AE551}",
+    "type": "wall",
+    "name": "Back of house wall",
+    "layer": "Venue Steel",
+    "cls": "None",
+    "bbox": [
+     [
+      -600.0,
+      -200.0
+     ],
+     [
+      600.0,
+      -200.0
+     ]
+    ],
+    "width": 1200.0,
+    "height": 0.0,
+    "length": 1200.0,
+    "z_min": 0.0,
+    "z_max": 96.0,
+    "source": "native",
+    "geometry": {
+     "kind": "wall",
+     "start": [
+      -600.0,
+      -200.0
+     ],
+     "end": [
+      600.0,
+      -200.0
+     ],
+     "thickness": 4.0
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, 16'-8\" DS of PL"
+   },
+   {
+    "id": "{61139733-F981-46AA-B153-8660EB618CD8}",
+    "type": "line",
+    "name": "CL",
+    "layer": "Venue Steel",
+    "cls": "Reference Lines",
+    "bbox": [
+     [
+      0.0,
+      -120.0
+     ],
+     [
+      0.0,
+      600.0
+     ]
+    ],
+    "width": 0.0,
+    "height": 720.0,
+    "length": 720.0,
+    "source": "native",
+    "geometry": {
+     "kind": "line",
+     "start": [
+      0.0,
+      -120.0
+     ],
+     "end": [
+      0.0,
+      600.0
+     ]
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{43C7669C-2A69-42D7-B341-319F82CC2387}",
+    "type": "line",
+    "name": "PL",
+    "layer": "Venue Steel",
+    "cls": "Reference Lines",
+    "bbox": [
+     [
+      -600.0,
+      0.0
+     ],
+     [
+      600.0,
+      0.0
+     ]
+    ],
+    "width": 1200.0,
+    "height": 0.0,
+    "length": 1200.0,
+    "source": "native",
+    "geometry": {
+     "kind": "line",
+     "start": [
+      -600.0,
+      0.0
+     ],
+     "end": [
+      600.0,
+      0.0
+     ]
+    },
+    "dept": "venue",
+    "dept_how": "guessed",
+    "where": "on CL, on PL"
+   },
+   {
+    "id": "{058109F6-B91E-4200-A6F8-4ECB9BEF92E4}",
+    "type": "plugin",
+    "name": "LX1",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      -240.0,
+      229.75
+     ],
+     [
+      240.0,
+      250.25
+     ]
+    ],
+    "width": 480.0,
+    "height": 20.5,
+    "plugin": "Truss",
+    "location": [
+     0.0,
+     240.0
+    ],
+    "z": 480.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "on CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{2834CB77-2FAB-4207-B2F2-E80A8F10A2D7}",
+    "type": "plugin",
+    "name": "LX2",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      -180.0,
+      349.75
+     ],
+     [
+      180.0,
+      370.25
+     ]
+    ],
+    "width": 360.0,
+    "height": 20.5,
+    "plugin": "Truss",
+    "location": [
+     0.0,
+     360.0
+    ],
+    "z": 480.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "on CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{4B33CAFC-A196-4869-9D19-9D6FECD1177E}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      -206.0,
+      234.0
+     ],
+     [
+      -194.0,
+      246.0
+     ]
+    ],
+    "width": 12.0,
+    "height": 12.0,
+    "plugin": "Hoist",
+    "location": [
+     -200.0,
+     240.0
+    ],
+    "z": 600.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "16'-8\" SR of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{36D6773A-BFDC-45B1-A593-A831E9C8BDC5}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      -6.0,
+      234.0
+     ],
+     [
+      6.0,
+      246.0
+     ]
+    ],
+    "width": 12.0,
+    "height": 12.0,
+    "plugin": "Hoist",
+    "location": [
+     0.0,
+     240.0
+    ],
+    "z": 600.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "on CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{B3545236-F415-44F3-B544-955CCE96B3E8}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      194.0,
+      234.0
+     ],
+     [
+      206.0,
+      246.0
+     ]
+    ],
+    "width": 12.0,
+    "height": 12.0,
+    "plugin": "Hoist",
+    "location": [
+     200.0,
+     240.0
+    ],
+    "z": 600.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "16'-8\" SL of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{2E12D288-E787-4491-A09E-E6E0E1BC17E8}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      -156.0,
+      354.0
+     ],
+     [
+      -144.0,
+      366.0
+     ]
+    ],
+    "width": 12.0,
+    "height": 12.0,
+    "plugin": "Hoist",
+    "location": [
+     -150.0,
+     360.0
+    ],
+    "z": 600.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "12'-6\" SR of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{93FD0A9B-F371-4056-A5C3-01DAEDFDE452}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Rigging",
+    "cls": "None",
+    "bbox": [
+     [
+      144.0,
+      354.0
+     ],
+     [
+      156.0,
+      366.0
+     ]
+    ],
+    "width": 12.0,
+    "height": 12.0,
+    "plugin": "Hoist",
+    "location": [
+     150.0,
+     360.0
+    ],
+    "z": 600.0,
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "rigging",
+    "dept_how": "guessed",
+    "where": "12'-6\" SL of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{1B4296D0-7BFB-4026-9F6D-E4A88D2BADF1}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -215.0,
+      233.0
+     ],
+     [
+      -205.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -210.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "101",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "17'-6\" SR of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{799304A1-0B85-42FA-A53B-7942FBF9389E}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -155.0,
+      233.0
+     ],
+     [
+      -145.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -150.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "102",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "12'-6\" SR of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{C1768698-8291-4728-B302-442A00F6523D}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -95.0,
+      233.0
+     ],
+     [
+      -85.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -90.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "103",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "7'-6\" SR of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{A32D32EA-1ED9-4311-ABC2-2A7228556F50}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -35.0,
+      233.0
+     ],
+     [
+      -25.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -30.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "104",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "2'-6\" SR of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{B99BFA03-E9C2-4FCD-8C69-E71A4CB719D2}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      25.0,
+      233.0
+     ],
+     [
+      35.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     30.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "105",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "2'-6\" SL of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{9F16AF7B-5169-46E8-B033-13F2A443A515}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      85.0,
+      233.0
+     ],
+     [
+      95.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     90.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "106",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "7'-6\" SL of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{73913C97-8223-4CBD-8A68-9242FA891598}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      145.0,
+      233.0
+     ],
+     [
+      155.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     150.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "107",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "12'-6\" SL of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{7D2E628F-6488-4BF8-9C91-F54A12B438C2}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      205.0,
+      233.0
+     ],
+     [
+      215.0,
+      247.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     210.0,
+     240.0
+    ],
+    "z": 470.0,
+    "channel": "108",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "17'-6\" SL of CL, 20'-0\" US of PL"
+   },
+   {
+    "id": "{7B20A334-CA09-4129-AAB7-922F6EF41BC6}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -170.0,
+      353.0
+     ],
+     [
+      -160.0,
+      367.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -165.0,
+     360.0
+    ],
+    "z": 470.0,
+    "channel": "109",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "13'-9\" SR of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{B3BC0854-E1CD-475A-A013-C83D4F4D8327}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      -60.0,
+      353.0
+     ],
+     [
+      -50.0,
+      367.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     -55.0,
+     360.0
+    ],
+    "z": 470.0,
+    "channel": "110",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "4'-7\" SR of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{D10F282F-CD55-4716-A3CB-18D13543BD35}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      50.0,
+      353.0
+     ],
+     [
+      60.0,
+      367.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     55.0,
+     360.0
+    ],
+    "z": 470.0,
+    "channel": "111",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "4'-7\" SL of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{2346A97B-4D10-4E88-872F-F73DC1C3F4EA}",
+    "type": "plugin",
+    "name": "",
+    "layer": "Lighting",
+    "cls": "Lighting-Fixtures",
+    "bbox": [
+     [
+      160.0,
+      353.0
+     ],
+     [
+      170.0,
+      367.0
+     ]
+    ],
+    "width": 10.0,
+    "height": 14.0,
+    "plugin": "Lighting Device",
+    "location": [
+     165.0,
+     360.0
+    ],
+    "z": 470.0,
+    "channel": "112",
+    "source": "native",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "lighting",
+    "dept_how": "guessed",
+    "where": "13'-9\" SL of CL, 30'-0\" US of PL"
+   },
+   {
+    "id": "{E8466A00-6917-4805-96D1-D90A7994B442}",
+    "type": "group",
+    "name": "Header",
+    "layer": "Scenic",
+    "cls": "None",
+    "bbox": [
+     [
+      -300.0,
+      120.0
+     ],
+     [
+      300.0,
+      132.0
+     ]
+    ],
+    "width": 600.0,
+    "height": 12.0,
+    "source": "native",
+    "geometry": {
+     "kind": "group",
+     "parts": [
+      {
+       "kind": "line",
+       "start": [
+        -300.0,
+        120.0
+       ],
+       "end": [
+        300.0,
+        120.0
+       ]
+      },
+      {
+       "kind": "line",
+       "start": [
+        -300.0,
+        132.0
+       ],
+       "end": [
+        300.0,
+        132.0
+       ]
+      },
+      {
+       "kind": "line",
+       "start": [
+        -300.0,
+        120.0
+       ],
+       "end": [
+        -300.0,
+        132.0
+       ]
+      }
+     ]
+    },
+    "dept": "scenic",
+    "dept_how": "guessed",
+    "where": "on CL, 10'-6\" US of PL"
+   },
+   {
+    "id": "{A6E611E7-73B4-4725-B99B-EB2AE45528D8}",
+    "type": "polygon",
+    "name": "Flat 1",
+    "layer": "Scenic",
+    "cls": "Scenic",
+    "bbox": [
+     [
+      -120.0,
+      150.0
+     ],
+     [
+      120.0,
+      156.0
+     ]
+    ],
+    "width": 240.0,
+    "height": 6.0,
+    "length": 492.0,
+    "perimeter": 492.0,
+    "area": 1440.0,
+    "z_min": 0.0,
+    "z_max": 288.0,
+    "source": "native",
+    "geometry": {
+     "kind": "polygon",
+     "closed": true,
+     "points": [
+      [
+       -120.0,
+       150.0
+      ],
+      [
+       120.0,
+       150.0
+      ],
+      [
+       120.0,
+       156.0
+      ],
+      [
+       -120.0,
+       156.0
+      ]
+     ]
+    },
+    "dept": "scenic",
+    "dept_how": "guessed",
+    "where": "on CL, 12'-9\" US of PL"
+   },
+   {
+    "id": "{9517B594-B696-433C-AA1F-91F04C979CDE}",
+    "type": "rectangle",
+    "name": "Deck",
+    "layer": "Stage Deck",
+    "cls": "None",
+    "bbox": [
+     [
+      -360.0,
+      -60.0
+     ],
+     [
+      360.0,
+      240.0
+     ]
+    ],
+    "width": 720.0,
+    "height": 300.0,
+    "area": 216000.0,
+    "perimeter": 2040.0,
+    "source": "native",
+    "geometry": {
+     "kind": "polygon",
+     "closed": true,
+     "points": [
+      [
+       -360.0,
+       -60.0
+      ],
+      [
+       360.0,
+       -60.0
+      ],
+      [
+       360.0,
+       240.0
+      ],
+      [
+       -360.0,
+       240.0
+      ]
+     ]
+    },
+    "dept": "staging",
+    "dept_how": "guessed",
+    "where": "on CL, 7'-6\" US of PL"
+   },
+   {
+    "id": "{4A6F5C54-098C-43BB-809D-83035FD9BA16}",
+    "type": "plugin",
+    "name": "PA-L",
+    "layer": "Audio (referenced)",
+    "cls": "None",
+    "bbox": [
+     [
+      -440.0,
+      40.0
+     ],
+     [
+      -400.0,
+      80.0
+     ]
+    ],
+    "width": 40.0,
+    "height": 40.0,
+    "plugin": "Point Load",
+    "location": [
+     -420.0,
+     60.0
+    ],
+    "z": 540.0,
+    "source": "referenced",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "audio",
+    "dept_how": "guessed",
+    "where": "35'-0\" SR of CL, 5'-0\" US of PL"
+   },
+   {
+    "id": "{BB5DFBA2-1969-4020-8A1A-91B05EEA9FC4}",
+    "type": "plugin",
+    "name": "PA-R",
+    "layer": "Audio (referenced)",
+    "cls": "None",
+    "bbox": [
+     [
+      400.0,
+      40.0
+     ],
+     [
+      440.0,
+      80.0
+     ]
+    ],
+    "width": 40.0,
+    "height": 40.0,
+    "plugin": "Point Load",
+    "location": [
+     420.0,
+     60.0
+    ],
+    "z": 540.0,
+    "source": "referenced",
+    "geometry": {
+     "kind": "bbox"
+    },
+    "dept": "audio",
+    "dept_how": "guessed",
+    "where": "35'-0\" SL of CL, 5'-0\" US of PL"
+   },
+   {
+    "id": "{6D948B5F-0C9F-4753-8989-B9C4C3A908A6}",
+    "type": "rectangle",
+    "name": "LED Wall",
+    "layer": "Video",
+    "cls": "Video-LED",
+    "bbox": [
+     [
+      -240.0,
+      408.0
+     ],
+     [
+      240.0,
+      420.0
+     ]
+    ],
+    "width": 480.0,
+    "height": 12.0,
+    "area": 5760.0,
+    "perimeter": 984.0,
+    "source": "viewport",
+    "geometry": {
+     "kind": "polygon",
+     "closed": true,
+     "points": [
+      [
+       -240.0,
+       408.0
+      ],
+      [
+       240.0,
+       408.0
+      ],
+      [
+       240.0,
+       420.0
+      ],
+      [
+       -240.0,
+       420.0
+      ]
+     ]
+    },
+    "dept": "video",
+    "dept_how": "guessed",
+    "where": "on CL, 34'-6\" US of PL"
+   }
+  ],
+  "setup": {
+   "document": "C:\\Shows\\Spring Tour\\Spring Tour - Rigging.vwx",
+   "datum_origin": [
+    0.0,
+    0.0
+   ],
+   "upstage": [
+    0.0,
+    1.0
+   ],
+   "cl_name": "CL",
+   "pl_name": "PL",
+   "datum_note": "Set: CL x PL at (0, 0), upstage toward the page's up.",
+   "datum_set": true,
+   "metric": false,
+   "x_positive": "SL",
+   "departments": {},
+   "limits": {
+    "weight_unit": "lb",
+    "point_limit": "1500",
+    "beam_limit": null,
+    "total_limit": "60000",
+    "max_bridle_angle": 120.0,
+    "default_hoist_wll": null,
+    "cable_allowance_per_ft": 0.0,
+    "truss_weight_per_ft": 0.0,
+    "chain_weight_per_ft": 0.0,
+    "dynamic_factor": 1.2,
+    "hoist_warn_fraction": 0.8,
+    "min_point_spacing": null,
+    "high_steel": null,
+    "steel_tolerance": null,
+    "beams": {}
+   }
+  },
+  "departments": [
+   {
+    "dept": "venue",
+    "objects": 6
+   },
+   {
+    "dept": "rigging",
+    "objects": 7
+   },
+   {
+    "dept": "lighting",
+    "objects": 12
+   },
+   {
+    "dept": "audio",
+    "objects": 2
+   },
+   {
+    "dept": "video",
+    "objects": 1
+   },
+   {
+    "dept": "scenic",
+    "objects": 2
+   },
+   {
+    "dept": "staging",
+    "objects": 1
+   }
+  ]
+ },
+ "rigging": {
+  "unit": "lb",
+  "points": [
+   {
+    "id": "{4B33CAFC-A196-4869-9D19-9D6FECD1177E}",
+    "point": "1",
+    "kind": "hoist",
+    "position": "LX1",
+    "x": -200.0,
+    "y": 240.0,
+    "x_text": "16'-8\" SR",
+    "y_text": "20'-0\" US of PL",
+    "where": "16'-8\" SR of CL, 20'-0\" US of PL",
+    "z": 600.0,
+    "z_text": "50'-0\"",
+    "hoist": "CM Lodestar 1 ton",
+    "capacity": 2000.0,
+    "capacity_text": "2,000 lb",
+    "trim": "40'",
+    "load": 109.89343750000002,
+    "load_text": "110 lb",
+    "load_source": "estimate",
+    "point_load": 225.8934375,
+    "point_load_text": "230 lb",
+    "dynamic": 271.07212499999997,
+    "dynamic_text": "275 lb",
+    "utilization": 0.1355360625,
+    "steel": {
+     "type": "dead hang",
+     "beams": [
+      "Beam A"
+     ]
+    },
+    "status": "ok",
+    "notes": [],
+    "source": "native"
+   },
+   {
+    "id": "{36D6773A-BFDC-45B1-A593-A831E9C8BDC5}",
+    "point": "2",
+    "kind": "hoist",
+    "position": "LX1",
+    "x": 0.0,
+    "y": 240.0,
+    "x_text": "0\" on CL",
+    "y_text": "20'-0\" US of PL",
+    "where": "on CL, 20'-0\" US of PL",
+    "z": 600.0,
+    "z_text": "50'-0\"",
+    "hoist": "CM Lodestar 1 ton",
+    "capacity": 2000.0,
+    "capacity_text": "2,000 lb",
+    "trim": "40'",
+    "load": 220.21312499999996,
+    "load_text": "225 lb",
+    "load_source": "estimate",
+    "point_load": 336.213125,
+    "point_load_text": "340 lb",
+    "dynamic": 403.45574999999997,
+    "dynamic_text": "405 lb",
+    "utilization": 0.20172787499999997,
+    "steel": {
+     "type": "dead hang",
+     "beams": [
+      "Beam A"
+     ]
+    },
+    "status": "ok",
+    "notes": [],
+    "source": "native"
+   },
+   {
+    "id": "{B3545236-F415-44F3-B544-955CCE96B3E8}",
+    "point": "3",
+    "kind": "hoist",
+    "position": "LX1",
+    "x": 200.0,
+    "y": 240.0,
+    "x_text": "16'-8\" SL",
+    "y_text": "20'-0\" US of PL",
+    "where": "16'-8\" SL of CL, 20'-0\" US of PL",
+    "z": 600.0,
+    "z_text": "50'-0\"",
+    "hoist": "CM Lodestar 1 ton",
+    "capacity": 2000.0,
+    "capacity_text": "2,000 lb",
+    "trim": "40'",
+    "load": 109.89343750000002,
+    "load_text": "110 lb",
+    "load_source": "estimate",
+    "point_load": 225.8934375,
+    "point_load_text": "230 lb",
+    "dynamic": 271.07212499999997,
+    "dynamic_text": "275 lb",
+    "utilization": 0.1355360625,
+    "steel": {
+     "type": "dead hang",
+     "beams": [
+      "Beam A"
+     ]
+    },
+    "status": "ok",
+    "notes": [],
+    "source": "native"
+   },
+   {
+    "id": "{2E12D288-E787-4491-A09E-E6E0E1BC17E8}",
+    "point": "4",
+    "kind": "hoist",
+    "position": "LX2",
+    "x": -150.0,
+    "y": 360.0,
+    "x_text": "12'-6\" SR",
+    "y_text": "30'-0\" US of PL",
+    "where": "12'-6\" SR of CL, 30'-0\" US of PL",
+    "z": 600.0,
+    "z_text": "50'-0\"",
+    "hoist": "CM Lodestar 1 ton",
+    "capacity": 2000.0,
+    "capacity_text": "2,000 lb",
+    "trim": "40'",
+    "load": 110.0,
+    "load_text": "110 lb",
+    "load_source": "statics",
+    "point_load": 226.0,
+    "point_load_text": "230 lb",
+    "dynamic": 271.2,
+    "dynamic_text": "275 lb",
+    "utilization": 0.1356,
+    "steel": {
+     "type": "bridle",
+     "beams": [
+      "Beam A",
+      "Beam B"
+     ],
+     "spread": 240.0,
+     "to_first": 120.0
+    },
+    "status": "ok",
+    "notes": [],
+    "source": "native"
+   },
+   {
+    "id": "{93FD0A9B-F371-4056-A5C3-01DAEDFDE452}",
+    "point": "5",
+    "kind": "hoist",
+    "position": "LX2",
+    "x": 150.0,
+    "y": 360.0,
+    "x_text": "12'-6\" SL",
+    "y_text": "30'-0\" US of PL",
+    "where": "12'-6\" SL of CL, 30'-0\" US of PL",
+    "z": 600.0,
+    "z_text": "50'-0\"",
+    "hoist": "CM Lodestar 1 ton",
+    "capacity": 2000.0,
+    "capacity_text": "2,000 lb",
+    "trim": "40'",
+    "load": 110.0,
+    "load_text": "110 lb",
+    "load_source": "statics",
+    "point_load": 226.0,
+    "point_load_text": "230 lb",
+    "dynamic": 271.2,
+    "dynamic_text": "275 lb",
+    "utilization": 0.1356,
+    "steel": {
+     "type": "bridle",
+     "beams": [
+      "Beam A",
+      "Beam B"
+     ],
+     "spread": 240.0,
+     "to_first": 120.0
+    },
+    "status": "ok",
+    "notes": [],
+    "source": "native"
+   },
+   {
+    "id": "{4A6F5C54-098C-43BB-809D-83035FD9BA16}",
+    "point": "PA-L",
+    "kind": "load",
+    "position": "PA-L",
+    "x": -420.0,
+    "y": 60.0,
+    "x_text": "35'-0\" SR",
+    "y_text": "5'-0\" US of PL",
+    "where": "35'-0\" SR of CL, 5'-0\" US of PL",
+    "z": 540.0,
+    "z_text": "45'-0\"",
+    "hoist": "",
+    "capacity": null,
+    "capacity_text": "\u2013",
+    "trim": "",
+    "load": 1850.0,
+    "load_text": "1,850 lb",
+    "load_source": "load object",
+    "point_load": 1850.0,
+    "point_load_text": "1,850 lb",
+    "dynamic": 2220.0,
+    "dynamic_text": "2,220 lb",
+    "utilization": null,
+    "steel": {
+     "type": "no steel",
+     "beams": [
+      "Beam A"
+     ]
+    },
+    "status": "over",
+    "notes": [
+     "from a referenced file"
+    ],
+    "source": "referenced"
+   },
+   {
+    "id": "{BB5DFBA2-1969-4020-8A1A-91B05EEA9FC4}",
+    "point": "PA-R",
+    "kind": "load",
+    "position": "PA-R",
+    "x": 420.0,
+    "y": 60.0,
+    "x_text": "35'-0\" SL",
+    "y_text": "5'-0\" US of PL",
+    "where": "35'-0\" SL of CL, 5'-0\" US of PL",
+    "z": 540.0,
+    "z_text": "45'-0\"",
+    "hoist": "",
+    "capacity": null,
+    "capacity_text": "\u2013",
+    "trim": "",
+    "load": 1850.0,
+    "load_text": "1,850 lb",
+    "load_source": "load object",
+    "point_load": 1850.0,
+    "point_load_text": "1,850 lb",
+    "dynamic": 2220.0,
+    "dynamic_text": "2,220 lb",
+    "utilization": null,
+    "steel": {
+     "type": "no steel",
+     "beams": [
+      "Beam A"
+     ]
+    },
+    "status": "over",
+    "notes": [
+     "from a referenced file"
+    ],
+    "source": "referenced"
+   }
+  ],
+  "trusses": [
+   {
+    "truss": "LX1",
+    "id": "{058109F6-B91E-4200-A6F8-4ECB9BEF92E4}",
+    "length": 480.0,
+    "length_text": "40'-0\"",
+    "hoists": [
+     "{4B33CAFC-A196-4869-9D19-9D6FECD1177E}",
+     "{36D6773A-BFDC-45B1-A593-A831E9C8BDC5}",
+     "{B3545236-F415-44F3-B544-955CCE96B3E8}"
+    ],
+    "items": 8,
+    "items_weight": 440.0,
+    "method": "continuous beam"
+   },
+   {
+    "truss": "LX2",
+    "id": "{2834CB77-2FAB-4207-B2F2-E80A8F10A2D7}",
+    "length": 360.0,
+    "length_text": "30'-0\"",
+    "hoists": [
+     "{2E12D288-E787-4491-A09E-E6E0E1BC17E8}",
+     "{93FD0A9B-F371-4056-A5C3-01DAEDFDE452}"
+    ],
+    "items": 4,
+    "items_weight": 220.0,
+    "method": "statics"
+   }
+  ],
+  "beams": [
+   {
+    "beam": "Beam A",
+    "total": 788.0,
+    "total_text": "790 lb",
+    "limit_text": "\u2013"
+   }
+  ],
+  "total": 4940.0,
+  "total_text": "4,940 lb",
+  "total_limit_text": "60,000 lb",
+  "checks": [
+   {
+    "severity": "danger",
+    "text": "Point PA-L: 1,850 lb is over the venue's 1,500 lb per point.",
+    "ids": [
+     "{4A6F5C54-098C-43BB-809D-83035FD9BA16}"
+    ]
+   },
+   {
+    "severity": "danger",
+    "text": "Point PA-R: 1,850 lb is over the venue's 1,500 lb per point.",
+    "ids": [
+     "{BB5DFBA2-1969-4020-8A1A-91B05EEA9FC4}"
+    ]
+   },
+   {
+    "severity": "warning",
+    "text": "Point PA-L has steel on one side only (nearest Beam A, 15'-0\" away): it needs another beam, a spreader or a mother grid.",
+    "ids": [
+     "{4A6F5C54-098C-43BB-809D-83035FD9BA16}"
+    ]
+   },
+   {
+    "severity": "warning",
+    "text": "Point PA-R has steel on one side only (nearest Beam A, 15'-0\" away): it needs another beam, a spreader or a mother grid.",
+    "ids": [
+     "{BB5DFBA2-1969-4020-8A1A-91B05EEA9FC4}"
+    ]
+   },
+   {
+    "severity": "info",
+    "text": "LX1 hangs on 3 points: loads per point are a continuous-beam estimate. Run Braceworks or use load cells before relying on them.",
+    "ids": [
+     "{058109F6-B91E-4200-A6F8-4ECB9BEF92E4}"
+    ]
+   },
+   {
+    "severity": "info",
+    "text": "Point 4 needs a bridle (Beam A to Beam B). Set the steel height to size it.",
+    "ids": [
+     "{2E12D288-E787-4491-A09E-E6E0E1BC17E8}"
+    ]
+   },
+   {
+    "severity": "info",
+    "text": "Point 5 needs a bridle (Beam A to Beam B). Set the steel height to size it.",
+    "ids": [
+     "{93FD0A9B-F371-4056-A5C3-01DAEDFDE452}"
+    ]
+   }
+  ],
+  "summary": {
+   "points": 7,
+   "danger": 2,
+   "warning": 2
+  },
+  "markout": [
+   {
+    "n": 1,
+    "point": "PA-L",
+    "id": "{4A6F5C54-098C-43BB-809D-83035FD9BA16}",
+    "across": "35'-0\" SR",
+    "updown": "5'-0\" US",
+    "steel": "no steel"
+   },
+   {
+    "n": 2,
+    "point": "PA-R",
+    "id": "{BB5DFBA2-1969-4020-8A1A-91B05EEA9FC4}",
+    "across": "35'-0\" SL",
+    "updown": "5'-0\" US",
+    "steel": "no steel"
+   },
+   {
+    "n": 3,
+    "point": "3",
+    "id": "{B3545236-F415-44F3-B544-955CCE96B3E8}",
+    "across": "16'-8\" SL",
+    "updown": "20'-0\" US",
+    "steel": "dead hang"
+   },
+   {
+    "n": 4,
+    "point": "2",
+    "id": "{36D6773A-BFDC-45B1-A593-A831E9C8BDC5}",
+    "across": "on CL",
+    "updown": "20'-0\" US",
+    "steel": "dead hang"
+   },
+   {
+    "n": 5,
+    "point": "1",
+    "id": "{4B33CAFC-A196-4869-9D19-9D6FECD1177E}",
+    "across": "16'-8\" SR",
+    "updown": "20'-0\" US",
+    "steel": "dead hang"
+   },
+   {
+    "n": 6,
+    "point": "4",
+    "id": "{2E12D288-E787-4491-A09E-E6E0E1BC17E8}",
+    "across": "12'-6\" SR",
+    "updown": "30'-0\" US",
+    "steel": "bridle"
+   },
+   {
+    "n": 7,
+    "point": "5",
+    "id": "{93FD0A9B-F371-4056-A5C3-01DAEDFDE452}",
+    "across": "12'-6\" SL",
+    "updown": "30'-0\" US",
+    "steel": "bridle"
+   }
+  ],
+  "setup": {
+   "document": "C:\\Shows\\Spring Tour\\Spring Tour - Rigging.vwx",
+   "datum_origin": [
+    0.0,
+    0.0
+   ],
+   "upstage": [
+    0.0,
+    1.0
+   ],
+   "cl_name": "CL",
+   "pl_name": "PL",
+   "datum_note": "Set: CL x PL at (0, 0), upstage toward the page's up.",
+   "datum_set": true,
+   "metric": false,
+   "x_positive": "SL",
+   "departments": {},
+   "limits": {
+    "weight_unit": "lb",
+    "point_limit": "1500",
+    "beam_limit": null,
+    "total_limit": "60000",
+    "max_bridle_angle": 120.0,
+    "default_hoist_wll": null,
+    "cable_allowance_per_ft": 0.0,
+    "truss_weight_per_ft": 0.0,
+    "chain_weight_per_ft": 0.0,
+    "dynamic_factor": 1.2,
+    "hoist_warn_fraction": 0.8,
+    "min_point_spacing": null,
+    "high_steel": null,
+    "steel_tolerance": null,
+    "beams": {}
+   }
+  },
+  "document": "Spring Tour - Rigging.vwx",
+  "changes": null,
+  "changes_since": null
+ },
+ "csv": "Point,Kind,Position,X,Y,Hook Z,Hoist,Capacity,Trim,Load,Load from,Point load (incl. hoist + chain),With dynamic factor,Steel,Status\r\n1,hoist,LX1,\"16'-8\"\" SR\",\"20'-0\"\" US of PL\",\"50'-0\"\"\",CM Lodestar 1 ton,\"2,000 lb\",40',110 lb,estimate,230 lb,275 lb,dead hang (Beam A),ok\r\n2,hoist,LX1,\"0\"\" on CL\",\"20'-0\"\" US of PL\",\"50'-0\"\"\",CM Lodestar 1 ton,\"2,000 lb\",40',225 lb,estimate,340 lb,405 lb,dead hang (Beam A),ok\r\n3,hoist,LX1,\"16'-8\"\" SL\",\"20'-0\"\" US of PL\",\"50'-0\"\"\",CM Lodestar 1 ton,\"2,000 lb\",40',110 lb,estimate,230 lb,275 lb,dead hang (Beam A),ok\r\n4,hoist,LX2,\"12'-6\"\" SR\",\"30'-0\"\" US of PL\",\"50'-0\"\"\",CM Lodestar 1 ton,\"2,000 lb\",40',110 lb,statics,230 lb,275 lb,bridle (Beam A / Beam B),ok\r\n5,hoist,LX2,\"12'-6\"\" SL\",\"30'-0\"\" US of PL\",\"50'-0\"\"\",CM Lodestar 1 ton,\"2,000 lb\",40',110 lb,statics,230 lb,275 lb,bridle (Beam A / Beam B),ok\r\nPA-L,load,PA-L,\"35'-0\"\" SR\",\"5'-0\"\" US of PL\",\"45'-0\"\"\",,\u2013,,\"1,850 lb\",load object,\"1,850 lb\",\"2,220 lb\",no steel (Beam A),over\r\nPA-R,load,PA-R,\"35'-0\"\" SL\",\"5'-0\"\" US of PL\",\"45'-0\"\"\",,\u2013,,\"1,850 lb\",load object,\"1,850 lb\",\"2,220 lb\",no steel (Beam A),over\r\n\r\nTotal,,,,,,,,,,,\"4,940 lb\",,,\"limit 60,000 lb\"\r\n"
+}

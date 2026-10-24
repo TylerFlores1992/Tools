@@ -25,6 +25,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/money",
   },
   {
+    slug: "vectorworks",
+    name: "Vectorworks",
+    summary: "The drawing open on your computer, live: select, drag, measure, edit fixtures. Claude draws through the same connector.",
+    stage: "Connector + live panel",
+    href: "/private/vectorworks",
+  },
+  {
     slug: "camphawk",
     name: "CampHawk lab",
     summary: "CampHawk's pages in a new look, with fake data. Try ideas here before they ship.",

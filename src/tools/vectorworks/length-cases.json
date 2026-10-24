@@ -1,0 +1,22 @@
+[
+  { "input": "12'-6\"", "units": "in", "expect": 150 },
+  { "input": "12' 6 1/2\"", "units": "in", "expect": 150.5 },
+  { "input": "12'6\"", "units": "in", "expect": 150 },
+  { "input": "12'", "units": "in", "expect": 144 },
+  { "input": "20 ft", "units": "in", "expect": 240 },
+  { "input": "6\"", "units": "in", "expect": 6 },
+  { "input": "6 1/4\"", "units": "in", "expect": 6.25 },
+  { "input": "1/2\"", "units": "in", "expect": 0.5 },
+  { "input": "-1'-6\"", "units": "in", "expect": -18 },
+  { "input": "3.5 in", "units": "in", "expect": 3.5 },
+  { "input": "42", "units": "in", "expect": 42 },
+  { "input": "254mm", "units": "in", "expect": 10 },
+  { "input": "1 m", "units": "mm", "expect": 1000 },
+  { "input": "450mm", "units": "mm", "expect": 450 },
+  { "input": "2.5 cm", "units": "mm", "expect": 25 },
+  { "input": "1'", "units": "mm", "expect": 304.8 },
+  { "input": "300", "units": "mm", "expect": 300 },
+  { "input": "12 parsecs", "units": "in", "expect": null },
+  { "input": "1/0\"", "units": "in", "expect": null },
+  { "input": "", "units": "in", "expect": null }
+]
