@@ -71,10 +71,14 @@ class Doc:
         self.redraws = 0
         self.menu_calls: list[str] = []
         self.units = units
+        self.origin = (0.0, 0.0)
+        self.path = r"C:\Shows\Untitled Plot.vwx"
+        self.class_vis: dict = {}
+        self.imported = 0
         self.active_layer = self._new_layer("Design Layer-1", 1)
 
     def _new_layer(self, name, kind=1):
-        layer = _Obj(31, name=name, layer_type=kind)
+        layer = _Obj(31, name=name, layer_type=kind, visibility=0, elevation=(0.0, 0.0), scale=48.0, referenced_file=None)
         self.layers.append(layer)
         return layer
 
@@ -128,7 +132,21 @@ def NextLayer(h):
 def GetObjectVariableInt(h, index):
     if index == 154:
         return h.layer_type
+    if index == 153:
+        return h.visibility
     raise ScriptErrors(f"selector {index} not faked")
+
+
+def SetObjectVariableInt(h, index, value):
+    if index != 153:
+        raise ScriptErrors(f"selector {index} not faked")
+    h.visibility = value
+
+
+def GetObjectVariableBoolean(h, index):
+    if index == 650:  # object is 3D
+        return getattr(h, "is3d", False)
+    raise ScriptErrors(f"boolean selector {index} not faked")
 
 
 def GetLName(h):
@@ -156,7 +174,7 @@ def CreateLayer(layerName, layerType):
 
 
 def GetLayer(h):
-    return h.layer
+    return _layer_of(h)
 
 
 def ClassNum():
@@ -214,7 +232,7 @@ def GetObjectUuid(h):
 
 
 def GetObjectByUuid(UUID):
-    return next((o for o in DOC.objects if o.uuid == UUID), NIL)
+    return next((o for o in _walk_all() if o.uuid == UUID), NIL)
 
 
 def GetObject(name):
@@ -356,7 +374,7 @@ def _points(h):
     if h.type in (15, 86):
         x, y = h.loc
         return [(x - h.w / 2, y - h.h / 2), (x + h.w / 2, y + h.h / 2)]
-    if h.type == 11:
+    if h.type in (11, 122):
         return [p for m in h.members for p in _points(m)]
     raise ScriptErrors(f"GetBBox of type {h.type} not faked")
 
@@ -563,20 +581,37 @@ def FInFolder(sfHd):
 # ---- search -----------------------------------------------------------------------------
 
 _T = {"LINE": 2, "RECT": 3, "OVAL": 4, "POLY": 5, "ARC": 6, "TEXT": 10, "GROUP": 11, "SYMBOL": 15,
-      "POLYLINE": 21, "DIMENSION": 63, "WALL": 68, "PLUGINOBJECT": 86, "LOCUS": 17}
+      "POLYLINE": 21, "DIMENSION": 63, "WALL": 68, "PLUGINOBJECT": 86, "LOCUS": 17, "VIEWPORT": 122}
+
+
+def _walk_all():
+    """Everything a criteria search sees: objects, group members, and what viewports show."""
+    for o in list(DOC.objects):
+        yield o
+        stack = list(getattr(o, "members", []))
+        while stack:
+            m = stack.pop(0)
+            yield m
+            stack.extend(getattr(m, "members", []))
 
 
 def ForEachObject(callback, c):
+    modifiers = set(re.findall(r"\b(NOTINREFDLVP|NOTINDLVP|INSYMBOL|INOBJECT|INVIEWPORT)\b", c))
     terms = re.findall(r"\(([A-Z]+)=?'?([^')]*)'?\)", c)
     if not terms:
         raise ScriptErrors(f"criteria {c!r}")
-    for o in list(DOC.objects):
+    for o in _walk_all():
+        vp = _viewport_of(o)
+        if vp is not None and vp.referenced and "NOTINREFDLVP" in modifiers:
+            continue
+        if vp is not None and not vp.referenced and "NOTINDLVP" in modifiers:
+            continue
         ok = True
         for key, val in terms:
             if key == "ALL":
                 continue
             if key == "L":
-                ok &= o.layer.name == val
+                ok &= _layer_of(o).name == val
             elif key == "C":
                 ok &= o.cls == val
             elif key == "SEL":
@@ -584,11 +619,26 @@ def ForEachObject(callback, c):
             elif key == "PON":
                 ok &= getattr(o, "parametric", None) == val
             elif key == "T":
-                ok &= o.type == _T[val]
+                ok &= o.type == (_T[val] if not val.isdigit() else int(val))
             else:
                 raise ScriptErrors(f"criteria key {key} not faked")
         if ok:
             callback(o)
+
+
+def _viewport_of(o):
+    p = getattr(o, "parent_obj", None)
+    while p is not None:
+        if p.type == 122:
+            return p
+        p = getattr(p, "parent_obj", None)
+    return None
+
+
+def _layer_of(o):
+    while getattr(o, "layer", None) is None and getattr(o, "parent_obj", None) is not None:
+        o = o.parent_obj
+    return o.layer
 
 
 # ---- dialogs (session mode) -------------------------------------------------------------
@@ -597,6 +647,115 @@ def ForEachObject(callback, c):
 def AlrtDialog(message):
     DOC.menu_calls.append(f"alert: {message}")
 
+
+
+# ---- containers, heights, walls, layers, origin (survey / rigging) ---------------------
+
+
+def GetParent(h):
+    return getattr(h, "parent_obj", None) or getattr(h, "layer", None) or NIL
+
+
+def FInGroup(ObjectHd):
+    m = getattr(ObjectHd, "members", [])
+    return m[0] if m else NIL
+
+
+def NextObj(h):
+    sib = getattr(getattr(h, "parent_obj", None), "members", None)
+    if sib is None:
+        return NIL
+    i = sib.index(h)
+    return sib[i + 1] if i + 1 < len(sib) else NIL
+
+
+def GetSymLoc3D(objectHandle):
+    x, y = objectHandle.loc
+    return (x, y, getattr(objectHandle, "z", 0.0))
+
+
+def Get3DInfo(h):
+    (x0, y1), (x1, y0) = GetBBox(h)
+    return (y1 - y0, x1 - x0, h.dz)  # height (dY), width (dX), depth (dZ), as documented
+
+
+def Get3DCntr(h):
+    (x0, y1), (x1, y0) = GetBBox(h)
+    return (((x0 + x1) / 2, (y0 + y1) / 2), h.zc)
+
+
+def GetWallThickness(h):
+    return (True, h.thickness)
+
+
+def GetWallCornerHeights(theWall):
+    return (theWall.height, 0.0, theWall.height, 0.0)
+
+
+def GetLayerElevationN(h):
+    return h.elevation
+
+
+def IsLayerReferenced(layer):
+    return (layer.referenced_file is not None, layer.referenced_file or "")
+
+
+def GetLScale(h):
+    return h.scale
+
+
+def GetOriginInDocUnits():
+    return DOC.origin
+
+
+def GetFPathName():
+    return DOC.path
+
+
+def ShowClass(clasName):
+    DOC.class_vis[clasName] = 0
+
+
+def HideClass(clasName):
+    DOC.class_vis[clasName] = -1
+
+
+def GrayClass(clasName):
+    DOC.class_vis[clasName] = 2
+
+
+def ImportDXFDWGFile(fileName, isBatch):
+    """Pretend DWG: an architect's venue in millimetres, as a layer of lines (DWG layers -> classes)."""
+    if not isBatch:
+        raise ScriptErrors("a dialog would open")
+    layer = DOC._new_layer("Venue DWG", 1)
+    prev = DOC.active_layer
+    DOC.active_layer = layer
+    for i, (a, b) in enumerate([((-20000.0, 15000.0), (20000.0, 15000.0)), ((-20000.0, 21000.0), (20000.0, 21000.0))]):
+        o = DOC.add(_Obj(2, pts=[a, b]))
+        o.cls = "A-STEEL"
+        if "A-STEEL" not in DOC.classes:
+            DOC.classes.append("A-STEEL")
+    DOC.active_layer = prev
+    DOC.imported += 1
+    return 0
+
+
+def HScale2D(h, centerX, centerY, scaleX, scaleY, scaleText):
+    def sc(p):
+        return (centerX + (p[0] - centerX) * scaleX, centerY + (p[1] - centerY) * scaleY)
+
+    if hasattr(h, "pts"):
+        h.pts = [sc(p) for p in h.pts]
+    if hasattr(h, "cx"):
+        h.cx, h.cy = sc((h.cx, h.cy))
+        if hasattr(h, "rx"):
+            h.rx *= scaleX
+            h.ry *= scaleY
+        if hasattr(h, "r"):
+            h.r *= scaleX
+    if hasattr(h, "loc"):
+        h.loc = sc(h.loc)
 
 # ---- strict signatures ------------------------------------------------------------------
 
@@ -618,7 +777,7 @@ def _strict(name, fn):
     return wrapper
 
 
-for _name, _fn in list(globals().items()):
+for _name, _fn in list(globals().items()):  # noqa: E305
     if _name[:1].isupper() and callable(_fn) and _name not in {"Doc", "ScriptErrors"} and not isinstance(_fn, type):
         globals()[_name] = _strict(_name, _fn)
 
@@ -649,3 +808,109 @@ def seed_demo():
             "1", str(i), f"1/{i}", "Source Four 26", "", "",
         ])))
     Layer("Design Layer-1")
+
+
+
+# ---- a whole show: every situation a head rigger meets ------------------------------------
+
+HOIST_FIELDS = ["Hoist ID", "Hoist Name", "Capacity", "Position", "Hoist Weight", "Chain Length", "Trim Height", "ReactionForce"]
+TRUSS_FIELDS = ["Name", "Truss Type", "Length"]
+LOAD_FIELDS = ["Load ID", "Load Name", "Load Category", "Total Weight", "Position"]
+
+
+def _pio(plugin, fields, loc, w, h, values, z=0.0, layer=None, name=""):
+    if plugin not in DOC.resources:
+        DOC.resources[plugin] = _Obj(47, name=plugin, fields=fields)
+    o = DOC.add(_Obj(86, loc=loc, w=w, h=h, parametric=plugin, z=z, name=name))
+    o.records[plugin] = {f: "" for f in fields}
+    o.records[plugin].update(values)
+    if layer is not None:
+        o.layer = layer
+    return o
+
+
+def seed_show():
+    """A theatre-style plot in inches, CL x PL at 0,0, audience at the bottom of the page.
+
+    Venue steel (two beams + a scoreboard obstruction), a wall, CL and PL lines; LX1 truss under
+    Beam A on three hoists (dead hangs, a continuous span), LX2 between the beams on two hoists
+    (bridles); twelve fixtures with weights; a scenic header built from a group and a 3D flat;
+    audio arriving through a REFERENCED viewport, video through a local one."""
+    DOC.fname = "Spring Tour - Rigging.vwx"
+    DOC.path = r"C:\Shows\Spring Tour\Spring Tour - Rigging.vwx"
+    seed_demo_resources()
+    venue = DOC._new_layer("Venue Steel")
+    venue.elevation = (0.0, 0.0)
+    for name, y in (("Beam A", 240.0), ("Beam B", 480.0)):
+        DOC.active_layer = venue
+        MoveTo((-600.0, y))
+        LineTo((600.0, y))
+        DOC.last.name, DOC.last.cls = name, "House-Steel"
+    Rect((-60.0, 420.0), (60.0, 300.0))
+    DOC.last.name, DOC.last.cls = "Scoreboard", "House-Obstruction"
+    Wall((-600.0, -200.0), (600.0, -200.0))
+    DOC.last.name = "Back of house wall"
+    for name, a, b in (("CL", (0.0, -120.0), (0.0, 600.0)), ("PL", (-600.0, 0.0), (600.0, 0.0))):
+        MoveTo(a)
+        LineTo(b)
+        DOC.last.name, DOC.last.cls = name, "Reference Lines"
+
+    rig = DOC._new_layer("Rigging")
+    DOC.active_layer = rig
+    _pio("Truss", TRUSS_FIELDS, (0.0, 240.0), 480.0, 20.5, {"Name": "LX1", "Truss Type": "20.5in box", "Length": "40'"}, z=480.0, name="LX1")
+    _pio("Truss", TRUSS_FIELDS, (0.0, 360.0), 360.0, 20.5, {"Name": "LX2", "Truss Type": "20.5in box", "Length": "30'"}, z=480.0, name="LX2")
+    for hid, x, y, pos in (("1", -200.0, 240.0, "LX1"), ("2", 0.0, 240.0, "LX1"), ("3", 200.0, 240.0, "LX1"),
+                           ("4", -150.0, 360.0, "LX2"), ("5", 150.0, 360.0, "LX2")):
+        _pio("Hoist", HOIST_FIELDS, (x, y), 12.0, 12.0, {"Hoist ID": hid, "Hoist Name": "CM Lodestar 1 ton", "Capacity": "2000 lb",
+             "Position": pos, "Hoist Weight": "116 lb", "Chain Length": "60'", "Trim Height": "40'"}, z=600.0)
+
+    lx = DOC._new_layer("Lighting")
+    DOC.active_layer = lx
+    fields = ["Inst Type", "Channel", "Unit Number", "Position", "Purpose", "Color", "Wattage", "Weight", "Universe", "DMX Address", "UniverseAddress", "Symbol Name"]
+    if "Lighting Device" not in DOC.resources:
+        DOC.resources["Lighting Device"] = _Obj(47, name="Lighting Device", fields=fields)
+    ch = 101
+    for pos, y, xs in (("LX1", 240.0, [-210, -150, -90, -30, 30, 90, 150, 210]), ("LX2", 360.0, [-165, -55, 55, 165])):
+        for i, x in enumerate(xs, start=1):
+            d = _pio("Lighting Device", fields, (float(x), y), 10.0, 14.0, {"Inst Type": "Spot 400", "Channel": str(ch), "Unit Number": str(i),
+                     "Position": pos, "Purpose": "Wash", "Weight": "55 lb", "Symbol Name": "Source Four 26"}, z=470.0)
+            d.cls = "Lighting-Fixtures"
+            ch += 1
+
+    scenic = DOC._new_layer("Scenic")
+    DOC.active_layer = scenic
+    header = DOC.add(_Obj(11, members=[], name="Header"))
+    for a, b in (((-300.0, 120.0), (300.0, 120.0)), ((-300.0, 132.0), (300.0, 132.0)), ((-300.0, 120.0), (-300.0, 132.0))):
+        m = _Obj(2, pts=[a, b], parent_obj=header, layer=None)
+        m.cls = "Scenic"
+        header.members.append(m)
+    flat = DOC.add(_Obj(5, pts=[(-120.0, 150.0), (120.0, 150.0), (120.0, 156.0), (-120.0, 156.0)], closed=True, is3d=True, zc=144.0, dz=288.0, name="Flat 1"))
+    flat.cls = "Scenic"
+
+    deck = DOC._new_layer("Stage Deck")
+    DOC.active_layer = deck
+    Rect((-360.0, 240.0), (360.0, -60.0))
+    DOC.last.name = "Deck"
+
+    audio = DOC._new_layer("Audio (referenced)")
+    audio.referenced_file = None  # DLVP referencing: the layer itself isn't a referenced layer
+    vp = DOC.add(_Obj(122, members=[], name="Audio from Spring Tour - Audio.vwx", referenced=True))
+    vp.layer = audio
+    for name, x in (("PA-L", -420.0), ("PA-R", 420.0)):
+        o = _Obj(86, loc=(x, 60.0), w=40.0, h=40.0, parametric="Point Load", z=540.0, name=name, parent_obj=vp, layer=None)
+        if "Point Load" not in DOC.resources:
+            DOC.resources["Point Load"] = _Obj(47, name="Point Load", fields=LOAD_FIELDS)
+        o.records["Point Load"] = {"Load ID": name, "Load Name": "K2 x 12", "Load Category": "Audio", "Total Weight": "1850 lb", "Position": name}
+        vp.members.append(o)
+
+    video = DOC._new_layer("Video")
+    vvp = DOC.add(_Obj(122, members=[], name="Video layout", referenced=False))
+    vvp.layer = video
+    led = _Obj(3, pts=[(-240.0, 420.0), (240.0, 420.0), (240.0, 408.0), (-240.0, 408.0)], parent_obj=vvp, layer=None, name="LED Wall")
+    led.cls = "Video-LED"
+    vvp.members.append(led)
+    DOC.active_layer = DOC.layers[0]
+
+
+def seed_demo_resources():
+    DOC.resources.setdefault("Source Four 26", _Obj(16, name="Source Four 26", w=10.0, h=14.0))

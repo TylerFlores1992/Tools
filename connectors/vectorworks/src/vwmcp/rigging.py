@@ -198,3 +198,213 @@ def classify_department(*names: str) -> str:
             if re.search(pat, n):
                 return dept
     return "other"
+
+
+# ---------------------------------------------------------------------------------------
+# reading field values (Spotlight shows them as display strings: "116 lb", "60'", "500 kg")
+# ---------------------------------------------------------------------------------------
+
+LB_PER_KG = 1 / 0.45359237
+_WEIGHT_UNITS = {"lb": 1.0, "lbs": 1.0, "#": 1.0, "kg": LB_PER_KG, "t": 1000 * LB_PER_KG, "ton": 2000.0, "tons": 2000.0,
+                 "us ton": 2000.0, "short ton": 2000.0, "tonne": 1000 * LB_PER_KG, "kn": 224.80894}
+
+
+def parse_weight(text, default_unit: str = "lb"):
+    """A weight as typed or shown ("1,850 lb", "500kg", "1 ton", "2 t") -> pounds, or None.
+    A bare number is in default_unit. "t" is a metric tonne; "ton" is a US ton (2,000 lb)."""
+    if text is None:
+        return None
+    if isinstance(text, (int, float)) and not isinstance(text, bool):
+        return float(text) * _WEIGHT_UNITS[default_unit]
+    s = str(text).strip().lower().replace(",", "")
+    m = re.match(r"^(-?\d+(?:\.\d+)?)\s*(lbs?|#|kg|t|tons?|us ton|short ton|tonne|kn)?\.?$", s)
+    if not m:
+        return None
+    unit = m.group(2) or default_unit
+    return float(m.group(1)) * _WEIGHT_UNITS[unit]
+
+
+def lb_to(value_lb: float, unit: str) -> float:
+    return value_lb / _WEIGHT_UNITS[unit]
+
+
+def format_weight(value_lb, unit: str = "lb") -> str:
+    """Rounded UP to the next 5 lb or 1 kg: a load is never shown lighter than it is."""
+    if value_lb is None or (isinstance(value_lb, float) and math.isnan(value_lb)):
+        return "–"
+    if unit == "kg":
+        return "{:,} kg".format(int(math.ceil(lb_to(value_lb, "kg") - 1e-9)))
+    return "{:,} lb".format(int(math.ceil(value_lb / 5 - 1e-9) * 5))
+
+
+# A copy of the bridge's length reader (vw_plugin/vwmcp_bridge.py, parse_length), for field
+# values the bridge hands over as text. Both are tested against src/tools/vectorworks/length-cases.json.
+_SUFFIX_IN = {'"': 1.0, "in": 1.0, "inch": 1.0, "inches": 1.0, "'": 12.0, "ft": 12.0, "foot": 12.0,
+              "feet": 12.0, "mm": 1 / 25.4, "cm": 10 / 25.4, "m": 1000 / 25.4}
+_NUM = r"\d+(?:\.\d+)?|\.\d+"
+
+
+def _inches_part(s: str):
+    m = re.match(r"^(?:(%s)(?:\s+(\d+)\s*/\s*(\d+))?|(\d+)\s*/\s*(\d+))$" % _NUM, s.strip())
+    if not m:
+        return None
+    if m.group(1) is not None:
+        whole = float(m.group(1))
+        return whole + float(m.group(2)) / float(m.group(3)) if m.group(2) else whole
+    den = float(m.group(5))
+    return None if den == 0 else float(m.group(4)) / den
+
+
+def parse_length(raw, upi: float):
+    if isinstance(raw, (int, float)) and not isinstance(raw, bool):
+        return float(raw)
+    s = str(raw).strip().lower().replace("′", "'").replace("’", "'").replace("″", '"').replace("”", '"').replace(",", "")
+    if not s:
+        return None
+    neg = s.startswith("-")
+    body = s[1:].strip() if neg else s
+    inches = None
+    fi = re.match(r"^(\d+(?:\.\d+)?)\s*'\s*-?\s*(.*?)\s*\"?$", body)
+    if fi and "'" in body:
+        rest = fi.group(2).strip()
+        ins = 0.0 if rest == "" else _inches_part(rest)
+        if ins is None:
+            return None
+        inches = float(fi.group(1)) * 12 + ins
+    else:
+        m = re.match(r"^(%s)\s*([a-z\"']+)$" % _NUM, body)
+        frac = re.match(r'^(.*?)\s*"$', body)
+        if m and m.group(2) in _SUFFIX_IN:
+            inches = float(m.group(1)) * _SUFFIX_IN[m.group(2)]
+        elif frac:
+            inches = _inches_part(frac.group(1))
+        elif re.match(r"^(?:%s)$" % _NUM, body):
+            v = float(body)
+            return -v if neg else v
+    if inches is None or not math.isfinite(inches):
+        return None
+    v = inches * upi
+    return -v if neg else v
+
+
+# ---------------------------------------------------------------------------------------
+# bridles built from real steel
+# ---------------------------------------------------------------------------------------
+
+
+def apex_from_legs(leg_a: float, leg_b: float, span: float, rise: float = 0.0):
+    """Where the apex lands for legs of fixed length (pin to pin): beam A at (0,0), beam B at
+    (span, rise). Returns (x from A, drop below A) or None when the legs can't reach."""
+    d = math.hypot(span, rise)
+    if d <= 0 or leg_a + leg_b < d or abs(leg_a - leg_b) > d:
+        return None
+    a = (leg_a ** 2 - leg_b ** 2 + d ** 2) / (2 * d)
+    h = math.sqrt(max(leg_a ** 2 - a ** 2, 0.0))
+    ux, uy = span / d, rise / d
+    mx, my = a * ux, a * uy
+    # two intersections; the apex is the lower one
+    p1 = (mx + h * uy, my - h * ux)
+    p2 = (mx - h * uy, my + h * ux)
+    x, y = min((p1, p2), key=lambda p: p[1])
+    return x, -y
+
+
+def leg_parts(length: float, steel: tuple = (50.0, 30.0, 20.0, 10.0, 5.0, 2.5), hardware: float = 0.0):
+    """A leg length (feet, pin to pin) made from standard steel, longest first, never longer than
+    asked. Returns (pieces, steel total, shortfall left to make up in deck chain or shackles).
+    Suggested parts only: check against what's actually on the truck."""
+    need = length - hardware
+    pieces = []
+    for piece in sorted(steel, reverse=True):
+        while need - piece >= -1e-9:
+            pieces.append(piece)
+            need -= piece
+    return pieces, sum(pieces), max(need, 0.0)
+
+
+# ---------------------------------------------------------------------------------------
+# truss reactions
+# ---------------------------------------------------------------------------------------
+
+
+def _solve(a, b):
+    """Gaussian elimination with partial pivoting (small systems; no numpy needed)."""
+    n = len(b)
+    m = [list(row) + [b[i]] for i, row in enumerate(a)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(m[r][c]))
+        if abs(m[piv][c]) < 1e-12:
+            raise ValueError("singular")
+        m[c], m[piv] = m[piv], m[c]
+        for r in range(n):
+            if r != c:
+                f = m[r][c] / m[c][c]
+                m[r] = [m[r][k] - f * m[c][k] for k in range(n + 1)]
+    return [m[i][n] / m[i][i] for i in range(n)]
+
+
+def _simple_defl(x, a, L):
+    """Deflection at x of a simple span 0..L under a unit point load at a (EI = 1, downward +)."""
+    b = L - a
+    if x <= a:
+        return b * x * (L * L - b * b - x * x) / (6 * L)
+    return a * (L - x) * (L * L - a * a - (L - x) ** 2) / (6 * L)
+
+
+def truss_reactions(supports, point_loads=(), udl: float = 0.0, start: float = None, end: float = None):
+    """Reactions at each support of a straight truss.
+
+    supports: positions along the truss (any length unit). point_loads: [(position, weight)].
+    udl: weight per unit length over start..end (default: the truss runs support to support).
+    Two supports: exact statics, overhangs included (a negative reaction means uplift).
+    Three or more: a continuous beam (equal stiffness, rigid level supports, solved by
+    compatibility). Real reactions depend on how level the hoists are, so those are estimates:
+    use Braceworks, load cells or an engineer before relying on them.
+    """
+    xs = sorted(float(s) for s in supports)
+    if len(xs) < 2:
+        raise ValueError("A truss needs at least two pick points.")
+    lo, hi = xs[0], xs[-1]
+    start = lo if start is None else float(start)
+    end = hi if end is None else float(end)
+    # Lump the UDL into many small point loads: exact enough (0.1% of span) and keeps one method.
+    loads = [(float(p), float(w)) for p, w in point_loads]
+    if udl and end > start:
+        n = 400
+        step = (end - start) / n
+        loads += [(start + (i + 0.5) * step, udl * step) for i in range(n)]
+    total = sum(w for _, w in loads)
+    L = hi - lo
+
+    def two_support(ls):
+        mb = sum(w * (p - lo) for p, w in ls) / L
+        return [sum(w for _, w in ls) - mb, mb]
+
+    if len(xs) == 2:
+        r = two_support(loads)
+        return {"reactions": r, "total": total, "method": "statics", "estimate": False}
+
+    # Interior supports are redundants: the beam between the end supports may not move there.
+    interior = xs[1:-1]
+    rel = [x - lo for x in interior]
+
+    def defl_from_loads(x):
+        out = 0.0
+        for p, w in loads:
+            a = p - lo
+            if 0 <= a <= L:
+                out += w * _simple_defl(x, a, L)
+            else:
+                # overhang load: acts as an end moment on the span (hogging lifts the span)
+                arm = -a if a < 0 else a - L
+                m = w * arm
+                xr = x if a < 0 else L - x
+                out -= m * xr * (L - xr) * (2 * L - xr) / (6 * L)
+        return out
+
+    A = [[_simple_defl(xi, xj, L) for xj in rel] for xi in rel]
+    b = [defl_from_loads(xi) for xi in rel]
+    r_int = _solve(A, b)
+    rest = loads + [(x, -r) for x, r in zip(interior, r_int)]
+    r_end = two_support(rest)
+    return {"reactions": [r_end[0]] + r_int + [r_end[1]], "total": total, "method": "continuous beam", "estimate": True}

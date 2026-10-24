@@ -233,8 +233,61 @@ def _find(layer=None, cls=None, selected_only=False, object_type=None, plugin=No
     criteria = " & ".join(parts) if parts else "(ALL)"
     found = []
     vs.ForEachObject(found.append, criteria)  # collect only; act afterwards
-    found = [h for h in found if all(f(h) for f in post) and vs.GetTypeN(h) not in (31, 16, 92)]
+    found = [h for h in found if all(f(h) for f in post) and vs.GetTypeN(h) not in (31, 16, 92, 122)
+             and not _inside_group(h)]  # a group is described with its members as parts
+    _note_native(criteria)
     return found[: int(limit) + 1]
+
+
+# Where objects come from. Criteria searches descend into design layer viewports unless told
+# not to (NOTINDLVP, NOTINREFDLVP), so the same search run three ways tells native objects,
+# objects shown through a viewport of this file, and objects from a referenced file apart.
+_NATIVE = set()
+_LOCAL_VP = set()
+
+
+def _note_native(criteria: str) -> None:
+    native, local = [], []
+    vs.ForEachObject(native.append, "NOTINREFDLVP & NOTINDLVP & " + criteria)
+    vs.ForEachObject(local.append, "NOTINREFDLVP & " + criteria)
+    _NATIVE.update(str(h) for h in native)
+    _LOCAL_VP.update(str(h) for h in local)
+
+
+def _parent_chain(h, depth: int = 12):
+    out = []
+    p = vs.GetParent(h)
+    while not _nil(p) and depth > 0 and vs.GetTypeN(p) != 31:
+        out.append(p)
+        p = vs.GetParent(p)
+        depth -= 1
+    return out
+
+
+def _inside_group(h) -> bool:
+    return any(vs.GetTypeN(p) == 11 for p in _parent_chain(h, 3))
+
+
+def _source(h) -> str:
+    """native | viewport (this file, through a design layer viewport) | referenced (another file)."""
+    key = str(h)
+    in_vp = any(vs.GetTypeN(p) == 122 for p in _parent_chain(h))
+    if key in _NATIVE and not in_vp:
+        return "native"
+    if key in _LOCAL_VP:
+        return "viewport"
+    if in_vp or (_NATIVE and key not in _NATIVE):
+        return "referenced" if key not in _LOCAL_VP else "viewport"
+    return "native"
+
+
+def _require_editable(h) -> None:
+    if not _NATIVE:
+        _note_native("(ALL)")
+    src = _source(h)
+    if src != "native":
+        where = "a referenced file" if src == "referenced" else "a design layer viewport"
+        raise OpError("That object is shown through %s, so it's read-only here. Change it in its own file or layer." % where)
 
 
 # ---------------------------------------------------------------------------------------
@@ -287,7 +340,7 @@ def _record_fields(h, record_name: str) -> dict:
     return out
 
 
-def _describe(h, include_records: bool = False) -> dict:
+def _describe(h, include_records: bool = False, depth: int = 0) -> dict:
     t = vs.GetTypeN(h)
     p1, p2 = vs.GetBBox(h)  # top-left, bottom-right
     x0, x1 = sorted((float(p1[0]), float(p2[0])))
@@ -337,16 +390,44 @@ def _describe(h, include_records: bool = False) -> dict:
         info["length"] = abs(math.radians(float(sweep))) * r
     elif t == 10:
         g = {"kind": "text", "position": [x0, y0], "text": _s(vs.GetText(h))}
+    elif t == 68:
+        a, b = _xy(vs.GetSegPt1(h)), _xy(vs.GetSegPt2(h))
+        ok, thick = vs.GetWallThickness(h)
+        s_top, s_bot, e_top, e_bot = vs.GetWallCornerHeights(h)
+        g = {"kind": "wall", "start": a, "end": b, "thickness": float(thick) if ok else None}
+        info["length"] = math.hypot(b[0] - a[0], b[1] - a[1])
+        info["z_min"] = float(min(s_bot, e_bot))
+        info["z_max"] = float(max(s_top, e_top))
+    elif t == 11 and depth < 3:
+        parts = []
+        m = vs.FInGroup(h)
+        while not _nil(m) and len(parts) < 300:
+            part = _describe(m, depth=depth + 1)["geometry"]
+            if part.get("kind") == "group":
+                parts.extend(part["parts"][: 300 - len(parts)])
+            elif part.get("kind") != "bbox":
+                parts.append(part)
+            m = vs.NextObj(m)
+        g = {"kind": "group", "parts": parts}
     elif t == 15:
         info["symbol"] = _s(vs.GetSymName(h))
         info["location"] = _xy(vs.GetSymLoc(h))
+        info["z"] = float(vs.GetSymLoc3D(h)[2])
     elif t == 86:
         info["plugin"] = _plugin_name(h)
         info["location"] = _xy(vs.GetSymLoc(h))
+        info["z"] = float(vs.GetSymLoc3D(h)[2])
         if info["plugin"] == LD:
             info["channel"] = _s(vs.GetRField(h, LD, "Channel"))
         if include_records and info["plugin"]:
             info["fields"] = _record_fields(h, info["plugin"])
+    if t not in (15, 86, 68, 11) and vs.GetObjectVariableBoolean(h, 650):  # "object is 3D"
+        dy, dx, dz = vs.Get3DInfo(h)  # documented order is height, width, depth = dY, dX, dZ
+        _p, zc = vs.Get3DCntr(h)
+        info["z_min"] = float(zc) - float(dz) / 2
+        info["z_max"] = float(zc) + float(dz) / 2
+    if depth == 0:
+        info["source"] = _source(h)
     info["geometry"] = g
     return info
 
@@ -650,6 +731,8 @@ def measure_distance(a, b):
 def move_objects(ids, dx, dy):
     dx, dy = _len(dx, "dx"), _len(dy, "dy")
     hs = [_resolve(i) for i in ids]  # all or nothing: fail before touching anything
+    for h in hs:
+        _require_editable(h)
     before = [_describe(h) for h in hs]
     for h in hs:
         vs.HMove(h, dx, dy)
@@ -667,6 +750,7 @@ def move_object(id, dx, dy):
 @op
 def rotate_object(id, angle, center=None):
     h = _resolve(id)
+    _require_editable(h)
     c = _pt(center, "center") if center else _center(id)[0]
     vs.HRotate(h, c, float(angle))
     if vs.GetTypeN(h) == 86:
@@ -692,6 +776,8 @@ def duplicate_objects(ids, dx=0, dy=0):
 @op
 def delete_objects(ids, _undoing=False):
     hs = [_resolve(i) for i in ids]
+    for h in hs:
+        _require_editable(h)
     gone = [_uuid(h) for h in hs]
     for h in hs:
         vs.DelObject(h)
@@ -708,6 +794,7 @@ def delete_object(id):
 @op
 def set_object_properties(id, name=None, cls=None, layer=None):
     h = _resolve(id)
+    _require_editable(h)
     before = _describe(h)
     if name is not None and name != before["name"]:
         other = vs.GetObject(name)
@@ -821,6 +908,7 @@ def _ld_values(h, values: dict) -> dict:
 @op
 def set_record_fields(id, record, values):
     h = _resolve(id)
+    _require_editable(h)
     values = dict(values)
     if record == LD:
         values = _ld_values(h, values)
@@ -854,7 +942,7 @@ def batch(steps):
     out = []
     for i, s in enumerate(steps):
         name = s.get("op")
-        if name in ("batch", "run_python", "undo_last") or name not in OPS:
+        if name in ("batch", "run_python", "undo_last", "import_dwg") or name not in OPS:
             raise OpError("Step %d: %r can't run in a batch." % (i + 1, name))
         try:
             out.append(OPS[name](**s.get("args", {})))
@@ -913,6 +1001,202 @@ def run_python(code):
 
 
 # ---------------------------------------------------------------------------------------
+# what's in this drawing (any situation: one file, referenced files, DWG, traced PDF)
+# ---------------------------------------------------------------------------------------
+
+RIGGING_KINDS = [
+    ("hoist", r"hoist|motor|chain ?hoist"),
+    ("house_point", r"house rigging point|rigging point|house point"),
+    ("bridle", r"bridle"),
+    ("truss", r"truss"),
+    ("load", r"\bload\b"),
+    ("position", r"hanging position|light position|lighting pipe|pipe ladder"),
+    ("fixture", r"lighting device"),
+]
+
+
+def _rigging_kind(plugin: str) -> str:
+    n = plugin.lower()
+    for kind, pat in RIGGING_KINDS:
+        if re.search(pat, n):
+            return kind
+    return ""
+
+
+@op
+def survey_drawing():
+    """Everything a rigger needs to know about a file they were just sent."""
+    everything = []
+    vs.ForEachObject(everything.append, "(ALL)")
+    _note_native("(ALL)")
+    counts = {"native": 0, "viewport": 0, "referenced": 0}
+    per_layer, per_class, plugins, viewports = {}, {}, {}, {}
+    xs, ys = [], []
+    for h in everything:
+        t = vs.GetTypeN(h)
+        if t in (31, 16, 92) or _inside_group(h):
+            continue
+        src = _source(h)
+        if t == 122:
+            viewports[str(h)] = {"name": _obj_name(h), "layer": _s(vs.GetLName(vs.GetLayer(h))), "objects": 0, "referenced": False}
+            continue
+        counts[src] += 1
+        if src != "native":
+            for anc in _parent_chain(h):
+                if vs.GetTypeN(anc) == 122 and str(anc) in viewports:
+                    viewports[str(anc)]["objects"] += 1
+                    viewports[str(anc)]["referenced"] = viewports[str(anc)]["referenced"] or src == "referenced"
+        layer = _s(vs.GetLName(vs.GetLayer(h)))
+        cls = _s(vs.GetClass(h))
+        per_layer[layer] = per_layer.get(layer, 0) + 1
+        per_class[cls] = per_class.get(cls, 0) + 1
+        if t == 86:
+            name = _plugin_name(h)
+            if name not in plugins:
+                plugins[name] = {"count": 0, "kind": _rigging_kind(name), "fields": list(_record_fields(h, name))[:80]}
+            plugins[name]["count"] += 1
+        p1, p2 = vs.GetBBox(h)
+        xs += [float(p1[0]), float(p2[0])]
+        ys += [float(p1[1]), float(p2[1])]
+    layers = []
+    for info in _layers():
+        h = vs.GetLayerByName(info["name"])
+        ref, path = vs.IsLayerReferenced(h)
+        elev = None
+        if hasattr(vs, "GetLayerElevationN"):  # document units, VW 2025+
+            base, thick = vs.GetLayerElevationN(h)
+            elev = {"base": float(base), "thickness": float(thick)}
+        layers.append(dict(info, objects=per_layer.get(info["name"], 0), visibility={-1: "hidden", 0: "visible", 2: "gray"}.get(vs.GetObjectVariableInt(h, 153), "visible"),
+                           elevation=elev, scale=float(vs.GetLScale(h)), referenced_file=_s(path) if ref else None))
+    ox, oy = vs.GetOriginInDocUnits()
+    extent = [[min(xs), min(ys)], [max(xs), max(ys)]] if xs else None
+    return {
+        "document": _s(vs.GetFName()), "path": _s(vs.GetFPathName()), "version": _version(), "units": _units(),
+        "user_origin": [float(ox), float(oy)], "extent": extent, "counts": counts,
+        "layers": layers, "classes": [{"name": c, "objects": per_class.get(c, 0)} for c in _classes()],
+        "viewports": list(viewports.values()), "plugins": [dict(v, name=k) for k, v in sorted(plugins.items())],
+    }
+
+
+@op
+def get_rigging(include_fixtures=False, limit=3000):
+    """Hoists, house points, bridles, truss, loads and hanging positions, with every field and Z.
+    Plug-in names vary by version, so objects are recognised by their plug-in name's words."""
+    found = []
+    vs.ForEachObject(found.append, "(T=PLUGINOBJECT)")
+    _note_native("(T=PLUGINOBJECT)")
+    out = []
+    for h in found:
+        if len(out) >= int(limit) or _inside_group(h):
+            continue
+        name = _plugin_name(h)
+        kind = _rigging_kind(name)
+        if not kind or (kind == "fixture" and not include_fixtures):
+            continue
+        d = _describe(h, include_records=True)
+        d.pop("geometry", None)
+        d["kind"] = kind
+        out.append(d)
+    return {"count": len(out), "units": _units(), "objects": out}
+
+
+VIS = {"visible": 0, "hidden": -1, "gray": 2}
+
+
+@op
+def set_visibility(layers=None, classes=None):
+    """Show, hide or gray layers and classes in Vectorworks: {"Venue Steel": "gray"}."""
+    for name, v in (layers or {}).items():
+        if v not in VIS:
+            raise OpError("Visibility is visible, hidden or gray, not %r" % v)
+        h = vs.GetLayerByName(name)
+        if _nil(h):
+            raise OpError("No layer named %r." % name)
+        vs.SetObjectVariableInt(h, 153, VIS[v])
+    for name, v in (classes or {}).items():
+        if v not in VIS:
+            raise OpError("Visibility is visible, hidden or gray, not %r" % v)
+        {"visible": vs.ShowClass, "hidden": vs.HideClass, "gray": vs.GrayClass}[v](name)
+    _no_undo("changing what's visible (use the Navigation palette to change it back)")
+    return {"layers": layers or {}, "classes": classes or {}}
+
+
+@op
+def find_reference_lines():
+    """Lines, loci and text that look like the show's datum: CL / centerline, PL / plaster line,
+    DSE / downstage edge, setting line, 0,0. Proposals only; a person confirms the datum."""
+    pat = re.compile(r"\b(cl|c/l|centre ?line|center ?line|pl|p/l|plaster ?line|setting ?line|curtain ?line|dse|d/s edge|downstage edge|datum|0,0|zero ?point|center ?point)\b", re.I)
+    found = []
+    vs.ForEachObject(found.append, "(ALL)")
+    out = []
+    for h in found:
+        t = vs.GetTypeN(h)
+        if t not in (2, 5, 21, 10, 17):
+            continue
+        label = " ".join([_obj_name(h), _s(vs.GetClass(h)), _s(vs.GetText(h)) if t == 10 else ""])
+        m = pat.search(label)
+        if m:
+            d = _describe(h)
+            d["matched"] = m.group(0)
+            out.append(d)
+        if len(out) >= 50:
+            break
+    return {"count": len(out), "candidates": out}
+
+
+@op
+def import_dwg(path):
+    """Import a DWG/DXF without the dialog (Vectorworks uses the last import settings) and report
+    what arrived: new layers and classes, how many objects, and how big it is, to catch unit mix-ups."""
+    if not os.path.isfile(_s(path)):
+        raise OpError("No file at %r." % path)
+    before_layers = set(l["name"] for l in _layers())
+    before_classes = set(_classes())
+    before = []
+    vs.ForEachObject(before.append, "(ALL)")
+    before_ids = set(_uuid(h) for h in before)
+    code = vs.ImportDXFDWGFile(_s(path), True)
+    after = []
+    vs.ForEachObject(after.append, "(ALL)")
+    new = [h for h in after if _uuid(h) not in before_ids and vs.GetTypeN(h) not in (31, 16, 92)]
+    xs, ys = [], []
+    for h in new:
+        p1, p2 = vs.GetBBox(h)
+        xs += [float(p1[0]), float(p2[0])]
+        ys += [float(p1[1]), float(p2[1])]
+    _no_undo("importing a DWG (use Ctrl+Z in Vectorworks)")
+    return {
+        "result_code": code, "new_objects": len(new),
+        "new_layers": sorted(set(l["name"] for l in _layers()) - before_layers),
+        "new_classes": sorted(set(_classes()) - before_classes),
+        "extent": [[min(xs), min(ys)], [max(xs), max(ys)]] if xs else None,
+        "units": _units(),
+    }
+
+
+@op
+def scale_objects(ids, factor, center=None):
+    """Scale 2D objects by `factor` about `center` (default: their combined middle). For a PDF or
+    DWG that came in at the wrong scale: measure a known dimension first (check_scale)."""
+    f = float(factor)
+    if not f > 0:
+        raise OpError("factor must be more than 0")
+    hs = [_resolve(i) for i in ids]
+    for h in hs:
+        _require_editable(h)
+    if center is None:
+        bbs = [vs.GetBBox(h) for h in hs]
+        cx = (min(float(b[0][0]) for b in bbs) + max(float(b[1][0]) for b in bbs)) / 2
+        cy = (min(float(b[1][1]) for b in bbs) + max(float(b[0][1]) for b in bbs)) / 2
+    else:
+        cx, cy = _pt(center, "center")
+    for h in hs:
+        vs.HScale2D(h, cx, cy, f, f, True)
+    _record("scale_objects", ids=[_uuid(h) for h in hs], factor=1.0 / f, center=[cx, cy])
+    return {"objects": [_describe(h) for h in hs]}
+
+
+# ---------------------------------------------------------------------------------------
 # queue processing
 # ---------------------------------------------------------------------------------------
 
@@ -949,6 +1233,8 @@ def run_pending(max_jobs: int = 50) -> int:
         job_id = job_path.stem
         del _pending_undo[:]
         _barrier[0] = None
+        _NATIVE.clear()  # handles only mean something within one run
+        _LOCAL_VP.clear()
         job = {}
         try:
             job = json.loads(running.read_text(encoding="utf-8"))

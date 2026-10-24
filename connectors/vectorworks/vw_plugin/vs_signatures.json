@@ -62,11 +62,20 @@
   "FInFolder": [
    "sfHd"
   ],
+  "FInGroup": [
+   "ObjectHd"
+  ],
   "FLayer": [],
   "FSymDef": [],
   "ForEachObject": [
    "callback",
    "c"
+  ],
+  "Get3DCntr": [
+   "h"
+  ],
+  "Get3DInfo": [
+   "h"
   ],
   "GetArc": [
    "h"
@@ -78,6 +87,7 @@
    "h"
   ],
   "GetFName": [],
+  "GetFPathName": [],
   "GetFldName": [
    "h",
    "index"
@@ -85,11 +95,17 @@
   "GetLName": [
    "h"
   ],
+  "GetLScale": [
+   "h"
+  ],
   "GetLayer": [
    "h"
   ],
   "GetLayerByName": [
    "layerName"
+  ],
+  "GetLayerElevationN": [
+   "h"
   ],
   "GetName": [
    "h"
@@ -103,11 +119,19 @@
   "GetObjectUuid": [
    "h"
   ],
+  "GetObjectVariableBoolean": [
+   "h",
+   "index"
+  ],
   "GetObjectVariableInt": [
    "h",
    "index"
   ],
+  "GetOriginInDocUnits": [],
   "GetParametricRecord": [
+   "h"
+  ],
+  "GetParent": [
    "h"
   ],
   "GetPolyPt": [
@@ -136,6 +160,9 @@
   "GetSymLoc": [
    "symHd"
   ],
+  "GetSymLoc3D": [
+   "objectHandle"
+  ],
   "GetSymName": [
    "symHd"
   ],
@@ -149,6 +176,15 @@
   "GetVersionEx": [],
   "GetVertNum": [
    "PolyHd"
+  ],
+  "GetWallCornerHeights": [
+   "theWall"
+  ],
+  "GetWallThickness": [
+   "h"
+  ],
+  "GrayClass": [
+   "clasName"
   ],
   "Group": [],
   "HCenter": [
@@ -171,6 +207,24 @@
    "h",
    "center",
    "rotationAngle"
+  ],
+  "HScale2D": [
+   "h",
+   "centerX",
+   "centerY",
+   "scaleX",
+   "scaleY",
+   "scaleText"
+  ],
+  "HideClass": [
+   "clasName"
+  ],
+  "ImportDXFDWGFile": [
+   "fileName",
+   "isBatch"
+  ],
+  "IsLayerReferenced": [
+   "layer"
   ],
   "IsPolyClosed": [
    "polyHandle"
@@ -198,6 +252,9 @@
    "clasName"
   ],
   "NextLayer": [
+   "h"
+  ],
+  "NextObj": [
    "h"
   ],
   "NextSymDef": [
@@ -272,6 +329,11 @@
    "h",
    "name"
   ],
+  "SetObjectVariableInt": [
+   "h",
+   "index",
+   "value"
+  ],
   "SetParent": [
    "obj",
    "container"
@@ -295,6 +357,9 @@
    "startHeightBottom",
    "endHeightTop",
    "endHeightBottom"
+  ],
+  "ShowClass": [
+   "clasName"
   ],
   "Symbol": [
    "symbolName",
