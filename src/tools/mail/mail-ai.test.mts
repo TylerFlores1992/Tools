@@ -5,8 +5,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { AI_BRIEF, aiPrompt, maskNumbers, mergeAi, readAiReply, type AiVerdict } from "./ai.ts";
-import { classify } from "./classify.ts";
-import type { IncomingMail, Rule } from "./types.ts";
+import { classify, isResolvedNotice, isRoutineCode, RESOLVED_MARK } from "./classify.ts";
+import { parseFrom } from "./headers.ts";
+import { buildReport } from "./report.ts";
+import type { IncomingMail, MailRow, Rule } from "./types.ts";
 
 let n = 0;
 const mail = (p: Partial<IncomingMail> & Pick<IncomingMail, "from" | "subject">): IncomingMail => ({
@@ -87,4 +89,51 @@ test("long numbers are masked before anything is sent; amounts, dates and codes 
   assert.equal(maskNumbers("Amount due $806.67 by 10/26/2026, code 254197, ending 1236"), "Amount due $806.67 by 10/26/2026, code 254197, ending 1236");
   const p = aiPrompt([mail({ from: '"Bank" <a@bank.com>', subject: "Acct 987654321", snippet: "Tracking 1Z999AA10123456784" })]);
   assert.ok(!/987654321|10123456784/.test(p), p);
+});
+
+// ---- outages that already ended, and one-time codes (owner, 2026-10-25) ----
+
+const bsStart = (t: string) => mail({ from: '"betterstack.com" <alerts@alerts.betterstack.com>', subject: `camphawk.app/api/health/status - ${t}`, snippet: "## New incident started ## Hello Tyler, Please acknowledge the incident." });
+const bsDone = (t: string) => mail({ from: '"betterstack.com" <alerts@alerts.betterstack.com>', subject: `camphawk.app/api/health/status - ${t}`, snippet: "## Incident resolved ## Hello Tyler, The incident was automatically resolved." });
+
+test("a monitor's 'resolved' email is information, whatever the model says", () => {
+  const done = bsDone("Oct 25, 2026 at 1:41am");
+  assert.equal(isResolvedNotice(done), true);
+  assert.equal(isResolvedNotice(bsStart("Oct 25, 2026 at 1:41am")), false);
+  const c = mergeAi(done, classify(done, null), v({ bucket: "needs_you", level: "urgent", summary: "Incident" }), null);
+  assert.deepEqual([c.bucket, c.level], ["other", "info"]);
+  assert.ok(c.detail?.startsWith(RESOLVED_MARK));
+  // A person writing "resolved" is not a monitor.
+  assert.equal(isResolvedNotice(mail({ from: '"Tori" <tori@gmail.com>', subject: "Re: parking incident resolved" })), false);
+});
+
+const row = (id: string, m: IncomingMail, bucket: MailRow["bucket"], extra: Partial<MailRow> = {}): MailRow => {
+  const c = classify(m, null);
+  const s = parseFrom(m.from);
+  return {
+    id, accountId: "gmail", reportDate: "2026-10-25", receivedAt: null, fromName: s.name, fromAddr: s.addr, subject: m.subject, bucket, level: "urgent",
+    title: m.subject, detail: bucket === "other" ? c.detail : "Better Stack incident started", action: null, actionFolder: null, actionStatus: null, actionNote: null,
+    unsubHttp: null, unsubMailto: null, oneClick: false, ...extra,
+  };
+};
+
+test("report: an outage with its 'resolved' email is closed; one still open is listed", () => {
+  const rows = [
+    row("s1", bsStart("Oct 25, 2026 at 1:41am"), "needs_you"),
+    row("r1", bsDone("Oct 25, 2026 at 1:41am"), "other"),
+    row("s2", bsStart("Oct 25, 2026 at 3:05am"), "needs_you"),
+  ];
+  const r = buildReport({ date: "2026-10-25", rows, dismissed: new Set(), unsubscribed: new Map(), ruleCoveredAddrs: new Set(), accountErrors: [] });
+  assert.deepEqual(r.needsYou.map((i) => i.id), ["s2"]);
+});
+
+test("one-time codes are low-key unless something was blocked or looked suspicious", () => {
+  const tiktok = mail({ from: '"TikTok" <register@account.tiktok.com>', subject: "254197 is your 6-digit code", snippet: "If this wasn't you, ignore this email." });
+  assert.equal(isRoutineCode(tiktok), true);
+  const ig = mail({ from: '"Instagram" <security@mail.instagram.com>', subject: "Verify your profile", snippet: "Enter 660088 to log in. If this wasn't you, secure your account." });
+  assert.equal(mergeAi(ig, classify(ig, null), v({ bucket: "security", level: "urgent" }), null).level, "info");
+  assert.equal(classify(tiktok, null).level, "info");
+  const blocked = mail({ from: '"Bank" <alerts@bank.com>', subject: "Your verification code", snippet: "We blocked a suspicious sign-in. Code 123456." });
+  assert.equal(isRoutineCode(blocked), false);
+  assert.equal(mergeAi(blocked, classify(blocked, null), v({ bucket: "security", level: "urgent" }), null).level, "urgent");
 });

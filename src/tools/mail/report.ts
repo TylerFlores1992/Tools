@@ -1,3 +1,4 @@
+import { RESOLVED_MARK } from "./classify.ts";
 import type { Level, MailRow } from "./types.ts";
 
 /**
@@ -64,9 +65,13 @@ export function buildReport(input: {
   });
   const sort = (a: ReportItem, b: ReportItem) => RANK[a.level] - RANK[b.level] || (b.since ?? "9").localeCompare(a.since ?? "9");
 
-  const needsYou = rows.filter((r) => r.bucket === "needs_you" && live(r)).map(toItem).sort(sort);
+  // An outage alert is closed by the monitor's own "resolved" email with the same subject (Better
+  // Stack sends both under one subject). Only outages still open are listed.
+  const resolved = new Set(rows.filter((r) => r.detail?.startsWith(RESOLVED_MARK) && r.fromAddr).map((r) => `${r.fromAddr}\u0000${r.subject}`));
+  const open = (r: MailRow) => !(r.fromAddr && resolved.has(`${r.fromAddr}\u0000${r.subject}`)) || r.detail?.startsWith(RESOLVED_MARK);
+  const needsYou = rows.filter((r) => r.bucket === "needs_you" && live(r) && open(r)).map(toItem).sort(sort);
   // A verification code is only worth showing the day it came.
-  const security = rows.filter((r) => r.bucket === "security" && live(r) && (r.level !== "info" || r.reportDate === date)).map(toItem).sort(sort);
+  const security = rows.filter((r) => r.bucket === "security" && live(r) && open(r) && (r.level !== "info" || r.reportDate === date)).map(toItem).sort(sort);
 
   const junk = today.filter((r) => r.bucket === "junk" && !r.action && !(r.fromAddr && input.ruleCoveredAddrs.has(r.fromAddr))).map(toItem);
   const updates = today.filter((r) => r.bucket === "updates" && !r.action).map(toItem);

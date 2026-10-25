@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isResolvedNotice, isRoutineCode } from "./classify.ts";
 import { clip, parseFrom, senderLabel } from "./headers.ts";
 import type { Bucket, Classified, IncomingMail, Level, Rule } from "./types.ts";
 
@@ -37,7 +38,9 @@ Put every email in exactly one bucket:
   suspended or over a limit (a service about to stop, quota used up, a payment that failed);
   anything that asks him to act or decide.
 - security: sign-ins, new devices, password or 2-step changes, account access, breaches, a code
-  he did not obviously ask for. Never put a real security alert anywhere else.
+  he did not obviously ask for. Never put a real security alert anywhere else. A one-time or
+  verification code is not urgent (he usually just asked for it) unless the email says something
+  was blocked, locked, breached or suspicious.
 - updates: receipts, refunds, invoices already paid, order confirmations, deliveries, welcome and
   verify-your-email messages for something he just signed up for, monthly account summaries,
   policy notices. Worth a glance, never a task.
@@ -93,13 +96,16 @@ export function readAiReply(reply: AiReply | null | undefined, mails: readonly I
  * With no verdict (model down, email missing from its reply) the code's answer stands.
  */
 export function mergeAi(mail: IncomingMail, code: Classified, ai: AiVerdict | undefined, rule: Rule | null): Classified {
-  if (!ai || rule) return code;
+  // An outage that ended is information, and the report uses the mark to close the outage.
+  if (!ai || rule || isResolvedNotice(mail)) return code;
+  const code1 = isRoutineCode(mail);
   if (code.bucket === "security") {
     return ai.summary ? { ...code, detail: detail(mail, ai.summary) } : code;
   }
   const title = clip(mail.subject || "(no subject)", 100);
   if (ai.bucket === "security") {
-    return { bucket: "security", level: ai.level === "urgent" ? "urgent" : "normal", title: `${senderLabel(parseFrom(mail.from))}: ${title}`, detail: detail(mail, ai.summary) };
+    const level = code1 ? "info" : ai.level === "urgent" ? "urgent" : "normal";
+    return { bucket: "security", level, title: `${senderLabel(parseFrom(mail.from))}: ${title}`, detail: detail(mail, ai.summary) };
   }
   return { bucket: ai.bucket, level: ai.level, title, detail: detail(mail, ai.summary) };
 }
