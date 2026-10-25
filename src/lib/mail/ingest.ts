@@ -52,7 +52,7 @@ export function opFor(row: Pick<MailRow, "id" | "action" | "actionFolder" | "act
 export async function ingest(mails: IncomingMail[], rules: readonly Rule[], reportDate = pacificDate()): Promise<{ stored: number; ops: MailboxOp[] }> {
   const known = await knownIds(mails.map((m) => m.id));
   const fresh = mails.filter((m) => !known.has(m.id));
-  const ai = await aiSort(fresh);
+  const ai = await aiSort(fresh, 18_000);
   const ops: MailboxOp[] = [];
   let stored = 0;
   for (const m of fresh) {
