@@ -108,6 +108,32 @@ export function looksLikePerson(sender: Sender): boolean {
   return true;
 }
 
+// ---- monitoring and one-time codes (owner, 2026-10-25) ------------------------------------------
+
+/** Starts every "it recovered" notice's detail line; the report pairs these with their outage. */
+export const RESOLVED_MARK = "Resolved";
+// "## Incident resolved" (Better Stack), "[Resolved]", "is back up", "recovered".
+const RESOLVED = /\bincident (has been |was |automatically )?resolved\b|\[resolved\]|\bresolved:|\bis (back )?up again\b|\bis back up\b|\bhas recovered\b|\brecovered\b.*\b(monitor|incident|outage)\b/i;
+const MONITOR_SENDER = /@(alerts\.)?(betterstack\.com|uptimerobot\.com|statuscake\.com|pingdom\.com|cronitor\.io)$|^alerts?@/i;
+
+/** A monitor saying an outage it reported has ended. Information, and it closes the outage. */
+export function isResolvedNotice(mail: Pick<IncomingMail, "from" | "subject" | "snippet">): boolean {
+  const addr = parseFrom(mail.from).addr ?? "";
+  return MONITOR_SENDER.test(addr) && RESOLVED.test(`${mail.subject} ${mail.snippet.slice(0, 200)}`);
+}
+
+// A one-time code: worth knowing, rarely urgent. Most arrive because he just asked for one.
+const ONE_TIME_CODE = /\b(verification|security|one[- ]time|login|sign[- ]in|confirmation|access) code\b|\bcode is\b|\byour code\b|\b\d{4,8} is your\b|\byour \d{1,2}-digit code\b|\bverify your (profile|identity|account|login)\b/i;
+// What makes a code worth a second look: something blocked, locked, breached or plainly odd.
+// Not "if this wasn't you": every code email says that.
+const CODE_ALARM = /\b(suspicious|unusual activity|breach(ed)?|compromised|locked|blocked|unrecognized|unknown device)\b/i;
+
+/** Security mail that is only a one-time code with nothing alarming in it. */
+export function isRoutineCode(mail: Pick<IncomingMail, "subject" | "snippet">): boolean {
+  const text = `${mail.subject} ${mail.snippet}`;
+  return ONE_TIME_CODE.test(text) && !CODE_ALARM.test(text);
+}
+
 /** Plain-language amount and due date, if the text carries them ("$806.67 · due 10/26"). */
 export function billFacts(text: string): string | null {
   const amount = text.match(/\$\s?\d{1,3}(?:,\d{3})*(?:\.\d{2})?/);
@@ -155,6 +181,10 @@ export function classify(mail: IncomingMail, rule: Rule | null): Classified {
     return { bucket: "needs_you", level: "normal", title: subject, detail: detail(facts ?? clip(mail.snippet, 140)) };
   }
 
+  if (isResolvedNotice(mail)) {
+    return { bucket: "other", level: "info", title: subject, detail: `${RESOLVED_MARK} · From ${who}` };
+  }
+
   const junk = junkSignals(mail, sender);
   if (junk.length) {
     const addr = sender.addr ? ` <${sender.addr}>` : "";
@@ -168,11 +198,11 @@ export function classify(mail: IncomingMail, rule: Rule | null): Classified {
 
   if (securityHit) {
     // A bare verification code is information: it expires in minutes and was usually asked for.
-    const codeOnly = CODE_ONLY.test(text) && !SECURITY_URGENT.test(text);
+    const codeOnly = isRoutineCode(mail) || (CODE_ONLY.test(text) && !SECURITY_URGENT.test(text));
     const copy = ALERT_COPY.test(text);
     return {
       bucket: "security",
-      level: copy ? "info" : SECURITY_URGENT.test(text) ? "urgent" : codeOnly ? "info" : "normal",
+      level: copy || codeOnly ? "info" : SECURITY_URGENT.test(text) ? "urgent" : "normal",
       title: `${who}: ${subject}`,
       detail: detail(clip(mail.snippet, 160) || null),
     };
