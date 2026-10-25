@@ -126,8 +126,9 @@ export async function resortRecent(rules: readonly Rule[], days = 7): Promise<{ 
     const rule = pickRule(rules, mail.from, mail.subject);
     const verdict = ai.get(mail.id);
     const c = mergeAi(mail, classify(mail, rule), verdict, rule);
-    if (c.bucket === r.bucket && c.level === r.level && c.title === r.title && c.detail === r.detail) continue;
-    await setClassification(r.id, c, verdict && !rule ? "ai" : "code");
+    const by = verdict && !rule ? "ai" : "code";
+    if (c.bucket === r.bucket && c.level === r.level && c.title === r.title && c.detail === r.detail && r.sortedBy === by) continue;
+    await setClassification(r.id, c, by);
     if (c.bucket !== r.bucket) changed++; // "moved" means a different section, not a reworded line
   }
   return { checked: rows.length, changed };

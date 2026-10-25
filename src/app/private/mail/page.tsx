@@ -8,9 +8,13 @@ import { requirePrivate } from "@/lib/money/guard";
 import { loadMail } from "@/lib/mail/load";
 import type { ReportItem } from "@/tools/mail/report";
 import { MailShell } from "@/tools/mail/ui/MailShell";
+import { PendingButton } from "@/tools/mail/ui/PendingButton";
 import { Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
 import { resortMail, ruleFromSender, toggleDone } from "./actions";
+
+// "Sort the last week again" reads up to ~150 emails through the AI.
+export const maxDuration = 60;
 
 export const metadata: Metadata = {
   title: "Morning Mail",
@@ -235,10 +239,13 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
 
         {isToday && !noAccounts && (
           <form action={resortMail} className="mt-10">
-            <button type="submit" className="inline-flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink">
+            <PendingButton
+              pending="Sorting with AI… up to a minute"
+              className="inline-flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink disabled:cursor-wait"
+            >
               Sort the last week again
-            </button>
-            <span className="ml-3 text-small text-muted">Uses your current rules. Nothing in your mailboxes moves.</span>
+            </PendingButton>
+            <span className="ml-3 text-small text-muted">Reads the week again with AI and your current rules. Nothing in your mailboxes moves.</span>
           </form>
         )}
 

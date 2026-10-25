@@ -12,28 +12,32 @@ import type { IncomingMail } from "@/tools/mail/types";
  */
 
 export const MAIL_AI_MODEL = process.env.MAIL_AI_MODEL || "google/gemini-2.5-flash";
-const CHUNK = 40;
+// Gemini Flash answering for 40 emails at once took over 25 s and timed out (2026-10-24, the
+// first re-sort). Smaller requests, two at a time, thinking off: each answers in a few seconds.
+const CHUNK = 20;
+const AT_ONCE = 2;
 
 export async function aiSort(mails: readonly IncomingMail[]): Promise<Map<string, AiVerdict>> {
   const out = new Map<string, AiVerdict>();
   if (!mails.length || process.env.MAIL_AI === "off") return out;
   const chunks: IncomingMail[][] = [];
   for (let i = 0; i < mails.length; i += CHUNK) chunks.push(mails.slice(i, i + CHUNK));
-  await Promise.all(
-    chunks.map(async (chunk) => {
+  const work = async (chunk: IncomingMail[]) => {
       try {
         const { output } = await generateText({
           model: MAIL_AI_MODEL,
           output: Output.object({ schema: AI_SCHEMA }),
-          abortSignal: AbortSignal.timeout(25_000),
-          maxRetries: 1,
+          abortSignal: AbortSignal.timeout(30_000),
+          maxRetries: 0,
+          // The gateway may serve Gemini from Google AI or Vertex; each reads its own key.
+          providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } }, vertex: { thinkingConfig: { thinkingBudget: 0 } } },
           prompt: aiPrompt(chunk),
         });
         for (const [id, v] of readAiReply(output, chunk)) out.set(id, v);
       } catch (e) {
-        console.error("mail ai sort failed", e instanceof Error ? `${e.name}: ${e.message.slice(0, 200)}` : "unknown");
+        console.error("mail ai sort failed", chunk.length, e instanceof Error ? `${e.name}: ${e.message.slice(0, 200)}` : "unknown");
       }
-    }),
-  );
+  };
+  for (let i = 0; i < chunks.length; i += AT_ONCE) await Promise.all(chunks.slice(i, i + AT_ONCE).map(work));
   return out;
 }
