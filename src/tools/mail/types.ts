@@ -52,4 +52,5 @@ export type MailRow = {
   unsubHttp: string | null;
   unsubMailto: string | null;
   oneClick: boolean;
+  sortedBy?: "ai" | "code"; // who decided the section: the model, or the code rules alone
 };

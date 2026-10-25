@@ -1,9 +1,11 @@
 import "server-only";
+import { mergeAi } from "@/tools/mail/ai";
 import { classify, mailFromStored, pickRule } from "@/tools/mail/classify";
 import { clip, parseFrom, parseUnsubscribe } from "@/tools/mail/headers";
 import { planAction, safeUnsubscribeUrl } from "@/tools/mail/plan";
 import { addDays, CARRY_DAYS } from "@/tools/mail/report";
 import type { IncomingMail, MailRow, Rule } from "@/tools/mail/types";
+import { aiSort } from "./ai-sort";
 import { insertMessage, knownIds, recordUnsubscribed, recentUnactioned, setActionStatus, setClassification, unactionedFrom } from "./store";
 
 /** What a source must do to its mailbox next. "trash" always means the account's own Trash. */
@@ -49,13 +51,15 @@ export function opFor(row: Pick<MailRow, "id" | "action" | "actionFolder" | "act
  */
 export async function ingest(mails: IncomingMail[], rules: readonly Rule[], reportDate = pacificDate()): Promise<{ stored: number; ops: MailboxOp[] }> {
   const known = await knownIds(mails.map((m) => m.id));
+  const fresh = mails.filter((m) => !known.has(m.id));
+  const ai = await aiSort(fresh);
   const ops: MailboxOp[] = [];
   let stored = 0;
-  for (const m of mails) {
-    if (known.has(m.id)) continue;
+  for (const m of fresh) {
     const sender = parseFrom(m.from);
     const rule = pickRule(rules, m.from, m.subject);
-    const c = classify(m, rule);
+    const verdict = ai.get(m.id);
+    const c = mergeAi(m, classify(m, rule), verdict, rule);
     const p = planAction(m, rule);
     const u = parseUnsubscribe(m.listUnsubscribe, m.listUnsubscribePost);
     let status = p.status;
@@ -71,7 +75,7 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
       id: m.id, accountId: m.accountId, reportDate, receivedAt: m.receivedAt, fromName: sender.name, fromAddr: sender.addr,
       subject: clip(m.subject || "(no subject)", 200), snippet: clip(m.snippet, 400), unsubHttp: u.http, unsubMailto: u.mailto, oneClick: u.oneClick,
       bucket: c.bucket, level: c.level, title: c.title, detail: c.detail, ruleId: rule?.id ?? null, action: p.action,
-      actionFolder: p.folder, actionStatus: status, actionNote: note,
+      actionFolder: p.folder, actionStatus: status, actionNote: note, sortedBy: verdict && !rule ? "ai" : "code",
     });
     if (!inserted) continue;
     stored++;
@@ -114,12 +118,16 @@ export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<{
  */
 export async function resortRecent(rules: readonly Rule[], days = 7): Promise<{ checked: number; changed: number }> {
   const rows = await recentUnactioned(addDays(pacificDate(), -(days - 1)));
+  const mails = rows.map(mailFromStored);
+  const ai = await aiSort(mails);
   let changed = 0;
-  for (const r of rows) {
-    const mail = mailFromStored(r);
-    const c = classify(mail, pickRule(rules, mail.from, mail.subject));
+  for (const [i, r] of rows.entries()) {
+    const mail = mails[i];
+    const rule = pickRule(rules, mail.from, mail.subject);
+    const verdict = ai.get(mail.id);
+    const c = mergeAi(mail, classify(mail, rule), verdict, rule);
     if (c.bucket === r.bucket && c.level === r.level && c.title === r.title && c.detail === r.detail) continue;
-    await setClassification(r.id, c);
+    await setClassification(r.id, c, verdict && !rule ? "ai" : "code");
     if (c.bucket !== r.bucket) changed++; // "moved" means a different section, not a reworded line
   }
   return { checked: rows.length, changed };

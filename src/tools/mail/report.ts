@@ -26,6 +26,7 @@ export type Report = {
   bulk: BulkSender[];
   otherCount: number;
   total: number;
+  aiCount: number; // of today's emails, how many the model sorted (0 means the code sorted them all)
 };
 
 // Mail a rule is moving out of the inbox (or already moved) is handled; a failed move stays listed.
@@ -134,6 +135,7 @@ export function buildReport(input: {
     bulk,
     otherCount: today.filter((r) => r.bucket === "other" && !r.action).length,
     total: today.length,
+    aiCount: today.filter((r) => r.sortedBy === "ai").length,
   };
 }
 

@@ -245,6 +245,8 @@ test("junk: a capital I for an l, in the name or the subject", () => {
   // Real words with a capital I are not that: acronyms, Mc/Mac names, a word that starts with I.
   assert.deepEqual(junkSignals(mail({ from: '"Ian McIntyre" <ian@studio.com>', subject: "AI notes for the IATSE call, iPhone shots" })), []);
   assert.deepEqual(junkSignals(mail({ from: '"Ops" <ops@x.com>', subject: "MacIntosh and O'Inn" })), []);
+  // A brand that capitalizes inside its name is not that either (vidIQ was flagged, 2026-10-24).
+  assert.deepEqual(junkSignals(mail({ from: '"Rob from vidIQ" <hello@send.vidiq.com>', subject: "Tyler, welcome to vidIQ!" })), []);
 });
 
 test("junk: underscores or padded spaces in the name, template leftovers", () => {

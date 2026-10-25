@@ -243,7 +243,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
         )}
 
         <p className="mt-6 text-small text-muted">
-          Checked every morning at 7{data.accounts.find((a) => a.lastRunAt) ? `, last at ${time(data.accounts.map((a) => a.lastRunAt).filter(Boolean).sort().pop() as string)}` : ""}. All code, no AI. Nothing is ever sent or permanently deleted; mail moves only when one of your rules says so.
+          Checked every morning at 7{data.accounts.find((a) => a.lastRunAt) ? `, last at ${time(data.accounts.map((a) => a.lastRunAt).filter(Boolean).sort().pop() as string)}` : ""}. {r.total ? (r.aiCount ? `Sorted by AI (${r.aiCount} of ${r.total} today), with your rules and the sign-in checks on top. ` : "Sorted by the code rules alone. ") : ""}Nothing is ever sent or permanently deleted; mail moves only when one of your rules says so.
         </p>
       </div>
     </MailShell>

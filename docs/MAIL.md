@@ -1,8 +1,22 @@
 # Morning Mail (`/private/mail`)
 
-The owner's morning email report, behind the Private password. **All code, no AI.** Built
+The owner's morning email report, behind the Private password. Built
 2026-10-18 as a trial next to the Claude-written "Morning Mail" artifact (a 7 am `/mail` Claude run on
-the home server, owner's call: "make that all code so Claude isn't involved").
+the home server, owner's call: "make that all code so Claude isn't involved"). **Since 2026-10-24 an
+AI read sorts and summarizes each email** (owner: the code-only sorting kept missing what the
+Claude version caught; "Do it").
+
+## The AI read (2026-10-24)
+- `src/tools/mail/ai.ts` (brief, prompt, reply parsing, `mergeAi`) + `src/lib/mail/ai-sort.ts` (the
+  call). Vercel AI Gateway, OIDC token, **free tier: `google/gemini-2.5-flash`** (Claude models are
+  refused on the free tier, docs/MONEY.md). `MAIL_AI_MODEL` switches model; `MAIL_AI=off` disables.
+- Sent: sender, subject, first 400 characters, one request per 40 emails, 25 s timeout. Cost sits
+  inside the gateway's free monthly credit at ~100 emails a day.
+- The code classifier still runs first and is the fallback. The model cannot override: the owner's
+  rules; a code "security" call (it may add a summary, or promote something to security).
+- `mail.messages.sorted_by` = `ai` | `code`; the page footer says how many of today's emails the
+  AI sorted. "Sort the last week again" re-reads the week through the AI too.
+- Tests: `src/tools/mail/mail-ai.test.mts` (mutation round 9/9).
 
 ## How it works
 ```

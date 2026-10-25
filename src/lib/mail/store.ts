@@ -24,13 +24,14 @@ type DbMsg = {
   id: string; account_id: string; report_date: string; received_at: Date | null; from_name: string | null; from_addr: string | null;
   subject: string; bucket: Bucket; level: Level; title: string; detail: string | null; action: RuleAction | null; action_folder: string | null;
   action_status: ActionStatus | null; action_note: string | null; unsub_http: string | null; unsub_mailto: string | null; one_click: boolean;
+  sorted_by?: string | null;
 };
 
 const toRow = (r: DbMsg): MailRow => ({
   id: r.id, accountId: r.account_id, reportDate: r.report_date, receivedAt: r.received_at?.toISOString() ?? null, fromName: r.from_name,
   fromAddr: r.from_addr, subject: r.subject, bucket: r.bucket, level: r.level, title: r.title, detail: r.detail, action: r.action,
   actionFolder: r.action_folder, actionStatus: r.action_status, actionNote: r.action_note, unsubHttp: r.unsub_http, unsubMailto: r.unsub_mailto,
-  oneClick: r.one_click,
+  oneClick: r.one_click, sortedBy: r.sorted_by === "ai" ? "ai" : "code",
 });
 
 export async function getAccounts(): Promise<AccountRow[]> {
@@ -97,14 +98,14 @@ export async function knownIds(ids: string[]): Promise<Set<string>> {
   return new Set(rows.map((r) => r.id));
 }
 
-export type NewMessage = Omit<MailRow, "receivedAt"> & { receivedAt: string | null; snippet: string; ruleId: number | null };
+export type NewMessage = Omit<MailRow, "receivedAt" | "sortedBy"> & { receivedAt: string | null; snippet: string; ruleId: number | null; sortedBy: "ai" | "code" };
 
 export async function insertMessage(m: NewMessage): Promise<boolean> {
   const rows = await sql()`
     insert into mail.messages (id, account_id, report_date, received_at, from_name, from_addr, subject, snippet, unsub_http, unsub_mailto, one_click,
-      bucket, level, title, detail, rule_id, action, action_folder, action_status, action_note)
+      bucket, level, title, detail, rule_id, action, action_folder, action_status, action_note, sorted_by)
     values (${m.id}, ${m.accountId}, ${m.reportDate}::date, ${m.receivedAt}, ${m.fromName}, ${m.fromAddr}, ${m.subject}, ${m.snippet}, ${m.unsubHttp},
-      ${m.unsubMailto}, ${m.oneClick}, ${m.bucket}, ${m.level}, ${m.title}, ${m.detail}, ${m.ruleId}, ${m.action}, ${m.actionFolder}, ${m.actionStatus}, ${m.actionNote})
+      ${m.unsubMailto}, ${m.oneClick}, ${m.bucket}, ${m.level}, ${m.title}, ${m.detail}, ${m.ruleId}, ${m.action}, ${m.actionFolder}, ${m.actionStatus}, ${m.actionNote}, ${m.sortedBy})
     on conflict (id) do nothing returning 1`;
   if (rows.length && m.ruleId !== null) {
     await sql()`update mail.rules set hits = hits + 1, last_hit_at = now() where id = ${m.ruleId}`;
@@ -130,7 +131,7 @@ export async function pendingActions(accountId: string): Promise<MailRow[]> {
 export async function getRows(since: string): Promise<MailRow[]> {
   const rows = await sql()<DbMsg[]>`
     select id, account_id, to_char(report_date, 'YYYY-MM-DD') as report_date, received_at, from_name, from_addr, subject, bucket, level, title, detail,
-      action, action_folder, action_status, action_note, unsub_http, unsub_mailto, one_click
+      action, action_folder, action_status, action_note, unsub_http, unsub_mailto, one_click, sorted_by
     from mail.messages where report_date >= ${since}::date order by received_at desc nulls last`;
   return rows.map(toRow);
 }
@@ -153,8 +154,8 @@ export async function recentUnactioned(since: string): Promise<Array<MailRow & {
   return rows.map((r) => ({ ...toRow(r), snippet: r.snippet }));
 }
 
-export async function setClassification(id: string, c: { bucket: Bucket; level: Level; title: string; detail: string | null }): Promise<void> {
-  await sql()`update mail.messages set bucket = ${c.bucket}, level = ${c.level}, title = ${c.title}, detail = ${c.detail} where id = ${id}`;
+export async function setClassification(id: string, c: { bucket: Bucket; level: Level; title: string; detail: string | null }, sortedBy: "ai" | "code"): Promise<void> {
+  await sql()`update mail.messages set bucket = ${c.bucket}, level = ${c.level}, title = ${c.title}, detail = ${c.detail}, sorted_by = ${sortedBy} where id = ${id}`;
 }
 
 export async function getDismissed(): Promise<Set<string>> {
