@@ -61,7 +61,7 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `src/app/private/vectorworks/` live Vectorworks panel (talks to 127.0.0.1, never via the site);
   logic `src/tools/vectorworks/`; the Python connector Claude draws through is
   `connectors/vectorworks/` (its README: setup, why it's built that way, first run on real VW)
-- `src/app/private/mail/` Morning Mail, all code (Gmail Apps Script + Yahoo IMAP → `mail` schema,
+- `src/app/private/mail/` Morning Mail, code rules + an AI read (Gmail Apps Script + Yahoo IMAP → `mail` schema,
   rules move mail); logic `src/tools/mail/`, server `src/lib/mail/`; `docs/MAIL.md`
 - `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
   camphawk.app (`ch-*` tokens, lab only). Chosen look "Golden hour": every CampHawk screen under

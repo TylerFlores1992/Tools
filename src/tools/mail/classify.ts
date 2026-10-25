@@ -52,6 +52,7 @@ function homoglyphWord(text: string): string | null {
     if (w.length < 3 || w === w.toUpperCase()) continue; // "AI", "OK", "NASA"
     for (let i = 1; i < w.length; i++) {
       if (w[i] !== "I" || !/[a-z]/.test(w[i - 1])) continue;
+      if (i + 1 < w.length && !/[a-z]/.test(w[i + 1])) continue; // "vidIQ", "iOS"-style brand caps
       if (/^(Ma?c|O)$/.test(w.slice(0, i))) continue; // McIntyre, MacIntosh
       return w;
     }
