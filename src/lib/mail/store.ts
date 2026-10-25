@@ -149,7 +149,7 @@ export async function unactionedFrom(fromAddr: string, since: string): Promise<A
 export async function recentUnactioned(since: string): Promise<Array<MailRow & { snippet: string }>> {
   const rows = await sql()<(DbMsg & { snippet: string })[]>`
     select id, account_id, to_char(report_date, 'YYYY-MM-DD') as report_date, received_at, from_name, from_addr, subject, bucket, level, title, detail,
-      action, action_folder, action_status, action_note, unsub_http, unsub_mailto, one_click, snippet
+      action, action_folder, action_status, action_note, unsub_http, unsub_mailto, one_click, snippet, sorted_by
     from mail.messages where action is null and report_date >= ${since}::date`;
   return rows.map((r) => ({ ...toRow(r), snippet: r.snippet }));
 }
