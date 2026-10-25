@@ -4,7 +4,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { AI_BRIEF, aiPrompt, mergeAi, readAiReply, type AiVerdict } from "./ai.ts";
+import { AI_BRIEF, aiPrompt, maskNumbers, mergeAi, readAiReply, type AiVerdict } from "./ai.ts";
 import { classify } from "./classify.ts";
 import type { IncomingMail, Rule } from "./types.ts";
 
@@ -78,4 +78,13 @@ test("the summary leads the detail line; the title stays the real subject", () =
   const c = mergeAi(m, classify(m, null), v({ summary: "Production documents for VTR5, Oct 23" }), null);
   assert.equal(c.title, "P&T Fool Us S12 // VTR5 10/23 Production Documents");
   assert.equal(c.detail, "Production documents for VTR5, Oct 23 · From Tori Rose Teixeira");
+});
+
+test("long numbers are masked before anything is sent; amounts, dates and codes stay", () => {
+  assert.equal(maskNumbers("Card 4111 1111 1111 1234 was charged"), "Card #…# was charged");
+  assert.equal(maskNumbers("Account 123456789 statement"), "Account #…# statement");
+  assert.equal(maskNumbers("Call (818) 555-0142 or 818-555-0142"), "Call (818) #…# or #…#");
+  assert.equal(maskNumbers("Amount due $806.67 by 10/26/2026, code 254197, ending 1236"), "Amount due $806.67 by 10/26/2026, code 254197, ending 1236");
+  const p = aiPrompt([mail({ from: '"Bank" <a@bank.com>', subject: "Acct 987654321", snippet: "Tracking 1Z999AA10123456784" })]);
+  assert.ok(!/987654321|10123456784/.test(p), p);
 });

@@ -15,6 +15,7 @@
     "e2e": "tsx scripts/e2e.mts"
   },
   "dependencies": {
+    "@ai-sdk/google": "4.0.100",
     "ai": "7.0.145",
     "imapflow": "2.5.4",
     "lucide-react": "1.22.0",

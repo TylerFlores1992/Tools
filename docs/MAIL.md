@@ -8,7 +8,12 @@ Claude version caught; "Do it").
 
 ## The AI read (2026-10-24)
 - `src/tools/mail/ai.ts` (brief, prompt, reply parsing, `mergeAi`) + `src/lib/mail/ai-sort.ts` (the
-  call). Vercel AI Gateway, OIDC token, **free tier: `google/gemini-2.5-flash`** (Claude models are
+  call).
+- **2026-10-24 evening: the Vercel gateway's free credit ran out** ("A positive credit balance is
+  required"), so the owner chose Google's free Gemini API: `MAIL_GEMINI_API_KEY` (AI Studio key,
+  set in Vercel by the owner) switches to it, model `MAIL_GEMINI_MODEL` (default
+  `gemini-flash-latest`). Google's free tier may use inputs to improve its products: the owner
+  accepted that; long digit runs are masked before sending (`maskNumbers`). Vercel AI Gateway, OIDC token, **free tier: `google/gemini-2.5-flash`** (Claude models are
   refused on the free tier, docs/MONEY.md). `MAIL_AI_MODEL` switches model; `MAIL_AI=off` disables.
 - Sent: sender, subject, first 400 characters, one request per 40 emails, 25 s timeout. Cost sits
   inside the gateway's free monthly credit at ~100 emails a day.
