@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { loadProgress } from "@/lib/learn/store";
 import { requirePrivate } from "@/lib/money/guard";
-import { lessonById, PHASES } from "@/tools/learn/lessons";
+import { lessonById, PHASES, quizzesOf } from "@/tools/learn/lessons";
 import { lessonStatus, phaseOpen } from "@/tools/learn/progress";
 import { LearnNotConfigured, LearnShell, LearnUnreachable } from "@/tools/learn/ui/LearnShell";
 import { LessonPlayer } from "@/tools/learn/ui/LessonPlayer";
@@ -31,18 +31,24 @@ export default async function LessonPage({ params }: Params) {
     );
   }
 
-  const pi = PHASES.findIndex((p) => p.lessons.some((l) => l.id === id));
+  // A quiz lives with its lesson: same phase, same lock.
+  const parentId = lesson.quizOf ?? id;
+  const parent = lessonById(parentId);
+  const pi = PHASES.findIndex((p) => p.lessons.some((l) => l.id === parentId));
   const open = phaseOpen(PHASES, pi, data.lessons);
   const status = lessonStatus(lesson, data.lessons.get(id));
   const startAt = status.kind === "started" ? status.step : 0;
+  const quizzes = quizzesOf(parentId).map((q) => ({ id: q.id, label: `Quiz ${q.number.split("Quiz ")[1]}: ${q.title}`, done: lessonStatus(q, data.lessons.get(q.id)).kind === "done" }));
+  // A quiz's number already says "1.2 · Quiz 1".
+  const kind = lesson.quizOf ? "" : lesson.checkpoint ? "Checkpoint " : "Lesson ";
 
   return (
     <LearnShell current={null} crumb={`${lesson.number} ${lesson.title}`}>
       <div className="max-w-[760px]">
         <p className="font-mono text-label uppercase text-muted">
-          {lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} · about {lesson.minutes} min
+          {kind}{lesson.number} · about {lesson.minutes} min
         </p>
-        <h1 className="mt-3 text-title font-normal">{lesson.title}</h1>
+        <h1 className="mt-3 text-title font-normal">{lesson.quizOf && parent ? `${parent.title}: ${lesson.title.toLowerCase()}` : lesson.title}</h1>
         <p className="mt-3 text-lede text-ink-2">{lesson.goal}</p>
         {!open && (
           <p className="mt-4 text-small">
@@ -59,7 +65,7 @@ export default async function LessonPage({ params }: Params) {
         {status.kind === "done" && <p className="mt-4 text-small"><State kind={status.passed ? "ok" : "note"}>{status.passed ? "Done before. Going through again counts as review." : "Not passed yet. Going again is the way."}</State></p>}
       </div>
       <div className="mt-8">
-        <LessonPlayer key={`${id}-${startAt}`} lesson={lesson} startAt={startAt} />
+        <LessonPlayer key={`${id}-${startAt}`} lesson={lesson} startAt={startAt} quizzes={quizzes} />
       </div>
     </LearnShell>
   );

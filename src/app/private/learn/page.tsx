@@ -5,7 +5,7 @@ import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { loadProgress } from "@/lib/learn/store";
 import { requirePrivate } from "@/lib/money/guard";
-import { ALL_LESSONS, findStep, PHASES } from "@/tools/learn/lessons";
+import { ALL_LESSONS, findStep, PHASES, quizzesOf } from "@/tools/learn/lessons";
 import { dueItems, lessonStatus, nextDue, nextLesson, phaseOpen, solidCount, week } from "@/tools/learn/progress";
 import { isGraded } from "@/tools/learn/types";
 import { LearnNotConfigured, LearnShell, LearnUnreachable } from "@/tools/learn/ui/LearnShell";
@@ -140,6 +140,26 @@ export default async function LearnHome() {
                             {s.kind === "new" && <span className="text-muted">{open ? "Not started" : "Locked"}</span>}
                           </span>
                           </div>
+                        )}
+                        {open && quizzesOf(l.id).length > 0 && (
+                          <ul aria-label={`Practice quizzes for ${l.number}`} className="mt-1.5 flex flex-wrap gap-1.5 pl-[3.5rem]">
+                            {quizzesOf(l.id).map((q, qi) => {
+                              const qs = lessonStatus(q, rows.get(q.id));
+                              return (
+                                <li key={q.id}>
+                                  <Link
+                                    href={`/private/learn/${q.id}`}
+                                    aria-label={`Quiz ${qi + 1}, ${q.title}: ${qs.kind === "done" ? "done" : qs.kind === "started" ? "in progress" : "not taken"}`}
+                                    className="flex min-h-11 items-center gap-2 rounded-full border border-line px-3 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:text-ink"
+                                  >
+                                    Quiz {qi + 1}
+                                    {qs.kind === "done" && <State kind="ok">{qs.score != null && qs.outOf ? `${qs.score}/${qs.outOf}` : "Done"}</State>}
+                                    {qs.kind === "started" && <span className="text-muted">· started</span>}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
                         )}
                       </li>
                     );

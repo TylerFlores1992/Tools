@@ -1,5 +1,6 @@
 import type { GradedStep, Lesson, Phase, Step } from "../types";
 import { PHASE_1 } from "./phase1";
+import { quizzesFor } from "./phase1-quizzes";
 
 /**
  * The course: four phases over about twelve weeks (the plan in the owner's "Learn to Read Code"
@@ -36,14 +37,19 @@ export const PHASES: readonly Phase[] = [
 
 export const ALL_LESSONS: readonly Lesson[] = PHASES.flatMap((p) => p.lessons);
 
-export const lessonById = (id: string): Lesson | undefined => ALL_LESSONS.find((l) => l.id === id);
+/** Three practice quizzes per lesson. They play like lessons but aren't steps on the course path. */
+export const ALL_QUIZZES: readonly Lesson[] = ALL_LESSONS.flatMap(quizzesFor);
+export const quizzesOf = (lessonId: string): readonly Lesson[] => ALL_QUIZZES.filter((q) => q.quizOf === lessonId);
+
+export const lessonById = (id: string): Lesson | undefined => ALL_LESSONS.find((l) => l.id === id) ?? ALL_QUIZZES.find((q) => q.id === id);
 
 export function findStep(lessonId: string, stepId: string): Step | undefined {
   return lessonById(lessonId)?.steps.find((s) => s.id === stepId);
 }
 
 export function phaseOf(lessonId: string): Phase | undefined {
-  return PHASES.find((p) => p.lessons.some((l) => l.id === lessonId));
+  const id = lessonById(lessonId)?.quizOf ?? lessonId;
+  return PHASES.find((p) => p.lessons.some((l) => l.id === id));
 }
 
 export function gradedStep(lessonId: string, stepId: string): GradedStep | undefined {

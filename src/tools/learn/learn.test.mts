@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import { BOX_DAYS, checkpointPassed, dueAfter, firstBox, interleave, nextBox, normalizeValue, outputMatches, parsonsRight, seededShuffle, todayLA, traceRowRight } from "./check.ts";
 import { readGrade } from "./grade.ts";
-import { ALL_LESSONS, PHASES, findStep } from "./lessons/index.ts";
+import { ALL_LESSONS, ALL_QUIZZES, PHASES, findStep, lessonById, phaseOf, quizzesOf } from "./lessons/index.ts";
+
+/** Lessons and their practice quizzes: every answer key gets the same checks. */
+const EVERY = [...ALL_LESSONS, ...ALL_QUIZZES];
 import { dueItems, lessonStatus, nextLesson, phaseOpen, week, type LessonState } from "./progress.ts";
 import type { Lesson } from "./types.ts";
 
@@ -140,9 +143,9 @@ test("AI reply is lined up with the rubric whatever length it comes back", () =>
 /* ───────── the lessons themselves ───────── */
 
 test("lesson and step ids are unique and URL-safe", () => {
-  const ids = ALL_LESSONS.map((l) => l.id);
+  const ids = EVERY.map((l) => l.id);
   assert.equal(new Set(ids).size, ids.length);
-  for (const l of ALL_LESSONS) {
+  for (const l of EVERY) {
     assert.match(l.id, /^[a-z0-9-]+$/);
     const s = l.steps.map((x) => x.id);
     assert.equal(new Set(s).size, s.length, `${l.id}: duplicate step id`);
@@ -151,7 +154,7 @@ test("lesson and step ids are unique and URL-safe", () => {
 });
 
 test("every step's answer points at something that exists", () => {
-  for (const l of ALL_LESSONS) {
+  for (const l of EVERY) {
     for (const s of l.steps) {
       const where = `${l.id}/${s.id}`;
       if (s.kind === "predict") {
@@ -192,7 +195,7 @@ function run(code: string): { lines: string[]; error: string | null } {
 }
 
 test("every Run step: the solution prints what's expected, and the starter doesn't", () => {
-  for (const l of ALL_LESSONS) {
+  for (const l of EVERY) {
     for (const s of l.steps) {
       if (s.kind !== "run") continue;
       const sol = run(`${s.solution}\n${s.after ?? ""}`);
@@ -207,7 +210,7 @@ test("every Run step: the solution prints what's expected, and the starter doesn
 test("predict steps whose code is plain JavaScript: the answer is what really prints", () => {
   // Only steps whose answer is the printed output; skip TypeScript and conceptual ones.
   let checked = 0;
-  for (const l of ALL_LESSONS) {
+  for (const l of EVERY) {
     for (const s of l.steps) {
       if (s.kind !== "predict" || !s.code || !s.code.includes("console.log") || /^How many/.test(s.prompt) || /:\s*(number|string|boolean|Watch|any)\b|interface /.test(s.code)) continue;
       const r = run(s.code);
@@ -223,7 +226,7 @@ test("predict steps whose code is plain JavaScript: the answer is what really pr
 
 test("trace steps in plain JavaScript: the table matches the real values", () => {
   let checked = 0;
-  for (const l of ALL_LESSONS) {
+  for (const l of EVERY) {
     for (const s of l.steps) {
       if (s.kind !== "trace" || /:\s*(number|string|boolean)\b|interface |matchingSites/.test(s.code)) continue;
       // Turn const/let at the top level into globals we can read back.
@@ -255,4 +258,25 @@ test("bug and compare steps with plain JavaScript: the buggy code really misbeha
   assert.deepEqual(run(l14.code.replace("let sitesLeft = 7", "let sitesLeft = 0")).lines, ["Open"]);
   // 1.2: const reassignment throws.
   assert.match(run(`const nights = 2;\nnights = 3;`).error ?? "", /TypeError: Assignment to constant variable/);
+});
+
+test("practice quizzes: three per lesson (not the checkpoint), four tap-friendly questions each", () => {
+  for (const l of ALL_LESSONS) {
+    const qs = quizzesOf(l.id);
+    if (l.checkpoint) {
+      assert.equal(qs.length, 0, `${l.id}: a checkpoint is its own quiz`);
+      continue;
+    }
+    assert.equal(qs.length, 3, `${l.id}: needs three quizzes`);
+    qs.forEach((q, i) => {
+      assert.equal(q.id, `${l.id}--quiz-${i + 1}`);
+      assert.equal(q.quizOf, l.id);
+      assert.equal(q.steps.length, 4, `${q.id}: four questions`);
+      for (const s of q.steps) assert.ok(s.kind !== "learn" && s.kind !== "run" && s.kind !== "explain", `${q.id}/${s.id}: quizzes are tap-and-type only`);
+      assert.equal(lessonById(q.id), q, "a quiz opens by its id like a lesson");
+      assert.equal(phaseOf(q.id), phaseOf(l.id), "and belongs to its lesson's phase");
+    });
+  }
+  // Quizzes are extra practice, not steps on the course path.
+  assert.ok(!PHASES.some((p) => p.lessons.some((l) => l.quizOf)));
 });

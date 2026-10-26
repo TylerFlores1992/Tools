@@ -13,7 +13,11 @@ across devices, Phase 1 first.
 | `/private/learn/review` | Today's spaced review: up to 15 items, mixed across lessons |
 | `/private/learn/method` | The research behind it, with sources |
 
-Phase 1 (weeks 1–3): lessons 1.1–1.11 and the 1.12 checkpoint. Phases 2–4 are listed with no
+Phase 1 (weeks 1–3): lessons 1.1–1.11 and the 1.12 checkpoint. **Practice quizzes** (owner's ask,
+2026-10-26): three per lesson 1.1–1.11, four tap-and-type questions each: Quick check, Practice
+(new examples), Mixed refresher (with earlier lessons). Data in `lessons/phase1-quizzes.ts`; each
+quiz plays like a lesson at `/private/learn/<lesson>--quiz-<n>`, feeds the same review boxes, and
+shows as a Quiz 1/2/3 button under its lesson. They aren't on the course path (don't gate phases). Phases 2–4 are listed with no
 lessons yet. **Next:** write Phase 2 (React and Next.js, traced through CampHawk) in
 `src/tools/learn/lessons/phase2.ts` and add it to `PHASES` in `lessons/index.ts`.
 

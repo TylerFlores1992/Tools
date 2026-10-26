@@ -111,6 +111,8 @@ export type Lesson = {
   /** One line: what you'll be able to do after. */
   goal: string;
   minutes: number;
+  /** Set on a practice quiz: the lesson it belongs to (src/tools/learn/lessons/phase1-quizzes.ts). */
+  quizOf?: string;
   /** A checkpoint must be passed (CHECKPOINT_PASS first-try) before the phase counts as done. */
   checkpoint?: boolean;
   steps: readonly Step[];
