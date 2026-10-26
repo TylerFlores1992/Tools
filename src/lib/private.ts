@@ -25,6 +25,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/money",
   },
   {
+    slug: "learn",
+    name: "Learn to read code",
+    summary: "Short hands-on lessons for reading, tracing and reviewing code, with a spaced review that syncs across devices.",
+    stage: "Phase 1: JavaScript and TypeScript basics",
+    href: "/private/learn",
+  },
+  {
     slug: "vectorworks",
     name: "Vectorworks",
     summary: "The drawing open on your computer, live: select, drag, measure, edit fixtures. Claude draws through the same connector.",
