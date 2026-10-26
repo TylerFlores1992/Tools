@@ -13,7 +13,9 @@ import { kindLabel, StepView, type Report } from "./Steps";
  * Plays one lesson a step at a time. Opens where you left off (saved per step, so a phone and a
  * computer agree). Continue unlocks once a step is answered; Back is always there to reread.
  */
-export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: number }) {
+export type QuizLink = { id: string; label: string; done: boolean };
+
+export function LessonPlayer({ lesson, startAt, quizzes = [] }: { lesson: Lesson; startAt: number; quizzes?: readonly QuizLink[] }) {
   const steps = lesson.steps;
   const graded = steps.filter(isGraded).length;
   const [i, setI] = useState(Math.min(Math.max(0, startAt), steps.length - 1));
@@ -85,7 +87,7 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
     const pass = !lesson.checkpoint || (full && checkpointPassed(score, scored));
     return (
       <div ref={top} className="max-w-[720px] scroll-mt-4">
-        <h2 className="font-mono text-label uppercase text-muted">{lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</h2>
+        <h2 className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "Quiz" : lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</h2>
         <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-card">
           <p className="font-mono text-label uppercase text-muted">Right on the first try</p>
           <p className="mt-2 text-title font-normal tabular-nums leading-none">
@@ -112,6 +114,24 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
             <Link href="/private/learn/review" className={buttonClasses("quiet")}>Review</Link>
           </div>
         </div>
+        {quizzes.some((q) => q.id !== lesson.id) && (
+          <section aria-labelledby="practice-quizzes" className="mt-8">
+            <h3 id="practice-quizzes" className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "The other quizzes for this lesson" : "Practice quizzes for this lesson"}</h3>
+            <p className="mt-2 text-small text-ink-2">Four questions each. The first right away; the others later today or tomorrow work best.</p>
+            <ul className="mt-3 grid gap-2">
+              {quizzes
+                .filter((q) => q.id !== lesson.id)
+                .map((q) => (
+                  <li key={q.id}>
+                    <Link href={`/private/learn/${q.id}`} className="flex min-h-12 items-center justify-between gap-3 rounded-input border border-line bg-surface px-4 py-2 text-body text-ink transition-colors duration-150 hover:border-control hover:bg-surface-2">
+                      <span>{q.label}</span>
+                      {q.done ? <State kind="ok" className="text-small">Done</State> : <span className="text-small text-muted">Not taken</span>}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
         {unsaved && <Unsaved />}
       </div>
     );
