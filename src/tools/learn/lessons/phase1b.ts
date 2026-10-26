@@ -76,7 +76,7 @@ export const L1_6: Lesson = {
       prompt: "This should keep the default untouched, but after it runs `defaults.nights` is 4. Which line causes that?",
       code: `const defaults = { nights: 2, rig: "tent" };\nconst mine = defaults;\nmine.nights = 4;\nconsole.log(defaults.nights);`,
       line: 2,
-      why: "Line 2 ties a second label to the same object instead of making a copy, so line 3 edits the defaults too. A real copy is `const mine = { ...defaults };` (the `...` spreads the properties into a new object).",
+      why: "Line 2 ties a second label to the same object instead of making a copy, so line 3 edits the defaults too. A real copy is `const mine = { ...defaults };` (the `...` spreads the properties into a new object; it copies the top level only).",
     },
     {
       kind: "run",
@@ -277,7 +277,7 @@ export const L1_8: Lesson = {
     {
       kind: "run",
       id: "run",
-      prompt: "Make it print the total nights: `6`. The loop is right; one line is in the wrong place.",
+      prompt: "Make it print the total nights, once: `6`. The loop is right; two lines are in the wrong place.",
       starter: `const nights = [2, 3, 1];\nfor (const n of nights) {\n  let total = 0;\n  total = total + n;\n  console.log(total);\n}`,
       expect: ["6"],
       hint: "Where should the running total start, and when should it be printed: every round, or once at the end?",

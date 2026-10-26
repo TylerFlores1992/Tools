@@ -1,5 +1,5 @@
 import { checkpointPassed, SOLID_BOX } from "./check";
-import type { Lesson, Phase } from "./types";
+import { isGraded, type Lesson, type Phase } from "./types";
 
 /** What the Learn home shows, worked out from the saved rows. Pure: tested in learn.test.mts. */
 
@@ -14,7 +14,9 @@ export type LessonStatus =
 export function lessonStatus(lesson: Lesson, row: LessonState | undefined): LessonStatus {
   if (!row) return { kind: "new" };
   if (row.completedAt) {
-    const passed = !lesson.checkpoint || (row.score != null && row.outOf != null && checkpointPassed(row.score, row.outOf));
+    // A checkpoint counts only from one full sitting: every question answered fresh, not a resume.
+    const graded = lesson.steps.filter(isGraded).length;
+    const passed = !lesson.checkpoint || (row.score != null && row.outOf === graded && checkpointPassed(row.score, row.outOf));
     return { kind: "done", score: row.score, outOf: row.outOf, passed };
   }
   return { kind: "started", step: row.lastStep };

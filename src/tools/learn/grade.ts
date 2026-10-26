@@ -42,7 +42,8 @@ export function gradePrompt(step: ExplainStep, answer: string): string {
     "",
     "Learner's answer (between the markers):",
     "<<<",
-    answer.slice(0, MAX_ANSWER),
+    // The markers can't appear inside the answer, so it can't pretend to end early.
+    answer.slice(0, MAX_ANSWER).replace(/<<<|>>>/g, "··"),
     ">>>",
     "",
     `Return exactly ${step.rubric.length} points, in rubric order.`,

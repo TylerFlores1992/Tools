@@ -10,9 +10,11 @@ export function normalizeValue(v: string): string {
 /** Arrays and lists typed loosely: spaces and quote marks don't matter, so ["C2"], ['C2'] and [C2] agree. */
 const loose = (v: string) => v.replace(/[\s'"`]/g, "");
 
-export function traceRowRight(typed: string, row: { answer: string; accept?: readonly string[] }): boolean {
+export function traceRowRight(typed: string, row: { answer: string; accept?: readonly string[]; quoted?: boolean }): boolean {
   const n = normalizeValue(typed);
   if (!n) return false;
+  // When the point is "this is a string", the quotes are part of the answer.
+  if (row.quoted && !/^(['"`]).*\1$/.test(typed.trim())) return false;
   const answers = [row.answer, ...(row.accept ?? [])];
   if (answers.some((a) => normalizeValue(a) === n)) return true;
   // Loose matching only for list answers: for a single value, "Upper Pines" and "UpperPines" differ.

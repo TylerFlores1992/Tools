@@ -19,6 +19,8 @@ test("trace answers: quotes and spaces don't matter, case does", () => {
   assert.ok(traceRowRight("['A1', 'C2']", { answer: '["A1", "C2"]' }));
   assert.ok(!traceRowRight("[C2, A1]", { answer: '["A1", "C2"]' }), "order matters in a list");
   assert.ok(!traceRowRight("UpperPines", { answer: "Upper Pines" }), "loose matching is for lists only");
+  assert.ok(!traceRowRight("105", { answer: '"105"', quoted: true }), "a quoted row needs the quotes");
+  assert.ok(traceRowRight("'105'", { answer: '"105"', quoted: true }));
 });
 
 test("parsons: order and content must match", () => {
@@ -93,10 +95,13 @@ test("lesson status and the next lesson", () => {
 test("phase 2 opens only after phase 1's checkpoint is passed", () => {
   const rows = new Map<string, LessonState>();
   const done = (l: Lesson, score: number, outOf: number) => rows.set(l.id, row(l.id, { completedAt: "2026-10-26T10:00:00Z", score, outOf }));
-  for (const l of PHASES[0].lessons) done(l, 9, 10);
+  const n = (l: Lesson) => l.steps.filter((s) => s.kind !== "learn").length;
+  for (const l of PHASES[0].lessons) done(l, n(l), n(l));
   assert.ok(phaseOpen(PHASES, 1, rows));
   const cp = PHASES[0].lessons.find((l) => l.checkpoint)!;
-  done(cp, 8, 12);
+  done(cp, 1, 1);
+  assert.ok(!phaseOpen(PHASES, 1, rows), "a checkpoint finished after a resume (1 of 1) doesn't pass");
+  done(cp, n(cp) - 4, n(cp));
   assert.ok(!phaseOpen(PHASES, 1, rows), "a failed checkpoint keeps the next phase shut");
   assert.equal(nextLesson(PHASES, rows)?.id, cp.id, "and sends you back to it");
 });
@@ -244,8 +249,10 @@ test("bug and compare steps with plain JavaScript: the buggy code really misbeha
   assert.deepEqual(run(`const sites = [{ open: true }, { open: false }, { open: true }];\nconst open = sites.filter((s) => { s.open; });\nconsole.log(open.length);`).lines, ["0"]);
   // 1.11: comparing with undefined drops everything.
   assert.deepEqual(run(`console.log(40 >= undefined);`).lines, ["false"]);
-  // 1.4: = in an if assigns, so Full every time.
-  assert.deepEqual(run(`let sitesLeft = 7;\nif (sitesLeft = 0) { console.log("Open"); } else { console.log("Full"); }`).lines, ["Full"]);
+  // 1.4: = in an if assigns 0, so "Open" every time (the step's code, run as written).
+  const l14 = findStep("p1-decisions", "bug");
+  assert.ok(l14 && l14.kind === "bug");
+  assert.deepEqual(run(l14.code.replace("let sitesLeft = 7", "let sitesLeft = 0")).lines, ["Open"]);
   // 1.2: const reassignment throws.
   assert.match(run(`const nights = 2;\nnights = 3;`).error ?? "", /TypeError: Assignment to constant variable/);
 });

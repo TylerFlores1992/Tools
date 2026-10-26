@@ -1,6 +1,6 @@
 import "server-only";
 import { sql, isConfigured } from "@/lib/money/db";
-import { dueAfter, firstBox, nextBox, todayLA } from "@/tools/learn/check";
+import { BOX_DAYS, firstBox, MAX_BOX, todayLA } from "@/tools/learn/check";
 
 /**
  * Learning progress in the `learn` schema (docs/sql/learn-schema.sql), same database and role as
@@ -64,24 +64,44 @@ export async function recordAttempt(a: {
   await db`insert into learn.attempts (item_id, lesson_id, kind, correct, answer, feedback, source)
     values (${a.itemId}, ${a.lessonId}, ${a.kind}, ${a.correct}, ${a.answer?.slice(0, 4000) ?? null}, ${a.feedback == null ? null : db.json(a.feedback as never)}, ${a.source})`;
   if (!a.first) return;
-  const [row] = await db<{ box: number }[]>`select box from learn.items where item_id = ${a.itemId}`;
-  const box = row ? nextBox(row.box, a.correct) : firstBox(a.correct);
-  const due = dueAfter(today, box);
-  await db`insert into learn.items (item_id, lesson_id, box, due_on, right_count, wrong_count, last_seen_at)
-    values (${a.itemId}, ${a.lessonId}, ${box}, ${due}, ${a.correct ? 1 : 0}, ${a.correct ? 0 : 1}, now())
-    on conflict (item_id) do update set box = ${box}, due_on = ${due},
+  // One statement, so two tabs answering at once can't both read the old box (check.ts has the
+  // same rules in TypeScript: nextBox, firstBox, BOX_DAYS; tested there).
+  const days = `{${BOX_DAYS.join(",")}}`;
+  await db`with next as (
+      select case
+        when i.box is null then ${firstBox(a.correct)}
+        when ${a.correct} then least(${MAX_BOX}, i.box + 1)
+        else 1 end as box
+      from (select 1) one left join learn.items i on i.item_id = ${a.itemId})
+    insert into learn.items (item_id, lesson_id, box, due_on, right_count, wrong_count, last_seen_at)
+    select ${a.itemId}, ${a.lessonId}, next.box, ${today}::date + (${days}::int[])[next.box], ${a.correct ? 1 : 0}, ${a.correct ? 0 : 1}, now() from next
+    on conflict (item_id) do update set
+      box = case when ${a.correct} then least(${MAX_BOX}, learn.items.box + 1) else 1 end,
+      due_on = ${today}::date + (${days}::int[])[case when ${a.correct} then least(${MAX_BOX}, learn.items.box + 1) else 1 end],
       right_count = learn.items.right_count + ${a.correct ? 1 : 0},
       wrong_count = learn.items.wrong_count + ${a.correct ? 0 : 1}, last_seen_at = now()`;
 }
 
 /** Where you are in a lesson, so it reopens there. Finishing records the first-try score. */
-export async function saveLessonStep(lessonId: string, step: number, finished: { score: number; outOf: number } | null): Promise<void> {
+export async function saveLessonStep(lessonId: string, step: number, finished: { score: number; outOf: number } | "unscored" | null): Promise<void> {
   const db = sql();
+  // Finished after a resume: some answers were from an earlier sitting, so this run isn't a score.
+  if (finished === "unscored") {
+    await db`insert into learn.lessons (lesson_id, last_step, completed_at) values (${lessonId}, ${step}, now())
+      on conflict (lesson_id) do update set last_step = ${step}, completed_at = now(), updated_at = now()`;
+    return;
+  }
   if (finished) {
     await db`insert into learn.lessons (lesson_id, last_step, completed_at, score, out_of, updated_at)
       values (${lessonId}, ${step}, now(), ${finished.score}, ${finished.outOf}, now())
-      on conflict (lesson_id) do update set last_step = ${step}, completed_at = now(),
-        score = greatest(coalesce(learn.lessons.score, 0), ${finished.score}), out_of = ${finished.outOf}, updated_at = now()`;
+      on conflict (lesson_id) do update set last_step = ${step}, completed_at = now(), updated_at = now(),
+        -- Keep the best sitting, score and total together (never a best score over a new total).
+        score = case when learn.lessons.score is null or learn.lessons.out_of is null or learn.lessons.out_of = 0
+            or excluded.score::float / nullif(excluded.out_of, 0) >= learn.lessons.score::float / learn.lessons.out_of
+          then excluded.score else learn.lessons.score end,
+        out_of = case when learn.lessons.score is null or learn.lessons.out_of is null or learn.lessons.out_of = 0
+            or excluded.score::float / nullif(excluded.out_of, 0) >= learn.lessons.score::float / learn.lessons.out_of
+          then excluded.out_of else learn.lessons.out_of end`;
     return;
   }
   await db`insert into learn.lessons (lesson_id, last_step) values (${lessonId}, ${step})

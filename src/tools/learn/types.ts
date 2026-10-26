@@ -33,7 +33,8 @@ export type TraceStep = {
   id: string;
   prompt: string;
   code: string;
-  rows: readonly { label: string; answer: string; accept?: readonly string[] }[];
+  /** `quoted`: a string answer must be typed with its quotes (when telling strings from numbers is the point). */
+  rows: readonly { label: string; answer: string; accept?: readonly string[]; quoted?: boolean }[];
   why: string;
 };
 

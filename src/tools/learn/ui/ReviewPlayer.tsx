@@ -22,7 +22,9 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
   const [over, setOver] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const counted = useRef<Set<number>>(new Set());
+  const [announce, setAnnounce] = useState("");
   const top = useRef<HTMLDivElement>(null);
+  const heading = useRef<HTMLParagraphElement>(null);
 
   // On a new step, bring its top into view (not on first load: the lesson header stays visible).
   const moved = useRef(false);
@@ -32,11 +34,13 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
       return;
     }
     top.current?.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
+    heading.current?.focus({ preventScroll: true });
   }, [i, over]);
 
   const item = items[i];
   const report: Report = ({ correct, answer, first, recorded }) => {
     if (!first || counted.current.has(i)) return;
+    setAnnounce(correct ? "Right." : "Not right. The explanation is below.");
     counted.current.add(i);
     setAnsweredCount((n) => n + 1);
     if (correct) setRight((n) => n + 1);
@@ -76,9 +80,11 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
         </div>
       </div>
       <div className="mt-8 max-w-[960px]">
-        <p className="font-mono text-label uppercase text-muted">
+        <p ref={heading} tabIndex={-1} className="font-mono text-label uppercase text-muted">
+          <span className="sr-only">Item {i + 1} of {items.length}: </span>
           {kindLabel(item.step.kind)} · from {item.lessonTitle}
         </p>
+        <p className="sr-only" aria-live="polite">{announce}</p>
         <div className="mt-3" key={`${item.lessonId}/${item.step.id}`}>
           <StepView step={item.step} lessonId={item.lessonId} source="review" report={report} onDone={() => setAnswered(true)} />
         </div>
@@ -93,6 +99,7 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
             disabled={!answered}
             onClick={() => {
               setAnswered(false);
+              setAnnounce("");
               if (i < items.length - 1) setI(i + 1);
               else setOver(true);
             }}

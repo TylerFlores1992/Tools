@@ -22,10 +22,13 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
   const [firsts, setFirsts] = useState<Map<string, boolean>>(new Map());
   const [finished, setFinished] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
+  const [announce, setAnnounce] = useState("");
   const top = useRef<HTMLDivElement>(null);
+  const heading = useRef<HTMLParagraphElement>(null);
   const step: Step = steps[i];
 
-  // On a new step, bring its top into view (not on first load: the lesson header stays visible).
+  // On a new step, bring its top into view and move focus to it, so keyboard and screen-reader
+  // users start at the new step (not on first load: the lesson header stays in view).
   const moved = useRef(false);
   useEffect(() => {
     if (!moved.current) {
@@ -33,25 +36,37 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
       return;
     }
     top.current?.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
+    heading.current?.focus({ preventScroll: true });
   }, [i, finished]);
 
-  // A step reopened with Back can be answered again, but only its first answer this sitting counts.
-  const seen = useRef<Set<string>>(new Set());
+  // Answered already: anything before where this sitting started (answered on an earlier visit),
+  // and anything answered since. Reopened with Back, a step can be answered again but isn't scored
+  // or moved through the review boxes a second time.
+  const [seen, setSeen] = useState<ReadonlySet<string>>(() => new Set(steps.slice(0, startAt).map((s) => s.id)));
+  const seenRef = useRef(seen);
   const report: Report = ({ correct, answer, first: firstTry, recorded }) => {
-    const first = firstTry && !seen.current.has(step.id);
+    const first = firstTry && !seenRef.current.has(step.id);
     if (first) {
-      seen.current.add(step.id);
+      seenRef.current = new Set(seenRef.current).add(step.id);
+      setSeen(seenRef.current);
       setFirsts((m) => new Map(m).set(step.id, correct));
     }
+    setAnnounce(correct ? "Right." : "Not right. The explanation is below.");
     if (recorded) return;
     answerStep({ lessonId: lesson.id, stepId: step.id, correct, answer, first, source: "lesson" })
       .then((r) => !r.saved && setUnsaved(true))
       .catch(() => setUnsaved(true));
   };
 
+  // Saved place = the furthest step reached, so stepping Back to reread doesn't move it back.
+  const furthest = useRef(i);
   const go = (n: number) => {
     setI(n);
-    saveStep(lesson.id, n).catch(() => setUnsaved(true));
+    setAnnounce("");
+    if (n > furthest.current) {
+      furthest.current = n;
+      saveStep(lesson.id, n).catch(() => setUnsaved(true));
+    }
   };
   const score = [...firsts.values()].filter(Boolean).length;
   const scored = firsts.size;
@@ -66,7 +81,8 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
   };
 
   if (finished) {
-    const pass = !lesson.checkpoint || checkpointPassed(score, scored);
+    const full = scored === graded;
+    const pass = !lesson.checkpoint || (full && checkpointPassed(score, scored));
     return (
       <div ref={top} className="max-w-[720px] scroll-mt-4">
         <h2 className="font-mono text-label uppercase text-muted">{lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</h2>
@@ -75,13 +91,15 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
           <p className="mt-2 text-title font-normal tabular-nums leading-none">
             {score} <span className="text-ink-2">of {scored}</span>
           </p>
-          {scored < graded && <p className="mt-2 text-small text-muted">Steps you did before picking this up again aren&rsquo;t counted here.</p>}
+          {!full && <p className="mt-2 text-small text-muted">Steps you did before picking this up again aren&rsquo;t counted, so this run doesn&rsquo;t replace your score.</p>}
           <div className="mt-4 text-body">
             {lesson.checkpoint ? (
               pass ? (
                 <State kind="ok">Checkpoint passed. The next phase is open.</State>
               ) : (
-                <State kind="wrong">Not passed yet: it needs {Math.round(CHECKPOINT_PASS * 100)}% on the first try. Review this phase, then try it again tomorrow.</State>
+                <State kind="wrong">
+                  {full ? `Not passed yet: it needs ${Math.round(CHECKPOINT_PASS * 100)}% on the first try. Review this phase, then try it again tomorrow.` : "A checkpoint only counts when done in one go. Start it from the beginning to take it."}
+                </State>
               )
             ) : (
               <p className="text-ink-2">Everything you missed comes back in tomorrow&rsquo;s review. The ones you got right come back later, so they stick.</p>
@@ -113,9 +131,13 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
       </div>
 
       <div className="mt-8 max-w-[960px]">
-        <p className="font-mono text-label uppercase text-muted">{kindLabel(step.kind)}</p>
+        <p ref={heading} tabIndex={-1} className="font-mono text-label uppercase text-muted">
+          <span className="sr-only">Step {i + 1} of {steps.length}: </span>
+          {kindLabel(step.kind)}
+        </p>
+        <p className="sr-only" aria-live="polite">{announce}</p>
         <div className="mt-3" key={step.id}>
-          <StepView step={step} lessonId={lesson.id} source="lesson" report={report} onDone={() => setDone((d) => new Set(d).add(i))} />
+          <StepView step={step} lessonId={lesson.id} source="lesson" answeredBefore={seen.has(step.id)} report={report} onDone={() => setDone((d) => new Set(d).add(i))} />
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6">

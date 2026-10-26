@@ -20,7 +20,8 @@ import { CodeBlock, Prose, inline, tokens } from "./Code";
 
 /** `recorded`: the server already saved this answer (the AI marker does), so only score it. */
 export type Report = (r: { correct: boolean; answer: string | null; first: boolean; recorded?: boolean }) => void;
-export type StepProps<S extends Step> = { step: S; lessonId: string; source: "lesson" | "review"; report: Report; onDone: () => void };
+/** `answeredBefore`: this step's first answer already counted (earlier visit, or before Back). */
+export type StepProps<S extends Step> = { step: S; lessonId: string; source: "lesson" | "review"; report: Report; onDone: () => void; answeredBefore?: boolean };
 
 const KIND_LABEL: Record<Step["kind"], string> = {
   learn: "Read",
@@ -149,7 +150,7 @@ export function BugView({ step, report, onDone }: StepProps<BugStep>) {
               aria-disabled={answered}
               aria-label={`Line ${n}: ${l.trim() || "blank"}`}
               className={cx(
-                "flex w-full min-h-10 items-center border-y border-transparent text-left font-mono text-small text-ink-2",
+                "flex w-full min-h-11 items-center border-y border-transparent text-left font-mono text-small text-ink-2",
                 !answered && "hover:border-line-2 hover:bg-surface",
                 answered && right && "border-ice bg-surface",
                 answered && mine && !right && "border-wrong bg-surface",
@@ -257,7 +258,7 @@ export function TraceView({ step, report, onDone }: StepProps<TraceStep>) {
                     autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    className="min-h-11 w-full rounded-input border border-control bg-surface px-3 font-mono text-small text-ink outline-none focus-visible:border-ink"
+                    className="min-h-11 w-full rounded-input border border-control bg-surface px-3 font-mono text-small text-ink focus-visible:border-ink"
                   />
                 </td>
                 <td className="w-24 py-2 pl-3 text-small">
@@ -329,6 +330,7 @@ export function ParsonsView({ step, report, onDone }: StepProps<ParsonsStep>) {
                 <button
                   type="button"
                   disabled={finished}
+                  aria-label={`Line ${i + 1}: ${p.text.trim()}${finished ? "" : ". Tap to take it out."}`}
                   onClick={() => {
                     setPlaced((xs) => xs.filter((x) => x.key !== p.key));
                     setVerdict(null);
@@ -351,6 +353,7 @@ export function ParsonsView({ step, report, onDone }: StepProps<ParsonsStep>) {
                 <li key={p.key}>
                   <button
                     type="button"
+                    aria-label={`Add line: ${p.text.trim()}`}
                     onClick={() => {
                       setPlaced((xs) => [...xs, p]);
                       setVerdict(null);
@@ -397,8 +400,13 @@ export function ParsonsView({ step, report, onDone }: StepProps<ParsonsStep>) {
 
 /* ───────────── Run it ───────────── */
 
-function onTab(e: KeyboardEvent<HTMLTextAreaElement>, set: (v: string) => void) {
-  if (e.key !== "Tab" || e.shiftKey) return;
+/** Tab indents (2 spaces) until Esc is pressed; after Esc, Tab moves on as usual (no keyboard trap). */
+function onTab(e: KeyboardEvent<HTMLTextAreaElement>, set: (v: string) => void, indent: boolean, setIndent: (v: boolean) => void) {
+  if (e.key === "Escape") {
+    setIndent(false);
+    return;
+  }
+  if (e.key !== "Tab" || e.shiftKey || !indent) return;
   e.preventDefault();
   const t = e.currentTarget;
   const { selectionStart: s, selectionEnd: end, value } = t;
@@ -415,6 +423,7 @@ export function RunView({ step, report, onDone }: StepProps<RunStep>) {
   const [ok, setOk] = useState(false);
   const [hint, setHint] = useState(false);
   const [shown, setShown] = useState(false);
+  const [indent, setIndent] = useState(true);
   const run = async () => {
     setRunning(true);
     const r = await runCode(`${code}\n${step.after ?? ""}`);
@@ -438,12 +447,14 @@ export function RunView({ step, report, onDone }: StepProps<RunStep>) {
             id={`${step.id}-code`}
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            onKeyDown={(e) => onTab(e, setCode)}
+            onKeyDown={(e) => onTab(e, setCode, indent, setIndent)}
+            onFocus={() => setIndent(true)}
+            aria-describedby={`${step.id}-keys`}
             rows={Math.max(6, code.split("\n").length + 1)}
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"
-            className="mt-2 w-full resize-y rounded-input border border-control bg-surface-2 p-4 font-mono text-small leading-relaxed text-ink outline-none focus-visible:border-ink"
+            className="mt-2 w-full resize-y rounded-input border border-control bg-surface-2 p-4 font-mono text-small leading-relaxed text-ink focus-visible:border-ink"
           />
           <div className="mt-3 flex flex-wrap gap-3">
             <Button onClick={run} disabled={running}>{running ? "Running…" : "Run"}</Button>
@@ -461,7 +472,7 @@ export function RunView({ step, report, onDone }: StepProps<RunStep>) {
               </Button>
             )}
           </div>
-          <p className="mt-2 text-small text-muted">Easiest on a computer. The code runs in your browser only.</p>
+          <p id={`${step.id}-keys`} className="mt-2 text-small text-muted">Easiest on a computer. Tab indents; press Esc, then Tab, to move on. The code runs in your browser only.</p>
         </div>
         <div className="grid content-start gap-4">
           <div>
@@ -495,7 +506,7 @@ export function RunView({ step, report, onDone }: StepProps<RunStep>) {
 
 /* ───────────── Explain ───────────── */
 
-export function ExplainView({ step, lessonId, source, report, onDone }: StepProps<ExplainStep>) {
+export function ExplainView({ step, lessonId, source, report, onDone, answeredBefore = false }: StepProps<ExplainStep>) {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [grade, setGrade] = useState<Grade | null>(null);
@@ -505,7 +516,7 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
   const [aiDown, setAiDown] = useState(false);
   const [ticks, setTicks] = useState<boolean[]>(() => step.rubric.map(() => false));
   const [selfDone, setSelfDone] = useState(false);
-  const firstRef = useRef(true);
+  const firstRef = useRef(!answeredBefore);
   // Feedback comes as hints first; the model answer only once every point is met or you ask for it
   // (an AI that hands over answers raises practice scores and lowers real ones: Bastani et al.).
   const passed = grade?.passed ?? false;
@@ -546,7 +557,7 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
         rows={5}
         maxLength={1500}
         placeholder="Say what it's for and what it does, as if to someone on the crew."
-        className="mt-2 w-full resize-y rounded-input border border-control bg-surface p-4 text-body text-ink outline-none placeholder:text-muted focus-visible:border-ink"
+        className="mt-2 w-full resize-y rounded-input border border-control bg-surface p-4 text-body text-ink placeholder:text-muted focus-visible:border-ink"
       />
       {!finished && !selfMark && (
         <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -591,7 +602,7 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
         </div>
       )}
 
-      {selfMark && !grade && (
+      {selfMark && (
         <div className="mt-5 rounded-card border border-line bg-surface p-4 sm:p-5">
           <State kind="note">{aiDown ? "AI feedback isn't available right now, so mark it yourself" : "Mark it yourself"}: tick each point your answer says, in any words. Be strict.</State>
           <fieldset className="mt-4" disabled={selfDone}>

@@ -26,7 +26,7 @@ const CHECKPOINT: Lesson = {
     {
       kind: "trace",
       id: "c2",
-      prompt: "Trace it. What are `a` and `b` at the end?",
+      prompt: "Trace it. What are `a.length` and `n` at the end?",
       code: `const a = ["truss"];\nconst b = a;\nb.push("motor");\nlet n = a.length;\nn = n * 10;`,
       rows: [
         { label: "a.length", answer: "2" },
@@ -103,7 +103,7 @@ const CHECKPOINT: Lesson = {
       code: `const w = { site: "C2" };\nconst x = { ...w };\nx.site = "D4";\nconsole.log(w.site);`,
       choices: ["C2", "D4", "undefined", "An error"],
       answer: 0,
-      why: "`{ ...w }` makes a new object with the same properties: a real copy. Changing `x` leaves `w` alone.",
+      why: "`{ ...w }` makes a new object with the same properties, so changing `x.site` leaves `w` alone. (It copies only the top level: an object or array nested inside would still be shared.)",
     },
     {
       kind: "bug",

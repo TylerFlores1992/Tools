@@ -250,8 +250,8 @@ export const L1_3: Lesson = {
       code: `const a = 10 + 5;\nconst b = "10" + 5;\nconst c = 10 + 5 + "!";`,
       rows: [
         { label: "a", answer: "15" },
-        { label: "b", answer: "\"105\"", accept: ["105"] },
-        { label: "c", answer: "\"15!\"", accept: ["15!"] },
+        { label: "b", answer: "\"105\"", quoted: true },
+        { label: "c", answer: "\"15!\"", quoted: true },
       ],
       why: "`a`: two numbers add to 15. `b`: a string on the left, so it glues: \"105\". `c`: left to right, 10 + 5 is 15 first, then 15 + \"!\" glues: \"15!\".",
     },
@@ -356,10 +356,10 @@ export const L1_4: Lesson = {
     {
       kind: "bug",
       id: "bug",
-      prompt: "This should only say \"Full\" when there are no sites left, but it says \"Full\" every time. Which line is wrong?",
-      code: `let sitesLeft = 7;\nif (sitesLeft = 0) {\n  console.log("Open");\n} else {\n  console.log("Full");\n}`,
+      prompt: "This should say \"Full\" when there are no sites left, but it says \"Open\" every time, even at 0. Which line is wrong?",
+      code: `let sitesLeft = 7;\nif (sitesLeft = 0) {\n  console.log("Full");\n} else {\n  console.log("Open");\n}`,
       line: 2,
-      why: "`sitesLeft = 0` with one `=` doesn't compare: it **puts** 0 in the box. The condition then checks the value 0, which counts as false, so it always goes to `else`. It should be `===`. (The branches are also swapped, which is a second thing to flag in a review.)",
+      why: "`sitesLeft = 0` with one `=` doesn't compare: it **puts** 0 in the box. The condition then checks the value 0, which counts as false, so it always goes to `else` and says \"Open\", even when it's full. It should be `===`. (And `sitesLeft` has been overwritten with 0 along the way: a second bug hiding in the same line.)",
     },
     {
       kind: "parsons",

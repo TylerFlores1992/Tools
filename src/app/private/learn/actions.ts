@@ -6,7 +6,7 @@ import { markExplanation } from "@/lib/learn/ai";
 import { recordAttempt, restartLesson, saveLessonStep } from "@/lib/learn/store";
 import { MAX_ANSWER, type Grade } from "@/tools/learn/grade";
 import { findStep, lessonById } from "@/tools/learn/lessons";
-import { itemId } from "@/tools/learn/types";
+import { isGraded, itemId } from "@/tools/learn/types";
 
 /** Every action re-checks the Private session; the proxy is the first lock, not the only one. */
 
@@ -71,9 +71,12 @@ export async function saveStep(lessonId: string, step: number): Promise<Saved> {
 export async function finishLesson(lessonId: string, score: number, outOf: number): Promise<Saved> {
   await requirePrivate("/private/learn");
   const lesson = lessonById(lessonId);
-  if (!lesson || !Number.isInteger(score) || !Number.isInteger(outOf) || score < 0 || score > outOf) return { saved: false };
+  // Never more answers than the lesson has questions.
+  if (!lesson || !Number.isInteger(score) || !Number.isInteger(outOf) || score < 0 || score > outOf || outOf > lesson.steps.filter(isGraded).length) return { saved: false };
   try {
-    await saveLessonStep(lessonId, lesson.steps.length - 1, { score, outOf });
+    // Only a full sitting (every question answered this time) is a score; a resumed one just finishes.
+    const full = outOf === lesson.steps.filter(isGraded).length;
+    await saveLessonStep(lessonId, lesson.steps.length - 1, full ? { score, outOf } : "unscored");
     revalidatePath("/private/learn");
     return { saved: true };
   } catch {
