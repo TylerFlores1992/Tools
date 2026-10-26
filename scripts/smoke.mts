@@ -51,6 +51,9 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/money", status: 200, contains: "Enter the password", absent: "Money in" },
   { path: "/private/money/transactions", status: 200, contains: "Enter the password", absent: "Change category" },
   { path: "/api/money/sync", status: 401, contains: "Unauthorized" },
+  // Learn: lessons and progress behind the same lock.
+  { path: "/private/learn", status: 200, contains: "Enter the password", absent: "Learn to read code" },
+  { path: "/private/learn/p1-reading", status: 200, contains: "Enter the password", absent: "How to read a program" },
   { path: "/private/money/income", status: 200, contains: "Enter the password", absent: "Pay still owed" },
   { path: "/api/money/health?ai=wrong", status: 401, contains: "unauthorized" },
   { path: "/api/money/health", status: 200, contains: "\"database\":\"ok\"" },
