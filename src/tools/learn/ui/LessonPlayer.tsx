@@ -25,8 +25,13 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
   const top = useRef<HTMLDivElement>(null);
   const step: Step = steps[i];
 
+  // On a new step, bring its top into view (not on first load: the lesson header stays visible).
+  const moved = useRef(false);
   useEffect(() => {
-    top.current?.focus({ preventScroll: true });
+    if (!moved.current) {
+      moved.current = true;
+      return;
+    }
     top.current?.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
   }, [i, finished]);
 
@@ -63,10 +68,9 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
   if (finished) {
     const pass = !lesson.checkpoint || checkpointPassed(score, scored);
     return (
-      <div ref={top} tabIndex={-1} className="max-w-[720px] outline-none">
-        <p className="font-mono text-label uppercase text-muted">{lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</p>
-        <h1 className="mt-3 text-title font-normal">{lesson.title}</h1>
-        <div className="mt-8 rounded-card border border-line bg-surface p-6 shadow-card">
+      <div ref={top} className="max-w-[720px] scroll-mt-4">
+        <h2 className="font-mono text-label uppercase text-muted">{lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</h2>
+        <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-card">
           <p className="font-mono text-label uppercase text-muted">Right on the first try</p>
           <p className="mt-2 text-title font-normal tabular-nums leading-none">
             {score} <span className="text-ink-2">of {scored}</span>
@@ -97,7 +101,7 @@ export function LessonPlayer({ lesson, startAt }: { lesson: Lesson; startAt: num
 
   const canGo = done.has(i);
   return (
-    <div ref={top} tabIndex={-1} className="outline-none">
+    <div ref={top} className="scroll-mt-4">
       <div className="sticky top-0 z-10 -mx-5 border-b border-line bg-bg px-5 py-3 sm:-mx-12 sm:px-12">
         <div className="flex max-w-[960px] items-center gap-4 text-small tabular-nums">
           <span className="whitespace-nowrap text-ink">Step {i + 1} of {steps.length}</span>

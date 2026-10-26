@@ -18,13 +18,19 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
   const [i, setI] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [right, setRight] = useState(0);
+  const [answeredCount, setAnsweredCount] = useState(0);
   const [over, setOver] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const counted = useRef<Set<number>>(new Set());
   const top = useRef<HTMLDivElement>(null);
 
+  // On a new step, bring its top into view (not on first load: the lesson header stays visible).
+  const moved = useRef(false);
   useEffect(() => {
-    top.current?.focus({ preventScroll: true });
+    if (!moved.current) {
+      moved.current = true;
+      return;
+    }
     top.current?.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
   }, [i, over]);
 
@@ -32,6 +38,7 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
   const report: Report = ({ correct, answer, first, recorded }) => {
     if (!first || counted.current.has(i)) return;
     counted.current.add(i);
+    setAnsweredCount((n) => n + 1);
     if (correct) setRight((n) => n + 1);
     if (recorded) return;
     answerStep({ lessonId: item.lessonId, stepId: item.step.id, correct, answer, first: true, source: "review" })
@@ -41,11 +48,11 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
 
   if (over || !item) {
     return (
-      <div ref={top} tabIndex={-1} className="max-w-[720px] outline-none">
+      <div ref={top} className="max-w-[720px] scroll-mt-4">
         <div className="rounded-card border border-line bg-surface p-6 shadow-card">
           <p className="font-mono text-label uppercase text-muted">Review done</p>
           <p className="mt-2 text-title font-normal tabular-nums leading-none">
-            {right} <span className="text-ink-2">of {counted.current.size} right</span>
+            {right} <span className="text-ink-2">of {answeredCount} right</span>
           </p>
           <p className="mt-4 text-body text-ink-2">The ones you missed come back tomorrow. The rest come back later, each time a little further out.</p>
           <Link href="/private/learn" className={buttonClasses("primary", "mt-6")}>
@@ -58,7 +65,7 @@ export function ReviewPlayer({ items }: { items: readonly ReviewItem[] }) {
   }
 
   return (
-    <div ref={top} tabIndex={-1} className="outline-none">
+    <div ref={top} className="scroll-mt-4">
       <div className="sticky top-0 z-10 -mx-5 border-b border-line bg-bg px-5 py-3 sm:-mx-12 sm:px-12">
         <div className="flex max-w-[960px] items-center gap-4 text-small tabular-nums">
           <span className="whitespace-nowrap text-ink">{i + 1} of {items.length}</span>

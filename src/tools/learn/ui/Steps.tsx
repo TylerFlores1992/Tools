@@ -68,7 +68,7 @@ const choiceClasses = (chosen: boolean, right: boolean, answered: boolean) =>
     !answered && "border-line-2 bg-surface hover:border-control hover:bg-surface-2",
     answered && right && "border-ice bg-surface",
     answered && chosen && !right && "border-wrong bg-surface",
-    answered && !chosen && !right && "border-line bg-surface opacity-70",
+    answered && !chosen && !right && "border-line bg-surface",
   );
 
 /* ───────────── Read ───────────── */
@@ -502,6 +502,7 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
   const [tries, setTries] = useState(0);
   const [showModel, setShowModel] = useState(false);
   const [selfMark, setSelfMark] = useState(false);
+  const [aiDown, setAiDown] = useState(false);
   const [ticks, setTicks] = useState<boolean[]>(() => step.rubric.map(() => false));
   const [selfDone, setSelfDone] = useState(false);
   const firstRef = useRef(true);
@@ -520,7 +521,10 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
       setGrade(r.grade);
       setTries((t) => t + 1);
       if (r.grade.passed) onDone();
-    } else setSelfMark(true);
+    } else {
+      setAiDown(true);
+      setSelfMark(true);
+    }
   };
   const saveSelf = () => {
     report({ correct: ticks.every(Boolean), answer: text, first: firstRef.current });
@@ -589,7 +593,7 @@ export function ExplainView({ step, lessonId, source, report, onDone }: StepProp
 
       {selfMark && !grade && (
         <div className="mt-5 rounded-card border border-line bg-surface p-4 sm:p-5">
-          <State kind="note">Mark it yourself: tick each point your answer says, in any words. Be strict.</State>
+          <State kind="note">{aiDown ? "AI feedback isn't available right now, so mark it yourself" : "Mark it yourself"}: tick each point your answer says, in any words. Be strict.</State>
           <fieldset className="mt-4" disabled={selfDone}>
             <legend className="font-mono text-label uppercase text-muted">A good answer says</legend>
             <ul className="mt-2 grid gap-2">

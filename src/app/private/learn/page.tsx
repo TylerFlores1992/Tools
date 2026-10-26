@@ -108,11 +108,8 @@ export default async function LearnHome() {
                     const graded = l.steps.filter(isGraded).length;
                     return (
                       <li key={l.id}>
-                        <Link
-                          href={open ? `/private/learn/${l.id}` : "#"}
-                          aria-disabled={!open || undefined}
-                          className="grid min-h-16 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 rounded-input border border-line bg-surface px-4 py-3 transition-colors duration-150 hover:border-control hover:bg-surface-2 aria-disabled:pointer-events-none aria-disabled:opacity-60 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto]"
-                        >
+                        {open ? (
+                          <Link href={`/private/learn/${l.id}`} className="grid min-h-16 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 rounded-input border border-line bg-surface px-4 py-3 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] transition-colors duration-150 hover:border-control hover:bg-surface-2">
                           <span className="font-mono text-label tabular-nums text-muted">{l.number}</span>
                           <span className="min-w-0">
                             <span className="block text-body text-ink">
@@ -126,7 +123,24 @@ export default async function LearnHome() {
                             {s.kind === "started" && <span className="text-ink-2">Step {s.step + 1} of {l.steps.length}</span>}
                             {s.kind === "new" && <span className="text-muted">{open ? "Not started" : "Locked"}</span>}
                           </span>
-                        </Link>
+                          </Link>
+                        ) : (
+                          <div className="grid min-h-16 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 rounded-input border border-line bg-surface px-4 py-3 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] border-dashed">
+                          <span className="font-mono text-label tabular-nums text-muted">{l.number}</span>
+                          <span className="min-w-0">
+                            <span className="block text-body text-ink">
+                              {l.title}
+                              {l.checkpoint && <span className="ml-2 rounded-tag border border-line-2 px-1.5 py-0.5 font-mono text-label uppercase text-ink-2">Checkpoint</span>}
+                            </span>
+                            <span className="block text-small text-muted">{l.goal} · about {l.minutes} min · {graded} to answer</span>
+                          </span>
+                          <span className="col-start-2 mt-1 text-small sm:col-start-3 sm:mt-0">
+                            {s.kind === "done" && (s.passed ? <State kind="ok">Done{s.score != null && s.outOf ? ` · ${s.score}/${s.outOf}` : ""}</State> : <State kind="wrong">Not passed · {s.score}/{s.outOf}</State>)}
+                            {s.kind === "started" && <span className="text-ink-2">Step {s.step + 1} of {l.steps.length}</span>}
+                            {s.kind === "new" && <span className="text-muted">{open ? "Not started" : "Locked"}</span>}
+                          </span>
+                          </div>
+                        )}
                       </li>
                     );
                   })}
