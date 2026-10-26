@@ -51,8 +51,8 @@ const QUIZZES: Record<string, Three> = {
     ],
     [
       T("a", "Trace it. What is `total` at the end?", `let total = 10;\ntotal = total - 3;\ntotal = total * 2;`, [{ label: "total", answer: "14" }], "10 − 3 is 7, then 7 × 2 is 14. Each line uses the value from the line before."),
-      P("b", "Someone tries to swap two values. What prints?", `let a = 2;\nlet b = 3;\na = b;\nb = a;\nconsole.log(a, b);`, ["3 2", "2 3", "3 3", "2 2"], 2, "After `a = b`, both hold 3; the 2 is gone. Then `b = a` copies 3 again. Swapping needs a third variable to hold one value."),
-      O("c", "Swap them so `a` ends as 2 and `b` as 1. One line doesn't belong.", ["let a = 1;", "let b = 2;", "const temp = a;", "a = b;", "b = temp;"], "Save `a` in `temp` first, then `a` can take `b`'s value, and `b` takes the saved one.", ["b = a;"]),
+      P("b", "Someone tries to swap two values. What prints? (`console.log(a, b)` prints both, with a space between.)", `let a = 2;\nlet b = 3;\na = b;\nb = a;\nconsole.log(a, b);`, ["3 2", "2 3", "3 3", "2 2"], 2, "After `a = b`, both hold 3; the 2 is gone. Then `b = a` copies 3 again. Swapping needs a third variable to hold one value."),
+      O("c", "Start: `let a = 1;` and `let b = 2;`. Put these in order to swap them, so `a` ends as 2 and `b` as 1. One line doesn't belong.", ["const temp = a;", "a = b;", "b = temp;"], "Save `a` in `temp` first, then `a` can take `b`'s value, and `b` takes the saved one.", ["b = a;"]),
       P("d", WHAT, `let n = 5;\nn = n + n;\nconsole.log(n);`, ["5", "10", "55", "n + n"], 1, "Right side first: 5 + 5 is 10, then it's stored in `n`."),
     ],
     [
@@ -75,7 +75,7 @@ const QUIZZES: Record<string, Three> = {
       P("a", "Left to right. What prints?", `console.log("Site " + 4 + 2);`, ["Site 6", "Site 42", "Site 4 2", "6"], 1, "\"Site \" + 4 is already text, \"Site 4\", so the 2 glues on too: \"Site 42\"."),
       P("b", "Now the numbers come first. What prints?", `console.log(4 + 2 + " sites");`, ["42 sites", "6 sites", "4 2 sites", "6"], 1, "4 + 2 is 6 (both numbers) before the string arrives, then 6 + \" sites\" glues."),
       P("c", WHAT, `console.log(typeof "true");`, ["boolean", "string", "true", "undefined"], 1, "Quotes make it a string, even though the word inside is true."),
-      B("d", "This should print 5 but prints 23. Which line is the cause?", `const a = "2";\nconst b = 3;\nconsole.log(a + b);`, 1, "`a` is the string \"2\" because of the quotes, so `+` glues. Line 3 is where it shows; line 1 is the cause."),
+      B("d", "This should print 5 but prints 23. Which line makes a value the wrong type?", `const a = "2";\nconst b = 3;\nconsole.log(a + b);`, 1, "`a` is the string \"2\" because of the quotes, so `+` glues. Line 3 is where it shows; line 1 is the cause."),
     ],
     [
       T("a", "Trace it (quotes for strings). What is `n` at the end?", `let n = "1";\nn = n + 1;\nn = n + 1;`, [{ label: "n", answer: "\"111\"", quoted: true }], "\"1\" + 1 glues to \"11\", then \"11\" + 1 glues to \"111\". It stays a string the whole time."),
@@ -95,9 +95,9 @@ const QUIZZES: Record<string, Three> = {
     ],
     [
       P("a", WHAT, `const temp = 72;\nif (temp > 90) {\n  console.log("Hot");\n} else if (temp > 60) {\n  console.log("Mild");\n} else {\n  console.log("Cold");\n}`, ["Hot", "Mild", "Cold", "Mild\nCold"], 1, "72 isn't over 90; it is over 60, so \"Mild\", and the chain stops."),
-      P("b", "0 counts as false in an if. What prints?", `const sitesLeft = 0;\nif (sitesLeft) {\n  console.log("yes");\n} else {\n  console.log("no");\n}`, ["yes", "no", "0", "Nothing"], 1, "An if treats 0, empty text \"\", `null` and `undefined` as false. So `else` runs."),
+      P("b", "0 counts as false in an if. What prints?", `const sitesLeft = 0;\nif (sitesLeft) {\n  console.log("yes");\n} else {\n  console.log("no");\n}`, ["yes", "no", "0", "Nothing"], 1, "An if treats `false`, 0, empty text \"\", `null` and `undefined` as false. So `else` runs."),
       B("c", "It should say Book only when the site is open AND you need 3 nights or fewer. It says Book far too often. Which line?", `const open = false;\nconst nights = 2;\nif (open || nights <= 3) {\n  console.log("Book");\n}`, 3, "`||` is OR: one true side is enough, so a closed site still says Book. It should be `&&`."),
-      P("d", WHAT, `console.log(5 == "5", 5 === "5");`, ["true true", "true false", "false false", "false true"], 1, "`==` converts the string first, so true. `===` checks the type too, so false."),
+      P("d", "What prints? (`console.log(x, y)` prints both, with a space between.)", `console.log(5 == "5", 5 === "5");`, ["true true", "true false", "false false", "false true"], 1, "`==` converts the string first, so true. `===` checks the type too, so false."),
     ],
     [
       P("a", "Mixed with 1.3. What prints?", `const nights = "3";\nif (nights === 3) {\n  console.log("match");\n} else {\n  console.log("no match");\n}`, ["match", "no match", "3", "An error"], 1, "\"3\" is a string and 3 is a number, so `===` says false."),
@@ -184,7 +184,7 @@ const QUIZZES: Record<string, Three> = {
     [
       P("a", WHAT, `let s = "";\nfor (const c of ["x", "y", "z"]) {\n  s = s + c;\n}\nconsole.log(s);`, ["xyz", "zyx", "x", "\"\""], 0, "Starting from empty text, each round glues one letter on the end."),
       T("b", "Trace it. How many are 2 or more?", `let count = 0;\nfor (const n of [1, 2, 3, 2]) {\n  if (n >= 2) {\n    count = count + 1;\n  }\n}`, [{ label: "count", answer: "3" }], "2, 3 and 2 qualify; 1 doesn't."),
-      P("c", "Counting down. What prints?", `for (let i = 3; i > 0; i--) {\n  console.log(i);\n}`, ["3\n2\n1", "3\n2\n1\n0", "1\n2\n3", "2\n1\n0"], 0, "`i--` takes 1 off each round. At 0, `0 > 0` is false, so 0 never prints."),
+      P("c", "Counting down. What prints? (`i--` means `i = i - 1`.)", `for (let i = 3; i > 0; i--) {\n  console.log(i);\n}`, ["3\n2\n1", "3\n2\n1\n0", "1\n2\n3", "2\n1\n0"], 0, "`i--` takes 1 off each round. At 0, `0 > 0` is false, so 0 never prints."),
       C("d", "Both should add up the list. Which is right?", `let total = 0;\nfor (const n of list) {\n  total = total + n;\n}`, `for (const n of list) {\n  let total = 0;\n  total = total + n;\n}`, "a", "In B the total is reset to 0 every round. A running total starts before the loop."),
     ],
     [
@@ -210,7 +210,7 @@ const QUIZZES: Record<string, Three> = {
       P("d", WHAT, `const inc = (n) => n + 1;\nconsole.log(inc(inc(1)));`, ["2", "3", "11", "undefined"], 1, "Inner call first: inc(1) is 2. Then inc(2) is 3."),
     ],
     [
-      P("a", "Mixed with 1.6. What prints?", `const sites = [{ id: "A", len: 20 }, { id: "B", len: 35 }];\nconsole.log(sites.filter((s) => s.len >= 30).map((s) => s.id).join(","));`, ["A", "B", "A,B", ""], 1, "Only B is at least 30. `map` turns it into its id; `join` makes it text."),
+      P("a", "Mixed with 1.6. What prints? (`join(\",\")` turns a list into one piece of text, with commas between.)", `const sites = [{ id: "A", len: 20 }, { id: "B", len: 35 }];\nconsole.log(sites.filter((s) => s.len >= 30).map((s) => s.id).join(","));`, ["A", "B", "A,B", ""], 1, "Only B is at least 30. `map` turns it into its id; `join` makes it text."),
       P("b", WHAT, `const a = [1, 2, 3];\nconst b = a.map((n) => n);\nb.push(4);\nconsole.log(a.length);`, ["3", "4", "undefined", "An error"], 0, "`map` always makes a NEW array, so pushing to `b` leaves `a` alone."),
       P("c", "Mixed with 1.8. What prints?", `let t = 0;\nfor (const n of [1, 2, 3].filter((n) => n !== 2)) {\n  t = t + n;\n}\nconsole.log(t);`, ["6", "4", "3", "5"], 1, "The 2 is filtered out, leaving 1 and 3: 4."),
       C("d", "Both get the first open site. Which would a reviewer prefer?", `const s = sites.filter((x) => x.open)[0];`, `const s = sites.find((x) => x.open);`, "b", "Same result, but `find` says what it means and stops at the first match. A builds a whole list to take one item."),
@@ -234,7 +234,7 @@ const QUIZZES: Record<string, Three> = {
     [
       P("a", "Mixed with 1.3, in plain JavaScript. What prints?", `const nights = "2";\nconsole.log(nights + 1);`, ["3", "21", "\"21\"", "An error"], 1, "A string glues. Typing `nights` as a number in TypeScript would have flagged the quotes."),
       P("b", "What does `double(4)` return?", `function double(n: number): number {\n  return n * 2;\n}`, ["4", "8", "\"8\"", "undefined"], 1, "The types don't change what the code does: 4 × 2 is 8."),
-      B("c", "Which line would TypeScript flag?", `interface Watch {\n  nights: number;\n}\nfunction total(w: Watch) {\n  return w.nigths * 10;\n}`, 5, "`nigths` is a typo. `Watch` has no such property, so TypeScript catches it. Plain JavaScript would quietly give NaN."),
+      B("c", "Which line would TypeScript flag?", `interface Watch {\n  nights: number;\n}\nfunction total(w: Watch) {\n  return w.nigths * 10;\n}`, 5, "`nigths` is a typo. `Watch` has no such property, so TypeScript catches it. Plain JavaScript would quietly give NaN (\"Not a Number\"), because `undefined * 10` isn't a number."),
       P("d", "`const list: string[] = [\"A1\"];` then `list.push(5);` What happens?", undefined, ["It works: push takes anything", "TypeScript flags it: 5 isn't a string", "The list becomes empty", "It throws an error when the app runs"], 1, "`string[]` means a list of strings only."),
     ],
   ],
