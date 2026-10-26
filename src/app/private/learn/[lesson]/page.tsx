@@ -39,13 +39,14 @@ export default async function LessonPage({ params }: Params) {
   const status = lessonStatus(lesson, data.lessons.get(id));
   const startAt = status.kind === "started" ? status.step : 0;
   const quizzes = quizzesOf(parentId).map((q) => ({ id: q.id, label: `Quiz ${q.number.split("Quiz ")[1]}: ${q.title}`, done: lessonStatus(q, data.lessons.get(q.id)).kind === "done" }));
-  const kind = lesson.quizOf ? "Practice quiz" : lesson.checkpoint ? "Checkpoint" : "Lesson";
+  // A quiz's number already says "1.2 · Quiz 1".
+  const kind = lesson.quizOf ? "" : lesson.checkpoint ? "Checkpoint " : "Lesson ";
 
   return (
     <LearnShell current={null} crumb={`${lesson.number} ${lesson.title}`}>
       <div className="max-w-[760px]">
         <p className="font-mono text-label uppercase text-muted">
-          {kind} {lesson.number} · about {lesson.minutes} min
+          {kind}{lesson.number} · about {lesson.minutes} min
         </p>
         <h1 className="mt-3 text-title font-normal">{lesson.quizOf && parent ? `${parent.title}: ${lesson.title.toLowerCase()}` : lesson.title}</h1>
         <p className="mt-3 text-lede text-ink-2">{lesson.goal}</p>

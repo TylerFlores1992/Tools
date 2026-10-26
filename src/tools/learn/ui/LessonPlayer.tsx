@@ -87,7 +87,7 @@ export function LessonPlayer({ lesson, startAt, quizzes = [] }: { lesson: Lesson
     const pass = !lesson.checkpoint || (full && checkpointPassed(score, scored));
     return (
       <div ref={top} className="max-w-[720px] scroll-mt-4">
-        <h2 className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "Quiz" : lesson.checkpoint ? "Checkpoint" : "Lesson"} {lesson.number} done</h2>
+        <h2 className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "" : lesson.checkpoint ? "Checkpoint " : "Lesson "}{lesson.number} done</h2>
         <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-card">
           <p className="font-mono text-label uppercase text-muted">Right on the first try</p>
           <p className="mt-2 text-title font-normal tabular-nums leading-none">
