@@ -132,6 +132,7 @@ export const RESUME = {
     {
       title: "Key rigging grip, best boy rigging grip, rigging grip",
       org: "IATSE Local 80 · film and television",
+      years: "11 years",
       lines: [
         "Key rigging grip: plan and run the rig with the key grip and gaffer, lead the crew, and own safety on every lift and hang.",
         "Best boy rigging grip: crew calls, gear orders, schedules and timecards; keep the rig on time and on budget.",
