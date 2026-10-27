@@ -64,14 +64,17 @@ function ProjectBlock({ p, n }: { p: Project; n: number }) {
           </a>
         )}
       </div>
-      {p.shot ? (
-        <figure className="self-start">
-          <Image src={p.shot.src} alt={p.shot.alt} width={p.shot.w} height={p.shot.h} sizes="(min-width: 1024px) 50vw, 100vw" className="w-full rounded-card border border-line shadow-card" />
-          {p.shot.note && <figcaption className="mt-3 text-small text-muted">{p.shot.note}</figcaption>}
-        </figure>
-      ) : p.stats ? (
-        <Stats stats={p.stats} />
-      ) : null}
+      {(p.shot || p.stats) && (
+        <div className="grid gap-6 self-start">
+          {p.shot && (
+            <figure>
+              <Image src={p.shot.src} alt={p.shot.alt} width={p.shot.w} height={p.shot.h} sizes="(min-width: 1024px) 50vw, 100vw" className="w-full rounded-card border border-line shadow-card" />
+              {p.shot.note && <figcaption className="mt-3 text-small text-muted">{p.shot.note}</figcaption>}
+            </figure>
+          )}
+          {p.stats && <Stats stats={p.stats} />}
+        </div>
+      )}
     </article>
   );
 }

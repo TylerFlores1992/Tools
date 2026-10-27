@@ -41,6 +41,7 @@ export const PROJECTS: readonly Project[] = [
       "A self-running agent setup on a small Windows server, with written operating rules, permission tiers, scheduled runs and cost logging.",
     ],
     stack: ["Next.js", "TypeScript", "Vercel", "Postgres (Supabase)", "Text and push alerts", "Claude Code"],
+    shot: { src: "/media/work/camphawk.webp", alt: "CampHawk's home page: the headline \"The campsite you wanted is already booked. We wait for it.\" over a tent in a misty forest, an example alert card for Site 42, and the campground search bar.", w: 962, h: 628, note: "camphawk.app, as a visitor sees it." },
     // Counted in CampHawk's database on 2026-10-26 (campgrounds, campsites, sent notifications, users).
     stats: {
       asOf: "October 2026",
