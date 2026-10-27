@@ -15,7 +15,8 @@ If this file and those disagree, **the code is right — fix this file.** Full b
 ## The feel
 Precise, nocturnal, alive. A real wolf in a night forest, thin circuit lines in its fur and one
 ember eye; quiet pages around tools with real depth. **Never** cheesy-cyberpunk (no Orbitron, Matrix rain, neon
-green/magenta glitch), cute, or corporate. **No bio, no "about me", no nickname story.**
+green/magenta glitch), cute, or corporate. **No bio, no "about me", no nickname story**, except the unlisted portfolio + résumé at `/work`
+(owner's call, 2026-10-26: never linked from the nav, sitemap or search).
 
 ## Colour = meaning (use a token, never a hex)
 | token | means |

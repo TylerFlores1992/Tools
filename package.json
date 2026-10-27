@@ -12,7 +12,8 @@
     "verify": "npm run typecheck && npm run lint && npm test && npm run build",
     "shots": "tsx scripts/screenshot.mts",
     "smoke": "tsx scripts/smoke.mts",
-    "e2e": "tsx scripts/e2e.mts"
+    "e2e": "tsx scripts/e2e.mts",
+    "resume": "tsx scripts/resume-pdf.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.100",

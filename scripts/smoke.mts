@@ -15,6 +15,9 @@ if (!/^https?:\/\//.test(base)) {
 const CHECKS: { path: string; status: number; contains: string; absent?: string; cache?: string }[] = [
   { path: "/", status: 200, contains: "Sharp teeth." },
   { path: "/workshop", status: 200, contains: "Tools" },
+  { path: "/work", status: 200, contains: "noindex" },
+  { path: "/work/resume", status: 200, contains: "IATSE Local 80" },
+  { path: "/work/tyler-flores-resume.pdf", status: 200, contains: "%PDF" },
   { path: "/workshop/bridle-calculator", status: 200, contains: "Two-leg bridle" },
   { path: "/workshop/etcp-rigger-study", status: 200, contains: "ETCP rigger study" },
   { path: "/workshop/etcp-rigger-study/practice/a", status: 200, contains: "Practice test A" },
