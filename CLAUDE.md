@@ -46,7 +46,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - **Mutation-test every new guard**: break the thing, see the test fail, confirm the break applied.
 - **Branch → PR → merge.** Never push to `main`. Small commits.
 - **US spelling** in user-visible copy (`src/lib/us-spelling.test.mts`). Comments: any.
-- **No bio / about-me / nickname content** on the site (owner's call, 2026-10-02).
+- **No bio / about-me / nickname content** on the site (owner's call, 2026-10-02). One exception:
+  the unlisted portfolio + résumé at `/work` (owner's call, 2026-10-26; `src/lib/work.ts`, `npm run resume`).
 
 ## Layout
 - `src/app/` routes · `src/components/` primitives (Phase 4) · `src/design/` tokens + tests
