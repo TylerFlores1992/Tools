@@ -5,7 +5,10 @@ import { Arrow, LinkButton } from "@/components/Button";
 import { Label } from "@/components/Label";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import Link from "next/link";
+import { ToolList } from "@/components/ToolList";
 import { SITE } from "@/lib/site";
+import { TOOLS } from "@/lib/tools";
 
 export const metadata: Metadata = {
   title: { absolute: `${SITE.name} — ${SITE.headline.join(" ")}` },
@@ -17,7 +20,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="theme-night bg-bg text-ink">
-      <main id="main" className="relative isolate flex min-h-svh flex-col overflow-hidden">
+      <main id="main">
+      <div className="relative isolate flex min-h-svh flex-col overflow-hidden">
         <HeroArt />
         {/* Scrims: text sits on these, never straight on the art (contrast is checked in screenshots).
             Landscape: a left scrim under the type, so the wolf keeps its light, plus a short floor
@@ -50,8 +54,22 @@ export default function Home() {
           </div>
         </div>
         </PageTransition>
+      </div>
+
+      {/* What's in the workshop, from the same list the workshop page uses (counts never typed). */}
+      <section aria-labelledby="in-the-workshop" className="w-full px-5 pb-20 pt-4 sm:px-12 sm:pb-24 3xl:px-16">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line-2 pb-5">
+          <h2 id="in-the-workshop" className="flex items-center gap-3 font-mono text-label uppercase text-ink-2">
+            <span aria-hidden="true" className="h-px w-7 bg-ink-2" />In the workshop
+          </h2>
+          <Link href="/workshop" className="group -my-3 inline-flex items-center gap-2 py-3 text-small text-ink-2 transition-colors duration-150 hover:text-ink">
+            All tools <Arrow className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
+          </Link>
+        </div>
+        <ToolList tools={TOOLS} heading="h3" />
+      </section>
       </main>
-      <SiteFooter />
+      <SiteFooter wide />
     </div>
   );
 }

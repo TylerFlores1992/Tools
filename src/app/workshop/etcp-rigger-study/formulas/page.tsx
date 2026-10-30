@@ -13,11 +13,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const SECTIONS = [...FORMULA_GROUPS.map((g) => ({ id: g.id, title: g.title })), { id: "conversions", title: "Conversions" }];
+
 /** "a03" → link to question 3 of test A. */
 function QuestionLink({ id }: { id: string }) {
   const set = id[0], n = Number(id.slice(1));
   return (
-    <Link href={`/workshop/etcp-rigger-study/practice/${set}#${id}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-tag border border-line-2 px-2.5 font-mono text-label text-ink-2 hover:border-control hover:text-ink">
+    <Link href={`/workshop/etcp-rigger-study/practice/${set}#${id}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-tag border border-line-2 px-2.5 font-mono text-label tracking-normal text-ink-2 hover:border-control hover:text-ink">
       {set.toUpperCase()}{n}
     </Link>
   );
@@ -27,7 +29,8 @@ function FormulaRow({ f }: { f: Formula }) {
   return (
     <li className="border-t border-line py-6 first:border-t-0">
       <h3 className="text-h3 font-medium text-ink">{f.name}</h3>
-      <div className="mt-3 overflow-x-auto rounded-input border border-line bg-surface-2 px-4 py-3 text-lede tabular-nums text-ink">
+      {/* Long lines scroll sideways; tabIndex lets keyboard users scroll them too. */}
+      <div tabIndex={0} role="group" aria-label={f.name} className="mt-3 overflow-x-auto rounded-input border border-line bg-surface-2 px-4 py-3 text-lede tabular-nums text-ink">
         {f.expr.split("\n").map((line, i) => (
           <p key={i} className="whitespace-nowrap"><RichLine text={line} /></p>
         ))}
@@ -53,44 +56,57 @@ export default function FormulasPage() {
         <p className="mt-4 text-lede text-ink-2">The formulas behind the practice questions, written the way the worked answers use them.</p>
       </header>
 
-      <div className="mt-8 max-w-[760px]">
-        <a href={OFFICIAL_SHEET.url} className="group flex items-center justify-between gap-4 rounded-card border border-line bg-surface p-5 shadow-card transition-colors duration-150 hover:border-control hover:bg-surface-2">
-          <span>
-            <span className="block font-mono text-label uppercase text-muted">In the exam · PDF</span>
-            <span className="mt-1 block text-body font-medium text-ink">{OFFICIAL_SHEET.title}</span>
-            <span className="mt-1 block text-small text-ink-2">ETCP hands you its own sheet in the exam. Learn its notation too; this page is a study companion, not a copy.</span>
-          </span>
-          <Arrow className="shrink-0 text-muted transition-[transform,color] duration-200 ease-out group-hover:translate-x-1 group-hover:text-ember" />
-        </a>
+      <div className="mt-8 lg:grid lg:grid-cols-[minmax(0,760px)_15rem] lg:items-start lg:gap-16 xl:gap-24">
+        <div className="min-w-0">
+          <a href={OFFICIAL_SHEET.url} className="group flex items-center justify-between gap-4 rounded-card border border-line bg-surface p-5 shadow-card transition-colors duration-150 hover:border-control hover:bg-surface-2">
+            <span>
+              <span className="block font-mono text-label uppercase text-muted">In the exam · PDF</span>
+              <span className="mt-1 block text-body font-medium text-ink">{OFFICIAL_SHEET.title}</span>
+              <span className="mt-1 block text-small text-ink-2">ETCP hands you its own sheet in the exam. Learn its notation too; this page is a study companion, not a copy.</span>
+            </span>
+            <Arrow className="shrink-0 text-muted transition-[transform,color] duration-200 ease-out group-hover:translate-x-1 group-hover:text-ember" />
+          </a>
 
-        <nav aria-label="Formula groups" className="mt-8 flex flex-wrap gap-2">
+          <nav aria-label="Formula groups" className="mt-8 flex flex-wrap gap-2 lg:hidden">
+            {SECTIONS.map((g) => (
+              <a key={g.id} href={`#${g.id}`} className="flex min-h-11 items-center rounded-full border border-line-2 bg-surface px-4 text-small text-ink-2 hover:border-control hover:text-ink">{g.title}</a>
+            ))}
+          </nav>
+
           {FORMULA_GROUPS.map((g) => (
-            <a key={g.id} href={`#${g.id}`} className="flex min-h-11 items-center rounded-full border border-line-2 bg-surface px-4 text-small text-ink-2 hover:border-control hover:text-ink">{g.title}</a>
+            <section key={g.id} id={g.id} aria-labelledby={`${g.id}-h`} className="mt-12 scroll-mt-6">
+              <h2 id={`${g.id}-h`} className="border-b border-line-2 pb-3 text-h2 font-normal">{g.title}</h2>
+              <ul>{g.formulas.map((f) => <FormulaRow key={f.id} f={f} />)}</ul>
+            </section>
           ))}
-          <a href="#conversions" className="flex min-h-11 items-center rounded-full border border-line-2 bg-surface px-4 text-small text-ink-2 hover:border-control hover:text-ink">Conversions</a>
-        </nav>
 
-        {FORMULA_GROUPS.map((g) => (
-          <section key={g.id} id={g.id} aria-labelledby={`${g.id}-h`} className="mt-12 scroll-mt-6">
-            <h2 id={`${g.id}-h`} className="border-b border-line-2 pb-3 text-h2 font-normal">{g.title}</h2>
-            <ul>{g.formulas.map((f) => <FormulaRow key={f.id} f={f} />)}</ul>
+          <section id="conversions" aria-labelledby="conversions-h" className="mt-12 scroll-mt-6">
+            <h2 id="conversions-h" className="border-b border-line-2 pb-3 text-h2 font-normal">Conversions</h2>
+            <p className="mt-4 text-small text-muted">Not on the official sheet. Know these from memory.</p>
+            <table className="mt-4 w-full text-body tabular-nums">
+              <tbody>
+                {CONVERSIONS.map(([a, b]) => (
+                  <tr key={a} className="border-b border-line">
+                    <th scope="row" className="py-3 pr-6 text-left font-medium text-ink">{a}</th>
+                    <td className="py-3 text-ink-2">{b}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
-        ))}
+        </div>
 
-        <section id="conversions" aria-labelledby="conversions-h" className="mt-12 scroll-mt-6">
-          <h2 id="conversions-h" className="border-b border-line-2 pb-3 text-h2 font-normal">Conversions</h2>
-          <p className="mt-4 text-small text-muted">Not on the official sheet. Know these from memory.</p>
-          <table className="mt-4 w-full text-body tabular-nums">
-            <tbody>
-              {CONVERSIONS.map(([a, b]) => (
-                <tr key={a} className="border-b border-line">
-                  <th scope="row" className="py-3 pr-6 text-left font-medium text-ink">{a}</th>
-                  <td className="py-3 text-ink-2">{b}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        {/* Desktop: the same index, kept in view beside the formulas. */}
+        <nav aria-label="Formula groups" className="hidden lg:sticky lg:top-6 lg:block">
+          <p className="font-mono text-label uppercase text-muted">On this page</p>
+          <ul className="mt-3 border-l border-line">
+            {SECTIONS.map((g) => (
+              <li key={g.id}>
+                <a href={`#${g.id}`} className="-ml-px flex min-h-11 items-center border-l border-transparent pl-4 text-small text-ink-2 hover:border-control hover:text-ink">{g.title}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </PageTransition>
   );

@@ -5,8 +5,9 @@ import { Label } from "@/components/Label";
 import { Arrow } from "@/components/Button";
 import { SITE } from "@/lib/site";
 import { toolBySlug } from "@/lib/tools";
-import { PRACTICE_SETS } from "@/tools/etcp/questions";
+import { PRACTICE_SETS, PRACTICE_SIZES, listJoin } from "@/tools/etcp/questions";
 import { CARDS, DECKS } from "@/tools/etcp/cards";
+import { SavedProgress } from "@/tools/etcp/SavedProgress";
 import { FORMULA_COUNT, OFFICIAL_SHEET } from "@/tools/etcp/formulas";
 
 const tool = toolBySlug("etcp-rigger-study");
@@ -14,21 +15,31 @@ const BASE = `/workshop/${tool.slug}`;
 
 export const metadata: Metadata = {
   title: tool.name,
-  description: "Free ETCP Certified Rigger study: three practice tests (25, 25 and a 50-question exam-weighted set) with worked answers, flashcards and a formula reference.",
+  description: `Free ETCP Certified Rigger study: ${PRACTICE_SETS.length} practice tests (${PRACTICE_SIZES} questions, one weighted like the real exam) with worked answers, flashcards and a formula reference.`,
   alternates: { canonical: BASE },
   robots: { index: true, follow: true },
 };
 
-const SECTIONS = [
-  ...PRACTICE_SETS.map((s) => ({
+type Section = { href: string; eyebrow: string; title: string; body: string; slug?: string };
+
+const SECTIONS: Section[] = [
+  ...PRACTICE_SETS.map((s, i) => ({
     href: `${BASE}/practice/${s.slug}`,
-    eyebrow: `${s.questions.length} questions`,
+    eyebrow: `${s.questions.length} questions${i === 0 ? " · start here" : ""}`,
     title: s.name,
-    body: s.about ?? "Arena-style multiple choice. Tap an answer to see the working.",
+    body: s.about ?? "Arena-style multiple choice. Pick an answer to lock it in and see the working.",
+    slug: s.slug,
   })),
-  { href: `${BASE}/flashcards`, eyebrow: `${CARDS.length} cards · ${DECKS.length} decks`, title: "Flashcards", body: DECKS.map((d) => d.label).join(", ") + ". Keep what you miss in rotation." },
+  { href: `${BASE}/flashcards`, eyebrow: `${CARDS.length} cards · ${DECKS.length} decks`, title: "Flashcards", body: `${sentence(listJoin(DECKS.map((d) => d.about)))}. Keep what you miss in rotation.` },
   { href: `${BASE}/formulas`, eyebrow: `${FORMULA_COUNT} formulas`, title: "Formula reference", body: "Bridles, beams, rope and forces, each linked to the questions that use it." },
 ];
+
+function sentence(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// An odd last card spans the row instead of sitting alone in half of it.
+const lastSpans = SECTIONS.length % 2 === 1;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -44,7 +55,7 @@ const jsonLd = {
 export default function StudyOverview() {
   return (
     <PageTransition>
-      <header className="mt-8 max-w-[64ch]">
+      <header className="mt-8 max-w-[760px]">
         <Label>Rigging · Study</Label>
         <h1 className="mt-3 text-title font-normal">{tool.name}</h1>
         <p className="mt-4 text-lede text-ink-2">
@@ -52,8 +63,8 @@ export default function StudyOverview() {
         </p>
       </header>
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-        {SECTIONS.map((s) => (
-          <li key={s.href}>
+        {SECTIONS.map((s, i) => (
+          <li key={s.href} className={lastSpans && i === SECTIONS.length - 1 ? "sm:col-span-2" : undefined}>
             <Link href={s.href} className="group flex h-full flex-col rounded-card border border-line bg-surface p-5 shadow-card transition-colors duration-150 hover:border-control hover:bg-surface-2 sm:p-6">
               <span className="font-mono text-label uppercase text-muted">{s.eyebrow}</span>
               <span className="mt-3 flex items-center justify-between gap-4 text-h3 font-medium text-ink">
@@ -61,6 +72,7 @@ export default function StudyOverview() {
                 <Arrow className="shrink-0 text-muted transition-[transform,color] duration-200 ease-out group-hover:translate-x-1 group-hover:text-ember" />
               </span>
               <span className="mt-2 text-body text-ink-2">{s.body}</span>
+              {s.slug && <SavedProgress slug={s.slug} />}
             </Link>
           </li>
         ))}

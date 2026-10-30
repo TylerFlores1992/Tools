@@ -56,3 +56,15 @@ export function useStored<T>(key: string, fallback: T, valid: (v: unknown) => v 
   );
   return [value, set];
 }
+
+/** Answers to one practice test: question id → chosen option index. */
+export type Answers = Record<string, number>;
+const NO_ANSWERS: Answers = {};
+const isAnswers = (v: unknown): v is Answers =>
+  typeof v === "object" && v !== null && !Array.isArray(v) && Object.values(v).every((n) => Number.isInteger(n) && n >= 0 && n <= 3);
+
+/** The saved answers for a practice set, shared by the test page and the overview's progress. */
+export function usePracticeAnswers(slug: string): [Answers, (next: Answers) => void, Answers] {
+  const [answers, set] = useStored(`etcp:practice:${slug}`, NO_ANSWERS, isAnswers);
+  return [answers, set, NO_ANSWERS];
+}

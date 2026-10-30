@@ -34,3 +34,8 @@ test("conversion pairs are inverses of each other", () => {
   assert.ok(Math.abs(v("1 kg") * v("1 lb") - 1) < 1e-3);
   assert.equal(v("1 in"), 25.4);
 });
+
+test("formulas write multiplication one way (×), never a middle dot", () => {
+  const dotted = all.filter((f) => [f.expr, f.where ?? "", f.note ?? ""].some((t) => t.includes("·"))).map((f) => f.id);
+  assert.deepEqual(dotted, []);
+});

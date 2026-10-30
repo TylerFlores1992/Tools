@@ -33,7 +33,7 @@ export function Segmented<T extends string>({
               if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); move(1); }
               if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); move(-1); }
             }}
-            className={cx("flex min-h-10 items-center gap-2 rounded-full px-4 text-small transition-colors duration-150", on ? "bg-primary text-on-primary" : "text-ink-2 hover:text-ink")}
+            className={cx("flex min-h-11 items-center gap-2 rounded-full px-4 text-small transition-colors duration-150", on ? "bg-primary text-on-primary" : "text-ink-2 hover:text-ink")}
           >
             {on && <span aria-hidden="true">✓</span>}
             {o.label}

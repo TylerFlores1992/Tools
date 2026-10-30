@@ -4,11 +4,12 @@
 export type Deck = "math" | "core" | "arena" | "theatre";
 
 /** Decks are told apart by name and glyph, never by colour (the owner is red-green colour-blind). */
-export const DECKS: readonly { key: Deck; label: string; glyph: string }[] = [
-  { key: "math", label: "Math & forces", glyph: "◆" },
-  { key: "core", label: "Both exams", glyph: "●" },
-  { key: "arena", label: "Arena", glyph: "▲" },
-  { key: "theatre", label: "Theatre", glyph: "■" },
+/** `about` reads inside a sentence on the overview ("Math and forces, core knowledge for both exams, …"). */
+export const DECKS: readonly { key: Deck; label: string; glyph: string; about: string }[] = [
+  { key: "math", label: "Math & forces", glyph: "◆", about: "math and forces" },
+  { key: "core", label: "Both exams", glyph: "●", about: "core knowledge for both exams" },
+  { key: "arena", label: "Arena", glyph: "▲", about: "Arena" },
+  { key: "theatre", label: "Theatre", glyph: "■", about: "Theatre" },
 ];
 
 export type Flashcard = { id: string; deck: Deck; q: string; a: string };

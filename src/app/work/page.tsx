@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { Arrow, buttonClasses } from "@/components/Button";
 import { Label } from "@/components/Label";
@@ -10,24 +11,36 @@ import { HOW_I_WORK, PROJECTS, RESUME, STATE_LABEL, type Project } from "@/lib/w
 
 // Unlisted (owner's call, 2026-10-26): shared by link, never in the nav, sitemap or search.
 export const metadata: Metadata = {
-  title: `${RESUME.name}: work`,
+  // absolute: the root layout's template would otherwise append the site name.
+  title: { absolute: `${RESUME.name} · Work` },
   description: RESUME.headline,
   robots: { index: false, follow: false },
 };
+
+/** Section heading: the page eyebrow's weight (ink-2 + rule), a step above in-card labels. */
+function SectionHeading({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <h2 id={id} className="flex items-center gap-3 font-mono text-label uppercase text-ink-2">
+      <span aria-hidden="true" className="h-px w-7 bg-ink-2" />
+      {children}
+    </h2>
+  );
+}
 
 function Stats({ stats }: { stats: NonNullable<Project["stats"]> }) {
   return (
     <div className="self-start rounded-card border border-line bg-surface p-6 shadow-card sm:p-8">
       <p className="font-mono text-label uppercase text-muted">By the numbers</p>
       <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-7">
-        {stats.items.map((s) => (
-          <div key={s.label} className="flex flex-col-reverse">
-            <dt className="mt-1 text-small text-ink-2">{s.label}</dt>
+        {stats.items.map((s, i) => (
+          // An odd count would orphan the last stat in one column: let it span the row.
+          <div key={s.label} className={i === stats.items.length - 1 && stats.items.length % 2 === 1 ? "col-span-2 flex flex-col-reverse" : "flex flex-col-reverse"}>
+            <dt className="mt-1 text-small text-pretty text-ink-2">{s.label}</dt>
             <dd className="text-title font-normal tabular-nums text-ink">{s.value}</dd>
           </div>
         ))}
       </dl>
-      <p className="mt-7 text-small text-muted">Counted from CampHawk&rsquo;s own records, {stats.asOf}.</p>
+      <p className="mt-7 text-small text-pretty text-muted">Counted from CampHawk&rsquo;s own records, {stats.asOf}.</p>
     </div>
   );
 }
@@ -38,14 +51,14 @@ function ProjectBlock({ p, n }: { p: Project; n: number }) {
       <div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-label uppercase">
           <span className="tabular-nums text-muted">{String(n).padStart(2, "0")}</span>
-          {p.state === "live" ? <State kind="ok">{STATE_LABEL[p.state]}</State> : <State kind="note">{STATE_LABEL[p.state]}</State>}
+          <State kind={p.state === "live" ? "ok" : "note"} sr="Status:">{STATE_LABEL[p.state]}</State>
         </div>
         <h3 id={`p-${p.id}`} className="mt-4 text-h2 font-normal">{p.name}</h3>
-        <p className="mt-3 max-w-[60ch] text-lede text-ink-2">{p.line}</p>
+        <p className="mt-3 max-w-[60ch] text-lede text-pretty text-ink-2">{p.line}</p>
         <p className="mt-6 font-mono text-label uppercase text-muted">The problem</p>
-        <p className="mt-2 max-w-[64ch] text-body text-ink-2">{p.problem}</p>
+        <p className="mt-2 max-w-[64ch] text-body text-pretty text-ink-2">{p.problem}</p>
         <p className="mt-6 font-mono text-label uppercase text-muted">What I built</p>
-        <ul className="mt-2 grid max-w-[64ch] gap-2 text-body text-ink-2">
+        <ul className="mt-2 grid max-w-[64ch] gap-2 text-body text-pretty text-ink-2">
           {p.built.map((b) => (
             <li key={b} className="grid grid-cols-[1rem_minmax(0,1fr)] gap-2">
               <span aria-hidden="true" className="text-muted">–</span>
@@ -68,8 +81,8 @@ function ProjectBlock({ p, n }: { p: Project; n: number }) {
         <div className="grid gap-6 self-start">
           {p.shot && (
             <figure>
-              <Image src={p.shot.src} alt={p.shot.alt} width={p.shot.w} height={p.shot.h} sizes="(min-width: 1024px) 50vw, 100vw" className="w-full rounded-card border border-line shadow-card" />
-              {p.shot.note && <figcaption className="mt-3 text-small text-muted">{p.shot.note}</figcaption>}
+              <Image src={p.shot.src} alt={p.shot.alt} width={p.shot.w} height={p.shot.h} sizes="(min-width: 1024px) 50vw, 100vw" className="w-full rounded-card border border-line bg-surface-2 shadow-card" />
+              {p.shot.note && <figcaption className="mt-3 text-small text-pretty text-muted">{p.shot.note}</figcaption>}
             </figure>
           )}
           {p.stats && <Stats stats={p.stats} />}
@@ -80,7 +93,9 @@ function ProjectBlock({ p, n }: { p: Project; n: number }) {
 }
 
 export default function WorkPage() {
-  const contact = RESUME.email ? `mailto:${RESUME.email}` : null;
+  // Shown lowercase: shorter in the button, and email addresses are case-insensitive.
+  const email = RESUME.email?.toLowerCase();
+  const contact = email ? `mailto:${email}` : null;
   return (
     <>
       <SiteHeader current={null} />
@@ -89,12 +104,12 @@ export default function WorkPage() {
           <header className="max-w-[900px]">
             <Label rule>Work</Label>
             <h1 className="mt-4 text-title font-normal">{RESUME.name}</h1>
-            <p className="mt-5 max-w-[60ch] text-lede text-ink-2">{RESUME.headline}</p>
+            <p className="mt-5 max-w-[60ch] text-lede text-pretty text-ink-2">{RESUME.headline}</p>
             {RESUME.region && <p className="mt-3 text-small text-muted">{RESUME.region} · open to remote work</p>}
             <div className="mt-8 flex flex-wrap gap-3">
               {contact && (
                 <a href={contact} className={buttonClasses("primary")}>
-                  Email {RESUME.email} <Arrow />
+                  Email {email} <Arrow />
                 </a>
               )}
               <a href={RESUME.pdf} download className={buttonClasses("quiet")}>
@@ -104,20 +119,20 @@ export default function WorkPage() {
           </header>
 
           <section aria-labelledby="how" className="mt-20">
-            <h2 id="how" className="font-mono text-label uppercase text-muted">How I work</h2>
+            <SectionHeading id="how">How I work</SectionHeading>
             <ol className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {HOW_I_WORK.map((h, i) => (
                 <li key={h.title} className="rounded-card border border-line bg-surface p-5 shadow-card">
                   <span className="font-mono text-label tabular-nums text-muted">{String(i + 1).padStart(2, "0")}</span>
                   <h3 className="mt-3 text-h3 font-medium">{h.title}</h3>
-                  <p className="mt-2 text-small text-ink-2">{h.body}</p>
+                  <p className="mt-2 text-small text-pretty text-ink-2">{h.body}</p>
                 </li>
               ))}
             </ol>
           </section>
 
           <section aria-labelledby="projects" className="mt-20">
-            <h2 id="projects" className="font-mono text-label uppercase text-muted">Projects</h2>
+            <SectionHeading id="projects">Projects</SectionHeading>
             <div className="mt-6">
               {PROJECTS.map((p, i) => <ProjectBlock key={p.id} p={p} n={i + 1} />)}
             </div>
@@ -125,15 +140,15 @@ export default function WorkPage() {
 
           {RESUME.experience.length > 0 && (
             <section aria-labelledby="experience" className="mt-12 border-t border-line-2 pt-12">
-              <h2 id="experience" className="font-mono text-label uppercase text-muted">Experience</h2>
+              <SectionHeading id="experience">Experience</SectionHeading>
               <ol className="mt-6 grid gap-8">
                 {RESUME.experience.map((j) => (
                   <li key={`${j.title}-${j.org}`} className="grid gap-2 md:grid-cols-[200px_minmax(0,1fr)] md:gap-8">
-                    <span className="font-mono text-label uppercase tabular-nums text-muted md:pt-1">{j.years ?? "Union crew"}</span>
+                    {j.years ? <span className="font-mono text-label uppercase tabular-nums text-muted md:pt-1">{j.years}</span> : <span aria-hidden="true" className="hidden md:block" />}
                     <div>
                       <h3 className="text-h3 font-medium">{j.title}</h3>
                       <p className="text-body text-ink-2">{j.org}</p>
-                      <ul className="mt-2 grid max-w-[64ch] gap-1.5 text-body text-ink-2">
+                      <ul className="mt-2 grid max-w-[64ch] gap-1.5 text-body text-pretty text-ink-2">
                         {j.lines.map((l) => <li key={l}>{l}</li>)}
                       </ul>
                     </div>
@@ -144,13 +159,13 @@ export default function WorkPage() {
           )}
 
           <section aria-labelledby="skills" className="mt-12 border-t border-line-2 pt-12">
-            <h2 id="skills" className="font-mono text-label uppercase text-muted">Skills</h2>
+            <SectionHeading id="skills">Skills</SectionHeading>
             <dl className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {RESUME.skills.map((s) => (
                 <div key={s.group}>
                   <dt className="text-h3 font-medium">{s.group}</dt>
                   <dd className="mt-2">
-                    <ul className="grid gap-1 text-small text-ink-2">
+                    <ul className="grid gap-1 text-small text-pretty text-ink-2">
                       {s.items.map((it) => <li key={it}>{it}</li>)}
                     </ul>
                   </dd>
@@ -161,8 +176,8 @@ export default function WorkPage() {
 
           {RESUME.certs.length > 0 && (
             <section aria-labelledby="certs" className="mt-12 border-t border-line-2 pt-12">
-              <h2 id="certs" className="font-mono text-label uppercase text-muted">Certifications and training</h2>
-              <ul className="mt-6 grid gap-1.5 text-body text-ink-2">
+              <SectionHeading id="certs">Certifications and training</SectionHeading>
+              <ul className="mt-6 grid gap-1.5 text-body text-pretty text-ink-2">
                 {RESUME.certs.map((c) => <li key={c}>{c}</li>)}
               </ul>
             </section>

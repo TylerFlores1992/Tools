@@ -1,25 +1,40 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { buttonClasses } from "@/components/Button";
 import { SITE } from "@/lib/site";
 import { PROJECTS, RESUME, STATE_LABEL } from "@/lib/work";
 
 // The printable résumé. `npm run resume` prints this page to public/work/tyler-flores-resume.pdf.
 // Same data as /work, so the page and the PDF never disagree. Unlisted, like /work.
 export const metadata: Metadata = {
-  title: `${RESUME.name}: résumé`,
+  // absolute: the root layout's template would otherwise append the site name.
+  title: { absolute: `${RESUME.name} · Résumé` },
   description: RESUME.headline,
   robots: { index: false, follow: false },
 };
 
 export default function ResumePage() {
+  // Shown lowercase: email addresses are case-insensitive, and it reads shorter.
+  const email = RESUME.email.toLowerCase();
+  // Narrow screens get a phone gutter and a stacked header; from sm up, and always on paper
+  // (the PDF lays out at 8.5in, past sm), it is the Letter layout.
   return (
-    <main id="main" className="mx-auto max-w-[8.5in] px-[0.6in] py-[0.4in] text-[9pt] leading-[1.4] text-ink-2">
-      <header className="flex items-end justify-between gap-6 border-b border-line-2 pb-3">
+    <main id="main" className="mx-auto max-w-[8.5in] px-5 py-[0.4in] text-[10.5pt] leading-[1.4] text-ink-2 print:text-[9pt] sm:px-[0.6in] print:px-[0.6in]">
+      <nav aria-label="Résumé" className="-mx-3 mb-4 flex flex-wrap items-center justify-between gap-2 print:hidden">
+        <Link href="/work" className={buttonClasses("ghost", "px-3")}>
+          <span aria-hidden="true">←</span> Portfolio
+        </Link>
+        <a href={RESUME.pdf} download className={buttonClasses("ghost", "px-3")}>
+          Download PDF
+        </a>
+      </nav>
+      <header className="flex flex-col gap-3 border-b border-line-2 pb-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6 print:flex-row print:items-end print:justify-between print:gap-6">
         <div>
           <h1 className="text-[22pt] font-normal leading-none tracking-[-0.03em] text-ink">{RESUME.name}</h1>
-          <p className="mt-1.5 text-[10.5pt] text-ink-2">{RESUME.headline}</p>
+          <p className="mt-1.5 text-[10.5pt] text-pretty text-ink-2">{RESUME.headline}</p>
         </div>
-        <p className="shrink-0 text-right text-[9pt] text-ink-2">
-          <a href={`mailto:${RESUME.email}`} className="text-ink">{RESUME.email}</a>
+        <p className="text-[10.5pt] text-ink-2 print:text-[9pt] sm:shrink-0 sm:text-right print:shrink-0 print:text-right">
+          <a href={`mailto:${email}`} className="text-ink">{email}</a>
           <br />
           {RESUME.region} · open to remote work
           <br />

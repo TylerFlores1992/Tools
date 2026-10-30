@@ -50,8 +50,8 @@ export default function BridleCalculatorPage() {
         <div className="mt-10">
           <BridleCalculator />
         </div>
-        <aside className="mt-8 max-w-[72ch] border-t border-line pt-5 text-small text-muted">
-          Tensions are static: they ignore the weight of the legs and hardware, and any shock loading. Check every real rig against your rigging references and a qualified rigger before you hang anything.
+        <aside aria-label="Safety" className="mt-8 max-w-[72ch] border-t border-line pt-5 text-small text-ink-2">
+          Tensions are static estimates: they ignore leg and hardware weight and any shock loading. Have a qualified rigger check any real rig before you hang it.
         </aside>
       </PageTransition>
 </main>

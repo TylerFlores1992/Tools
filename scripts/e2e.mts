@@ -61,11 +61,15 @@ try {
     assert.match(page.url(), /u=metric/);
   });
 
-  await check("typing something that isn’t a number explains it in words and keeps the last good result", async () => {
-    const before = await leftTension();
+  await check("typing something that isn’t a number explains it in words and shows no stale tension", async () => {
     await page.getByLabel("Span between beams").fill("abc");
     await page.getByText("Enter a number.").waitFor();
-    assert.equal(await leftTension(), before);
+    await page.getByText("Fix the highlighted measurement to see tensions.").waitFor();
+    assert.match(await leftTension(), /^–/);
+    // Leaving the field keeps the bad draft and its error; it doesn't snap back to an old number.
+    await page.getByLabel("Span between beams").blur();
+    assert.equal(await page.getByLabel("Span between beams").inputValue(), "abc");
+    assert.match(await leftTension(), /^–/);
   });
 
   await check("impossible geometry is explained with ✕ and shows no fake tension", async () => {
@@ -88,7 +92,7 @@ try {
     const q2 = page.locator("#a02");
     await q2.getByRole("button", { name: /60°/ }).click();
     await q2.getByText("Not quite. The answer is C.").waitFor();
-    await q2.getByText(/Problem: Your answer/).waitFor(); // icon + word, with the state name for screen readers
+    await q2.getByText("Your answer · incorrect").waitFor(); // icon + word, with the state name for screen readers
     await q2.getByText("Correct answer").waitFor();
     await page.getByText("1 of 25 answered").waitFor();
     await page.reload();

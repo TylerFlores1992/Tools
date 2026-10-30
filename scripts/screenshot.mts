@@ -67,6 +67,19 @@ for (const route of routes) {
       await page.evaluate(() => document.fonts.ready);
       // Let entrance animations finish: a mid-animation screenshot (or contrast reading) lies.
       await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running" || a.effect?.getTiming().iterations === Infinity), null, { timeout: 8000 }).catch(() => problems.push(`${tag}: animations still running after 8s`));
+      // Scroll through once so lazy images load (a capture without it shows empty frames), then
+      // require every image to have loaded: a broken image is a defect, not a screenshot quirk.
+      for (let y = 0, h = await page.evaluate(() => document.body.scrollHeight); y < h; y += HEIGHT[w]) {
+        await page.evaluate((y) => scrollTo(0, y), y);
+        await page.waitForTimeout(80);
+      }
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.waitForLoadState("networkidle");
+      await page.waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 8000 }).catch(() => {});
+      for (const src of await page.$$eval("img", (els) => els.filter((i) => !(i.complete && i.naturalWidth > 0)).map((i) => i.currentSrc || i.src))) problems.push(`${tag}: image failed to load: ${src}`);
+      // A page wider than the window sways sideways on a phone and shows dead space.
+      const [sw, iw] = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+      if (sw > iw) problems.push(`${tag}: scrolls sideways (${sw}px wide in a ${iw}px window)`);
       const name = (route === "/" ? "home" : route.slice(1).replace(/\//g, "_")) + `-${w}-${scheme}.png`;
       // A full-page capture resizes the viewport, which can switch a srcset image to a bigger file
       // mid-capture and photograph its blurred placeholder: capture once to warm it, then for real.

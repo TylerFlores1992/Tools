@@ -49,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LAUNCH_SCRIPT }} />
       </head>
-      <body className="min-h-dvh bg-bg text-ink">
+      <body className="flex min-h-dvh flex-col bg-bg text-ink">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-btn focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
