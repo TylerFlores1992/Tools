@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
@@ -37,16 +37,27 @@ export function Flashcards() {
     setPos((idx + delta + pile.length) % pile.length);
     setFlippedId(null);
   };
+  // A button that's pressed swaps for another (Show answer → Again / Got it), so focus moves on
+  // with it: to the answer after a flip, to "Show answer" after rating a card.
+  const answerRef = useRef<HTMLDivElement>(null);
+  const showRef = useRef<HTMLButtonElement>(null);
+  const focusNext = useRef<"answer" | "show" | null>(null);
+  useEffect(() => {
+    const target = focusNext.current === "answer" ? answerRef.current : focusNext.current === "show" ? showRef.current : null;
+    focusNext.current = null;
+    target?.focus();
+  });
+
   const flip = () => current && setFlippedId(flipped ? null : current.id);
   function gotIt() {
-    if (!current) return;
+    if (!current || !flipped) return;
     setKnownList([...knownList, current.id]);
     setFlippedId(null);
     // The next card slides into this position; wrap at the end.
     if (idx >= pile.length - 1) setPos(0);
   }
   function again() {
-    if (!current) return;
+    if (!current || !flipped) return;
     // Bring it back three cards from now.
     const target = pile[Math.min(idx + 3, pile.length - 1)];
     const rest = order.filter((id) => id !== current.id);
@@ -71,13 +82,23 @@ export function Flashcards() {
     setFlippedId(null);
   }
 
-  // ← → move between cards anywhere on the page, except while typing or using a control's own arrows.
+  // Keys work anywhere on the page, except while typing or using a control's own keys:
+  // ← → move, F (or Space/Enter away from a button or link) flips, A is Again, G is Got it.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const t = e.target as HTMLElement;
       if (t.closest("input, textarea, select, [role=radiogroup], [role=slider]") || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "ArrowRight") go(1);
-      if (e.key === "ArrowLeft") go(-1);
+      const onControl = !!t.closest("button, a, summary, [role=button]");
+      const k = e.key.toLowerCase();
+      if (k === "arrowright") go(1);
+      else if (k === "arrowleft") go(-1);
+      else if (k === "f" || ((k === " " || k === "enter") && !onControl)) {
+        if (!current) return;
+        e.preventDefault();
+        focusNext.current = flipped ? "show" : "answer";
+        flip();
+      } else if (k === "a" && flipped) { focusNext.current = "show"; again(); }
+      else if (k === "g" && flipped) { focusNext.current = "show"; gotIt(); }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -85,7 +106,8 @@ export function Flashcards() {
 
   return (
     <div className="max-w-[760px]">
-      <div role="group" aria-label="Deck" className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+      {/* relative: keeps each chip's sr-only text inside the scroller, so the page can't scroll sideways */}
+      <div role="group" aria-label="Deck" className="relative -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {([{ key: "all", label: "All cards", glyph: "" }, ...DECKS] as const).map((d) => {
           const on = filter === d.key;
           const left = CARDS.filter((c) => (d.key === "all" || c.deck === d.key) && !known.has(c.id)).length;
@@ -115,7 +137,7 @@ export function Flashcards() {
         <div role="progressbar" aria-label="Learned" aria-valuemin={0} aria-valuemax={total} aria-valuenow={learned} className="h-1.5 min-w-16 flex-1 overflow-hidden rounded-full bg-line">
           <div className="h-full rounded-full bg-ink transition-[width] duration-300 ease-out" style={{ width: `${total ? (learned / total) * 100 : 0}%` }} />
         </div>
-        <span className="flex gap-1">
+        <span className="-mx-3 flex gap-1">
           <Button variant="ghost" className="min-h-11 px-3 text-small" onClick={shuffle}>Shuffle</Button>
           <Button variant="ghost" className="min-h-11 px-3 text-small" onClick={resetDeck} disabled={learned === 0}>Reset deck</Button>
         </span>
@@ -126,11 +148,12 @@ export function Flashcards() {
           <section aria-label="Flashcard" className="mt-4 rounded-card border border-line bg-surface shadow-card">
             <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3 font-mono text-label uppercase text-muted sm:px-6">
               <span className="whitespace-nowrap"><span aria-hidden="true" className="mr-2">{deck.glyph}</span>{deck.label}</span>
-              <span className="whitespace-nowrap tabular-nums">
-                {flipped ? "Answer · " : ""}{idx + 1}<span aria-hidden="true"> / </span><span className="sr-only"> of </span>{pile.length}
+              {/* The one live line: says which card and side, not the whole card. */}
+              <span aria-live="polite" aria-atomic="true" className="whitespace-nowrap tabular-nums">
+                {flipped ? "Answer · " : ""}<span className="sr-only">Card </span>{idx + 1}<span aria-hidden="true"> / </span><span className="sr-only"> of </span>{pile.length}
               </span>
             </div>
-            <div aria-live="polite" onClick={flip} className="flip-in min-h-72 cursor-pointer px-5 py-8 sm:px-8 sm:py-10" key={`${current.id}-${flipped}`}>
+            <div ref={answerRef} tabIndex={-1} onClick={flip} className="flip-in min-h-72 cursor-pointer px-5 py-8 outline-none sm:px-8 sm:py-10" key={`${current.id}-${flipped}`}>
               {flipped ? (
                 <>
                   <p className="text-small text-muted">{current.q}</p>
@@ -140,22 +163,29 @@ export function Flashcards() {
                 <p className="text-h2 font-normal text-ink">{current.q}</p>
               )}
             </div>
-            <div className="border-t border-line p-2">
-              <Button variant="ghost" className="w-full" onClick={flip}>{flipped ? "Show question" : "Show answer"}</Button>
-            </div>
+            {flipped && (
+              <div className="border-t border-line p-2">
+                <Button variant="ghost" className="w-full" onClick={() => { focusNext.current = "show"; flip(); }}>Show question</Button>
+              </div>
+            )}
           </section>
 
+          {/* One action slot, sticky on phones: "Show answer" until the card is flipped, then rate it. */}
           <div className="sticky bottom-0 z-10 -mx-5 mt-4 border-t border-line bg-bg px-5 py-3 sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="quiet" onClick={again}>Again</Button>
-              <Button onClick={gotIt}><span aria-hidden="true">✓</span> Got it</Button>
-            </div>
+            {flipped ? (
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="quiet" onClick={() => { focusNext.current = "show"; again(); }}>Again</Button>
+                <Button onClick={() => { focusNext.current = "show"; gotIt(); }}><span aria-hidden="true">✓</span> Got it</Button>
+              </div>
+            ) : (
+              <Button ref={showRef} className="w-full" onClick={() => { focusNext.current = "answer"; flip(); }}>Show answer</Button>
+            )}
           </div>
-          <div className="mt-3 flex justify-between">
+          <div className="-mx-5 mt-3 flex justify-between">
             <Button variant="ghost" onClick={() => go(-1)}><span aria-hidden="true">←</span> Previous</Button>
-            <Button variant="ghost" onClick={() => go(1)}>Skip <span aria-hidden="true">→</span></Button>
+            <Button variant="ghost" onClick={() => go(1)}>Next <span aria-hidden="true">→</span></Button>
           </div>
-          <p className="mt-4 hidden text-small text-muted sm:block">Tip: ← and → move between cards.</p>
+          <p className="mt-4 hidden text-small text-muted sm:block">Tip: F or Space flips the card, A is Again, G is Got it, and ← → move between cards.</p>
         </>
       ) : (
         <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-card sm:p-8">

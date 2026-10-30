@@ -1,5 +1,5 @@
 // Original practice tests written to the ETCP Certified Rigger – Arena content outline: two
-// 25-question sets and a 50-question set (set-c.ts) weighted like the real exam. Every numeric
+// short sets and a longer set (set-c.ts) weighted like the real exam. Every numeric
 // answer is recomputed from first principles in questions.test.mts, so a typo in an option or a
 // wrong answer key fails the build.
 
@@ -142,10 +142,18 @@ const B: Question[] = [
 ];
 
 export const PRACTICE_SETS: readonly PracticeSet[] = [
-  { slug: "a", name: "Practice test A", questions: A },
-  { slug: "b", name: "Practice test B", questions: B },
-  { slug: "c", name: "Practice test C", about: "Weighted like the real exam: each part of ETCP's Arena content outline gets its share of the 50 questions.", questions: C },
+  { slug: "a", name: "Practice test A", about: "Symmetric and offset bridles, conversions, design factor, shock loads, beam reactions and center of gravity, then knots, bump checks, phase rotation and fall protection.", questions: A },
+  { slug: "b", name: "Practice test B", about: "High/low bridles, the breaking strength you need, cantilevers, tilting and sling angles, then hoist reeving, wire rope inspection, E-stops and structural drawings.", questions: B },
+  { slug: "c", name: "Practice test C", about: `Weighted like the real exam: each part of ETCP's Arena content outline gets its share of the ${C.length} questions.`, questions: C },
 ];
+
+/** "25, 25 and 50": the set sizes, read from the data. */
+export const PRACTICE_SIZES = listJoin(PRACTICE_SETS.map((s) => String(s.questions.length)));
+
+/** "a, b and c" */
+export function listJoin(items: readonly string[]): string {
+  return items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
 
 export function practiceSet(slug: string): PracticeSet | undefined {
   return PRACTICE_SETS.find((s) => s.slug === slug);

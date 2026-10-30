@@ -20,7 +20,7 @@ export type Formula = {
 
 export type FormulaGroup = { id: string; title: string; formulas: readonly Formula[] };
 
-const DEN = "V~1~·H~2~ + V~2~·H~1~";
+const DEN = "V~1~ × H~2~ + V~2~ × H~1~";
 
 export const FORMULA_GROUPS: readonly FormulaGroup[] = [
   {
@@ -30,9 +30,9 @@ export const FORMULA_GROUPS: readonly FormulaGroup[] = [
       { id: "leg", name: "Leg length", expr: "L = √(H² + V²)", where: "H = horizontal distance, V = vertical distance from beam point to apex.", note: "Subtract hardware (shackles, hook) to get the steel length.", questions: ["a05", "b04"] },
       { id: "sym-t", name: "Symmetric bridle: tension per leg", expr: "T = (W ÷ 2) × L ÷ V", where: "W = load.", note: "At a 120° included angle each leg carries the full load.", questions: ["a01", "a02", "b01"] },
       { id: "sym-h", name: "Symmetric bridle: horizontal force on each beam", expr: "F~H~ = (W ÷ 2) × H ÷ V", note: "Flat bridles pull the beams hard toward each other.", questions: ["b02"] },
-      { id: "asym-t", name: "Any two-leg bridle: leg tension", expr: `T~1~ = W·L~1~·H~2~ ÷ (${DEN})\nT~2~ = W·L~2~·H~1~ ÷ (${DEN})`, where: "1 and 2 are the two beam points; H and V are each leg's horizontal and vertical distances to the apex.", note: "Works for beams at different heights (high/low bridles).", questions: ["a03", "b03"] },
-      { id: "asym-v", name: "Any two-leg bridle: vertical force on each beam", expr: `F~V1~ = W·V~1~·H~2~ ÷ (${DEN})\nF~V2~ = W·V~2~·H~1~ ÷ (${DEN})`, note: "The two always add up to W.", questions: ["a04"] },
-      { id: "asym-h", name: "Any two-leg bridle: horizontal force", expr: `F~H~ = W·H~1~·H~2~ ÷ (${DEN})`, note: "Equal and opposite on the two beams." },
+      { id: "asym-t", name: "Any two-leg bridle: leg tension", expr: `T~1~ = W × L~1~ × H~2~ ÷ (${DEN})\nT~2~ = W × L~2~ × H~1~ ÷ (${DEN})`, where: "1 and 2 are the two beam points; H and V are each leg's horizontal and vertical distances to the apex.", note: "Works for beams at different heights (high/low bridles).", questions: ["a03", "b03"] },
+      { id: "asym-v", name: "Any two-leg bridle: vertical force on each beam", expr: `F~V1~ = W × V~1~ × H~2~ ÷ (${DEN})\nF~V2~ = W × V~2~ × H~1~ ÷ (${DEN})`, note: "The two always add up to W.", questions: ["a04"] },
+      { id: "asym-h", name: "Any two-leg bridle: horizontal force", expr: `F~H~ = W × H~1~ × H~2~ ÷ (${DEN})`, note: "Equal and opposite on the two beams." },
       { id: "incl", name: "Included angle", expr: "Included angle = 2 × arctan(H ÷ V)", where: "For a symmetric bridle.", note: "Keep it at or under 120°.", questions: ["b14"] },
     ],
   },
@@ -44,7 +44,7 @@ export const FORMULA_GROUPS: readonly FormulaGroup[] = [
       { id: "moments", name: "Overhangs and cantilevers: take moments", expr: "R~2~ = Σ(W × d) ÷ S", where: "d = each load's distance from support 1, S = distance between the supports.", note: "Then R~1~ = total load − R~2~. A cantilever can unload the back point.", questions: ["b11"] },
       { id: "udl", name: "Uniform load on a simple span", expr: "R~A~ = R~B~ = total ÷ 2" , questions: ["a13"] },
       { id: "cont3", name: "Continuous truss on 3 equal points, uniform load", expr: "Ends = 3/16 of total each\nCenter = 10/16 of total", note: "Treating it as two simple spans underestimates the center.", questions: ["a14"] },
-      { id: "cont4", name: "Continuous truss on 4 equal points, uniform load", expr: "Ends = 0.4·w·S each\nInner = 1.1·w·S each", where: "w = load per foot, S = one span (total = 3·w·S).", questions: ["b12"] },
+      { id: "cont4", name: "Continuous truss on 4 equal points, uniform load", expr: "Ends = 0.4 × w × S each\nInner = 1.1 × w × S each", where: "w = load per foot, S = one span (total = 3 × w × S).", questions: ["b12"] },
       { id: "cg", name: "Center of gravity", expr: "CG = Σ(W × x) ÷ ΣW", where: "x = each weight's distance from the same reference point.", questions: ["a15"] },
     ],
   },

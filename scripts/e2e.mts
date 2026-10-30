@@ -92,7 +92,7 @@ try {
     const q2 = page.locator("#a02");
     await q2.getByRole("button", { name: /60°/ }).click();
     await q2.getByText("Not quite. The answer is C.").waitFor();
-    await q2.getByText(/Problem: Your answer/).waitFor(); // icon + word, with the state name for screen readers
+    await q2.getByText("Your answer · incorrect").waitFor(); // icon + word, with the state name for screen readers
     await q2.getByText("Correct answer").waitFor();
     await page.getByText("1 of 25 answered").waitFor();
     await page.reload();
