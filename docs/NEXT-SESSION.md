@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-26, night (portfolio + résumé at `/work`, unlisted; `src/lib/work.ts`, PDF via `npm run resume`). Earlier the same day: (Learn to read code: `/private/learn`, Phase 1 lessons, spaced review, Gemini marking; `docs/LEARN.md`). Earlier: 2026-10-23 (Vectorworks: connector + live panel at `/private/vectorworks`, branch `claude/vectorworks-panel`). Earlier: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-10-30 (portfolio polish pass over every public page, PR #95: four independent reviews plus a real-Chrome walk-through from the home server via the QA bridge, two fix rounds, confirmed in real Chrome). Earlier: 2026-10-26, night (portfolio + résumé at `/work`, unlisted; `src/lib/work.ts`, PDF via `npm run resume`). Earlier the same day: (Learn to read code: `/private/learn`, Phase 1 lessons, spaced review, Gemini marking; `docs/LEARN.md`). Earlier: 2026-10-23 (Vectorworks: connector + live panel at `/private/vectorworks`, branch `claude/vectorworks-panel`). Earlier: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -40,6 +40,23 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29/29 on production after #19 merged, 2026-10-07, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
+
+## Portfolio polish pass (2026-10-30, PR #95)
+Owner: "go page by page… it will be used as a portfolio showcasing my AI skill… make it perfect."
+- **How it was checked:** four reviewer agents (home/workshop/404/sign-in, bridle, ETCP, /work),
+  the home server's real Chrome through the QA bridge (campsite-finder #447; post a `[qa-request]`
+  comment, wait with `scripts/qa-bridge/wait.mjs`), a confirming reviewer, and a second bridge pass
+  on the protected preview (Vercel share link via `get_access_to_vercel_url`, 23 h).
+- **Done:** one content edge (`src/components/wrap.ts`), footer at the window's foot (flex body),
+  designed 404, home "In the workshop" strip (`ToolList`), print styles, `State` `sr` prop; bridle:
+  no stale tensions on bad input + accessibility; ETCP: no sideways scroll, real breadcrumb,
+  indexes at lg+, keyboard flashcards, counts from data; /work + résumé: phone header, back link,
+  status wording, PDF reprinted (still one page). New guards in `npm run shots`: lazy images load,
+  broken images and sideways scroll fail (both mutation-tested).
+- **Open (owner's call):** the 12 px mono labels read small and pale to a real visitor; they are
+  the house style and pass AA. Bumping `--text-label` is one line in `globals.css`.
+- **Tooling note:** `npm run resume` needs `CHROMIUM_PATH=/opt/pw-browsers/chromium` in cloud
+  containers (the pinned Playwright build isn't installed there).
 
 ## Money tracker (live 2026-10-18, #54)
 Start at `docs/MONEY.md`. Waiting on the owner: sign up at SimpleFIN Bridge, add Chase and U.S.
