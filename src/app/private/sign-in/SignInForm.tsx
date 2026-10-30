@@ -65,14 +65,15 @@ export function SignInForm({ next }: { next: string }) {
             <span className="sr-only"> password</span>
           </button>
         </div>
-        <p id="password-error" aria-live="polite" className="min-h-6 text-small">
-          {error && <State kind="wrong">{error}</State>}
+        {/* One slot under the field: the hint until there's an error, then the error. No
+            reserved blank line between the field and the button. */}
+        <p id="password-error" aria-live="polite" className="text-small">
+          {error ? <State kind="wrong">{error}</State> : <span id="password-hint" className="text-muted">You’ll stay signed in on this device for 30 days.</span>}
         </p>
       </div>
       <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Checking…" : <>Unlock <Arrow /></>}
       </Button>
-      <p id="password-hint" className="text-small text-muted">You’ll stay signed in on this device for 30 days.</p>
     </form>
   );
 }

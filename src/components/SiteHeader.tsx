@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { cx } from "./cx";
+import { EDGE, WRAP } from "./wrap";
 
 const NAV = [
   { href: "/", label: "Home", locked: false },
@@ -17,10 +18,12 @@ function Lock() {
   );
 }
 
-/** Brand mark + nav pill. `overlay` floats it over the home hero. */
+/** Brand mark + nav pill. `overlay` floats it over the home hero, edge to edge like the hero;
+ *  elsewhere it sits in the page column so the brand lines up with the content. */
 export function SiteHeader({ current, overlay = false }: { current: "/" | "/workshop" | "/private" | null; overlay?: boolean }) {
   return (
-    <header className={cx("z-20 flex items-center justify-between px-5 py-5 sm:px-12 sm:py-7 3xl:px-16 3xl:py-9", overlay ? "absolute inset-x-0 top-0" : "relative")}>
+    <header className={cx("z-20", overlay ? "absolute inset-x-0 top-0" : "relative")}>
+      <div className={cx("flex items-center justify-between py-5 sm:py-7 3xl:py-9", overlay ? EDGE : WRAP)}>
       <Link href="/" className="group flex min-h-11 items-center gap-3 whitespace-nowrap rounded-btn pr-2 text-body font-semibold tracking-[-0.01em] text-ink 3xl:text-lede">
         <span aria-hidden="true" className="size-2 rotate-45 rounded-[2px] bg-ember shadow-[0_0_12px_var(--fw-ember)] transition-transform duration-300 ease-out group-hover:rotate-[135deg]" />
         {SITE.name}
@@ -44,6 +47,7 @@ export function SiteHeader({ current, overlay = false }: { current: "/" | "/work
           ))}
         </ul>
       </nav>
+      </div>
     </header>
   );
 }

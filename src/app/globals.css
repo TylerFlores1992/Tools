@@ -83,6 +83,31 @@
   --fw-shadow-pop: 0 2px 6px rgb(18 20 28 / 0.06), 0 24px 48px -20px rgb(18 20 28 / 0.22);
 }
 
+/* Paper is always light: printing a page (the résumé above all) from dark mode would otherwise
+   put light-grey ink on white paper. The same values as the light theme. */
+@media print {
+  :root, :root[data-theme="dark"] {
+    color-scheme: light;
+    --fw-bg: #f5f3ee;
+    --fw-surface: #ffffff;
+    --fw-surface-2: #eae6de;
+    --fw-line: rgb(18 20 28 / 0.1);
+    --fw-line-2: rgb(18 20 28 / 0.18);
+    --fw-control: #767b88;
+    --fw-ink: #12141c;
+    --fw-ink-2: #454a57;
+    --fw-muted: #5f6472;
+    --fw-ember: #9a4a1e;
+    --fw-ice: #2459d6;
+    --fw-wrong: #b0257a;
+    --fw-series-2: #b05a1f;
+    --fw-on-primary: #f5f3ee;
+    --fw-primary: #12141c;
+    --fw-shadow-card: none;
+    --fw-shadow-pop: none;
+  }
+}
+
 /* The home hero is always night, whatever the theme. */
 .theme-night {
   color-scheme: dark;
@@ -554,6 +579,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* The body is a flex column so the footer sits at the window's foot on short pages. A centred
+   column (`mx-auto max-w-…`) would shrink to its content in a flex column, so page-level blocks
+   keep the full width; :where() keeps this at zero specificity, so any width utility still wins. */
+:where(body > main, body > header, body > footer, body > div:not(.launch)) { width: 100%; }
 
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
