@@ -69,7 +69,7 @@ export function PracticeTest({ slug }: { slug: string }) {
           )}
         </div>
         {done < qs.length && (
-          <div className="mt-10 max-w-[760px] border-t border-line pt-6">
+          <div className="mt-10 max-w-[760px] pt-2">
             <p className="text-body text-ink-2 tabular-nums">
               {done === 0
                 ? `Nothing answered yet. Your score shows here once all ${qs.length} are done.`
@@ -115,9 +115,11 @@ function QuestionIndex({ qs, answers }: { qs: readonly Question[]; answers: Answ
                 )}
               >
                 <span>{n}</span>
-                <span aria-hidden="true" className={cx("mt-1 h-3", state === "right" && "text-ice", state === "wrong" && "text-wrong")}>
-                  {state === "right" ? "✓" : state === "wrong" ? "✕" : ""}
-                </span>
+                {state !== "none" && (
+                  <span aria-hidden="true" className={cx("mt-1", state === "right" ? "text-ice" : "text-wrong")}>
+                    {state === "right" ? "✓" : "✕"}
+                  </span>
+                )}
               </a>
             </li>
           );

@@ -26,7 +26,8 @@ export function StudyBreadcrumb({ toolName }: { toolName: string }) {
           )}
         </li>
         {!onHub && (
-          <li className="flex items-center">
+          // On phones the active tab right below already names the page; this crumb would wrap.
+          <li className="hidden items-center sm:flex">
             <span aria-hidden="true" className="mx-2">/</span>
             <span aria-current="page" className="text-ink-2">{page.name}</span>
           </li>

@@ -66,9 +66,7 @@ export default function Home() {
             All tools <Arrow className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="max-w-[1280px] 3xl:max-w-[1600px]">
-          <ToolList tools={TOOLS} heading="h3" />
-        </div>
+        <ToolList tools={TOOLS} heading="h3" />
       </section>
       </main>
       <SiteFooter wide />

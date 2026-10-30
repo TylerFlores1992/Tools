@@ -19,7 +19,7 @@ export default function ResumePage() {
   // Narrow screens get a phone gutter and a stacked header; from sm up, and always on paper
   // (the PDF lays out at 8.5in, past sm), it is the Letter layout.
   return (
-    <main id="main" className="mx-auto max-w-[8.5in] px-5 py-[0.4in] text-[9pt] leading-[1.4] text-ink-2 sm:px-[0.6in] print:px-[0.6in]">
+    <main id="main" className="mx-auto max-w-[8.5in] px-5 py-[0.4in] text-[10.5pt] leading-[1.4] text-ink-2 print:text-[9pt] sm:px-[0.6in] print:px-[0.6in]">
       <nav aria-label="Résumé" className="-mx-3 mb-4 flex flex-wrap items-center justify-between gap-2 print:hidden">
         <Link href="/work" className={buttonClasses("ghost", "px-3")}>
           <span aria-hidden="true">←</span> Portfolio
@@ -33,7 +33,7 @@ export default function ResumePage() {
           <h1 className="text-[22pt] font-normal leading-none tracking-[-0.03em] text-ink">{RESUME.name}</h1>
           <p className="mt-1.5 text-[10.5pt] text-pretty text-ink-2">{RESUME.headline}</p>
         </div>
-        <p className="text-[9pt] text-ink-2 sm:shrink-0 sm:text-right print:shrink-0 print:text-right">
+        <p className="text-[10.5pt] text-ink-2 print:text-[9pt] sm:shrink-0 sm:text-right print:shrink-0 print:text-right">
           <a href={`mailto:${email}`} className="text-ink">{email}</a>
           <br />
           {RESUME.region} · open to remote work

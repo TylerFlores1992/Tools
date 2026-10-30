@@ -170,8 +170,9 @@ export function Flashcards() {
             )}
           </section>
 
-          {/* One action slot, sticky on phones: "Show answer" until the card is flipped, then rate it. */}
-          <div className="sticky bottom-0 z-10 -mx-5 mt-4 border-t border-line bg-bg px-5 py-3 sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+          {/* One action slot right under the card: "Show answer" until it's flipped, then rate it.
+              Not sticky: on a phone a stuck bar sat over the question itself. */}
+          <div className="mt-4">
             {flipped ? (
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="quiet" onClick={() => { focusNext.current = "show"; again(); }}>Again</Button>

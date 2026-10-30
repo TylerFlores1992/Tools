@@ -14,8 +14,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const live = TOOLS.filter((t) => t.status === "live").length;
-const building = TOOLS.length - live;
+// The header counts what the rows say: "Live" here, "Own site" for tools linked out, "Building".
+const ownSite = TOOLS.filter((t) => t.status === "live" && t.tier === 3).length;
+const live = TOOLS.filter((t) => t.status === "live").length - ownSite;
+const building = TOOLS.filter((t) => t.status === "building").length;
 
 export default function Workshop() {
   return (
@@ -29,7 +31,7 @@ export default function Workshop() {
             <h1 className="mt-3 text-title font-normal">Tools</h1>
           </div>
           <p className="font-mono text-label uppercase text-muted">
-            {live} live{building > 0 && ` · ${building} building`}
+            {[live > 0 && `${live} live`, ownSite > 0 && `${ownSite} own site`, building > 0 && `${building} building`].filter(Boolean).join(" · ")}
           </p>
         </div>
         <ToolList tools={TOOLS} />

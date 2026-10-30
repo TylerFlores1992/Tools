@@ -122,7 +122,6 @@ export function BridleCalculator() {
               <State kind={status.kind}>{status.text}</State>
             )}
           </div>
-          <p className="text-ink-2">Static estimates only. Have a qualified rigger check any real rig.</p>
         </div>
       </section>
 
@@ -215,7 +214,7 @@ function Stat({ label, value, unit }: { label: string; value: string; unit?: str
 /** Desktop frame; below PHONE_PX of rendered width a narrower frame keeps text and the handle big enough. */
 const VW_WIDE = 640, VW_PHONE = 420, PHONE_PX = 520, VH = 420, MB = 70;
 /** On-screen minimums: label text in CSS px, and the drag handle's hit target diameter. */
-const MIN_TEXT_PX = 11, MIN_HIT_PX = 44;
+const MIN_TEXT_PX = 13, MIN_HIT_PX = 44;
 
 function Diagram({ input, result: r, blocked, units, onMove }: { input: BridleInput; result: BridleResult; blocked: boolean; units: Units; onMove: (x: number, drop: number) => void }) {
   const svg = useRef<SVGSVGElement>(null);
@@ -236,7 +235,7 @@ function Diagram({ input, result: r, blocked, units, onMove }: { input: BridleIn
   const VW = phone ? VW_PHONE : VW_WIDE;
   const s = px0 > 0 ? VW / px0 : 1;
   const fs = (base: number) => Math.max(base, MIN_TEXT_PX * s);
-  const fSpan = fs(13), fSeg = fs(14), fLeg = fs(15), fLoad = fs(14);
+  const fSpan = fs(13), fSeg = fs(14), fLeg = fs(15), fLoad = fs(14); // floors at MIN_TEXT_PX on screen
 
   // Header band: span label on top, segment labels under it, then the dimension line; never overlapping.
   const spanY = fSpan + 4, segY = spanY + fSeg + 8, dimY = segY + 9, MT = dimY + 34;
