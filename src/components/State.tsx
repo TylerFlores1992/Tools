@@ -3,14 +3,16 @@ import { cx } from "./cx";
 
 /**
  * A status, always as icon + word + colour, never colour alone (the owner is red-green
- * colour-blind). `sr` gives screen readers the state name before the text.
+ * colour-blind). Screen readers hear a short state name before the text; pass `sr` to word it
+ * for the context ("Status:" on a project badge, "Incorrect:" in a quiz), or `false` when the
+ * visible text already says it ("Correct").
  */
 type Kind = "ok" | "wrong" | "note";
 
 const STYLE: Record<Kind, { cls: string; sr: string; icon: ReactNode }> = {
   ok: {
     cls: "text-ice",
-    sr: "Correct:",
+    sr: "OK:",
     icon: <path d="M3 8.5l3.2 3L13 4.5" />,
   },
   wrong: {
@@ -30,15 +32,16 @@ const STYLE: Record<Kind, { cls: string; sr: string; icon: ReactNode }> = {
   },
 };
 
-export function State({ kind, children, className }: { kind: Kind; children: ReactNode; className?: string }) {
+export function State({ kind, children, className, sr }: { kind: Kind; children: ReactNode; className?: string; sr?: string | false }) {
   const s = STYLE[kind];
+  const prefix = sr === undefined ? s.sr : sr;
   return (
     <span className={cx("inline-flex items-start gap-2", s.cls, className)}>
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="mt-[0.2em] shrink-0">
         {s.icon}
       </svg>
       <span>
-        <span className="sr-only">{s.sr} </span>
+        {prefix && <span className="sr-only">{prefix} </span>}
         {children}
       </span>
     </span>
