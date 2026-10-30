@@ -153,7 +153,7 @@ export function Flashcards() {
                 {flipped ? "Answer · " : ""}<span className="sr-only">Card </span>{idx + 1}<span aria-hidden="true"> / </span><span className="sr-only"> of </span>{pile.length}
               </span>
             </div>
-            <div ref={answerRef} tabIndex={-1} onClick={flip} className="flip-in min-h-72 cursor-pointer px-5 py-8 outline-none sm:px-8 sm:py-10" key={`${current.id}-${flipped}`}>
+            <div ref={answerRef} tabIndex={-1} onClick={flip} className="flip-in min-h-52 cursor-pointer px-5 py-7 outline-none sm:px-8 sm:py-8" key={`${current.id}-${flipped}`}>
               {flipped ? (
                 <>
                   <p className="text-small text-muted">{current.q}</p>
