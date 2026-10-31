@@ -18,6 +18,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/mail",
   },
   {
+    slug: "recordings",
+    name: "Recordings",
+    summary: "The home DVR: what's coming up, what's recorded, and what to record next. Ads come out by themselves.",
+    stage: "Series, one-offs, library and trash",
+    href: "/private/recordings",
+  },
+  {
     slug: "money",
     name: "Money",
     summary: "Household spending, income and recurring payments, synced daily from the banks.",
