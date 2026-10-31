@@ -36,6 +36,7 @@ export function readFailureMessage(err: { name?: string; message?: string } | nu
   const msg = err?.message ?? "";
   if (name === "TimeoutError" || name === "AbortError") return "Reading took too long. Try a closer, flatter photo, or enter it by hand.";
   if (/positive credit balance|insufficient.?(credit|funds)|top.?up/i.test(msg)) return "The AI service is out of credit, so nothing could read the stub. Enter it by hand, or see docs/MONEY.md.";
+  if (/high demand|overloaded|unavailable|\b503\b/i.test(msg)) return "Google's AI is busy right now. Try again in a few minutes, or enter it by hand.";
   if (/quota|rate.?limit|resource.?exhausted|\b429\b/i.test(msg)) return "Today's free AI reads are used up. Try again tomorrow, or enter it by hand.";
   if (/api.?key|auth|\b401\b|\b403\b|oidc|permission/i.test(msg)) return "The AI service didn't accept this site's key. Check MONEY_GEMINI_API_KEY in Vercel (docs/MONEY.md), or enter it by hand.";
   return "The stub couldn't be read. Try another photo, or enter it by hand.";

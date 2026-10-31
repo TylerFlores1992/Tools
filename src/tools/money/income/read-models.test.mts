@@ -24,6 +24,9 @@ test("a failed read says what actually happened", () => {
   assert.match(readFailureMessage({ name: "AI_APICallError", message: "You exceeded your current quota" }), /free AI reads are used up/);
   assert.match(readFailureMessage({ name: "AI_APICallError", message: "Too Many Requests (429)" }), /free AI reads are used up/);
   assert.match(readFailureMessage({ name: "AI_APICallError", message: "API key not valid. Please pass a valid API key." }), /didn't accept this site's key/);
+  // The real 2026-10-31 18:36Z error from gemini-3.8-flash.
+  assert.match(readFailureMessage({ name: "AI_APICallError", message: "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later." }), /busy right now/);
+  assert.match(readFailureMessage({ name: "AI_APICallError", message: "Service Unavailable 503" }), /busy right now/);
   assert.match(readFailureMessage({ name: "TimeoutError", message: "" }), /took too long/);
   assert.match(readFailureMessage({ name: "AbortError", message: "" }), /took too long/);
   assert.match(readFailureMessage({ name: "AI_NoObjectGeneratedError", message: "could not parse" }), /couldn't be read/);
