@@ -13,8 +13,10 @@ import { geminiKey, readFailureMessage, readRoute } from "@/tools/money/income/r
 
 export class ReadFailed extends Error {}
 
-const TOTAL_MS = 50_000; // the page's action has 60 s
-const PER_TRY_MS = 30_000;
+// The pages that read (income/add, stubs/[id]) allow 120 s. On 2026-10-31 a real stub photo
+// timed out on full Flash at 30 s and then on Lite at 20 s, so each try gets room to finish.
+const TOTAL_MS = 110_000;
+const PER_TRY_MS = 60_000;
 
 function modelFor(id: string): LanguageModel {
   const key = geminiKey(process.env);

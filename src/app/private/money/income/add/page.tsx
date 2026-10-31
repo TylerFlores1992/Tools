@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 // The upload action reads the document with the AI before answering (up to ~50 s).
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 export default async function AddStub({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
   await requirePrivate("/private/money/income/add");
