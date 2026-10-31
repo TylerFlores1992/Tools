@@ -21,7 +21,8 @@ test("with a key: Gemini models, full Flash first, the override first and never 
 test("a failed read says what actually happened", () => {
   // The real 2026-10-31 error from the gateway.
   assert.match(readFailureMessage({ name: "GatewayInternalServerError", message: "A positive credit balance is required to use this model" }), /out of credit/);
-  assert.match(readFailureMessage({ name: "AI_APICallError", message: "Resource has been exhausted (e.g. check quota). 429" }), /free AI reads are used up/);
+  assert.match(readFailureMessage({ name: "AI_APICallError", message: "You exceeded your current quota" }), /free AI reads are used up/);
+  assert.match(readFailureMessage({ name: "AI_APICallError", message: "Too Many Requests (429)" }), /free AI reads are used up/);
   assert.match(readFailureMessage({ name: "AI_APICallError", message: "API key not valid. Please pass a valid API key." }), /didn't accept this site's key/);
   assert.match(readFailureMessage({ name: "TimeoutError", message: "" }), /took too long/);
   assert.match(readFailureMessage({ name: "AbortError", message: "" }), /took too long/);
