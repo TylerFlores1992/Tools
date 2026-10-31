@@ -1,41 +1,59 @@
 import "server-only";
-import { generateText, Output } from "ai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { generateText, Output, type LanguageModel, type ModelMessage } from "ai";
 import { READ_PROMPT, READ_SCHEMA, type ReadResult } from "@/tools/money/income/read";
+import { geminiKey, readFailureMessage, readRoute } from "@/tools/money/income/read-models";
 
 /**
- * Reads a stub or W-2 photo/PDF with a vision model through Vercel's AI Gateway (the owner's
- * call, 2026-10-19: "Use AI"). On Vercel the gateway is reached with the deployment's OIDC token,
- * so there is no key to store; AI_GATEWAY_API_KEY overrides it for local runs.
- * Only the document goes to the model. Its answer is a proposal: the owner reviews every field.
+ * Reads a stub or W-2 photo/PDF with a vision model (the owner's call, 2026-10-19: "Use AI").
+ * Straight to Google on the free Gemini key since 2026-10-31; Vercel's AI Gateway only when no
+ * key is set (read-models.ts says why and what the owner accepted). Only the document goes to the
+ * model, and its answer is a proposal: the owner reviews every field.
  */
-
-export const STUB_MODEL = process.env.MONEY_STUB_MODEL || "google/gemini-2.5-flash";
 
 export class ReadFailed extends Error {}
 
-export async function readDocument(bytes: Buffer, mime: string): Promise<{ result: ReadResult; model: string }> {
-  try {
-    const { output } = await generateText({
-      model: STUB_MODEL,
-      output: Output.object({ schema: READ_SCHEMA }),
-      abortSignal: AbortSignal.timeout(50_000),
-      maxRetries: 1,
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: READ_PROMPT },
-            { type: "file", data: bytes, mediaType: mime },
-          ],
-        },
-      ],
-    });
-    return { result: output, model: STUB_MODEL };
-  } catch (e) {
-    const name = e instanceof Error ? e.name : "unknown";
-    console.error("money stub read failed", name, e instanceof Error ? e.message.slice(0, 200) : "");
-    if (name === "TimeoutError" || name === "AbortError") throw new ReadFailed("Reading took too long. Try a closer, flatter photo, or enter it by hand.");
-    if (/auth|401|403|oidc|token/i.test(e instanceof Error ? e.message : "")) throw new ReadFailed("The AI service didn't accept this site's sign-in. Set AI_GATEWAY_API_KEY in Vercel (docs/MONEY.md), or enter it by hand.");
-    throw new ReadFailed("The stub couldn't be read. Try another photo, or enter it by hand.");
+const TOTAL_MS = 50_000; // the page's action has 60 s
+const PER_TRY_MS = 30_000;
+
+function modelFor(id: string): LanguageModel {
+  const key = geminiKey(process.env);
+  return key ? createGoogleGenerativeAI({ apiKey: key })(id) : id;
+}
+
+/** Tries each model in turn until one answers. Throws ReadFailed with a sentence for the page. */
+export async function runRead(messages: ModelMessage[]): Promise<{ result: ReadResult; model: string }> {
+  const { models } = readRoute(process.env);
+  const deadline = Date.now() + TOTAL_MS;
+  let last: unknown = null;
+  for (const id of models) {
+    const left = deadline - Date.now();
+    if (left < 5_000) break;
+    try {
+      const { output } = await generateText({
+        model: modelFor(id),
+        output: Output.object({ schema: READ_SCHEMA }),
+        abortSignal: AbortSignal.timeout(Math.min(PER_TRY_MS, left)),
+        maxRetries: 0,
+        messages,
+      });
+      return { result: output, model: id };
+    } catch (e) {
+      last = e;
+      console.error("money stub read failed", id, e instanceof Error ? `${e.name}: ${e.message.slice(0, 200)}` : "unknown");
+    }
   }
+  throw new ReadFailed(readFailureMessage(last instanceof Error ? last : null));
+}
+
+export async function readDocument(bytes: Buffer, mime: string): Promise<{ result: ReadResult; model: string }> {
+  return runRead([
+    {
+      role: "user",
+      content: [
+        { type: "text", text: READ_PROMPT },
+        { type: "file", data: bytes, mediaType: mime },
+      ],
+    },
+  ]);
 }
