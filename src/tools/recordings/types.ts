@@ -129,3 +129,11 @@ export type SeriesInput = {
   padAfterMin: number | null;
   folder?: string;
 };
+
+/** What a Recordings button hands back for the toast. `at` makes two identical results distinct. */
+export type ActionResult = {
+  ok: boolean;
+  message: string;
+  undo?: { kind: "undelete" | "unskip"; value: string };
+  at: number;
+};

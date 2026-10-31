@@ -10,8 +10,11 @@ import { requirePrivate } from "@/lib/money/guard";
 import { dvr } from "@/lib/recordings/dvr";
 import { adsText, clash, clock, groupByDay, padText, plural, relIn, shortDate, size, when } from "@/tools/recordings/format";
 import type { DvrState, Episode, Rule, Show, Upcoming } from "@/tools/recordings/types";
+import { ActionForm } from "@/tools/recordings/ui/ActionForm";
 import { Confirm } from "@/tools/recordings/ui/Confirm";
 import { RecordingsShell } from "@/tools/recordings/ui/RecordingsShell";
+import { Tabs } from "@/tools/recordings/ui/Tabs";
+import { Toaster } from "@/tools/recordings/ui/Toaster";
 import { Tag } from "@/tools/money/ui/MoneyShell";
 import { PendingButton } from "@/tools/mail/ui/PendingButton";
 import {
@@ -31,7 +34,7 @@ const TAB_LABEL: Record<Tab, string> = { upcoming: "Upcoming", library: "Library
 const small = (extra?: string) => buttonClasses("ghost", cx("min-h-10 px-3 text-small", extra));
 const quietSmall = (extra?: string) => buttonClasses("quiet", cx("min-h-10 px-4 text-small", extra));
 
-export default async function Recordings({ searchParams }: { searchParams: Promise<{ tab?: string; msg?: string; kind?: string; undo?: string; unskip?: string }> }) {
+export default async function Recordings({ searchParams }: { searchParams: Promise<{ tab?: string; msg?: string; kind?: string }> }) {
   await requirePrivate("/private/recordings");
   const sp = await searchParams;
   const r = await dvr<DvrState>("state");
@@ -77,50 +80,22 @@ export default async function Recordings({ searchParams }: { searchParams: Promi
         </Link>
       </div>
 
+      {/* Coming back from "Record a show": its outcome. Buttons on this page use the toast. */}
       {sp.msg && (
-        <div className="mt-6 flex flex-wrap items-center gap-3" role="status">
+        <p className="mt-6" role="status">
           <State kind={sp.kind === "wrong" ? "wrong" : "ok"}>{sp.msg}</State>
-          {sp.undo && /^[a-z0-9]{6,20}$/.test(sp.undo) && (
-            <form action={undelete}>
-              <input type="hidden" name="id" value={sp.undo} />
-              <input type="hidden" name="tab" value={tab} />
-              <PendingButton className={quietSmall()} pending="Restoring…">Undo</PendingButton>
-            </form>
-          )}
-          {sp.unskip && /^\d+\|\d+$/.test(sp.unskip) && (
-            <form action={unskipEpisode}>
-              <input type="hidden" name="key" value={sp.unskip} />
-              <PendingButton className={quietSmall()} pending="Undoing…">Undo</PendingButton>
-            </form>
-          )}
-        </div>
+        </p>
       )}
 
-      <Stats s={s} />
-
-      <nav aria-label="Recordings" className="mt-10 overflow-x-auto">
-        <ul className="inline-flex gap-1 rounded-full border border-line bg-surface p-1">
-          {tabs.map((t) => (
-            <li key={t}>
-              <Link
-                href={`/private/recordings?tab=${t}`}
-                aria-current={tab === t ? "page" : undefined}
-                className="flex min-h-10 items-center gap-2 rounded-full px-4 text-small whitespace-nowrap text-ink-2 transition-colors duration-150 hover:text-ink aria-[current=page]:bg-primary aria-[current=page]:text-on-primary"
-              >
-                {TAB_LABEL[t]}
-                {counts[t] > 0 && <span className="tabular-nums">{counts[t]}</span>}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="mt-6 max-w-[920px]">
-        {tab === "upcoming" && <UpcomingTab s={s} />}
-        {tab === "library" && <LibraryTab s={s} />}
-        {tab === "series" && <SeriesTab s={s} />}
-        {tab === "trash" && <TrashTab s={s} />}
-      </div>
+      <Toaster undelete={undelete} unskip={unskipEpisode}>
+        <Stats s={s} />
+        <Tabs
+          tabs={tabs.map((t) => ({ key: t, label: TAB_LABEL[t], count: counts[t] }))}
+          initial={tab}
+          fallback="library"
+          panels={{ upcoming: <UpcomingTab s={s} />, library: <LibraryTab s={s} />, series: <SeriesTab s={s} />, trash: s.trash.length ? <TrashTab s={s} /> : null }}
+        />
+      </Toaster>
     </RecordingsShell>
   );
 }
@@ -231,29 +206,29 @@ function UpcomingRow({ u, lines }: { u: Upcoming; lines: number }) {
         {u.state === "recording" ? (
           <Confirm label="Stop" danger>
             <p>Stop recording {name} now? What&rsquo;s recorded so far is kept.</p>
-            <form action={stopRecording}>
+            <ActionForm action={stopRecording}>
               <input type="hidden" name="key" value={u.key} />
               <PendingButton className={quietSmall()} pending="Stopping…">Stop recording</PendingButton>
-            </form>
+            </ActionForm>
           </Confirm>
         ) : u.once && u.ruleId ? (
-          <form action={cancelOnce}>
+          <ActionForm action={cancelOnce}>
             <input type="hidden" name="id" value={u.ruleId} />
             <input type="hidden" name="name" value={name} />
             <PendingButton className={small()} pending="Canceling…">Cancel</PendingButton>
-          </form>
+          </ActionForm>
         ) : u.state === "skipped" ? (
-          <form action={unskipEpisode}>
+          <ActionForm action={unskipEpisode}>
             <input type="hidden" name="key" value={u.key} />
             <input type="hidden" name="name" value={name} />
             <PendingButton className={quietSmall()} pending="Saving…">Record it</PendingButton>
-          </form>
+          </ActionForm>
         ) : (
-          <form action={skipEpisode}>
+          <ActionForm action={skipEpisode}>
             <input type="hidden" name="key" value={u.key} />
             <input type="hidden" name="name" value={name} />
             <PendingButton className={small()} pending="Skipping…">Skip</PendingButton>
-          </form>
+          </ActionForm>
         )}
       </div>
     </li>
@@ -298,7 +273,7 @@ function ShowCard({ sh, rule }: { sh: Show; rule?: Rule }) {
         </div>
         <Confirm label="Delete all" danger>
           <p>Move all {plural(sh.episodes.length, "episode")} of {sh.show} ({size(sh.size)}) to the Trash? You can restore them for 7 days.</p>
-          <form action={deleteShow} className="grid gap-3">
+          <ActionForm action={deleteShow} className="grid gap-3">
             <input type="hidden" name="show" value={sh.show} />
             {sh.episodes.map((e) => <input key={e.rel} type="hidden" name="rel" value={e.rel} />)}
             {rule && (
@@ -309,7 +284,7 @@ function ShowCard({ sh, rule }: { sh: Show; rule?: Rule }) {
               </label>
             )}
             <PendingButton className={quietSmall("justify-self-start")} pending="Deleting…">Delete all</PendingButton>
-          </form>
+          </ActionForm>
         </Confirm>
       </header>
       <ul>
@@ -337,18 +312,18 @@ function EpisodeRow({ e }: { e: Episode }) {
         {e.ads.canRestore && (
           <Confirm label="Put ads back">
             <p>Swap in the full recording, ads included? Use this if the ad removal cut part of the show. The ad-free copy goes to the Trash.</p>
-            <form action={restoreAds}>
+            <ActionForm action={restoreAds}>
               <input type="hidden" name="rel" value={e.rel} />
               <input type="hidden" name="name" value={name} />
               <PendingButton className={quietSmall()} pending="Swapping…">Put ads back</PendingButton>
-            </form>
+            </ActionForm>
           </Confirm>
         )}
-        <form action={deleteEpisode}>
+        <ActionForm action={deleteEpisode}>
           <input type="hidden" name="rel" value={e.rel} />
           <input type="hidden" name="name" value={name} />
           <PendingButton className={small("hover:text-wrong")} pending="Deleting…">Delete</PendingButton>
-        </form>
+        </ActionForm>
       </div>
     </li>
   );
@@ -374,11 +349,11 @@ function SeriesTab({ s }: { s: DvrState }) {
       <Card>
         <h2 className="text-h3 font-medium">Default timing</h2>
         <p className="mt-2 text-small text-ink-2">Every series starts recording a little early and keeps going after the guide says it ends, because shows often run over. A series can have its own timing.</p>
-        <form action={saveDefaults} className="mt-4 flex flex-wrap items-end gap-4">
+        <ActionForm action={saveDefaults} className="mt-4 flex flex-wrap items-end gap-4">
           <Pick name="padBeforeMin" label="Start early" value={s.defaults.padBeforeMin} options={[0, 1, 2, 3, 5, 10]} />
           <Pick name="padAfterMin" label="End late" value={s.defaults.padAfterMin} options={[0, 5, 10, 15, 20, 30, 45, 60]} />
           <PendingButton className={quietSmall("min-h-11")} pending="Saving…">Save</PendingButton>
-        </form>
+        </ActionForm>
       </Card>
     </div>
   );
@@ -417,15 +392,15 @@ function SeriesCard({ x, s }: { x: Rule; s: DvrState }) {
         <span className="py-2 text-small text-muted">{plural(x.episodes, "episode")} recorded</span>
         <div className="flex flex-wrap items-start gap-1">
           <Link href={`/private/recordings/record?show=${encodeURIComponent(x.title)}&edit=${x.id}`} className={small()}>Edit</Link>
-          <form action={setPaused}>
+          <ActionForm action={setPaused}>
             <input type="hidden" name="id" value={x.id} />
             <input type="hidden" name="name" value={x.title} />
             <input type="hidden" name="resume" value={x.enabled ? "0" : "1"} />
             <PendingButton className={small()} pending="Saving…">{x.enabled ? "Pause" : "Resume"}</PendingButton>
-          </form>
+          </ActionForm>
           <Confirm label="Delete" danger>
             <p>Stop recording {x.title}? No more episodes will record.</p>
-            <form action={deleteSeries} className="grid gap-2">
+            <ActionForm action={deleteSeries} className="grid gap-2">
               <input type="hidden" name="id" value={x.id} />
               <input type="hidden" name="name" value={x.title} />
               {x.episodes > 0 && (
@@ -441,7 +416,7 @@ function SeriesCard({ x, s }: { x: Rule; s: DvrState }) {
                 </>
               )}
               <PendingButton className={quietSmall("justify-self-start")} pending="Stopping…">Stop recording</PendingButton>
-            </form>
+            </ActionForm>
           </Confirm>
         </div>
       </div>
@@ -465,19 +440,18 @@ function TrashTab({ s }: { s: DvrState }) {
                 Deleted {when(Date.parse(t.deletedAt), s.now)}{t.why ? ` · ${t.why}` : ""} · {size(t.size)} · gone for good {relIn(t.purgeAt, s.now)}
               </p>
             </div>
-            <form action={undelete}>
+            <ActionForm action={undelete}>
               <input type="hidden" name="id" value={t.id} />
-              <input type="hidden" name="tab" value="trash" />
               <PendingButton className={quietSmall()} pending="Restoring…">Restore</PendingButton>
-            </form>
+            </ActionForm>
           </li>
         ))}
       </ul>
       <Confirm label={`Empty trash (${size(total)})`} danger className="justify-self-start">
         <p>Delete {plural(s.trash.length, "item")} for good? This can&rsquo;t be undone.</p>
-        <form action={emptyTrash}>
+        <ActionForm action={emptyTrash}>
           <PendingButton className={quietSmall()} pending="Deleting…">Delete for good</PendingButton>
-        </form>
+        </ActionForm>
       </Confirm>
     </div>
   );
