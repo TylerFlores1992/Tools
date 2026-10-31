@@ -140,13 +140,20 @@ The owner is a stagehand paid weekly by several payroll companies, mostly on pap
 his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income ties the three together.
 - **Stubs and W-2s:** photo or PDF on `/income/add` (shrunk to 2200 px JPEG in the browser, 4 MB
   cap, `serverActions.bodySizeLimit` 4.5 MB) → stored in `money.stub_files` (bytea, private route
-  `/income/stubs/<id>/file`) → read by a vision model through **Vercel AI Gateway**
-  (`src/lib/money/income/read-document.ts`, model `MONEY_STUB_MODEL`, default
-  `google/gemini-2.5-flash`; auth is the deployment's OIDC token, or `AI_GATEWAY_API_KEY`).
-  **The team's gateway is on the FREE tier, which refuses Claude Sonnet 5, Claude Haiku 5.5 and
-  Gemini 2.5 Pro** ("Free tier users do not have access to this model", 2026-10-19); Gemini 2.5
-  Flash is allowed and read the probe stub exactly. With paid credit, set `MONEY_STUB_MODEL`.
-  Probe any model: `/api/money/health?ai=<MONEY_PROBE_KEY>&model=<provider/model>` (text stub).
+  `/income/stubs/<id>/file`) → read by a vision model (`src/lib/money/income/read-document.ts`,
+  which models in `src/tools/money/income/read-models.ts`). **Since 2026-10-31 it goes straight
+  to Google on the free AI Studio key** (`MONEY_GEMINI_API_KEY`, else Mail's `MAIL_GEMINI_API_KEY`;
+  models tried in turn: `MONEY_GEMINI_MODEL`, `gemini-3.8-flash`, `gemini-3.5-flash-lite`,
+  `gemini-flash-lite-latest`; 50 s in all). Vercel AI Gateway read them before and is still used
+  when no key is set (`MONEY_STUB_MODEL`, default `google/gemini-2.5-flash`), but its free credit
+  ran out ("A positive credit balance is required", every read on 2026-10-31 failed with it).
+  **Privacy, the owner's call 2026-10-31:** Google's free tier may use what it is sent to improve
+  its products, and a stub photo can't be masked the way Mail masks long numbers, so employee
+  number, IDs and pay amounts go as they are. The owner accepted that. A paid Gemini key (set
+  `MONEY_GEMINI_API_KEY`) stops Google using the data.
+  A failed read says why: out of credit, free quota used up, key refused, too slow, or unreadable.
+  Probe: `/api/money/health?ai=<MONEY_PROBE_KEY>` (the same models, text stub; `&model=<provider/model>`
+  tries one gateway model instead).
   Owner's call (2026-10-19): use AI. **Nothing counts until the owner saves the review screen.**
   Text shaped like an SSN or account number is blanked in every stored field (`noSsn`); the photo
   itself keeps whatever is printed (stubs show the last 4), and can be deleted after saving.
@@ -211,8 +218,9 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
 - **W-2 check:** each saved W-2 against that employer's saved stubs for the year (withholding boxes
   to the cent; box 1 above gross = a missing stub). Employer matching accepts the payroll company
   as the W-2 employer of record (`sameEmployer`).
-- **Probe:** `/api/money/health?ai=<MONEY_PROBE_KEY>` reads a made-up stub through the gateway and
-  says ok/failed. The key is a Vercel env var (sensitive); each call costs a little.
+- **Probe:** `/api/money/health?ai=<MONEY_PROBE_KEY>` reads a made-up stub the way a real read does
+  and says ok/failed and which model answered. The key is a Vercel env var (sensitive); each call
+  spends a little free quota.
 - Tables: `docs/sql/money-income.sql` (stubs, stub_files, work_events, income_settings).
 
 ## Ideas not built yet
