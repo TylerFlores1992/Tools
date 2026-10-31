@@ -143,8 +143,9 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   `/income/stubs/<id>/file`) → read by a vision model (`src/lib/money/income/read-document.ts`,
   which models in `src/tools/money/income/read-models.ts`). **Since 2026-10-31 it goes straight
   to Google on the free AI Studio key** (`MONEY_GEMINI_API_KEY`, else Mail's `MAIL_GEMINI_API_KEY`;
-  models tried in turn: `MONEY_GEMINI_MODEL`, `gemini-3.8-flash`, `gemini-3.5-flash-lite`,
-  `gemini-flash-lite-latest`; 50 s in all). Vercel AI Gateway read them before and is still used
+  models tried in turn: `MONEY_GEMINI_MODEL`, `gemini-3.5-flash-lite`, `gemini-3.8-flash`,
+  `gemini-flash-lite-latest`; up to 60 s each, 110 s in all, pages allow 120 s. Full Flash first
+  timed out on a real photo on 2026-10-31, so Lite leads). Vercel AI Gateway read them before and is still used
   when no key is set (`MONEY_STUB_MODEL`, default `google/gemini-2.5-flash`), but its free credit
   ran out ("A positive credit balance is required", every read on 2026-10-31 failed with it).
   **Privacy, the owner's call 2026-10-31:** Google's free tier may use what it is sent to improve

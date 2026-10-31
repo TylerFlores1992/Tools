@@ -16,13 +16,13 @@ type Env = { readonly [name: string]: string | undefined };
 export const geminiKey = (env: Env) => env.MONEY_GEMINI_API_KEY || env.MAIL_GEMINI_API_KEY || undefined;
 
 /**
- * The models to try, best reader first. Mail and Learn put Flash-Lite first for its larger free
- * quota; a stub is one read a week where a wrong number costs more than a slow one, so full Flash
- * goes first here and Lite is the fallback when Flash's quota is used up.
+ * The models to try, in order. Flash-Lite first, as Mail and Learn do: on 2026-10-31 full Flash
+ * took over 30 s on a real stub photo and timed out, leaving Lite too little time to finish.
+ * Flash is the fallback when Lite fails or its quota is used up. The owner reviews every field.
  */
 export function readRoute(env: Env): ReadRoute {
   if (geminiKey(env)) {
-    const models = [env.MONEY_GEMINI_MODEL, "gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-flash-lite-latest"].filter(
+    const models = [env.MONEY_GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-flash-lite-latest"].filter(
       (m, i, a): m is string => !!m && a.indexOf(m) === i,
     );
     return { via: "gemini", models };

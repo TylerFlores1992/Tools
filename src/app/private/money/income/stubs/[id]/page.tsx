@@ -18,7 +18,7 @@ import { MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
 import { chooseDeposit, removePhoto, removeStub, rereadStub, saveStub } from "../../actions";
 
 export const metadata: Metadata = { title: "Review stub · Income", description: "Check what was read.", robots: { index: false, follow: false } };
-export const maxDuration = 60; // "Read again" runs the AI read
+export const maxDuration = 120; // "Read again" runs the AI read
 
 const FIELD = "field min-h-11 w-full min-w-0 rounded-input border border-control bg-surface px-3 text-body text-ink tabular-nums";
 const v = (n: number | null | undefined) => (n == null ? "" : String(n));
