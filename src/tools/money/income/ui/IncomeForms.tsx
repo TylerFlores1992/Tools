@@ -62,7 +62,8 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
         form.set("kind", kind);
         form.set("file", f);
         const res: OneResult = await uploadOne(form);
-        if (res.ok && files.current.length === 1) {
+        // One file: open its page, whether it was just read or was already on file.
+        if ((res.ok || res.error === "Already added.") && res.id && files.current.length === 1) {
           router.push(`/private/money/income/stubs/${res.id}`);
           return;
         }

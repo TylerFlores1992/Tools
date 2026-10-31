@@ -40,3 +40,9 @@ export function readFailureMessage(err: { name?: string; message?: string } | nu
   if (/api.?key|auth|\b401\b|\b403\b|oidc|permission/i.test(msg)) return "The AI service didn't accept this site's key. Check MONEY_GEMINI_API_KEY in Vercel (docs/MONEY.md), or enter it by hand.";
   return "The stub couldn't be read. Try another photo, or enter it by hand.";
 }
+
+/**
+ * Uploading a file that is already on file: read it again if the earlier read failed or never
+ * finished (a timed-out read can leave "reading" behind); skip it once it read or was saved.
+ */
+export const retryOnUpload = (status: string | null | undefined) => status === "failed" || status === "reading";

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { geminiKey, readFailureMessage, readRoute } from "./read-models.ts";
+import { geminiKey, readFailureMessage, readRoute, retryOnUpload } from "./read-models.ts";
 
 test("the Money key wins, Mail's key is the fallback, none means the gateway", () => {
   assert.equal(geminiKey({ MONEY_GEMINI_API_KEY: "m", MAIL_GEMINI_API_KEY: "x" }), "m");
@@ -28,4 +28,12 @@ test("a failed read says what actually happened", () => {
   assert.match(readFailureMessage({ name: "AbortError", message: "" }), /took too long/);
   assert.match(readFailureMessage({ name: "AI_NoObjectGeneratedError", message: "could not parse" }), /couldn't be read/);
   assert.match(readFailureMessage(null), /couldn't be read/);
+});
+
+test("re-uploading a file reads it again only if the earlier read failed or never finished", () => {
+  assert.equal(retryOnUpload("failed"), true);
+  assert.equal(retryOnUpload("reading"), true);
+  assert.equal(retryOnUpload("review"), false);
+  assert.equal(retryOnUpload("saved"), false);
+  assert.equal(retryOnUpload(null), false);
 });
