@@ -66,6 +66,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   marks explanations; lessons are data in `src/tools/learn/lessons/`; `docs/LEARN.md`
 - `src/app/private/mail/` Morning Mail, code rules + an AI read (Gmail Apps Script + Yahoo IMAP → `mail` schema,
   rules move mail); logic `src/tools/mail/`, server `src/lib/mail/`; `docs/MAIL.md`
+- `src/app/private/recordings/` the home DVR (upcoming, library, series, trash; record a show) through a
+  key-locked Tailscale Funnel to the home server (`DVR_URL`/`DVR_TOKEN`); logic `src/tools/recordings/`; `docs/RECORDINGS.md`
 - `src/lab/camphawk/` + `src/app/private/camphawk/` CampHawk design lab: mockups only, never
   camphawk.app (`ch-*` tokens, lab only). Chosen look "Golden hour": every CampHawk screen under
   `/private/camphawk/golden-hour` (map at `/screens`; `round2/` core five, `round2/pages/` the
