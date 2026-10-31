@@ -11,7 +11,7 @@
 
 export type ReadRoute = { via: "gemini"; models: readonly string[] } | { via: "gateway"; models: readonly string[] };
 
-type Env = Partial<Record<"MONEY_GEMINI_API_KEY" | "MAIL_GEMINI_API_KEY" | "MONEY_GEMINI_MODEL" | "MONEY_STUB_MODEL", string>>;
+type Env = { readonly [name: string]: string | undefined };
 
 export const geminiKey = (env: Env) => env.MONEY_GEMINI_API_KEY || env.MAIL_GEMINI_API_KEY || undefined;
 
