@@ -16,6 +16,7 @@ import {
 import { calendarScript } from "@/tools/money/income/calendar-script";
 import { parseMoney, parseStubForm } from "@/tools/money/income/form";
 import { fromRead } from "@/tools/money/income/read";
+import { retryOnUpload } from "@/tools/money/income/read-models";
 import { withDefaults, type IncomeConfig, type WorkEvent } from "@/tools/money/income/types";
 import { icsEventId, parseIcs, type IcsEvent } from "@/tools/money/income/ics";
 import { defaultLinks } from "@/tools/money/income/workdays";
@@ -32,7 +33,8 @@ export type OneResult =
 /**
  * One file of a batch ("Add a year of stubs"): stores and reads it like `uploadDocument`, but
  * answers instead of redirecting, so the page can send the next file. The same file twice is
- * not added again.
+ * not added again. But a file whose earlier read failed is read again (2026-10-31: the owner
+ * re-uploaded a stub that had timed out and got "Already added" with nothing to show for it).
  */
 export async function uploadOne(form: FormData): Promise<OneResult> {
   await requirePrivate("/private/money/income/add");
@@ -43,8 +45,9 @@ export async function uploadOne(form: FormData): Promise<OneResult> {
   if (!OK_TYPES.has(file.type)) return { ok: false, error: "Not a photo or PDF." };
   const bytes = Buffer.from(await file.arrayBuffer());
   const existing = await findStubByFile(bytes);
-  if (existing) return { ok: false, error: "Already added.", id: existing };
-  const id = await createStub(kind, file.type, bytes);
+  const before = existing ? await getStub(existing) : null;
+  if (existing && !retryOnUpload(before?.status)) return { ok: false, error: "Already added.", id: existing };
+  const id = existing ?? (await createStub(kind, file.type, bytes));
   await readInto(id, bytes, file.type, kind);
   const stub = await getStub(id);
   revalidatePath("/private/money/income", "layout");
