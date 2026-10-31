@@ -14,7 +14,7 @@
   then choose new episodes only or every airing. Under More options: feed, keep latest N and
   timing. Or record just one airing. "Add a series by name" covers shows not in the guide yet.
 
-Everything is a plain form or link (state in the URL), so it works without JavaScript; `AutoSubmit`
+Tabs switch in the browser (`ui/Tabs.tsx`; every panel is already on the page, `?tab=` follows) and buttons update the page in place with a toast (`ui/ActionForm.tsx`, `ui/Toaster.tsx`, actions call `refresh()`), so nothing reloads, fades or jumps to the top (owner, 2026-10-31). Forms still work without JavaScript; `AutoSubmit`
 only makes the search live.
 
 ## How it reaches home
