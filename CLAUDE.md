@@ -59,6 +59,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
 - `src/app/private/money/` household money tracker (SimpleFIN → Supabase `money` schema, daily
   cron `src/app/api/money/sync`); logic `src/tools/money/`, server `src/lib/money/`; `docs/MONEY.md`.
   Income tab: pay stubs/W-2s read by AI (free Gemini key), calendar via Apps Script; `docs/MONEY.md#income`
+- `src/app/private/course/` Page Turner: phone view of a course run on the home server (`connectors/course-runner/`, README there;
+  key-locked Funnel `COURSE_URL`/`COURSE_TOKEN`). Questions always go to the owner; it never answers them
 - `src/app/private/vectorworks/` live Vectorworks panel (talks to 127.0.0.1, never via the site);
   logic `src/tools/vectorworks/`; the Python connector Claude draws through is
   `connectors/vectorworks/` (its README: setup, why it's built that way, first run on real VW)

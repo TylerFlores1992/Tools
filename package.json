@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "tsx --test \"src/**/*.test.mts\" \"scripts/**/*.test.mts\"",
+    "test": "tsx --test \"src/**/*.test.mts\" \"scripts/**/*.test.mts\" \"connectors/course-runner/*.test.mjs\"",
     "verify": "npm run typecheck && npm run lint && npm test && npm run build",
     "shots": "tsx scripts/screenshot.mts",
     "smoke": "tsx scripts/smoke.mts",
