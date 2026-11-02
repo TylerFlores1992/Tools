@@ -29,6 +29,7 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   // redirect); files are refused outright.
   { path: "/private", status: 200, contains: "Enter the password", absent: "Sign out" },
   { path: "/private/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
+  { path: "/private/course", status: 200, contains: "Enter the password", absent: "Show the course" },
   { path: "/private/recordings", status: 200, contains: "Enter the password", absent: "Home DVR" },
   { path: "/private/recordings/record", status: 200, contains: "Enter the password", absent: "Search the TV guide" },
   { path: "/lab/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },

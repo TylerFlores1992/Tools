@@ -18,6 +18,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/mail",
   },
   {
+    slug: "course",
+    name: "Page Turner",
+    summary: "Turns the pages of a course on the home server and alerts your phone at each question.",
+    stage: "Windows runner + phone view",
+    href: "/private/course",
+  },
+  {
     slug: "recordings",
     name: "Recordings",
     summary: "The home DVR: what's coming up, what's recorded, and what to record next. Ads come out by themselves.",

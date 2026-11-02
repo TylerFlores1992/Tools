@@ -1,0 +1,9 @@
+{
+  "name": "course-runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Page Turner's home-server half: runs a course in Chrome and hands every question to the phone.",
+  "scripts": { "start": "node runner.mjs" },
+  "dependencies": { "playwright-core": "1.63.0" }
+}
