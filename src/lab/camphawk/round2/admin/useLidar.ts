@@ -11,9 +11,10 @@ export type LidarState = { state: "off" | "loading" | "ready" | "error"; src: st
  * services answer any origin; maps/lidar.ts): Oregon's own lidar there, else USGS 3DEP. Fetched
  * only while `on`, at about `widthPx` across (never finer than half a metre a pixel).
  */
-export function useLidar(bbox: Bbox | undefined, frameW: number, widthPx: number, on: boolean): LidarState {
+export function useLidar(bbox: Bbox | undefined, frameW: number, widthPx: number, on: boolean, attempt = 0): LidarState {
   const [out, setOut] = useState<LidarState & { key: string }>({ key: "", state: "off", src: null, source: null });
-  const key = on && bbox && widthPx ? `${bbox.join(",")}@${Math.round(widthPx / 400)}` : "";
+  // `attempt` > 0 is a Retry: a new key, and the services asked past any cached failure.
+  const key = on && bbox && widthPx ? `${bbox.join(",")}@${Math.round(widthPx / 400)}#${attempt}` : "";
   useEffect(() => {
     if (!key || !bbox) return;
     const ctl = new AbortController();
@@ -22,7 +23,7 @@ export function useLidar(bbox: Bbox | undefined, frameW: number, widthPx: number
       setOut({ key, state: "loading", src: null, source: null });
       const size = lidarSize(bbox, Math.max(0.5, frameW / widthPx));
       for (const source of lidarSourcesFor(bbox)) {
-        const res = await fetch(lidarUrl(bbox, size, source), { signal: ctl.signal }).catch(() => null);
+        const res = await fetch(lidarUrl(bbox, size, source), { signal: ctl.signal, cache: attempt ? "reload" : "default" }).catch(() => null);
         if (ctl.signal.aborted) return;
         const dem = res?.ok ? decodeBip(await res.arrayBuffer(), size.width, size.height) : null;
         if (!dem || mostlyMissing(dem)) continue;

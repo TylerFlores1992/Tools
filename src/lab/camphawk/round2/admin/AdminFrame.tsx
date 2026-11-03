@@ -10,7 +10,7 @@ import { LabBar } from "../../LabBar";
 // one new section, Site maps. A forest sidebar on the left from lg; on a phone, a slim forest
 // header with a row of tabs. The current item is marked by a bar, bold text and aria-current,
 // never by colour alone. Only Site maps exists in the lab, so the other sections are shown as
-// CampHawk lists them, as plain text rather than links that would lead nowhere.
+// CampHawk lists them, as plain text under a "Not in the lab" label (they looked like dead links).
 
 const SECTIONS: { label: string; Icon: LucideIcon }[] = [
   { label: "Overview", Icon: LayoutDashboard },
@@ -35,17 +35,19 @@ export function AdminFrame({ page, home, children }: { page: string; home: strin
             </span>
           </div>
           <nav aria-label="Admin" className="flex-1 space-y-0.5 px-3 py-2">
-            {SECTIONS.slice(0, 4).map((s) => <Item key={s.label} {...s} />)}
-            <div className="my-2 border-t border-ch-white/10" />
-            <Item {...SECTIONS[4]} />
-            <Link href={home} aria-current="page" className={cx("relative flex items-center gap-3 rounded-ch-input bg-ch-forest-3 px-3 py-2.5 text-[14px] font-bold text-ch-white", focusRing)}>
+            <Link href={home} aria-current="page" className={cx("relative flex min-h-11 items-center gap-3 rounded-ch-input bg-ch-forest-3 px-3 py-2.5 text-[14px] font-bold text-ch-white", focusRing)}>
               <span aria-hidden="true" className="absolute bottom-2 left-0 top-2 w-1 rounded-full bg-ch-white" />
               <Map aria-hidden="true" className="size-[18px] shrink-0" />
               <span className="flex-1">Site maps</span>
             </Link>
+            <div className="my-2 border-t border-ch-white/10" />
+            <p id="not-in-lab" className="px-3 pb-1 pt-1 text-ch-label font-bold uppercase tracking-[.14em] text-ch-white/70">Not in the lab</p>
+            <ul aria-labelledby="not-in-lab">
+              {SECTIONS.map((s) => <li key={s.label}><Item {...s} /></li>)}
+            </ul>
           </nav>
           <div className="border-t border-ch-white/10 px-3 py-3">
-            <Link href="/private/camphawk" className={cx("flex items-center gap-2 rounded-ch-input px-3 py-2 text-ch-body text-ch-white/80 hover:bg-ch-forest-2 hover:text-ch-white", focusRing)}>
+            <Link href="/private/camphawk" className={cx("flex min-h-11 items-center gap-2 rounded-ch-input px-3 py-2 text-ch-body text-ch-white/80 hover:bg-ch-forest-2 hover:text-ch-white", focusRing)}>
               <ArrowLeft aria-hidden="true" className="size-4" />
               Back to the lab
             </Link>
@@ -61,14 +63,11 @@ export function AdminFrame({ page, home, children }: { page: string; home: strin
               </span>
             </div>
             <nav aria-label="Admin" className="flex gap-1 overflow-x-auto px-3 pb-2 [scrollbar-width:none]">
-              <Link href={home} aria-current="page" className={cx("flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-ch-chip bg-ch-white px-3 py-2 text-ch-meta font-bold text-ch-ink", focusRing)}>
+              <Link href={home} aria-current="page" className={cx("flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-ch-chip bg-ch-white px-3 py-2 text-ch-meta font-bold text-ch-ink", focusRing)}>
                 <Map aria-hidden="true" className="size-4" />Site maps
               </Link>
-              {SECTIONS.map((s) => (
-                <span key={s.label} className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-ch-chip px-3 py-2 text-ch-meta text-ch-white/70">
-                  <s.Icon aria-hidden="true" className="size-4" />{s.label}
-                </span>
-              ))}
+              {/* The rest of CampHawk's admin isn't mocked: one plain line, not chips that look pressable. */}
+              <span className="flex min-h-11 shrink-0 items-center whitespace-nowrap px-2 text-ch-meta text-ch-white/70">Other sections: not in the lab</span>
             </nav>
           </header>
           <main id="main" className="mx-auto w-full max-w-6xl px-4 pb-16 pt-5 sm:px-6 sm:pt-7">{children}</main>

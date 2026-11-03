@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, Loader2, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
@@ -17,6 +18,7 @@ import { ROUTES } from "../gates";
 import { A, LabNote, Steps } from "../LabPage";
 import { LabPage } from "../LabPage";
 import { useUrlState, withVisitor } from "../labState";
+import { OutLink } from "../labOut";
 import { HOLD_STEPS, LAUNCH_PRICING, RC_HOLD_OPEN, TRIAL_DAYS } from "./tier2-data";
 
 // Tier 2: Plans & pricing (campsite-finder src/app/(app)/pricing, PricingSection.tsx, Pricing.tsx,
@@ -66,15 +68,25 @@ function PlanCard({ name, tier, features, recommended, children }: { name: strin
   );
 }
 
+/** Where a finished checkout lands: Welcome, as a subscriber on the plan just bought. `id` is
+    "<tier>-<interval>"; the lab's plan switch names the base tier "alerts". */
+const welcomeAfterCheckout = (id: string) => withVisitor(`${ROUTES.welcome}?from=checkout&plan=${id.startsWith("autocart") ? "autocart" : "alerts"}`, "subscriber");
+
 /** The web pitch and the two plan cards, for anyone without a subscription. */
 function WebPlans({ visitor, lookup, checkout }: { visitor: Visitor; lookup: Lookup; checkout: Checkout }) {
+  const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const signedOut = visitor === "signed-out";
   const go = (id: string) => {
     setBusy(id);
     setError(false);
-    window.setTimeout(() => { setBusy(null); if (checkout === "fails") setError(true); }, 900);
+    window.setTimeout(() => {
+      // A failed checkout says so and nothing was charged; a working one comes back to Welcome as
+      // a subscriber, as Stripe's success URL does (the spinner stays until the page changes).
+      if (checkout === "fails") { setBusy(null); setError(true); return; }
+      router.push(welcomeAfterCheckout(id));
+    }, 900);
   };
   const priceBtn = (tier: PlanTier, i: "monthly" | "yearly") => {
     const id = `${tier}-${i}`;
@@ -181,6 +193,7 @@ function AppPlan({ name, tier, features, billing, recommended, children }: { nam
     two plans as the web shows them, and the store's own terms in a row underneath. It had a second
     headline over four uneven price tiles and a half-width block of terms. */
 function AppPaywall({ store }: { store: Store }) {
+  const router = useRouter();
   const [buying, setBuying] = useState<string | null>(null);
   const [restore, setRestore] = useState<"idle" | "busy" | "none">("idle");
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
@@ -195,7 +208,7 @@ function AppPaywall({ store }: { store: Store }) {
   const buy = (tier: PlanTier) => {
     const id = `${tier}-${billing}`;
     return (
-      <button type="button" disabled={buying !== null} onClick={() => { setBuying(id); window.setTimeout(() => setBuying(null), 1200); }} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>
+      <button type="button" disabled={buying !== null} onClick={() => { setBuying(id); window.setTimeout(() => router.push(welcomeAfterCheckout(id)), 1200); }} className={buttonClasses({ variant: tier === "autocart" ? "ink" : "quiet", fullWidth: true, className: "min-h-12 disabled:cursor-wait" })}>
         {buying === id ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Opening…</> : `Try free for ${TRIAL_DAYS} days, then ${priceShort(tier, billing)}`}
       </button>
     );
@@ -219,7 +232,7 @@ function AppPaywall({ store }: { store: Store }) {
         <p className="text-[14px] leading-relaxed text-ch-ink-2">No account needed — your alerts come to this device as notifications. A free account is optional: it adds email and text alerts and lets you use your subscription on the website and your other devices. <A href={ROUTES.signUp} visitor="app">Create an account</A> or <A href={ROUTES.signIn} visitor="app">sign in</A>, any time.</p>
         <div className="text-[13px] leading-relaxed text-ch-ink-2">
           <p>Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless it is canceled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the current period. Manage or cancel any time in your App Store account settings. Any unused portion of a free trial is forfeited when you buy a subscription.</p>
-          <p className="mt-2"><A href="#">Terms of Use</A> · <A href={ROUTES.privacy} visitor="app">Privacy Policy</A></p>
+          <p className="mt-2"><OutLink where="Apple’s standard Terms of Use" className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Terms of Use</OutLink> · <A href={ROUTES.privacy} visitor="app">Privacy Policy</A></p>
         </div>
       </div>
     </section>

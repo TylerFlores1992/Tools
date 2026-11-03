@@ -63,3 +63,20 @@ export function accountGate(v: Visitor): AccountGate {
   if (v === "app") return "appGuest";
   return "needsSub";
 }
+
+/** Where a watch button goes for this visitor (before `withVisitor`). A subscriber reaches New
+    watch with whatever is known filled in (`query`, without its "?"); a signed-out visitor signs
+    up and is brought back to that same New watch; a member, a lapsed subscriber and the app's
+    guest go to Pricing, which in the app is the store's own paywall (no web price there). */
+export function watchGateHref(visitor: Visitor, query = ""): string {
+  const form = `${ROUTES.newWatch}${query ? `?${query}` : ""}`;
+  if (canWatch(visitor)) return form;
+  if (visitor === "signed-out") return `${ROUTES.signUp}?redirect_url=${encodeURIComponent(form)}`;
+  return ROUTES.pricing;
+}
+
+/** SubscribeCta's main step for someone who can't watch yet: a trial starts with an account (sign
+    up), a past subscriber resubscribes on Pricing, the app's guest goes to the store paywall. */
+export function subscribeHref(visitor: Visitor): string {
+  return visitor === "signed-out" ? ROUTES.signUp : ROUTES.pricing;
+}

@@ -71,12 +71,13 @@ export function splitEntries(raw: (WaveEntry | (FailedEntry & { verdict?: undefi
   return { entries, failed };
 }
 
-/** Load wave n (the sample synchronously; a later wave from the server). Throws if it won't load. */
-export async function loadWave(n: number): Promise<Wave> {
+/** Load wave n (the sample synchronously; a later wave from the server). Throws if it won't load.
+    `retry` > 0 asks again past any cached failure (a Retry button). */
+export async function loadWave(n: number, retry = 0): Promise<Wave> {
   if (n === 0) return SAMPLE_WAVE;
   const info = WAVES.find((w) => w.wave === n);
   if (!info) throw new Error(`no wave ${n}`);
-  const res = await fetch(`/private/camphawk/maps/waves/wave-${pad(n)}.json`);
+  const res = await fetch(`/private/camphawk/maps/waves/wave-${pad(n)}.json${retry ? `?retry=${retry}` : ""}`, retry ? { cache: "reload" } : undefined);
   if (!res.ok) throw new Error(`wave ${n}: HTTP ${res.status}`);
   const manifest = await res.json();
   const file = LOOK_FILES.find((f) => f.wave === n);

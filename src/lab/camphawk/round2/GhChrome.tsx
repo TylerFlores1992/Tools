@@ -49,9 +49,9 @@ export function PhotoHeader({ visitor, current }: { visitor: Visitor; current?: 
             <span className="grid size-9 place-items-center rounded-full bg-ch-paper text-ch-meta font-extrabold text-ch-forest"><span aria-hidden="true">TF</span><span className="sr-only">Account (signed in)</span></span>
           ) : (
             <>
-              <a href="#" className="whitespace-nowrap rounded-[10px] px-2 py-2.5 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10 sm:px-3">Sign in</a>
+              <Link href={withVisitor(ROUTES.signIn, visitor)} className="flex min-h-11 items-center whitespace-nowrap rounded-[10px] px-2 text-[15px] font-bold text-ch-paper hover:bg-ch-white/10 sm:px-3">Sign in</Link>
               {/* On phones too: it was hidden there, and phones are where most sign-ups start. */}
-              {visitor === "signed-out" && <a href="#" className={buttonClasses({ variant: "paper", size: "sm", className: "min-h-11 whitespace-nowrap px-4" })}>Sign up</a>}
+              {visitor === "signed-out" && <Link href={ROUTES.signUp} className={buttonClasses({ variant: "paper", size: "sm", className: "min-h-11 whitespace-nowrap px-4" })}>Sign up</Link>}
             </>
           )}
         </div>

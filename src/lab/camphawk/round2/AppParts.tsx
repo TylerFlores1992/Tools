@@ -7,15 +7,15 @@ import { cx } from "@/components/cx";
 import { buttonClasses, type ButtonVariant } from "../ui";
 import { HIT_AREA, HIT_BOX } from "../ui/hit";
 import { priceShort, type Visitor } from "../data";
-import { accountGate, canWatch, ROUTES, watchCtaLabel } from "./gates";
+import { accountGate, canWatch, ROUTES, subscribeHref, watchCtaLabel, watchGateHref } from "./gates";
 import { PhotoHeader, type Tab } from "./GhChrome";
 import { Art, type Piece } from "./Art";
 import { withVisitor } from "./labState";
 
 // Pieces the Golden hour app screens (Explore, New watch, Watches) share, ported from
 // campsite-finder src/components/v2 (WatchCta, SubscribeCta, PricingLink, FavoriteHeart,
-// SetupNudges) and driven by the lab's switches. Lab links that would leave the lab (sign-up,
-// checkout, settings) go nowhere ("#").
+// SetupNudges) and driven by the lab's switches. Every account step goes to the lab's own screen
+// for it (sign-up, Pricing, Settings), keeping who we're pretending to be.
 // Lab changes, from CampHawk's own colour rules: a favorite is ochre ("you asked for this"), not
 // red; the upgrade note is a plain card, not decorative green.
 
@@ -29,7 +29,8 @@ export function WatchCtaLink({
   visitor, label = "Start a watch", campgroundId, start, end, variant = "primary", fullWidth = true, onDark = false, className,
 }: { visitor: Visitor; label?: string; campgroundId?: string; start?: string | null; end?: string | null; variant?: ButtonVariant; fullWidth?: boolean; onDark?: boolean; className?: string }) {
   const q = new URLSearchParams({ ...(campgroundId ? { campground: campgroundId } : {}), ...(start && end ? { start, end } : {}) }).toString();
-  const href = canWatch(visitor) ? withVisitor(`${ROUTES.newWatch}${q ? `?${q}` : ""}`, visitor) : "#";
+  // Everyone gets somewhere: New watch, sign-up (and back to this watch), or Pricing (gates.ts).
+  const href = withVisitor(watchGateHref(visitor, q), visitor);
   // Only a subscriber's button starts a watch (green: it's how you get a site). Everyone else's
   // is a sign-up or a trial, so it's the ink button (lab change; CampHawk greens both).
   const v = canWatch(visitor) || variant !== "primary" ? variant : onDark ? "paper" : "ink";
@@ -43,15 +44,15 @@ export function SubscribeCta({ visitor, fullWidth = false, className }: { visito
   const btn = buttonClasses({ variant: "ink", fullWidth, className: cx("min-h-12", !fullWidth && "px-6") });
   const link = "inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2";
   // The app sells through the store's own paywall: no price, no account needed.
-  if (gate === "appGuest") return <div className={className}><a href="#" className={btn}>See plans</a></div>;
+  if (gate === "appGuest") return <div className={className}><Link href={withVisitor(ROUTES.pricing, visitor)} className={btn}>See plans</Link></div>;
   // One account step carries the weight; plans and sign-in are links beside it, never a stack
   // of equal buttons competing with the page's own action.
   return (
     <div className={className}>
-      <a href="#" className={btn}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</a>
+      <Link href={withVisitor(subscribeHref(visitor), visitor)} className={btn}>{visitor === "lapsed" ? "Resubscribe" : "Start free trial"}</Link>
       <p className={cx("flex flex-wrap items-center gap-x-6 gap-y-1", fullWidth ? "mt-2 justify-center" : "mt-3")}>
-        <a href="#" className={link}>See plans</a>
-        {gate === "signedOut" && <a href="#" className={link}>Sign in</a>}
+        <Link href={withVisitor(ROUTES.pricing, visitor)} className={link}>See plans</Link>
+        {gate === "signedOut" && <Link href={ROUTES.signIn} className={link}>Sign in</Link>}
       </p>
     </div>
   );
@@ -66,19 +67,19 @@ export function PricingLink({ visitor, plan, className }: { visitor: Visitor; pl
       <p className="mt-1 max-w-[58ch] text-[15px] leading-relaxed text-ch-ink-2">
         Add Auto-Cart and an opening goes straight into your Recreation.gov cart — held while you get to your phone. {priceShort("autocart", "monthly")} or {priceShort("autocart", "yearly")}, prorated on your current billing.
       </p>
-      <a href="#" className={buttonClasses({ variant: "ink", size: "sm", className: "mt-3 min-h-11 px-4" })}>Upgrade to Auto-Cart</a>
+      <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ variant: "ink", size: "sm", className: "mt-3 min-h-11 px-4" })}>Upgrade to Auto-Cart</Link>
     </div>
   );
 }
 
 /** SetupNudges' first nudge: a subscriber with live watches and no phone number. Ochre is "you
     asked for this" (your alerting), not an error. */
-export function PhoneNudge({ className }: { className?: string }) {
+export function PhoneNudge({ className, visitor = "subscriber" }: { className?: string; visitor?: Visitor }) {
   return (
     <div className={cx("rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3.5", className)}>
       <p className="text-[16px] font-bold text-ch-ink">You’re only getting email alerts</p>
       <p className="mt-1 text-[15px] leading-relaxed text-ch-ink-2">Openings often last minutes. A text is what actually reaches you in time — add your number and we’ll send both.</p>
-      <a href="#" className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">Turn on text alerts</a>
+      <Link href={withVisitor(ROUTES.settings, visitor)} className="mt-1.5 inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">Turn on text alerts</Link>
     </div>
   );
 }

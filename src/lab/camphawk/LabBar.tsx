@@ -4,6 +4,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import Link from "next/link";
 import { cx } from "@/components/cx";
 import { VISITORS, type Visitor } from "./data";
+import { LabToast } from "./round2/labOut";
 
 /**
  * The lab's own strip, above CampHawk's chrome: where you are, who we're pretending to be, and
@@ -52,7 +53,7 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
                 aria-checked={on}
                 tabIndex={on ? 0 : -1}
                 onClick={() => onVisitor(v.value)}
-                className={cx("flex min-h-10 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold sm:flex-none", on ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}
+                className={cx("flex min-h-11 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold sm:flex-none", on ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}
               >
                 {on && <span aria-hidden="true">✓</span>}
                 {v.label}
@@ -61,6 +62,8 @@ export function LabBar({ page, visitor, onVisitor, children }: { page: string; v
           })}
         </div>}
       </div>
+      {/* The lab's one status line ("Lab: this would open Recreation.gov."), for every page with a lab bar. */}
+      <LabToast />
     </aside>
   );
 }

@@ -27,8 +27,9 @@ import { useUrlState, withVisitor } from "../labState";
 // - Errors are sentences: no "mint failed (500)", no "Is your CampHawk server online?".
 // The lab runs the wait faster than life: the "still working" note at 2 s, not 20.
 
-type Status = "idle" | "connecting" | "form" | "stream" | "done" | "error" | "timeout";
-const STATUSES: readonly Status[] = ["idle", "connecting", "form", "stream", "done", "error", "timeout"];
+// "opening" is "connecting" held still, so a reviewer can study it; "connecting" moves on by itself.
+type Status = "idle" | "connecting" | "opening" | "form" | "stream" | "done" | "error" | "timeout";
+const STATUSES: readonly Status[] = ["idle", "connecting", "opening", "form", "stream", "done", "error", "timeout"];
 
 const ERRORS: Partial<Record<Status, string>> = {
   error: "We couldn’t reach the sign-in service just now. Nothing was saved — try again in a minute.",
@@ -114,7 +115,7 @@ export function Connect() {
   }, [status, setStatus]);
   return (
     <BareFrame page="Connect Recreation.gov" homeLabel="CampHawk — back to the site" controls={() => (
-      <LabSelect label="Sign-in step" short="Step" value={status} onChange={setStatus} options={[["idle", "Start"], ["connecting", "Opening"], ["form", "Form"], ["stream", "Live window (CAPTCHA)"], ["done", "Connected"], ["error", "Couldn’t reach service"], ["timeout", "Helper didn’t respond"]]} />
+      <LabSelect label="Sign-in step" short="Step" value={status} onChange={setStatus} options={[["idle", "Start"], ["connecting", "Opening"], ["opening", "Opening (held still)"], ["form", "Form"], ["stream", "Live window (CAPTCHA)"], ["done", "Connected"], ["error", "Couldn’t reach service"], ["timeout", "Helper didn’t respond"]]} />
     )}>
       {({ visitor }) => (
         <BareCard>
@@ -132,7 +133,7 @@ export function Connect() {
                 <button type="button" onClick={() => setStatus("connecting")} className={blue()}>Start secure sign-in</button>
               </div>
             )}
-            {status === "connecting" && (
+            {(status === "connecting" || status === "opening") && (
               <p role="status" className="flex items-center gap-3 rounded-ch-input border border-ch-line bg-ch-paper px-4 py-4 text-[15px] text-ch-ink-2">
                 <Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />Opening a secure Recreation.gov window…
               </p>

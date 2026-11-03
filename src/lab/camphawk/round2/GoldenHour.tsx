@@ -227,7 +227,7 @@ export function GoldenHour() {
                 <Search aria-hidden="true" className="size-4" />
                 Search campgrounds
               </Link>
-              <a href="#" className="min-h-11 content-center text-[16px] font-bold text-ch-paper underline underline-offset-4">Or browse campgrounds by state</a>
+              <Link href={withVisitor(ROUTES.camping, visitor)} className="min-h-11 content-center text-[16px] font-bold text-ch-paper underline underline-offset-4">Or browse campgrounds by state</Link>
             </div>
           </div>
         </section>

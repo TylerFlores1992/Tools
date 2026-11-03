@@ -11,7 +11,10 @@ import { Tag } from "../ui/Tag";
 import { Art, ART } from "./Art";
 import { LabNote } from "./LabPage";
 import { GhFooter, PhotoHeader, ScreenLinks } from "./GhChrome";
-import { canWatch, ROUTES, watchCtaLabel } from "./gates";
+import { canWatch, ROUTES, watchCtaLabel, watchGateHref } from "./gates";
+import { addDays } from "../ui/date";
+import { ALL_REGIONS, MIN_FOR_PAGE } from "./pages/camping-data";
+import { OutLink } from "./labOut";
 import { campgroundFor } from "./campground-lookup";
 import type { SiteMapData } from "./maps";
 import { useSiteMap } from "./maps/useSiteMap";
@@ -44,13 +47,15 @@ type Arrival = "search" | "google";
 const labSelect = "min-h-11 cursor-pointer rounded-ch-chip border border-ch-white/40 bg-ch-forest px-3 font-bold text-ch-white";
 
 /** WatchCta for this page: a subscriber goes to New watch with the campground and the picked
-    nights filled in; everyone else gets the step open to them (gates.ts). The lab doesn't
-    build sign-up or checkout, so those stay put. */
-function watchHref(visitor: Visitor, id: string, start?: string, end?: string): string {
-  if (!canWatch(visitor)) return "#";
+    nights filled in; everyone else gets the step open to them (gates.ts): sign-up and back to
+    that same watch, or Pricing. */
+function watchHref(visitor: Visitor, id: string, start?: string | null, end?: string | null): string {
   const q = new URLSearchParams({ campground: id, ...(start && end ? { start, end } : {}) });
-  return withVisitor(`${ROUTES.newWatch}?${q}`, visitor);
+  return withVisitor(watchGateHref(visitor, q.toString()), visitor);
 }
+
+/** Smooth scrolling, unless the visitor asked for less motion. */
+const scrollBehavior = (): ScrollBehavior => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
 
 const firstMonthName = monthLabel(FIRST_MONTH).split(" ")[0];
 
@@ -92,7 +97,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
   const picked = selected && selected.startsWith(month) ? selected : null;
   const pickedSites = picked ? (data.open[picked] ?? []).map((id) => sites[id]) : [];
   const shift = (by: number) => { setMonth(shiftMonth(month, by)); setSelected(null); setSite(null); };
-  const showOnMap = (siteId: string) => { setSite(siteId); (document.getElementById("site-map-h") ?? document.getElementById("area-map-h"))?.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const showOnMap = (siteId: string) => { setSite(siteId); (document.getElementById("site-map-h") ?? document.getElementById("area-map-h"))?.scrollIntoView({ behavior: scrollBehavior(), block: "start" }); };
   const summary = data.error ? "Availability unavailable"
     : data.unknown ? "Couldn’t check this month"
     : data.closed ? "Not open for booking this month"
@@ -119,7 +124,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
         </div>
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {cells.map((day, i) => {
-            if (!day) return <div key={`blank-${i}`} className="aspect-square sm:aspect-auto sm:h-14" />;
+            if (!day) return <div key={`blank-${i}`} className="aspect-square min-h-11 sm:aspect-auto sm:h-14" />;
             const n = Number(day.slice(8));
             const isPast = day < TODAY;
             const sites = data.open[day] ?? [];
@@ -141,7 +146,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
                 aria-pressed={isOpen ? on : undefined}
                 onClick={() => { setSelected(day); setSite(only(day)); }}
                 className={cx(
-                  "flex aspect-square flex-col items-center justify-center rounded-[11px] text-[15px] font-semibold tabular-nums sm:aspect-auto sm:h-14 sm:text-[16px]",
+                  "flex aspect-square min-h-11 flex-col items-center justify-center rounded-[11px] text-[15px] font-semibold tabular-nums sm:aspect-auto sm:h-14 sm:text-[16px]",
                   isOpen && !on && "cursor-pointer bg-ch-green-soft font-bold text-ch-green-deep hover:bg-ch-green-soft-hover",
                   // Selected has its own shape too (a ring), not only a darker fill.
                   isOpen && on && "cursor-pointer bg-ch-green font-bold text-ch-white ring-2 ring-ch-green ring-offset-2 ring-offset-ch-card",
@@ -218,7 +223,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
                 )}
                 {/* An open site gets you there: the blue hand-off to the booking site (lab change;
                     CampHawk's day panel only offers a watch). */}
-                <a href="#" aria-label={`Book ${s.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 shrink-0 px-4" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+                <OutLink where={provider} aria-label={`Book ${s.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 shrink-0 px-4" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></OutLink>
               </li>
             ))}
           </ul>
@@ -227,7 +232,7 @@ function Calendar({ visitor, id, months, sites, map, mapPending, mapLoading, nam
         <div className="mt-2 border-t border-ch-line pt-4">
           <p className="text-[15px] leading-relaxed text-ch-ink-2">Not the nights you need? We can watch your dates and tell you the moment a site opens.</p>
           {/* A link, not a second button: the band's button is the page's one watch action. */}
-          <Link href={watchHref(visitor, id)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{watchCtaLabel(visitor, "Watch this campground")}<ChevronRight aria-hidden="true" className="size-4" /></Link>
+          <Link href={watchHref(visitor, id, picked, picked ? addDays(picked, 1) : null)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">{watchCtaLabel(visitor, "Watch this campground")}<ChevronRight aria-hidden="true" className="size-4" /></Link>
         </div>
       </aside>
     </div>
@@ -250,7 +255,7 @@ function NoMap({ name, provider, pending }: { name: string; provider: string; pe
         <p className="mt-1 text-[15px] text-ch-ink-2">We haven’t drawn a map of {name} yet. You can see its sites on {provider}.</p>
         {pending && <LabNote className="mt-3">This map is drawn from California State Parks’ campsite data, which waits on their permission. It renders on a local run only and is never deployed.</LabNote>}
       </div>
-      <a href="#" className={buttonClasses({ variant: "cart", className: "px-5" })}>See the sites on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+      <OutLink where={provider} className={buttonClasses({ variant: "cart", className: "px-5" })}>See the sites on {provider}<ExternalLink aria-hidden="true" className="size-3.5" /></OutLink>
     </div>
   );
 }
@@ -272,6 +277,9 @@ export function Campground() {
   const mapState = useSiteMap(CAMPGROUND.id, mapSwitch === "drawn");
   const siteMap = mapState.map;
   const mapPending = mapState.status === "pending";
+  // The state's page, if it has one (under five campgrounds is a 404, so the list of states).
+  const region = ALL_REGIONS.find((r) => r.name === stateName);
+  const stateHref = region && region.count >= MIN_FOR_PAGE ? `${ROUTES.camping}/${region.slug}` : ROUTES.camping;
   const back = (
     <Link href={searchHref} className="inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-ch-line hover:text-ch-white">
       <ChevronLeft aria-hidden="true" className="size-4" /> Back to search
@@ -279,9 +287,9 @@ export function Campground() {
   );
   const crumbs = (
     <nav aria-label="Breadcrumb" className="flex min-h-11 flex-wrap items-center gap-x-1.5 text-[15px] text-ch-line">
-      {["CampHawk", "Camping by state", stateName].map((c) => (
+      {([["CampHawk", ROUTES.home], ["Camping by state", ROUTES.camping], [stateName, stateHref]] as const).map(([c, href]) => (
         <span key={c} className="inline-flex items-center gap-1.5">
-          <a href="#" className="inline-flex min-h-11 items-center font-bold hover:text-ch-white hover:underline">{c}</a>
+          <Link href={withVisitor(href, visitor)} className="inline-flex min-h-11 items-center font-bold hover:text-ch-white hover:underline">{c}</Link>
           <span aria-hidden="true">›</span>
         </span>
       ))}
@@ -292,14 +300,17 @@ export function Campground() {
     <div className="gh">
       <LabBar page="Campground" visitor={visitor} onVisitor={setVisitor}>
         <ScreenLinks visitor={visitor} current="campground" />
-        <div role="radiogroup" aria-label="Booking" onKeyDown={radioKeys(["reservable", "first-come"] as const, booking, setBooking)} className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
+        {/* A campground that takes no reservations can't be switched to them: the switch says so
+            rather than ignoring the press. */}
+        <div role="radiogroup" aria-label="Booking" aria-describedby={CAMPGROUND.reservable ? undefined : "booking-fixed"} aria-disabled={CAMPGROUND.reservable ? undefined : true} onKeyDown={CAMPGROUND.reservable ? radioKeys(["reservable", "first-come"] as const, booking, setBooking) : undefined} className="flex items-center gap-1 rounded-ch-chip bg-ch-white/10 p-0.5">
           {(["reservable", "first-come"] as const).map((b) => (
-            <button key={b} type="button" role="radio" aria-checked={booking === b} tabIndex={booking === b ? 0 : -1} onClick={() => setBooking(b)} className={cx("flex min-h-10 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white hover:bg-ch-white/15")}>
+            <button key={b} type="button" role="radio" aria-checked={booking === b} tabIndex={booking === b ? 0 : -1} disabled={!CAMPGROUND.reservable && b === "reservable"} onClick={() => setBooking(b)} className={cx("flex min-h-11 items-center gap-1 whitespace-nowrap rounded-ch-chip px-3 font-bold disabled:cursor-not-allowed disabled:text-ch-line disabled:line-through", booking === b ? "bg-ch-white text-ch-forest" : "text-ch-white enabled:hover:bg-ch-white/15")}>
               {booking === b && <span aria-hidden="true">✓</span>}
               {b === "reservable" ? "Reservations" : "First come"}
             </button>
           ))}
         </div>
+        {!CAMPGROUND.reservable && <span id="booking-fixed" className="font-bold">This campground is first come only</span>}
         <label className="flex items-center gap-2"><span aria-hidden="true" className="font-bold">Page</span>
           <select aria-label="Page state" value={page} onChange={(e) => setPage(e.target.value as PageState)} className={labSelect}>
             <option value="loaded">Loaded</option>
@@ -422,7 +433,7 @@ export function Campground() {
             </ul>
             <p className="mt-4 flex items-center text-[16px] text-ch-ink-2">
               <span className="text-ch-muted">Phone:&nbsp;</span>
-              <a href="#" className="inline-flex min-h-11 items-center whitespace-nowrap font-bold text-ch-forest tabular-nums underline underline-offset-2 hover:decoration-2">{phone}</a>
+              <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="inline-flex min-h-11 items-center whitespace-nowrap font-bold text-ch-forest tabular-nums underline underline-offset-2 hover:decoration-2">{phone}</a>
             </p>
           </section>
           {/* Plain prose on paper, not a second card: this is the reading part of the page. */}
@@ -434,7 +445,7 @@ export function Campground() {
               ))}
             </div>
             <p className="mt-5 text-[16px] text-ch-ink-2">
-              Fully booked? Read <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">what actually works when a campground is fully booked</a>, see <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we track</a>, or <a href="#" className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</a>.
+              Fully booked? Read <Link href={withVisitor(ROUTES.soldOut, visitor)} className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">what actually works when a campground is fully booked</Link>, see <Link href={withVisitor(stateHref, visitor)} className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">every {stateName} campground we track</Link>, or <Link href={withVisitor(ROUTES.camping, visitor)} className="font-bold text-ch-forest underline underline-offset-2 hover:decoration-2">browse by state</Link>.
             </p>
           </section>
         </div>

@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { Check, Star } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { AUTOCART_FEATURES, BASE_FEATURES } from "../Pricing";
 import { LAUNCH_PRICING, TRIAL_DAYS } from "./pages/tier2-data";
 import { ROUTES } from "./gates";
+import { withVisitor } from "./labState";
 import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor } from "../data";
 
 // Round-2 pricing: the same three branches, prices and words as Pricing.tsx, set as a section of
@@ -13,7 +15,10 @@ import { WATCH_LIMIT, pricePhrase, priceShort, yearlySavingPercent, type Visitor
 // Round-2 copy edit, as in GoldenHour's steps: no "any N nights". Pricing.tsx keeps CampHawk's words.
 const plainNights = (f: string) => f.replace("any N nights in a window", "how many nights you need, anywhere in a window");
 
-function Plan({ name, tier, features, recommended }: { name: string; tier: "base" | "autocart"; features: string[]; recommended?: boolean }) {
+function Plan({ name, tier, features, recommended, visitor }: { name: string; tier: "base" | "autocart"; features: string[]; recommended?: boolean; visitor: Visitor }) {
+  // Signed out, a trial starts with an account and carries the plan through it; someone with an
+  // account starts it (or resubscribes, with no second trial) on Pricing.
+  const href = visitor === "signed-out" ? `${ROUTES.signUp}?plan=${tier}` : withVisitor(ROUTES.pricing, visitor);
   return (
     <div className={cx("relative flex flex-col rounded-[18px] bg-ch-card p-6 sm:p-7", recommended ? "border border-ch-forest ring-1 ring-ch-forest" : "border border-ch-line")}>
       {/* The badge sits on the card's top edge, so both cards start their title at the same
@@ -31,7 +36,7 @@ function Plan({ name, tier, features, recommended }: { name: string; tier: "base
         ))}
       </ul>
       {/* Pinned to the card's foot, so both trial buttons sit level whatever the list length. */}
-      <a href={`${ROUTES.signUp}?plan=${tier}`} className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-auto self-start px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
+      <Link href={href} className={buttonClasses({ variant: recommended ? "ink" : "quiet", className: "mt-auto self-start px-5" })}>{visitor === "lapsed" ? "Resubscribe" : `Start ${TRIAL_DAYS}‑day free trial`}</Link>
     </div>
   );
 }
@@ -50,9 +55,9 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
           <li>Any alert lets you pause the watch, reopen it, or mute a site you don’t want.</li>
         </ul>
         <div className="mt-7 flex flex-wrap gap-2.5">
-          <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</a>
-          <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>New watch</a>
-          <a href="#" className={buttonClasses({ variant: "quiet", className: "px-5" })}>Alert settings</a>
+          <Link href={withVisitor(`${ROUTES.settings}?plan=alerts`, visitor)} className={buttonClasses({ variant: "ink", className: "px-5" })}>Upgrade to Auto-Cart — {priceShort("autocart", "monthly")}</Link>
+          <Link href={withVisitor(ROUTES.newWatch, visitor)} className={buttonClasses({ variant: "quiet", className: "px-5" })}>New watch</Link>
+          <Link href={withVisitor(ROUTES.settings, visitor)} className={buttonClasses({ variant: "quiet", className: "px-5" })}>Alert settings</Link>
         </div>
       </div>
     );
@@ -76,8 +81,8 @@ export function Pricing2({ visitor }: { visitor: Visitor }) {
         </p>
       </div>
       <div className="mt-10 grid gap-8 md:grid-cols-2 md:gap-4">
-        <Plan name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)} />
-        <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended />
+        <Plan name="Alerts" tier="base" features={BASE_FEATURES.map(plainNights)} visitor={visitor} />
+        <Plan name="Auto-Cart" tier="autocart" features={AUTOCART_FEATURES} recommended visitor={visitor} />
       </div>
     </div>
   );

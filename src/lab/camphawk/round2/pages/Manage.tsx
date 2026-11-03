@@ -14,7 +14,8 @@ import { ART } from "../Art";
 import { LabSelect } from "../AppParts";
 import { ROUTES } from "../gates";
 import { LabNote, LabPage } from "../LabPage";
-import { useSwapFocus } from "../useSwapFocus";
+import { useFocusOnChange, useSwapFocus } from "../useSwapFocus";
+import { OutLink } from "../labOut";
 import { useUrlState, withVisitor } from "../labState";
 import { MANAGE, releaseLong, releaseShort, type ManageWatch } from "./alert-data";
 
@@ -97,13 +98,13 @@ export function Manage() {
           <Link href={withVisitor(ROUTES.watches, visitor)} className={buttonClasses({ variant: "quiet", className: "mt-5 px-5" })}>Back to watches</Link>
         </div>
       ) : (
-        <ManageBody key={which} w={w} back={withVisitor(ROUTES.watches, visitor)} calendar={which === "leo" ? "#" : withVisitor(`${ROUTES.campground}?id=upper-pines`, visitor)} />
+        <ManageBody key={which} w={w} back={withVisitor(ROUTES.watches, visitor)} calendar={which === "leo" ? null : withVisitor(`${ROUTES.campground}?id=upper-pines`, visitor)} />
       )}
     </LabPage>
   );
 }
 
-function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calendar: string }) {
+function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calendar: string | null }) {
   const [active, setActive] = useState(true);
   const [editing, setEditing] = useState(false);
   const [requested, setRequested] = useState(w.requested);
@@ -114,11 +115,17 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
   const [saving, setSaving] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [removed, setRemoved] = useState(false);
+  // What the last in-place change did, said in a status line that also takes focus (the button
+  // pressed is gone by then).
+  const [notice, setNotice] = useState<string | null>(null);
+  const noticeRef = useFocusOnChange<HTMLParagraphElement>(notice);
+  const removedRef = useFocusOnChange<HTMLHeadingElement>(removed);
+  const { confirmRef: keepRef, triggerRef: removeTriggerRef } = useSwapFocus(confirming);
 
   if (removed) {
     return (
-      <div className="rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
-        <h2 className="font-ch-display text-[28px] font-extrabold text-ch-ink">Watch removed</h2>
+      <div role="status" className="rounded-ch-card border border-ch-line bg-ch-card p-6 text-center shadow-ch-pop sm:p-10">
+        <h2 ref={removedRef} tabIndex={-1} className="font-ch-display text-[28px] font-extrabold text-ch-ink outline-none">Watch removed</h2>
         <p className="mx-auto mt-2 max-w-[46ch] text-[17px] text-ch-ink-2">We’ve stopped checking, and you won’t get any more alerts for it.</p>
         <Link href={back} className={buttonClasses({ variant: "quiet", className: "mt-5 px-5" })}>Back to watches</Link>
       </div>
@@ -145,6 +152,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
 
   return (
     <div className="grid gap-5">
+      <p ref={noticeRef} tabIndex={-1} role="status" className={cx("outline-none", notice ? "order-last rounded-ch-input border border-ch-line bg-ch-card px-4 py-3 text-[15px] font-bold text-ch-ink shadow-ch-card" : "sr-only")}>{notice ?? ""}</p>
       {/* It sits on the band's photo, above the card that docks into it: paper type, underlined. */}
       <Link href={back} className="inline-flex min-h-11 items-center gap-1 justify-self-start text-[15px] font-bold text-ch-paper underline underline-offset-[3px] hover:decoration-2">
         <ChevronLeft aria-hidden="true" className="size-4" /> Back to watches
@@ -191,8 +199,8 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
               : <button type="button" onClick={() => setActive(true)} className={buttonClasses({ variant: "ink", size: "sm", className: "min-h-11 px-4" })}>Resume checks</button>}
           </span>
           <span className="flex flex-wrap gap-x-6 sm:ml-auto">
-            <Link href={calendar} className={navLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
-            <a href="#" className={navLink}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+            {calendar && <Link href={calendar} className={navLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>}
+            <OutLink where={w.provider} className={navLink}>Open on {w.provider}<ExternalLink aria-hidden="true" className="size-3.5" /></OutLink>
           </span>
         </div>
       </Card>
@@ -208,7 +216,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="block text-[17px] font-bold text-ch-ink">{o.name}</span>
                   <span className="block text-[14px] text-ch-ink-2">{o.seenSecondsAgo < 90 ? "Seen open just now" : `Seen open ${Math.round(o.seenSecondsAgo / 60)} min ago`}</span>
                 </span>
-                <a href="#" className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+                <OutLink where={w.provider} className={buttonClasses({ variant: "cart", size: "sm", className: "min-h-11 px-5" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></OutLink>
               </li>
             ))}
           </ul>
@@ -226,7 +234,7 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
                   <span className="flex flex-wrap items-center gap-2"><span className="text-[16px] font-bold text-ch-ink">{r.unit}</span><Tag kind="watch" mark="hold">8 AM hold</Tag></span>
                   <span className="mt-0.5 block text-[14px] text-ch-ink-2">{r.stay}, releases {releaseLong()}</span>
                 </span>
-                <button type="button" onClick={() => setRequested((xs) => xs.filter((x) => x.unit !== r.unit))} aria-label={`Cancel hold: ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Cancel hold</button>
+                <button type="button" onClick={() => { setRequested((xs) => xs.filter((x) => x.unit !== r.unit)); setNotice(`Hold canceled: ${r.unit}. We won’t try for it at ${releaseShort()}.`); }} aria-label={`Cancel hold: ${r.unit}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Cancel hold</button>
               </li>
             ))}
           </ul>
@@ -273,12 +281,12 @@ function ManageBody({ w, back, calendar }: { w: ManageWatch; back: string; calen
         {!confirming ? (
           <div className="grid gap-3">
             <p className="flex-1 text-[15px] text-ch-ink-2">Done with this trip? Removing the watch deletes it and its alert history.</p>
-            <button type="button" onClick={() => setConfirming(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Remove watch</button>
+            <button ref={removeTriggerRef} type="button" onClick={() => setConfirming(true)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 justify-self-start px-4" })}>Remove watch</button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-3">
             <p className="flex-1 text-[16px] font-bold text-ch-ink">Remove this watch permanently?</p>
-            <button type="button" onClick={() => setConfirming(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Keep it</button>
+            <button ref={keepRef} type="button" onClick={() => setConfirming(false)} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>Keep it</button>
             <button type="button" onClick={() => setRemoved(true)} className={buttonClasses({ variant: "warn", size: "sm", className: "min-h-11 px-4" })}>Remove</button>
           </div>
         )}
