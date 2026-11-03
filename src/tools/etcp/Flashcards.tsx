@@ -93,7 +93,7 @@ export function Flashcards() {
     setOrder(a);
     setPos(0);
     setFlippedId(null);
-    setNotice("Shuffled. Starting from a new first card.");
+    setNotice("Shuffled.");
   }
   function resetDeck() {
     const name = filter === "all" ? "all cards" : `the ${DECKS.find((d) => d.key === filter)!.label} deck`;
@@ -101,7 +101,7 @@ export function Flashcards() {
     setKnownList(knownList.filter((id) => !inFilter(id)));
     setPos(0);
     setFlippedId(null);
-    setNotice("Deck reset. Every card is back in the pile.");
+    setNotice("Deck reset: every card is back.");
     focusNext.current = "reset";
   }
 
@@ -174,7 +174,7 @@ export function Flashcards() {
         </span>
       </div>
       {/* Always rendered so screen readers hear it; visible too, so a tap on Shuffle is seen to land. */}
-      <p role="status" className="mt-1 min-h-6 text-small text-ink-2">
+      <p role="status" className="mt-1 min-h-7 text-small text-ink-2">
         {notice && <State kind="ok" sr={false}>{notice}</State>}
       </p>
 
