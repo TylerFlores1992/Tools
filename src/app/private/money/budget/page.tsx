@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Label } from "@/components/Label";
+import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountsFor, acrossFor, loadMoney } from "@/lib/money/load";
 import { buildBudget } from "@/tools/money/budget";
@@ -163,7 +164,15 @@ export default async function MoneyBudget({ searchParams }: { searchParams: Prom
                   return (
                     <tr key={`${u.name}-${i}`}>
                       <td className="py-2 pr-3 whitespace-nowrap text-ink-2">{shortDate(u.date)}</td>
-                      <td className="max-w-[16ch] truncate py-2 pr-3 sm:max-w-[32ch]">{u.name}</td>
+                      <td className="max-w-[16ch] py-2 pr-3 sm:max-w-[32ch]">
+                        <span className="block truncate">{u.name}</span>
+                        {/* Phones have no room for the Cash left column: the same figure, under the bill. */}
+                        {b.cash !== null && (
+                          <span className="mt-0.5 block text-small tabular-nums text-muted sm:hidden">
+                            {running < 0 ? <State kind="wrong" sr={false}>Cash left −{money(running)}, short</State> : <>Cash left {money(running)}</>}
+                          </span>
+                        )}
+                      </td>
                       <td className="py-2 pr-3 text-right tabular-nums whitespace-nowrap">−{money(u.amount)}</td>
                       {b.cash !== null && <td className="hidden py-2 text-right tabular-nums whitespace-nowrap sm:table-cell">{running < 0 ? "−" : ""}{money(running)}{running < 0 ? <span className="ml-1 text-small text-muted">short</span> : null}</td>}
                     </tr>

@@ -22,8 +22,8 @@ export function MoneyShell({ current, children }: { current?: MoneyTab; children
     <>
       <SiteHeader current="/private" />
       <main id="main" className="mx-auto max-w-[1280px] px-5 pb-24 pt-4 sm:px-12 sm:pt-8 3xl:max-w-[1600px]">
-        <nav aria-label="Breadcrumb" className="text-small text-muted">
-          <Link href="/private" className="rounded-tag underline-offset-4 hover:text-ink hover:underline">Private</Link>
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center text-small text-muted">
+          <Link href="/private" className="inline-flex min-h-11 items-center rounded-tag underline-offset-4 hover:text-ink hover:underline">Private</Link>
           <span aria-hidden="true" className="px-2">/</span>
           <span className="text-ink-2">Money</span>
         </nav>
@@ -52,7 +52,7 @@ export function ChoiceLink({ href, on, children }: { href: string; on: boolean; 
     <Link
       href={href}
       aria-current={on ? "true" : undefined}
-      className={cx("flex min-h-10 items-center gap-2 rounded-full px-4 text-small whitespace-nowrap transition-colors duration-150", on ? "bg-surface-2 text-ink" : "text-ink-2 hover:text-ink")}
+      className={cx("flex min-h-11 items-center gap-2 rounded-full px-4 text-small whitespace-nowrap transition-colors duration-150", on ? "bg-surface-2 text-ink" : "text-ink-2 hover:text-ink")}
     >
       {on && <span aria-hidden="true">✓</span>}
       {children}

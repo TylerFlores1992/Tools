@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { refreshCalendar } from "@/app/private/money/income/actions";
+import { Spinner } from "@/components/Spinner";
+import { State } from "@/components/State";
 
 const WHEN = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 const POLL_MS = 5_000;
@@ -16,6 +18,7 @@ export function CalendarRefresh({ lastRunAt, pending, scriptVersion, children }:
   const router = useRouter();
   const [waiting, setWaiting] = useState(pending);
   const [gaveUp, setGaveUp] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [busy, start] = useTransition();
   const seen = useRef(lastRunAt);
   const started = useRef(0);
@@ -43,16 +46,28 @@ export function CalendarRefresh({ lastRunAt, pending, scriptVersion, children }:
         <button
           type="button"
           disabled={busy || waiting}
-          onClick={() => start(async () => { await refreshCalendar(); started.current = Date.now(); setGaveUp(false); setWaiting(true); })}
-          className="-mx-1 min-h-11 rounded-btn px-1 text-ink-2 underline underline-offset-4 hover:text-ink disabled:no-underline"
+          aria-busy={busy || waiting || undefined}
+          onClick={() =>
+            start(async () => {
+              setFailed(false);
+              setGaveUp(false);
+              // A dropped connection throws; the database not answering returns false. Either way, say so.
+              const ok = await refreshCalendar().catch(() => false);
+              if (!ok) { setFailed(true); return; }
+              started.current = Date.now();
+              setWaiting(true);
+            })
+          }
+          className="-mx-1 inline-flex min-h-11 items-center gap-2 rounded-btn px-1 text-ink-2 underline underline-offset-4 hover:text-ink disabled:no-underline"
         >
-          {waiting ? "Reading your calendar…" : "Refresh"}
+          {busy ? <><Spinner />Asking…</> : waiting ? <><Spinner />Reading your calendar…</> : "Refresh"}
         </button>
         {children ? <><span aria-hidden="true">·</span>{children}</> : null}
       </p>
       <p aria-live="polite">
         {waiting && old ? "Your script reads once a day; make the new one in Settings and Refresh works within a minute." : null}
         {gaveUp ? "No read in two and a half minutes. Open the script at script.google.com and check its last run." : null}
+        {failed ? <State kind="wrong">Couldn’t ask for a read: the money database didn’t answer. Try again in a minute.</State> : null}
       </p>
     </div>
   );

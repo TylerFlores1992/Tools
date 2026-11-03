@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { Label } from "@/components/Label";
-import { Arrow, Button } from "@/components/Button";
+import { Arrow } from "@/components/Button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PRIVATE_PROJECTS } from "@/lib/private";
 import { signOut } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export const metadata: Metadata = {
   title: "Private",
@@ -27,7 +28,7 @@ export default function PrivateHome() {
               <p className="mt-4 max-w-[52ch] text-lede text-ink-2">Work in progress. New projects land here before they go public.</p>
             </div>
             <form action={signOut}>
-              <Button type="submit" variant="quiet">Sign out</Button>
+              <SubmitButton variant="quiet" pending="Signing out…">Sign out</SubmitButton>
             </form>
           </div>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2">

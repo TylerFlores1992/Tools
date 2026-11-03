@@ -26,7 +26,11 @@ import { CalendarRefresh } from "@/tools/money/income/ui/CalendarRefresh";
 import { refreshPending } from "@/tools/money/income/refresh";
 import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
-import { NotConfigured } from "@/tools/money/ui/Setup";
+import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
+import { ClearQuery } from "@/tools/money/ui/ClearQuery";
+import { SubmitButton } from "@/components/SubmitButton";
+import type { IncomeSettings } from "@/lib/money/income/store";
+import type { Txn } from "@/tools/money/types";
 
 export const metadata: Metadata = {
   title: "Income · Money",
@@ -39,22 +43,36 @@ const todayPacific = () => toLocalDate(Date.now() / 1000);
 
 const yearOf = (s: Stub) => s.taxYear ?? (s.payDate ? Number(s.payDate.slice(0, 4)) : null);
 
-export default async function IncomePage({ searchParams }: { searchParams: Promise<{ year?: string; saved?: string; cal?: string }> }) {
+/** Reads everything Income shows, one query at a time (src/lib/money/db.ts). Throws if the database doesn't answer. */
+async function load(yearParam: string | undefined, today: string) {
+  const stubs = await listStubs();
+  const settings: IncomeSettings = await getIncomeSettings();
+  const events = await listEvents();
+  const thisYear = Number(today.slice(0, 4));
+  const years = [...new Set([thisYear, ...stubs.map(yearOf).filter((y): y is number => !!y)])].sort((a, b) => b - a);
+  const year = years.includes(Number(yearParam)) ? Number(yearParam) : thisYear;
+  const txns: Txn[] = await getTransactions(`${year}-01-01`);
+  return { stubs, settings, events, thisYear, years, year, txns };
+}
+
+/** One-time notes in the address, cleared once shown (ClearQuery). */
+const NOTES = ["saved", "deleted", "failed"] as const;
+
+export default async function IncomePage({ searchParams }: { searchParams: Promise<{ year?: string; saved?: string; deleted?: string; failed?: string; cal?: string }> }) {
   await requirePrivate("/private/money/income");
   const sp = await searchParams;
   if (!isConfigured()) return <MoneyShell current="/private/money/income"><h1 className="text-title font-normal">Income</h1><div className="mt-8"><NotConfigured /></div></MoneyShell>;
 
-  // One query at a time (src/lib/money/db.ts).
-  const stubs = await listStubs();
-  const settings = await getIncomeSettings();
-  const events = await listEvents();
-  const { config } = settings;
   const today = todayPacific();
-  const thisYear = Number(today.slice(0, 4));
-  const years = [...new Set([thisYear, ...stubs.map(yearOf).filter((y): y is number => !!y)])].sort((a, b) => b - a);
-  const year = years.includes(Number(sp.year)) ? Number(sp.year) : thisYear;
-
-  const txns = await getTransactions(`${year}-01-01`);
+  let loaded: Awaited<ReturnType<typeof load>>;
+  try {
+    loaded = await load(sp.year, today);
+  } catch (e) {
+    console.error("money income load failed", e instanceof Error ? e.name : "unknown");
+    return <MoneyShell current="/private/money/income"><h1 className="text-title font-normal">Income</h1><div className="mt-8"><Unreachable /></div></MoneyShell>;
+  }
+  const { stubs, settings, events, thisYear, years, year, txns } = loaded;
+  const { config } = settings;
   const missing = missingStubs(txns.filter((t) => t.posted <= `${year}-12-31`), stubs, year);
   const missingCount = missing.reduce((n, g) => n + g.deposits.length, 0);
   const eddUnfiled = unfiledEdd(txns.filter((t) => t.posted <= `${year}-12-31`), stubs);
@@ -131,7 +149,10 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           {years.map((y) => <ChoiceLink key={y} href={y === thisYear ? "/private/money/income" : `/private/money/income?year=${y}`} on={y === year}>{y}</ChoiceLink>)}
         </div>
       )}
-      {sp.saved && <p className="mt-6"><State kind="ok">Saved.{stubs.find((s) => s.id === sp.saved)?.depositTxnId ? " Its deposit was found in the bank." : ""}</State></p>}
+      <ClearQuery keys={NOTES} />
+      {sp.saved && <p role="status" className="mt-6"><State kind="ok">Saved.{stubs.find((s) => s.id === sp.saved)?.depositTxnId ? " Its deposit was found in the bank." : ""}</State></p>}
+      {sp.deleted && <p role="status" className="mt-6"><State kind="ok">Deleted.</State></p>}
+      {sp.failed && <p role="alert" className="mt-6"><State kind="wrong">Nothing was changed: the money database didn’t answer. Try again in a minute.</State></p>}
 
       <section aria-label="Totals" className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatTile label="Income, gross" value={money(gross + benefits)} note={benefits ? `${money(gross)} wages + ${money(benefits)} EDD${estimatedGross ? ` · ${money(estimatedGross)} of wages estimated` : ""}` : `${saved.length} ${saved.length === 1 ? "stub" : "stubs"}${estimatedGross ? `, ${money(estimatedGross)} estimated` : ""}`} />
@@ -154,7 +175,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
             ...(estimate ? [["fed", "Withholding"]] : []),
             ...(w2s.length ? [["w2", "W-2"]] : []),
             ["stubs", "Stubs"],
-          ].map(([id, label]) => <li key={id}><a href={`#${id}`} className="flex min-h-10 items-center rounded-full border border-line px-3 text-ink-2 hover:text-ink">{label}</a></li>)}
+          ].map(([id, label]) => <li key={id}><a href={`#${id}`} className="flex min-h-11 items-center rounded-full border border-line px-3 text-ink-2 hover:text-ink">{label}</a></li>)}
         </ul>
       </nav>
 
@@ -197,7 +218,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
                         <span className="text-ink-2">Arrived {shortDate(d.posted)}</span>
                         <span className="flex items-center gap-3">
                           <span className="tabular-nums">{money(d.amount)}</span>
-                          <form action={markNotPay}><input type="hidden" name="txn" value={d.id} /><button type="submit" className="min-h-11 rounded-btn px-2 text-small text-ink-2 underline underline-offset-4 hover:text-ink">Not pay</button></form>
+                          <form action={markNotPay}><input type="hidden" name="txn" value={d.id} /><input type="hidden" name="year" value={year} /><SubmitButton variant="ghost" pending="Filing…">Not pay<span className="sr-only">: {money(d.amount)} on {shortDate(d.posted)}</span></SubmitButton></form>
                         </span>
                       </li>
                     ))}
@@ -359,8 +380,8 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
                     <span className="text-body">{shortDate(t.posted)} · <span className="tabular-nums">{money(t.amount)}</span></span>
                     <span className="flex flex-wrap gap-2">
                       {PROGRAMS.map((p) => (
-                        <form key={p} action={fileEdd}><input type="hidden" name="txn" value={t.id} /><input type="hidden" name="program" value={p} />
-                          <button type="submit" className="min-h-11 rounded-btn border border-line-2 bg-surface px-3 text-small text-ink hover:bg-surface-2">{p === PFL ? "Family leave" : "Disability"}</button>
+                        <form key={p} action={fileEdd}><input type="hidden" name="txn" value={t.id} /><input type="hidden" name="program" value={p} /><input type="hidden" name="year" value={year} />
+                          <SubmitButton variant="quiet" pending="Filing…">{p === PFL ? "Family leave" : "Disability"}<span className="sr-only">: {money(t.amount)} on {shortDate(t.posted)}</span></SubmitButton>
                         </form>
                       ))}
                     </span>
@@ -377,7 +398,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
                   <li key={s.id} className="flex flex-wrap items-center justify-between gap-3 py-1">
                     <span className="text-ink-2">{s.payDate ? shortDate(s.payDate) : "?"} · {s.showName}</span>
                     <span className="flex items-center gap-3"><span className="tabular-nums">{money(s.gross ?? 0)}</span>
-                      <form action={unfileEdd}><input type="hidden" name="id" value={s.id} /><button type="submit" className="min-h-11 px-2 text-small text-ink-2 underline underline-offset-4 hover:text-ink">Unfile</button></form>
+                      <form action={unfileEdd}><input type="hidden" name="id" value={s.id} /><input type="hidden" name="year" value={year} /><SubmitButton variant="ghost" pending="Unfiling…">Unfile<span className="sr-only">: {money(s.gross ?? 0)} on {s.payDate ? shortDate(s.payDate) : "unknown date"}</span></SubmitButton></form>
                     </span>
                   </li>
                 ))}

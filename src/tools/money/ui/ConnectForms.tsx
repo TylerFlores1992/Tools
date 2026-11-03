@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { Arrow, Button } from "@/components/Button";
+import { Arrow } from "@/components/Button";
+import { SubmitButton } from "@/components/SubmitButton";
 import { State } from "@/components/State";
 import { connect, importStatement, refileNow, syncNow, type FormState } from "@/app/private/money/actions";
 
@@ -9,7 +10,7 @@ const INITIAL: FormState = { attempt: 0 };
 
 /** Paste the SimpleFIN setup token. Works without JavaScript; errors appear in words. */
 export function ConnectForm({ reconnect }: { reconnect: boolean }) {
-  const [state, action, pending] = useActionState(connect, INITIAL);
+  const [state, action] = useActionState(connect, INITIAL);
   return (
     <form action={action} className="grid gap-4">
       <label className="grid gap-2">
@@ -31,20 +32,18 @@ export function ConnectForm({ reconnect }: { reconnect: boolean }) {
         {state.error && <State kind="wrong">{state.error}</State>}
         {state.done && <State kind="note">{state.done}</State>}
       </p>
-      <Button type="submit" disabled={pending} className="w-full sm:w-auto sm:justify-self-start">
-        {pending ? "Connecting and syncing…" : <>{reconnect ? "Replace connection" : "Connect"} <Arrow /></>}
-      </Button>
+      <SubmitButton pending="Connecting and syncing…" className="w-full sm:w-auto sm:justify-self-start">
+        {reconnect ? "Replace connection" : "Connect"} <Arrow />
+      </SubmitButton>
     </form>
   );
 }
 
 export function SyncNowForm() {
-  const [state, action, pending] = useActionState(syncNow, INITIAL);
+  const [state, action] = useActionState(syncNow, INITIAL);
   return (
     <form action={action} className="grid gap-3">
-      <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">
-        {pending ? "Syncing…" : "Sync now"}
-      </Button>
+      <SubmitButton variant="quiet" pending="Syncing… this can take a minute" className="justify-self-start">Sync now</SubmitButton>
       <p aria-live="polite" className="min-h-6 text-small">
         {state.error && <State kind="wrong">{state.error}</State>}
         {state.done && <State kind="ok">{state.done}</State>}
@@ -55,7 +54,7 @@ export function SyncNowForm() {
 
 /** Upload a bank's CSV export for one account. Messages in words, in a live region. */
 export function ImportForm({ accounts }: { accounts: Array<{ id: string; label: string }> }) {
-  const [state, action, pending] = useActionState(importStatement, INITIAL);
+  const [state, action] = useActionState(importStatement, INITIAL);
   const field = "field min-h-11 w-full rounded-input border border-control bg-surface px-3 text-body text-ink";
   return (
     <form action={action} className="grid gap-4">
@@ -78,21 +77,17 @@ export function ImportForm({ accounts }: { accounts: Array<{ id: string; label: 
         {state.error && <State kind="wrong">{state.error}</State>}
         {state.done && <State kind="ok">{state.done}</State>}
       </p>
-      <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">
-        {pending ? "Importing…" : "Import"}
-      </Button>
+      <SubmitButton variant="quiet" pending="Importing…" className="justify-self-start">Import</SubmitButton>
     </form>
   );
 }
 
 /** Re-run the automatic categories over all history (no bank request). */
 export function RefileForm() {
-  const [state, action, pending] = useActionState(refileNow, INITIAL);
+  const [state, action] = useActionState(refileNow, INITIAL);
   return (
     <form action={action} className="grid gap-3">
-      <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">
-        {pending ? "Re-filing…" : "Re-file categories"}
-      </Button>
+      <SubmitButton variant="quiet" pending="Re-filing…" className="justify-self-start">Re-file categories</SubmitButton>
       <p aria-live="polite" className="min-h-6 text-small">
         {state.error && <State kind="wrong">{state.error}</State>}
         {state.done && <State kind="ok">{state.done}</State>}

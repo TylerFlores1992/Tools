@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { Arrow, Button } from "@/components/Button";
+import { Arrow } from "@/components/Button";
+import { SubmitButton } from "@/components/SubmitButton";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
 import { signIn, type SignInState } from "../actions";
@@ -10,6 +11,7 @@ const MESSAGES: Record<NonNullable<SignInState["error"]>, string> = {
   empty: "Enter the password.",
   wrong: "That password didn’t work. Try again.",
   unset: "The private area isn’t set up yet.",
+  locked: "Too many wrong tries. Wait 15 minutes, then try again.",
 };
 
 const INITIAL: SignInState = { attempt: 0 };
@@ -20,7 +22,7 @@ const INITIAL: SignInState = { attempt: 0 };
  * another try.
  */
 export function SignInForm({ next }: { next: string }) {
-  const [state, action, pending] = useActionState(signIn, INITIAL);
+  const [state, action] = useActionState(signIn, INITIAL);
   const [show, setShow] = useState(false);
   // The attempt whose message the visitor has typed past; typing again clears it.
   const [dismissed, setDismissed] = useState(0);
@@ -71,9 +73,9 @@ export function SignInForm({ next }: { next: string }) {
           {error ? <State kind="wrong">{error}</State> : <span id="password-hint" className="text-muted">You’ll stay signed in on this device for 30 days.</span>}
         </p>
       </div>
-      <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Checking…" : <>Unlock <Arrow /></>}
-      </Button>
+      <SubmitButton pending="Checking…" className="w-full">
+        Unlock <Arrow />
+      </SubmitButton>
     </form>
   );
 }

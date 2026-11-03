@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requirePrivate } from "@/lib/money/guard";
 import { markExplanation } from "@/lib/learn/ai";
 import { recordAttempt, restartLesson, saveLessonStep } from "@/lib/learn/store";
@@ -88,6 +89,14 @@ export async function startOver(form: FormData): Promise<void> {
   await requirePrivate("/private/learn");
   const id = String(form.get("lesson") ?? "");
   if (!lessonById(id)) return;
-  await restartLesson(id);
+  let ok = true;
+  try {
+    await restartLesson(id);
+  } catch (e) {
+    console.error("learn restart failed", e instanceof Error ? e.name : "unknown");
+    ok = false;
+  }
   revalidatePath(`/private/learn/${id}`);
+  // Outside the try: redirect() works by throwing.
+  if (!ok) redirect(`/private/learn/${encodeURIComponent(id)}?error=restart`);
 }

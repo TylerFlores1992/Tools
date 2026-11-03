@@ -25,16 +25,21 @@ export async function runSync(trigger: "cron" | "manual" | "connect"): Promise<S
   const db = sql();
   const [{ id: runId }] = await db<{ id: number }[]>`insert into money.sync_runs (trigger) values (${trigger}) returning id`;
 
+  // Logging the run must never hide its result: a failed log write is logged by name and dropped.
   const finish = async (r: SyncResult) => {
-    await db`update money.sync_runs set finished_at = now(), ok = ${r.ok}, accounts = ${r.accounts}, new_txns = ${r.newTxns},
-             updated_txns = ${r.updatedTxns}, errors = ${r.errors}, message = ${r.message} where id = ${runId}`;
+    try {
+      await db`update money.sync_runs set finished_at = now(), ok = ${r.ok}, accounts = ${r.accounts}, new_txns = ${r.newTxns},
+               updated_txns = ${r.updatedTxns}, errors = ${r.errors}, message = ${r.message} where id = ${runId}`;
+    } catch (e) {
+      console.error("money sync log failed", e instanceof Error ? e.name : "unknown");
+    }
     return r;
   };
 
-  const access = await getAccessUrl();
-  if (!access) return finish({ ok: false, accounts: 0, newTxns: 0, updatedTxns: 0, errors: [], message: "Not connected to SimpleFIN yet." });
-
   try {
+    const access = await getAccessUrl();
+    if (!access) return finish({ ok: false, accounts: 0, newTxns: 0, updatedTxns: 0, errors: [], message: "Not connected to SimpleFIN yet." });
+
     const [{ n: existing }] = await db<{ n: number }[]>`select count(*)::int as n from money.transactions`;
     const now = Math.floor(Date.now() / 1000);
     const windows = syncWindows(now, existing === 0 ? 90 : 14, 45);

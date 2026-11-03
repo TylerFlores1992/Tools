@@ -1,10 +1,19 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { randomBytes } from "node:crypto";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, SESSION_DAYS, SESSION_PATH, createSession, passwordMatches, safeNext } from "@/lib/private-auth";
+import { Throttle, clientKey } from "./sign-in/throttle";
 
-export type SignInState = { error?: "empty" | "wrong" | "unset"; attempt: number };
+export type SignInState = { error?: "empty" | "wrong" | "unset" | "locked"; attempt: number };
+
+/** Every wrong try waits this long before answering, so guessing is slow even before the lockout. */
+const WRONG_DELAY_MS = 1_500;
+
+// Per server instance: see sign-in/throttle.ts for what this does and doesn't protect against.
+const throttle = new Throttle();
+const salt = randomBytes(16).toString("hex");
 
 /** Checks the password, sets the session cookie and goes where the visitor was headed. */
 export async function signIn(prev: SignInState, form: FormData): Promise<SignInState> {
@@ -15,11 +24,19 @@ export async function signIn(prev: SignInState, form: FormData): Promise<SignInS
 
   if (!secret) return { error: "unset", attempt };
   if (password === "") return { error: "empty", attempt };
-  if (!passwordMatches(password, secret)) {
-    // A short pause makes guessing slow without bothering the owner.
-    await new Promise((r) => setTimeout(r, 600));
-    return { error: "wrong", attempt };
+  const h = await headers();
+  const key = clientKey(h.get("x-forwarded-for"), h.get("x-real-ip"), salt);
+  if (throttle.lockedFor(key) > 0) {
+    // Locked out: the password isn't checked at all, so a right guess now teaches nothing.
+    await pause(WRONG_DELAY_MS);
+    return { error: "locked", attempt };
   }
+  if (!passwordMatches(password, secret)) {
+    const nowLocked = throttle.fail(key);
+    await pause(WRONG_DELAY_MS);
+    return { error: nowLocked ? "locked" : "wrong", attempt };
+  }
+  throttle.succeed(key);
 
   (await cookies()).set(SESSION_COOKIE, createSession(secret), {
     httpOnly: true,
@@ -30,6 +47,8 @@ export async function signIn(prev: SignInState, form: FormData): Promise<SignInS
   });
   redirect(next);
 }
+
+const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Forgets this device and returns home. */
 export async function signOut(): Promise<void> {

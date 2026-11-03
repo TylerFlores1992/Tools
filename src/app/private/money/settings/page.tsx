@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
+import { SubmitButton } from "@/components/SubmitButton";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, loadMoney } from "@/lib/money/load";
 import { MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
@@ -10,7 +10,9 @@ import { ConnectForm, ImportForm, RefileForm, SyncNowForm } from "@/tools/money/
 import { importedByAccount } from "@/lib/money/import";
 import { shortDate } from "@/tools/money/summary";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
-import { disconnect, removeRule, saveAccount, undoStatement } from "../actions";
+import { AccountForm } from "@/tools/money/ui/AccountForm";
+import { ClearQuery } from "@/tools/money/ui/ClearQuery";
+import { disconnect, removeRule, undoStatement } from "../actions";
 import { IncomeSettings } from "./IncomeSettings";
 
 export const metadata: Metadata = {
@@ -25,9 +27,17 @@ export const maxDuration = 60;
 const when = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-const FIELD = "field min-h-11 w-full rounded-input border border-control bg-surface px-3 text-body text-ink";
+/** What a failed action says when it comes back here (`?failed=`). The database is the only thing that fails. */
+const FAILED: Record<string, string> = {
+  disconnect: "Not disconnected: the money database didn’t answer. Try again in a minute.",
+  rule: "The rule wasn’t removed: the money database didn’t answer. Try again in a minute.",
+  undo: "The import wasn’t undone: the money database didn’t answer. Try again in a minute.",
+};
 
-export default async function MoneySettings({ searchParams }: { searchParams: Promise<{ disconnected?: string; saved?: string; imported?: string; removed?: string }> }) {
+/** One-time notes in the address, cleared once shown (ClearQuery). */
+const NOTES = ["disconnected", "saved", "imported", "removed", "failed"] as const;
+
+export default async function MoneySettings({ searchParams }: { searchParams: Promise<{ disconnected?: string; saved?: string; imported?: string; removed?: string; failed?: string }> }) {
   await requirePrivate("/private/money/settings");
   const sp = await searchParams;
   const data = await loadMoney();
@@ -38,6 +48,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
     <MoneyShell current="/private/money/settings">
       <Label>Money</Label>
       <h1 className="mt-3 text-title font-normal">Settings</h1>
+      <ClearQuery keys={NOTES} />
 
       {data.state === "not-configured" && <div className="mt-8"><NotConfigured /></div>}
       {data.state === "unreachable" && <div className="mt-8"><Unreachable /></div>}
@@ -46,7 +57,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
         <nav aria-label="On this page" className="mt-6 overflow-x-auto">
           <ul className="flex w-max gap-1 text-small sm:w-auto sm:flex-wrap">
             {[["conn", "Bank"], ["accts", "Accounts"], ["income", "Work calendar"], ["import", "Import a calendar"], ["pay", "Pay and taxes"], ["older", "Older bank history"], ["rules", "Category rules"], ["hist", "Recent syncs"]].map(([id, label]) => (
-              <li key={id}><a href={`#${id}`} className="flex min-h-10 items-center rounded-full border border-line px-3 whitespace-nowrap text-ink-2 hover:text-ink">{label}</a></li>
+              <li key={id}><a href={`#${id}`} className="flex min-h-11 items-center rounded-full border border-line px-3 whitespace-nowrap text-ink-2 hover:text-ink">{label}</a></li>
             ))}
           </ul>
         </nav>
@@ -57,7 +68,8 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
           <section aria-labelledby="conn" className="scroll-mt-6">
             <h2 id="conn" className="text-h2 font-normal">Bank connection</h2>
             <Card className="mt-4 max-w-[720px]">
-              {sp.disconnected && <p className="mb-4"><State kind="note">Disconnected. Transactions already saved are kept.</State></p>}
+              {sp.disconnected && <p className="mb-4"><State kind="ok">Disconnected. Transactions already saved are kept.</State></p>}
+              {sp.failed === "disconnect" && <p role="alert" className="mb-4"><State kind="wrong">{FAILED.disconnect}</State></p>}
               {data.connected ? (
                 <>
                   <State kind="ok">Connected to SimpleFIN. Syncs every morning around 7.</State>
@@ -82,7 +94,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
               {data.connected && (
                 <form action={disconnect} className="mt-6 border-t border-line pt-6">
                   <p className="mb-3 text-small text-muted">Forget the SimpleFIN connection on this site. To cut access entirely, also remove the app connection in SimpleFIN Bridge.</p>
-                  <Button type="submit" variant="ghost">Disconnect</Button>
+                  <SubmitButton variant="ghost" pending="Disconnecting…" confirm="Disconnect the bank sync? Transactions already saved are kept; new ones stop arriving until you connect again.">Disconnect</SubmitButton>
                 </form>
               )}
             </Card>
@@ -109,29 +121,15 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
                           <span className="text-small text-ink-2 underline underline-offset-4">Edit<span className="sr-only"> {accountLabel(a)}</span></span>
                         </span>
                       </summary>
-                      {/* Keyed on the saved values: React resets a form after its action runs, and a
-                          reset <select> fell back to "Not set" instead of the value just saved. A new
-                          key remounts the form with the new defaults. */}
-                      <form key={`${a.owner ?? ""}|${a.displayName ?? ""}|${a.hidden}`} action={saveAccount} className="grid gap-3 border-t border-line p-4 sm:grid-cols-[1fr_10rem] sm:items-end">
-                        <input type="hidden" name="id" value={a.id} />
-                        <p className="text-small text-muted sm:col-span-2">{[a.orgName, a.name].filter(Boolean).join(" · ")}</p>
-                        <label className="grid gap-1.5">
-                          <span className="text-small text-ink-2">Name to show</span>
-                          <input name="displayName" defaultValue={a.displayName ?? ""} placeholder={accountLabel({ ...a, displayName: null })} maxLength={60} className={`${FIELD} placeholder:text-muted`} />
-                        </label>
-                        <label className="grid gap-1.5">
-                          <span className="text-small text-ink-2">Whose</span>
-                          <select name="owner" defaultValue={a.owner ?? ""} className={FIELD}>
-                            <option value="">Not set</option>
-                            {(Object.keys(OWNER_LABEL) as Array<keyof typeof OWNER_LABEL>).map((k) => <option key={k} value={k}>{OWNER_LABEL[k]}</option>)}
-                          </select>
-                        </label>
-                        <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
-                          <input type="checkbox" name="hidden" defaultChecked={a.hidden} className="size-5 accent-ink" />
-                          Hide this account
-                        </label>
-                        <Button type="submit" variant="quiet" className="sm:justify-self-end">Save</Button>
-                      </form>
+                      <AccountForm
+                        id={a.id}
+                        bankName={[a.orgName, a.name].filter(Boolean).join(" · ")}
+                        placeholder={accountLabel({ ...a, displayName: null })}
+                        displayName={a.displayName}
+                        owner={a.owner}
+                        hidden={a.hidden}
+                        owners={Object.entries(OWNER_LABEL)}
+                      />
                     </details>
                   </li>
                 ))}
@@ -140,7 +138,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
           </section>
 
           <div id="income" className="grid scroll-mt-6 grid-cols-[minmax(0,1fr)] gap-10 border-t border-line-2 pt-10">
-            <IncomeSettings saved={sp.saved === "income"} imported={sp.imported} removed={sp.removed} />
+            <IncomeSettings saved={sp.saved === "income"} failed={sp.failed} imported={sp.imported} removed={sp.removed} />
           </div>
 
           <section aria-labelledby="older" className="scroll-mt-6">
@@ -155,6 +153,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
               <p className="mt-4 text-body text-ink-2">Connect the bank sync first, so the accounts exist.</p>
             ) : (
               <Card className="mt-4 max-w-[720px]">
+                {sp.failed === "undo" && <p role="alert" className="mb-4 text-small"><State kind="wrong">{FAILED.undo}</State></p>}
                 <ImportForm accounts={data.accounts.filter((a) => !a.hidden).map((a) => ({ id: a.id, label: accountLabel(a) }))} />
                 {imported.size > 0 && (
                   <ul className="mt-6 divide-y divide-line border-t border-line">
@@ -165,7 +164,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
                           <span className="text-ink-2"><span className="text-ink">{accountLabel(a)}</span> · {i.n} imported, {shortDate(i.from)} {i.from.slice(0, 4)} to {shortDate(i.to)} {i.to.slice(0, 4)}</span>
                           <form action={undoStatement}>
                             <input type="hidden" name="account" value={a.id} />
-                            <Button type="submit" variant="ghost">Undo import<span className="sr-only"> for {accountLabel(a)}</span></Button>
+                            <SubmitButton variant="ghost" pending="Undoing…" confirm={`Remove the ${i.n} imported transactions from ${accountLabel(a)}? Synced transactions are kept.`}>Undo import<span className="sr-only"> for {accountLabel(a)}</span></SubmitButton>
                           </form>
                         </li>
                       );
@@ -180,6 +179,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
             <h2 id="rules" className="text-h2 font-normal">Category rules</h2>
             <p className="mt-2 max-w-[60ch] text-body text-ink-2">Made when you leave “Always file this way” ticked on a transaction. They beat the automatic categories; a category you set by hand beats both. Every sync re-files the history; “Re-file categories” does it now without asking the bank.</p>
             <div className="mt-4"><RefileForm /></div>
+            {sp.failed === "rule" && <p role="alert" className="mt-4 text-small"><State kind="wrong">{FAILED.rule}</State></p>}
             {data.rules.length === 0 ? (
               <p className="mt-4 text-body text-ink-2">No rules yet.</p>
             ) : (
@@ -189,7 +189,7 @@ export default async function MoneySettings({ searchParams }: { searchParams: Pr
                     <span className="min-w-0 text-body"><span className="font-mono text-small">{r.pattern}</span> <span aria-hidden="true">→</span><span className="sr-only">files as</span> {r.category}</span>
                     <form action={removeRule}>
                       <input type="hidden" name="pattern" value={r.pattern} />
-                      <Button type="submit" variant="ghost">Remove<span className="sr-only"> rule for {r.pattern}</span></Button>
+                      <SubmitButton variant="ghost" pending="Removing…" confirm={`Remove the rule for “${r.pattern}”? Transactions it filed are re-filed automatically on the next sync.`}>Remove<span className="sr-only"> rule for {r.pattern}</span></SubmitButton>
                     </form>
                   </li>
                 ))}

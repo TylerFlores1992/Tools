@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sha256 } from "@/lib/mail/secret";
 import { requirePrivate } from "@/lib/money/guard";
+import { attempt, DB_DOWN } from "@/lib/money/attempt";
+import { UnsafeLink, fetchPublic } from "@/lib/money/fetch-public";
 import { setCategory } from "@/lib/money/store";
 import { OTHER_INCOME } from "@/tools/money/categorize";
 import { PROGRAMS } from "@/tools/money/income/benefits";
@@ -44,15 +46,20 @@ export async function uploadOne(form: FormData): Promise<OneResult> {
   if (file.size > MAX_BYTES) return { ok: false, error: "Over 4 MB. Save it smaller and add it again." };
   if (!OK_TYPES.has(file.type)) return { ok: false, error: "Not a photo or PDF." };
   const bytes = Buffer.from(await file.arrayBuffer());
-  const existing = await findStubByFile(bytes);
-  const before = existing ? await getStub(existing) : null;
-  if (existing && !retryOnUpload(before?.status)) return { ok: false, error: "Already added.", id: existing };
-  const id = existing ?? (await createStub(kind, file.type, bytes));
-  await readInto(id, bytes, file.type, kind);
-  const stub = await getStub(id);
-  revalidatePath("/private/money/income", "layout");
-  const label = [stub?.employer || stub?.payrollCompany, stub?.payDate].filter(Boolean).join(" · ") || "Not read";
-  return { ok: true, id, status: stub?.status === "failed" ? "failed" : "review", label };
+  try {
+    const existing = await findStubByFile(bytes);
+    const before = existing ? await getStub(existing) : null;
+    if (existing && !retryOnUpload(before?.status)) return { ok: false, error: "Already added.", id: existing };
+    const id = existing ?? (await createStub(kind, file.type, bytes));
+    await readInto(id, bytes, file.type, kind);
+    const stub = await getStub(id);
+    revalidatePath("/private/money/income", "layout");
+    const label = [stub?.employer || stub?.payrollCompany, stub?.payDate].filter(Boolean).join(" · ") || "Not read";
+    return { ok: true, id, status: stub?.status === "failed" ? "failed" : "review", label };
+  } catch (e) {
+    console.error("money stub upload failed", e instanceof Error ? e.name : "unknown");
+    return { ok: false, error: DB_DOWN };
+  }
 }
 
 /** Runs the AI read and stores what it proposed, for review. */
@@ -77,62 +84,89 @@ async function readInto(id: string, bytes: Buffer, mime: string, asked: "stub" |
   }
 }
 
+/**
+ * Where a stub's own actions land. A stub id is a UUID (store.ts refuses anything else), so it is
+ * safe in the path; `note` is one of the stub page's notes (`?note=`).
+ */
+const stubPage = (id: string, note?: "db" | "pick" | "deposit") =>
+  `/private/money/income/stubs/${/^[0-9a-f-]{36}$/.test(id) ? id : ""}${note ? `?note=${note}` : ""}`;
+
 export async function rereadStub(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
-  const stub = await getStub(id);
-  const file = stub ? await getStubFile(id) : null;
-  if (stub && file && stub.kind !== "benefit") await readInto(id, file.bytes, file.mime, stub.kind);
+  // readInto records a failed read on the stub itself; this only catches the database not answering.
+  const ok = await attempt("stub reread", async () => {
+    const stub = await getStub(id);
+    const file = stub ? await getStubFile(id) : null;
+    if (stub && file && stub.kind !== "benefit") await readInto(id, file.bytes, file.mime, stub.kind);
+  });
   revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/income/stubs/${id}`);
+  redirect(stubPage(id, ok ? undefined : "db"));
 }
 
 export async function saveStub(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
-  const stub = await getStub(id);
-  if (!stub) redirect("/private/money/income");
-  const fields = parseStubForm((k) => (form.has(k) ? String(form.get(k)) : null), (k) => form.getAll(k).map(String));
-  await writeStub(id, { ...fields, status: "saved", readError: null });
-  await rematchDeposits();
+  let found = true;
+  const ok = await attempt("stub save", async () => {
+    const stub = await getStub(id);
+    if (!stub) { found = false; return; }
+    const fields = parseStubForm((k) => (form.has(k) ? String(form.get(k)) : null), (k) => form.getAll(k).map(String));
+    await writeStub(id, { ...fields, status: "saved", readError: null });
+    await rematchDeposits();
+  });
   revalidatePath("/private/money", "layout");
-  redirect(`/private/money/income?saved=${id}`);
+  if (!ok) redirect(stubPage(id, "db"));
+  redirect(found ? `/private/money/income?saved=${id}` : "/private/money/income");
 }
 
 export async function removeStub(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
-  if (id) await deleteStub(id);
+  const ok = await attempt("stub delete", async () => { if (id) await deleteStub(id); });
   revalidatePath("/private/money", "layout");
-  redirect("/private/money/income");
+  redirect(ok ? "/private/money/income?deleted=1" : stubPage(id, "db"));
 }
 
 export async function removePhoto(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
-  if (id) await deleteStubFile(id);
+  const ok = await attempt("stub photo delete", async () => { if (id) await deleteStubFile(id); });
   revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/income/stubs/${id}`);
+  redirect(stubPage(id, ok ? undefined : "db"));
 }
 
-/** Pick the deposit by hand, or say there isn't one (stops auto-matching for this stub). */
+/**
+ * Pick the deposit by hand, or say there isn't one (stops auto-matching for this stub). Only the
+ * "none" choice means none: an empty choice (the "Pick one" placeholder) changes nothing, where it
+ * used to wipe a matched deposit.
+ */
 export async function chooseDeposit(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
   const txn = String(form.get("txn") ?? "");
-  if (txn === "auto") {
-    await setDeposit(id, null, "auto");
-    await rematchDeposits();
-  } else if (txn === "none" || !txn) await setDeposit(id, null, "none");
-  else await setDeposit(id, txn, "manual");
+  if (!txn) redirect(stubPage(id, "pick"));
+  const ok = await attempt("deposit choice", async () => {
+    if (txn === "auto") {
+      await setDeposit(id, null, "auto");
+      await rematchDeposits();
+    } else if (txn === "none") await setDeposit(id, null, "none");
+    else await setDeposit(id, txn, "manual");
+  });
   revalidatePath("/private/money", "layout");
-  redirect(`/private/money/income/stubs/${id}`);
+  redirect(stubPage(id, ok ? "deposit" : "db"));
 }
 
 // ---- settings ----
 
 export async function saveIncomeSettings(form: FormData): Promise<void> {
   await requirePrivate("/private/money/settings");
+  const ok = await attempt("income settings save", () => writeIncomeSettings(form));
+  revalidatePath("/private/money", "layout");
+  redirect(ok ? "/private/money/settings?saved=income#pay" : "/private/money/settings?failed=income#pay");
+}
+
+async function writeIncomeSettings(form: FormData): Promise<void> {
   const { config: old } = await getIncomeSettings();
   const num = (k: string, fallback: number) => { const v = Number(String(form.get(k) ?? "").trim()); return Number.isFinite(v) && String(form.get(k) ?? "").trim() !== "" ? v : fallback; };
   const rates: IncomeConfig["rates"] = [];
@@ -167,27 +201,38 @@ export async function saveIncomeSettings(form: FormData): Promise<void> {
     },
   });
   await saveConfig(config);
-  revalidatePath("/private/money", "layout");
-  redirect("/private/money/settings?saved=income#pay");
 }
 
-export type ScriptState = { script?: string; attempt: number };
+export type ScriptState = { script?: string; error?: string; attempt: number };
 
 /** A new key: shown once inside the script, stored as SHA-256 only. Stops any older script. */
 export async function newCalendarScript(prev: ScriptState): Promise<ScriptState> {
   await requirePrivate("/private/money/settings");
   const key = randomBytes(24).toString("base64url");
-  await setCalendarKeyHash(sha256(key));
+  // On failure the old key (and the old script) keep working: nothing was replaced.
+  if (!(await attempt("calendar key", () => setCalendarKeyHash(sha256(key))))) {
+    return { script: prev.script, error: `${DB_DOWN} Your current script still works.`, attempt: prev.attempt + 1 };
+  }
   const base = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://tylerflores.dev";
   return { script: calendarScript(`${base}/api/money/calendar`, key), attempt: prev.attempt + 1 };
 }
+
+/**
+ * The small buttons on Income stay on the page when they work. When the database doesn't answer
+ * they come back to Income with a note at the top (`?failed=1`), instead of the error page.
+ */
+const incomeFailed = (form: FormData) => {
+  const year = String(form.get("year") ?? "");
+  return `/private/money/income?${/^\d{4}$/.test(year) ? `year=${year}&` : ""}failed=1`;
+};
 
 /** "Not pay": file a deposit as Other income by hand, which takes it off "Stubs still missing". */
 export async function markNotPay(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("txn") ?? "");
-  if (id) await setCategory(id, OTHER_INCOME, null);
+  const ok = await attempt("not-pay", async () => { if (id) await setCategory(id, OTHER_INCOME, null); });
   revalidatePath("/private/money", "layout");
+  if (!ok) redirect(incomeFailed(form));
 }
 
 /** File an EDD deposit as Paid Family Leave or Disability Insurance. */
@@ -195,21 +240,23 @@ export async function fileEdd(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const txn = String(form.get("txn") ?? "");
   const program = String(form.get("program") ?? "");
-  if (txn && (PROGRAMS as readonly string[]).includes(program)) await fileBenefit(txn, program);
+  const ok = await attempt("edd file", async () => { if (txn && (PROGRAMS as readonly string[]).includes(program)) await fileBenefit(txn, program); });
   revalidatePath("/private/money", "layout");
+  if (!ok) redirect(incomeFailed(form));
 }
 
 export async function unfileEdd(form: FormData): Promise<void> {
   await requirePrivate("/private/money/income");
   const id = String(form.get("id") ?? "");
-  if (id) await unfileBenefit(id);
+  const ok = await attempt("edd unfile", async () => { if (id) await unfileBenefit(id); });
   revalidatePath("/private/money", "layout");
+  if (!ok) redirect(incomeFailed(form));
 }
 
-/** Refresh on Income: the calendar script reads on its next one-minute wake (refresh.ts). */
-export async function refreshCalendar(): Promise<void> {
+/** Refresh on Income: the calendar script reads on its next one-minute wake (refresh.ts). False = the database didn't answer. */
+export async function refreshCalendar(): Promise<boolean> {
   await requirePrivate("/private/money/income");
-  await requestCalendarRefresh();
+  return attempt("calendar refresh", () => requestCalendarRefresh());
 }
 
 // ---- importing an older calendar (.ics) ----
@@ -236,11 +283,13 @@ export async function previewIcs(prev: IcsPreview, form: FormData): Promise<IcsP
       text = await file.text();
     } else if (link) {
       if (!/^https:\/\//i.test(link)) return { attempt, error: "The link should start with https:// or webcal://." };
-      const res = await fetch(link, { signal: AbortSignal.timeout(20_000), headers: { Accept: "text/calendar" } });
-      if (!res.ok) return { attempt, error: `The calendar link answered ${res.status}.` };
+      // Public https hosts only, redirects re-checked by hand (no reaching our own network).
+      const res = await fetchPublic(link, { signal: AbortSignal.timeout(20_000), headers: { Accept: "text/calendar" } });
+      if (!res.ok) return { attempt, error: res.status === 404 ? "That calendar link wasn’t found. Check it’s the public or secret address." : "That calendar link didn’t open. Try downloading the file and choosing it instead." };
       text = (await res.text()).slice(0, ICS_MAX_BYTES);
     } else return { attempt, error: "Choose the .ics file, or paste the calendar's link." };
-  } catch {
+  } catch (e) {
+    if (e instanceof UnsafeLink) return { attempt, error: `${e.message} Try downloading the file and choosing it instead.` };
     return { attempt, error: "Couldn't read that calendar. Try downloading the file and choosing it instead." };
   }
   if (!/BEGIN:VCALENDAR/.test(text)) return { attempt, error: "That isn't a calendar file (.ics)." };
@@ -255,6 +304,13 @@ export async function previewIcs(prev: IcsPreview, form: FormData): Promise<IcsP
  */
 export async function saveIcs(form: FormData): Promise<void> {
   await requirePrivate("/private/money/settings");
+  let n = 0;
+  const ok = await attempt("ics import", async () => { n = await importPicked(form); });
+  revalidatePath("/private/money/income", "layout");
+  redirect(ok ? `/private/money/settings?imported=${n}#import` : "/private/money/settings?failed=import#import");
+}
+
+async function importPicked(form: FormData): Promise<number> {
   const { config } = await getIncomeSettings();
   const markPaid = form.get("paid") === "on";
   const picked: WorkEvent[] = [];
@@ -274,13 +330,13 @@ export async function saveIcs(form: FormData): Promise<void> {
       if (add.length) { s.workDays = [...s.workDays, ...add]; await addWorkDays(s.id, add); }
     }
   }
-  revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/settings?imported=${picked.length}#import`);
+  return picked.length;
 }
 
 export async function removeImported(): Promise<void> {
   await requirePrivate("/private/money/settings");
-  const n = await removeImportedEvents();
+  let n = 0;
+  const ok = await attempt("ics remove", async () => { n = await removeImportedEvents(); });
   revalidatePath("/private/money/income", "layout");
-  redirect(`/private/money/settings?removed=${n}#import`);
+  redirect(ok ? `/private/money/settings?removed=${n}#import` : "/private/money/settings?failed=import#import");
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePrivate } from "@/lib/money/guard";
+import { attempt, DB_DOWN } from "@/lib/money/attempt";
 import { importRows, undoImport } from "@/lib/money/import";
 import { sql } from "@/lib/money/db";
 import { deleteRule, getAccounts, getRules, manualSyncsToday, saveAccessUrl, setCategory, updateAccount } from "@/lib/money/store";
@@ -38,56 +39,70 @@ export async function connect(prev: FormState, form: FormData): Promise<FormStat
 export async function syncNow(prev: FormState): Promise<FormState> {
   await requirePrivate("/private/money/settings");
   const attempt = prev.attempt + 1;
-  if ((await manualSyncsToday()) >= MANUAL_SYNCS_PER_DAY) {
-    return { error: `That’s ${MANUAL_SYNCS_PER_DAY} manual syncs in a day, the limit (SimpleFIN only allows a few requests a day). The daily sync still runs.`, attempt };
+  try {
+    if ((await manualSyncsToday()) >= MANUAL_SYNCS_PER_DAY) {
+      return { error: `That’s ${MANUAL_SYNCS_PER_DAY} manual syncs in a day, the limit (SimpleFIN only allows a few requests a day). The daily sync still runs.`, attempt };
+    }
+    const r = await runSync("manual");
+    revalidatePath("/private/money", "layout");
+    if (!r.ok) return { error: r.message, attempt };
+    const what = r.newTxns === 1 ? "1 new transaction" : `${r.newTxns} new transactions`;
+    return { done: `${r.message} ${what}.${r.errors.length ? ` ${r.errors.join(" ")}` : ""}`, attempt };
+  } catch (e) {
+    console.error("money manual sync failed", e instanceof Error ? e.name : "unknown");
+    return { error: DB_DOWN, attempt };
   }
-  const r = await runSync("manual");
-  revalidatePath("/private/money", "layout");
-  if (!r.ok) return { error: r.message, attempt };
-  const what = r.newTxns === 1 ? "1 new transaction" : `${r.newTxns} new transactions`;
-  return { done: `${r.message} ${what}.${r.errors.length ? ` ${r.errors.join(" ")}` : ""}`, attempt };
 }
 
 export async function disconnect(): Promise<void> {
   await requirePrivate("/private/money/settings");
-  await saveAccessUrl(null);
+  const ok = await attempt("disconnect", () => saveAccessUrl(null));
   revalidatePath("/private/money", "layout");
-  redirect("/private/money/settings?disconnected=1");
+  redirect(ok ? "/private/money/settings?disconnected=1" : "/private/money/settings?failed=disconnect#conn");
 }
 
 const OWNERS: ReadonlySet<string> = new Set(["mine", "joint", "hers"]);
 
-export async function saveAccount(form: FormData): Promise<void> {
+/** One account's name, owner and hidden switch (Settings → Accounts). Answers "Saved." in place. */
+export async function saveAccount(prev: FormState, form: FormData): Promise<FormState> {
   await requirePrivate("/private/money/settings");
+  const attempt_ = prev.attempt + 1;
   const id = String(form.get("id") ?? "");
   const ownerRaw = String(form.get("owner") ?? "");
   const displayName = String(form.get("displayName") ?? "").trim().slice(0, 60) || null;
-  if (!id) return;
-  await updateAccount(id, {
+  if (!id) return { error: "Couldn’t tell which account this is. Reload the page and try again.", attempt: attempt_ };
+  const ok = await attempt("account save", () => updateAccount(id, {
     owner: OWNERS.has(ownerRaw) ? (ownerRaw as Owner) : null,
     displayName,
     hidden: form.get("hidden") === "on",
-  });
+  }));
+  if (!ok) return { error: `Not saved. ${DB_DOWN}`, attempt: attempt_ };
   revalidatePath("/private/money", "layout");
+  return { done: "Saved.", attempt: attempt_ };
 }
 
-export async function recategorize(form: FormData): Promise<void> {
+/** A transaction's category (and "Always file this way"). `done` carries the category it was filed as. */
+export async function recategorize(prev: FormState, form: FormData): Promise<FormState> {
   await requirePrivate("/private/money/transactions");
+  const attempt_ = prev.attempt + 1;
   const id = String(form.get("id") ?? "");
   const category = String(form.get("category") ?? "");
   const description = String(form.get("description") ?? "");
-  if (!id || !(CATEGORIES as readonly string[]).includes(category)) return;
+  if (!id || !(CATEGORIES as readonly string[]).includes(category)) return { error: "Pick a category from the list.", attempt: attempt_ };
   // "Always" files by the merchant's name without dates and numbers, so next month's charge matches too.
   const pattern = form.get("always") === "on" ? merchantKey(description) : "";
-  await setCategory(id, category, pattern.length >= 3 ? { pattern } : null);
+  const ok = await attempt("recategorize", () => setCategory(id, category, pattern.length >= 3 ? { pattern } : null));
+  if (!ok) return { error: `Not saved. ${DB_DOWN}`, attempt: attempt_ };
   revalidatePath("/private/money", "layout");
+  return { done: category, attempt: attempt_ };
 }
 
 export async function removeRule(form: FormData): Promise<void> {
   await requirePrivate("/private/money/settings");
   const pattern = String(form.get("pattern") ?? "");
-  if (pattern) await deleteRule(pattern);
+  const ok = await attempt("rule delete", async () => { if (pattern) await deleteRule(pattern); });
   revalidatePath("/private/money", "layout");
+  if (!ok) redirect("/private/money/settings?failed=rule#rules");
 }
 
 /** A bank's CSV export, for history older than SimpleFIN's 90 days (src/lib/money/import.ts). */
@@ -96,7 +111,8 @@ export async function importStatement(prev: FormState, form: FormData): Promise<
   const attempt = prev.attempt + 1;
   const accountId = String(form.get("account") ?? "");
   const file = form.get("file");
-  const accounts = await getAccounts();
+  const accounts = await getAccounts().catch(() => null);
+  if (!accounts) return { error: DB_DOWN, attempt };
   const account = accounts.find((a) => a.id === accountId);
   if (!account) return { error: "Pick the account this file is from.", attempt };
   if (!(file instanceof File) || file.size === 0) return { error: "Choose the CSV file you downloaded from the bank.", attempt };
@@ -124,8 +140,9 @@ export async function importStatement(prev: FormState, form: FormData): Promise<
 export async function undoStatement(form: FormData): Promise<void> {
   await requirePrivate("/private/money/settings");
   const accountId = String(form.get("account") ?? "");
-  if (accountId) await undoImport(accountId);
+  const ok = await attempt("import undo", async () => { if (accountId) await undoImport(accountId); });
   revalidatePath("/private/money", "layout");
+  if (!ok) redirect("/private/money/settings?failed=undo#older");
 }
 
 const dayLabel = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });

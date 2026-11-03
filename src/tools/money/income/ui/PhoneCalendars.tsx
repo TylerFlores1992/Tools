@@ -116,22 +116,24 @@ export function DotsCalendar({ days, month, today, counts = true }: PhoneCalProp
     <div>
       {counts && <div className="mb-3"><Counts days={days} month={month} /></div>}
       <Weekdays />
-      <div role="grid" aria-label="Work days" className="grid gap-y-1">
+      {/* A group of toggle buttons, not role="grid": Tab moves day to day and aria-pressed says
+          which is open, without the arrow-key handling a grid promises. */}
+      <div role="group" aria-label="Work days" className="grid gap-y-1">
         {weeks.map((w, i) => (
-          <div role="row" key={i} className="grid grid-cols-7">
+          <div key={i} className="grid grid-cols-7">
             {w.map((day, j) => {
-              if (!day) return <span role="gridcell" key={j} />;
+              if (!day) return <span key={j} />;
               const list = byDay.get(day) ?? [];
               const s = worst(list);
               const on = day === sel;
               return (
-                <span role="gridcell" key={day}>
+                <span key={day}>
                   <button
                     type="button"
                     onClick={() => setSel(day)}
                     aria-pressed={on}
                     aria-label={`${longDay(day)}${list.length ? `: ${list.map((d) => `${d.title}, ${word(calStatus(d))}`).join("; ")}` : ", no work"}`}
-                    className={cx("mx-auto flex h-14 w-full max-w-12 flex-col items-center justify-start gap-1 rounded-btn pt-1.5 text-small tabular-nums", on ? "bg-surface-2 text-ink ring-2 ring-ink ring-inset" : list.length ? "text-ink" : "text-muted")}
+                    className={cx("mx-auto flex h-14 w-full min-w-0 flex-col items-center justify-start gap-1 rounded-btn pt-1.5 text-small tabular-nums", on ? "bg-surface-2 text-ink ring-2 ring-ink ring-inset" : list.length ? "text-ink" : "text-muted")}
                   >
                     <span className={cx(day === today && "rounded-full bg-primary px-1.5 text-on-primary")}>{Number(day.slice(8))}</span>
                     {s ? <Mark s={s} size={14} /> : <span className="h-3.5" />}
