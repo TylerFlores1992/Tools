@@ -10,8 +10,8 @@ export function NotConfigured() {
     <Card className="max-w-[640px]">
       <State kind="note">Money isn’t set up on this site yet.</State>
       <p className="mt-3 text-body text-ink-2">Tyler needs to finish setting it up.</p>
-      <details className="mt-4">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">For Tyler</summary>
+      <details className="group mt-4">
+        <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink"><span aria-hidden="true" className="mr-1.5 inline-block transition-transform duration-150 group-open:rotate-90 motion-reduce:transition-none">›</span>For Tyler</summary>
         <p className="mt-1 text-small text-ink-2">
           The site needs <code className="font-mono">MONEY_DATABASE_URL</code> in Vercel. Setup steps are in{" "}
           <code className="font-mono">docs/MONEY.md</code>.

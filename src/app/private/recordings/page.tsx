@@ -47,8 +47,8 @@ export default async function Recordings({ searchParams }: { searchParams: Promi
           {r.reason === "not-configured" ? (
             <>
               <State kind="note">Recordings isn&rsquo;t connected to the DVR at home yet.</State>
-              <details className="mt-3 text-small text-ink-2">
-                <summary className="inline-flex min-h-11 cursor-pointer items-center text-ink-2 underline underline-offset-4 hover:text-ink">For Tyler</summary>
+              <details className="group mt-3 text-small text-ink-2">
+                <summary className="inline-flex min-h-11 cursor-pointer items-center text-ink-2 underline underline-offset-4 hover:text-ink"><span aria-hidden="true" className="mr-1.5 inline-block transition-transform duration-150 group-open:rotate-90 motion-reduce:transition-none">›</span>For Tyler</summary>
                 <p className="mt-2">
                   The site needs <code className="font-mono">DVR_URL</code> and <code className="font-mono">DVR_TOKEN</code> in Vercel. Setup is in{" "}
                   <code className="font-mono">docs/RECORDINGS.md</code>.

@@ -49,8 +49,8 @@ export function LearnNotConfigured() {
     <Card className="max-w-[640px]">
       <State kind="note">Learn isn&rsquo;t set up on this site yet, so it can&rsquo;t keep your progress.</State>
       <p className="mt-3 text-body text-ink-2">Tyler needs to finish setting it up.</p>
-      <details className="mt-4">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink">For Tyler</summary>
+      <details className="group mt-4">
+        <summary className="inline-flex min-h-11 cursor-pointer items-center text-small text-ink-2 hover:text-ink"><span aria-hidden="true" className="mr-1.5 inline-block transition-transform duration-150 group-open:rotate-90 motion-reduce:transition-none">›</span>For Tyler</summary>
         <p className="mt-1 text-small text-ink-2">
           Learn keeps progress in the same database as Money (<code className="font-mono">MONEY_DATABASE_URL</code>). Setup is in{" "}
           <code className="font-mono">docs/LEARN.md</code>.
