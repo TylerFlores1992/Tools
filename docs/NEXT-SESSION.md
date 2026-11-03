@@ -68,15 +68,19 @@ private… The site must work perfect."
   - **CampHawk lab:** "Sign up to watch" did nothing for four visitors, and about 30 dead `#` links.
 - **Security edges:** the private password has a per-instance lockout (5 tries / 15 min); the ICS
   link fetch refuses private hosts and checks redirects; stub files are served `nosniff`.
-- **Owner to apply by hand (SQL editor):**
-  - the last statement in `docs/sql/money-income.sql` (one benefit stub per deposit);
-  - the last block in `docs/sql/mail-schema.sql` (one rule per match; run the commented `delete`
-    first if it fails).
-
-  The code guards both without them.
+- **Both database backstops are applied (2026-11-03, through the Supabase connector):**
+  `stubs_one_benefit_per_deposit` (no duplicates existed) and `rules_one_per_match_idx`. The mail
+  index needed the file's `delete` first: 12 extra copies of two identical "trash" rules, double
+  taps from 2026-10-22 before the code de-duplicated. The oldest of each was kept, so mail sorts
+  the same. Nothing references `mail.rules.id`.
+- **Real-data walk in the home-server Chrome (2026-11-03, owner signed in, read only):** all 7
+  private pages loaded with no console errors, overlap or sideways scroll. Every tab press showed
+  a skeleton in ~3-12 ms and content in 0.45-1.5 s. Recordings is the slowest first load (a few
+  seconds of "Asking the DVR at home…", then fills). Page Turner says it isn't connected (expected:
+  `COURSE_URL`/`COURSE_TOKEN` not set). Vectorworks says "Not paired with this computer yet".
+  One small note, left as is: the tapped pill tab turns dark at ~75-120 ms (when the URL changes),
+  so the old tab stays lit that long; the skeleton is the instant feedback.
 - **Not done / open:**
-  - the bridge Chrome needs the owner to sign in to /private once, then re-walk Money, Mail,
-    Recordings, Learn and Page Turner on real data;
   - the Money tabs still scroll sideways on a phone (the current tab stays visible);
   - the lockout is per server instance, not global (a long `LAB_PASSWORD` is the real protection).
 
