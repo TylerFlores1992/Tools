@@ -3,6 +3,9 @@ import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { Label } from "@/components/Label";
 import { Arrow } from "@/components/Button";
+import { cx } from "@/components/cx";
+import { LinkPending } from "@/components/LinkPending";
+import { PRESS_FILL, PRESS_ROW } from "@/components/press";
 import { SITE } from "@/lib/site";
 import { toolBySlug } from "@/lib/tools";
 import { PRACTICE_SETS, PRACTICE_SIZES, listJoin } from "@/tools/etcp/questions";
@@ -63,19 +66,32 @@ export default function StudyOverview() {
         </p>
       </header>
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-        {SECTIONS.map((s, i) => (
-          <li key={s.href} className={lastSpans && i === SECTIONS.length - 1 ? "sm:col-span-2" : undefined}>
-            <Link href={s.href} className="group flex h-full flex-col rounded-card border border-line bg-surface p-5 shadow-card transition-colors duration-150 hover:border-control hover:bg-surface-2 sm:p-6">
-              <span className="font-mono text-label uppercase text-muted">{s.eyebrow}</span>
-              <span className="mt-3 flex items-center justify-between gap-4 text-h3 font-medium text-ink">
-                {s.title}
-                <Arrow className="shrink-0 text-muted transition-[transform,color] duration-200 ease-out group-hover:translate-x-1 group-hover:text-ember" />
-              </span>
-              <span className="mt-2 text-body text-ink-2">{s.body}</span>
-              {s.slug && <SavedProgress slug={s.slug} />}
-            </Link>
-          </li>
-        ))}
+        {SECTIONS.map((s, i) => {
+          // Named by its title, described by the rest, so a screen reader hears "Practice test A"
+          // first rather than the whole card run together.
+          const id = `study-${i}`;
+          return (
+            <li key={s.href} className={lastSpans && i === SECTIONS.length - 1 ? "sm:col-span-2" : undefined}>
+              <Link
+                href={s.href}
+                aria-labelledby={`${id}-title`}
+                aria-describedby={`${id}-eyebrow ${id}-body ${id}-progress`}
+                className={cx("group flex h-full flex-col rounded-card border border-line bg-surface p-5 shadow-card transition-[color,background-color,border-color,scale] duration-150 hover:border-control hover:bg-surface-2 active:border-control sm:p-6", PRESS_FILL, PRESS_ROW)}
+              >
+                <span id={`${id}-eyebrow`} className="font-mono text-label uppercase text-muted">{s.eyebrow}</span>
+                <span className="mt-3 flex items-center justify-between gap-4 text-h3 font-medium text-ink">
+                  <span id={`${id}-title`}>
+                    {s.title}
+                    <LinkPending className="ml-2 align-middle" />
+                  </span>
+                  <Arrow className="shrink-0 text-muted transition-[transform,color] duration-200 ease-out group-hover:translate-x-1 group-hover:text-ember" />
+                </span>
+                <span id={`${id}-body`} className="mt-2 text-body text-ink-2">{s.body}</span>
+                {s.slug && <SavedProgress slug={s.slug} id={`${id}-progress`} />}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       <aside className="mt-10 max-w-[72ch] border-t border-line pt-5 text-small text-muted">
         <p>

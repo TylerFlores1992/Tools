@@ -18,7 +18,7 @@ import { Art, ART } from "./Art";
 import { AppBand, BandPhoto, FavoriteHeart, LabSelect, PLANS, PricingLink, SubscribeCta, WatchCtaLink, type Plan } from "./AppParts";
 import { CAMPGROUND, FIRST_COME_BADGE, FIRST_COME_WHY } from "./campground-data";
 import { CAMPGROUNDS as EXAMPLES, ORIGIN, search, suggest, type ExampleCampground } from "./explore-data";
-import { ROUTES } from "./gates";
+import { ROUTES, watchGateHref } from "./gates";
 import { TRIAL_DAYS } from "./pages/tier2-data";
 import { LabNote } from "./LabPage";
 import { GhFooter, ScreenLinks } from "./GhChrome";
@@ -34,7 +34,8 @@ import { useUrlState, useVisitor, withVisitor } from "./labState";
 //   dates nothing is claimed at all.
 // - The map's pins carry state as a shape as well as a hue, and picking one hoists its card to
 //   the front instead of scrolling the map away.
-// - Once there are results, the radius, date and nights controls re-run the search.
+// - Once there are results, the radius, date, nights and filter controls re-run the search, and
+//   so does the lab's "Search answers" switch.
 // - The search lives in the URL, so "Back to search" from a campground restores it.
 // Lab changes, from CampHawk's own colour rules: the status box and first-run panel are plain
 // cards (its blue means the provider hand-off, its green an open site); the picked pin and card
@@ -363,7 +364,9 @@ export function Explore() {
     run();
   }, [restoring, run]);
 
-  // Once there are results, these controls re-run the search (exact dates wait for both ends).
+  // Once there are results, these controls re-run the search (exact dates wait for both ends), as
+  // do the filters and the lab's "Search answers" switch: a switch that did nothing until the next
+  // press of Search read as broken.
   const runRef = useRef(run);
   useEffect(() => { runRef.current = run; }, [run]);
   const hasResults = results !== null;
@@ -373,7 +376,7 @@ export function Explore() {
     const t = window.setTimeout(() => runRef.current(), 250);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- deliberately not on results
-  }, [radius, when, range.start, range.end, flexNights]);
+  }, [radius, when, range.start, range.end, flexNights, filters.siteType, filters.rvLength, filters.electric, answer]);
 
   const choosePreset = (p: When) => {
     setWhen(p);
@@ -539,7 +542,7 @@ export function Explore() {
                     <h3 className="font-ch-display text-[20px] font-extrabold text-ch-ink">{openCount > 0 ? "The one you wanted is booked?" : "Nothing open for your dates?"}</h3>
                     <p className="mx-auto mb-4 mt-1.5 max-w-[46ch] text-[16px] leading-relaxed text-ch-ink-2">The good spots are booked, not gone. Set a watch and we’ll alert you within seconds of a cancellation.</p>
                     {visitor === "signed-out"
-                      ? <a href="#" className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}‑day free trial</a>
+                      ? <Link href={watchGateHref("signed-out", searched.range.start && searched.range.end ? `start=${searched.range.start}&end=${searched.range.end}` : "")} className={buttonClasses({ variant: "ink", className: "px-5" })}>Start {TRIAL_DAYS}‑day free trial</Link>
                       : <Link href={withVisitor(`${ROUTES.newWatch}${searched.range.start && searched.range.end ? `?start=${searched.range.start}&end=${searched.range.end}` : ""}`, visitor)} className={buttonClasses({ className: "px-5" })}>Create a watch</Link>}
                   </div>
                 )}

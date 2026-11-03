@@ -2,7 +2,7 @@
 
 import { isFirstCome } from "../maps/first-come";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, CircleCheck, Download, Eye, EyeOff, PenLine, RotateCcw, Route } from "lucide-react";
 import { cx } from "@/components/cx";
@@ -20,6 +20,8 @@ import { AerialCheck } from "./AerialCheck";
 import { AERIAL, aerialSource, NO_PHOTO } from "../maps/aerial";
 import { TraceTool } from "./TraceTool";
 import { useSavedTraceIds, useTraceDraft } from "./useTraceDraft";
+import { createBrowserStore, isRecord } from "./browserStore";
+import { useFocusOnChange } from "../useSwapFocus";
 import { withDraft } from "../maps/trace";
 import { RECORDED, decisionsFileFor, suggestedDecision, type Decision } from "../maps/decisions";
 
@@ -39,47 +41,41 @@ const PAGE = 48;
 
 /* ---------- decisions: recorded with the maps, then this browser's clicks on top ---------- */
 
-const KEY = "lab-site-map-decisions";
-const EVT = "lab-site-map-decisions";
-// A click is saved here; "open" reopens a map whose decision is recorded with the maps (Undo).
+// A click is kept here; "open" reopens a map whose decision is recorded with the maps (Undo).
+// Memory first, this browser second (browserStore.ts): with storage blocked a click still shows,
+// and the decision box says it isn't saved.
 type Local = Record<string, Decision | "open">;
+const decisionStore = createBrowserStore<Local>("lab-site-map-decisions", {}, isRecord as (x: unknown) => x is Local);
 /** "1 unit" for a single unit (a cabin, lookout or group site), else "N sites". */
 const sitesWord = (n: number, kind?: string) => (kind === "firstcome" ? "first-come campground" : n === 1 ? "1 unit" : `${n} sites`);
 
-function readLocal(): Local {
-  try { return JSON.parse(window.localStorage.getItem(KEY) ?? "{}") ?? {}; } catch { return {}; }
-}
 const RECORDED_ONLY: Record<string, Decision> = Object.fromEntries(Object.entries(RECORDED).map(([id, r]) => [id, r.decision]));
 function merge(local: Local): Record<string, Decision> {
   const out = { ...RECORDED_ONLY };
   for (const [id, d] of Object.entries(local)) { if (d === "open") delete out[id]; else out[id] = d; }
   return out;
 }
-let cache: { raw: string | null; value: Record<string, Decision> } = { raw: null, value: RECORDED_ONLY };
+let merged: { local: Local | null; value: Record<string, Decision> } = { local: null, value: RECORDED_ONLY };
 function snapshot() {
-  let raw: string | null = null;
-  try { raw = window.localStorage.getItem(KEY); } catch { /* storage blocked: only the recorded decisions */ }
-  if (raw !== cache.raw) cache = { raw, value: merge(readLocal()) };
-  return cache.value;
+  const local = decisionStore.get();
+  if (local !== merged.local) merged = { local, value: merge(local) };
+  return merged.value;
 }
 function useDecisions(): [Record<string, Decision>, (id: string, d: Decision | null) => void] {
-  const value = useSyncExternalStore(
-    (on) => { window.addEventListener(EVT, on); window.addEventListener("storage", on); return () => { window.removeEventListener(EVT, on); window.removeEventListener("storage", on); }; },
-    snapshot,
-    () => RECORDED_ONLY,
-  );
+  const value = useSyncExternalStore(decisionStore.subscribe, snapshot, () => RECORDED_ONLY);
   const set = (id: string, d: Decision | null) => {
-    const next = { ...readLocal() };
+    const next = { ...decisionStore.get() };
     const recorded = RECORDED[id]?.decision;
     if (d === recorded) delete next[id];
     else if (d) next[id] = d;
     else if (recorded) next[id] = "open";
     else delete next[id];
-    try { window.localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* not saved */ }
-    window.dispatchEvent(new Event(EVT));
+    decisionStore.set(next);
   };
   return [value, set];
 }
+/** False when this browser refused to save the decisions. */
+const useDecisionsSaved = () => !useSyncExternalStore(decisionStore.subscribe, decisionStore.saveFailed, () => false);
 
 // The queue's order: maps that need a look first, and among them the ones a first look found fine
 // (a quick approval) ahead of the ones that need work.
@@ -104,17 +100,29 @@ function waveFrom(raw: string | null, id: string | null): number {
   return (id ? waveOf(id) : null) ?? LATEST_WAVE;
 }
 
-function useWave(n: number): { wave: Wave | null; state: "loading" | "ready" | "error" } {
-  const [got, setGot] = useState<{ n: number; wave: Wave | null } | null>(null);
+function useWave(n: number): { wave: Wave | null; state: "loading" | "ready" | "error"; retry: () => void } {
+  const [got, setGot] = useState<{ n: number; try: number; wave: Wave | null } | null>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (n === 0) return;
     let live = true;
-    loadWave(n).then((w) => w, () => null).then((w) => { if (live) setGot({ n, wave: w }); });
+    loadWave(n, attempt).then((w) => w, () => null).then((w) => { if (live) setGot({ n, try: attempt, wave: w }); });
     return () => { live = false; };
-  }, [n]);
-  if (n === 0) return { wave: SAMPLE_WAVE, state: "ready" };
-  if (!got || got.n !== n) return { wave: null, state: "loading" };
-  return got.wave ? { wave: got.wave, state: "ready" } : { wave: null, state: "error" };
+  }, [n, attempt]);
+  const retry = () => setAttempt((a) => a + 1);
+  if (n === 0) return { wave: SAMPLE_WAVE, state: "ready", retry };
+  if (!got || got.n !== n || got.try !== attempt) return { wave: null, state: "loading", retry };
+  return got.wave ? { wave: got.wave, state: "ready", retry } : { wave: null, state: "error", retry };
+}
+
+/** A load that failed: what didn't load, and a way to ask again (past any cached failure). */
+function LoadFailed({ what, onRetry, className }: { what: string; onRetry: () => void; className?: string }) {
+  return (
+    <div role="alert" className={cx("grid justify-items-center gap-3 rounded-ch-input bg-ch-shell px-4 py-6 text-center text-[14.5px] text-ch-ink-2", className)}>
+      <p>{what} didn’t load. It may be the connection; try again.</p>
+      <button type="button" onClick={onRetry} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}><RotateCcw aria-hidden="true" className="size-4" />Retry</button>
+    </div>
+  );
 }
 
 export function SiteMaps() {
@@ -122,16 +130,21 @@ export function SiteMaps() {
   const id = params.get("id");
   const n = waveFrom(params.get("wave"), id);
   const home = usePathname() ?? "";
-  const { wave, state } = useWave(n);
+  const { wave, state, retry } = useWave(n);
   return (
     <AdminFrame page="Site maps (admin)" home={home}>
       {wave ? (id ? <Detail wave={wave} id={id} home={home} /> : <Queue wave={wave} home={home} />)
-        : <p role={state === "error" ? "alert" : "status"} className="rounded-ch-card border border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">{state === "error" ? `${waveLabel(n)} didn’t load. Reload the page to try again.` : `Loading ${waveLabel(n).toLowerCase()}…`}</p>}
+        : state === "error" ? <LoadFailed what={waveLabel(n)} onRetry={retry} />
+        : <p role="status" className="rounded-ch-card border border-ch-line bg-ch-card px-5 py-8 text-center text-[15px] text-ch-ink-2">{`Loading ${waveLabel(n).toLowerCase()}…`}</p>}
     </AdminFrame>
   );
 }
 
 /* ---------- the queue ---------- */
+
+// Changing the wave loads it, which swaps the queue out; when the new one arrives, focus goes back
+// to the Wave menu, so the keyboard isn't left on the page's body.
+let refocusWave = false;
 
 const LOOK_FILTERS: [string, string][] = [["", "Any"], ["good", "Good"], ["usable", "Roads incomplete"], ["hold", "Not usable"], ["unsure", "Can’t tell"], ["none", "Not looked at yet"]];
 const DECIDED_FILTERS: [string, string][] = [["", "Any"], ["no", "Not decided"], ["yes", "Decided"]];
@@ -139,6 +152,8 @@ const field = "min-h-11 w-full min-w-0 cursor-pointer rounded-ch-input border bo
 
 function Queue({ wave, home }: { wave: Wave; home: string }) {
   const params = useSearchParams();
+  const waveSelect = useRef<HTMLSelectElement>(null);
+  useEffect(() => { if (refocusWave) { refocusWave = false; waveSelect.current?.focus(); } }, []);
   const n = wave.info.wave;
   const raw = params.get("show");
   const filter: Filter = FILTERS.some(([v]) => v === raw) ? (raw as Filter) : "all";
@@ -203,7 +218,7 @@ function Queue({ wave, home }: { wave: Wave; home: string }) {
         {WAVES.length > 1 && (
           <label className="grid shrink-0 gap-1 text-[13px] font-bold text-ch-ink-2">
             Wave
-            <select value={n} onChange={(ev) => { const q = new URLSearchParams({ wave: ev.target.value }); window.history.replaceState(null, "", `${home}?${q}`); }} className={cx(field, "sm:w-60")}>
+            <select ref={waveSelect} value={n} onChange={(ev) => { refocusWave = ev.target.value !== "0"; const q = new URLSearchParams({ wave: ev.target.value }); window.history.replaceState(null, "", `${home}?${q}`); }} className={cx(field, "sm:w-60")}>
               {WAVES.map((w) => <option key={w.wave} value={w.wave}>{`${waveLabel(w.wave)}: ${w.count} campgrounds`}</option>)}
             </select>
           </label>
@@ -359,12 +374,15 @@ function Select({ label, value, options, onChange }: { label: string; value: str
 /** Saves this wave's decisions as the file a session records with the maps (maps/decisions/). */
 function DownloadDecisions({ wave, ids, decisions, count }: { wave: number; ids: string[]; decisions: Record<string, Decision>; count: number }) {
   const [problems, setProblems] = useState<string[]>([]);
+  const [saved, setSaved] = useState<string | null>(null);
   if (!count) return null;
   const save = () => {
     const today = new Date().toISOString().slice(0, 10);
     const { file, problems: p } = decisionsFileFor(wave, ids, decisions, today);
     setProblems(p);
+    setSaved(null);
     if (p.length) return;
+    setSaved(`wave-${pad2(wave)}.json`);
     const url = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1) + "\n"], { type: "application/json" }));
     const a = Object.assign(document.createElement("a"), { href: url, download: `wave-${pad2(wave)}.json` });
     document.body.append(a); a.click(); a.remove();
@@ -376,6 +394,7 @@ function DownloadDecisions({ wave, ids, decisions, count }: { wave: number; ids:
         <h2 id="dl-h" className="font-ch-display text-ch-h font-bold text-ch-ink">Your decisions on this wave</h2>
         <p className="text-[14px] leading-snug text-ch-ink-2">{count} decided. Save them as a file and send it to the session, which records them with the maps.</p>
         {problems.length > 0 && <p role="alert" className="mt-1 text-[13.5px] font-bold text-ch-alert-deep">The file wasn’t saved: {problems.join("; ")}.</p>}
+        <p role="status" className="mt-1 flex items-center gap-1.5 text-[13.5px] font-bold text-ch-ink">{saved && <><Check aria-hidden="true" className="size-4 shrink-0" />Saved {saved} — send it to the session.</>}</p>
       </div>
       <button type="button" onClick={save} className={buttonClasses({ variant: "ink", size: "sm", className: "shrink-0" })}><Download aria-hidden="true" className="size-4" />Download decisions</button>
     </section>
@@ -494,23 +513,26 @@ function DecisionNote({ decision, className }: { decision: Decision; className?:
 
 /* ---------- one map ---------- */
 
-function useMap(id: string): { map: SiteMapData | null; state: "loading" | "ready" | "error" } {
-  const [got, setGot] = useState<{ id: string; map: SiteMapData | null } | null>(null);
+function useMap(id: string): { map: SiteMapData | null; state: "loading" | "ready" | "error"; retry: () => void } {
+  const [got, setGot] = useState<{ id: string; try: number; map: SiteMapData | null } | null>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let live = true;
-    fetch(`/private/camphawk/maps/ridb-${id}.json`)
+    // A retry asks past any cached failure.
+    fetch(`/private/camphawk/maps/ridb-${id}.json${attempt ? `?retry=${attempt}` : ""}`, attempt ? { cache: "reload" } : undefined)
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null)
-      .then((m: SiteMapData | null) => { if (live) setGot({ id, map: m && Array.isArray(m.sites) ? m : null }); });
+      .then((m: SiteMapData | null) => { if (live) setGot({ id, try: attempt, map: m && Array.isArray(m.sites) ? m : null }); });
     return () => { live = false; };
-  }, [id]);
-  if (!got || got.id !== id) return { map: null, state: "loading" };
-  return got.map ? { map: got.map, state: "ready" } : { map: null, state: "error" };
+  }, [id, attempt]);
+  const retry = () => setAttempt((a) => a + 1);
+  if (!got || got.id !== id || got.try !== attempt) return { map: null, state: "loading", retry };
+  return got.map ? { map: got.map, state: "ready", retry } : { map: null, state: "error", retry };
 }
 
 function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
   const [decisions, decide] = useDecisions();
-  const { map, state } = useMap(id);
+  const { map, state, retry } = useMap(id);
   const [draft, setDraft, changed, discard] = useTraceDraft(id, map);
   // Check the map, or trace what it's missing; ?tool=trace opens the tracing tool.
   const params = useSearchParams();
@@ -535,7 +557,7 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
   const lookNote = look && wave.looks ? <FirstLookNote look={look} by={wave.looks.by} on={wave.looks.on} /> : null;
   // "Trace the missing roads" opens the tool and brings the photo into view.
   const openTrace = () => { setTool("trace"); requestAnimationFrame(() => document.getElementById("aerial-h")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" })); };
-  const decisionBox = <DecisionBox entry={entry} look={look?.call} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} traceChanged={changed} />;
+  const decisionBox = <DecisionBox key={entry.id} entry={entry} look={look?.call} decision={decision} decide={decide} nextHref={nextHref} onTrace={map?.bbox ? openTrace : undefined} traceChanged={changed} />;
 
   return (
     <>
@@ -576,7 +598,7 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
                   ? <TraceTool map={{ ...map, bbox: map.bbox }} mapKey={`ridb-${entry.id}`} name={name} draft={draft} setDraft={setDraft} changed={changed} discard={discard} />
                   : <AerialCheck map={shown} name={name} />}
               </>
-            ) : <Pending state={state} />}
+            ) : <Pending state={state} onRetry={retry} />}
           </Panel>
           <div className="mt-4 lg:hidden">{decisionBox}</div>
 
@@ -602,7 +624,7 @@ function Detail({ wave, id, home }: { wave: Wave; id: string; home: string }) {
             <p className="mt-0.5 text-[14px] text-ch-ink-2">{changed ? "With your traces in place. They aren’t built yet, so the checks above don’t include them." : shown && isFirstCome(shown) ? "A first-come campground: the campground page shows its area and how to get a site." : shown?.sites.length === 1 ? "One unit: the campground page shows where it is." : shown?.split?.kind === "areas" ? `The campground page shows this listing as ${shown.split.areas.length} areas, one at a time.` : "The campground page’s site map, drawn from this data."}</p>
             {state === "ready" && shown ? (
               <CamperMap map={shown} name={name} provider="Recreation.gov" picked={null} openIds={[]} selectedId={null} onSelect={() => {}} note="No night is picked here, so every site is a plain dot." />
-            ) : <div className="mt-3"><Pending state={state} /></div>}
+            ) : <div className="mt-3"><Pending state={state} onRetry={retry} /></div>}
           </div>
 
           <Panel id="sources-h" title="Where each layer came from" className="mt-4">
@@ -662,6 +684,10 @@ function DecisionBox({ entry, look, decision, decide, nextHref, onTrace, traceCh
   // A fixed order on every map, so a hundred decisions don't become a hundred mis-clicks; the
   // suggestion is filled and says so.
   const shown = OPTIONS.filter((o) => o.show);
+  const persisted = useDecisionsSaved();
+  // A decision swaps the buttons for its note (and Undo swaps back): focus follows, and the note is
+  // a status, so it's heard.
+  const swapRef = useFocusOnChange<HTMLDivElement>(decision ?? "open");
   return (
     <section aria-label="Your decision" className="rounded-ch-card border border-ch-line bg-ch-card p-4 shadow-ch-card">
       {traceChanged && !decision && (
@@ -670,6 +696,7 @@ function DecisionBox({ entry, look, decision, decide, nextHref, onTrace, traceCh
           <span>Your traces aren’t on this map yet: its checks and verdict are for the map as built. Download the trace file to have it rebuilt, then judge it again.</span>
         </p>
       )}
+      <div ref={swapRef} tabIndex={-1} role="status" className="outline-none">
       {decision ? (
         <>
           <DecisionNote decision={decision} />
@@ -686,6 +713,7 @@ function DecisionBox({ entry, look, decision, decide, nextHref, onTrace, traceCh
             : "Compare the sites with the aerial photo. Approve the map if they sit on real pads along real roads."}
         </p>
       )}
+      </div>
       <div className="mt-3 grid gap-2">
         {decision ? (
           <>
@@ -697,7 +725,10 @@ function DecisionBox({ entry, look, decision, decide, nextHref, onTrace, traceCh
           <button key={d} type="button" onClick={() => decide(entry.id, d)} className={buttonClasses({ variant: d === primary && !traceChanged ? "ink" : "quiet", size: "sm", fullWidth: true })}><Icon aria-hidden="true" className="size-4" />{d === "approved" && traceChanged ? "Approve without my traces" : label}{d === primary && !traceChanged && <span className="text-[12px] font-normal">· Suggested</span>}</button>
         ))}
       </div>
-      <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: a decision made here is saved in this browser until it’s recorded with the maps.</p>
+      {persisted
+        ? <p className="mt-3 text-[13px] leading-snug text-ch-ink-2">Lab: a decision made here is saved in this browser until it’s recorded with the maps.</p>
+        : <p className="mt-3"><StatusMark level="fail" label="Not saved in this browser" className="whitespace-normal text-[13px]" /></p>}
+      {!persisted && <p className="mt-1 text-[13px] leading-snug text-ch-ink-2">This browser is blocking storage, so your decisions last until you close the page. Download them before you go.</p>}
     </section>
   );
 }
@@ -720,12 +751,9 @@ function Panel({ id, title, className, pad = true, children }: { id: string; tit
   );
 }
 
-function Pending({ state }: { state: "loading" | "ready" | "error" }) {
-  return (
-    <p role={state === "error" ? "alert" : "status"} className="rounded-ch-input bg-ch-shell px-4 py-6 text-center text-[14.5px] text-ch-ink-2">
-      {state === "error" ? "This map’s file didn’t load. Reload the page to try again." : "Loading the map…"}
-    </p>
-  );
+function Pending({ state, onRetry }: { state: "loading" | "ready" | "error"; onRetry: () => void }) {
+  if (state === "error") return <LoadFailed what="This map’s file" onRetry={onRetry} />;
+  return <p role="status" className="rounded-ch-input bg-ch-shell px-4 py-6 text-center text-[14.5px] text-ch-ink-2">Loading the map…</p>;
 }
 
 const RESULT: Record<QaCheck["result"], ReactNode> = {

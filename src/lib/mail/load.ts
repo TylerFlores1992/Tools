@@ -32,8 +32,8 @@ export async function loadMail(date?: string): Promise<MailPage> {
     const history = await dayCounts(addDays(today, -13));
     const gmail = await getGmailSettings();
     const covered = new Set(rules.map((r) => (r.matchFrom ?? "").toLowerCase()).filter((f) => f.includes("@")));
-    const accountErrors = accounts.filter((a) => a.enabled && a.lastError).map((a) => `${accountLabel(a.id)}: ${a.lastError}`);
-    const report = buildReport({ date: day, rows: rows.filter((r) => r.reportDate <= day), dismissed, unsubscribed, ruleCoveredAddrs: covered, accountErrors });
+    // Account errors show once, in the account list at the top of the page, not again under "Couldn't do".
+    const report = buildReport({ date: day, rows: rows.filter((r) => r.reportDate <= day), dismissed, unsubscribed, ruleCoveredAddrs: covered, accountErrors: [] });
     const statuses: AccountStatus[] = accounts.map((a) => ({
       id: a.id,
       label: accountLabel(a.id),

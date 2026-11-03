@@ -1,7 +1,7 @@
 # Next session
 
 *Updated at the end of every session. Read this first, then `CLAUDE.md`.*
-*Last updated: 2026-10-30, night (Recordings: the home DVR at `/private/recordings`, through a key-locked Tailscale Funnel; `docs/RECORDINGS.md`). Earlier: 2026-10-30 (portfolio polish pass over every public page, PR #95: four independent reviews plus a real-Chrome walk-through from the home server via the QA bridge, two fix rounds, confirmed in real Chrome). Earlier: 2026-10-26, night (portfolio + résumé at `/work`, unlisted; `src/lib/work.ts`, PDF via `npm run resume`). Earlier the same day: (Learn to read code: `/private/learn`, Phase 1 lessons, spaced review, Gemini marking; `docs/LEARN.md`). Earlier: 2026-10-23 (Vectorworks: connector + live panel at `/private/vectorworks`, branch `claude/vectorworks-panel`). Earlier: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
+*Last updated: 2026-11-03 (whole-site audit: every press gives feedback; see the section below). Earlier: 2026-10-30, night (Recordings: the home DVR at `/private/recordings`, through a key-locked Tailscale Funnel; `docs/RECORDINGS.md`). Earlier: 2026-10-30 (portfolio polish pass over every public page, PR #95: four independent reviews plus a real-Chrome walk-through from the home server via the QA bridge, two fix rounds, confirmed in real Chrome). Earlier: 2026-10-26, night (portfolio + résumé at `/work`, unlisted; `src/lib/work.ts`, PDF via `npm run resume`). Earlier the same day: (Learn to read code: `/private/learn`, Phase 1 lessons, spaced review, Gemini marking; `docs/LEARN.md`). Earlier: 2026-10-23 (Vectorworks: connector + live panel at `/private/vectorworks`, branch `claude/vectorworks-panel`). Earlier: 2026-10-21 (Morning Mail: Likely junk and Updates sections, stricter "a person wrote", #81; Income: phone calendar, .ics import, settings merged, #73-#80). Earlier: 2026-10-20 (Money + Mail cleanup and the work calendar, #72; Income stubs, estimates and EDD benefits, #64-#71). Earlier: 2026-10-18 (home hero redesign started, `docs/design/hero-wilderness-cyber.md`). Earlier: 2026-10-11 (the camphawk.app hand-off written, `docs/design/camphawk-handoff.md`; campground maps: every held map with a public-data fix has been through a batch; delegated waves 2,011 pass, 950 held). Earlier: 2026-10-08, night (CampHawk shirts: after polish rounds 5-10 the owner chose to print the pick as it was (round 4 no. 7), kit rebuilt from it, PR #24; owner's map decisions recorded, PR #25; network back on Full, OSM extracts from OpenStreetMap France). Earlier: 2026-10-08 (PR #22 merged and live, production smoke 29/29: campground site maps' roads picked by fit from four sources, a tracing tool on the Site maps review page, traces on 13 sample maps, 45 of 50 can go live after one look, up from 38; and `docs/design/campground-maps-playbook.md` + the `campground-maps` skill, so "complete the maps" picks the work up). Earlier the same day: the 50-campground sample and review page (PR #19, merged, production smoke 29/29), Upper Pines live in the lab, ReserveCalifornia local-only, both State Parks requests sent; CampHawk lab fix rounds 6–17, PR #18 merged.*
 
 ## At a glance
 
@@ -42,6 +42,43 @@ add `LAB_PASSWORD` to Vercel's Preview environment (Settings → Environment Var
 `npm run shots` (80 screenshots) · `npm run smoke -- https://tylerflores.dev` (29/29 on production after #19 merged, 2026-10-07, including
 that `/private`, every lab page and its old URL land on the sign-in page, private files answer 401,
 and the hero film is served `immutable`). CI runs `verify` and `e2e` on every push.
+
+## Whole-site audit: every press gives feedback (2026-11-03)
+Owner: "A lot of the buttons don't really give feedback… go through the entire website public and
+private… The site must work perfect."
+- **How it was checked:**
+  - four read-only code audits (public; Money/Learn/shell; Mail/Recordings/Page Turner/Vectorworks;
+    CampHawk lab);
+  - the home server's real Chrome on production (public pages; the Private tab wasn't signed in);
+  - local builds with `npm run e2e` (57 checks, 3 new), `npm run shots` (80) and phone/desktop
+    shots of every private page;
+  - a fresh reviewer over the whole diff.
+- **Shared pieces:** `SubmitButton` (spinner, pending words, no double press, `confirm`),
+  `Spinner`, `PageLoading`, `AppTabs` (tabs follow the URL, pending dot), `LinkPending`, `press.ts`;
+  `loading.tsx` for money, mail, learn, learn/[lesson], recordings; `src/app/error.tsx` and
+  `global-error.tsx` ("Try again"). The rule is in the `flores-design` skill → Feedback.
+- **Bugs fixed:**
+  - **Money:** stub "Use this" could wipe a deposit; the category picker snapped back; Income
+    crashed with the DB down; one EDD deposit could be filed twice.
+  - **Recordings:** delete toasts and Undo vanished with the row.
+  - **Mail:** double-tapped rules doubled, and Unsubscribe ran past 60 s.
+  - **Page Turner:** polls piled up when the home server was slow.
+  - **Flashcards:** "Again" on the last card repeated it.
+  - **Bridle:** URL writes could crash Safari.
+  - **CampHawk lab:** "Sign up to watch" did nothing for four visitors, and about 30 dead `#` links.
+- **Security edges:** the private password has a per-instance lockout (5 tries / 15 min); the ICS
+  link fetch refuses private hosts and checks redirects; stub files are served `nosniff`.
+- **Owner to apply by hand (SQL editor):**
+  - the last statement in `docs/sql/money-income.sql` (one benefit stub per deposit);
+  - the last block in `docs/sql/mail-schema.sql` (one rule per match; run the commented `delete`
+    first if it fails).
+
+  The code guards both without them.
+- **Not done / open:**
+  - the bridge Chrome needs the owner to sign in to /private once, then re-walk Money, Mail,
+    Recordings, Learn and Page Turner on real data;
+  - the Money tabs still scroll sideways on a phone (the current tab stays visible);
+  - the lockout is per server instance, not global (a long `LAB_PASSWORD` is the real protection).
 
 ## Portfolio polish pass (2026-10-30, PR #95)
 Owner: "go page by page… it will be used as a portfolio showcasing my AI skill… make it perfect."

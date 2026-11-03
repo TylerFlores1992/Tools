@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { BellOff, BellRing, Check, ChevronDown } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
@@ -245,9 +246,9 @@ export function NewWatch() {
     setError(null);
     setAnswer(null);
     window.setTimeout(() => {
-      setSaving(false);
-      if (onSubmit === "limit") return setError(`You’ve hit the ${WATCH_LIMIT}-watch limit. Delete one to add another.`);
-      if (onSubmit === "expired" || onSubmit === "needs-sub") return setAnswer(onSubmit);
+      // The button keeps saying "Setting up…" until the page changes; only a refusal resets it.
+      if (onSubmit === "limit") { setSaving(false); return setError(`You’ve hit the ${WATCH_LIMIT}-watch limit. Delete one to add another.`); }
+      if (onSubmit === "expired" || onSubmit === "needs-sub") { setSaving(false); return setAnswer(onSubmit); }
       const nights = mode === "flexible" ? `&nights=${flexNights}${weekendsOnly ? "&weekends=1" : ""}` : "";
       router.push(withVisitor(`${ROUTES.watches}?new=${chosen.id}&start=${range.start}&end=${range.end}${nights}`, visitor));
     }, 600);
@@ -421,7 +422,7 @@ export function NewWatch() {
                 <legend className={label}>Auto-cart</legend>
                 <div className={panel}>
                   <p className="text-[15px] font-bold text-ch-ink">Auto-cart is on the Auto-Cart plan</p>
-                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We’ll still alert you the moment a site opens — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                  <p className="mt-0.5 text-[14px] leading-normal text-ch-ink-2">We’ll still alert you the moment a site opens — you book it yourself. <Link href={withVisitor(ROUTES.pricing, visitor)} className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</Link></p>
                 </div>
               </fieldset>
             )}
@@ -435,7 +436,7 @@ export function NewWatch() {
             {canRcHold && offer === "upsell" && (
               <div className={cx(panel, "mt-6")}>
                 <p className="text-[15px] font-bold text-ch-ink">8 AM holds are on the Auto-Cart plan</p>
-                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We’ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <a href="#" className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</a></p>
+                <p className="mt-1 text-[14px] leading-normal text-ch-ink-2">ReserveCalifornia releases canceled sites at 8 AM. We’ll still tell you the night before which site is opening, and alert you the moment it does — you book it yourself. <Link href={withVisitor(ROUTES.pricing, visitor)} className="font-bold underline underline-offset-2 hover:text-ch-ink">See plans</Link></p>
               </div>
             )}
             {/* The action sits under the fields it submits (CampHawk puts it in the side panel, which
@@ -454,15 +455,15 @@ export function NewWatch() {
                 {gate === "ready" && (
                   <p className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[14px] text-ch-ink-2">
                     <BellRing aria-hidden="true" className="size-4 shrink-0" />
-                    {visitor === "app" ? "Alerts come to this phone as notifications." : <>Alerts go by email, push and text. <a href="#" className="font-bold text-ch-ink underline underline-offset-[3px]">Change in Settings</a></>}
+                    {visitor === "app" ? "Alerts come to this phone as notifications." : <>Alerts go by email, push and text. <Link href={withVisitor(ROUTES.settings, visitor)} className="font-bold text-ch-ink underline underline-offset-[3px]">Change in Settings</Link></>}
                   </p>
                 )}
               </div>
               {answer === "needs-sub" && (
-                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}‑day free trial. <a href="#" className="font-bold underline">Compare plans</a></p>
+                <p role="status" className="mt-3 text-[14px] leading-normal text-ch-ink">Watches need a subscription — from {priceShort("base", "monthly")} after a {TRIAL_DAYS}‑day free trial. <Link href={withVisitor(ROUTES.pricing, visitor)} className="font-bold underline">Compare plans</Link></p>
               )}
               {answer === "expired" && (
-                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <a href="#" className="font-bold underline">Sign in</a> and press Start watching again — nothing you’ve entered is lost.</p>
+                <p role="alert" className="mt-3 text-[14px] leading-normal text-ch-alert-deep">Your session expired before we could save this. <Link href={`${ROUTES.signIn}?redirect_url=${encodeURIComponent(withVisitor(ROUTES.newWatch, visitor))}`} className="font-bold underline">Sign in</Link> and press Start watching again — nothing you’ve entered is lost.</p>
               )}
               {error && <p role="alert" className="mt-3 text-[14px] text-ch-alert-deep">{error}</p>}
             </div>
@@ -481,7 +482,8 @@ export function NewWatch() {
                     : formatRange(range.start, range.end)],
                   ["Checked", `Every ${CHECK_SECONDS} seconds, around the clock`],
                   ["Alerts", visitor === "app" ? "Notifications on this phone" : "Email, push and text, at once"],
-                  ...(offer === "promise" && canAutoCart ? [["Auto-cart", "On: an opening goes straight into your cart"] as const] : []),
+                  // Follows the switch: off means we alert and you book it yourself.
+                  ...(offer === "promise" && canAutoCart ? [["Auto-cart", autoCart ? "On: an opening goes straight into your cart" : "Off: we alert you, you book it yourself"] as const] : []),
                 ] as Array<readonly [string, React.ReactNode]>).map(([k, v]) => (
                   <div key={k} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 py-2.5 text-[15px] leading-snug">
                     <dt className="font-bold text-ch-ink-2">{k}</dt>
@@ -493,7 +495,8 @@ export function NewWatch() {
             </div>
             <div className="rounded-ch-card border border-ch-line bg-ch-card p-5 shadow-ch-card">
               <p className="mb-3 text-[13px] font-extrabold text-ch-ink-2">When a site opens, you get this</p>
-              <AlertCard compact cart={offer === "promise"} />
+              {/* The cart line only when this watch will cart: Recreation.gov, the Auto-Cart plan, switch on. */}
+              <AlertCard compact cart={offer === "promise" && canAutoCart && autoCart} />
             </div>
           </aside>
           <PricingLink visitor={visitor} plan={plan} className="lg:col-span-2" />

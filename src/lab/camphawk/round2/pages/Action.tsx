@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
 import { buttonClasses } from "../../ui";
@@ -8,6 +8,7 @@ import { LabSelect } from "../AppParts";
 import { BareCard, BareFrame, BetaNote, Facts } from "../BareFrame";
 import { ROUTES } from "../gates";
 import { useUrlState, withVisitor } from "../labState";
+import { OutLink } from "../labOut";
 import { HOLD, releaseLong } from "./alert-data";
 
 // Tier 1: the one-tap action page (campsite-finder src/app/w/[token], HoldConfirm.tsx). A tapped
@@ -76,6 +77,9 @@ function LineNote({ rank }: { rank: 1 | 2 }) {
 
 function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
   const [busy, setBusy] = useState(false);
+  // A yes still working when the lab's switch moves on must not land on the next screen.
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
   return (
     <BareCard>
       <h1 className="font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">Hold this site for you?</h1>
@@ -84,21 +88,24 @@ function HoldOffer({ second, onYes }: { second: boolean; onYes: () => void }) {
       {/* The beta note stays above the promise, on purpose. */}
       <BetaNote className="mt-4" />
       {/* Never disabled: a second tap while it works is harmless, and a dead button reads as broken. */}
-      <button type="button" onClick={() => { setBusy(true); window.setTimeout(onYes, 700); }} className={buttonClasses({ fullWidth: true, className: "mt-5 min-h-12 text-[16px]" })}>
+      <button type="button" onClick={() => { setBusy(true); window.clearTimeout(timer.current); timer.current = window.setTimeout(onYes, 700); }} className={buttonClasses({ fullWidth: true, className: "mt-5 min-h-12 text-[16px]" })}>
         {busy ? <><Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />Holding…</> : "Yes — hold it for me"}
       </button>
       <p className="mt-3 text-center text-[14px] text-ch-ink-2">Do nothing and we won’t hold it. You’ll still get the normal alert when it opens.</p>
       {second && <LineNote rank={2} />}
-      <a href="#" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-bold text-ch-forest underline underline-offset-[3px]">Look at {HOLD.unit} on ReserveCalifornia<ExternalLink aria-hidden="true" className="size-4" /></a>
+      <OutLink where="ReserveCalifornia" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-bold text-ch-forest underline underline-offset-[3px]">Look at {HOLD.unit} on ReserveCalifornia<ExternalLink aria-hidden="true" className="size-4" /></OutLink>
     </BareCard>
   );
 }
 
-function HoldConfirmed({ kind }: { kind: "fresh" | "revisit" | "full" | "offline" }) {
+function HoldConfirmed({ kind, focus = false }: { kind: "fresh" | "revisit" | "full" | "offline"; focus?: boolean }) {
+  // Arriving from "Yes — hold it for me": the button is gone, so focus goes to the answer.
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => { if (focus) heading.current?.focus(); }, [focus]);
   return (
     <BareCard>
       <CheckCircle2 aria-hidden="true" className="size-10 text-ch-ink-2" />
-      <h1 className="mt-3 font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">{kind === "revisit" ? "You’re on the list for this site" : "Got it — we’ll try for this site"}</h1>
+      <h1 ref={heading} tabIndex={-1} className="mt-3 outline-none font-ch-display text-[28px] font-extrabold leading-tight text-ch-ink">{kind === "revisit" ? "You’re on the list for this site" : "Got it — we’ll try for this site"}</h1>
       <p className="mt-2 text-[16px] leading-relaxed text-ch-ink-2">{kind === "revisit" ? "Your request is in, no need to tap again." : "We have your request."} When {HOLD.unit} at {HOLD.campground} opens on {releaseLong()}, our bot will try to put it in the cart for you.</p>
       {(kind === "full" || kind === "offline") && (
         <p className="mt-4 rounded-ch-input border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3 text-[15px] leading-relaxed text-ch-ink-2">
@@ -128,12 +135,13 @@ const LABELS: Record<Action, string> = {
 
 export function ActionPage() {
   const [action, setAction] = useUrlState<Action>("action", "stop", ACTIONS);
+  const [answered, setAnswered] = useState(false);
   return (
     <BareFrame page="One-tap action" controls={() => <LabSelect label="What the link did" short="Link" value={action} onChange={setAction} options={ACTIONS.map((a) => [a, LABELS[a]] as const)} />}>
       {({ visitor }) => {
         const home = withVisitor(visitor === "app" ? ROUTES.explore : ROUTES.home, visitor);
-        if (action === "hold-offer" || action === "hold-offer-second") return <HoldOffer second={action === "hold-offer-second"} onYes={() => setAction("hold-confirmed")} />;
-        if (action === "hold-confirmed") return <HoldConfirmed kind="fresh" />;
+        if (action === "hold-offer" || action === "hold-offer-second") return <HoldOffer key={action} second={action === "hold-offer-second"} onYes={() => { setAnswered(true); setAction("hold-confirmed"); }} />;
+        if (action === "hold-confirmed") return <HoldConfirmed kind="fresh" focus={answered} />;
         if (action === "hold-revisit") return <HoldConfirmed kind="revisit" />;
         if (action === "hold-full") return <HoldConfirmed kind="full" />;
         if (action === "hold-bot-offline") return <HoldConfirmed kind="offline" />;

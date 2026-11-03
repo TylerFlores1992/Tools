@@ -1,7 +1,10 @@
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { State } from "@/components/State";
-import { getIncomeSettings, listEvents } from "@/lib/money/income/store";
+import { SubmitButton } from "@/components/SubmitButton";
+import { getIncomeSettings, listEvents, type IncomeSettings as Settings } from "@/lib/money/income/store";
+import { toLocalDate } from "@/tools/money/simplefin";
+import { Unreachable } from "@/tools/money/ui/Setup";
+import type { WorkEvent } from "@/tools/money/income/types";
 import { CalendarScriptForm } from "@/tools/money/income/ui/IncomeForms";
 import { IcsImport } from "@/tools/money/income/ui/IcsImport";
 import { isImportedEvent } from "@/tools/money/income/ics";
@@ -17,16 +20,40 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 const FIELD = "field min-h-11 w-full min-w-0 rounded-input border border-control bg-surface px-3 text-body text-ink";
 
 /**
+ * The owner kept work days in Yahoo until he moved to Google Calendar on this day (ics.ts), so an
+ * older calendar's import ends here by default; the script reads Google from then on.
+ */
+const MOVED_TO_GOOGLE = "2026-10-05";
+/** Today in Pacific time, read once per request (a server component renders once). */
+const todayPacific = () => toLocalDate(Date.now() / 1000);
+
+/**
  * The Income part of Money → Settings: the work calendar script, importing an older calendar, and
  * pay, health plan and tax settings. Lives on the one Settings page (owner, 2026-10-20: "Income
  * settings is kind of hidden"); /private/money/income/settings redirects here.
  */
-export async function IncomeSettings({ saved, imported: imported_, removed }: { saved?: boolean; imported?: string; removed?: string }) {
-  const s = await getIncomeSettings();
+export async function IncomeSettings({ saved, failed, imported: imported_, removed }: { saved?: boolean; failed?: string; imported?: string; removed?: string }) {
+  // One query at a time (src/lib/money/db.ts). If the database doesn't answer, say so here
+  // instead of taking the whole Settings page down.
+  let s: Settings;
+  let events: WorkEvent[];
+  try {
+    s = await getIncomeSettings();
+    events = await listEvents();
+  } catch (e) {
+    console.error("money income settings load failed", e instanceof Error ? e.name : "unknown");
+    return (
+      <section aria-labelledby="cal" className="max-w-[720px] scroll-mt-6">
+        <h2 id="cal" className="text-h2 font-normal">Work calendar, pay and taxes</h2>
+        <div className="mt-4"><Unreachable /></div>
+      </section>
+    );
+  }
   const c = s.config;
   const rateRows = [...c.rates, ...Array.from({ length: 3 }, () => null)];
   const summary = (s.lastSummary ?? null) as { sent?: number; recolored?: number; errors?: number; scriptVersion?: string } | null;
-  const imported = (await listEvents()).filter((e) => isImportedEvent(e.eventId));
+  const imported = events.filter((e) => isImportedEvent(e.eventId));
+  const today = todayPacific();
   const importedRange = imported.length ? `${longDay(imported[0].startDay)} to ${longDay(imported[imported.length - 1].startDay)}` : "";
   const oldScript = !!s.keyHash && !!summary && Number(summary.scriptVersion ?? 0) < 2;
 
@@ -54,20 +81,24 @@ export async function IncomeSettings({ saved, imported: imported_, removed }: { 
           <p className="text-body text-ink-2">Work days kept in another calendar before this one (a Yahoo calendar, say). Export it as an .ics file, or copy its share link, then pick the events that were work. Imported days show on the work calendar like the Google ones; the script never changes or removes them.</p>
           {imported_ && <State kind="ok">Imported {imported_} {imported_ === "1" ? "event" : "events"}.</State>}
           {removed && <State kind="ok">Removed {removed} imported {removed === "1" ? "event" : "events"}.</State>}
+          {failed === "import" && <p role="alert"><State kind="wrong">Nothing was changed: the money database didn’t answer. Try again in a minute.</State></p>}
           {imported.length > 0 && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-btn border border-line px-4 py-3">
               <span className="text-body text-ink-2">{imported.length} imported {imported.length === 1 ? "event" : "events"}, {importedRange}</span>
-              <form action={removeImported}><Button type="submit" variant="quiet">Remove all imported</Button></form>
+              <form action={removeImported}><SubmitButton variant="quiet" pending="Removing…" confirm={`Remove all ${imported.length} imported ${imported.length === 1 ? "event" : "events"}? Days from your Google Calendar stay.`}>Remove all imported</SubmitButton></form>
             </div>
           )}
-          <IcsImport defaultFrom={`${new Date().getFullYear()}-01-01`} defaultBefore="2026-10-05" />
+          <IcsImport defaultFrom={`${today.slice(0, 4)}-01-01`} defaultBefore={today < MOVED_TO_GOOGLE ? today : MOVED_TO_GOOGLE} />
         </Card>
       </section>
 
       <section aria-labelledby="pay" className="max-w-[720px] scroll-mt-6">
         <h2 id="pay" className="text-h2 font-normal">Pay, health plan and taxes</h2>
         {saved && <p className="mt-3"><State kind="ok">Saved.</State></p>}
-      <form action={saveIncomeSettings} className="mt-6 grid gap-10">
+        {failed === "income" && <p role="alert" className="mt-3"><State kind="wrong">Not saved: the money database didn’t answer. Try again in a minute.</State></p>}
+      {/* Keyed on the saved settings: React resets a form after its action, and a reset <select>
+          would show the value it first rendered with, not the one just saved (docs/MONEY.md). */}
+      <form key={JSON.stringify(c)} action={saveIncomeSettings} className="mt-6 grid gap-10">
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 text-h3 font-medium">Colors</legend>
           <Pick label="Work days (worked, not paid)" name="workColor" value={c.workColor} />
@@ -136,7 +167,7 @@ export async function IncomeSettings({ saved, imported: imported_, removed }: { 
           </label>
         </fieldset>
 
-        <Button type="submit" className="justify-self-start">Save settings</Button>
+        <SubmitButton pending="Saving…" className="justify-self-start">Save settings</SubmitButton>
       </form>
       </section>
     </>

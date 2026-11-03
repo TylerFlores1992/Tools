@@ -27,6 +27,7 @@ export function LessonPlayer({ lesson, startAt, quizzes = [] }: { lesson: Lesson
   const [announce, setAnnounce] = useState("");
   const top = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLParagraphElement>(null);
+  const doneHeading = useRef<HTMLHeadingElement>(null);
   const step: Step = steps[i];
 
   // On a new step, bring its top into view and move focus to it, so keyboard and screen-reader
@@ -38,7 +39,9 @@ export function LessonPlayer({ lesson, startAt, quizzes = [] }: { lesson: Lesson
       return;
     }
     top.current?.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
-    heading.current?.focus({ preventScroll: true });
+    // Finishing swaps the step for the result card, so focus goes to the card's heading
+    // (otherwise it falls to <body> when the Finish button disappears).
+    (finished ? doneHeading.current : heading.current)?.focus({ preventScroll: true });
   }, [i, finished]);
 
   // Answered already: anything before where this sitting started (answered on an earlier visit),
@@ -87,7 +90,7 @@ export function LessonPlayer({ lesson, startAt, quizzes = [] }: { lesson: Lesson
     const pass = !lesson.checkpoint || (full && checkpointPassed(score, scored));
     return (
       <div ref={top} className="max-w-[720px] scroll-mt-4">
-        <h2 className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "" : lesson.checkpoint ? "Checkpoint " : "Lesson "}{lesson.number} done</h2>
+        <h2 ref={doneHeading} tabIndex={-1} className="font-mono text-label uppercase text-muted">{lesson.quizOf ? "" : lesson.checkpoint ? "Checkpoint " : "Lesson "}{lesson.number} done</h2>
         <div className="mt-4 rounded-card border border-line bg-surface p-6 shadow-card">
           <p className="font-mono text-label uppercase text-muted">Right on the first try</p>
           <p className="mt-2 text-title font-normal tabular-nums leading-none">

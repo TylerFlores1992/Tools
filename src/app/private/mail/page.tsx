@@ -7,6 +7,8 @@ import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { loadMail } from "@/lib/mail/load";
 import type { ReportItem } from "@/tools/mail/report";
+import { SubmitButton } from "@/components/SubmitButton";
+import { ClearNoteParams, DoneToggle } from "@/tools/mail/ui/MailButtons";
 import { MailShell } from "@/tools/mail/ui/MailShell";
 import { PendingButton } from "@/tools/mail/ui/PendingButton";
 import { Tag } from "@/tools/money/ui/MoneyShell";
@@ -27,7 +29,7 @@ const shortDate = (d: string) => new Intl.DateTimeFormat("en-US", { month: "shor
 const time = (iso: string) => new Date(iso).toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" });
 const dayTime = (iso: string) => new Date(iso).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string; ruled?: string; did?: string; n?: string; gmail?: string; err?: string }> }) {
+export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string; ruled?: string; did?: string; n?: string; gmail?: string; yahoo?: string; dup?: string; err?: string }> }) {
   await requirePrivate("/private/mail");
   const sp = await searchParams;
   const data = await loadMail(sp.date);
@@ -83,6 +85,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
           </Card>
         )}
 
+        {(ruled || resorted !== null) && <ClearNoteParams keys={NOTE_PARAMS} />}
         {ruled && (
           <p className="mt-5" role="status">
             <State kind={sp.err ? "wrong" : "ok"}>{ruled}</State>
@@ -226,7 +229,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
               <ul className="grid gap-1">
                 {data.history.filter((h) => h.date !== date).map((h) => (
                   <li key={h.date}>
-                    <Link href={`/private/mail?date=${h.date}`} className="flex min-h-10 items-center justify-between rounded-btn px-1 text-body text-ink-2 hover:bg-surface-2 hover:text-ink">
+                    <Link href={`/private/mail?date=${h.date}`} className="flex min-h-11 items-center justify-between rounded-btn px-1 text-body text-ink-2 hover:bg-surface-2 hover:text-ink">
                       <span>{longDate(h.date)}</span>
                       <span className="text-small tabular-nums text-muted">{h.needs} for you · {h.total} emails</span>
                     </Link>
@@ -241,7 +244,7 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
           <form action={resortMail} className="mt-10">
             <PendingButton
               pending="Sorting with AI… up to a minute"
-              className="inline-flex min-h-11 items-center rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink disabled:cursor-wait"
+              className="inline-flex min-h-11 items-center gap-2 rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink"
             >
               Sort the last week again
             </PendingButton>
@@ -257,19 +260,24 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
   );
 }
 
+/** One-off notes in the address; cleared once shown so a reload doesn't repeat them. */
+const NOTE_PARAMS = ["ruled", "did", "n", "gmail", "yahoo", "dup", "err", "resorted", "of"] as const;
+
 const RULE_WORD: Record<string, string> = {
   trash: "goes to Trash", file: "is filed in Misc", unsubscribe: "is unsubscribed from and trashed", hide: "is left out of this page", important: "always shows under Needs you",
 };
 
 /** The line under the date after a sender button: what the new rule does and what it did today. */
-function ruleNote(sp: { ruled?: string; did?: string; n?: string; gmail?: string; err?: string }): string | null {
+function ruleNote(sp: { ruled?: string; did?: string; n?: string; gmail?: string; yahoo?: string; dup?: string; err?: string }): string | null {
   if (!sp.ruled || !sp.did || !RULE_WORD[sp.did]) return null;
+  if (sp.dup) return `That rule was already there: mail from ${sp.ruled.slice(0, 120)} ${RULE_WORD[sp.did]}. Nothing new was done.`;
   const n = Number(sp.n) || 0;
   const moves = sp.did !== "hide" && sp.did !== "important";
   let text = `Mail from ${sp.ruled.slice(0, 120)} ${RULE_WORD[sp.did]} from now on.`;
   if (moves && n) {
     text += ` ${n} ${n === 1 ? "email" : "emails"} from the last week ${n === 1 ? "was" : "were"} handled the same way`;
-    text += sp.err ? ", but Yahoo didn't answer; the move happens at the next run." : sp.gmail ? "; Gmail moves them at its next run." : ".";
+    const later = [sp.yahoo && "Yahoo moves them in the next minute", sp.gmail && "Gmail moves them at its next run"].filter(Boolean).join("; ");
+    text += sp.err ? ", but Yahoo didn't answer; the move happens at the next run." : later ? `; ${later}.` : ".";
   }
   return text;
 }
@@ -303,28 +311,14 @@ function Items({ items, dismissed, empty, canDismiss, canTrash = false }: { item
               <p className="mt-0.5 text-small text-muted">{i.account}{i.since ? ` · since ${shortDate(i.since)}` : ""}</p>
               {canTrash && !done && i.addr && (
                 <details className="mt-1">
-                  <summary className="inline-flex min-h-10 cursor-pointer list-none items-center text-small text-muted underline underline-offset-4 hover:text-ink [&::-webkit-details-marker]:hidden">Spam?</summary>
+                  <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-small text-muted underline underline-offset-4 hover:text-ink [&::-webkit-details-marker]:hidden">Spam?</summary>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     <SenderButton addr={i.addr} action="trash" label={`Always trash ${i.addr}`} />
                   </div>
                 </details>
               )}
             </div>
-            {canDismiss && (
-              <form action={toggleDone}>
-                <input type="hidden" name="id" value={i.id} />
-                <input type="hidden" name="title" value={i.title} />
-                <input type="hidden" name="on" value={done ? "0" : "1"} />
-                <button
-                  type="submit"
-                  aria-label={`${done ? "Restore" : "Mark handled"}: ${i.title}`}
-                  aria-pressed={done}
-                  className="flex size-11 shrink-0 items-center justify-center rounded-full border border-control text-ink-2 transition-colors duration-150 hover:bg-surface-2 hover:text-ink aria-pressed:bg-primary aria-pressed:text-on-primary"
-                >
-                  <span aria-hidden="true">✓</span>
-                </button>
-              </form>
-            )}
+            {canDismiss && <DoneToggle id={i.id} title={i.title} done={done} action={toggleDone} />}
           </li>
         );
       })}
@@ -332,15 +326,17 @@ function Items({ items, dismissed, empty, canDismiss, canTrash = false }: { item
   );
 }
 
+const SENDER_PENDING: Record<string, string> = { unsubscribe: "Unsubscribing…", trash: "Saving…", file: "Saving…", hide: "Saving…", important: "Saving…" };
+
 function SenderButton({ addr, action, label, folder }: { addr: string; action: string; label: string; folder?: string }) {
   return (
     <form action={ruleFromSender}>
       <input type="hidden" name="addr" value={addr} />
       <input type="hidden" name="action" value={action} />
       {folder && <input type="hidden" name="folder" value={folder} />}
-      <button type="submit" className="inline-flex min-h-10 items-center rounded-btn border border-line-2 bg-surface px-3 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink">
+      <SubmitButton variant="quiet" pending={SENDER_PENDING[action] ?? "Saving…"} className="min-h-11 px-3 text-small">
         {label}
-      </button>
+      </SubmitButton>
     </form>
   );
 }

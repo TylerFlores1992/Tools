@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { conceptBoardClicks } from "./round2/labOut";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { buttonClasses } from "./ui";
@@ -30,7 +31,7 @@ export function HomeLab({ initialLook = DEFAULT_LOOK }: { initialLook?: LookId }
     window.history.replaceState(null, "", url);
   };
   return (
-    <div className="look" data-look={look.id}>
+    <div className="look" data-look={look.id} onClickCapture={conceptBoardClicks}>
       <LabBar page="Home" visitor={visitor} onVisitor={setVisitor}>
         <label htmlFor="lab-look" className="font-bold">Look</label>
         <select

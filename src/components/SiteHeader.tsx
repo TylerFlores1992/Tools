@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { cx } from "./cx";
+import { LinkPending } from "./LinkPending";
+import { PRESS } from "./press";
 import { EDGE, WRAP } from "./wrap";
 
 const NAV = [
@@ -35,13 +37,18 @@ export function SiteHeader({ current, overlay = false }: { current: "/" | "/work
             <li key={item.href} className={item.href === "/" ? "hidden sm:block" : undefined}>
               <Link
                 href={item.href}
-                // Private is behind a sign-in; prefetching it would only cache the redirect.
+                // Private is behind a sign-in; prefetching it would only cache the redirect. So its
+                // tap can wait on a cold server: the pending dot under the label says it landed.
                 prefetch={item.locked ? false : undefined}
                 aria-current={current === item.href ? "page" : undefined}
-                className="flex min-h-11 items-center gap-1.5 rounded-full px-2.5 text-small min-[360px]:px-3 text-ink-2 sm:min-h-9 sm:px-4 3xl:min-h-12 3xl:px-6 3xl:text-body transition-colors duration-150 hover:text-ink aria-[current=page]:bg-surface-2 aria-[current=page]:text-ink"
+                className={cx(
+                  "relative flex min-h-11 items-center gap-1.5 rounded-full px-2.5 text-small min-[360px]:px-3 text-ink-2 sm:min-h-9 sm:px-4 3xl:min-h-12 3xl:px-6 3xl:text-body transition-[color,background-color,scale] duration-150 hover:text-ink active:bg-surface-2 aria-[current=page]:bg-surface-2 aria-[current=page]:text-ink",
+                  PRESS,
+                )}
               >
                 {item.locked && <Lock />}
                 {item.label}
+                <LinkPending overlay="below" />
               </Link>
             </li>
           ))}

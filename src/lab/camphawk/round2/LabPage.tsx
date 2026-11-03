@@ -119,7 +119,8 @@ export function A({ href, visitor, children, className }: { href: string; visito
   const out = href === "#" || href.startsWith("http") || href.startsWith("mailto:");
   // Links are forest ink and underlined, not action green: following a link isn't getting a site.
   const cls = cx("font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2", className);
-  if (out) return <a href={href} className={cls}>{children}</a>;
+  // A "#" (nothing to go to in the lab) never jumps the page to the top.
+  if (out) return <a href={href} onClick={href === "#" ? (e) => e.preventDefault() : undefined} className={cls}>{children}</a>;
   return <Link href={visitor ? withVisitor(href, visitor) : href} className={cls}>{children}</Link>;
 }
 
@@ -214,6 +215,6 @@ export function Panel({ children, className, as: As = "div", label }: { children
 /** The one primary link a page ends on (a lab link where it can be, "#" where it would leave). */
 export function ActionLink({ href, visitor, children, variant = "primary", className }: { href: string; visitor?: Visitor; children: ReactNode; variant?: "primary" | "quiet" | "cart"; className?: string }) {
   const cls = buttonClasses({ variant, size: "lg", className: cx("px-6", className) });
-  if (href === "#") return <a href="#" className={cls}>{children}</a>;
+  if (href === "#") return <a href="#" onClick={(e) => e.preventDefault()} className={cls}>{children}</a>;
   return <Link href={visitor ? withVisitor(href, visitor) : href} className={cls}>{children}</Link>;
 }

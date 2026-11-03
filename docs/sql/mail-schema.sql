@@ -30,3 +30,15 @@ alter table mail.messages add constraint messages_bucket_check check (bucket in 
 
 -- 2026-10-24: who sorted each email, the AI read ('ai') or the code rules alone ('code').
 alter table mail.messages add column if not exists sorted_by text;
+
+-- 2026-11-03: one rule per (sender, subject, action, folder), so a double tap on a sender button
+-- can't make two (and an Unsubscribe rule can't press the link twice). The code already skips a
+-- duplicate (src/lib/mail/store.ts addRule); this closes two requests landing in the same instant.
+-- Safe to run more than once. If it fails with "could not create unique index", duplicates exist:
+-- run the delete below first (it keeps the oldest of each set), then the create again.
+--   delete from mail.rules a using mail.rules b
+--   where a.id > b.id and lower(coalesce(a.match_from,'')) = lower(coalesce(b.match_from,''))
+--     and lower(coalesce(a.match_subject,'')) = lower(coalesce(b.match_subject,''))
+--     and a.action = b.action and coalesce(a.folder,'') = coalesce(b.folder,'');
+create unique index if not exists rules_one_per_match_idx on mail.rules
+  (lower(coalesce(match_from, '')), lower(coalesce(match_subject, '')), action, coalesce(folder, ''));

@@ -4,6 +4,7 @@ import { classify, mailFromStored, pickRule } from "@/tools/mail/classify";
 import { clip, parseFrom, parseUnsubscribe } from "@/tools/mail/headers";
 import { planAction, safeUnsubscribeUrl } from "@/tools/mail/plan";
 import { addDays, CARRY_DAYS } from "@/tools/mail/report";
+import { unsubscribeOnce } from "@/tools/mail/service-text";
 import type { IncomingMail, MailRow, Rule } from "@/tools/mail/types";
 import { aiSort } from "./ai-sort";
 import { insertMessage, knownIds, recordUnsubscribed, recentUnactioned, setActionStatus, setClassification, unactionedFrom } from "./store";
@@ -54,6 +55,7 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
   const fresh = mails.filter((m) => !known.has(m.id));
   const ai = await aiSort(fresh, 18_000);
   const ops: MailboxOp[] = [];
+  const unsubscribe = unsubscribeOnce(oneClickUnsubscribe);
   let stored = 0;
   for (const m of fresh) {
     const sender = parseFrom(m.from);
@@ -65,7 +67,7 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
     let status = p.status;
     let note = p.note;
     if (p.action === "unsubscribe" && p.status === "pending") {
-      const r = await oneClickUnsubscribe(u.http);
+      const r = await unsubscribe(sender.addr, u.http);
       note = r.note;
       if (r.ok) {
         if (sender.addr) await recordUnsubscribed(sender.addr, "one-click");
@@ -92,16 +94,22 @@ export async function ingest(mails: IncomingMail[], rules: readonly Rule[], repo
 export async function applyRuleToRecent(rule: Rule, fromAddr: string): Promise<{ touched: number; accounts: string[] }> {
   const rows = await unactionedFrom(fromAddr, addDays(pacificDate(), -(CARRY_DAYS - 1)));
   const accounts = new Set<string>();
+  // One press per sender (each email's link carries its own token): stop at the first that works.
+  const unsubscribe = unsubscribeOnce(oneClickUnsubscribe);
+  let unsubscribedRecorded = false;
   for (const r of rows) {
     const mail = mailFromStored(r);
     const p = planAction(mail, rule);
     let status = p.status;
     let note = p.note;
     if (p.action === "unsubscribe" && p.status === "pending") {
-      const res = await oneClickUnsubscribe(r.unsubHttp);
+      const res = await unsubscribe(fromAddr, r.unsubHttp);
       note = res.note;
-      if (res.ok) await recordUnsubscribed(fromAddr, "one-click");
-      else status = "failed";
+      if (!res.ok) status = "failed";
+      else if (!unsubscribedRecorded) {
+        await recordUnsubscribed(fromAddr, "one-click");
+        unsubscribedRecorded = true;
+      }
     }
     if (p.action && status) {
       await setActionStatus(r.id, status, note, p.action, p.folder);

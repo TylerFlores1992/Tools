@@ -9,6 +9,7 @@ import { cleanRoad, lengthM, moveSite, nearestSite, originalAt, segmentsOfPath, 
 import { TracedMark } from "./AerialCheck";
 import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
 import { useLidar } from "./useLidar";
+import { useTracesSaved } from "./useTraceDraft";
 import { LIDAR } from "../maps/lidar";
 
 // Tracing what no public source has, over the aerial photo: campground roads, and restrooms and
@@ -59,6 +60,20 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   const [cursor, setCursor] = useState<XY | null>(null);
   const [focused, setFocused] = useState(false);
   const [said, setSaid] = useState("");
+  // Download and Copy confirm beside their buttons for a few seconds (the status bar above the
+  // list can be scrolled out of view by then).
+  const [fileNote, setFileNote] = useState<{ ok: boolean; text: string } | null>(null);
+  const fileNoteTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(fileNoteTimer.current), []);
+  const noteFile = (ok: boolean, text: string) => {
+    setFileNote({ ok, text });
+    window.clearTimeout(fileNoteTimer.current);
+    if (ok) fileNoteTimer.current = window.setTimeout(() => setFileNote(null), 4000);
+  };
+  // Retry asks the photo again with a cache-buster, and the lidar services past any cached failure.
+  const [photoTry, setPhotoTry] = useState(0);
+  const [lidarTry, setLidarTry] = useState(0);
+  const persisted = useTracesSaved();
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReplace, setConfirmReplace] = useState(false);
   // The site picked up to move (Move a site): the next tap puts it down.
@@ -95,8 +110,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
   // Asked for in steps of 400px so a resize doesn't fetch a new photo every pixel; USGS serves up to 4000.
   const photoW = drawnW ? Math.min(4000, Math.ceil((drawnW * dpr) / 400) * 400) : 1400;
   const source = aerialSource(map);
-  const lidar = useLidar(map.bbox, f.w, photoW, ground === "lidar");
-  const src = ground === "lidar" ? lidar.src : aerialUrl(map, f, photoW);
+  const lidar = useLidar(map.bbox, f.w, photoW, ground === "lidar", lidarTry);
+  const aerial = aerialUrl(map, f, photoW);
+  const src = ground === "lidar" ? lidar.src : aerial && photoTry ? `${aerial}&retry=${photoTry}` : aerial;
   const [photo, setPhoto] = useState<{ src: string; state: "ready" | "error" } | null>(null);
   const photoState = ground === "lidar" ? (lidar.state === "ready" ? "ready" : lidar.state === "error" ? "error" : "loading") : photo?.src === src ? photo.state : "loading";
   const img = useRef<HTMLImageElement>(null);
@@ -284,10 +300,11 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     setSaid(`Downloaded ${mapKey}.json.`);
+    noteFile(true, `Downloaded ${mapKey}.json`);
   };
   const copy = async () => {
-    try { await navigator.clipboard.writeText(JSON.stringify(file(), null, 1) + "\n"); setSaid("Trace file copied."); }
-    catch { setSaid("Copying didn’t work in this browser. Use Download instead."); }
+    try { await navigator.clipboard.writeText(JSON.stringify(file(), null, 1) + "\n"); setSaid("Trace file copied."); noteFile(true, "Copied"); }
+    catch { setSaid("Copying didn’t work in this browser. Use Download instead."); noteFile(false, "Copying didn’t work here. Use Download instead."); }
   };
 
   const vertex = 6 * perPx; // a 6px square at any zoom
@@ -417,6 +434,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
         {active !== null && <button type="button" onClick={undo} className={buttonClasses({ variant: "quiet", size: "sm" })}><Undo2 aria-hidden="true" className="size-4" />Undo last point</button>}
         {deleted && <button type="button" onClick={undoDelete} className={buttonClasses({ variant: "quiet", size: "sm" })}><RotateCcw aria-hidden="true" className="size-4" />Undo delete</button>}
         <p aria-live="polite" className={cx("min-w-0 basis-full text-[13.5px] font-bold text-ch-ink sm:flex-1 sm:basis-auto", !said && "sr-only")}>{said}</p>
+        {photoState === "error" && (ground === "lidar" || source) && (
+          <button type="button" onClick={() => { if (ground === "lidar") setLidarTry((t) => t + 1); else { setPhoto(null); setPhotoTry((t) => t + 1); } }} className={buttonClasses({ variant: "quiet", size: "sm" })}><RotateCcw aria-hidden="true" className="size-4" />{ground === "lidar" ? "Retry the lidar" : "Retry the photo"}</button>
+        )}
         {!said && <p className="text-[13.5px] text-ch-ink-2">{tool === "road" ? "Tap the photo to start a road." : tool === "site" ? "Tap a site to pick it up, then tap where it really is." : `Tap the photo to place a ${POINT_WORD[tool].toLowerCase()}.`}</p>}
       </div>
 
@@ -433,7 +453,7 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
       <section aria-labelledby="traces-h" className="mt-4 rounded-ch-input border border-ch-line bg-ch-paper">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-ch-line px-4 py-2.5">
           <h3 id="traces-h" className="font-ch-display text-[16px] font-bold text-ch-ink">Your traces</h3>
-          <p className="text-[13px] text-ch-ink-2">{changed ? "Saved in this browser; not on the map yet" : map.trace ? "As built into this map" : "Nothing traced yet"}</p>
+          <p className="text-[13px] text-ch-ink-2">{changed ? (persisted ? "Saved in this browser; not on the map yet" : <strong className="font-bold text-ch-alert-deep">Not saved in this browser: it blocks storage, so download them before you close the page</strong>) : map.trace ? "As built into this map" : "Nothing traced yet"}</p>
         </div>
         {draft.roads.length || draft.points.length || moves.length ? (
           <ul className="divide-y divide-ch-line">
@@ -525,6 +545,9 @@ export function TraceTool({ map, mapKey, name, draft, setDraft, changed, discard
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={download} disabled={!hasAny} className={buttonClasses({ variant: "ink", size: "sm", className: OFF })}><Download aria-hidden="true" className="size-4" />Download trace file</button>
             <button type="button" onClick={copy} disabled={!hasAny} className={buttonClasses({ variant: "quiet", size: "sm", className: OFF })}><Copy aria-hidden="true" className="size-4" />Copy</button>
+            <p role="status" className={cx("flex min-h-11 items-center gap-1.5 text-[13.5px] font-bold", fileNote?.ok === false ? "text-ch-alert-deep" : "text-ch-ink", !fileNote && "sr-only")}>
+              {fileNote && <>{fileNote.ok ? <Check aria-hidden="true" className="size-4 shrink-0" /> : null}{fileNote.text}</>}
+            </p>
             {changed && (confirmClear ? (
               <>
                 <button type="button" onClick={() => { discard(); setActive(null); setConfirmClear(false); setDeleted(null); setOpen(new Set()); setSaid(map.trace ? "Back to the trace built into this map." : "Your traces were deleted."); }} className={buttonClasses({ variant: "warn", size: "sm" })}><Trash2 aria-hidden="true" className="size-4" />{map.trace ? "Yes, discard my changes" : "Yes, delete my traces"}</button>

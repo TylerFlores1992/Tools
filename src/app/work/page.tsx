@@ -8,6 +8,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { State } from "@/components/State";
 import { HOW_I_WORK, PROJECTS, RESUME, STATE_LABEL, type Project } from "@/lib/work";
+import { CopyEmail } from "./CopyEmail";
+import { DownloadLink } from "./DownloadLink";
+import { publicFileSize } from "./resume-file";
 
 // Unlisted (owner's call, 2026-10-26): shared by link, never in the nav, sitemap or search.
 export const metadata: Metadata = {
@@ -96,6 +99,7 @@ export default function WorkPage() {
   // Shown lowercase: shorter in the button, and email addresses are case-insensitive.
   const email = RESUME.email?.toLowerCase();
   const contact = email ? `mailto:${email}` : null;
+  const size = publicFileSize(RESUME.pdf);
   return (
     <>
       <SiteHeader current={null} />
@@ -112,9 +116,9 @@ export default function WorkPage() {
                   Email {email} <Arrow />
                 </a>
               )}
-              <a href={RESUME.pdf} download className={buttonClasses("quiet")}>
-                Download résumé (PDF)
-              </a>
+              <DownloadLink href={RESUME.pdf} filename={RESUME.pdf.split("/").pop()!} label={size ? `Download résumé (PDF, ${size})` : "Download résumé (PDF)"} />
+              {/* Last in the row: it appears once JavaScript runs, and mustn't push the others. */}
+              {email && <CopyEmail email={email} />}
             </div>
           </header>
 

@@ -3,6 +3,7 @@ import { isConfigured } from "@/lib/money/db";
 import { ingest, opFor, type MailboxOp } from "@/lib/mail/ingest";
 import { sha256 } from "@/lib/mail/secret";
 import { getGmailSettings, getRules, markAccountRun, pendingActions, recordGmailRun, setActionStatus, knownIds } from "@/lib/mail/store";
+import { gmailProblem } from "@/tools/mail/service-text";
 import type { IncomingMail } from "@/tools/mail/types";
 
 /**
@@ -71,7 +72,10 @@ export async function POST(req: Request) {
         if (typeof r?.id !== "string") continue;
         const id = `gmail:${r.id}`;
         if (r.ok === true) await setActionStatus(id, "done", null);
-        else await setActionStatus(id, "failed", `Gmail said: ${String(r.error ?? "it could not move this email").slice(0, 160)}`);
+        else {
+          console.error("gmail move failed:", String(r.error ?? "no reason given").slice(0, 300));
+          await setActionStatus(id, "failed", gmailProblem(r.error));
+        }
       }
       return json({ ok: true });
     }

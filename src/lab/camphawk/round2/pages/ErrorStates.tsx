@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { buttonClasses } from "../../ui";
+import { labSay } from "../labOut";
 import { LabBar } from "../../LabBar";
 import { LabSelect } from "../AppParts";
 import { ROUTES } from "../gates";
@@ -24,6 +27,23 @@ function Badge() {
   );
 }
 
+/** "Try again": CampHawk reloads the page. Reloading the lab's mock would only draw the same screen
+    with no sign anything happened, so it shows a short pending state and says what would happen. */
+function TryAgain({ className }: { className: string }) {
+  const [busy, setBusy] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return (
+    <button type="button" aria-disabled={busy || undefined} onClick={() => {
+      if (busy) return;
+      setBusy(true);
+      timer.current = window.setTimeout(() => { setBusy(false); labSay("Lab: CampHawk reloads the page here. This example shows the same error again."); }, 800);
+    }} className={buttonClasses({ variant: "quiet", className })}>
+      {busy && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}{busy ? "Trying again…" : "Try again"}
+    </button>
+  );
+}
+
 export function ErrorScreen({ kind }: { kind: Kind }) {
   const [visitor] = useVisitor();
   if (kind === "global") {
@@ -34,7 +54,7 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
         <div className="max-w-[24rem]">
           <h1 className="text-[24px] font-extrabold text-ch-ink">CampHawk hit an error</h1>
           <p className="mt-3 text-[16px] leading-relaxed text-ch-ink-2">Something went wrong loading the app. Please try again.</p>
-          <button type="button" onClick={() => window.location.reload()} className={buttonClasses({ variant: "quiet", className: "mt-6 px-6" })}>Try again</button>
+          <TryAgain className="mt-6 px-6" />
         </div>
       </div>
     );
@@ -55,7 +75,7 @@ export function ErrorScreen({ kind }: { kind: Kind }) {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {/* A way back into the product, not just home (the lab bar's "All screens" covers the lab). */}
           {notFound && <a href={withVisitor(ROUTES.explore, visitor)} className={buttonClasses({ className: "px-6" })}>Search campgrounds</a>}
-          {!notFound && <button type="button" onClick={() => window.location.reload()} className={buttonClasses({ variant: "quiet", className: "px-6" })}>Try again</button>}
+          {!notFound && <TryAgain className="px-6" />}
           {/* A hard navigation on purpose: when the client has failed, the router may be what broke. */}
           <a href={withVisitor(ROUTES.home, visitor)} className={buttonClasses({ variant: "quiet", className: "px-6" })}>{notFound ? "Back to home" : "Home"}</a>
         </div>

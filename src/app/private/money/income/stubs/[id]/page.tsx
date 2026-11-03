@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
+import { SubmitButton } from "@/components/SubmitButton";
 import { requirePrivate } from "@/lib/money/guard";
 import { getIncomeSettings, getStub, getStubFile, listEvents, listStubs } from "@/lib/money/income/store";
 import { getTransactions } from "@/lib/money/store";
@@ -15,6 +15,8 @@ import { TAX_KEYS, TAX_LABEL } from "@/tools/money/income/types";
 import { dayKey, eventDays } from "@/tools/money/income/workdays";
 import { money, shortDate } from "@/tools/money/summary";
 import { MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
+import { ClearQuery } from "@/tools/money/ui/ClearQuery";
+import { Unreachable } from "@/tools/money/ui/Setup";
 import { chooseDeposit, removePhoto, removeStub, rereadStub, saveStub } from "../../actions";
 
 export const metadata: Metadata = { title: "Review stub · Income", description: "Check what was read.", robots: { index: false, follow: false } };
@@ -24,17 +26,43 @@ const FIELD = "field min-h-11 w-full min-w-0 rounded-input border border-control
 const v = (n: number | null | undefined) => (n == null ? "" : String(n));
 const addDays = (d: string, n: number) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
 
-export default async function StubPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  await requirePrivate(`/private/money/income/stubs/${id}`);
+/** Notes an action leaves in the address (`?note=`), cleared once shown. */
+const NOTE: Record<string, { kind: "ok" | "wrong" | "note"; text: string }> = {
+  db: { kind: "wrong", text: "Nothing was changed: the money database didn’t answer. Try again in a minute." },
+  pick: { kind: "note", text: "Pick a deposit from the list first. Nothing was changed." },
+  deposit: { kind: "ok", text: "Deposit updated." },
+};
+
+async function load(id: string) {
   const stub = await getStub(id);
-  if (!stub) notFound();
+  if (!stub) return null;
   // One query at a time: the pooler stalls pipelined queries (src/lib/money/db.ts).
   const file = await getStubFile(id);
   const all = await listStubs();
   const { config } = await getIncomeSettings();
   const events = await listEvents();
   const txns = await getTransactions(addDays(stub.payDate ?? new Date().toISOString().slice(0, 10), -40));
+  return { stub, file, all, config, events, txns };
+}
+
+export default async function StubPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ note?: string }> }) {
+  const { id } = await params;
+  await requirePrivate(`/private/money/income/stubs/${id}`);
+  const note = NOTE[(await searchParams).note ?? ""];
+  let data: Awaited<ReturnType<typeof load>>;
+  try {
+    data = await load(id);
+  } catch (e) {
+    console.error("money stub load failed", e instanceof Error ? e.name : "unknown");
+    return (
+      <MoneyShell current="/private/money/income">
+        <h1 className="text-title font-normal">Pay stub</h1>
+        <div className="mt-8"><Unreachable /></div>
+      </MoneyShell>
+    );
+  }
+  if (!data) notFound();
+  const { stub, file, all, config, events, txns } = data;
 
   const checks = stubChecks(stub, previousStub(stub, all), config);
   const reissues = replacedBy(all);
@@ -56,7 +84,7 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
 
   return (
     <MoneyShell current="/private/money/income">
-      <nav aria-label="Breadcrumb" className="text-small text-muted"><Link href="/private/money/income" className="underline-offset-4 hover:text-ink hover:underline">Income</Link> <span aria-hidden="true">/</span> {isW2 ? "W-2" : "Pay stub"}</nav>
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 text-small text-muted"><Link href="/private/money/income" className="inline-flex min-h-11 items-center rounded-tag underline-offset-4 hover:text-ink hover:underline">Income</Link> <span aria-hidden="true">/</span> {isW2 ? "W-2" : "Pay stub"}</nav>
       <Label className="mt-4">Income</Label>
       <h1 className="mt-3 text-title font-normal">{stub.status === "saved" ? (isW2 ? "W-2" : "Pay stub") : "Check what was read"}</h1>
       <p className="mt-3 flex flex-wrap gap-2">
@@ -67,6 +95,8 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
       {stub.estimated && <p className="mt-4 max-w-[64ch] text-body text-ink-2">An estimate, not read from a stub: {stub.notes ?? "worked out from your other stubs."} Add the real stub when you have it; once its take-home matches this one, it replaces the estimate.</p>}
       {reissuedBy && <p className="mt-4 max-w-[64ch] text-body text-ink-2">This week was reissued on <Link href={`/private/money/income/stubs/${reissuedBy.id}`} className="text-ink underline underline-offset-4">check {reissuedBy.checkNumber ?? "(no number)"}</Link>. Its take-home still counts as paid, but gross, taxes and hours come from the reissue.</p>}
       {reissueOf && <p className="mt-4 max-w-[64ch] text-body text-ink-2">A reissue of <Link href={`/private/money/income/stubs/${reissueOf.id}`} className="text-ink underline underline-offset-4">check {reissueOf.checkNumber ?? "(no number)"}</Link>: it takes back that check&rsquo;s take-home, so its own take-home is only the difference.</p>}
+      {note && <p role={note.kind === "wrong" ? "alert" : "status"} className="mt-4"><State kind={note.kind}>{note.text}</State></p>}
+      <ClearQuery keys={["note"]} />
       {stub.readError && <p className="mt-4"><State kind="wrong">{stub.readError}</State></p>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -85,10 +115,10 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
           )}
           <div className="mt-4 flex flex-wrap gap-2">
             {file && (
-              <form action={rereadStub}><input type="hidden" name="id" value={id} /><Button type="submit" variant="quiet">Read it again</Button></form>
+              <form action={rereadStub}><input type="hidden" name="id" value={id} /><SubmitButton variant="quiet" pending="Reading… this can take up to a minute" confirm={stub.status === "saved" ? "Read it again? What the AI reads replaces the numbers saved here, and you check them again before saving." : undefined}>Read it again</SubmitButton></form>
             )}
             {file && stub.status === "saved" && (
-              <form action={removePhoto}><input type="hidden" name="id" value={id} /><Button type="submit" variant="ghost">Delete the photo, keep the numbers</Button></form>
+              <form action={removePhoto}><input type="hidden" name="id" value={id} /><SubmitButton variant="ghost" pending="Deleting…" confirm="Delete the photo? The numbers stay saved, but the photo can’t be brought back.">Delete the photo, keep the numbers</SubmitButton></form>
             )}
           </div>
           {!isW2 && checks.length > 0 && (
@@ -190,7 +220,7 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
           </label>
 
           <div className="flex flex-wrap gap-3">
-            <Button type="submit">{stub.status === "saved" ? "Save changes" : "Looks right, save it"}</Button>
+            <SubmitButton pending="Saving…">{stub.status === "saved" ? "Save changes" : "Looks right, save it"}</SubmitButton>
           </div>
         </form>
       </div>
@@ -207,21 +237,21 @@ export default async function StubPage({ params }: { params: Promise<{ id: strin
             <input type="hidden" name="id" value={id} />
             <label className="grid min-w-0 flex-1 gap-1.5">
               <span className="text-small text-ink-2">Change it</span>
-              <select name="txn" defaultValue="" className={FIELD}>
+              <select name="txn" defaultValue="" required className={FIELD}>
                 <option value="" disabled>Pick one</option>
                 <option value="auto">Find it automatically</option>
                 {candidates.map((t) => <option key={t.id} value={t.id}>+{money(t.amount)} · {shortDate(t.posted)} · {(t.payee || t.description).slice(0, 40)}</option>)}
                 <option value="none">There is no deposit for this (cash, or not paid)</option>
               </select>
             </label>
-            <Button type="submit" variant="quiet">Use this</Button>
+            <SubmitButton variant="quiet" pending="Saving…">Use this</SubmitButton>
           </form>
         </section>
       )}
 
       <form action={removeStub} className="mt-12 border-t border-line pt-6">
         <input type="hidden" name="id" value={id} />
-        <Button type="submit" variant="ghost">Delete this {isW2 ? "W-2" : "stub"}</Button>
+        <SubmitButton variant="ghost" pending="Deleting…" confirm={`Delete this ${isW2 ? "W-2" : "stub"} and its photo? This can’t be undone.`}>Delete this {isW2 ? "W-2" : "stub"}</SubmitButton>
       </form>
     </MoneyShell>
   );

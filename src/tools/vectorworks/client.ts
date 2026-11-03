@@ -75,17 +75,21 @@ export class PanelError extends Error {
   }
 }
 
+const waitWords = (ms: number) => (ms >= 60_000 && ms % 60_000 === 0 ? `${ms / 60_000} ${ms === 60_000 ? "minute" : "minutes"}` : `${Math.max(1, Math.round(ms / 1000))} s`);
+
 export class PanelClient {
   constructor(
     readonly pairing: Pairing,
     private readonly fetcher: typeof fetch = (...a) => fetch(...a),
+    /** How long an ordinary request waits for Vectorworks before giving up. */
+    private readonly waitMs = 45_000,
   ) {}
 
   private get base() {
     return `http://127.0.0.1:${this.pairing.port}`;
   }
 
-  private async request<T>(path: string, init: RequestInit = {}, timeoutMs = 45_000): Promise<T> {
+  private async request<T>(path: string, init: RequestInit = {}, timeoutMs = this.waitMs): Promise<T> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     let res: Response;
@@ -96,6 +100,9 @@ export class PanelClient {
         headers: { authorization: `Bearer ${this.pairing.token}`, "content-type": "application/json", ...init.headers },
       });
     } catch {
+      // Our own timer ran out: the connector is there but Vectorworks is stuck (usually a dialog).
+      // That is not "offline", so the page keeps the drawing and says what to look for.
+      if (ctrl.signal.aborted) throw new PanelError(`Vectorworks didn't answer in ${waitWords(timeoutMs)}. Is a dialog open in Vectorworks?`, "vectorworks");
       throw new PanelError("Can't reach the connector on this computer. Is vwmcp-panel running?", "offline");
     } finally {
       clearTimeout(timer);
@@ -155,7 +162,8 @@ export class PanelClient {
     let res: Response;
     try {
       res = await this.fetcher(`http://127.0.0.1:${this.pairing.port}/api/rigging.csv`, { headers: { authorization: `Bearer ${this.pairing.token}` }, signal: AbortSignal.timeout(90_000) });
-    } catch {
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "TimeoutError") throw new PanelError(`Vectorworks didn't answer in ${waitWords(90_000)}. Is a dialog open in Vectorworks?`, "vectorworks");
       throw new PanelError("Can't reach the connector on this computer. Is vwmcp-panel running?", "offline");
     }
     if (!res.ok) throw new PanelError("Vectorworks didn't give the point list.", "vectorworks");

@@ -8,6 +8,10 @@ import { dayLabel } from "./campground-data";
 import { nearestRestroomFt, restrooms, scaleBar, siteTypeLabel, type MapSite, type SiteMapData } from "./maps";
 import { findSite, placeNumbers, toPx, type Box } from "./maps/layout";
 import { strayMiles } from "./maps/areas";
+import { OutLink } from "./labOut";
+
+/** Smooth scrolling, unless the visitor asked for less motion. */
+const smooth = (): ScrollBehavior => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
 
 // The campground's own site map, drawn by CampHawk from public data (no provider map image is
 // copied or traced): site points from Recreation.gov's RIDB, roads, restrooms and parking from the
@@ -132,7 +136,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
     const el = scroller.current;
     if (!el) return;
     const [x, y] = toPx(map, at, W);
-    el.scrollTo({ left: x - el.clientWidth / 2, top: y - el.clientHeight / 2, behavior: "smooth" });
+    el.scrollTo({ left: x - el.clientWidth / 2, top: y - el.clientHeight / 2, behavior: smooth() });
   };
   useLayoutEffect(() => {
     if (zoom > 1) { const at = found?.at ?? selected?.at; if (at) center(at); }
@@ -141,7 +145,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
   const pick = (s: Placed) => {
     onSelect(s.name);
     // Phones: the details (and Book) are below the map; bring them up.
-    if (!wide) requestAnimationFrame(() => details.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+    if (!wide) requestAnimationFrame(() => details.current?.scrollIntoView({ behavior: smooth(), block: "nearest" }));
   };
   const find = (q = query) => {
     const s = findSite(map, q);
@@ -275,7 +279,7 @@ export function SiteMap({ map, name, provider, picked, openIds, selectedId, onSe
         </div>
 
         <div className="grid gap-5 px-1 sm:px-0">
-          {selected && <div ref={details} className="scroll-mt-4"><SiteDetails map={map} site={selected} picked={picked!} /></div>}
+          {selected && <div ref={details} className="scroll-mt-4"><SiteDetails map={map} site={selected} picked={picked!} provider={provider} /></div>}
           <ul aria-label="Map key" className={cx("grid grid-cols-2 gap-x-4 gap-y-2.5 text-[14px] text-ch-ink-2 lg:grid-cols-1", selected && "border-t border-ch-line pt-4")}>
             {picked && <Key wide mark={<span className="gh-pin block scale-75" data-state="open" />}>Open on the picked night</Key>}
             <Key mark={<span className="size-[6px] rounded-full bg-ch-ink-2" />}>{picked ? "Other sites" : "Campsites"}</Key>
@@ -306,7 +310,7 @@ function Key({ mark, wide, children }: { mark: ReactNode; wide?: boolean; childr
   );
 }
 
-function SiteDetails({ map, site, picked }: { map: SiteMapData; site: MapSite; picked: string }) {
+function SiteDetails({ map, site, picked, provider }: { map: SiteMapData; site: MapSite; picked: string; provider: string }) {
   const toilet = nearestRestroomFt(map, site);
   const facts = [
     site.loop && site.loop,
@@ -323,7 +327,7 @@ function SiteDetails({ map, site, picked }: { map: SiteMapData; site: MapSite; p
       <p className="text-[13px] font-bold text-ch-green-deep"><span aria-hidden="true">✓ </span>Open {dayLabel(picked)}</p>
       <h3 className="mt-1 font-ch-display text-[19px] font-bold text-ch-ink">Site {site.name}</h3>
       <p className="text-[15px] text-ch-ink-2">{siteTypeLabel(site.type).replace(/^./, (c) => c.toUpperCase())}</p>
-      <a href="#" aria-label={`Book Site ${site.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", fullWidth: true, className: "mt-3" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></a>
+      <OutLink where={provider} aria-label={`Book Site ${site.name} (opens the booking site)`} className={buttonClasses({ variant: "cart", fullWidth: true, className: "mt-3" })}>Book<ExternalLink aria-hidden="true" className="size-3.5" /></OutLink>
       <ul className="mt-3 grid gap-1.5 border-t border-ch-line pt-3 text-[14px] text-ch-ink-2">
         {facts.map((t) => <li key={t}>{t}</li>)}
       </ul>

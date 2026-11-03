@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Form from "next/form";
 import Link from "next/link";
 import { buttonClasses } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -12,6 +11,7 @@ import { plural, when } from "@/tools/recordings/format";
 import { feedValue } from "@/tools/recordings/series-form";
 import type { AiringChannel, DvrState, SearchHit, ShowInfo, StoredRule } from "@/tools/recordings/types";
 import { AutoSubmit } from "@/tools/recordings/ui/AutoSubmit";
+import { LiveArea, LiveForm, LiveResults, LiveStatus } from "@/tools/recordings/ui/LiveSearch";
 import { RecordingsShell } from "@/tools/recordings/ui/RecordingsShell";
 import { Tag } from "@/tools/money/ui/MoneyShell";
 import { PendingButton } from "@/tools/mail/ui/PendingButton";
@@ -54,14 +54,17 @@ async function Search({ q }: { q: string }) {
         <p className="mt-3 text-body text-ink-2">
           Search the TV guide. It covers the next few days{guideEnd ? ` (through ${when(guideEnd, now).split(",").slice(0, -1).join(",")})` : ""}.
         </p>
-        <Form action={HERE} replace scroll={false} className="mt-6 flex gap-2" role="search">
+        <LiveArea>
+        <LiveForm action={HERE} className="mt-6 flex gap-2" role="search">
           <label className="sr-only" htmlFor="q">Show, sport or movie</label>
           <input id="q" name="q" type="search" defaultValue={q} autoFocus autoComplete="off" placeholder="Show, sport or movie" className={cx(field, "text-lede")} />
           <button type="submit" className={buttonClasses("quiet")}>Search</button>
           <AutoSubmit />
-        </Form>
+        </LiveForm>
+        <LiveStatus className="mt-2" />
 
-        <div className="mt-6" aria-live="polite">
+        <LiveResults className="mt-4">
+        <div aria-live="polite">
           {found && !found.ok && <State kind="wrong">{found.message}</State>}
           {found?.ok && found.data.length === 0 && <p className="text-body text-ink-2">Nothing in the guide matches “{q}”.</p>}
           {found?.ok && found.data.length > 0 && (
@@ -86,6 +89,8 @@ async function Search({ q }: { q: string }) {
             </ul>
           )}
         </div>
+        </LiveResults>
+        </LiveArea>
         <p className="mt-8 text-small text-muted">
           Not in the guide yet, like a show coming back next month?{" "}
           <Link href={`${HERE}?manual=1${q ? `&show=${encodeURIComponent(q)}` : ""}`} className="underline underline-offset-4 hover:text-ink">Add a series by name</Link>; it records once the show appears.
@@ -133,8 +138,9 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
           <p className="mt-4"><State kind="ok" sr="Note:">{rule.once ? "One airing is set to record." : `Already recording on ${rule.channelName ?? "its channel"}. Change the settings below.`}</State></p>
         )}
 
+        <LiveArea>
         <Card className="mt-8 grid gap-6">
-          <Form action={HERE} replace scroll={false} className="grid gap-1.5">
+          <LiveForm action={HERE} className="grid gap-1.5">
             <input type="hidden" name="show" value={info.title} />
             {editId && <input type="hidden" name="edit" value={editId} />}
             <label htmlFor="ch" className="text-small text-ink-2">Channel</label>
@@ -147,7 +153,8 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
               <noscript><button type="submit" className={buttonClasses("quiet")}>Show</button></noscript>
             </div>
             <AutoSubmit />
-          </Form>
+            <LiveStatus>Loading that channel…</LiveStatus>
+          </LiveForm>
 
           <form action={saveSeries} className="grid gap-6">
             <input type="hidden" name="title" value={info.title} />
@@ -159,6 +166,7 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
           </form>
         </Card>
 
+        <LiveResults>
         {chosen.airings.length > 0 && (
           <section className="mt-10" aria-label={`Coming up on ${chosen.name}`}>
             <Label>Coming up on {chosen.name}</Label>
@@ -186,7 +194,7 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
                       <input type="hidden" name="stop" value={a.stop} />
                       <input type="hidden" name="label" value={when(a.start, now)} />
                       {rule?.folder && <input type="hidden" name="folder" value={rule.folder} />}
-                      <PendingButton className={buttonClasses("quiet", "min-h-10 px-4 text-small")} pending="Saving…">Record this one</PendingButton>
+                      <PendingButton className={buttonClasses("quiet", "min-h-11 px-4 text-small")} pending="Saving…">Record this one</PendingButton>
                     </form>
                   )}
                 </li>
@@ -194,6 +202,8 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
             </ul>
           </section>
         )}
+        </LiveResults>
+        </LiveArea>
       </div>
     </RecordingsShell>
   );

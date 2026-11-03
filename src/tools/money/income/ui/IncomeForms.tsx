@@ -1,7 +1,9 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Arrow, Button } from "@/components/Button";
+import { State } from "@/components/State";
+import { SubmitButton } from "@/components/SubmitButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { newCalendarScript, uploadOne, type OneResult, type ScriptState } from "@/app/private/money/income/actions";
@@ -51,10 +53,14 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
 
   async function run() {
     stop.current = false;
+    // "Not added" rows go back in the queue, so Carry on retries them (a dropped connection, the
+    // database not answering). Read from this snapshot: `rows` in this closure doesn't update.
+    const queue = rows.map((r) => (r.state === "error" ? { ...r, state: "waiting" as const, text: undefined } : r));
+    setRows(queue);
     setRunning(true);
     for (let i = 0; i < files.current.length; i++) {
       if (stop.current) break;
-      if (rows[i] && rows[i].state !== "waiting") continue;
+      if (queue[i] && queue[i].state !== "waiting") continue;
       set(i, { state: "reading" });
       try {
         const f = await shrink(files.current[i]);
@@ -79,6 +85,8 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
   }
 
   const done = rows.filter((r) => r.state !== "waiting" && r.state !== "reading").length;
+  const retryable = rows.filter((r) => r.state === "error").length;
+  const waiting = rows.some((r) => r.state === "waiting");
   return (
     <div className="grid gap-5">
       <fieldset className="grid gap-2" disabled={running}>
@@ -128,8 +136,8 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
         {running ? (
           <Button type="button" variant="quiet" onClick={() => { stop.current = true; }}>Stop after this one</Button>
         ) : (
-          <Button type="button" disabled={!rows.some((r) => r.state === "waiting")} onClick={run}>
-            {done ? "Carry on" : rows.length === 1 ? <>Read it <Arrow /></> : <>Read them all <Arrow /></>}
+          <Button type="button" disabled={!waiting && retryable === 0} onClick={run}>
+            {!waiting && retryable ? `Try the ${retryable === 1 ? "one" : retryable} not added again` : done ? "Carry on" : rows.length === 1 ? <>Read it <Arrow /></> : <>Read them all <Arrow /></>}
           </Button>
         )}
         {!running && done > 0 && <Link href="/private/money/income" className="inline-flex min-h-11 items-center text-body text-ink underline underline-offset-4">Check them on Income</Link>}
@@ -139,15 +147,29 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
 }
 
 export function CalendarScriptForm({ connected }: { connected: boolean }) {
-  const [state, action, pending] = useActionState<ScriptState, FormData>(newCalendarScript, { attempt: 0 });
-  const [copied, setCopied] = useState(false);
+  const [state, action] = useActionState<ScriptState, FormData>(newCalendarScript, { attempt: 0 });
+  const [copy, setCopy] = useState<"idle" | "copied" | "failed">("idle");
+  // A new script starts with a fresh Copy button; "✓ Copied" goes back after two seconds.
+  const [shown, setShown] = useState(state.attempt);
+  if (shown !== state.attempt) { setShown(state.attempt); setCopy("idle"); }
+  useEffect(() => {
+    if (copy !== "copied") return;
+    const t = setTimeout(() => setCopy("idle"), 2000);
+    return () => clearTimeout(t);
+  }, [copy]);
+  const hasScript = connected || !!state.script;
   return (
     <div className="grid gap-4">
       <form action={action}>
-        <Button type="submit" variant={connected ? "quiet" : "primary"} disabled={pending}>
-          {pending ? "Making…" : connected ? "Make a new script (replaces the old one)" : <>Make my calendar script <Arrow /></>}
-        </Button>
+        <SubmitButton
+          variant={hasScript ? "quiet" : "primary"}
+          pending="Making…"
+          confirm={hasScript ? "Make a new script? The one in your Google account stops working until you paste the new one in and run setup again." : undefined}
+        >
+          {hasScript ? "Make a new script (replaces the old one)" : <>Make my calendar script <Arrow /></>}
+        </SubmitButton>
       </form>
+      {state.error && <p role="alert" className="text-small"><State kind="wrong">{state.error}</State></p>}
       {state.script && (
         <div className="grid gap-3">
           <ol className="grid list-decimal gap-1.5 pl-5 text-body text-ink-2 marker:text-muted">
@@ -155,22 +177,30 @@ export function CalendarScriptForm({ connected }: { connected: boolean }) {
             <li>Delete what&rsquo;s there and paste the script below.</li>
             <li>Choose <span className="text-ink">setup</span> in the function menu, press Run, and allow access to Calendar.</li>
           </ol>
-          <textarea readOnly value={state.script} rows={8} aria-label="Calendar script" className="field w-full rounded-input border border-control bg-surface p-3 font-mono text-small text-ink" />
-          <Button
-            type="button"
-            variant="quiet"
-            className="justify-self-start"
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(state.script ?? "");
-                setCopied(true);
-              } catch {
-                setCopied(false);
-              }
-            }}
-          >
-            {copied ? "✓ Copied" : "Copy script"}
-          </Button>
+          <textarea id="calendar-script" readOnly value={state.script} rows={8} aria-label="Calendar script" className="field w-full rounded-input border border-control bg-surface p-3 font-mono text-small text-ink" />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="quiet"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(state.script ?? "");
+                  setCopy("copied");
+                } catch {
+                  setCopy("failed");
+                  // Select it, so copying by hand is one step.
+                  const box = document.getElementById("calendar-script") as HTMLTextAreaElement | null;
+                  box?.focus();
+                  box?.select();
+                }
+              }}
+            >
+              {copy === "copied" ? "✓ Copied" : "Copy script"}
+            </Button>
+            <p aria-live="polite" className="text-small">
+              {copy === "failed" ? <State kind="wrong">Couldn&rsquo;t copy here. The script is selected: copy it with your keyboard or the Copy menu.</State> : null}
+            </p>
+          </div>
           <p className="text-small text-muted">The key inside is shown only now. If you lose it, make a new script.</p>
         </div>
       )}

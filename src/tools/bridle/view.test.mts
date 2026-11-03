@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { convertInput, solveBridle } from "./math.ts";
-import { FIX_FIELD, fromQuery, statusFor, toQuery } from "./view.ts";
+import { FIX_FIELD, URL_WRITE_GAP_MS, fromQuery, loadNotes, statusFor, toQuery, urlWriteWait } from "./view.ts";
 
 test("share URL is rounded to the precision the inputs show", () => {
   const metric = convertInput({ span: 21, load: 500, x: 9, drop: 12, rise: 0 }, "imperial", "metric");
@@ -48,4 +48,36 @@ test("wide legs get a plain note; status texts carry no live numbers", () => {
   assert.ok(s.kind === "note" && !s.caution);
   const wider = statusFor(solveBridle({ span: 20, load: 1000, x: 10, drop: 7, rise: 0 }), 1000, false);
   assert.equal(wider.text, s.text, "dragging must not change the words, or the live region re-announces");
+});
+
+test("load notes: zero and a likely typo get a note; ordinary loads don't", () => {
+  assert.match(loadNotes(0, "imperial")[0], /load is 0/);
+  assert.deepEqual(loadNotes(500, "imperial"), []);
+  assert.deepEqual(loadNotes(20000, "imperial"), [], "the threshold itself is fine");
+  assert.match(loadNotes(999999, "imperial")[0], /20,000 lb/);
+  assert.deepEqual(loadNotes(9000, "metric"), []);
+  assert.match(loadNotes(10001, "metric")[0], /10,000 kg/);
+});
+
+test("the share URL is written at most about three times a second during a drag, and the last change lands", () => {
+  // A 4 s drag at ~60 changes a second, run through the same rule the component uses.
+  let last = -Infinity, pendingAt: number | null = null;
+  const writes: number[] = [];
+  const flushUntil = (t: number) => { if (pendingAt !== null && pendingAt <= t) { writes.push(pendingAt); last = pendingAt; pendingAt = null; } };
+  for (let t = 0; t <= 4000; t += 1000 / 60) {
+    flushUntil(t);
+    pendingAt = null; // a new change replaces the scheduled write
+    const wait = urlWriteWait(t, last);
+    if (wait === 0) { writes.push(t); last = t; } else pendingAt = t + wait;
+  }
+  flushUntil(Infinity);
+  assert.ok(writes.length <= Math.ceil(4000 / URL_WRITE_GAP_MS) + 2, `${writes.length} writes`);
+  assert.ok(writes.length < 100, "stays under Safari's limit");
+  assert.ok(writes.at(-1)! >= 4000, "the final position is written");
+  for (let i = 1; i < writes.length; i++) assert.ok(writes[i] - writes[i - 1] >= URL_WRITE_GAP_MS - 1e-9);
+});
+
+test("the first change after a pause is written straight away", () => {
+  assert.equal(urlWriteWait(10_000, 0), 0);
+  assert.equal(urlWriteWait(100, 0), URL_WRITE_GAP_MS - 100);
 });

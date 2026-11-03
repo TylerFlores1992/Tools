@@ -195,15 +195,25 @@ export async function markRecolored(keys: string[], paidColor: string): Promise<
   await sql()`update money.work_events set recolored_at = now(), color = ${paidColor} where event_id in ${sql()(keys)}`;
 }
 
-/** File an EDD deposit as Paid Family Leave or Disability Insurance (benefits.ts). Once per deposit. */
+/**
+ * File an EDD deposit as Paid Family Leave or Disability Insurance (benefits.ts). Once per deposit,
+ * even when two presses race: a transaction-scoped advisory lock on the deposit serializes them, so
+ * the second one sees the first one's row and inserts nothing. `on conflict do nothing` (no target)
+ * also defers to the unique index in docs/sql/money-income.sql once it exists; without the index it
+ * is a no-op, so this works either way.
+ */
 export async function fileBenefit(txnId: string, program: string): Promise<void> {
-  await sql()`
-    insert into money.stubs (kind, status, employer, payroll_company, show_name, pay_date, tax_year, gross, net, taxes, deductions, earnings, ytd, deposit_txn_id, deposit_match)
-    select 'benefit', 'saved', 'California EDD', 'California EDD', ${program}, t.posted, extract(year from t.posted)::int, t.amount, t.amount,
-      '{}'::jsonb, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, t.id, 'manual'
-    from money.transactions t
-    where t.id = ${txnId} and t.amount > 0
-      and not exists (select 1 from money.stubs s where s.kind = 'benefit' and s.deposit_txn_id = t.id)`;
+  await sql().begin(async (tx) => {
+    await tx`select pg_advisory_xact_lock(hashtext(${`money.benefit:${txnId}`}))`;
+    await tx`
+      insert into money.stubs (kind, status, employer, payroll_company, show_name, pay_date, tax_year, gross, net, taxes, deductions, earnings, ytd, deposit_txn_id, deposit_match)
+      select 'benefit', 'saved', 'California EDD', 'California EDD', ${program}, t.posted, extract(year from t.posted)::int, t.amount, t.amount,
+        '{}'::jsonb, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, t.id, 'manual'
+      from money.transactions t
+      where t.id = ${txnId} and t.amount > 0
+        and not exists (select 1 from money.stubs s where s.kind = 'benefit' and s.deposit_txn_id = t.id)
+      on conflict do nothing`;
+  });
 }
 
 export async function unfileBenefit(id: string): Promise<void> {

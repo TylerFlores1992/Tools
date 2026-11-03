@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cx } from "@/components/cx";
+import { LinkPending } from "@/components/LinkPending";
+import { PRESS } from "@/components/press";
 import { STUDY_PAGES, studyPageFor } from "./nav";
 
 /**
@@ -18,9 +21,13 @@ export function StudyNav() {
             <Link
               href={item.href}
               aria-current={current === item.href ? "page" : undefined}
-              className="flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-2 text-small text-ink-2 transition-colors duration-150 hover:text-ink aria-[current=page]:bg-primary aria-[current=page]:text-on-primary sm:px-4"
+              className={cx(
+                "relative flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-2 text-small text-ink-2 transition-[color,background-color,scale] duration-150 hover:text-ink not-aria-[current=page]:active:bg-surface-2 aria-[current=page]:bg-primary aria-[current=page]:text-on-primary sm:px-4",
+                PRESS,
+              )}
             >
               {item.tab}
+              <LinkPending overlay="below" />
             </Link>
           </li>
         ))}

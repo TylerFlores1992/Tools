@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AlertTriangle, Bell, CreditCard, Loader2, Mail, ShoppingCart, Trash2, UserRound } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
@@ -13,7 +14,8 @@ import { A, LabNote, LabPage, WithRail } from "../LabPage";
 import { withVisitor } from "../labState";
 import { useUrlState } from "../labState";
 import { SmsAlerts } from "../SmsAlerts";
-import { useSwapFocus } from "../useSwapFocus";
+import { useFocusOnChange, useSwapFocus } from "../useSwapFocus";
+import { OutLink } from "../labOut";
 import { EMAIL } from "./alert-data";
 
 // Tier 1: Settings (campsite-finder src/app/(app)/settings, AutoCartSettings.tsx,
@@ -84,8 +86,9 @@ const AUTOCART_BODY = "When a site opens up on Recreation.gov we can put it in y
 function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor; plan: Plan; state: AutoCart; setState: (s: AutoCart) => void }) {
   const entitled = visitor === "subscriber" && plan === "autocart";
   const connect = withVisitor(ROUTES.connect, visitor);
-  const [step, setStep] = useState<"idle" | "confirm" | "busy">("idle");
-  const { confirmRef: upgradeConfirmRef, triggerRef: upgradeTriggerRef } = useSwapFocus(step !== "idle");
+  const [step, setStep] = useState<"idle" | "confirm" | "busy" | "done">("idle");
+  const { confirmRef: upgradeConfirmRef, triggerRef: upgradeTriggerRef } = useSwapFocus(step === "confirm" || step === "busy");
+  const upgradedRef = useFocusOnChange<HTMLParagraphElement>(step === "done");
   const [saving, setSaving] = useState(false);
 
   if (!entitled) {
@@ -98,29 +101,36 @@ function AutoCartSettings({ visitor, plan, state, setState }: { visitor: Visitor
         <p className="text-[15px] leading-relaxed text-ch-ink-2">{AUTOCART_BODY} Auto-cart comes with the Auto-Cart plan.</p>
         {visitor === "app" ? (
           // The app sells through the store's own paywall: no price here, ever.
-          <a href="#" className={sm("quiet", "justify-self-start")}>See the Auto-Cart plan</a>
+          <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("quiet", "justify-self-start")}>See the Auto-Cart plan</Link>
         ) : visitor === "subscriber" ? (
           <div className="rounded-ch-input border border-ch-line bg-ch-paper p-4">
             <p className="text-[15px] font-bold text-ch-ink">Add Auto-Cart to your subscription</p>
             <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">{pricePhrase("autocart", "monthly")}, or {pricePhrase("autocart", "yearly")} — you keep your current billing cycle and Stripe prorates the difference from today.</p>
+            {step === "done" ? (
+              <div className="mt-3 grid gap-3">
+                <p ref={upgradedRef} tabIndex={-1} role="status" className="text-[15px] font-bold text-ch-ink outline-none">You’re on the Auto-Cart plan now. One more step: connect Recreation.gov so we can cart for you.</p>
+                <Link href={connect} className={sm("cart", "justify-self-start")}>Set up auto-cart</Link>
+                <LabNote>Nothing is charged here. Switch Plan to Auto-Cart to see Settings on that plan.</LabNote>
+              </div>
+            ) : (
             <div className="mt-3 flex flex-wrap gap-2">
               {step === "idle" ? (
                 <button ref={upgradeTriggerRef} type="button" onClick={() => setStep("confirm")} className={sm("ink")}>Upgrade to Auto-Cart</button>
               ) : (
                 <>
-                  <button type="button" disabled={step === "busy"} onClick={() => setStep("busy")} className={sm("ink", off)}>
+                  <button type="button" disabled={step === "busy"} onClick={() => { setStep("busy"); window.setTimeout(() => setStep("done"), 900); }} className={sm("ink", off)}>
                     {step === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Upgrading…</> : "Confirm upgrade"}
                   </button>
                   <button ref={upgradeConfirmRef} type="button" aria-disabled={step === "busy" || undefined} onClick={() => { if (step !== "busy") setStep("idle"); }} className={sm()}>Cancel</button>
                 </>
               )}
             </div>
-            {step === "busy" && <LabNote className="mt-3">Nothing is charged here. Switch Plan to Auto-Cart to see what comes next.</LabNote>}
+            )}
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            <a href="#" className={sm()}>Auto-Cart — {priceShort("autocart", "monthly").replace("/mo", " / month")}</a>
-            <a href="#" className={sm("ink")}>Auto-Cart — {priceShort("autocart", "yearly").replace("/yr", " / year")}</a>
+            <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm()}>Auto-Cart — {priceShort("autocart", "monthly").replace("/mo", " / month")}</Link>
+            <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("ink")}>Auto-Cart — {priceShort("autocart", "yearly").replace("/yr", " / year")}</Link>
           </div>
         )}
       </>
@@ -195,7 +205,9 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
           </p>
         )}
         <p className="mt-1 max-w-[62ch] text-[14px] leading-relaxed text-ch-ink-2">{known && `${on} `}{m.detail}</p>
-        <a href={billing === "not-billed" ? "mailto:alerts@camphawk.app" : "#"} className={sm("quiet", "mt-3")}>{m.label}</a>
+        {billing === "not-billed" ? <a href="mailto:alerts@camphawk.app" className={sm("quiet", "mt-3")}>{m.label}</a>
+          : billing === "unknown" ? <Link href={withVisitor(ROUTES.support, visitor)} className={sm("quiet", "mt-3")}>{m.label}</Link>
+          : <OutLink where={({ stripe: "Stripe’s billing portal", "app-store": "your App Store subscriptions", play: "your Google Play subscriptions" } as const)[billing]} className={sm("quiet", "mt-3")}>{m.label}</OutLink>}
       </div>
     );
   }
@@ -203,7 +215,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
     return (
       <>
         <p className="text-[15px] leading-relaxed text-ch-ink-2">Watching needs a subscription.</p>
-        <a href="#" className={sm("ink", "justify-self-start")}>See plans</a>
+        <Link href={withVisitor(ROUTES.pricing, visitor)} className={sm("ink", "justify-self-start")}>See plans</Link>
         <RestorePurchases />
       </>
     );
@@ -221,6 +233,7 @@ function Subscription({ visitor, plan, billing }: { visitor: Visitor; plan: Plan
 /* ---------- Account ---------- */
 
 function SignOutConfirm({ textOn }: { textOn: boolean }) {
+  const router = useRouter();
   const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
   const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
   return (
@@ -233,7 +246,8 @@ function SignOutConfirm({ textOn }: { textOn: boolean }) {
           <p id="signout-q" className="text-[15px] font-bold text-ch-ink">Sign out of CampHawk?</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">You’ll need your email and password to get back in. Nothing is deleted.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("ink", off)}>{s === "busy" ? "Signing out…" : "Yes, sign me out"}</button>
+            {/* Signed out, CampHawk lands on its home page; the lab does the same as the signed-out visitor. */}
+            <button type="button" disabled={s === "busy"} onClick={() => { setS("busy"); window.setTimeout(() => router.push(ROUTES.home), 700); }} className={sm("ink", off)}>{s === "busy" ? <><Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />Signing out…</> : "Yes, sign me out"}</button>
             <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>Stay signed in</button>
           </div>
         </div>
@@ -245,8 +259,9 @@ function SignOutConfirm({ textOn }: { textOn: boolean }) {
 function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billing }) {
   const guest = visitor === "app";
   const noun = guest ? "your data" : "your account";
-  const [s, setS] = useState<"idle" | "confirm" | "busy">("idle");
-  const { confirmRef, triggerRef } = useSwapFocus(s !== "idle");
+  const [s, setS] = useState<"idle" | "confirm" | "busy" | "done">("idle");
+  const { confirmRef, triggerRef } = useSwapFocus(s === "confirm" || s === "busy");
+  const doneRef = useFocusOnChange<HTMLParagraphElement>(s === "done");
   const store = billing === "app-store" ? "App Store" : billing === "play" ? "Google Play" : null;
   let bill: ReactNode;
   if (guest) bill = <>If you bought a subscription in the app, it is billed by the App Store, and deleting your data <strong className="font-bold text-ch-ink">does not cancel it</strong> — cancel it in your store subscription settings.</>;
@@ -257,17 +272,23 @@ function DeleteAccount({ visitor, billing }: { visitor: Visitor; billing: Billin
     <>
       <p className="text-[15px] leading-relaxed text-ch-ink-2">Deleting {noun} removes your watches, alert history and saved campgrounds permanently. This can’t be undone.</p>
       <p className="text-[15px] leading-relaxed text-ch-ink-2">{bill}</p>
-      {s === "idle" ? (
+      {s === "done" ? (
+        <div className="grid gap-3 rounded-ch-input border border-ch-line bg-ch-paper p-4">
+          <p ref={doneRef} tabIndex={-1} role="status" className="text-[15px] font-bold text-ch-ink outline-none">{guest ? "Your data is deleted." : "Your account is deleted."} You’re signed out.</p>
+          <Link href={ROUTES.home} className={sm("quiet", "justify-self-start")}>Go to the CampHawk home page</Link>
+          <LabNote>Nothing is deleted here.</LabNote>
+        </div>
+      ) : s === "idle" ? (
         <button ref={triggerRef} type="button" onClick={() => setS("confirm")} className={sm("quiet", "justify-self-start text-ch-alert-deep!")}><Trash2 aria-hidden="true" className="size-4" />{guest ? "Delete my data" : "Delete account"}</button>
       ) : (
         <div role="group" aria-labelledby="delete-q" className="rounded-ch-input border-2 border-ch-alert bg-ch-card p-4">
           <p id="delete-q" className="flex items-center gap-2 text-[15px] font-bold text-ch-ink"><AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-ch-alert" />{guest ? "Delete your data?" : "Delete your account?"}</p>
           <p className="mt-1 text-[14px] text-ch-ink-2">Everything above happens as soon as you press the button, and we can’t bring any of it back.</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" disabled={s === "busy"} onClick={() => setS("busy")} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
+            <button type="button" disabled={s === "busy"} onClick={() => { setS("busy"); window.setTimeout(() => setS("done"), 900); }} className={sm("warn", off)}>{s === "busy" ? "Deleting…" : guest ? "Yes, delete my data" : "Yes, delete my account"}</button>
             <button ref={confirmRef} type="button" aria-disabled={s === "busy" || undefined} onClick={() => { if (s !== "busy") setS("idle"); }} className={sm()}>{guest ? "Keep my data" : "Keep my account"}</button>
           </div>
-          {s === "busy" && <LabNote className="mt-3">Nothing is deleted here.</LabNote>}
+
         </div>
       )}
     </>
@@ -365,7 +386,7 @@ export function Settings() {
                     <p className="text-[16px] font-bold text-ch-ink">{EMAIL}</p>
                     <p className="mt-1 text-[14px] leading-relaxed text-ch-ink-2">Change your email address, password or sign-in methods here, or from your account menu in the top right.</p>
                     {/* Opens Clerk's account panel in CampHawk; a stand-in here. */}
-                    <a href="#" className={sm("quiet", "mt-3")}>Manage sign-in</a>
+                    <OutLink where="your sign-in settings (Clerk’s account panel)" className={sm("quiet", "mt-3")}>Manage sign-in</OutLink>
                   </div>
                   <SignOutConfirm textOn={textOn} />
                 </>

@@ -38,3 +38,12 @@ test("every failure becomes words and a kind the page can act on", async () => {
     await assert.rejects(c.op("ping"), (e: unknown) => e instanceof PanelError && e.kind === kind && msg.test(e.message));
   }
 });
+
+test("a request Vectorworks never answers says so, and is not read as the connector being off", async () => {
+  const hang: ConstructorParameters<typeof PanelClient>[1] = (_url, init) =>
+    new Promise((_, reject) => init?.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError"))));
+  const c = new PanelClient({ port: 7377, token: TOKEN }, hang, 20);
+  await assert.rejects(c.op("ping"), (e: unknown) => e instanceof PanelError && e.kind === "vectorworks" && /didn't answer in 1 s\. Is a dialog open/.test(e.message));
+  const refused = new PanelClient({ port: 7377, token: TOKEN }, async () => { throw new TypeError("Failed to fetch"); }, 20);
+  await assert.rejects(refused.op("ping"), (e: unknown) => e instanceof PanelError && e.kind === "offline");
+});

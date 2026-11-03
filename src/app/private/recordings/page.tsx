@@ -31,8 +31,8 @@ type Tab = "upcoming" | "library" | "series" | "trash";
 const TABS: readonly Tab[] = ["upcoming", "library", "series", "trash"];
 const TAB_LABEL: Record<Tab, string> = { upcoming: "Upcoming", library: "Library", series: "Series", trash: "Trash" };
 
-const small = (extra?: string) => buttonClasses("ghost", cx("min-h-10 px-3 text-small", extra));
-const quietSmall = (extra?: string) => buttonClasses("quiet", cx("min-h-10 px-4 text-small", extra));
+const small = (extra?: string) => buttonClasses("ghost", cx("min-h-11 px-3 text-small", extra));
+const quietSmall = (extra?: string) => buttonClasses("quiet", cx("min-h-11 px-4 text-small", extra));
 
 export default async function Recordings({ searchParams }: { searchParams: Promise<{ tab?: string; msg?: string; kind?: string }> }) {
   await requirePrivate("/private/recordings");
@@ -44,12 +44,19 @@ export default async function Recordings({ searchParams }: { searchParams: Promi
       <RecordingsShell>
         <h1 className="text-title font-normal">Recordings</h1>
         <Card className="mt-8 max-w-[640px]">
-          <State kind={r.reason === "not-configured" ? "note" : "wrong"}>{r.message}</State>
-          {r.reason === "not-configured" && (
-            <p className="mt-3 text-body text-ink-2">
-              The site needs <code className="font-mono text-small">DVR_URL</code> and <code className="font-mono text-small">DVR_TOKEN</code> in Vercel. Setup is in{" "}
-              <code className="font-mono text-small">docs/RECORDINGS.md</code>.
-            </p>
+          {r.reason === "not-configured" ? (
+            <>
+              <State kind="note">Recordings isn&rsquo;t connected to the DVR at home yet.</State>
+              <details className="group mt-3 text-small text-ink-2">
+                <summary className="inline-flex min-h-11 cursor-pointer items-center text-ink-2 underline underline-offset-4 hover:text-ink"><span aria-hidden="true" className="mr-1.5 inline-block transition-transform duration-150 group-open:rotate-90 motion-reduce:transition-none">›</span>For Tyler</summary>
+                <p className="mt-2">
+                  The site needs <code className="font-mono">DVR_URL</code> and <code className="font-mono">DVR_TOKEN</code> in Vercel. Setup is in{" "}
+                  <code className="font-mono">docs/RECORDINGS.md</code>.
+                </p>
+              </details>
+            </>
+          ) : (
+            <State kind="wrong">{r.message}</State>
           )}
         </Card>
       </RecordingsShell>

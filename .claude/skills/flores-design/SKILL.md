@@ -58,6 +58,15 @@ settle (longer motion would need a pause control). Headline is the LCP element.
 Copy: "Quiet tools. / Sharp teeth." (`SITE.headline` in `src/lib/site.ts`). History, prompts and
 provenance: `docs/design/hero-wilderness-cyber.md`.
 
+## Feedback (every press answers, owner's rule 2026-11-03)
+- **A submit that calls the server is a `SubmitButton`** (`src/components/SubmitButton.tsx`): spinner +
+  `pending` words while it runs, refuses a second press, `confirm="…"` on anything destructive.
+- **A dynamic page gets a `loading.tsx`** using `PageLoading` inside its app shell, so a tap shows
+  the shell and "Loading…" at once. App tabs are `AppTabs` (light from the URL, pending dot).
+- **Slow links show they're working** (`LinkPending`, built on `useLinkStatus`); tappable rows and
+  chips carry a pressed style (`press.ts`); errors land on `src/app/error.tsx` with "Try again".
+- Outcomes are said in words where you are (toast, inline status), never only by a reload.
+
 ## Copy
 Plain, specific, honest. US spelling (`src/lib/us-spelling.test.mts`). No invented numbers —
 counts come from data (`src/lib/tools.ts`). Never show internals (codes, IDs). Unknown is

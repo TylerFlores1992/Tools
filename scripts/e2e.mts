@@ -74,7 +74,7 @@ try {
 
   await check("impossible geometry is explained with ✕ and shows no fake tension", async () => {
     await page.goto(`${BASE}/workshop/bridle-calculator?span=10&load=500&x=0&drop=5&rise=0&u=imperial`);
-    await page.getByText("Keep the bridle point between the two beams.").waitFor();
+    await page.getByRole("region", { name: "Results" }).getByText("Keep the bridle point between the two beams.").waitFor();
     assert.match(await leftTension(), /^–/);
   });
 
@@ -1199,7 +1199,7 @@ try {
     await p.getByText("Your 7‑day free trial of Auto-Cart starts after this.", { exact: false }).waitFor();
     await p.getByLabel("Email address").fill("camper@example.com");
     await p.getByLabel("Password").fill("long-enough-password");
-    await p.getByRole("button", { name: "Continue" }).click();
+    await p.getByRole("button", { name: "Continue", exact: true }).click();
     await p.waitForURL(/\/welcome\?next=/);
     await p.getByRole("button", { name: "Skip for now" }).click();
     await p.waitForURL(/\/pricing\?plan=autocart&as=member/);
@@ -1298,6 +1298,46 @@ try {
     await page.getByText("1 of 73 learned").waitFor();
     await page.getByRole("button", { name: /Arena/ }).click();
     await page.getByText("0 of 15 learned").waitFor();
+  });
+
+  await check("study: “Again” on the last card shows a different card, never the same one straight back", async () => {
+    await page.goto(`${BASE}/workshop/etcp-rigger-study/flashcards`);
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    const card = page.getByRole("region", { name: "Flashcard" });
+    await page.getByRole("button", { name: "Show answer" }).waitFor();
+    await page.locator("body").click({ position: { x: 5, y: 5 } });
+    for (let i = 0; i < 72; i++) await page.keyboard.press("ArrowRight");
+    await card.getByText(/^(Card )?73\D+73$/).waitFor();
+    const before = await card.locator("p.text-h2").innerText();
+    await page.getByRole("button", { name: "Show answer" }).click();
+    await page.getByRole("button", { name: "Again" }).click();
+    const after = await card.locator("p.text-h2").innerText();
+    assert.notEqual(after, before, "Again brought the same card straight back");
+  });
+
+  await check("private: an app's tab lights from the URL, including pages under it", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private/money/income`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/money/income`);
+    const tabs = p.getByRole("navigation", { name: "Money" });
+    assert.equal(await tabs.getByRole("link", { name: /Income/ }).getAttribute("aria-current"), "page");
+    assert.equal(await tabs.getByRole("link", { name: /Overview/ }).getAttribute("aria-current"), null);
+    await ctx.close();
+  });
+
+  await check("private: Sign out (a SubmitButton) still submits its server action and leaves the Private tab", async () => {
+    const { ctx, p } = await fresh();
+    await p.goto(`${BASE}/private`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private`);
+    const out = p.getByRole("button", { name: "Sign out" });
+    await out.click();
+    await p.waitForURL(`${BASE}/`);
+    await p.goto(`${BASE}/private`);
+    await p.waitForURL(/\/private\/sign-in/);
+    await ctx.close();
   });
 
   // ---- Vectorworks panel, against a stand-in for the connector's panel API ----------------

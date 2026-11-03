@@ -44,9 +44,16 @@ function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Vi
     // Each error names its field, is tied to it, and takes focus there.
     if (!email.includes("@")) { setError({ field: "email", text: "Enter an email address, like name@example.com." }); document.getElementById("auth-email")?.focus(); return; }
     if (up && password.length < 8) { setError({ field: "password", text: "Your password needs at least 8 characters." }); document.getElementById("auth-pass")?.focus(); return; }
+    finish("form");
+  };
+  // Continue, or Continue with Google: as if it worked. After sign-up: Welcome, carrying the
+  // destination. After sign-in: back where you were.
+  const [via, setVia] = useState<"form" | "google" | null>(null);
+  const finish = (how: "form" | "google") => {
+    if (busy) return;
     setError(null);
     setBusy(true);
-    // After sign-up: Welcome, carrying the destination. After sign-in: back where you were.
+    setVia(how);
     const to = up ? `${ROUTES.welcome}${next ? `?next=${encodeURIComponent(next)}` : ""}` : next ?? ROUTES.explore;
     window.setTimeout(() => router.push(withVisitor(to, app ? "app" : "member")), 700);
   };
@@ -56,10 +63,15 @@ function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Vi
       <p className="mt-1 text-center text-[15px] text-ch-ink-2">{!up ? "Welcome back." : trial ? "Takes about a minute." : "It’s free. Searching never needs an account."}</p>
       {!app && (
         <>
-          <a href="#" className="mt-6 flex min-h-12 items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper">
-            {/* eslint-disable-next-line @next/next/no-img-element -- a 20px brand mark, nothing for next/image to do */}
-            <img src="/private/camphawk/google-g.svg" alt="" width={20} height={20} className="size-5" />Continue with Google
-          </a>
+          <button type="button" disabled={busy} onClick={() => finish("google")} className="mt-6 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2.5 rounded-ch-input border border-ch-line bg-ch-card text-[15px] font-bold text-ch-ink hover:bg-ch-paper disabled:cursor-wait">
+            {via === "google"
+              ? <Loader2 aria-hidden="true" className="size-5 animate-spin motion-reduce:animate-none" />
+              : (
+                // eslint-disable-next-line @next/next/no-img-element -- a 20px brand mark, nothing for next/image to do
+                <img src="/private/camphawk/google-g.svg" alt="" width={20} height={20} className="size-5" />
+              )}
+            Continue with Google
+          </button>
           <div className="my-5 flex items-center gap-3 text-[14px] text-ch-ink-2"><span className="h-px flex-1 bg-ch-line" />or<span className="h-px flex-1 bg-ch-line" /></div>
         </>
       )}
@@ -69,7 +81,7 @@ function Widget({ mode, visitor, next, trial }: { mode: "in" | "up"; visitor: Vi
           <label className="grid gap-1.5"><span className="text-[14px] font-bold text-ch-ink">Password</span><input id="auth-pass" type="password" autoComplete={up ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} aria-invalid={error?.field === "password" || undefined} aria-describedby={error?.field === "password" ? "auth-error" : undefined} className={field} /></label>
         )}
         {error && <p id="auth-error" role="alert" className="text-[14px] font-bold text-ch-alert-deep">{error.text}</p>}
-        <button type="submit" disabled={busy} className={main}>{busy && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Continue</button>
+        <button type="submit" disabled={busy} className={main}>{via === "form" && <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}Continue</button>
         {/* What signing up agrees to, under the button (Clerk's legal-consent line, worded in the lab). */}
         {up && <p className="text-center text-[13px] leading-relaxed text-ch-ink-2">By continuing, you agree to CampHawk’s <A href={ROUTES.terms} visitor={visitor}>Terms of Service</A> and <A href={ROUTES.privacy} visitor={visitor}>Privacy Policy</A>.</p>}
       </form>

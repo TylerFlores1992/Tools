@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, Check, ExternalLink, Loader2, Lock } from "lucide-react";
 import { cx } from "@/components/cx";
 import { buttonClasses } from "../../ui";
@@ -9,6 +9,7 @@ import { LabSelect } from "../AppParts";
 import { BareFrame } from "../BareFrame";
 import { ROUTES } from "../gates";
 import { useUrlState, withVisitor } from "../labState";
+import { OutLink } from "../labOut";
 import { CLAIM } from "./alert-data";
 
 // Tier 1: Claim a held site (campsite-finder src/app/claim/[id], ClaimFlow.tsx, RcSignInForm.tsx,
@@ -152,6 +153,10 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
   const [opened, setOpened] = useState(false);
   const [ready, setReady] = useState(false);
   const [releasing, setReleasing] = useState(false);
+  // The hand-over's short wait must not fire after the lab's switch has moved to another status
+  // (this body is keyed by status, so it unmounts then).
+  const handover = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(handover.current), []);
   useEffect(() => {
     if (status !== "claiming") return;
     const t = window.setTimeout(() => setStatus("released"), 2200);
@@ -181,9 +186,9 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
       <>
         <SiteCard heading={`${CLAIM.unit} is yours to book`} tone="done" />
         <Step tone="todo" title={c.afterCta} body={c.afterBody}>
-          <a href="#" className={buttonClasses({ variant: "cart", size: "lg", fullWidth: true })}>{canInject ? "Check out on ReserveCalifornia" : c.afterCta}<ExternalLink aria-hidden="true" className="size-4" /></a>
+          <OutLink where="ReserveCalifornia’s checkout" className={buttonClasses({ variant: "cart", size: "lg", fullWidth: true })}>{canInject ? "Check out on ReserveCalifornia" : c.afterCta}<ExternalLink aria-hidden="true" className="size-4" /></OutLink>
         </Step>
-        <a href="#" className="mt-4 flex min-h-11 items-center justify-center text-[15px] font-bold text-ch-ink underline underline-offset-[3px]">Go straight to your ReserveCalifornia cart</a>
+        <OutLink where="your ReserveCalifornia cart" className="mt-4 flex min-h-11 items-center justify-center text-[15px] font-bold text-ch-ink underline underline-offset-[3px]">Go straight to your ReserveCalifornia cart</OutLink>
       </>
     );
   }
@@ -199,7 +204,7 @@ function ClaimBody({ status, device, setStatus }: { status: Status; device: Devi
         <p className="min-w-0 flex-1 text-[17px] font-bold text-ch-ink"><span className="sr-only">{ready ? "Next: " : "Then: "}</span>Hand it over{!ready && <span className="mt-0.5 flex items-center gap-1 text-[13px] font-bold text-ch-ink-2"><Lock aria-hidden="true" className="size-3.5" />After you sign in</span>}</p>
       </div>
       <p className="mt-3 text-[15px] leading-relaxed text-ch-ink-2">{ready ? "Tap the button and we let go so you can take it." : <>Once you’re signed in, tap <strong className="text-ch-ink">It’s mine — hand it over</strong> and we let go so you can take it.</>} The swap takes a couple of seconds, and the site is open to anyone during it — so only tap when you’re ready to finish.</p>
-      {ready && <button type="button" onClick={() => { setReleasing(true); window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It’s mine — hand it over"}</button>}
+      {ready && <button type="button" onClick={() => { setReleasing(true); window.clearTimeout(handover.current); handover.current = window.setTimeout(() => setStatus("claiming"), 400); }} className={buttonClasses({ size: "lg", fullWidth: true, className: "mt-4" })}>{releasing ? "Releasing…" : "It’s mine — hand it over"}</button>}
     </div>
   );
   return (

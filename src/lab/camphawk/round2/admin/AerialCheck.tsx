@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { RotateCcw } from "lucide-react";
 import { cx } from "@/components/cx";
+import { buttonClasses } from "../../ui";
 import { pct, type SiteMapData } from "../maps";
 import { segmentsOfPath } from "../maps/trace";
 import { aerialSource, aerialUrl, NO_PHOTO } from "../maps/aerial";
@@ -38,15 +40,20 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
   const ring = width && width < 560 ? 3.5 : 5.5;
   const [numbers, setNumbers] = useState(false);
   const [photo, setPhoto] = useState<"loading" | "ready" | "error">("loading");
+  // Retry asks again with a cache-buster on the photo, and past any cached failure for the lidar.
+  const [photoTry, setPhotoTry] = useState(0);
+  const [lidarTry, setLidarTry] = useState(0);
   // A photo already in the browser's cache can finish before React attaches onLoad.
   const img = useRef<HTMLImageElement>(null);
   useEffect(() => { const el = img.current; if (el?.complete) setPhoto(el.naturalWidth ? "ready" : "error"); }, []);
   const f = map.frame;
-  const lidar = useLidar(map.bbox, f.w, Math.max(800, width * 2), ground === "lidar");
+  const lidar = useLidar(map.bbox, f.w, Math.max(800, width * 2), ground === "lidar", lidarTry);
   const placed = map.sites.filter((s): s is typeof s & { at: [number, number] } => s.at !== null);
   if (!map.bbox) return <p className="text-[14.5px] text-ch-ink-2">This map was built before aerial checks existed. Rebuild it to compare.</p>;
   const source = aerialSource({ facilityId: map.facilityId, bbox: map.bbox });
-  const src = aerialUrl({ facilityId: map.facilityId, bbox: map.bbox }, f);
+  const base = aerialUrl({ facilityId: map.facilityId, bbox: map.bbox }, f);
+  const src = base && photoTry ? `${base}&retry=${photoTry}` : base;
+  const retryBtn = (onRetry: () => void) => <button type="button" onClick={onRetry} className={buttonClasses({ variant: "quiet", size: "sm", className: "mt-3 min-h-11 bg-ch-card! px-4" })}><RotateCcw aria-hidden="true" className="size-4" />Retry</button>;
 
   return (
     <div>
@@ -76,18 +83,20 @@ export function AerialCheck({ map, name }: { map: SiteMapData; name: string }) {
         {src && <img ref={img} src={src} width={1400} height={Math.round((1400 * f.h) / f.w)} alt={`Aerial photo of ${name} and the ground around it`} onLoad={() => setPhoto("ready")} onError={() => setPhoto("error")}
           className={cx("absolute inset-0 size-full object-fill transition-opacity duration-300", photo === "ready" ? "opacity-100" : "opacity-0")} />}
         {ground === "photo" && (photo !== "ready" || !source) && (
-          <p role={photo === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-            {!source ? NO_PHOTO : photo === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}
-          </p>
+          <div role={photo === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
+            <p>{!source ? NO_PHOTO : photo === "error" ? `The aerial photo didn’t load. ${source.host} may be busy; try again in a minute.` : "Loading the aerial photo…"}</p>
+            {source && photo === "error" && retryBtn(() => { setPhoto("loading"); setPhotoTry((t) => t + 1); })}
+          </div>
         )}
         {ground === "lidar" && (
           <div className="absolute inset-0 bg-ch-shell">
             {/* eslint-disable-next-line @next/next/no-img-element -- rendered here from the lidar elevations */}
             {lidar.src && <img src={lidar.src} alt={`Lidar relief of ${name}: the ground under the trees`} className="absolute inset-0 size-full object-fill" />}
             {lidar.state !== "ready" && (
-              <p role={lidar.state === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
-                {lidar.state === "error" ? "No lidar answered for this ground (or the service is busy; try again in a minute)." : "Loading the lidar relief…"}
-              </p>
+              <div role={lidar.state === "error" ? "alert" : "status"} className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-[14.5px] text-ch-ink-2">
+                <p>{lidar.state === "error" ? "No lidar answered for this ground (or the service is busy; try again in a minute)." : "Loading the lidar relief…"}</p>
+                {lidar.state === "error" && retryBtn(() => setLidarTry((t) => t + 1))}
+              </div>
             )}
           </div>
         )}

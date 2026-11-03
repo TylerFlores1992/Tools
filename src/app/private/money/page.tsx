@@ -10,6 +10,7 @@ import { InOutChart } from "@/tools/money/ui/Charts";
 import { StatTile } from "@/tools/money/ui/StatTile";
 import { ChoiceLink, MoneyShell, OWNER_LABEL, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
+import { ClearQuery } from "@/tools/money/ui/ClearQuery";
 
 export const metadata: Metadata = {
   title: "Money",
@@ -146,7 +147,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
               return (
                 <li key={m}>
                   {m > thisMonth ? (
-                    <span aria-disabled="true" className="flex min-h-10 min-w-12 items-center justify-center rounded-full px-3 text-small text-muted"><span className="sr-only">{monthName(m)}, not yet</span><span aria-hidden="true">{label}</span></span>
+                    <span aria-disabled="true" className="flex min-h-11 min-w-12 items-center justify-center rounded-full px-3 text-small text-muted"><span className="sr-only">{monthName(m)}, not yet</span><span aria-hidden="true">{label}</span></span>
                   ) : (
                     <Link href={qs({ month: m })} aria-current={on ? "true" : undefined} className={on ? CHIP_ON : CHIP}>
                       <span className="sr-only">{monthName(m)}</span><span aria-hidden="true">{label}</span>
@@ -159,7 +160,7 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
         </nav>
       )}
 
-      {sp.synced && <p className="mt-6"><State kind="ok">Connected and synced.</State></p>}
+      {sp.synced && <p role="status" className="mt-6"><State kind="ok">Connected and synced.</State><ClearQuery keys={["synced"]} /></p>}
       {!data.connected && <div className="mt-8"><NotConnected /></div>}
 
       <div role="group" aria-label="Which accounts" className="mt-6 inline-flex flex-wrap gap-1 rounded-full border border-line bg-surface p-1">
@@ -357,8 +358,8 @@ export default async function MoneyOverview({ searchParams }: { searchParams: Se
 const STOPPED_WITHIN_DAYS = 120;
 /** Categories shown before "Show more" in Where it went. */
 const TOP_CATEGORIES = 8;
-const CHIP = "flex min-h-10 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small tabular-nums text-ink-2 hover:text-ink";
-const CHIP_ON = "flex min-h-10 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small tabular-nums text-on-primary";
+const CHIP = "flex min-h-11 min-w-12 items-center justify-center rounded-full border border-line px-3 text-small tabular-nums text-ink-2 hover:text-ink";
+const CHIP_ON = "flex min-h-11 min-w-12 items-center justify-center rounded-full bg-primary px-3 text-small tabular-nums text-on-primary";
 const STEP = "flex min-h-11 min-w-11 items-center justify-center rounded-btn border border-line-2 bg-surface text-small text-ink-2 hover:text-ink";
 
 /** "$188.39 less than August": words, not a sign the reader has to decode. */

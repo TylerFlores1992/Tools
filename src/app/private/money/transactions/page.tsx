@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Button } from "@/components/Button";
+import Form from "next/form";
+import { SubmitButton } from "@/components/SubmitButton";
 import { Label } from "@/components/Label";
 import { requirePrivate } from "@/lib/money/guard";
 import { accountLabel, accountsFor, loadMoney } from "@/lib/money/load";
@@ -12,7 +13,7 @@ import { isMonth, isYear, money, monthName, monthOf, shiftMonth, shortDate } fro
 import type { Txn } from "@/tools/money/types";
 import { MoneyShell, Tag } from "@/tools/money/ui/MoneyShell";
 import { NotConfigured, NotConnected, Unreachable } from "@/tools/money/ui/Setup";
-import { recategorize } from "../actions";
+import { CategoryForm, MovedNote } from "@/tools/money/ui/CategoryForm";
 
 export const metadata: Metadata = {
   title: "Transactions · Money",
@@ -68,7 +69,9 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
       <h1 className="mt-3 text-title font-normal">Transactions</h1>
       {!data.connected && <div className="mt-8"><NotConnected /></div>}
 
-      <form method="get" className="mt-8 grid gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.4fr_auto] lg:items-end">
+      {/* next/form: a plain GET form without JavaScript; with it, a client navigation the Filter
+          button can show as pending ("Filtering…"). */}
+      <Form action="/private/money/transactions" className="mt-8 grid gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.4fr_auto] lg:items-end">
         <Field label="Month">
           <select name="month" defaultValue={month} className={SELECT}>
             {months.map((m) => <option key={m} value={m}>{monthName(m)}</option>)}
@@ -92,10 +95,11 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
           <input name="q" type="search" defaultValue={q} placeholder="Merchant or memo" className={`${SELECT} placeholder:text-muted`} />
         </Field>
         {view !== "all" && <input type="hidden" name="view" value={view} />}
-        <Button type="submit" variant="quiet">Filter</Button>
-      </form>
+        <SubmitButton variant="quiet" pending="Filtering…">Filter</SubmitButton>
+      </Form>
 
-      <p className="mt-5 text-small tabular-nums text-ink-2" aria-live="polite">
+      <div className="mt-5"><MovedNote /></div>
+      <p className="mt-2 text-small tabular-nums text-ink-2" aria-live="polite">
         {rows.length} {rows.length === 1 ? "transaction" : "transactions"} · {`−${money(outTotal)}`} out · {`+${money(inTotal)}`} in, transfers included
         {(category || q || account || month !== thisMonth) && (
           <> · <Link href="/private/money/transactions" className="underline underline-offset-4 hover:text-ink">Clear filters</Link></>
@@ -110,7 +114,7 @@ export default async function Transactions({ searchParams }: { searchParams: Sea
             <section key={day} aria-label={shortDate(day)}>
               <h2 className="font-mono text-label uppercase text-muted">{shortDate(day)}</h2>
               <ul className="mt-2 divide-y divide-line rounded-card border border-line bg-surface">
-                {list.map((t) => <Row key={t.id} t={t} account={names.get(t.accountId) ?? ""} />)}
+                {list.map((t) => <Row key={t.id} t={t} account={names.get(t.accountId) ?? ""} filter={category} />)}
               </ul>
             </section>
           ))}
@@ -131,7 +135,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function Row({ t, account }: { t: Txn; account: string }) {
+function Row({ t, account, filter }: { t: Txn; account: string; filter: string }) {
   const merchant = merchantKey(t.payee || t.description);
   // The whole row opens the category editor: one tap target instead of a link under every row.
   return (
@@ -154,23 +158,7 @@ function Row({ t, account }: { t: Txn; account: string }) {
         </summary>
         <div className="border-t border-line px-4 pb-4 pt-3">
           {(t.payee || displayName(t.description)) !== t.description && <p className="mb-3 break-words text-small text-muted">Bank says: {t.description}</p>}
-          <form action={recategorize} className="grid gap-3 sm:grid-cols-[minmax(0,16rem)_1fr_auto] sm:items-center">
-            <input type="hidden" name="id" value={t.id} />
-            <input type="hidden" name="description" value={t.payee || t.description} />
-            <label className="grid gap-1">
-              <span className="sr-only">Category</span>
-              <select name="category" defaultValue={t.category ?? ""} className={SELECT}>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </label>
-            {merchant.length >= 3 ? (
-              <label className="flex min-h-11 items-center gap-3 text-small text-ink-2">
-                <input type="checkbox" name="always" defaultChecked className="size-5 accent-ink" />
-                <span>Always file “{merchant}” this way</span>
-              </label>
-            ) : <span />}
-            <Button type="submit" variant="quiet">Save</Button>
-          </form>
+          <CategoryForm id={t.id} description={t.payee || t.description} label={t.payee || displayName(t.description)} category={t.category} source={t.categorySource} merchant={merchant} categories={CATEGORIES} filter={filter} />
           {t.categorySource && <p className="mt-2 text-small text-muted">Current: {SOURCE_WORD[t.categorySource]}.{t.memo ? ` Memo: ${t.memo}` : ""}</p>}
         </div>
       </details>

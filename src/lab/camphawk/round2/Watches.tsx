@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Bell, CalendarDays, Eye, Info, ShoppingCart, SlidersHorizontal, type LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { cx } from "@/components/cx";
 import { buttonClasses } from "../ui";
 import { WATCH_LIMIT, type Visitor } from "../data";
 import { LabBar } from "../LabBar";
@@ -14,6 +15,8 @@ import { ART } from "./Art";
 import { AppBand, BandPhoto, LabSelect, PhoneNudge, PLANS, PricingLink, WatchCtaLink, type Plan } from "./AppParts";
 import { availability, CAMPGROUNDS } from "./explore-data";
 import { ROUTES } from "./gates";
+import { OutLink } from "./labOut";
+import { useFocusOnChange } from "./useSwapFocus";
 import { TRIAL_DAYS } from "./pages/tier2-data";
 import { joinAnd } from "./pages/camping-data";
 import { GhFooter, ScreenLinks } from "./GhChrome";
@@ -51,7 +54,7 @@ function watchState(w: ExampleWatch, cart: CartLink, providerDown: boolean): Wat
   return "watching";
 }
 
-function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
+function HoldRow({ h, visitor, onRemove }: { h: Hold; visitor: Visitor; onRemove: (h: Hold) => void }) {
   const offered = h.status === "offered";
   return (
     <div className="grid gap-2 py-3 first:pt-0 last:pb-0">
@@ -68,8 +71,8 @@ function HoldRow({ h, onRemove }: { h: Hold; onRemove: (id: string) => void }) {
           : "We’ll try for this the moment it opens, tomorrow at 8 AM. We’ll tell you either way — keep an alarm set in case we miss."}
       </p>
       <div className="flex flex-wrap gap-2">
-        {offered && <a href="#" className={buttonClasses({ size: "sm", className: "min-h-11 flex-1 px-4" })}>Hold it for me</a>}
-        <button type="button" onClick={() => onRemove(h.id)} aria-label={offered ? `I don’t want this one: Site ${h.site}` : `Cancel hold: Site ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
+        {offered && <Link href={withVisitor(`${ROUTES.action}?action=hold-offer`, visitor)} aria-label={`Hold it for me: Site ${h.site}`} className={buttonClasses({ size: "sm", className: "min-h-11 flex-1 px-4" })}>Hold it for me</Link>}
+        <button type="button" onClick={() => onRemove(h)} aria-label={offered ? `I don’t want this one: Site ${h.site}` : `Cancel hold: Site ${h.site}`} className={buttonClasses({ variant: "quiet", size: "sm", className: "min-h-11 px-4" })}>
           {offered ? "I don’t want this one" : "Cancel hold"}
         </button>
       </div>
@@ -93,7 +96,7 @@ function mergeParts(parts: ReadonlyArray<string>): string[] {
   return out.map((o) => (o.sites.length ? `${o.base} (sites ${joinAnd(o.sites)})` : o.base));
 }
 
-function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (id: string) => void }) {
+function WatchCard({ w, visitor, cart, providerDown, onRemoveHold, fresh }: { w: ExampleWatch; visitor: Visitor; cart: CartLink; providerDown: boolean; onRemoveHold: (h: Hold) => void; fresh?: boolean }) {
   const state = watchState(w, cart, providerDown);
   const nights = w.flexNights ?? nightsBetween(w.start, w.end);
   const spec = [w.flexNights ? null : `${nights} ${nights === 1 ? "night" : "nights"}`, w.weekendsOnly ? "weekends only" : null, w.mutedSites ? `skipping ${w.mutedSites} muted site${w.mutedSites === 1 ? "" : "s"}` : null].filter(Boolean).join(", ");
@@ -103,9 +106,13 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
   const recgov = w.provider === "Recreation.gov";
   const carted = w.carted?.length && cart === "connected" ? w.carted : null;
   const calendarHref = withVisitor(`${ROUTES.campground}?id=${CAMPGROUNDS.find((c) => c.name === w.name)?.id ?? ""}`, visitor);
+  // The lab's Manage page has two example watches: Leo Carrillo for ReserveCalifornia, Upper Pines otherwise.
+  const manageHref = withVisitor(`${ROUTES.manage}${w.provider === "ReserveCalifornia" ? "?watch=leo" : ""}`, visitor);
 
   return (
-    <Card state={cardState} className="flex flex-col">
+    // A watch just created gets an ochre ring for a few seconds ("you asked for this"); it appears
+    // and goes without animating, so there is nothing to reduce.
+    <Card state={cardState} className={cx("flex flex-col", fresh && "ring-2 ring-ch-ochre ring-offset-2 ring-offset-ch-paper")}>
       <div data-card-dim className="flex-1">
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           {state === "hit" && <Tag kind="open">{w.openSites!.length} site{w.openSites!.length === 1 ? "" : "s"} open</Tag>}
@@ -137,13 +144,13 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
       {state === "authexpired" && (
         <div className="mt-3 border-t border-ch-line pt-3">
           <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Auto-cart can’t hold a site for you right now — the machine holding your Recreation.gov session is reconnecting. It signs back in by itself, and we’re still checking and still alerting you meanwhile.</p>
-          <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in again if this sticks</a>
+          <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Sign in again if this sticks</Link>
         </div>
       )}
       {state === "disconnected" && (
         <div className="mt-3 border-t border-ch-line pt-3">
           <p className="mb-2.5 text-[14px] leading-normal text-ch-ink-2">Recreation.gov signed CampHawk out of your account, so auto-cart can’t put an opening in your cart. We’re still checking and still alerting you. Sign in again and it picks back up.</p>
-          <a href="#" className={buttonClasses({ variant: "quiet", fullWidth: true })}>Reconnect Recreation.gov</a>
+          <Link href={withVisitor(ROUTES.connect, visitor)} className={buttonClasses({ variant: "quiet", fullWidth: true })}>Reconnect Recreation.gov</Link>
         </div>
       )}
       {state === "stalled" && (
@@ -156,12 +163,12 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
           {/* Same order as Manage: what you committed to first, then what you could add. */}
           {asked.length > 0 && (
             <Collapsible label="Holds you asked for" summary={`${asked.length} site${asked.length === 1 ? "" : "s"}`}>
-              <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
+              <div className="divide-y divide-ch-line">{asked.map((h) => <HoldRow key={h.id} h={h} visitor={visitor} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
           {offered.length > 0 && (
             <Collapsible label="Sites you can hold at 8 AM" summary={`${offered.length} site${offered.length === 1 ? "" : "s"}`}>
-              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} onRemove={onRemoveHold} />)}</div>
+              <div className="divide-y divide-ch-line">{offered.map((h) => <HoldRow key={h.id} h={h} visitor={visitor} onRemove={onRemoveHold} />)}</div>
             </Collapsible>
           )}
         </div>
@@ -174,16 +181,16 @@ function WatchCard({ w, visitor, cart, providerDown, onRemoveHold }: { w: Exampl
               cart for 15 minutes), so it comes before the button; red, because you must act.
               Example time. */}
           <p className="mb-2.5 flex flex-wrap items-center gap-2 text-[14px] text-ch-ink-2"><Tag kind="alert" mark="queued" srPrefix="Time left:">12 min left</Tag>Recreation.gov holds a cart for 15 minutes.</p>
-          <a href="#" className={buttonClasses({ variant: "cart", fullWidth: true })}>
+          <OutLink where="Recreation.gov" className={buttonClasses({ variant: "cart", fullWidth: true })}>
             <ShoppingCart aria-hidden="true" className="size-4" />
             Check out on Recreation.gov
-          </a>
+          </OutLink>
         </div>
       )}
       {/* Quiet links, not boxed buttons: four pairs of full-width buttons outweighed the watches. */}
       <div className="mt-3 flex gap-6 border-t border-ch-line pt-1">
         <Link href={calendarHref} aria-label={`Calendar for ${w.name}`} className={cardLink}><CalendarDays aria-hidden="true" className="size-4" />Calendar</Link>
-        <a href="#" aria-label={`Manage the ${w.name} watch`} className={cardLink}><SlidersHorizontal aria-hidden="true" className="size-4" />Manage</a>
+        <Link href={manageHref} aria-label={`Manage the ${w.name} watch`} className={cardLink}><SlidersHorizontal aria-hidden="true" className="size-4" />Manage</Link>
       </div>
     </Card>
   );
@@ -244,9 +251,9 @@ function AccountWall({ visitor }: { visitor: Visitor }) {
       {/* One account step carries the weight; the rest are plain links, so the wall reads as an
           explanation with a way in, not a stack of equal buttons. */}
       <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a href="#" className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Start {TRIAL_DAYS}‑day free trial</a>
-        <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">See plans</a>
-        <a href="#" className="text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Sign in</a>
+        <Link href={`${ROUTES.signUp}?redirect_url=${encodeURIComponent(ROUTES.watches)}`} className={buttonClasses({ variant: "ink", className: "min-h-12 px-6" })}>Start {TRIAL_DAYS}‑day free trial</Link>
+        <Link href={ROUTES.pricing} className="inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">See plans</Link>
+        <Link href={`${ROUTES.signIn}?redirect_url=${encodeURIComponent(ROUTES.watches)}`} className="inline-flex min-h-11 items-center text-[16px] font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Sign in</Link>
       </div>
       <p className="mt-5 text-[15px] text-ch-ink-2">Just looking? <Link href={withVisitor(ROUTES.explore, visitor)} className="font-bold text-ch-forest underline decoration-1 underline-offset-[3px] hover:decoration-2">Keep exploring without an account</Link></p>
     </Panel>
@@ -316,13 +323,31 @@ export function Watches() {
   const [outlookDismissed, setOutlookDismissed] = useState(false);
   const created = useCreated();
   const twoColumns = useTwoColumns();
+  // A canceled or declined hold takes its button with it: say what happened, and put focus there.
+  const [holdNotice, setHoldNotice] = useState<string | null>(null);
+  const holdNoticeRef = useFocusOnChange<HTMLParagraphElement>(holdNotice);
+  // The watch New watch just made is ringed for a few seconds, and a status line names it.
+  const createdId = created?.watch.id ?? null;
+  const [freshId, setFreshId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!createdId) return;
+    // Arriving from New watch (the URL is the external system here): ring it, then let it go.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFreshId(createdId);
+    const t = window.setTimeout(() => setFreshId(null), 4000);
+    return () => window.clearTimeout(t);
+  }, [createdId]);
 
   const subscriber = visitor === "subscriber";
   const watches = [...(created ? [created.watch] : []), ...WATCHES].map((w) => ({ ...w, holds: w.holds?.filter((h) => !removed.has(h.id)) }));
   const running = watches.filter((w) => w.active).length;
   const providerDown = provider === "down";
   const stalled = providerDown ? watches.filter((w) => w.active && w.provider === "ReserveCalifornia" && !w.openSites?.length).length : 0;
-  const card = (w: ExampleWatch) => <WatchCard key={w.id} w={w} visitor={visitor} cart={cart} providerDown={providerDown} onRemoveHold={(id) => setRemoved((r) => new Set(r).add(id))} />;
+  const removeHold = (h: Hold) => {
+    setRemoved((r) => new Set(r).add(h.id));
+    setHoldNotice(h.status === "offered" ? `Site ${h.site} won’t be offered again.` : `Hold canceled: Site ${h.site}. We won’t try for it at 8 AM.`);
+  };
+  const card = (w: ExampleWatch) => <WatchCard key={w.id} w={w} visitor={visitor} cart={cart} providerDown={providerDown} onRemoveHold={removeHold} fresh={freshId === w.id} />;
 
   let body: React.ReactNode;
   if (visitor === "signed-out") body = <AccountWall visitor={visitor} />;
@@ -354,7 +379,9 @@ export function Watches() {
             </div>
           </div>
         )}
-        {setup === "no-phone" && <PhoneNudge className="mb-4" />}
+        {created && <p role="status" className="mb-4 flex items-center gap-2.5 rounded-[13px] border border-ch-ochre-line bg-ch-ochre-soft px-4 py-3 text-[16px] font-bold text-ch-ink"><Eye aria-hidden="true" className="size-5 shrink-0" />Watching {created.watch.name}, {formatRange(created.watch.start, created.watch.end)}</p>}
+        <p ref={holdNoticeRef} tabIndex={-1} role="status" className={holdNotice ? "mb-4 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3 text-[15px] font-bold text-ch-ink shadow-ch-card outline-none" : "sr-only"}>{holdNotice ?? ""}</p>
+        {setup === "no-phone" && <PhoneNudge className="mb-4" visitor={visitor} />}
         {created?.quiet && !outlookDismissed && (
           <div className="mb-4 flex items-start gap-3 rounded-[13px] border border-ch-line bg-ch-card px-4 py-3.5 shadow-ch-card">
             <div className="flex-1">

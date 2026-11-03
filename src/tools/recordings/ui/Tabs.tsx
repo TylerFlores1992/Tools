@@ -47,7 +47,7 @@ export function Tabs<K extends string>({ tabs, initial, fallback, panels }: { ta
                 e.preventDefault();
                 pick(tabs[(i + d + tabs.length) % tabs.length].key, true);
               }}
-              className="flex min-h-10 items-center gap-2 rounded-full px-4 text-small whitespace-nowrap text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
+              className="flex min-h-11 items-center gap-2 rounded-full px-4 text-small whitespace-nowrap text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
             >
               {t.label}
               {t.count > 0 && <span className="tabular-nums">{t.count}</span>}

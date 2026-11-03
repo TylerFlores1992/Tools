@@ -3,6 +3,8 @@ import Link from "next/link";
 import { buttonClasses } from "@/components/Button";
 import { SITE } from "@/lib/site";
 import { PROJECTS, RESUME, STATE_LABEL } from "@/lib/work";
+import { DownloadLink } from "../DownloadLink";
+import { publicFileSize } from "../resume-file";
 
 // The printable résumé. `npm run resume` prints this page to public/work/tyler-flores-resume.pdf.
 // Same data as /work, so the page and the PDF never disagree. Unlisted, like /work.
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function ResumePage() {
   // Shown lowercase: email addresses are case-insensitive, and it reads shorter.
   const email = RESUME.email.toLowerCase();
+  const size = publicFileSize(RESUME.pdf);
   // Narrow screens get a phone gutter and a stacked header; from sm up, and always on paper
   // (the PDF lays out at 8.5in, past sm), it is the Letter layout.
   return (
@@ -24,9 +27,7 @@ export default function ResumePage() {
         <Link href="/work" className={buttonClasses("ghost", "px-3")}>
           <span aria-hidden="true">←</span> Portfolio
         </Link>
-        <a href={RESUME.pdf} download className={buttonClasses("ghost", "px-3")}>
-          Download PDF
-        </a>
+        <DownloadLink href={RESUME.pdf} filename={RESUME.pdf.split("/").pop()!} label={size ? `Download PDF (${size})` : "Download PDF"} variant="ghost" className="px-3" />
       </nav>
       <header className="flex flex-col gap-3 border-b border-line-2 pb-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6 print:flex-row print:items-end print:justify-between print:gap-6">
         <div>

@@ -12,17 +12,17 @@ export function StudyBreadcrumb({ toolName }: { toolName: string }) {
   const page = studyPageFor(usePathname() ?? STUDY_BASE);
   const onHub = !page || page.href === STUDY_BASE;
   return (
-    <nav aria-label="Breadcrumb" className="text-small text-muted">
+    <nav aria-label="Breadcrumb" className="-my-3 text-small text-muted">
       <ol className="flex flex-wrap items-center gap-y-1">
         <li>
-          <Link href="/workshop" className="hover:text-ink">Workshop</Link>
+          <Link href="/workshop" className="inline-flex min-h-11 items-center hover:text-ink active:text-ink">Workshop</Link>
         </li>
         <li className="flex items-center">
           <span aria-hidden="true" className="mx-2">/</span>
           {onHub ? (
             <span aria-current="page" className="text-ink-2">{toolName}</span>
           ) : (
-            <Link href={STUDY_BASE} className="hover:text-ink">{toolName}</Link>
+            <Link href={STUDY_BASE} className="inline-flex min-h-11 items-center hover:text-ink active:text-ink">{toolName}</Link>
           )}
         </li>
         {!onHub && (

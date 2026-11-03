@@ -20,7 +20,7 @@ export default async function AddStub({ searchParams }: { searchParams: Promise<
   const sp = await searchParams;
   return (
     <MoneyShell current="/private/money/income">
-      <nav aria-label="Breadcrumb" className="text-small text-muted"><Link href="/private/money/income" className="underline-offset-4 hover:text-ink hover:underline">Income</Link> <span aria-hidden="true">/</span> Add</nav>
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 text-small text-muted"><Link href="/private/money/income" className="inline-flex min-h-11 items-center rounded-tag underline-offset-4 hover:text-ink hover:underline">Income</Link> <span aria-hidden="true">/</span> Add</nav>
       <Label className="mt-4">Income</Label>
       <h1 className="mt-3 text-title font-normal">Add stubs or W-2s</h1>
       <p className="mt-3 max-w-[64ch] text-body text-ink-2">Pick one file or a whole year&rsquo;s worth: PDFs from the payroll sites (OneRevolution, MyCast&amp;Crew, GreenSlate and so on) or photos of paper stubs. <Link href="/private/money/income#missing" className="text-ink underline underline-offset-4">Stubs still missing</Link> lists what the bank says you were paid.</p>

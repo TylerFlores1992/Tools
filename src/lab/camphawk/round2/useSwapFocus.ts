@@ -19,3 +19,18 @@ export function useSwapFocus<C extends HTMLElement = HTMLButtonElement, T extend
   }, [open]);
   return { confirmRef, triggerRef };
 }
+
+/** For content that replaces what was pressed (a removed watch, a confirmed hold, a decision
+    recorded): when `key` changes to a non-null value, focus moves to the element `ref` is on (a
+    heading or a status line with tabIndex={-1}), so the keyboard isn't left on the body. Like
+    useSwapFocus, it ignores the first render, so nothing moves on page load. */
+export function useFocusOnChange<E extends HTMLElement = HTMLElement>(key: unknown) {
+  const ref = useRef<E>(null);
+  const prev = useRef(key);
+  useEffect(() => {
+    if (Object.is(prev.current, key)) return;
+    prev.current = key;
+    if (key !== null && key !== undefined && key !== false) ref.current?.focus();
+  }, [key]);
+  return ref;
+}

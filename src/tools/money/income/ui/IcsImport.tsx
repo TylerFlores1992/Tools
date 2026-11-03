@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { Button } from "@/components/Button";
+import { State } from "@/components/State";
+import { SubmitButton } from "@/components/SubmitButton";
 import { previewIcs, saveIcs, type IcsPreview } from "@/app/private/money/income/actions";
 
 const FIELD = "field min-h-11 w-full min-w-0 rounded-input border border-control bg-surface px-3 text-body text-ink";
@@ -13,7 +14,7 @@ const fmt = (d: string) => DAY.format(new Date(`${d}T00:00:00Z`));
  * event in the dates given, untick what isn't work, save. Two steps, so nothing lands unseen.
  */
 export function IcsImport({ defaultFrom, defaultBefore }: { defaultFrom: string; defaultBefore: string }) {
-  const [state, action, pending] = useActionState<IcsPreview, FormData>(previewIcs, { attempt: 0 });
+  const [state, action] = useActionState<IcsPreview, FormData>(previewIcs, { attempt: 0 });
   const events = useMemo(() => state.events ?? [], [state.events]);
   const [off, setOff] = useState<Set<string>>(new Set());
   const [shown, setShown] = useState(0);
@@ -41,10 +42,10 @@ export function IcsImport({ defaultFrom, defaultBefore }: { defaultFrom: string;
           <span className="text-small text-ink-2">and before</span>
           <input type="date" name="before" defaultValue={state.before ?? defaultBefore} required className={FIELD} />
         </label>
-        <Button type="submit" variant="quiet" disabled={pending} className="justify-self-start">{pending ? "Reading…" : "Show the events"}</Button>
+        <SubmitButton variant="quiet" pending="Reading the calendar…" className="justify-self-start">Show the events</SubmitButton>
       </form>
 
-      {state.error && <p role="alert" className="text-small text-wrong">! {state.error}</p>}
+      {state.error && <p role="alert" className="text-small"><State kind="wrong">{state.error}</State></p>}
 
       {state.events && (
         <form action={saveIcs} className="grid gap-3">
@@ -78,7 +79,7 @@ export function IcsImport({ defaultFrom, defaultBefore }: { defaultFrom: string;
                 <input type="checkbox" name="paid" defaultChecked className="size-5 accent-ink" />
                 Days no saved stub covers were already paid (mark them paid, not waiting)
               </label>
-              <Button type="submit" className="justify-self-start" disabled={picked === 0}>Import {picked} {picked === 1 ? "event" : "events"}</Button>
+              <SubmitButton className="justify-self-start" disabled={picked === 0} pending={`Importing ${picked} ${picked === 1 ? "event" : "events"}…`}>Import {picked} {picked === 1 ? "event" : "events"}</SubmitButton>
             </>
           )}
         </form>

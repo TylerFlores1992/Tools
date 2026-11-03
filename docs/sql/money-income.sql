@@ -86,3 +86,12 @@ alter table money.stubs add constraint stubs_kind_check check (kind in ('stub', 
 
 -- 2026-10-20: the Refresh button on Income asks the calendar script for a read now (refresh.ts).
 alter table money.income_settings add column if not exists calendar_refresh_requested_at timestamptz;
+
+-- 2026-11-03 (site audit): one EDD deposit can be filed only once. fileBenefit() already takes an
+-- advisory lock and skips a deposit that is filed, so this index is the database's own backstop
+-- for two presses at once. NOT APPLIED YET: run it by hand in the Supabase SQL editor. If it
+-- fails with "could not create unique index", a deposit is already filed twice; find it with
+--   select deposit_txn_id, count(*) from money.stubs where kind = 'benefit' group by 1 having count(*) > 1;
+-- delete the extra row(s) on Income (Unfile), then run it again.
+create unique index if not exists stubs_one_benefit_per_deposit
+  on money.stubs (deposit_txn_id) where kind = 'benefit';

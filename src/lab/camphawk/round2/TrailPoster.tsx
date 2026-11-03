@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { conceptBoardClicks } from "./labOut";
 import { Check, Search } from "lucide-react";
 import { buttonClasses } from "../ui";
 import { COVERAGE_SENTENCE, type Visitor } from "../data";
@@ -54,7 +55,7 @@ export function TrailPoster() {
   const [visitor, setVisitor] = useState<Visitor>("signed-out");
   const [lead, ...rest] = FEATURES;
   return (
-    <div className="tp look-grain bg-ch-paper">
+    <div className="tp look-grain bg-ch-paper" onClickCapture={conceptBoardClicks}>
       <LabBar page="Round 2" visitor={visitor} onVisitor={setVisitor}>
         <DirectionLinks current="trail-poster" />
       </LabBar>

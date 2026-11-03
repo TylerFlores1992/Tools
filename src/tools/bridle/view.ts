@@ -47,3 +47,35 @@ export function statusFor(r: BridleResult, load: number, blocked: boolean): Stat
   if (r.includedAngle > 90) return { kind: "note", caution: false, text: "Legs are more than 90° apart. Past 120° on level beams, each leg carries more than the load." };
   return { kind: "ok", text: "Both legs carry less than the load." };
 }
+
+/**
+ * Notes about the measurements themselves, shown beside the inputs. Soft: they never block a
+ * result. Only two, both about the load, and neither is an engineering limit:
+ * - a load of 0 makes every tension 0, which reads like an answer but isn't one;
+ * - a load past 10 tons is far beyond the examples and common chain hoists (1/4 to 2 tons), so
+ *   it's most often a typo or the wrong units. The note asks you to check, nothing more.
+ */
+export const LARGE_LOAD: Record<Units, number> = { imperial: 20000, metric: 10000 };
+
+export function loadNotes(load: number, units: Units): string[] {
+  if (load === 0) return ["The load is 0, so both legs read 0. Enter the weight you’re hanging."];
+  if (load > LARGE_LOAD[units]) {
+    return [units === "metric"
+      ? "That’s over 10,000 kg (10 tonnes). Check the number and that you meant kilograms."
+      : "That’s over 20,000 lb (10 tons). Check the number and that you meant pounds."];
+  }
+  return [];
+}
+
+/**
+ * The share URL follows the inputs, but at most once per URL_WRITE_GAP_MS: dragging fires a change
+ * on every frame (242 in a 4 s drag), and Safari throws once replaceState runs over 100 times in
+ * a short window. The first change after a pause writes at once (a unit switch shows in the URL
+ * straight away); changes inside the gap wait, and the last one always lands.
+ */
+export const URL_WRITE_GAP_MS = 300;
+
+/** How long to wait before the next URL write: 0 means write now. */
+export function urlWriteWait(now: number, lastWrite: number): number {
+  return Math.max(0, URL_WRITE_GAP_MS - (now - lastWrite));
+}

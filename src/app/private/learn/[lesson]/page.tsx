@@ -7,17 +7,21 @@ import { lessonStatus, phaseOpen } from "@/tools/learn/progress";
 import { LearnNotConfigured, LearnShell, LearnUnreachable } from "@/tools/learn/ui/LearnShell";
 import { LessonPlayer } from "@/tools/learn/ui/LessonPlayer";
 import { State } from "@/components/State";
+import { SubmitButton } from "@/components/SubmitButton";
+import { ClearQuery } from "@/tools/money/ui/ClearQuery";
 import { startOver } from "../actions";
 
 type Params = { params: Promise<{ lesson: string }> };
+type Search = { searchParams: Promise<{ error?: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const l = lessonById((await params).lesson);
   return { title: l ? `${l.number} ${l.title}` : "Lesson", robots: { index: false, follow: false } };
 }
 
-export default async function LessonPage({ params }: Params) {
+export default async function LessonPage({ params, searchParams }: Params & Search) {
   const { lesson: id } = await params;
+  const sp = await searchParams;
   await requirePrivate(`/private/learn/${encodeURIComponent(id)}`);
   const lesson = lessonById(id);
   if (!lesson) notFound();
@@ -55,11 +59,19 @@ export default async function LessonPage({ params }: Params) {
             <State kind="note">This phase opens once the phase before it is passed. You can look around, but finish that one first.</State>
           </p>
         )}
+        {sp.error === "restart" && (
+          <p className="mt-4 text-small">
+            <State kind="wrong">Couldn&rsquo;t start over: the progress database didn&rsquo;t answer. Try again in a minute.</State>
+            <ClearQuery keys={["error"]} />
+          </p>
+        )}
         {status.kind === "started" && status.step > 0 && (
           <form action={startOver} className="mt-4 flex flex-wrap items-center gap-3 text-small text-muted">
             <span>Picking up at step {status.step + 1}.</span>
             <input type="hidden" name="lesson" value={id} />
-            <button type="submit" className="min-h-11 underline underline-offset-4 hover:text-ink">Start from the beginning</button>
+            <SubmitButton variant="ghost" pending="Starting over…" confirm="Start this lesson again from step 1? Your answers so far still count.">
+              Start from the beginning
+            </SubmitButton>
           </form>
         )}
         {status.kind === "done" && <p className="mt-4 text-small"><State kind={status.passed ? "ok" : "note"}>{status.passed ? "Done before. Going through again counts as review." : "Not passed yet. Going again is the way."}</State></p>}

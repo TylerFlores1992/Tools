@@ -5,8 +5,9 @@ import { NumberField } from "@/components/NumberField";
 import { Segmented } from "@/components/Segmented";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
+import { PRESS, PRESS_FILL } from "@/components/press";
 import { convertInput, levelBeamTension, solveBridle, type BridleInput, type BridleResult, type Units } from "./math";
-import { DECIMALS, KEYS, fromQuery, statusFor, toQuery, type Key } from "./view";
+import { DECIMALS, KEYS, fromQuery, loadNotes, statusFor, toQuery, urlWriteWait, type Key } from "./view";
 
 const UNIT = { imperial: { len: "ft", force: "lb" }, metric: { len: "m", force: "kg" } } as const;
 
@@ -38,7 +39,13 @@ export function BridleCalculator() {
   const status = statusFor(r, input.load, blocked);
 
   // Deep links: read the rig from the URL once, then keep the URL in step (no history spam).
+  // Writes are throttled (urlWriteWait): a drag changes the rig every frame, and Safari throws
+  // after ~100 replaceState calls in a short window. A throw here would take the page down, so
+  // it's caught: the share link just lags until the next write.
   const loaded = useRef(false);
+  const lastWrite = useRef(-Infinity);
+  const pendingWrite = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(pendingWrite.current), []);
   useEffect(() => {
     if (!loaded.current) {
       loaded.current = true;
@@ -49,7 +56,22 @@ export function BridleCalculator() {
       if (q) { setInput(q.input); setUnits(q.units); }
       return;
     }
-    window.history.replaceState(null, "", `?${toQuery(input, units)}`);
+    const next = `?${toQuery(input, units)}`;
+    // Nothing to write (the rig just loaded from this very URL): don't spend the throttle on it,
+    // so the next real change shows in the URL at once.
+    if (next === window.location.search) { clearTimeout(pendingWrite.current); return; }
+    const write = () => {
+      lastWrite.current = Date.now();
+      try {
+        window.history.replaceState(null, "", next);
+      } catch {
+        // Refused (rate limit, sandboxed frame). The calculator doesn't depend on the URL.
+      }
+    };
+    clearTimeout(pendingWrite.current);
+    const wait = urlWriteWait(Date.now(), lastWrite.current);
+    if (wait === 0) write();
+    else pendingWrite.current = setTimeout(write, wait);
   }, [input, units]);
 
   const set = useCallback((k: Key) => (n: number) => setInput((p) => ({ ...p, [k]: n })), []);
@@ -60,6 +82,10 @@ export function BridleCalculator() {
   const replaceAll = (next: BridleInput) => { setInput(next); setBad(NO_ERRORS); setGen((g) => g + 1); };
   const switchUnits = (next: Units) => { replaceAll(convertInput(input, units, next)); setUnits(next); };
   const level = Math.abs(input.rise) < 1e-9;
+  // Which example the current rig is, if any: compared at the precision the fields show.
+  const here = toQuery(input, units);
+  const presetOn = (p: (typeof PRESETS)[number]) => !blocked && toQuery(convertInput(p.input, p.units, units), units) === here;
+  const notes = blocked ? [] : loadNotes(input.load, units);
   const field = (k: Key, label: string, unit: string, extra?: { min?: number; step?: number; hint?: string }) => (
     <NumberField key={`${k}-${gen}`} label={label} unit={unit} value={input[k]} decimals={DECIMALS[k]} onChange={set(k)} onInvalid={flag[k]} {...extra} />
   );
@@ -70,9 +96,9 @@ export function BridleCalculator() {
       <div className="contents lg:sticky lg:top-6 lg:grid lg:gap-8">
       {/* Diagram */}
       <section aria-label="Bridle diagram" className="order-1 rounded-card border border-line bg-surface shadow-card">
-        <Diagram input={input} result={r} blocked={blocked} units={units} onMove={(x, drop) => setInput((p) => ({ ...p, x, drop }))} />
-        <p className="border-t border-line px-5 py-3 text-small text-muted sm:px-6">
-          Drag the bridle point, or focus it and use the arrow keys (Shift for bigger steps).
+        <Diagram input={input} result={r} blocked={blocked} units={units} helpId="bridle-help" onMove={(x, drop) => setInput((p) => ({ ...p, x, drop }))} />
+        <p id="bridle-help" className="border-t border-line px-5 py-3 text-small text-muted sm:px-6">
+          Drag the bridle point, or focus it and use the arrow keys: ← → move it along the span, ↑ ↓ raise or lower it (Shift for bigger steps).
         </p>
       </section>
 
@@ -145,19 +171,37 @@ export function BridleCalculator() {
             {field("rise", "Right beam higher by", u.len, { hint: "0 when both beams are the same height. Negative if the right beam is lower." })}
           </div>
         </div>
+        {/* Next to the fields that cause them, so they're seen on a phone (the status line sits
+            above, under the results). The live status line already speaks the geometry problem,
+            so that copy isn't live; the load notes are. */}
+        {!blocked && !r.valid && (
+          <p className="mt-4 text-small"><State kind="wrong">{r.problem}</State></p>
+        )}
+        <div aria-live="polite" className="text-small">
+          {notes.map((n) => <p key={n} className="mt-4"><State kind="note">{n}</State></p>)}
+        </div>
         <div className="mt-6 border-t border-line pt-5">
           <p className="text-small text-muted">Examples</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {PRESETS.map((p) => (
-              <button
-                key={p.label}
-                type="button"
-                onClick={() => replaceAll(convertInput(p.input, p.units, units))}
-                className="min-h-11 rounded-full border border-line-2 px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:text-ink"
-              >
-                {p.label}
-              </button>
-            ))}
+            {PRESETS.map((p) => {
+              const on = presetOn(p);
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => replaceAll(convertInput(p.input, p.units, units))}
+                  className={cx(
+                    "flex min-h-11 items-center gap-2 rounded-full border px-4 text-small transition-[color,background-color,border-color,scale] duration-150",
+                    PRESS,
+                    on ? "border-primary bg-primary text-on-primary" : cx("border-line-2 text-ink-2 hover:border-control hover:text-ink", PRESS_FILL),
+                  )}
+                >
+                  {on && <span aria-hidden="true">✓</span>}
+                  {p.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -216,7 +260,7 @@ const VW_WIDE = 640, VW_PHONE = 420, PHONE_PX = 520, VH = 420, MB = 70;
 /** On-screen minimums: label text in CSS px, and the drag handle's hit target diameter. */
 const MIN_TEXT_PX = 13, MIN_HIT_PX = 44;
 
-function Diagram({ input, result: r, blocked, units, onMove }: { input: BridleInput; result: BridleResult; blocked: boolean; units: Units; onMove: (x: number, drop: number) => void }) {
+function Diagram({ input, result: r, blocked, units, helpId, onMove }: { input: BridleInput; result: BridleResult; blocked: boolean; units: Units; helpId: string; onMove: (x: number, drop: number) => void }) {
   const svg = useRef<SVGSVGElement>(null);
   const [drag, setDrag] = useState(false);
   const [px0, setPx0] = useState(0); // rendered width in CSS px; 0 until measured
@@ -335,10 +379,14 @@ function Diagram({ input, result: r, blocked, units, onMove }: { input: BridleIn
       {/* apex handle: draggable and keyboard-operable */}
       <g
         tabIndex={0}
+        // A slider for the position along the span (its value, and the 2–98% the drag allows);
+        // ↑ ↓ change the drop, so the spoken value names both and the help text says so.
         role="slider"
         aria-label="Bridle point"
-        aria-valuemin={0}
-        aria-valuemax={span}
+        aria-orientation="horizontal"
+        aria-describedby={helpId}
+        aria-valuemin={round(span * 0.02, 1)}
+        aria-valuemax={round(span * 0.98, 1)}
         aria-valuenow={round(x, 1)}
         aria-valuetext={`${len(x)} ${u.len} from the left beam, ${len(drop)} ${u.len} below it`}
         onKeyDown={onKey}
