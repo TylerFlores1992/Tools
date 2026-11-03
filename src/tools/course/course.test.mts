@@ -35,3 +35,18 @@ test("polls every 3 s while the home server answers, and backs off to 15 then 30
   assert.equal(nextPollDelay(2), 30_000);
   assert.equal(nextPollDelay(9), 30_000);
 });
+
+test("a command's status stays until the server agrees; a poll from before it can't flip it back", async () => {
+  const { dropExpected, EXPECT_GRACE_MS } = await import("./poll");
+  const done = 10_000;
+  // The poll that was already running when Pause was pressed reports "running": keep "paused".
+  assert.equal(dropExpected({ asked: "paused", reported: "running", sending: false, pollStarted: done - 2000, commandDoneAt: done }), false);
+  // One that started just after the command still might not see it: keep it.
+  assert.equal(dropExpected({ asked: "paused", reported: "running", sending: false, pollStarted: done + 1000, commandDoneAt: done }), false);
+  // The server agrees: drop the stand-in, the real status takes over.
+  assert.equal(dropExpected({ asked: "paused", reported: "paused", sending: false, pollStarted: done - 2000, commandDoneAt: done }), true);
+  // Well after the command and still not paused: the command didn't take, show the truth.
+  assert.equal(dropExpected({ asked: "paused", reported: "running", sending: false, pollStarted: done + EXPECT_GRACE_MS + 1, commandDoneAt: done }), true);
+  // Nothing asked: nothing to drop.
+  assert.equal(dropExpected({ asked: null, reported: "running", sending: false, pollStarted: done + 99_999, commandDoneAt: done }), false);
+});

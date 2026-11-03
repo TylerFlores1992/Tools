@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useTransition } from "react";
 import { Button, LinkButton } from "@/components/Button";
 import { Label } from "@/components/Label";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -15,7 +15,9 @@ import { WRAP } from "@/components/wrap";
  * framework's "Application error". "Try again" re-runs the page on the server.
  */
 export default function Error({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
-  const [trying, setTrying] = useState(false);
+  // A transition, not a flag: if the retry throws again the boundary keeps this component, and a
+  // flag would read "Trying again…" for ever. The transition ends when the retry does.
+  const [trying, startTry] = useTransition();
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -35,10 +37,7 @@ export default function Error({ error, retry }: { error: Error & { digest?: stri
           <div className="mt-9 flex flex-wrap gap-3">
             <Button
               aria-busy={trying || undefined}
-              onClick={() => {
-                setTrying(true);
-                retry();
-              }}
+              onClick={() => startTry(() => retry())}
             >
               {trying ? (
                 <>

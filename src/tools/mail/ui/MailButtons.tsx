@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useOptimistic } from "react";
 import { cx } from "@/components/cx";
 
@@ -45,6 +46,9 @@ export function DoneToggle({ id, title, done, action }: { id: string; title: str
  * out of the address, so a reload or the next refresh doesn't show it again.
  */
 export function ClearNoteParams({ keys }: { keys: readonly string[] }) {
+  // Re-run when the query changes: a second rule redirects back to this same page with a new
+  // ?ruled=, and this component stays mounted, so depending on `keys` alone would leave it there.
+  const query = useSearchParams().toString();
   useEffect(() => {
     const url = new URL(window.location.href);
     let changed = false;
@@ -55,6 +59,6 @@ export function ClearNoteParams({ keys }: { keys: readonly string[] }) {
       }
     }
     if (changed) window.history.replaceState(null, "", url); // null: Next keeps its router in step
-  }, [keys]);
+  }, [keys, query]);
   return null;
 }

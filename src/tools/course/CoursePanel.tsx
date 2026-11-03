@@ -8,7 +8,7 @@ import { Label } from "@/components/Label";
 import { Spinner } from "@/components/Spinner";
 import { State } from "@/components/State";
 import { STATUS_LABEL, type Command, type CourseState, type CourseStatus } from "./commands";
-import { nextPollDelay } from "./poll";
+import { dropExpected, nextPollDelay } from "./poll";
 
 const SCREEN_MS = 2500;
 
@@ -30,11 +30,18 @@ export function CoursePanel() {
   const lastStatus = useRef("");
   const inFlight = useRef<Promise<boolean> | null>(null);
   const busy = useRef(false); // a command is on its way: a second press waits for it
+  // The status a command asked for stays on screen until the home server reports it. A poll that
+  // started before the command (or within a grace after it) can't overrule it: its answer may
+  // predate the command. Only a later poll that still disagrees means the command didn't take.
+  const expectedRef = useRef<CourseStatus | null>(null);
+  const commandDoneAt = useRef(0);
+  const expect = useCallback((s: CourseStatus | null) => { expectedRef.current = s; setExpected(s); }, []);
 
   /** One look at the home server. Never two at once; true when it answered. */
   const refresh = useCallback((): Promise<boolean> => {
     if (document.hidden) return Promise.resolve(true);
     inFlight.current ??= (async () => {
+      const started = Date.now();
       try {
         const res = await fetch("/private/course/state", { cache: "no-store", signal: AbortSignal.timeout(20_000) });
         if (res.redirected) { location.reload(); return false; }
@@ -42,7 +49,7 @@ export function CoursePanel() {
         if (!res.ok) { setError(json.error ?? "The home server didn’t answer."); return false; } // keep the last state on screen
         setError("");
         setState(json);
-        if (!busy.current) setExpected(null); // a command still on its way keeps the status it asked for
+        if (dropExpected({ asked: expectedRef.current, reported: json.status, sending: busy.current, pollStarted: started, commandDoneAt: commandDoneAt.current })) expect(null);
         return true;
       } catch {
         setError("Couldn’t reach this site. Check your connection.");
@@ -52,7 +59,7 @@ export function CoursePanel() {
       }
     })();
     return inFlight.current;
-  }, []);
+  }, [expect]);
 
   // Polls one after another (the next starts when the last has finished), slower after failures.
   useEffect(() => {
@@ -90,18 +97,19 @@ export function CoursePanel() {
     if (busy.current) return false;
     busy.current = true;
     if (s) setSending(s);
-    if (leadsTo) setExpected(leadsTo);
+    if (leadsTo) expect(leadsTo);
     try {
       const res = await fetch("/private/course/control", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(c), signal: AbortSignal.timeout(20_000) });
       const json = await res.json().catch(() => ({}));
       setError(res.ok ? "" : json.error ?? "That didn’t go through.");
-      if (!res.ok) setExpected(null);
+      if (!res.ok) expect(null);
       return res.ok;
     } catch {
       setError("Couldn’t reach this site. Check your connection.");
-      setExpected(null);
+      expect(null);
       return false;
     } finally {
+      commandDoneAt.current = Date.now();
       busy.current = false;
       setSending(null);
       setFrame((f) => f + 1);
