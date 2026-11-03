@@ -89,8 +89,8 @@ alter table money.income_settings add column if not exists calendar_refresh_requ
 
 -- 2026-11-03 (site audit): one EDD deposit can be filed only once. fileBenefit() already takes an
 -- advisory lock and skips a deposit that is filed, so this index is the database's own backstop
--- for two presses at once. NOT APPLIED YET: run it by hand in the Supabase SQL editor. If it
--- fails with "could not create unique index", a deposit is already filed twice; find it with
+-- for two presses at once. Applied to Supabase 2026-11-03 (no duplicates existed). On a fresh
+-- database, if it fails with "could not create unique index", a deposit is already filed twice; find it with
 --   select deposit_txn_id, count(*) from money.stubs where kind = 'benefit' group by 1 having count(*) > 1;
 -- delete the extra row(s) on Income (Unfile), then run it again.
 create unique index if not exists stubs_one_benefit_per_deposit

@@ -34,7 +34,8 @@ alter table mail.messages add column if not exists sorted_by text;
 -- 2026-11-03: one rule per (sender, subject, action, folder), so a double tap on a sender button
 -- can't make two (and an Unsubscribe rule can't press the link twice). The code already skips a
 -- duplicate (src/lib/mail/store.ts addRule); this closes two requests landing in the same instant.
--- Safe to run more than once. If it fails with "could not create unique index", duplicates exist:
+-- Applied to Supabase 2026-11-03, after the delete below removed 12 copies of two "trash" rules
+-- (double taps from 2026-10-22). Safe to run more than once. If it fails with "could not create unique index", duplicates exist:
 -- run the delete below first (it keeps the oldest of each set), then the create again.
 --   delete from mail.rules a using mail.rules b
 --   where a.id > b.id and lower(coalesce(a.match_from,'')) = lower(coalesce(b.match_from,''))

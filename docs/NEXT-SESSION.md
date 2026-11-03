@@ -68,12 +68,11 @@ private… The site must work perfect."
   - **CampHawk lab:** "Sign up to watch" did nothing for four visitors, and about 30 dead `#` links.
 - **Security edges:** the private password has a per-instance lockout (5 tries / 15 min); the ICS
   link fetch refuses private hosts and checks redirects; stub files are served `nosniff`.
-- **Owner to apply by hand (SQL editor):**
-  - the last statement in `docs/sql/money-income.sql` (one benefit stub per deposit);
-  - the last block in `docs/sql/mail-schema.sql` (one rule per match; run the commented `delete`
-    first if it fails).
-
-  The code guards both without them.
+- **Both database backstops are applied (2026-11-03, through the Supabase connector):**
+  `stubs_one_benefit_per_deposit` (no duplicates existed) and `rules_one_per_match_idx`. The mail
+  index needed the file's `delete` first: 12 extra copies of two identical "trash" rules, double
+  taps from 2026-10-22 before the code de-duplicated. The oldest of each was kept, so mail sorts
+  the same. Nothing references `mail.rules.id`.
 - **Not done / open:**
   - the bridge Chrome needs the owner to sign in to /private once, then re-walk Money, Mail,
     Recordings, Learn and Page Turner on real data;
