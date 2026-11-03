@@ -8,10 +8,10 @@ import { fileEdd, markNotPay, unfileEdd } from "./actions";
 import { requirePrivate } from "@/lib/money/guard";
 import { isConfigured } from "@/lib/money/db";
 import { getIncomeSettings, listEvents, listStubs } from "@/lib/money/income/store";
-import { getTransactions } from "@/lib/money/store";
+import { getAccounts, getTransactions } from "@/lib/money/store";
 import { employerKey, sameEmployer, taxTotal, workedHours } from "@/tools/money/income/checks";
 import { healthPeriods } from "@/tools/money/income/health";
-import { missingStubs } from "@/tools/money/income/missing";
+import { missingStubs, ownTxns } from "@/tools/money/income/missing";
 import { replacedBy } from "@/tools/money/income/reissue";
 import { benefitsByProgram, isBenefit, PFL, PROGRAMS, unfiledEdd, yearOfBenefit } from "@/tools/money/income/benefits";
 import { TAX_KEYS, TAX_LABEL, type Stub } from "@/tools/money/income/types";
@@ -55,9 +55,12 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
   const year = years.includes(Number(sp.year)) ? Number(sp.year) : thisYear;
 
   const txns = await getTransactions(`${year}-01-01`);
-  const missing = missingStubs(txns.filter((t) => t.posted <= `${year}-12-31`), stubs, year);
+  const accounts = await getAccounts();
+  // Only the owner's own accounts: a deposit into Joint or hers is not the owner's pay (missing.ts).
+  const ownThisYear = ownTxns(txns.filter((t) => t.posted <= `${year}-12-31`), accounts);
+  const missing = missingStubs(ownThisYear, stubs, year);
   const missingCount = missing.reduce((n, g) => n + g.deposits.length, 0);
-  const eddUnfiled = unfiledEdd(txns.filter((t) => t.posted <= `${year}-12-31`), stubs);
+  const eddUnfiled = unfiledEdd(ownThisYear, stubs);
   const eddFiled = stubs.filter((s) => isBenefit(s) && yearOfBenefit(s) === year).sort((a, b) => (a.payDate ?? "").localeCompare(b.payDate ?? ""));
   const eddTotals = benefitsByProgram(stubs, year);
 

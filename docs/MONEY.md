@@ -182,7 +182,9 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   companies, generic PAYROLL/PR DEPOSIT wording, phone check deposits; never EDD, tax refunds,
   transfers, Zelle, Stripe), grouped by payer, minus the ones a saved stub matched. The same
   deposit in two accounts on the same day counts once (a bank CSV imported into the wrong account
-  would otherwise list it twice).
+  would otherwise list it twice). **Only the owner's own accounts** (owner "Mine", not hidden;
+  `ownTxns`), owner's call 2026-11-03: a $2,343.25 phone check into the joint U.S. Bank checking
+  was listed as a missing stub because the list read every account. Unfiled EDD reads the same set.
 - **Checks on every stub** (`checks.ts`): gross − taxes − deductions = net; lines add up to gross;
   hours × rate per line; OT at 1.5× / 2× the straight rate; rate below the owner's; SS 6.2%,
   Medicare 1.45%, CA SDI 1.3% (2026); year-to-date carries on from the last stub (a gap = a

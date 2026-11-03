@@ -1,5 +1,5 @@
 import { normalize } from "../normalize.ts";
-import type { Txn } from "../types.ts";
+import type { Account, Txn } from "../types.ts";
 import type { Stub } from "./types.ts";
 
 /**
@@ -10,6 +10,10 @@ import type { Stub } from "./types.ts";
  *
  * A deposit the owner filed by hand under any category but "Income" isn't pay (a settlement, a
  * refund check, a reimbursement): that's what the "Not pay" button does.
+ *
+ * Only the owner's own accounts (owner "mine" in Settings, not hidden) are read: Income is the owner's pay,
+ * and a deposit into Joint or hers isn't (owner, 2026-11-03, after a check deposited into the
+ * joint U.S. Bank account was listed as a missing stub). `ownTxns` does the filtering.
  *
  * A deposit can sit in the data twice when the same bank CSV was imported into two accounts; a
  * copy in another account on the same day, for the same amount and description, counts once.
@@ -33,6 +37,12 @@ export const PAYERS: readonly Payer[] = [
 const GENERIC = /\bPAYROLL\b|\bPR DEPOSIT\b|\bDIRECT PAY\b|\bDIR DEP\b|\bSALARY\b/;
 /** Money in that is never wages, even when it says "payroll" or "deposit". */
 const NEVER = /\bEDD\b|\bIRS\b|\bTAX R(E)?F|\bFRANCHISE TAX\b|\bTRANSFER\b|\bZELLE\b|\bVENMO\b|\bSTRIPE\b|\bREFUND\b|\bREWARDS\b|\bINTEREST\b|\bPAYMENTS\b/;
+
+/** Transactions in the owner's own visible accounts only. Unassigned accounts are left out. */
+export function ownTxns(txns: readonly Txn[], accounts: readonly Pick<Account, "id" | "owner" | "hidden">[]): Txn[] {
+  const mine = new Set(accounts.filter((a) => a.owner === "mine" && !a.hidden).map((a) => a.id));
+  return txns.filter((t) => mine.has(t.accountId));
+}
 
 export type PayerMatch = { key: string; name: string };
 

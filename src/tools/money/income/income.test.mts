@@ -8,7 +8,7 @@ import { dayPay, previousStub, sameEmployer, stubChecks, workedHours } from "./c
 import { parseStubForm } from "./form.ts";
 import { healthPeriods } from "./health.ts";
 import { findDeposit, matchDeposits } from "./match.ts";
-import { missingStubs, payerOf } from "./missing.ts";
+import { missingStubs, ownTxns, payerOf } from "./missing.ts";
 import { countedStubs, replacedBy } from "./reissue.ts";
 import { estimateFromSimilar, remainingFromYtd, splitByNet } from "./estimate.ts";
 import { benefitsByProgram, DI, PFL, taxableBenefits, unfiledEdd } from "./benefits.ts";
@@ -345,6 +345,20 @@ test("missing stubs: unmatched pay deposits by payer; a matched one drops off; a
   assert.deepEqual(missingStubs([settled, keptPay], [], 2026).flatMap((g) => g.deposits.map((d) => d.amount)), [900]);
   // The stub matched to the CSV copy instead still clears it.
   assert.equal(missingStubs([a, copy], [stub({ depositTxnId: copy.id })], 2026).length, 0);
+});
+
+test("missing stubs read only the owner's own accounts: a check into Joint is not the owner's pay", () => {
+  const accounts = [
+    { id: "chase", owner: "mine" as const, hidden: false },
+    { id: "usbank", owner: "joint" as const, hidden: false },
+    { id: "hers", owner: "hers" as const, hidden: false },
+    { id: "old", owner: "mine" as const, hidden: true },
+    { id: "unset", owner: null, hidden: false },
+  ];
+  const at = (accountId: string, amount: number) => txn({ posted: "2026-10-22", amount, description: "Mobile Check Deposit", accountId });
+  const kept = ownTxns([at("chase", 1), at("usbank", 2343.25), at("hers", 3), at("old", 4), at("unset", 5)], accounts);
+  assert.deepEqual(kept.map((t) => t.amount), [1]);
+  assert.deepEqual(missingStubs(kept, [], 2026).flatMap((g) => g.deposits.map((d) => d.amount)), [1], "the joint check is not listed");
 });
 
 // ---- reissued weeks ----
