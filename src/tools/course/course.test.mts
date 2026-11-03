@@ -27,3 +27,11 @@ test("refuses anything else", () => {
 test("a command becomes a path and a body", () => {
   assert.deepEqual(toRequest({ kind: "tap", x: 0.5, y: 0.25 }), { path: "tap", body: { x: 0.5, y: 0.25 } });
 });
+
+test("polls every 3 s while the home server answers, and backs off to 15 then 30 s after failures", async () => {
+  const { nextPollDelay, POLL_MS } = await import("./poll");
+  assert.equal(nextPollDelay(0), POLL_MS);
+  assert.equal(nextPollDelay(1), 15_000);
+  assert.equal(nextPollDelay(2), 30_000);
+  assert.equal(nextPollDelay(9), 30_000);
+});

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Segmented } from "@/components/Segmented";
+import { Spinner } from "@/components/Spinner";
 import { State } from "@/components/State";
 import { cx } from "@/components/cx";
 import { PanelClient, PanelError, loadPairing, pairingFromHash, savePairing, type DocInfo, type Pairing, type SetupChange } from "../client";
@@ -51,6 +52,7 @@ export function VectorworksPanel() {
   const [units, setUnits] = useState<Units>(INCHES);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [note, setNote] = useState<Note>(null);
   const [tool, setTool] = useState<Tool>("select");
   const [stepIndex, setStepIndex] = useState("1");
@@ -72,6 +74,11 @@ export function VectorworksPanel() {
   const steps = useMemo(() => nudgeSteps(units), [units]);
   const step = steps[Number(stepIndex)]?.value ?? steps[0].value;
   const inFlight = useRef(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const connRef = useRef(conn);
+  useEffect(() => {
+    connRef.current = conn;
+  }, [conn]);
 
   const fail = useCallback((e: unknown) => {
     const err = e instanceof PanelError ? e : new PanelError(String(e), "vectorworks");
@@ -142,11 +149,23 @@ export function VectorworksPanel() {
   const refresh = useCallback(
     (opts: { fit?: boolean } = {}) => {
       if (!client) return;
-      void client.alive().then((ok) => {
-        if (ok) return load(opts);
-        setConn("offline");
-        setNote(null);
-      });
+      // Busy from the first look, so Refresh shows it heard you even when the connector is slow to answer.
+      inFlight.current++;
+      setBusy(true);
+      setChecking(true);
+      void client
+        .alive()
+        .then((ok) => {
+          if (ok) return load(opts);
+          // Already offline: say the new look happened, so a second Refresh doesn't seem to do nothing.
+          setNote(connRef.current === "offline" ? { kind: "wrong", text: `Still not answering (checked ${time()}).` } : null);
+          setConn("offline");
+        })
+        .finally(() => {
+          setChecking(false);
+          inFlight.current--;
+          if (!inFlight.current) setBusy(false);
+        });
     },
     [client, load],
   );
@@ -378,23 +397,36 @@ export function VectorworksPanel() {
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="quiet" disabled={busy} onClick={() => refresh()}>Refresh</Button>
+          <Button variant="quiet" disabled={busy} aria-busy={checking || undefined} onClick={() => refresh()}>
+            {checking ? <><Spinner />Checking…</> : "Refresh"}
+          </Button>
           <Button variant="quiet" disabled={busy || conn !== "ready"} onClick={useVwSelection}>Use Vectorworks selection</Button>
           <Button variant="ghost" disabled={busy || conn !== "ready"} onClick={undo}>Undo last change</Button>
         </div>
       </div>
 
       <div role="tablist" aria-label="Views" className="inline-flex max-w-full justify-self-start overflow-x-auto rounded-full border border-line bg-surface p-1">
-        {TABS.map((t) => (
+        {TABS.map((t, i) => (
           <button
             key={t.value}
+            ref={(el) => { tabRefs.current[i] = el; }}
             type="button"
             role="tab"
             id={`tab-${t.value}`}
             aria-selected={tab === t.value}
             aria-controls={`panel-${t.value}`}
+            tabIndex={tab === t.value ? 0 : -1}
             onClick={() => setTab(t.value)}
-            className="flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-small sm:gap-2 sm:px-4 text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
+            onKeyDown={(e) => {
+              // Arrow keys move between tabs (Home/End to the ends); Tab leaves the row.
+              const to = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : e.key === "Home" ? 0 : e.key === "End" ? TABS.length - 1 : null;
+              if (to === null) return;
+              e.preventDefault();
+              const n = (to + TABS.length) % TABS.length;
+              setTab(TABS[n].value);
+              tabRefs.current[n]?.focus();
+            }}
+            className="flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-small sm:gap-2 sm:px-4 text-ink-2 transition-colors duration-150 hover:text-ink aria-selected:bg-primary aria-selected:text-on-primary"
           >
             {tab === t.value && <span aria-hidden="true">✓</span>}
             {t.label}
@@ -423,13 +455,13 @@ export function VectorworksPanel() {
             {doc && doc.layers.length > 1 && (
               <label className="flex items-center gap-2 text-small text-ink-2">
                 Layer
-                <select value={layer} onChange={(e) => setLayer(e.target.value)} className="field min-h-10 rounded-input border border-control bg-surface px-3 text-small text-ink">
+                <select value={layer} onChange={(e) => setLayer(e.target.value)} className="field min-h-11 rounded-input border border-control bg-surface px-3 text-small text-ink">
                   <option value="">All layers</option>
                   {doc.layers.map((l) => <option key={l.name} value={l.name}>{l.name}{l.type === "sheet" ? " (sheet)" : ""}</option>)}
                 </select>
               </label>
             )}
-            <Button variant="ghost" className="ml-auto min-h-10" onClick={() => setFitSignal((n) => n + 1)}>Fit</Button>
+            <Button variant="ghost" className="ml-auto" onClick={() => setFitSignal((n) => n + 1)}>Fit</Button>
           </div>
           {present.length > 1 && (
             <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-2.5 sm:px-5" role="group" aria-label="Departments">
@@ -440,7 +472,7 @@ export function VectorworksPanel() {
                   onClick={() => setVisibility({ ...visibility, [d]: NEXT_VISIBILITY[visOf(d)] })}
                   aria-label={`${DEPT_LABEL[d]}: ${VIS_WORD[visOf(d)]}. Press to change.`}
                   className={cx(
-                    "flex min-h-9 items-center gap-2 rounded-full border px-3 text-small transition-colors duration-150 hover:border-control",
+                    "flex min-h-11 items-center gap-2 rounded-full border px-3 text-small transition-colors duration-150 hover:border-control",
                     visOf(d) === "shown" ? "border-line-2 text-ink" : visOf(d) === "dimmed" ? "border-line text-ink-2" : "border-line text-muted line-through",
                   )}
                 >
@@ -449,7 +481,7 @@ export function VectorworksPanel() {
                   <span className="font-mono text-label uppercase text-muted">{VIS_WORD[visOf(d)]}</span>
                 </button>
               ))}
-              <Button variant="ghost" className="min-h-9 px-3 text-small" disabled={busy} onClick={sameInVectorworks}>Same in Vectorworks</Button>
+              <Button variant="ghost" className="px-3 text-small" disabled={busy} onClick={sameInVectorworks}>Same in Vectorworks</Button>
             </div>
           )}
           <DrawingCanvas
@@ -466,7 +498,7 @@ export function VectorworksPanel() {
               <span>Drag to move · Shift-click or Shift-drag to add · arrows nudge · F fits</span>
             )}
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} className="size-4 accent-ember" />
+              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} className="size-4 accent-ink" />
               Re-read when I come back to this tab
             </label>
           </div>
@@ -499,7 +531,7 @@ export function VectorworksPanel() {
             </div>
             <label className="grid gap-1.5 text-small text-ink-2">
               Find
-              <span className="field flex min-h-10 items-center rounded-input border border-control bg-surface">
+              <span className="field flex min-h-11 items-center rounded-input border border-control bg-surface">
                 <input value={filter} onChange={(e) => setFilter(e.target.value)} size={14} className="min-w-0 bg-transparent px-3 py-1.5 text-small text-ink outline-none" />
               </span>
             </label>
@@ -528,7 +560,7 @@ function ObjectRow({ o, units, on, onPick }: { o: VwObject; units: Units; on: bo
       className="flex min-h-11 w-full items-center justify-between gap-3 rounded-tag px-3 text-left text-small text-ink-2 transition-colors duration-150 hover:bg-surface-2 hover:text-ink aria-pressed:bg-surface-2 aria-pressed:text-ink"
     >
       <span className="flex min-w-0 items-center gap-2">
-        <span aria-hidden="true" className="w-4 shrink-0 text-ember">{on ? "✓" : ""}</span>
+        <span aria-hidden="true" className="w-4 shrink-0 text-ink">{on ? "✓" : ""}</span>
         <span className="truncate">{labelOf(o)}</span>
         <span className="shrink-0 font-mono text-label uppercase text-muted">{o.plugin === "Lighting Device" ? (o.fields?.["Inst Type"] ?? "fixture") : o.type.replace(/_/g, " ")}</span>
       </span>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Label } from "@/components/Label";
 import { State } from "@/components/State";
@@ -7,7 +6,7 @@ import { isConfigured } from "@/lib/money/db";
 import { requirePrivate } from "@/lib/money/guard";
 import { getAccounts, getGmailSettings, listRules, recentRuns } from "@/lib/mail/store";
 import { accountLabel } from "@/tools/mail/report";
-import { GmailScriptForm, RuleForm, RunNowForm, YahooForm } from "@/tools/mail/ui/MailForms";
+import { GmailScriptForm, RemoveArea, RemoveButton, RuleForm, RunNowForm, YahooForm } from "@/tools/mail/ui/MailForms";
 import { MailShell } from "@/tools/mail/ui/MailShell";
 import { NotConfigured, Unreachable } from "@/tools/money/ui/Setup";
 import { removeMailAccount, removeRule } from "../actions";
@@ -66,6 +65,7 @@ export default async function MailSettings() {
           <section aria-labelledby="yahoo">
             <h2 id="yahoo" className="text-h2 font-normal">Yahoo</h2>
             <Card className="mt-4 grid gap-5">
+              <RemoveArea>
               {data.accounts.filter((a) => a.kind === "yahoo").length > 0 && (
                 <ul className="grid gap-3">
                   {data.accounts.filter((a) => a.kind === "yahoo").map((a) => (
@@ -76,14 +76,17 @@ export default async function MailSettings() {
                           {a.lastError ? <State kind="wrong">{a.lastError}</State> : a.lastRunAt ? <State kind="ok">Checked {when(a.lastRunAt)}</State> : <State kind="note">Not checked yet</State>}
                         </span>
                       </span>
-                      <form action={removeMailAccount}>
-                        <input type="hidden" name="id" value={a.id} />
-                        <Button type="submit" variant="ghost">Remove<span className="sr-only"> {a.address}</span></Button>
-                      </form>
+                      <RemoveButton
+                        id={a.id}
+                        label={a.address}
+                        action={removeMailAccount}
+                        confirm={`Remove ${a.address}? Its saved app password is deleted and it's no longer checked. Mail already listed stays.`}
+                      />
                     </li>
                   ))}
                 </ul>
               )}
+              </RemoveArea>
               {!keyReady && <State kind="wrong">The site&rsquo;s encryption key (MAIL_SECRET_KEY) isn&rsquo;t set, so Yahoo accounts can&rsquo;t be saved yet.</State>}
               <details className="text-body text-ink-2">
                 <summary className="cursor-pointer text-ink">How to get a Yahoo app password</summary>
@@ -101,8 +104,10 @@ export default async function MailSettings() {
           <section aria-labelledby="rules">
             <h2 id="rules" className="text-h2 font-normal">Rules</h2>
             <p className="mt-2 max-w-[60ch] text-body text-ink-2">Mail is only moved when a rule says so. Rules made from the Today page match the sender&rsquo;s address. Trash is each account&rsquo;s own Trash, so nothing is gone for good.</p>
+            <div className="mt-4 grid gap-3">
+            <RemoveArea>
             {data.rules.length > 0 && (
-              <ul className="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
+              <ul className="divide-y divide-line rounded-card border border-line bg-surface">
                 {data.rules.map((r) => (
                   <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
                     <span className="min-w-0 text-body">
@@ -112,14 +117,18 @@ export default async function MailSettings() {
                       <span className="text-ink-2"> → {ACTION_WORDS[r.action]}{r.action === "file" ? ` ${r.folder}` : ""}</span>
                       <span className="block text-small text-muted">{r.hits ? `Used ${r.hits} ${r.hits === 1 ? "time" : "times"}` : "Not used yet"}</span>
                     </span>
-                    <form action={removeRule}>
-                      <input type="hidden" name="id" value={r.id} />
-                      <Button type="submit" variant="ghost">Remove<span className="sr-only"> rule</span></Button>
-                    </form>
+                    <RemoveButton
+                      id={r.id}
+                      label={`rule for ${r.matchFrom ?? r.matchSubject ?? ""}`}
+                      action={removeRule}
+                      confirm="Remove this rule? Mail it would have moved stays where it lands from now on."
+                    />
                   </li>
                 ))}
               </ul>
             )}
+            </RemoveArea>
+            </div>
             <Card className="mt-4"><RuleForm /></Card>
           </section>
 

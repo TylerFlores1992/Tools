@@ -85,9 +85,14 @@ export async function deleteShow(_: ActionResult | null, form: FormData): Promis
   if (form.get("stopSeries") === "1" && isRuleId(ruleId)) {
     return act(`rules/${ruleId}`, { method: "DELETE", body: { deleteRecordings: true } }, `Moved ${show} to the Trash and stopped recording it.`);
   }
+  let moved = 0;
   for (const rel of rels) {
     const r = await dvr("delete", { method: "POST", body: { rel } });
-    if (!r.ok) { refresh(); return say(false, r.message); }
+    if (!r.ok) {
+      refresh();
+      return say(false, moved ? `Moved ${moved} of ${rels.length} episodes of ${show} to the Trash, then stopped: ${r.message}` : r.message);
+    }
+    moved++;
   }
   refresh();
   return say(true, `Moved ${rels.length} ${rels.length === 1 ? "episode" : "episodes"} of ${show} to the Trash.`);

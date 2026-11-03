@@ -84,7 +84,7 @@ export function RiggingView({
                 <span className={c.severity === "danger" ? "text-wrong" : c.severity === "warning" ? "text-ink" : "text-ink-2"}>
                   <b className="font-medium">{SEVERITY[c.severity].word}:</b> {c.text}
                   {c.ids.length > 0 && (
-                    <button type="button" onClick={() => onPick(c.ids[0])} className="ml-2 underline underline-offset-4 hover:text-ink">Show</button>
+                    <button type="button" onClick={() => onPick(c.ids[0])} className="ml-2 underline underline-offset-4 hover:text-ink relative after:absolute after:-inset-x-2 after:-inset-y-3">Show</button>
                   )}
                 </span>
               </li>
@@ -109,7 +109,7 @@ export function RiggingView({
               {report.points.map((p) => (
                 <tr key={p.id} className="border-b border-line align-top">
                   <th scope="row" className="px-2 py-2 font-medium text-ink">
-                    <button type="button" onClick={() => onPick(p.id)} className="underline-offset-4 hover:underline">{p.point || "(no ID)"}</button>
+                    <button type="button" onClick={() => onPick(p.id)} className="underline-offset-4 hover:underline relative after:absolute after:-inset-x-2 after:-inset-y-3">{p.point || "(no ID)"}</button>
                     {p.position && <span className="block font-normal text-muted">{p.position}</span>}
                   </th>
                   <td className="px-2 py-2">{p.x_text}</td>
@@ -150,7 +150,7 @@ export function RiggingView({
             {report.markout.map((m) => (
               <li key={m.n} className="grid grid-cols-[2rem_1fr_auto] gap-2 rounded-tag px-2 py-1.5 hover:bg-surface-2">
                 <span className="text-muted">{m.n}.</span>
-                <button type="button" onClick={() => onPick(m.id)} className="text-left text-ink underline-offset-4 hover:underline">{m.point || "(no ID)"}</button>
+                <button type="button" onClick={() => onPick(m.id)} className="text-left text-ink underline-offset-4 hover:underline relative after:absolute after:-inset-x-2 after:-inset-y-3">{m.point || "(no ID)"}</button>
                 <span className="text-ink-2">{m.across}, {m.updown}</span>
               </li>
             ))}

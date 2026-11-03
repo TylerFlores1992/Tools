@@ -82,10 +82,39 @@ export async function listRules(): Promise<Array<Rule & { hits: number; lastHitA
   return rows.map((r) => ({ id: Number(r.id), matchFrom: r.match_from, matchSubject: r.match_subject, action: r.action, folder: r.folder, hits: r.hits, lastHitAt: r.last_hit_at?.toISOString() ?? null }));
 }
 
-export async function addRule(r: Omit<Rule, "id">): Promise<number> {
-  const [row] = await sql()<{ id: string }[]>`
-    insert into mail.rules (match_from, match_subject, action, folder) values (${r.matchFrom}, ${r.matchSubject}, ${r.action}, ${r.folder}) returning id::text`;
-  return Number(row.id);
+/**
+ * Adds a rule unless the same one is already there (same sender, subject, action and folder,
+ * ignoring case), in one statement, so a double tap can't make two. `created` is false when it
+ * already existed. (docs/sql/mail-schema.sql has a unique index that closes the last gap: two
+ * requests in the same instant.)
+ */
+export async function addRule(r: Omit<Rule, "id">): Promise<{ id: number; created: boolean }> {
+  const [row] = await sql()<{ id: string; created: boolean }[]>`
+    with found as (
+      select id from mail.rules
+      where lower(coalesce(match_from, '')) = lower(coalesce(${r.matchFrom}::text, ''))
+        and lower(coalesce(match_subject, '')) = lower(coalesce(${r.matchSubject}::text, ''))
+        and action = ${r.action} and coalesce(folder, '') = coalesce(${r.folder}::text, '')
+      order by id limit 1
+    ), made as (
+      insert into mail.rules (match_from, match_subject, action, folder)
+      select ${r.matchFrom}, ${r.matchSubject}, ${r.action}, ${r.folder} where not exists (select 1 from found)
+      on conflict do nothing
+      returning id
+    )
+    select id::text, true as created from made
+    union all
+    select id::text, false as created from found`;
+  if (row) return { id: Number(row.id), created: row.created };
+  // The unique index turned away a twin made in the same instant: that twin is the rule.
+  const [twin] = await sql()<{ id: string }[]>`
+    select id::text from mail.rules
+    where lower(coalesce(match_from, '')) = lower(coalesce(${r.matchFrom}::text, ''))
+      and lower(coalesce(match_subject, '')) = lower(coalesce(${r.matchSubject}::text, ''))
+      and action = ${r.action} and coalesce(folder, '') = coalesce(${r.folder}::text, '')
+    order by id limit 1`;
+  if (!twin) throw new Error("rule insert returned nothing");
+  return { id: Number(twin.id), created: false };
 }
 
 export async function deleteRule(id: number): Promise<void> {

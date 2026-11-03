@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requirePrivate } from "@/lib/money/guard";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { requirePrivate } from "@/lib/money/guard";
 import { applyRuleToRecent, resortRecent } from "@/lib/mail/ingest";
 import { runYahoo, syncYahooAccounts } from "@/lib/mail/run";
 import { newKey, sealSecret, sha256 } from "@/lib/mail/secret";
@@ -14,7 +15,14 @@ import type { RuleAction } from "@/tools/mail/types";
 
 /** Every action re-checks the Private session itself; the proxy is the first lock, not the only one. */
 
-export type FormState = { error?: string; done?: string; script?: string; attempt: number };
+export type FormState = {
+  error?: string;
+  done?: string;
+  script?: string;
+  attempt: number;
+  /** What was typed, handed back so a failed try doesn't wipe the form (React resets it after every action). Never the password. */
+  values?: Record<string, string>;
+};
 
 const ACTIONS: ReadonlySet<string> = new Set(["trash", "file", "unsubscribe", "hide", "important"]);
 
@@ -33,15 +41,31 @@ export async function ruleFromSender(form: FormData): Promise<void> {
   if (!addr.includes("@") || !ACTIONS.has(action)) return;
   const folder = action === "file" ? cleanFolder(String(form.get("folder") ?? "")) ?? "Misc" : null;
   const rule = { matchFrom: addr, matchSubject: null, action: action as RuleAction, folder };
-  const id = await addRule(rule);
+  const { id, created } = await addRule(rule);
+  const q = new URLSearchParams({ ruled: addr, did: action, n: "0" });
+  if (!created) {
+    // A second tap (or the same rule made before): the first one already did the work. Doing it
+    // again would press an unsubscribe link twice.
+    q.set("dup", "1");
+    redirect(`/private/mail?${q}`);
+  }
   const { touched, accounts } = await applyRuleToRecent({ id, ...rule }, addr);
-  // Yahoo moves happen now rather than at 7 tomorrow; Gmail's script makes its own at its next run.
+  q.set("n", String(touched));
+  // Yahoo's moves are made right after the page answers (a Yahoo sign-in and sync can take most of
+  // the minute a request gets); Gmail's script makes its own at its next run.
   const yahoo = accounts.filter((a) => a.startsWith("yahoo:"));
-  const { problems } = yahoo.length ? await syncYahooAccounts(yahoo) : { problems: [] };
+  if (yahoo.length) {
+    q.set("yahoo", "1");
+    after(async () => {
+      try {
+        await syncYahooAccounts(yahoo); // the page reads the database fresh on the next visit
+      } catch (e) {
+        console.error("mail: yahoo sync after a new rule failed", e instanceof Error ? e.message : e);
+      }
+    });
+  }
   revalidatePath("/private/mail", "layout");
-  const q = new URLSearchParams({ ruled: addr, did: action, n: String(touched) });
   if (accounts.some((a) => !a.startsWith("yahoo:"))) q.set("gmail", "1");
-  if (problems.length) q.set("err", "1");
   redirect(`/private/mail?${q}`);
 }
 
@@ -59,19 +83,23 @@ export async function createRule(prev: FormState, form: FormData): Promise<FormS
   const matchFrom = String(form.get("matchFrom") ?? "").trim().slice(0, 120) || null;
   const matchSubject = String(form.get("matchSubject") ?? "").trim().slice(0, 120) || null;
   const action = String(form.get("action") ?? "");
-  if (!matchFrom && !matchSubject) return { error: "Fill in who it's from, the subject, or both.", attempt };
-  if (!ACTIONS.has(action)) return { error: "Pick what the rule should do.", attempt };
+  const values = { matchFrom: matchFrom ?? "", matchSubject: matchSubject ?? "", folder: String(form.get("folder") ?? "").slice(0, 60) };
+  if (!matchFrom && !matchSubject) return { error: "Fill in who it's from, the subject, or both.", attempt, values };
+  if (!ACTIONS.has(action)) return { error: "Pick what the rule should do.", attempt, values };
   const folder = action === "file" ? cleanFolder(String(form.get("folder") ?? "")) ?? "Misc" : null;
-  await addRule({ matchFrom, matchSubject, action: action as RuleAction, folder });
+  const { created } = await addRule({ matchFrom, matchSubject, action: action as RuleAction, folder });
   revalidatePath("/private/mail", "layout");
-  return { done: "Rule saved. It applies to new mail from the next run.", attempt };
+  return { done: created ? "Rule saved. It applies to new mail from the next run." : "That rule is already in the list, so nothing changed.", attempt };
 }
 
-export async function removeRule(form: FormData): Promise<void> {
+/** Removes a rule; the answer is a sentence for the page. */
+export async function removeRule(form: FormData): Promise<{ ok: boolean; message: string }> {
   await requirePrivate("/private/mail/settings");
   const id = Number(form.get("id"));
-  if (Number.isInteger(id)) await deleteRule(id);
+  if (!Number.isInteger(id)) return { ok: false, message: "That didn't look right. Reload the page and try again." };
+  await deleteRule(id);
   revalidatePath("/private/mail", "layout");
+  return { ok: true, message: "Rule removed. Mail it would have moved now stays where it lands." };
 }
 
 export async function addYahoo(prev: FormState, form: FormData): Promise<FormState> {
@@ -79,24 +107,28 @@ export async function addYahoo(prev: FormState, form: FormData): Promise<FormSta
   const attempt = prev.attempt + 1;
   const address = String(form.get("address") ?? "").trim().toLowerCase();
   const pass = String(form.get("appPassword") ?? "").replace(/\s+/g, "");
-  if (!/^[^@\s]+@(yahoo|ymail|rocketmail|aol)\.[a-z.]+$/.test(address)) return { error: "Enter a Yahoo address, like name@yahoo.com.", attempt };
-  if (pass.length < 8) return { error: "Paste the app password Yahoo made for you (16 letters).", attempt };
+  const values = { address: address.slice(0, 120) }; // the address only: the password is never sent back
+  if (!/^[^@\s]+@(yahoo|ymail|rocketmail|aol)\.[a-z.]+$/.test(address)) return { error: "Enter a Yahoo address, like name@yahoo.com.", attempt, values };
+  if (pass.length < 8) return { error: "Paste the app password Yahoo made for you (16 letters).", attempt, values };
   const problem = await testYahooLogin(address, pass);
-  if (problem) return { error: problem, attempt };
+  if (problem) return { error: problem, attempt, values };
   try {
     await upsertYahoo(address, sealSecret(pass));
   } catch {
-    return { error: "Couldn't save it: the site's encryption key isn't set up.", attempt };
+    return { error: "Couldn't save it: the site's encryption key isn't set up.", attempt, values };
   }
   revalidatePath("/private/mail", "layout");
   return { done: `Signed in to ${address}. It's checked every morning at 7.`, attempt };
 }
 
-export async function removeMailAccount(form: FormData): Promise<void> {
+/** Removes an account and its saved app password; the answer is a sentence for the page. */
+export async function removeMailAccount(form: FormData): Promise<{ ok: boolean; message: string }> {
   await requirePrivate("/private/mail/settings");
   const id = String(form.get("id") ?? "");
-  if (id) await removeAccount(id);
+  if (!id) return { ok: false, message: "That didn't look right. Reload the page and try again." };
+  await removeAccount(id);
   revalidatePath("/private/mail", "layout");
+  return { ok: true, message: `Removed ${id.replace(/^yahoo:/, "")} and its saved app password. You can revoke the app password at Yahoo too.` };
 }
 
 export async function makeGmailScript(prev: FormState): Promise<FormState> {

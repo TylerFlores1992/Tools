@@ -3,6 +3,7 @@ import { ImapFlow, type ListResponse } from "imapflow";
 import { simpleParser } from "mailparser";
 import { rawHeader } from "@/tools/mail/headers";
 import { cleanFolder } from "@/tools/mail/plan";
+import { imapProblem } from "@/tools/mail/service-text";
 import type { IncomingMail, Rule } from "@/tools/mail/types";
 import { ingest, opFor, type MailboxOp } from "./ingest";
 import { openSecret } from "./secret";
@@ -38,11 +39,11 @@ export async function testYahooLogin(address: string, appPassword: string): Prom
   }
 }
 
+/** A sentence for the page; what Yahoo actually said goes to the server log only. */
 export function describeImapError(e: unknown): string {
-  const err = e as { authenticationFailed?: boolean; responseText?: string; code?: string; message?: string };
-  if (err?.authenticationFailed) return "Yahoo did not accept that sign-in. Use an app password (Yahoo Account Security → Generate app password), not your normal password.";
-  if (err?.code === "ETIMEDOUT" || err?.code === "ECONNRESET" || err?.code === "ENOTFOUND") return "Couldn't reach Yahoo's mail server. It will try again at the next run.";
-  return `Yahoo answered: ${String(err?.responseText || err?.message || "an error").slice(0, 160)}`;
+  const err = e as { responseText?: string; code?: string; message?: string } | null;
+  console.error("yahoo imap:", err?.code ?? "", String(err?.responseText || err?.message || "unknown").slice(0, 300));
+  return imapProblem(e);
 }
 
 function trashPath(list: ListResponse[]): string {
