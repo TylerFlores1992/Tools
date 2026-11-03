@@ -4,6 +4,7 @@ import { Card } from "@/components/Card";
 import { PageTransition } from "@/components/PageTransition";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { AppTabs } from "@/components/AppTabs";
 import { State } from "@/components/State";
 
 const TABS = [
@@ -14,7 +15,7 @@ const TABS = [
 
 export type LearnTab = (typeof TABS)[number]["href"] | null;
 
-export function LearnShell({ current, children, crumb }: { current: LearnTab; children: ReactNode; crumb?: string }) {
+export function LearnShell({ current, children, crumb }: { current?: LearnTab; children: ReactNode; crumb?: string }) {
   return (
     <>
       <SiteHeader current="/private" />
@@ -32,25 +33,9 @@ export function LearnShell({ current, children, crumb }: { current: LearnTab; ch
             <span className="text-ink-2">Learn</span>
           )}
         </nav>
-        {current && (
-          <nav aria-label="Learn" className="mt-4 overflow-x-auto">
-            <ul className="inline-flex gap-1 rounded-full border border-line bg-surface p-1">
-              {TABS.map((t) => (
-                <li key={t.href}>
-                  <Link
-                    href={t.href}
-                    aria-current={current === t.href ? "page" : undefined}
-                    className="flex min-h-10 items-center rounded-full px-4 text-small whitespace-nowrap text-ink-2 transition-colors duration-150 hover:text-ink aria-[current=page]:bg-primary aria-[current=page]:text-on-primary"
-                  >
-                    {t.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        {current !== null && <AppTabs label="Learn" tabs={TABS} current={current} />}
         <PageTransition>
-          <div className={current ? "mt-8" : "mt-6"}>{children}</div>
+          <div className={current !== null ? "mt-8" : "mt-6"}>{children}</div>
         </PageTransition>
       </main>
       <SiteFooter />

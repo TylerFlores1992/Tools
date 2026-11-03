@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { AppTabs } from "@/components/AppTabs";
 
 const TABS = [
   { href: "/private/mail", label: "Today" },
@@ -11,7 +12,7 @@ const TABS = [
 
 export type MailTab = (typeof TABS)[number]["href"];
 
-export function MailShell({ current, children }: { current: MailTab; children: ReactNode }) {
+export function MailShell({ current, children }: { current?: MailTab; children: ReactNode }) {
   return (
     <>
       <SiteHeader current="/private" />
@@ -21,21 +22,7 @@ export function MailShell({ current, children }: { current: MailTab; children: R
           <span aria-hidden="true" className="px-2">/</span>
           <span className="text-ink-2">Morning Mail</span>
         </nav>
-        <nav aria-label="Morning Mail" className="mt-4 overflow-x-auto">
-          <ul className="inline-flex gap-1 rounded-full border border-line bg-surface p-1">
-            {TABS.map((t) => (
-              <li key={t.href}>
-                <Link
-                  href={t.href}
-                  aria-current={current === t.href ? "page" : undefined}
-                  className="flex min-h-10 items-center rounded-full px-4 text-small whitespace-nowrap text-ink-2 transition-colors duration-150 hover:text-ink aria-[current=page]:bg-primary aria-[current=page]:text-on-primary"
-                >
-                  {t.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <AppTabs label="Morning Mail" tabs={TABS} current={current} />
         <PageTransition>
           <div className="mt-8">{children}</div>
         </PageTransition>
