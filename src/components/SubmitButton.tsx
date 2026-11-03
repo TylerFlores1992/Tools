@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentProps, type MouseEvent, type ReactNode } from "react";
+import { useState, type ComponentProps, type MouseEvent, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { buttonClasses } from "./Button";
 import { cx } from "./cx";
@@ -32,9 +32,13 @@ export function SubmitButton({
 }: Omit<ComponentProps<"button">, "type"> & { pending?: ReactNode; confirm?: string; variant?: Variant }) {
   const { pending: busy } = useFormStatus();
   const [pressed, setPressed] = useState(false);
-  useEffect(() => {
+  // Forget the press once the form is idle again (adjusting state while rendering, not in an
+  // effect), so a later submit from a sibling button doesn't spin this one too.
+  const [wasBusy, setWasBusy] = useState(busy);
+  if (busy !== wasBusy) {
+    setWasBusy(busy);
     if (!busy) setPressed(false);
-  }, [busy]);
+  }
 
   function handleClick(e: MouseEvent<HTMLButtonElement>) {
     if (busy) {

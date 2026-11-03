@@ -3,6 +3,9 @@ import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { Label } from "@/components/Label";
 import { Arrow } from "@/components/Button";
+import { cx } from "@/components/cx";
+import { PRESS, PRESS_FILL, PRESS_ROW } from "@/components/press";
+import { practiceSet } from "@/tools/etcp/questions";
 import { CONVERSIONS, FORMULA_GROUPS, OFFICIAL_SHEET, type Formula } from "@/tools/etcp/formulas";
 import { RichLine, RichText } from "@/tools/etcp/Rich";
 
@@ -15,11 +18,19 @@ export const metadata: Metadata = {
 
 const SECTIONS = [...FORMULA_GROUPS.map((g) => ({ id: g.id, title: g.title })), { id: "conversions", title: "Conversions" }];
 
-/** "a03" → link to question 3 of test A. */
+/**
+ * "a03" → link to question 3 of test A. Shown as "A3", heard as "A3: Practice test A, question 3"
+ * (the name starts with the visible text, so "click A3" still works for voice control).
+ */
 function QuestionLink({ id }: { id: string }) {
   const set = id[0], n = Number(id.slice(1));
+  const name = practiceSet(set)?.name ?? `Practice test ${set.toUpperCase()}`;
   return (
-    <Link href={`/workshop/etcp-rigger-study/practice/${set}#${id}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-tag border border-line-2 px-2.5 font-mono text-label tracking-normal text-ink-2 hover:border-control hover:text-ink">
+    <Link
+      href={`/workshop/etcp-rigger-study/practice/${set}#${id}`}
+      aria-label={`${set.toUpperCase()}${n}: ${name}, question ${n}`}
+      className={cx("inline-flex min-h-11 min-w-11 items-center justify-center rounded-tag border border-line-2 px-2.5 font-mono text-label tracking-normal text-ink-2 transition-[color,background-color,border-color,scale] duration-150 hover:border-control hover:text-ink", PRESS, PRESS_FILL)}
+    >
       {set.toUpperCase()}{n}
     </Link>
   );
@@ -58,7 +69,7 @@ export default function FormulasPage() {
 
       <div className="mt-8 lg:grid lg:grid-cols-[minmax(0,760px)_15rem] lg:items-start lg:gap-16 xl:gap-24">
         <div className="min-w-0">
-          <a href={OFFICIAL_SHEET.url} className="group flex items-center justify-between gap-4 rounded-card border border-line bg-surface p-5 shadow-card transition-colors duration-150 hover:border-control hover:bg-surface-2">
+          <a href={OFFICIAL_SHEET.url} className={cx("group flex items-center justify-between gap-4 rounded-card border border-line bg-surface p-5 shadow-card transition-[color,background-color,border-color,scale] duration-150 hover:border-control hover:bg-surface-2", PRESS_FILL, PRESS_ROW)}>
             <span>
               <span className="block font-mono text-label uppercase text-muted">In the exam · PDF</span>
               <span className="mt-1 block text-body font-medium text-ink">{OFFICIAL_SHEET.title}</span>
@@ -69,7 +80,7 @@ export default function FormulasPage() {
 
           <nav aria-label="Formula groups" className="mt-8 flex flex-wrap gap-2 lg:hidden">
             {SECTIONS.map((g) => (
-              <a key={g.id} href={`#${g.id}`} className="flex min-h-11 items-center rounded-full border border-line-2 bg-surface px-4 text-small text-ink-2 hover:border-control hover:text-ink">{g.title}</a>
+              <a key={g.id} href={`#${g.id}`} className={cx("flex min-h-11 items-center rounded-full border border-line-2 bg-surface px-4 text-small text-ink-2 transition-[color,background-color,border-color,scale] duration-150 hover:border-control hover:text-ink", PRESS, PRESS_FILL)}>{g.title}</a>
             ))}
           </nav>
 
@@ -102,7 +113,7 @@ export default function FormulasPage() {
           <ul className="mt-3 border-l border-line">
             {SECTIONS.map((g) => (
               <li key={g.id}>
-                <a href={`#${g.id}`} className="-ml-px flex min-h-11 items-center border-l border-transparent pl-4 text-small text-ink-2 hover:border-control hover:text-ink">{g.title}</a>
+                <a href={`#${g.id}`} className="-ml-px flex min-h-11 items-center border-l border-transparent pl-4 text-small text-ink-2 hover:border-control hover:text-ink active:border-ink active:text-ink">{g.title}</a>
               </li>
             ))}
           </ul>

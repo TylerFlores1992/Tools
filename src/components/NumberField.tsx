@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { cx } from "./cx";
+import { readDraft } from "./number-draft";
 
 /**
  * A decimal input that keeps the visitor's draft while they type ("1" on the way to "14" is
@@ -11,6 +12,10 @@ import { cx } from "./cx";
  * Pass `onInvalid` to hear when the draft can't be read (true) and when it can again (false):
  * the field then keeps a bad draft and its error on blur, so the parent can blank results that
  * belong to the old value. Without it, blur quietly returns to the last good value.
+ *
+ * A half-typed number ("", "-", ".") is not an error while the field has focus: "-" on the way
+ * to "-2" says nothing and keeps the last good value. Left that way, it's "Enter a number." on
+ * blur. Errors are announced politely (they appear while typing, so they mustn't interrupt).
  */
 const SPOKEN: Record<string, string> = { ft: "feet", m: "meters", lb: "pounds", kg: "kilograms", in: "inches", mm: "millimeters", cm: "centimeters" };
 
@@ -45,8 +50,10 @@ export function NumberField({
 
   function commit(text: string) {
     setDraft(text);
-    const n = Number(text.replace(",", "."));
-    if (text.trim() === "" || !Number.isFinite(n)) return setError("Enter a number.");
+    const d = readDraft(text);
+    if (d.kind === "typing") return setError("");
+    if (d.kind === "invalid") return setError("Enter a number.");
+    const n = d.n;
     if (min !== undefined && n < min) return setError(`Use ${min} or more.`);
     if (max !== undefined && n > max) return setError(`Use ${max} or less.`);
     setError("");
@@ -77,7 +84,11 @@ export function NumberField({
           aria-describedby={[error && `${id}-err`, hint && `${id}-hint`, `${id}-unit`].filter(Boolean).join(" ")}
           onChange={(e) => commit(e.target.value)}
           onFocus={() => { if (!error) setDraft(fmt(value)); setFocused(true); }}
-          onBlur={() => { setFocused(false); if (!keepsBad) setError(""); }}
+          onBlur={() => {
+            setFocused(false);
+            if (!keepsBad) setError("");
+            else if (readDraft(draft).kind === "typing") setError("Enter a number.");
+          }}
           onKeyDown={(e) => {
             if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); nudge(e.key === "ArrowUp" ? 1 : -1, e.shiftKey); }
           }}
@@ -86,11 +97,15 @@ export function NumberField({
         <span aria-hidden="true" className="font-mono text-label uppercase text-muted">{unit}</span>
         <span id={`${id}-unit`} className="sr-only">in {SPOKEN[unit] ?? unit}</span>
       </div>
-      {error && (
-        <p id={`${id}-err`} role="alert" className="flex items-center gap-1.5 text-small text-wrong">
-          <span aria-hidden="true">✕</span> {error}
-        </p>
-      )}
+      {/* Always rendered, so the polite announcement fires when an error appears. Empty, its
+          negative margin cancels the grid gap, so it takes no room. */}
+      <div aria-live="polite" className="empty:-mt-1.5">
+        {error && (
+          <p id={`${id}-err`} className="flex items-center gap-1.5 text-small text-wrong">
+            <span aria-hidden="true">✕</span> {error}
+          </p>
+        )}
+      </div>
       {hint && <p id={`${id}-hint`} className="text-small text-muted">{hint}</p>}
     </div>
   );

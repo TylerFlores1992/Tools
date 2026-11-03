@@ -35,10 +35,16 @@ export default function BridleCalculatorPage() {
       <SiteHeader current="/workshop" />
       <main id="main" className="mx-auto max-w-[1280px] px-5 pb-20 pt-6 sm:px-12 sm:pt-10 3xl:max-w-[1600px]">
 <PageTransition>
-        <nav aria-label="Breadcrumb" className="text-small text-muted">
-          <Link href="/workshop" className="hover:text-ink">Workshop</Link>
-          <span aria-hidden="true" className="mx-2">/</span>
-          <span className="text-ink-2">{tool.name}</span>
+        <nav aria-label="Breadcrumb" className="-my-3 text-small text-muted">
+          <ol className="flex flex-wrap items-center gap-y-1">
+            <li>
+              <Link href="/workshop" className="inline-flex min-h-11 items-center hover:text-ink active:text-ink">Workshop</Link>
+            </li>
+            <li className="flex items-center">
+              <span aria-hidden="true" className="mx-2">/</span>
+              <span aria-current="page" className="text-ink-2">{tool.name}</span>
+            </li>
+          </ol>
         </nav>
         <header className="mt-6 max-w-[64ch]">
           <Label>Rigging · Calculator</Label>

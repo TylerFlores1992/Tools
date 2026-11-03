@@ -2,7 +2,9 @@
 
 import { Button, LinkButton, Arrow } from "@/components/Button";
 import { State } from "@/components/State";
+import { useRef } from "react";
 import { cx } from "@/components/cx";
+import { PRESS, PRESS_FILL, PRESS_ROW } from "@/components/press";
 import { AREAS, LETTERS, PRACTICE_SETS, type Area, type Question } from "./questions";
 import { usePracticeAnswers, type Answers } from "./stored";
 import { STUDY_BASE } from "./nav";
@@ -17,7 +19,15 @@ export function PracticeTest({ slug }: { slug: string }) {
   const right = qs.filter((q) => answers[q.id] === q.answer).length;
   const wrong = done - right;
   const pct = Math.round((right / qs.length) * 100);
-  const startOver = () => { setAnswers(NONE); window.scrollTo({ top: 0 }); };
+  // Clearing every answer can't be undone, so it asks first. Focus then goes to the progress line
+  // ("0 of 25 answered"), which says it worked, instead of falling to the page when the button goes.
+  const progressRef = useRef<HTMLDivElement>(null);
+  const startOver = () => {
+    if (!window.confirm(`Start ${set.name} over? Your ${done} ${done === 1 ? "answer" : "answers"} will be cleared.`)) return;
+    setAnswers(NONE);
+    window.scrollTo({ top: 0 });
+    progressRef.current?.focus({ preventScroll: true });
+  };
 
   function answer(q: Question, i: number) {
     if (answers[q.id] !== undefined) return;
@@ -29,7 +39,7 @@ export function PracticeTest({ slug }: { slug: string }) {
       <div className="min-w-0">
         {/* Full-bleed background on phones; the hairline stops at the column. */}
         <div className="sticky top-0 z-10 -mx-5 bg-bg px-5 sm:-mx-12 sm:px-12 lg:mx-0 lg:px-0">
-          <div className="flex max-w-[760px] flex-wrap items-center gap-x-4 gap-y-2 border-b border-line py-3 text-small tabular-nums">
+          <div ref={progressRef} tabIndex={-1} className="flex max-w-[760px] flex-wrap items-center gap-x-4 gap-y-2 border-b border-line py-3 text-small tabular-nums">
             <span className="text-ink">{done} of {qs.length} answered</span>
             <span className="flex gap-3 text-muted">
               <span><span aria-hidden="true" className="text-ice">✓</span> {right} right</span>
@@ -108,7 +118,9 @@ function QuestionIndex({ qs, answers }: { qs: readonly Question[]; answers: Answ
                 href={`#${q.id}`}
                 aria-label={`Question ${i + 1}, ${state === "none" ? "not answered" : state === "right" ? "correct" : "incorrect"}`}
                 className={cx(
-                  "flex size-11 flex-col items-center justify-center rounded-tag border font-mono text-label leading-none tabular-nums tracking-normal transition-colors duration-150 hover:bg-surface-2",
+                  "flex size-11 flex-col items-center justify-center rounded-tag border font-mono text-label leading-none tabular-nums tracking-normal transition-[color,background-color,border-color,scale] duration-150 hover:bg-surface-2",
+                  PRESS,
+                  PRESS_FILL,
                   state === "none" && "border-line-2 text-muted hover:text-ink",
                   state === "right" && "border-ice text-ink-2",
                   state === "wrong" && "border-wrong text-ink-2",
@@ -188,8 +200,8 @@ function QuestionItem({ q, n, chosen, onAnswer }: { q: Question; n: number; chos
                   aria-disabled={answered || undefined}
                   onClick={() => onAnswer(i)}
                   className={cx(
-                    "flex min-h-12 w-full items-start gap-3 rounded-input border bg-surface px-4 py-3 text-left text-body transition-colors duration-150",
-                    !answered && "border-control hover:border-ink-2 hover:bg-surface-2",
+                    "flex min-h-12 w-full items-start gap-3 rounded-input border bg-surface px-4 py-3 text-left text-body transition-[color,background-color,border-color,scale] duration-150",
+                    !answered && cx("border-control hover:border-ink-2 hover:bg-surface-2 active:border-ink-2", PRESS_ROW, PRESS_FILL),
                     answered && "cursor-default",
                     answered && isKey && "border-ice",
                     answered && isChosen && !isKey && "border-wrong",

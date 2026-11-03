@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { cx } from "./cx";
+import { PRESS, PRESS_FILL } from "./press";
 
 /** A single-choice control with real radio semantics: one tab stop, arrows move the choice. */
 export function Segmented<T extends string>({
@@ -33,7 +34,7 @@ export function Segmented<T extends string>({
               if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); move(1); }
               if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); move(-1); }
             }}
-            className={cx("flex min-h-11 items-center gap-2 rounded-full px-4 text-small transition-colors duration-150", on ? "bg-primary text-on-primary" : "text-ink-2 hover:text-ink")}
+            className={cx("flex min-h-11 items-center gap-2 rounded-full px-4 text-small transition-[color,background-color,scale] duration-150", PRESS, on ? "bg-primary text-on-primary" : cx("text-ink-2 hover:text-ink", PRESS_FILL))}
           >
             {on && <span aria-hidden="true">✓</span>}
             {o.label}

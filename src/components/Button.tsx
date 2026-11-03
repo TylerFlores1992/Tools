@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { ComponentProps } from "react";
 import { cx } from "./cx";
+import { LinkPending } from "./LinkPending";
 
 type Variant = "primary" | "quiet" | "ghost";
 
 const BASE =
-  "inline-flex min-h-11 items-center justify-center gap-3 rounded-btn px-5 text-body font-medium whitespace-nowrap transition-[transform,background-color,color,border-color] duration-150 ease-out select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex min-h-11 items-center justify-center gap-3 rounded-btn px-5 text-body font-medium whitespace-nowrap transition-[transform,scale,background-color,color,border-color] duration-150 ease-out select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS: Record<Variant, string> = {
   primary: "bg-primary text-on-primary hover:bg-ink-2",
@@ -22,9 +23,18 @@ export function Button({ variant = "primary", className, type = "button", ...res
   return <button type={type} className={buttonClasses(variant, className)} {...rest} />;
 }
 
-/** Navigation that looks like a button. Never nest a link in a button. */
-export function LinkButton({ variant = "primary", className, ...rest }: ComponentProps<typeof Link> & { variant?: Variant }) {
-  return <Link className={buttonClasses(variant, className)} {...rest} />;
+/**
+ * Navigation that looks like a button. Never nest a link in a button. While the page it opens is
+ * still loading, a small dot pulses in its right padding (LinkPending), so a slow tap never looks
+ * missed; the label and size don't change.
+ */
+export function LinkButton({ variant = "primary", className, children, ...rest }: ComponentProps<typeof Link> & { variant?: Variant }) {
+  return (
+    <Link className={buttonClasses(variant, cx("relative", className))} {...rest}>
+      {children}
+      <LinkPending overlay="end" />
+    </Link>
+  );
 }
 
 export function Arrow({ className }: { className?: string }) {

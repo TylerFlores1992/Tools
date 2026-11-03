@@ -42,6 +42,7 @@ export const CONTRAST_PAIRS: { fg: ColorToken; bg: ColorToken; min: number; use:
   { fg: "ice", bg: "surface-2", min: 4.5, use: "correct / done on raised panels (worked answers)" },
   { fg: "wrong", bg: "surface-2", min: 4.5, use: "error text on raised panels (worked answers)" },
   { fg: "series-2", bg: "surface", min: 3, use: "second diagram series (non-text)" },
+  { fg: "series-2", bg: "surface", min: 4.5, use: "second-series labels as text (bridle \"Right leg\", diagram figures)" },
   { fg: "on-primary", bg: "primary", min: 4.5, use: "main button label" },
   { fg: "on-primary", bg: "ink-2", min: 4.5, use: "main button label on hover" },
   { fg: "control", bg: "bg", min: 3, use: "input edge on the page" },
