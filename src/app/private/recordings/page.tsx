@@ -206,6 +206,7 @@ function UpcomingRow({ u, lines }: { u: Upcoming; lines: number }) {
           {u.state === "skipped" && <State kind="note" sr="Status:" className="text-small">Skipped</State>}
           {u.isNew && <Tag>New</Tag>}
           {u.once && <Tag>One time</Tag>}
+          {u.early && <Tag>Earliest airing</Tag>}
           {warn && <State kind="wrong" sr="Warning:" className="text-small">{warn}</State>}
         </div>
       </div>
@@ -390,6 +391,7 @@ function SeriesCard({ x, s }: { x: Rule; s: DvrState }) {
       <div className="flex flex-wrap gap-2">
         <Tag>{x.newOnly ? "New episodes only" : "Every airing"}</Tag>
         <Tag>{x.keep ? `Keep latest ${x.keep}` : "Keep all"}</Tag>
+        {x.alsoOn?.length > 0 && <Tag>Earliest airing: {x.alsoOn[0].channelName}</Tag>}
         <Tag>{padText(x, s.defaults)}</Tag>
       </div>
       <p className="text-small text-ink-2">

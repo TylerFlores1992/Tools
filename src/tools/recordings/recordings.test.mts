@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { adsText, clash, dayLabel, daysApart, groupByDay, padText, plural, relIn, size, when } from "./format.ts";
-import { feedValue, readSeriesForm } from "./series-form.ts";
+import { earlyValue, feedValue, readSeriesForm } from "./series-form.ts";
 import type { Upcoming } from "./types.ts";
 
 const form = (o: Record<string, string>) => ({ get: (k: string) => (k in o ? o[k] : null) });
@@ -22,6 +22,19 @@ test("series form: refuses a missing show or channel, clamps the rest", () => {
   assert.deepEqual(readSeriesForm(form({ title: "X", feed: "abc::x" })), { ok: false, message: "Pick a channel." });
   const r = readSeriesForm(form({ title: "X", feed: "1::x", padA: "999", keep: "-3" }));
   assert.ok(r.ok && r.value.padAfterMin === 180 && r.value.keep === 0);
+});
+
+test("series form: 'record the earliest airing' adds the early feed, unticking removes it", () => {
+  const base = { title: "Survivor", feed: feedValue(430060, "CBS 2 Los Angeles"), earlyOffered: "1" };
+  const on = readSeriesForm(form({ ...base, early: earlyValue({ channel: 429909, channelName: "US: CBS 2 WCBS (NEW YORK) HD", gid: "pub.WCBS-DT.us_locals1" }) }));
+  assert.ok(on.ok);
+  assert.deepEqual(on.value.alsoOn, [{ channel: 429909, channelName: "US: CBS 2 WCBS (NEW YORK) HD", guideId: "pub.WCBS-DT.us_locals1" }]);
+  const off = readSeriesForm(form(base));
+  assert.ok(off.ok && Array.isArray(off.value.alsoOn) && off.value.alsoOn.length === 0, "offered but unticked: turned off");
+  const untouched = readSeriesForm(form({ title: "Survivor", feed: base.feed }));
+  assert.ok(untouched.ok && untouched.value.alsoOn === undefined, "not offered: left as it was");
+  const same = readSeriesForm(form({ ...base, early: earlyValue({ channel: 430060, channelName: "x", gid: "g" }) }));
+  assert.ok(same.ok && same.value.alsoOn?.length === 0, "the series' own channel is never its own early feed");
 });
 
 const pt = (iso: string) => Date.parse(iso); // write times with their offset

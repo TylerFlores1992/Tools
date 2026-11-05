@@ -7,8 +7,8 @@ import { Label } from "@/components/Label";
 import { State } from "@/components/State";
 import { requirePrivate } from "@/lib/money/guard";
 import { dvr } from "@/lib/recordings/dvr";
-import { plural, when } from "@/tools/recordings/format";
-import { feedValue } from "@/tools/recordings/series-form";
+import { clock, plural, when } from "@/tools/recordings/format";
+import { earlyValue, feedValue } from "@/tools/recordings/series-form";
 import type { AiringChannel, DvrState, SearchHit, ShowInfo, StoredRule } from "@/tools/recordings/types";
 import { AutoSubmit } from "@/tools/recordings/ui/AutoSubmit";
 import { LiveArea, LiveForm, LiveResults, LiveStatus } from "@/tools/recordings/ui/LiveSearch";
@@ -113,6 +113,7 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
         id: fromState.id, title: fromState.title, folder: fromState.folder, channel: fromState.channel, channelName: fromState.channelName,
         newOnly: fromState.newOnly, keep: fromState.keep || undefined, once: fromState.once ?? undefined,
         padBeforeMin: fromState.padBeforeMin ?? undefined, padAfterMin: fromState.padAfterMin ?? undefined,
+        alsoOn: fromState.alsoOn,
       }
     : info.rule;
   const editing = Boolean(rule && !rule.once);
@@ -127,6 +128,7 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
   const ruleFeed = rule && chosen.streams.find((s) => s.id === rule.channel);
   const feeds = chosen.streams.map((s, i) => ({ value: feedValue(s.id, i === 0 ? chosen.name : s.name.replace(/ \(.*\)$/, "")), label: s.name, on: ruleFeed ? s.id === ruleFeed.id : i === 0 }));
   const defaultFeed = (feeds.find((f) => f.on) ?? feeds[0]).value;
+  const early = earlyOption(info, chosen, rule);
 
   return (
     <RecordingsShell trail="Record a show">
@@ -161,7 +163,7 @@ async function ShowView({ title, ch, editId }: { title: string; ch?: string; edi
             <input type="hidden" name="gid" value={chosen.gid} />
             {editing && rule && <input type="hidden" name="ruleId" value={rule.id} />}
             {rule?.folder && <input type="hidden" name="folder" value={rule.folder} />}
-            <SeriesOptions rule={editing ? rule : null} defaults={defaults} feeds={feeds} />
+            <SeriesOptions rule={editing ? rule : null} defaults={defaults} feeds={feeds} early={early} />
             <PendingButton className={buttonClasses("primary", "justify-self-start")} pending="Saving…">{editing ? "Save changes" : "Record series"}</PendingButton>
           </form>
         </Card>
@@ -218,13 +220,55 @@ function Unreachable({ title, message }: { title: string; message: string }) {
   );
 }
 
+// ---------- earliest airing ----------
+
+type EarlyOption = { value: string; channelName: string; start: number | null; hours: number | null; on: boolean };
+
+/**
+ * "Record the earliest airing" (2026-11-04): when the newest episode airs sooner on another
+ * station (CBS on the East Coast, 3 hours before Los Angeles), offer to record it there, with the
+ * chosen channel as the backup. A series that already records early keeps showing it.
+ */
+function earlyOption(info: ShowInfo, chosen: AiringChannel, rule: StoredRule | null): EarlyOption | null {
+  const current = rule?.alsoOn?.[0];
+  const e = info.earliest;
+  if (e && !chosen.streams.some((s) => s.id === e.channel) && e.gid !== chosen.gid) {
+    const here = chosen.airings.find((a) => a.se === e.se)?.start;
+    const hours = here ? Math.round(((here - e.start) / 3600000) * 10) / 10 : e.hoursEarlier;
+    if (current || hours === null || hours > 0) {
+      const on = Boolean(current);
+      const f = current && current.channel !== e.channel ? { channel: current.channel, channelName: current.channelName, gid: current.guideId ?? "" } : { channel: e.channel, channelName: e.channelName, gid: e.gid };
+      return { value: earlyValue(f), channelName: f.channelName, start: f.channel === e.channel ? e.start : null, hours: f.channel === e.channel ? hours : null, on };
+    }
+  }
+  return current ? { value: earlyValue({ channel: current.channel, channelName: current.channelName, gid: current.guideId ?? "" }), channelName: current.channelName, start: null, hours: null, on: true } : null;
+}
+
+function EarlyChoice({ early }: { early: EarlyOption }) {
+  const soon = early.hours && early.hours > 0 ? `${early.hours} ${early.hours === 1 ? "hour" : "hours"} sooner` : "sooner";
+  return (
+    <label className="flex cursor-pointer gap-3 rounded-btn border border-line-2 p-4 has-[:checked]:border-control has-[:checked]:bg-surface-2">
+      <input type="hidden" name="earlyOffered" value="1" />
+      <input type="checkbox" name="early" value={early.value} defaultChecked={early.on} className="mt-1 size-5 shrink-0 accent-primary" />
+      <span>
+        <span className="block text-body text-ink">Record the earliest airing</span>
+        <span className="mt-1 block text-small text-muted">
+          {early.channelName} shows it {soon}{early.start ? ` (${clock(early.start)})` : ""}, so it&rsquo;s ready earlier, ads already out. This channel stays as the
+          backup: it records only if the early one fails or misses part of the show.
+        </span>
+      </span>
+    </label>
+  );
+}
+
 // ---------- shared options ----------
 
 /** Record new-only or every airing, plus "More options" (feed, keep, timing). No feeds = the form has its own channel field. */
-function SeriesOptions({ rule, defaults, feeds }: {
+function SeriesOptions({ rule, defaults, feeds, early }: {
   rule: StoredRule | null;
   defaults: { padBeforeMin: number; padAfterMin: number };
   feeds: { value: string; label: string; on: boolean }[];
+  early?: EarlyOption | null;
 }) {
   const newOnly = rule ? rule.newOnly !== false : true;
   const pick = (name: string, label: string, value: number | undefined, options: number[], dflt: number) => (
@@ -255,6 +299,7 @@ function SeriesOptions({ rule, defaults, feeds }: {
           ))}
         </div>
       </fieldset>
+      {early && <EarlyChoice early={early} />}
       <details className="group rounded-btn border border-line-2" open={Boolean(rule && (rule.keep || rule.padBeforeMin !== undefined || rule.padAfterMin !== undefined))}>
         <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 text-small text-ink-2 hover:text-ink [&::-webkit-details-marker]:hidden">
           More options <span aria-hidden="true">▾</span>

@@ -20,6 +20,12 @@ export function readSeriesForm(form: Field): { ok: true; value: SeriesInput } | 
   const pad = (k: string) => (/^\d{1,3}$/.test(s(k)) ? Math.min(180, Number(s(k))) : null);
   const keep = /^\d{1,2}$/.test(s("keep")) ? Number(s("keep")) : 0;
   const folder = s("folder").slice(0, 120);
+  // "Record the earliest airing": the checkbox carries "<stream id>::<name>::<guide id>".
+  // A form that offered it but left it unticked sends earlyOffered, which turns it off.
+  const [eId, eName = "", eGid = ""] = s("early").split("::");
+  const alsoOn = /^\d{1,9}$/.test(eId) && Number(eId) !== channel
+    ? [{ channel: Number(eId), channelName: eName.slice(0, 120) || eId, guideId: eGid.slice(0, 200) }]
+    : form.get("earlyOffered") !== null ? [] : undefined;
   return {
     ok: true,
     value: {
@@ -32,6 +38,12 @@ export function readSeriesForm(form: Field): { ok: true; value: SeriesInput } | 
       padBeforeMin: pad("padB"),
       padAfterMin: pad("padA"),
       ...(folder ? { folder } : {}),
+      ...(alsoOn ? { alsoOn } : {}),
     },
   };
+}
+
+/** The checkbox value for an earlier feed. */
+export function earlyValue(f: { channel: number; channelName: string; gid: string }): string {
+  return `${f.channel}::${f.channelName.replace(/::/g, " ")}::${f.gid}`;
 }
