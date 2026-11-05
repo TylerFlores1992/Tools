@@ -21,6 +21,8 @@ export type Upcoming = {
   state: UpcomingState;
   isNew: boolean;
   once: boolean;
+  /** Recording from an earlier feed (the series' own channel is the backup). */
+  early?: boolean;
   /** Recorded so far, while recording. */
   mb: number;
   /** Different channels recording at the same moment (each needs a provider line). */
@@ -67,7 +69,11 @@ export type Rule = {
   padAfterMin: number | null;
   next: number | null;
   episodes: number;
+  /** Earlier feeds it records from first ("Record the earliest airing"). */
+  alsoOn: Feed[];
 };
+
+export type Feed = { channel: number; channelName: string; guideId?: string };
 
 export type TrashItem = { id: string; rel: string; name: string; size: number; deletedAt: string; why: string; purgeAt: number };
 
@@ -113,9 +119,12 @@ export type AiringChannel = {
 };
 
 /** A rule as stored in the recorder's rules file (what `airings` returns for an existing series). */
-export type StoredRule = { id: string; title: string; folder?: string; channel: number; channelName?: string; newOnly?: boolean; keep?: number; padBeforeMin?: number; padAfterMin?: number; once?: number };
+export type StoredRule = { id: string; title: string; folder?: string; channel: number; channelName?: string; guideId?: string; newOnly?: boolean; keep?: number; padBeforeMin?: number; padAfterMin?: number; once?: number; alsoOn?: Feed[] };
 
-export type ShowInfo = { title: string; desc: string; rule: StoredRule | null; channels: AiringChannel[] };
+/** Where the newest episode airs first, and the feed to record it from. */
+export type Earliest = { se: string; start: number; gid: string; channel: number; channelName: string; hoursEarlier: number | null };
+
+export type ShowInfo = { title: string; desc: string; rule: StoredRule | null; channels: AiringChannel[]; earliest: Earliest | null };
 
 /** What the "Record a show" dialog sends to save a series (new or edited). */
 export type SeriesInput = {
@@ -128,6 +137,8 @@ export type SeriesInput = {
   padBeforeMin: number | null;
   padAfterMin: number | null;
   folder?: string;
+  /** "Record the earliest airing": [] turns it off, undefined leaves it as it was. */
+  alsoOn?: Feed[];
 };
 
 /** What a Recordings button hands back for the toast. `at` makes two identical results distinct. */
