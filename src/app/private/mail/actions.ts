@@ -11,6 +11,7 @@ import { addRule, ensureGmailAccount, deleteRule, getRules, removeAccount, setDi
 import { testYahooLogin } from "@/lib/mail/yahoo";
 import { gmailScript } from "@/tools/mail/gmail-script";
 import { cleanFolder } from "@/tools/mail/plan";
+import { ruleNote, type SenderResult } from "@/tools/mail/rule-note";
 import type { RuleAction } from "@/tools/mail/types";
 
 /** Every action re-checks the Private session itself; the proxy is the first lock, not the only one. */
@@ -34,28 +35,45 @@ export async function toggleDone(form: FormData): Promise<void> {
   revalidatePath("/private/mail");
 }
 
-export async function ruleFromSender(form: FormData): Promise<void> {
+/**
+ * A sender button ("Always trash", "Not junk", …). It answers with a sentence for the toast and
+ * refreshes the page in place. It never redirects: a redirect is a fresh navigation, which scrolled
+ * the page back to the top after every press.
+ */
+export async function ruleFromSender(form: FormData): Promise<SenderResult> {
   await requirePrivate("/private/mail");
+  const at = Date.now();
   const addr = String(form.get("addr") ?? "").trim().toLowerCase();
   const action = String(form.get("action") ?? "");
-  if (!addr.includes("@") || !ACTIONS.has(action)) return;
+  if (!addr.includes("@") || !ACTIONS.has(action)) return { ok: false, message: "That button didn't send a sender to make a rule for.", at };
   const folder = action === "file" ? cleanFolder(String(form.get("folder") ?? "")) ?? "Misc" : null;
   const rule = { matchFrom: addr, matchSubject: null, action: action as RuleAction, folder };
-  const { id, created } = await addRule(rule);
-  const q = new URLSearchParams({ ruled: addr, did: action, n: "0" });
+  let id: number, created: boolean;
+  try {
+    ({ id, created } = await addRule(rule));
+  } catch (e) {
+    console.error("mail: saving a sender rule failed", e instanceof Error ? e.message : e);
+    return { ok: false, message: "Couldn't save that rule. Nothing changed; try again.", at };
+  }
   if (!created) {
     // A second tap (or the same rule made before): the first one already did the work. Doing it
     // again would press an unsubscribe link twice.
-    q.set("dup", "1");
-    redirect(`/private/mail?${q}`);
+    return { ok: true, message: ruleNote({ addr, action, touched: 0, dup: true, gmail: false, yahoo: false }) ?? "", at };
   }
-  const { touched, accounts } = await applyRuleToRecent({ id, ...rule }, addr);
-  q.set("n", String(touched));
+  let touched = 0;
+  let accounts: string[] = [];
+  try {
+    ({ touched, accounts } = await applyRuleToRecent({ id, ...rule }, addr));
+  } catch (e) {
+    // The rule is saved and applies from the next run; only today's catch-up failed.
+    console.error("mail: applying a new rule to recent mail failed", e instanceof Error ? e.message : e);
+    revalidatePath("/private/mail", "layout");
+    return { ok: true, message: `${ruleNote({ addr, action, touched: 0, dup: false, gmail: false, yahoo: false })} This week's mail couldn't be moved now; the next run does it.`, at };
+  }
   // Yahoo's moves are made right after the page answers (a Yahoo sign-in and sync can take most of
   // the minute a request gets); Gmail's script makes its own at its next run.
   const yahoo = accounts.filter((a) => a.startsWith("yahoo:"));
   if (yahoo.length) {
-    q.set("yahoo", "1");
     after(async () => {
       try {
         await syncYahooAccounts(yahoo); // the page reads the database fresh on the next visit
@@ -65,8 +83,8 @@ export async function ruleFromSender(form: FormData): Promise<void> {
     });
   }
   revalidatePath("/private/mail", "layout");
-  if (accounts.some((a) => !a.startsWith("yahoo:"))) q.set("gmail", "1");
-  redirect(`/private/mail?${q}`);
+  const gmail = accounts.some((a) => !a.startsWith("yahoo:"));
+  return { ok: true, message: ruleNote({ addr, action, touched, dup: false, gmail, yahoo: yahoo.length > 0 }) ?? "", at };
 }
 
 /** Sorts the last week's mail again with the current rules and sorting. Nothing in a mailbox moves. */

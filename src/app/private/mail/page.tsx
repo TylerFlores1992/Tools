@@ -9,6 +9,7 @@ import { loadMail } from "@/lib/mail/load";
 import type { ReportItem } from "@/tools/mail/report";
 import { SubmitButton } from "@/components/SubmitButton";
 import { ClearNoteParams, DoneToggle } from "@/tools/mail/ui/MailButtons";
+import { MailToaster, SenderForm } from "@/tools/mail/ui/SenderToast";
 import { MailShell } from "@/tools/mail/ui/MailShell";
 import { PendingButton } from "@/tools/mail/ui/PendingButton";
 import { Tag } from "@/tools/money/ui/MoneyShell";
@@ -29,7 +30,7 @@ const shortDate = (d: string) => new Intl.DateTimeFormat("en-US", { month: "shor
 const time = (iso: string) => new Date(iso).toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" });
 const dayTime = (iso: string) => new Date(iso).toLocaleString("en-US", { timeZone: "America/Los_Angeles", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string; ruled?: string; did?: string; n?: string; gmail?: string; yahoo?: string; dup?: string; err?: string }> }) {
+export default async function MorningMail({ searchParams }: { searchParams: Promise<{ date?: string; handled?: string; resorted?: string; of?: string }> }) {
   await requirePrivate("/private/mail");
   const sp = await searchParams;
   const data = await loadMail(sp.date);
@@ -49,238 +50,215 @@ export default async function MorningMail({ searchParams }: { searchParams: Prom
   const noAccounts = data.accounts.length === 0;
   const visible = (items: ReportItem[]) => (showHandled ? items : items.filter((i) => !data.dismissed.has(i.id)));
   const resorted = /^\d+$/.test(sp.resorted ?? "") ? Number(sp.resorted) : null;
-  const ruled = ruleNote(sp);
   const handledCount = [...r.needsYou, ...r.security].filter((i) => data.dismissed.has(i.id)).length;
 
   return (
     <MailShell current="/private/mail">
-      <div className="max-w-[760px]">
-        <Label>{isToday ? "Today" : "Earlier"}</Label>
-        <h1 className="mt-3 text-title font-normal">{longDate(date)}</h1>
-        <p className="mt-3 text-small text-muted">
-          {r.total} {r.total === 1 ? "email" : "emails"} checked
-          {r.otherCount ? ` · ${r.otherCount} needed nothing` : ""}
-          {!isToday && <> · <Link href="/private/mail" className="underline underline-offset-4 hover:text-ink">Back to today</Link></>}
-        </p>
-
-        <ul className="mt-5 grid gap-1.5 text-small" aria-label="Accounts">
-          {data.accounts.map((a) => (
-            <li key={a.id}>
-              {a.ok === null ? (
-                <State kind="note">{a.label}: not checked yet</State>
-              ) : a.ok ? (
-                <State kind="ok">{a.label}: checked {a.lastRunAt ? dayTime(a.lastRunAt) : ""}</State>
-              ) : (
-                <State kind="wrong">{a.label}: {a.error}</State>
-              )}
-            </li>
-          ))}
-        </ul>
-
-        {noAccounts && (
-          <Card className="mt-8">
-            <h2 className="text-h3 font-medium">Connect your mail</h2>
-            <p className="mt-2 text-body text-ink-2">Add Gmail and your Yahoo accounts, and this page fills in every morning at 7.</p>
-            <Link href="/private/mail/settings" className="mt-4 inline-flex min-h-11 items-center rounded-btn bg-primary px-5 text-body font-medium text-on-primary">Set up accounts</Link>
-          </Card>
-        )}
-
-        {(ruled || resorted !== null) && <ClearNoteParams keys={NOTE_PARAMS} />}
-        {ruled && (
-          <p className="mt-5" role="status">
-            <State kind={sp.err ? "wrong" : "ok"}>{ruled}</State>
+      <MailToaster>
+        <div className="max-w-[760px]">
+          <Label>{isToday ? "Today" : "Earlier"}</Label>
+          <h1 className="mt-3 text-title font-normal">{longDate(date)}</h1>
+          <p className="mt-3 text-small text-muted">
+            {r.total} {r.total === 1 ? "email" : "emails"} checked
+            {r.otherCount ? ` · ${r.otherCount} needed nothing` : ""}
+            {!isToday && <> · <Link href="/private/mail" className="underline underline-offset-4 hover:text-ink">Back to today</Link></>}
           </p>
-        )}
-        {resorted !== null && (
-          <p className="mt-5" role="status">
-            <State kind="ok">Sorted the last week again: {resorted === 0 ? "nothing changed" : `${resorted} ${resorted === 1 ? "email moved" : "emails moved"}`}{/^\d+$/.test(sp.of ?? "") ? ` (of ${sp.of} checked)` : ""}.</State>
-          </p>
-        )}
 
-        <div className="mt-8 grid gap-6">
-          <Section title="Needs you" count={visible(r.needsYou).filter((i) => !data.dismissed.has(i.id)).length}>
-            <Items items={visible(r.needsYou)} dismissed={data.dismissed} empty="Nothing needs you." canDismiss={isToday} canTrash={isToday} />
-          </Section>
-          <Section title="Security" count={visible(r.security).filter((i) => !data.dismissed.has(i.id)).length}>
-            <Items items={visible(r.security)} dismissed={data.dismissed} empty="No new sign-in or breach alerts." canDismiss={isToday} />
-          </Section>
-          {handledCount > 0 && isToday && (
-            <Link href={showHandled ? "/private/mail" : "/private/mail?handled=1"} className="justify-self-start text-small text-ink-2 underline underline-offset-4 hover:text-ink">
-              {showHandled ? "Hide handled" : `Show ${handledCount} handled`}
-            </Link>
+          <ul className="mt-5 grid gap-1.5 text-small" aria-label="Accounts">
+            {data.accounts.map((a) => (
+              <li key={a.id}>
+                {a.ok === null ? (
+                  <State kind="note">{a.label}: not checked yet</State>
+                ) : a.ok ? (
+                  <State kind="ok">{a.label}: checked {a.lastRunAt ? dayTime(a.lastRunAt) : ""}</State>
+                ) : (
+                  <State kind="wrong">{a.label}: {a.error}</State>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {noAccounts && (
+            <Card className="mt-8">
+              <h2 className="text-h3 font-medium">Connect your mail</h2>
+              <p className="mt-2 text-body text-ink-2">Add Gmail and your Yahoo accounts, and this page fills in every morning at 7.</p>
+              <Link href="/private/mail/settings" className="mt-4 inline-flex min-h-11 items-center rounded-btn bg-primary px-5 text-body font-medium text-on-primary">Set up accounts</Link>
+            </Card>
           )}
 
-          {r.junk.length > 0 && isToday && (
-            <Section title="Likely junk" count={r.junk.length}>
-              <p className="text-small text-muted">These look like spam (each says why). Nothing was moved. Trash the sender for good, or say it isn&rsquo;t junk and it always goes to Needs you.</p>
-              <ul className="grid gap-4">
-                {r.junk.map((j) => (
-                  <li key={j.id} className="grid gap-2 border-t border-line pt-4 first:border-t-0 first:pt-0">
-                    <div className="min-w-0">
-                      <p className="break-words text-body text-ink">{j.title}</p>
-                      {j.detail && <p className="break-words text-small text-muted">{j.detail} · {j.account}</p>}
-                    </div>
-                    {j.addr && (
-                      <div className="flex flex-wrap gap-2">
-                        <SenderButton addr={j.addr} action="trash" label="Always trash" />
-                        <SenderButton addr={j.addr} action="important" label="Not junk" />
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
+          {resorted !== null && <ClearNoteParams keys={NOTE_PARAMS} />}
+          {resorted !== null && (
+            <p className="mt-5" role="status">
+              <State kind="ok">Sorted the last week again: {resorted === 0 ? "nothing changed" : `${resorted} ${resorted === 1 ? "email moved" : "emails moved"}`}{/^\d+$/.test(sp.of ?? "") ? ` (of ${sp.of} checked)` : ""}.</State>
+            </p>
+          )}
+
+          <div className="mt-8 grid gap-6">
+            <Section title="Needs you" count={visible(r.needsYou).filter((i) => !data.dismissed.has(i.id)).length}>
+              <Items items={visible(r.needsYou)} dismissed={data.dismissed} empty="Nothing needs you." canDismiss={isToday} canTrash={isToday} />
             </Section>
-          )}
+            <Section title="Security" count={visible(r.security).filter((i) => !data.dismissed.has(i.id)).length}>
+              <Items items={visible(r.security)} dismissed={data.dismissed} empty="No new sign-in or breach alerts." canDismiss={isToday} />
+            </Section>
+            {handledCount > 0 && isToday && (
+              <Link href={showHandled ? "/private/mail" : "/private/mail?handled=1"} className="justify-self-start text-small text-ink-2 underline underline-offset-4 hover:text-ink">
+                {showHandled ? "Hide handled" : `Show ${handledCount} handled`}
+              </Link>
+            )}
 
-          {r.updates.length > 0 && (
-            <section className="rounded-card border border-line bg-surface shadow-card">
-              <details>
-                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-mono text-label uppercase text-ink-2 hover:text-ink [&::-webkit-details-marker]:hidden">
-                  <span>Updates <span className="normal-case text-muted">· receipts, deliveries, notices</span></span>
-                  <span className="tabular-nums">{r.updates.length} <span aria-hidden="true">▾</span></span>
-                </summary>
-                <ul className="grid gap-3 border-t border-line px-5 pb-5 pt-4">
-                  {r.updates.map((u) => (
-                    <li key={u.id} className="min-w-0">
-                      <p className="break-words text-body text-ink">{u.title}</p>
-                      <p className="break-words text-small text-muted">{u.detail ? `${u.detail} · ` : ""}{u.account}</p>
+            {r.junk.length > 0 && isToday && (
+              <Section title="Likely junk" count={r.junk.length}>
+                <p className="text-small text-muted">These look like spam (each says why). Nothing was moved. Trash the sender for good, or say it isn&rsquo;t junk and it always goes to Needs you.</p>
+                <ul className="grid gap-4">
+                  {r.junk.map((j) => (
+                    <li key={j.id} className="grid gap-2 border-t border-line pt-4 first:border-t-0 first:pt-0">
+                      <div className="min-w-0">
+                        <p className="break-words text-body text-ink">{j.title}</p>
+                        {j.detail && <p className="break-words text-small text-muted">{j.detail} · {j.account}</p>}
+                      </div>
+                      {j.addr && (
+                        <div className="flex flex-wrap gap-2">
+                          <SenderButton addr={j.addr} action="trash" label="Always trash" />
+                          <SenderButton addr={j.addr} action="important" label="Not junk" />
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
-              </details>
-            </section>
-          )}
-
-          <Section title="Done">
-            {r.done.length ? (
-              <ul className="grid gap-3">
-                {r.done.map((d) => (
-                  <li key={d.account} className="grid gap-0.5">
-                    <span className="font-mono text-label uppercase text-muted">{d.account}</span>
-                    <span className="text-body text-ink-2">{d.text}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-body text-ink-2">No changes. Mail is only moved by your rules.</p>
+              </Section>
             )}
-          </Section>
 
-          {r.unsubscribeByHand.length > 0 && (
-            <Section title="Unsubscribe by hand" count={r.unsubscribeByHand.length}>
-              <ul className="grid gap-3">
-                {r.unsubscribeByHand.map((u) => (
-                  <li key={u.id} className="text-body">
-                    <span className="text-ink">{u.sender}</span>
-                    <span className="block text-small text-muted">
-                      {u.note}{" "}
-                      {u.link && <a href={u.link} target="_blank" rel="noreferrer noopener" className="text-ink-2 underline underline-offset-4 hover:text-ink">Open its unsubscribe page</a>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            {r.updates.length > 0 && (
+              <section className="rounded-card border border-line bg-surface shadow-card">
+                <details>
+                  <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-mono text-label uppercase text-ink-2 hover:text-ink [&::-webkit-details-marker]:hidden">
+                    <span>Updates <span className="normal-case text-muted">· receipts, deliveries, notices</span></span>
+                    <span className="tabular-nums">{r.updates.length} <span aria-hidden="true">▾</span></span>
+                  </summary>
+                  <ul className="grid gap-3 border-t border-line px-5 pb-5 pt-4">
+                    {r.updates.map((u) => (
+                      <li key={u.id} className="min-w-0">
+                        <p className="break-words text-body text-ink">{u.title}</p>
+                        <p className="break-words text-small text-muted">{u.detail ? `${u.detail} · ` : ""}{u.account}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </section>
+            )}
+
+            <Section title="Done">
+              {r.done.length ? (
+                <ul className="grid gap-3">
+                  {r.done.map((d) => (
+                    <li key={d.account} className="grid gap-0.5">
+                      <span className="font-mono text-label uppercase text-muted">{d.account}</span>
+                      <span className="text-body text-ink-2">{d.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-body text-ink-2">No changes. Mail is only moved by your rules.</p>
+              )}
             </Section>
+
+            {r.unsubscribeByHand.length > 0 && (
+              <Section title="Unsubscribe by hand" count={r.unsubscribeByHand.length}>
+                <ul className="grid gap-3">
+                  {r.unsubscribeByHand.map((u) => (
+                    <li key={u.id} className="text-body">
+                      <span className="text-ink">{u.sender}</span>
+                      <span className="block text-small text-muted">
+                        {u.note}{" "}
+                        {u.link && <a href={u.link} target="_blank" rel="noreferrer noopener" className="text-ink-2 underline underline-offset-4 hover:text-ink">Open its unsubscribe page</a>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
+            {r.stillArriving.length > 0 && (
+              <Section title="Still arriving after unsubscribe" count={r.stillArriving.length}>
+                <ul className="grid gap-2">
+                  {r.stillArriving.map((s) => (
+                    <li key={s.sender} className="text-body text-ink-2">
+                      <span className="text-ink">{s.sender}</span>: {s.count} today, unsubscribed {shortDate(s.since)}. A trash rule will catch them.
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
+            {r.couldntDo.length > 0 && (
+              <Section title="Couldn't do" count={r.couldntDo.length}>
+                <ul className="grid gap-2">
+                  {r.couldntDo.map((c) => <li key={c}><State kind="wrong">{c}</State></li>)}
+                </ul>
+              </Section>
+            )}
+
+            {r.bulk.length > 0 && isToday && (
+              <Section title="Mailing lists today" count={r.bulk.length}>
+                <p className="text-small text-muted">Nothing here was moved. Pick what should happen to each sender from now on (today&rsquo;s emails included).</p>
+                <ul className="grid gap-4">
+                  {r.bulk.map((b) => (
+                    <li key={b.addr} className="grid gap-2 border-t border-line pt-4 first:border-t-0 first:pt-0">
+                      <div className="min-w-0">
+                        <p className="text-body text-ink">{b.name} <span className="text-small text-muted">· {b.count} · {b.accounts.join(", ")}</span></p>
+                        <p className="truncate text-small text-muted">{b.sample}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <SenderButton addr={b.addr} action="trash" label="Always trash" />
+                        <SenderButton addr={b.addr} action="file" label="File in Misc" folder="Misc" />
+                        {b.oneClick && <SenderButton addr={b.addr} action="unsubscribe" label="Unsubscribe" />}
+                        <SenderButton addr={b.addr} action="hide" label="Ignore" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
+            {data.history.length > 1 && (
+              <Section title="Earlier">
+                <ul className="grid gap-1">
+                  {data.history.filter((h) => h.date !== date).map((h) => (
+                    <li key={h.date}>
+                      <Link href={`/private/mail?date=${h.date}`} className="flex min-h-11 items-center justify-between rounded-btn px-1 text-body text-ink-2 hover:bg-surface-2 hover:text-ink">
+                        <span>{longDate(h.date)}</span>
+                        <span className="text-small tabular-nums text-muted">{h.needs} for you · {h.total} emails</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+          </div>
+
+          {isToday && !noAccounts && (
+            <form action={resortMail} className="mt-10">
+              <PendingButton
+                pending="Sorting with AI… up to a minute"
+                className="inline-flex min-h-11 items-center gap-2 rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink"
+              >
+                Sort the last week again
+              </PendingButton>
+              <span className="ml-3 text-small text-muted">Reads the week again with AI and your current rules. Nothing in your mailboxes moves.</span>
+            </form>
           )}
 
-          {r.stillArriving.length > 0 && (
-            <Section title="Still arriving after unsubscribe" count={r.stillArriving.length}>
-              <ul className="grid gap-2">
-                {r.stillArriving.map((s) => (
-                  <li key={s.sender} className="text-body text-ink-2">
-                    <span className="text-ink">{s.sender}</span>: {s.count} today, unsubscribed {shortDate(s.since)}. A trash rule will catch them.
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
-
-          {r.couldntDo.length > 0 && (
-            <Section title="Couldn't do" count={r.couldntDo.length}>
-              <ul className="grid gap-2">
-                {r.couldntDo.map((c) => <li key={c}><State kind="wrong">{c}</State></li>)}
-              </ul>
-            </Section>
-          )}
-
-          {r.bulk.length > 0 && isToday && (
-            <Section title="Mailing lists today" count={r.bulk.length}>
-              <p className="text-small text-muted">Nothing here was moved. Pick what should happen to each sender from now on (today&rsquo;s emails included).</p>
-              <ul className="grid gap-4">
-                {r.bulk.map((b) => (
-                  <li key={b.addr} className="grid gap-2 border-t border-line pt-4 first:border-t-0 first:pt-0">
-                    <div className="min-w-0">
-                      <p className="text-body text-ink">{b.name} <span className="text-small text-muted">· {b.count} · {b.accounts.join(", ")}</span></p>
-                      <p className="truncate text-small text-muted">{b.sample}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <SenderButton addr={b.addr} action="trash" label="Always trash" />
-                      <SenderButton addr={b.addr} action="file" label="File in Misc" folder="Misc" />
-                      {b.oneClick && <SenderButton addr={b.addr} action="unsubscribe" label="Unsubscribe" />}
-                      <SenderButton addr={b.addr} action="hide" label="Ignore" />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
-
-          {data.history.length > 1 && (
-            <Section title="Earlier">
-              <ul className="grid gap-1">
-                {data.history.filter((h) => h.date !== date).map((h) => (
-                  <li key={h.date}>
-                    <Link href={`/private/mail?date=${h.date}`} className="flex min-h-11 items-center justify-between rounded-btn px-1 text-body text-ink-2 hover:bg-surface-2 hover:text-ink">
-                      <span>{longDate(h.date)}</span>
-                      <span className="text-small tabular-nums text-muted">{h.needs} for you · {h.total} emails</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
+          <p className="mt-6 text-small text-muted">
+            Checked every morning at 7{data.accounts.find((a) => a.lastRunAt) ? `, last at ${time(data.accounts.map((a) => a.lastRunAt).filter(Boolean).sort().pop() as string)}` : ""}. {r.total ? (r.aiCount ? `Sorted by AI (${r.aiCount} of ${r.total} today), with your rules and the sign-in checks on top. ` : "Sorted by the code rules alone. ") : ""}Nothing is ever sent or permanently deleted; mail moves only when one of your rules says so.
+          </p>
         </div>
-
-        {isToday && !noAccounts && (
-          <form action={resortMail} className="mt-10">
-            <PendingButton
-              pending="Sorting with AI… up to a minute"
-              className="inline-flex min-h-11 items-center gap-2 rounded-btn border border-line-2 bg-surface px-4 text-small text-ink-2 transition-colors duration-150 hover:border-control hover:bg-surface-2 hover:text-ink"
-            >
-              Sort the last week again
-            </PendingButton>
-            <span className="ml-3 text-small text-muted">Reads the week again with AI and your current rules. Nothing in your mailboxes moves.</span>
-          </form>
-        )}
-
-        <p className="mt-6 text-small text-muted">
-          Checked every morning at 7{data.accounts.find((a) => a.lastRunAt) ? `, last at ${time(data.accounts.map((a) => a.lastRunAt).filter(Boolean).sort().pop() as string)}` : ""}. {r.total ? (r.aiCount ? `Sorted by AI (${r.aiCount} of ${r.total} today), with your rules and the sign-in checks on top. ` : "Sorted by the code rules alone. ") : ""}Nothing is ever sent or permanently deleted; mail moves only when one of your rules says so.
-        </p>
-      </div>
+      </MailToaster>
     </MailShell>
   );
 }
 
-/** One-off notes in the address; cleared once shown so a reload doesn't repeat them. */
-const NOTE_PARAMS = ["ruled", "did", "n", "gmail", "yahoo", "dup", "err", "resorted", "of"] as const;
-
-const RULE_WORD: Record<string, string> = {
-  trash: "goes to Trash", file: "is filed in Misc", unsubscribe: "is unsubscribed from and trashed", hide: "is left out of this page", important: "always shows under Needs you",
-};
-
-/** The line under the date after a sender button: what the new rule does and what it did today. */
-function ruleNote(sp: { ruled?: string; did?: string; n?: string; gmail?: string; yahoo?: string; dup?: string; err?: string }): string | null {
-  if (!sp.ruled || !sp.did || !RULE_WORD[sp.did]) return null;
-  if (sp.dup) return `That rule was already there: mail from ${sp.ruled.slice(0, 120)} ${RULE_WORD[sp.did]}. Nothing new was done.`;
-  const n = Number(sp.n) || 0;
-  const moves = sp.did !== "hide" && sp.did !== "important";
-  let text = `Mail from ${sp.ruled.slice(0, 120)} ${RULE_WORD[sp.did]} from now on.`;
-  if (moves && n) {
-    text += ` ${n} ${n === 1 ? "email" : "emails"} from the last week ${n === 1 ? "was" : "were"} handled the same way`;
-    const later = [sp.yahoo && "Yahoo moves them in the next minute", sp.gmail && "Gmail moves them at its next run"].filter(Boolean).join("; ");
-    text += sp.err ? ", but Yahoo didn't answer; the move happens at the next run." : later ? `; ${later}.` : ".";
-  }
-  return text;
-}
+/** The re-sort's one-off note in the address; cleared once shown so a reload doesn't repeat it. */
+const NOTE_PARAMS = ["resorted", "of"] as const;
 
 function Section({ title, count, children }: { title: string; count?: number; children: ReactNode }) {
   return (
@@ -330,13 +308,13 @@ const SENDER_PENDING: Record<string, string> = { unsubscribe: "Unsubscribing…"
 
 function SenderButton({ addr, action, label, folder }: { addr: string; action: string; label: string; folder?: string }) {
   return (
-    <form action={ruleFromSender}>
+    <SenderForm action={ruleFromSender}>
       <input type="hidden" name="addr" value={addr} />
       <input type="hidden" name="action" value={action} />
       {folder && <input type="hidden" name="folder" value={folder} />}
       <SubmitButton variant="quiet" pending={SENDER_PENDING[action] ?? "Saving…"} className="min-h-11 px-3 text-small">
         {label}
       </SubmitButton>
-    </form>
+    </SenderForm>
   );
 }
