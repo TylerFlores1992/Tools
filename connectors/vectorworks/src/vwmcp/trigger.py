@@ -16,11 +16,16 @@ If you're in another app (a browser, Claude) it fires straight away and hands fo
 
 from __future__ import annotations
 
+import re
 import sys
 import threading
 import time
 
 from .config import Settings
+
+
+# Vectorworks' program on Windows ("Vectorworks2026.exe" and the like). Not a browser, not Explorer.
+DEFAULT_PROCESS_RE = r"(?i)^vectorworks[^\\/]*\.exe$"
 
 
 class TriggerError(RuntimeError):
@@ -83,13 +88,30 @@ class _Win32:
     def foreground(self) -> int:
         return int(self._user32.GetForegroundWindow() or 0)
 
-    def find_window(self, title_re: str):
-        wins = [
+    def windows(self, title_re: str) -> list:
+        """Visible top-level windows whose title matches, front to back. Any program's."""
+        return [
             w
             for w in self._Desktop(backend="win32").windows(title_re=title_re, visible_only=True)
             if w.class_name() != "ConsoleWindowClass"
         ]
-        return wins[0] if wins else None
+
+    def exe_name(self, window) -> str | None:
+        """The file name of the program that owns the window ("Vectorworks2026.exe"), or None."""
+        from ctypes import wintypes
+
+        k = self._kernel32
+        handle = k.OpenProcess(0x1000, False, window.process_id())  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not handle:
+            return None
+        try:
+            size = wintypes.DWORD(1024)
+            buf = self._ctypes.create_unicode_buffer(size.value)
+            if not k.QueryFullProcessImageNameW(handle, 0, buf, self._ctypes.byref(size)):
+                return None
+            return buf.value.replace("/", "\\").rsplit("\\", 1)[-1] or None
+        finally:
+            k.CloseHandle(handle)
 
     def focus(self, window) -> None:
         if window.is_minimized():
@@ -146,6 +168,7 @@ class HotkeyTrigger(Trigger):
         hotkey: str,
         title_re: str,
         restore_focus: bool = True,
+        process_re: str = DEFAULT_PROCESS_RE,
         idle_ms: int = 600,
         idle_max_s: float = 20.0,
         win=None,
@@ -155,6 +178,7 @@ class HotkeyTrigger(Trigger):
     ):
         self.hotkey = hotkey
         self.title_re = title_re
+        self.process_re = re.compile(process_re)
         self.restore_focus = restore_focus
         self.idle_ms = idle_ms
         self.idle_max_s = idle_max_s
@@ -172,10 +196,37 @@ class HotkeyTrigger(Trigger):
 
     STARTUP_GRACE_S = 30.0  # scripting Vectorworks this soon after launch can crash it
 
+    def find_window(self):
+        """The front-most Vectorworks window, or None.
+
+        The title alone isn't enough: a browser tab on the panel page is titled "Vectorworks -
+        Cyber Wolf", and pressing the shortcut there would do nothing (or something else). So a
+        window counts only if its program's file name matches VWMCP_PROCESS_RE. A program we
+        can't read the name of doesn't count either: better "not found" than keys sent to the
+        wrong app.
+        """
+        self._skipped = []
+        for w in self.win.windows(self.title_re):
+            exe = self.win.exe_name(w)
+            if exe and self.process_re.search(exe):
+                return w
+            self._skipped.append(exe or "a program whose name couldn't be read")
+        return None
+
+    def _not_found(self, doing: str) -> TriggerError:
+        msg = f"No Vectorworks window found{doing}. Is Vectorworks open with a drawing?"
+        if self._skipped:
+            seen = ", ".join(sorted(set(self._skipped)))
+            msg += (
+                f" (Windows with 'Vectorworks' in the title belong to: {seen}. If one of those is"
+                " Vectorworks itself, set VWMCP_PROCESS_RE to match its program name.)"
+            )
+        return TriggerError(msg)
+
     def _target(self):
-        target = self.win.find_window(self.title_re)
+        target = self.find_window()
         if target is None:
-            raise TriggerError("No Vectorworks window found. Is Vectorworks open with a drawing?")
+            raise self._not_found("")
         if self.win.process_age_s(target) < self.STARTUP_GRACE_S:
             raise TriggerError("Vectorworks only just started. Give it 30 seconds to settle, then try again.")
         if not self.win.enabled(target):
@@ -183,9 +234,9 @@ class HotkeyTrigger(Trigger):
         return target
 
     def capture_png(self) -> bytes:
-        target = self.win.find_window(self.title_re)
+        target = self.find_window()
         if target is None:
-            raise TriggerError("No Vectorworks window found to capture.")
+            raise self._not_found(" to capture")
         with self._lock:
             self.win.focus(target)  # capture what's on screen, not what's behind another window
             self._sleep(0.3)
@@ -232,6 +283,7 @@ def make_trigger(settings: Settings) -> Trigger:
             settings.hotkey,
             settings.window_title_re,
             settings.restore_focus,
+            process_re=settings.process_re,
             idle_ms=settings.idle_ms,
         )
     if settings.trigger in {"session", "none"}:

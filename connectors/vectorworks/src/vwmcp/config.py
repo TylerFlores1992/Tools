@@ -20,6 +20,7 @@ class Settings:
     trigger: str  # "hotkey" | "session" | "none"
     hotkey: str  # pywinauto send_keys syntax
     window_title_re: str
+    process_re: str  # the program that owns the window must match this too
     restore_focus: bool
     timeout: float  # seconds to wait for a result
     refire_after: float  # seconds before re-sending the hotkey if the job wasn't picked up
@@ -58,6 +59,7 @@ def load() -> Settings:
         # Ctrl+Shift+Alt+M by default. Assign the same shortcut to "MCP Run Job" in the Workspace Editor.
         hotkey=os.environ.get("VWMCP_HOTKEY", "^+%m"),
         window_title_re=os.environ.get("VWMCP_WINDOW_RE", ".*Vectorworks.*"),
+        process_re=os.environ.get("VWMCP_PROCESS_RE", r"(?i)^vectorworks[^\\/]*\.exe$"),
         restore_focus=_flag("VWMCP_RESTORE_FOCUS", True),
         timeout=float(os.environ.get("VWMCP_TIMEOUT", "30")),
         refire_after=float(os.environ.get("VWMCP_REFIRE_AFTER", "3")),
