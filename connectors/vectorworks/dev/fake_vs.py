@@ -317,7 +317,8 @@ def CreateText(theText):
 
 def Symbol(symbolName, p, rotationAngle):
     d = DOC.resources[symbolName]
-    DOC.add(_Obj(15, symbol=symbolName, loc=_pt(p), w=d.w, h=d.h, rot=rotationAngle))
+    DOC.add(_Obj(15, symbol=symbolName, loc=_pt(p), w=d.w, h=d.h, rot=rotationAngle, z=0.0,
+                 mat=_rz(rotationAngle), bbox_off=getattr(d, "bbox_off", (0.0, 0.0))))
 
 
 def CreateCustomObjectN(objectName, p, rotationAngle, showPref):
@@ -372,7 +373,8 @@ def _points(h):
         n = 64
         return [(h.cx + h.r * math.cos(a0 + sweep * i / n), h.cy + h.r * math.sin(a0 + sweep * i / n)) for i in range(n + 1)]
     if h.type in (15, 86):
-        x, y = h.loc
+        ox, oy = getattr(h, "bbox_off", (0.0, 0.0))
+        x, y = h.loc[0] + ox, h.loc[1] + oy
         return [(x - h.w / 2, y - h.h / 2), (x + h.w / 2, y + h.h / 2)]
     if h.type in (11, 122):
         return [p for m in h.members for p in _points(m)]
@@ -757,6 +759,118 @@ def HScale2D(h, centerX, centerY, scaleX, scaleY, scaleText):
     if hasattr(h, "loc"):
         h.loc = sc(h.loc)
 
+
+# ---- 3D placement: symbols to groups, 3D moves and rotations, flips ----------------------
+# Objects that live in 3D carry `mat` (rows of a 3x3: columns are where local X, Y, Z point),
+# `loc` (x, y) and `z` for their insertion point.
+
+_I3 = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+
+
+def _mm(a, b):
+    return [[sum(a[i][k] * b[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+
+
+def _mv(a, v):
+    return tuple(sum(a[i][k] * v[k] for k in range(3)) for i in range(3))
+
+
+def _rx(d):
+    c, s = math.cos(math.radians(d)), math.sin(math.radians(d))
+    return [[1.0, 0.0, 0.0], [0.0, c, -s], [0.0, s, c]]
+
+
+def _ry(d):
+    c, s = math.cos(math.radians(d)), math.sin(math.radians(d))
+    return [[c, 0.0, s], [0.0, 1.0, 0.0], [-s, 0.0, c]]
+
+
+def _rz(d):
+    c, s = math.cos(math.radians(d)), math.sin(math.radians(d))
+    return [[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]]
+
+
+def _det(m):
+    return (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+            + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
+
+
+def SymbolToGroup(h, convertAction):
+    """The symbol becomes a group of what its definition holds. As documented, LNewObj is NIL
+    afterwards (the new group has to be found another way)."""
+    if h.type != 15:
+        raise ScriptErrors("SymbolToGroup needs a symbol")
+    d = DOC.resources[h.symbol]
+    i = DOC.objects.index(h)
+    g = _Obj(11, members=[], layer=h.layer)
+    g.cls = h.cls
+    for make in getattr(d, "contents", []):
+        m = make(h)
+        m.parent_obj, m.layer = g, None
+        g.members.append(m)
+    if not g.members:  # a plain symbol: its geometry as one line
+        g.members.append(_Obj(2, pts=[h.loc, (h.loc[0] + h.w, h.loc[1])], parent_obj=g, layer=None))
+    DOC.objects[i] = g
+    DOC.last = None
+
+
+def HUngroup(h):
+    if h.type != 11:
+        raise ScriptErrors("HUngroup needs a group")
+    i = DOC.objects.index(h)
+    for m in h.members:
+        m.parent_obj, m.layer = None, h.layer
+    DOC.objects[i:i + 1] = h.members
+
+
+def Move3DObj(h, xDistance, yDistance, zDistance):
+    HMove(h, xDistance, yDistance)
+    if hasattr(h, "z"):
+        h.z += float(zDistance)
+
+
+def Set3DRot(h, xAngle, yAngle, zAngle, xDistance, yDistance, zDistance):
+    """Adds a rotation about the world axes through (x, y, z). With all three angles non-zero
+    the fake applies X, then Y, then Z; the bridge only ever passes one at a time."""
+    if h.type not in (15, 86, 11):
+        raise ScriptErrors("Set3DRot of type %d not faked" % h.type)
+    r = _mm(_rz(float(zAngle)), _mm(_ry(float(yAngle)), _rx(float(xAngle))))
+    c = (float(xDistance), float(yDistance), float(zDistance))
+    p = (h.loc[0] - c[0], h.loc[1] - c[1], h.z - c[2])
+    q = _mv(r, p)
+    h.loc = (c[0] + q[0], c[1] + q[1])
+    h.z = c[2] + q[2]
+    h.mat = _mm(r, h.mat)
+
+
+def Flip3DObj(h, horiz):
+    """Mirror in the plan, about the BOUNDING BOX centre, not the insertion point (measured on
+    VW 2026 with the swivel clamp: 0.031" off)."""
+    if h.type not in (15,):
+        raise ScriptErrors("Flip3DObj of type %d not faked" % h.type)
+    (x0, y1), (x1, y0) = GetBBox(h)
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    ox, oy = h.bbox_off
+    if horiz:
+        h.mat = _mm(h.mat, [[-1.0, 0, 0], [0, 1.0, 0], [0, 0, 1.0]])
+        h.loc, h.bbox_off = (2 * cx - h.loc[0], h.loc[1]), (-ox, oy)
+    else:
+        h.mat = _mm(h.mat, [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+        h.loc, h.bbox_off = (h.loc[0], 2 * cy - h.loc[1]), (ox, -oy)
+
+
+def Get3DOrientation(h):
+    if not hasattr(h, "mat"):
+        return (False, 0.0, 0.0, 0.0, False)
+    m = h.mat
+    mirrored = _det(m) < 0
+    if mirrored:
+        m = _mm(m, [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+    b = math.asin(max(-1.0, min(1.0, -m[2][0])))
+    a = math.atan2(m[2][1], m[2][2])
+    c = math.atan2(m[1][0], m[0][0])
+    return (True, math.degrees(a), math.degrees(b), math.degrees(c), mirrored)
+
 # ---- strict signatures ------------------------------------------------------------------
 
 
@@ -914,3 +1028,46 @@ def seed_show():
 
 def seed_demo_resources():
     DOC.resources.setdefault("Source Four 26", _Obj(16, name="Source Four 26", w=10.0, h=14.0))
+
+
+# ---- the truss, pipe and clamp library in Tyler's file (2026-11-07) ----------------------
+
+STRAIGHT_TRUSS_FIELDS = ["LineLength", "Truss Type", "Hanging Angle", "Name"]
+
+
+def _truss_contents(length_in):
+    """What 'Convert to Group' gives for a Spotlight truss symbol: the Straight Truss plug-in
+    (insertion where the symbol was) and two MagnetObjects."""
+    def truss(sym):
+        o = _Obj(86, loc=sym.loc, w=length_in, h=12.0, parametric="Straight Truss", z=sym.z, mat=[r[:] for r in sym.mat])
+        o.cls = sym.cls
+        o.records["Straight Truss"] = {"LineLength": str(length_in), "Truss Type": "12in Box", "Hanging Angle": "0", "Name": ""}
+        return o
+
+    def magnet(sym):
+        o = _Obj(86, loc=sym.loc, w=1.0, h=1.0, parametric="MagnetObject", z=sym.z, mat=[r[:] for r in sym.mat])
+        o.records["MagnetObject"] = {}
+        return o
+
+    return [truss, magnet, magnet]
+
+
+def seed_rig_library(clamps=True, truss=True, pipes=True):
+    folder = _Obj(92, name="Truss")
+    DOC.resources["Truss"] = folder
+    DOC.resources["Straight Truss"] = _Obj(47, name="Straight Truss", fields=STRAIGHT_TRUSS_FIELDS)
+    DOC.resources["MagnetObject"] = _Obj(47, name="MagnetObject", fields=[])
+    if truss:
+        for ft in (6, 8, 10):
+            n = f"Truss Box 12in x 12in x {ft}ft"
+            DOC.resources[n] = _Obj(16, name=n, w=ft * 12.0, h=12.0, parent=folder, contents=_truss_contents(ft * 12.0))
+    if pipes:
+        for n in ["Pipe 1.5in-1ft-6in Length", "Pipe 1.5in-2ft-6in Length"] + [f"Pipe 1.5in-{ft}ft Length" for ft in (2, 3, 4, 5, 6, 8)]:
+            DOC.resources[n] = _Obj(16, name=n, w=48.0, h=1.9, parent=folder)
+    if clamps:
+        for n in ("Aluminium Scaffold Clamp- 0 Deg", "Aluminium Scaffold Clamp-15 Deg", "Aluminium Scaffold Clamp-30 Deg",
+                  "Aluminium Scaffold Clamp-45 Deg", "Aluminium Scaffold Clamp-60 Deg", "Aluminium Scaffold Clamp-75 Deg",
+                  "Aluminium Scaffold Clamp-90deg"):
+            # The clamp's bounding box isn't centred on its insertion point: flipping it moves the
+            # insertion 0.031" (2 x 0.0155).
+            DOC.resources[n] = _Obj(16, name=n, w=3.0, h=4.0, parent=folder, bbox_off=(0.0, 0.0155))
