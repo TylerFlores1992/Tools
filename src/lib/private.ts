@@ -46,6 +46,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/learn",
   },
   {
+    slug: "rig",
+    name: "Rig Planner",
+    summary: "Design truss rigs on your phone in 3D, see the rental list and checks, then have Claude build it in Vectorworks.",
+    stage: "Cube, goal post, tower, flown grid",
+    href: "/private/rig",
+  },
+  {
     slug: "vectorworks",
     name: "Vectorworks",
     summary: "The drawing open on your computer, live: select, drag, measure, edit fixtures. Claude draws through the same connector.",
