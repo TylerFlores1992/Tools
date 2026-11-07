@@ -8,7 +8,8 @@ VW, BROWSER = 100, 200
 
 
 class FakeWindow:
-    handle = VW
+    def __init__(self, handle=VW, exe="Vectorworks2026.exe"):
+        self.handle, self.exe = handle, exe
 
     def is_minimized(self):
         return False
@@ -17,15 +18,19 @@ class FakeWindow:
 class FakeWin:
     """Scripted Windows: who's in front, how long since input, mouse held, dialog open..."""
 
-    def __init__(self, foreground=BROWSER, idle=[5000], held=[False], age=600.0, enabled=True, window=True):
+    def __init__(self, foreground=BROWSER, idle=[5000], held=[False], age=600.0, enabled=True, window=True, front=()):
         self.fg = foreground
         self.idle_seq, self.held_seq = list(idle), list(held)
         self.age, self.is_enabled = age, enabled
-        self.window = FakeWindow() if window else None
+        # Windows whose title matches, front to back: `front` ones first, then Vectorworks itself.
+        self.titled = list(front) + ([FakeWindow()] if window else [])
         self.log = []
 
-    def find_window(self, title_re):
-        return self.window
+    def windows(self, title_re):
+        return list(self.titled)
+
+    def exe_name(self, w):
+        return w.exe
 
     def process_age_s(self, w):
         return self.age
@@ -43,8 +48,8 @@ class FakeWin:
         return self.held_seq.pop(0) if len(self.held_seq) > 1 else self.held_seq[0]
 
     def focus(self, w):
-        self.log.append("focus vw")
-        self.fg = VW
+        self.log.append("focus vw" if w.handle == VW else f"focus {w.handle}")
+        self.fg = w.handle
 
     def focus_hwnd(self, h):
         self.log.append(f"focus {h}")
@@ -127,3 +132,49 @@ def test_screenshot_brings_vectorworks_forward_first():
     win = FakeWin()
     t, _ = make(win)
     assert t.capture_png() == b"\x89PNG" and win.log == ["focus vw"]
+
+
+# ---- which window counts as Vectorworks --------------------------------------------------
+
+
+def test_a_browser_tab_titled_vectorworks_is_never_pressed():
+    """The panel page's tab reads "Vectorworks - Cyber Wolf". Chrome is in front of Vectorworks."""
+    win = FakeWin(front=[FakeWindow(handle=BROWSER, exe="chrome.exe")])
+    trig, _ = make(win)
+    trig.fire()
+    # Vectorworks is focused and pressed; Chrome only gets focus back afterwards.
+    assert win.log[:2] == ["focus vw", "keys ^+%m"]
+
+
+def test_no_vectorworks_program_means_not_found_and_names_what_it_saw():
+    win = FakeWin(window=False, front=[FakeWindow(handle=BROWSER, exe="chrome.exe"), FakeWindow(handle=300, exe=None)])
+    with pytest.raises(TriggerError, match="chrome.exe") as e:
+        make(win)[0].fire()
+    assert "couldn't be read" in str(e.value) and "VWMCP_PROCESS_RE" in str(e.value)
+    assert not any(line.startswith("keys") for line in win.log)
+
+
+def test_a_program_name_that_cant_be_read_never_counts():
+    win = FakeWin(window=False, front=[FakeWindow(handle=300, exe=None)])
+    with pytest.raises(TriggerError, match="No Vectorworks window"):
+        make(win)[0].fire()
+
+
+def test_the_default_program_rule():
+    import re
+
+    from vwmcp.trigger import DEFAULT_PROCESS_RE
+
+    rule = re.compile(DEFAULT_PROCESS_RE)
+    for exe in ["Vectorworks2026.exe", "VECTORWORKS2026.EXE", "Vectorworks.exe"]:
+        assert rule.search(exe), exe
+    for exe in ["chrome.exe", "msedge.exe", "explorer.exe", "Vectorworks2026.exe.bak", "notvectorworks.exe"]:
+        assert not rule.search(exe), exe
+
+
+def test_config_and_trigger_share_one_default(monkeypatch):
+    from vwmcp import config
+    from vwmcp.trigger import DEFAULT_PROCESS_RE
+
+    monkeypatch.delenv("VWMCP_PROCESS_RE", raising=False)
+    assert config.load().process_re == DEFAULT_PROCESS_RE
