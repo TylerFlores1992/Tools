@@ -18,7 +18,8 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 52 tools (54 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 56 tools (58 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
 | Panel API (`vwmcp-panel`) + the page on tylerflores.dev | Tested end to end in a real browser against the fake |
@@ -130,6 +131,38 @@ Show settings live in `%USERPROFILE%\.vwmcp\shows\`, one file per drawing.
 are; the report says so on every such point. Check with Braceworks, load cells or an engineer
 before anything flies.
 
+## Build a rig from the phone
+
+Design and approve a rig at **tylerflores.dev/private/rig**, then have Claude build it here in
+one call. The format both sides share is `docs/RIG.md` (build list v1).
+
+1. **Give the connector the site's token.** Add `VWMCP_RIG_TOKEN` to the MCP config, e.g. for
+   Claude Desktop: `"env": { "VWMCP_RIG_TOKEN": "…" }` next to `"command"`; for Claude Code,
+   `claude mcp add vectorworks -e VWMCP_RIG_TOKEN=… -- …\vwmcp.exe`. Restart Claude.
+2. **After every `git pull`, run `vwmcp-install-plugin` again.** Vectorworks runs the copy in
+   `%USERPROFILE%\.vwmcp\plugin`, not this folder; an old copy answers "Unknown op
+   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs).
+3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
+   **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
+   layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
+   and the design is marked built on the site. `undo_last` removes the whole build.
+
+The answer lists every part, what it **substituted** (nearest pipe length, nearest clamp angle),
+what it **skipped** (base plates for now, sloped truss, kinds it doesn't know yet) and any
+**missing symbols** to import first (then nothing is placed). Library names it uses:
+`Truss Box 12in x 12in x 10ft/8ft/6ft`, `Pipe 1.5in-<n>ft Length`, and
+`Aluminium Scaffold Clamp-<angle> Deg` (0–90°). Only the 12" box series is mapped so far.
+
+Single parts: `place_truss` (centerline start → end, level or plumb), `place_symbol_3d` (a 3D
+symbol from two axis vectors, mirrored when the frame is left-handed) and `set_z`. 3D tools take
+inches, Z up.
+
+**First real run, check:** a plumb leg lands on its corner block (the half-width Hanging Angle
+pivot is corrected); `LineLength` really changes the truss length; the clamps' jaws sit on the
+pipe and chord (each part's `readback` is Vectorworks' own `Get3DOrientation`). If the clamps
+come out turned the wrong way, `Set3DRot`'s sign or axes differ from the right-hand rule the
+bridge assumes (`_place_symbol_3d` in `vw_plugin/vwmcp_bridge.py`).
+
 ## Why it's built this way
 
 These come from the official reference (github.com/Vectorworks/developer-scripting, which
@@ -178,6 +211,7 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
 | Show setup | `survey_drawing`, `get_show_setup`, `find_reference_lines`, `set_datum`, `set_departments`, `set_limits`, `show_departments`, `where_is` |
 | Rigging | `get_rigging`, `rigging_report`, `save_rigging_revision`, `design_bridle`, `bridle_from_legs`, `truss_loads` |
 | Venue files | `import_dwg`, `check_scale`, `scale_objects` |
+| 3D & rigs | `build_rig`, `place_truss`, `place_symbol_3d`, `set_z` |
 | Workflow | `batch` (many steps, one round trip, one undo), `undo_last`, `vs_lookup` |
 | Look | `screenshot` (Windows), `snapshot` (SVG) |
 | Optional | `run_python` (needs `VWMCP_ALLOW_EXEC=1` and a file named `allow_exec` in `%USERPROFILE%\.vwmcp`); `end_session` (session mode) |
@@ -207,6 +241,9 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 | `VWMCP_PANEL_PORT` | `7377` | Panel API port (always 127.0.0.1) |
 | `VWMCP_PANEL_ORIGINS` | tylerflores.dev, localhost:3000 | Pages allowed to use the panel API |
 | `VWMCP_HOME` | `%USERPROFILE%\.vwmcp` | Queue, journal, token, installed bridge |
+| `VWMCP_RIG_TOKEN` | (none) | Bearer token for fetching Rig Planner designs (`build_rig design_id=…`) |
+| `VWMCP_RIG_URL` | `https://tylerflores.dev` | Where designs are fetched from |
+| `VWMCP_RIG_TIMEOUT` | `180` | Seconds a whole `build_rig` may take inside Vectorworks |
 
 ## Panel API safety
 
@@ -234,7 +271,8 @@ end, on any OS.
 src/vwmcp/     server.py (MCP tools) · panel.py (local HTTP API) · jobs.py (queue) ·
                trigger.py (hotkey, idle wait, guards, capture) · svg.py · install.py · config.py
                service.py (show workflow) · show.py (datum, departments, limits, per file) ·
-               rigging.py (bridles, truss reactions, units) · report.py (point list, checks)
+               rigging.py (bridles, truss reactions, units) · report.py (point list, checks) ·
+               rig.py (Rig Planner build lists: frames, clamps, truss insertion; no vs)
 vw_plugin/     vwmcp_bridge.py (runs in Vectorworks) · menu_run_job.py · menu_session.py ·
                vs_signatures.json (official parameter lists for every vs call used)
 dev/           fake_vs.py (strict in-memory Vectorworks) · fake_vectorworks.py (queue watcher)
