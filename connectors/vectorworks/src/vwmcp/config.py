@@ -29,6 +29,9 @@ class Settings:
     panel_host: str
     panel_port: int
     panel_origins: tuple[str, ...]  # web pages allowed to drive the panel API
+    rig_url: str = "https://tylerflores.dev"  # where build_rig fetches approved Rig Planner designs
+    rig_token: str = ""  # bearer token for the site's /api/rig endpoints
+    rig_timeout: float = 180.0  # seconds a whole build_rig job may take inside Vectorworks
 
     @property
     def jobs_dir(self) -> Path:
@@ -74,4 +77,7 @@ def load() -> Settings:
             ).split(",")
             if o.strip()
         ),
+        rig_url=os.environ.get("VWMCP_RIG_URL", "https://tylerflores.dev").strip().rstrip("/"),
+        rig_token=os.environ.get("VWMCP_RIG_TOKEN", "").strip(),
+        rig_timeout=float(os.environ.get("VWMCP_RIG_TIMEOUT", "180")),
     )
