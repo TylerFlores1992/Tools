@@ -6,8 +6,10 @@ export async function POST(req: Request, ctx: RouteContext<"/api/rig/designs/[id
   if (!rigTokenOk(req)) return noStore({ error: "unauthorized" }, 401);
   if (!rigStoreReady()) return noStore({ error: "not configured" }, 503);
   const { id } = await ctx.params;
+  const body = (await req.json().catch(() => ({}))) as { approvedAt?: unknown };
+  const approvedAt = typeof body.approvedAt === "string" && !Number.isNaN(Date.parse(body.approvedAt)) ? body.approvedAt : null;
   try {
-    return (await markBuilt(id)) ? noStore({ ok: true }) : noStore({ error: "not an approved design" }, 409);
+    return (await markBuilt(id, approvedAt)) ? noStore({ ok: true }) : noStore({ error: "not this approval: it was edited or approved again since" }, 409);
   } catch {
     return noStore({ error: "couldn't reach the database" }, 503);
   }

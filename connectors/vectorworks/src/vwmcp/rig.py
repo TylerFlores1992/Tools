@@ -471,10 +471,10 @@ def design_url(base: str, design_id: str) -> str:
     return "%s/api/rig/designs/%s" % (base.rstrip("/"), design_id)
 
 
-def _request(url: str, token: str, method: str = "GET", timeout: float = 20.0):
+def _request(url: str, token: str, method: str = "GET", timeout: float = 20.0, body: dict | None = None):
     req = urllib.request.Request(url, method=method, headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
     if method == "POST":
-        req.data = b"{}"
+        req.data = json.dumps(body or {}).encode("utf-8")
         req.add_header("Content-Type", "application/json")
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -496,5 +496,7 @@ def fetch_design(base: str, token: str, design_id: str) -> dict:
     return data
 
 
-def mark_built(base: str, token: str, design_id: str) -> None:
-    _request(design_url(base, design_id) + "/built", token, method="POST")
+def mark_built(base: str, token: str, design_id: str, approved_at: str | None = None) -> None:
+    """Tell the site this approval is built. `approved_at` (from the GET) makes sure a design
+    re-approved while Vectorworks was building isn't marked built by mistake."""
+    _request(design_url(base, design_id) + "/built", token, method="POST", body={"approvedAt": approved_at} if approved_at else None)

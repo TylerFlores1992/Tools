@@ -1566,7 +1566,7 @@ try {
     const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
     await p.getByRole("img", { name: /10' × 10' × 10' cube: \d+ parts in 3D/ }).waitFor({ timeout: 20000 });
     await p.getByRole("radio", { name: "Parts" }).click();
-    await p.getByText("12\" box truss, 8' section").waitFor();
+    await p.getByText("12\" box truss, 8' section").first().waitFor();
     await p.getByPlaceholder(/12 feet tall/).fill("no braces, and make it 12 feet tall");
     await p.getByRole("button", { name: "Go", exact: true }).click();
     await p.getByText(/✓ .*height 12'/i).waitFor({ timeout: 15000 });
@@ -1590,6 +1590,27 @@ try {
     await p.getByText(/✕ Saving isn't set up yet/).waitFor({ timeout: 15000 });
     await p.reload();
     await p.getByRole("img", { name: /cube/ }).waitFor({ timeout: 20000 });
+    await ctx.close();
+  });
+
+  await check("rig: a part can be picked without touching the 3D view; the sheet takes focus and Escape gives it back", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("radio", { name: "Parts" }).click();
+    await p.getByText(/Pick a part to edit/).click();
+    const top = p.getByRole("button", { name: /^Top section · / }).first();
+    await top.focus();
+    await top.press("Enter");
+    const sheet = p.getByRole("dialog", { name: "Top section" });
+    await sheet.waitFor();
+    assert.equal(await p.evaluate(() => document.activeElement?.textContent), "Top section");
+    // A wider floor needs more sections, so every id after it shifts: the sheet must stay on a top section.
+    await sheet.getByRole("button", { name: "Width: longer" }).click();
+    await p.waitForTimeout(300);
+    assert.equal(await p.getByRole("dialog").getAttribute("aria-label"), "Top section");
+    await p.keyboard.press("Escape");
+    await sheet.waitFor({ state: "detached" });
+    // Focus is back in the pick list (its rows renumber with the design, so not necessarily the same row).
+    assert.match(await p.evaluate(() => document.activeElement?.textContent ?? ""), / · 12" box truss/);
     await ctx.close();
   });
 

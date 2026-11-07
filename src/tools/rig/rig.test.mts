@@ -173,3 +173,11 @@ test("edits stay inside the template's limits and rename auto-named designs", ()
   const named = { ...d, name: "Stage left cube" };
   assert.equal(applyEdit(named, parseEdit("12 ft tall")!).design.name, "Stage left cube");
 });
+
+test("top and bottom braces that would cross on a short leg are refused, not drawn", () => {
+  const small = buildList(newDesign("cube", { width: 120, depth: 120, height: 72, braces: "both", braceLength: 48 }));
+  assert.ok(small.notes.some((n) => /doesn't fit/.test(n)));
+  assert.equal(small.parts.filter((p) => p.kind === "pipe").length, 0);
+  const topOnly = buildList(newDesign("cube", { width: 120, depth: 120, height: 72, braces: "top", braceLength: 48 }));
+  assert.deepEqual(topOnly.notes, []);
+});

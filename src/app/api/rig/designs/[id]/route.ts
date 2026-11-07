@@ -14,7 +14,7 @@ export async function GET(req: Request, ctx: RouteContext<"/api/rig/designs/[id]
     const rig = await getRig(id);
     if (!rig) return noStore({ error: "no design with that id" }, 404);
     if (rig.status === "draft" || !rig.buildList) return noStore({ error: "not approved yet: approve it on the phone first", status: rig.status }, 409);
-    return noStore({ id: rig.id, name: rig.name, status: rig.status, buildList: rig.buildList });
+    return noStore({ id: rig.id, name: rig.name, status: rig.status, approvedAt: rig.approvedAt, buildList: rig.buildList });
   } catch {
     return noStore({ error: "couldn't reach the database" }, 503);
   }

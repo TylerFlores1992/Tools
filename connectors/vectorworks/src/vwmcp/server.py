@@ -246,7 +246,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         out.update(built=res["failed"] == 0, placed=res["placed"], failed=res["failed"], cleared=res["cleared"], parts=res["results"])
         if design_id is not None and out["built"]:
             try:
-                await asyncio.to_thread(rig.mark_built, settings.rig_url, settings.rig_token, design_id)
+                await asyncio.to_thread(rig.mark_built, settings.rig_url, settings.rig_token, design_id, (design or {}).get("approvedAt"))
                 out["marked_built"] = True
             except rig.RigError as e:
                 out["marked_built"] = False

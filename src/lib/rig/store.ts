@@ -55,15 +55,28 @@ export async function saveRig(id: string | null, design: RigDesign): Promise<str
 }
 
 export async function approveRig(id: string | null, design: RigDesign): Promise<string> {
-  const db = sql();
-  const key = await saveRig(id, design);
+  const key = id && /^[a-z0-9]{3,12}$/.test(id) ? id : newId();
   const list = buildList(design);
-  await db`update rig.designs set status = 'approved', build_list = ${db.json(list as never)}, approved_at = now(), updated_at = now() where id = ${key}`;
+  await sql().begin(async (tx) => {
+    await tx`
+      insert into rig.designs (id, name, design, build_list, status, approved_at)
+      values (${key}, ${design.name}, ${tx.json(design)}, ${tx.json(list as never)}, 'approved', now())
+      on conflict (id) do update set name = excluded.name, design = excluded.design, build_list = excluded.build_list,
+        status = 'approved', approved_at = now(), built_at = null, updated_at = now()`;
+  });
   return key;
 }
 
-export async function markBuilt(id: string): Promise<boolean> {
-  const rows = await sql()`update rig.designs set status = 'built', built_at = now() where id = ${id} and status = 'approved' returning id`;
+/**
+ * Marks an approval built. With `approvedAt` (what the connector fetched), only that approval:
+ * a design re-approved while Vectorworks was building stays "approved".
+ */
+export async function markBuilt(id: string, approvedAt: string | null): Promise<boolean> {
+  const db = sql();
+  const rows = approvedAt
+    ? await db`update rig.designs set status = 'built', built_at = now()
+        where id = ${id} and status = 'approved' and date_trunc('milliseconds', approved_at) = ${approvedAt}::timestamptz returning id`
+    : await db`update rig.designs set status = 'built', built_at = now() where id = ${id} and status = 'approved' returning id`;
   return rows.length > 0;
 }
 

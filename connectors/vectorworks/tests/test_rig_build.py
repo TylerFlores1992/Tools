@@ -187,16 +187,17 @@ def test_build_from_a_design_on_the_site_marks_it_built(server, fake_rig, monkey
 
     def fetch(base, token, design_id):
         seen.append(("GET", base, token, design_id))
-        return {"id": design_id, "name": "Cube", "status": "approved", "buildList": full_cube()}
+        return {"id": design_id, "name": "Cube", "status": "approved", "approvedAt": "2026-11-07T18:00:00.000Z", "buildList": full_cube()}
 
-    def built(base, token, design_id):
-        seen.append(("POST", base, token, design_id))
+    def built(base, token, design_id, approved_at=None):
+        seen.append(("POST", base, token, design_id, approved_at))
 
     monkeypatch.setattr(rig, "fetch_design", fetch)
     monkeypatch.setattr(rig, "mark_built", built)
     r = call(server, "build_rig", design_id="d42")
     assert r["built"] and r["marked_built"] is True and r["design"]["name"] == "Cube"
     assert [s[0] for s in seen] == ["GET", "POST"] and seen[0][1] == "https://tylerflores.dev"
+    assert seen[1][4] == "2026-11-07T18:00:00.000Z", "the approval it built goes back, so a newer approval isn't marked"
 
 
 def test_a_failed_built_notice_doesnt_fail_the_build(server, fake_rig, monkeypatch):

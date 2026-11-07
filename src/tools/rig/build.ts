@@ -81,7 +81,9 @@ class Builder {
     const dir = (du: number, dz: number): Vec3 => add(scale(f.u, du * R2), [0, 0, dz * R2]);
     const normal = scale(f.out, -1);
     const UP: Vec3 = [0, 0, 1];
-    if (a1 + s > a2 - s + 1e-6 || s > zt - zb) {
+    // Both ends on one leg need room for two braces without crossing.
+    const legRoom = which.top && which.bottom ? 2 * s : s;
+    if (a1 + s > a2 - s + 1e-6 || legRoom > zt - zb + 1e-6) {
       this.notes.push(`${label}: a ${length}" brace pipe doesn't fit this face.`);
       return;
     }

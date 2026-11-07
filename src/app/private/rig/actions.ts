@@ -4,14 +4,14 @@ import { revalidatePath } from "next/cache";
 import { requirePrivate } from "@/lib/money/guard";
 import { aiEdit } from "@/lib/rig/ai";
 import { approveRig, deleteRig, rigStoreReady, saveRig } from "@/lib/rig/store";
-import { applyEdit, parseEdit } from "@/tools/rig/commands";
+import { applyEdit, parseEdit, type RigEdit } from "@/tools/rig/commands";
 import type { RigDesign } from "@/tools/rig/types";
 import { readDesign } from "@/tools/rig/validate";
 
 /** Every action re-checks the Private session; the proxy is the first lock, not the only one. */
 
 export type ChatResult =
-  | { state: "changed"; design: RigDesign; reply: string; by: "words" | "ai" }
+  | { state: "changed"; design: RigDesign; edit: RigEdit; reply: string; by: "words" | "ai" }
   | { state: "unchanged"; reply: string };
 
 export async function chat(raw: unknown, message: string): Promise<ChatResult> {
@@ -25,7 +25,7 @@ export async function chat(raw: unknown, message: string): Promise<ChatResult> {
   const { design: next, changes } = applyEdit(design, edit);
   if (!changes.length) return { state: "unchanged", reply: edit.reply || "That's already how it is." };
   const said = changes.join(", ");
-  return { state: "changed", design: next, reply: edit.reply || `${said[0].toUpperCase()}${said.slice(1)}.`, by: quick ? "words" : "ai" };
+  return { state: "changed", design: next, edit, reply: edit.reply || `${said[0].toUpperCase()}${said.slice(1)}.`, by: quick ? "words" : "ai" };
 }
 
 export type SaveResult = { ok: true; id: string } | { ok: false; reason: string };

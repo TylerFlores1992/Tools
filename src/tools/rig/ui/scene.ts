@@ -97,18 +97,41 @@ export type Look = { truss: string; corner: string; pipe: string; clamp: string;
 
 export type PartMesh = THREE.Mesh & { userData: { partId: string; kind: Part["kind"] } };
 
-/** Every part as a mesh, in a group that sits on the floor. */
-export function buildScene(list: BuildList, look: Look): THREE.Group {
-  const group = new THREE.Group();
-  const { width, chordInset, chordOd } = list.series;
-  const chordR = chordOd / 2;
-  const mats = {
+export type Mats = Record<Part["kind"], THREE.MeshStandardMaterial>;
+
+/** One material per kind, made once per viewer and shared by every rebuild. */
+export function makeMaterials(look: Look): Mats {
+  return {
     truss: new THREE.MeshStandardMaterial({ color: look.truss, metalness: 0.6, roughness: 0.35 }),
     corner: new THREE.MeshStandardMaterial({ color: look.corner, metalness: 0.6, roughness: 0.35 }),
     pipe: new THREE.MeshStandardMaterial({ color: look.pipe, metalness: 0.5, roughness: 0.45 }),
     clamp: new THREE.MeshStandardMaterial({ color: look.clamp, metalness: 0.7, roughness: 0.3 }),
     baseplate: new THREE.MeshStandardMaterial({ color: look.plate, metalness: 0.4, roughness: 0.6 }),
   };
+}
+
+/** Faded copies of each kind's material, for everything that isn't selected. */
+export function dimMaterials(mats: Mats): Mats {
+  const out = {} as Mats;
+  for (const [k, m] of Object.entries(mats) as [Part["kind"], THREE.MeshStandardMaterial][]) {
+    const d = m.clone();
+    d.transparent = true;
+    d.opacity = 0.28;
+    out[k] = d;
+  }
+  return out;
+}
+
+/** Frees a rig's geometries (materials are shared and freed by their owner). */
+export function disposeGeometries(g: THREE.Object3D) {
+  g.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+}
+
+/** Every part as a mesh, in a group that sits on the floor. */
+export function buildScene(list: BuildList, mats: Mats): THREE.Group {
+  const group = new THREE.Group();
+  const { width, chordInset, chordOd } = list.series;
+  const chordR = chordOd / 2;
   for (const p of list.parts) {
     let geo: THREE.BufferGeometry;
     switch (p.kind) {
