@@ -1,0 +1,296 @@
+{
+ "version": 1,
+ "name": "20' goal post, 14' tall",
+ "units": "in",
+ "series": {
+  "id": "box12",
+  "label": "12\" box truss",
+  "width": 12,
+  "height": 12,
+  "chordOd": 2,
+  "chordInset": 1
+ },
+ "parts": [
+  {
+   "id": "b1",
+   "kind": "baseplate",
+   "size": 24,
+   "center": [
+    6,
+    6,
+    -0.25
+   ]
+  },
+  {
+   "id": "c1",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    6,
+    6,
+    162
+   ]
+  },
+  {
+   "id": "t1",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    6,
+    6,
+    0
+   ],
+   "end": [
+    6,
+    6,
+    96
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t2",
+   "kind": "truss",
+   "role": "leg",
+   "length": 60,
+   "start": [
+    6,
+    6,
+    96
+   ],
+   "end": [
+    6,
+    6,
+    156
+   ],
+   "roll": 0
+  },
+  {
+   "id": "b2",
+   "kind": "baseplate",
+   "size": 24,
+   "center": [
+    234,
+    6,
+    -0.25
+   ]
+  },
+  {
+   "id": "c2",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    234,
+    6,
+    162
+   ]
+  },
+  {
+   "id": "t3",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    234,
+    6,
+    0
+   ],
+   "end": [
+    234,
+    6,
+    96
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t4",
+   "kind": "truss",
+   "role": "leg",
+   "length": 60,
+   "start": [
+    234,
+    6,
+    96
+   ],
+   "end": [
+    234,
+    6,
+    156
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t5",
+   "kind": "truss",
+   "role": "header",
+   "length": 120,
+   "start": [
+    12,
+    6,
+    162
+   ],
+   "end": [
+    132,
+    6,
+    162
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t6",
+   "kind": "truss",
+   "role": "header",
+   "length": 96,
+   "start": [
+    132,
+    6,
+    162
+   ],
+   "end": [
+    228,
+    6,
+    162
+   ],
+   "roll": 0
+  },
+  {
+   "id": "p1",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    8.8787,
+    -2,
+    125.1802
+   ],
+   "end": [
+    42.8195,
+    -2,
+    159.121
+   ]
+  },
+  {
+   "id": "k1",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    11,
+    -2,
+    127.3015
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k2",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    40.6985,
+    -2,
+    157
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p2",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    231.1213,
+    -2,
+    125.1802
+   ],
+   "end": [
+    197.1805,
+    -2,
+    159.121
+   ]
+  },
+  {
+   "id": "k3",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    229,
+    -2,
+    127.3015
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k4",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    199.3015,
+    -2,
+    157
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  }
+ ],
+ "notes": []
+}

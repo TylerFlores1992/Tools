@@ -52,7 +52,7 @@ Every vector is `[x, y, z]`. Directions are unit vectors.
   object plus two `MagnetObject`s (delete them). The object's insertion is the **start, centered
   on the width, Z = bottom face**. For a horizontal section, insertion = `start - [0,0,height/2]`.
 - **Vertical truss:** set the record field `Hanging Angle` to 90. It pivots so the leg lands
-  **6" (half the width) toward −X**: place it at `start.x + width/2`. Verified against the
+  **6" toward −X** (half the section, since it turns about its bottom face: strictly half the *height*; the same for box truss): place it at `start.x + height/2`. Verified against the
   front, side and top views.
 - **Rotate 3D on a hybrid symbol fails** ("Hybrid objects can only be rotated about the Z
   axis"); a 3D-only symbol (the pipes, the clamps) rotates fine.

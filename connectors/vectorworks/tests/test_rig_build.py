@@ -248,3 +248,18 @@ def test_set_z_and_undo(server, fake_rig):
     line = call(server, "draw_line", start=[0, 0], end=[1, 0])
     with pytest.raises(ToolError, match="Only symbols and plug-in objects"):
         call(server, "set_z", ids=[line["id"]], z=10)
+
+
+# ---- Contract: the website's own build lists (written by scripts/rig-fixtures.mts) ----
+FIXTURES = __import__("pathlib").Path(__file__).parent / "fixtures"
+
+
+@pytest.mark.parametrize("name", sorted(p.stem for p in FIXTURES.glob("rig-*.json")))
+def test_site_build_lists_build(server, fake_rig, name):
+    bl = json.loads((FIXTURES / f"{name}.json").read_text())
+    r = call(server, "build_rig", build_list=bl, layer="Rig " + name)
+    assert r["built"] is True, r
+    assert r["failed"] == 0, r
+    buildable = [p for p in bl["parts"] if p["kind"] in ("truss", "corner", "pipe", "clamp")]
+    assert r["placed"] == len(buildable), r
+    assert {s["id"] for s in r["skipped"]} == {p["id"] for p in bl["parts"] if p["kind"] == "baseplate"}

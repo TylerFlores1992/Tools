@@ -1,0 +1,196 @@
+{
+ "version": 1,
+ "name": "20' × 16' grid at 16'",
+ "units": "in",
+ "series": {
+  "id": "box12",
+  "label": "12\" box truss",
+  "width": 12,
+  "height": 12,
+  "chordOd": 2,
+  "chordInset": 1
+ },
+ "parts": [
+  {
+   "id": "c1",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    6,
+    6,
+    198
+   ]
+  },
+  {
+   "id": "c2",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    6,
+    186,
+    198
+   ]
+  },
+  {
+   "id": "c3",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    234,
+    6,
+    198
+   ]
+  },
+  {
+   "id": "c4",
+   "kind": "corner",
+   "size": 12,
+   "ways": 2,
+   "center": [
+    234,
+    186,
+    198
+   ]
+  },
+  {
+   "id": "t1",
+   "kind": "truss",
+   "role": "grid",
+   "length": 120,
+   "start": [
+    12,
+    6,
+    198
+   ],
+   "end": [
+    132,
+    6,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t2",
+   "kind": "truss",
+   "role": "grid",
+   "length": 96,
+   "start": [
+    132,
+    6,
+    198
+   ],
+   "end": [
+    228,
+    6,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t3",
+   "kind": "truss",
+   "role": "grid",
+   "length": 120,
+   "start": [
+    12,
+    186,
+    198
+   ],
+   "end": [
+    132,
+    186,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t4",
+   "kind": "truss",
+   "role": "grid",
+   "length": 96,
+   "start": [
+    132,
+    186,
+    198
+   ],
+   "end": [
+    228,
+    186,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t5",
+   "kind": "truss",
+   "role": "grid",
+   "length": 120,
+   "start": [
+    6,
+    12,
+    198
+   ],
+   "end": [
+    6,
+    132,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t6",
+   "kind": "truss",
+   "role": "grid",
+   "length": 48,
+   "start": [
+    6,
+    132,
+    198
+   ],
+   "end": [
+    6,
+    180,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t7",
+   "kind": "truss",
+   "role": "grid",
+   "length": 120,
+   "start": [
+    234,
+    12,
+    198
+   ],
+   "end": [
+    234,
+    132,
+    198
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t8",
+   "kind": "truss",
+   "role": "grid",
+   "length": 48,
+   "start": [
+    234,
+    132,
+    198
+   ],
+   "end": [
+    234,
+    180,
+    198
+   ],
+   "roll": 0
+  }
+ ],
+ "notes": []
+}
