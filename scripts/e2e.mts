@@ -1552,6 +1552,85 @@ try {
   });
 
   await vw.close();
+
+  // ---- Rig Planner: a phone-first 3D planner; no database here, so saving explains itself ----
+  const rigPage = async (opts: Opts = {}) => {
+    const { ctx, p } = await fresh(opts);
+    await p.goto(`${BASE}/private/rig`);
+    await signIn(p);
+    await p.waitForURL(`${BASE}/private/rig`);
+    return { ctx, p };
+  };
+
+  await check("rig: plain words change the design, and the rental list follows", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("img", { name: /10' × 10' × 10' cube: \d+ parts in 3D/ }).waitFor({ timeout: 20000 });
+    await p.getByRole("radio", { name: "Parts" }).click();
+    await p.getByText("12\" box truss, 8' section").first().waitFor();
+    await p.getByPlaceholder(/12 feet tall/).fill("no braces, and make it 12 feet tall");
+    await p.getByRole("button", { name: "Go", exact: true }).click();
+    await p.getByText(/✓ .*height 12'/i).waitFor({ timeout: 15000 });
+    await p.getByRole("img", { name: /10' × 10' × 12' cube/ }).waitFor();
+    assert.equal(await p.getByText("Cheeseborough (swivel coupler)").count(), 0, "no braces left, so no cheeseboroughs");
+    await ctx.close();
+  });
+
+  await check("rig: steppers say the length in words and stop at the template's limits", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    const shorter = p.getByRole("button", { name: "Height: shorter" });
+    for (let i = 0; i < 8; i++) if (await shorter.isEnabled()) await shorter.click();
+    assert.equal(await shorter.isEnabled(), false);
+    assert.equal(await p.locator("output").nth(2).innerText(), "4'");
+    await ctx.close();
+  });
+
+  await check("rig: without a database, Send to Vectorworks explains it and keeps the design", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("button", { name: "Send to Vectorworks" }).click();
+    await p.getByText(/✕ Saving isn't set up yet/).waitFor({ timeout: 15000 });
+    await p.reload();
+    await p.getByRole("img", { name: /cube/ }).waitFor({ timeout: 20000 });
+    await ctx.close();
+  });
+
+  await check("rig: a part can be picked without touching the 3D view; the sheet takes focus and Escape gives it back", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("radio", { name: "Parts" }).click();
+    await p.getByText(/Pick a part to edit/).click();
+    const top = p.getByRole("button", { name: /^Top section · / }).first();
+    await top.focus();
+    await top.press("Enter");
+    const sheet = p.getByRole("dialog", { name: "Top section" });
+    await sheet.waitFor();
+    assert.equal(await p.evaluate(() => document.activeElement?.textContent), "Top section");
+    // A wider floor needs more sections, so every id after it shifts: the sheet must stay on a top section.
+    await sheet.getByRole("button", { name: "Width: longer" }).click();
+    await p.waitForTimeout(300);
+    assert.equal(await p.getByRole("dialog").getAttribute("aria-label"), "Top section");
+    await p.keyboard.press("Escape");
+    await sheet.waitFor({ state: "detached" });
+    // Focus is back in the pick list (its rows renumber with the design, so not necessarily the same row).
+    assert.match(await p.evaluate(() => document.activeElement?.textContent ?? ""), / · 12" box truss/);
+    await ctx.close();
+  });
+
+  await check("rig: phone width fits without sideways scroll on every tab", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 375, height: 812 } });
+    for (const t of ["Design", "Parts", "Checks", "Saved"]) {
+      await p.getByRole("radio", { name: new RegExp(`^${t}`) }).click();
+      await p.waitForTimeout(200);
+      const over = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(over <= 0, `${t}: ${over}px sideways scroll`);
+    }
+    await ctx.close();
+  });
+
+  await check("rig: the connector API refuses anyone without the key", async () => {
+    const r = await fetch(`${BASE}/api/rig/designs/abcde`);
+    assert.equal(r.status, 401);
+    const r2 = await fetch(`${BASE}/api/rig/designs/abcde/built`, { method: "POST", headers: { Authorization: "Bearer wrong" } });
+    assert.equal(r2.status, 401);
+  });
 } finally {
   await browser.close();
   if (server?.pid) { try { process.kill(-server.pid, "SIGTERM"); } catch {} }

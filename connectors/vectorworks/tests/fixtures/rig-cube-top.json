@@ -1,0 +1,852 @@
+{
+ "version": 1,
+ "name": "10' × 10' × 10' cube",
+ "units": "in",
+ "series": {
+  "id": "box12",
+  "label": "12\" box truss",
+  "width": 12,
+  "height": 12,
+  "chordOd": 2,
+  "chordInset": 1
+ },
+ "parts": [
+  {
+   "id": "c1",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    6,
+    6,
+    6
+   ]
+  },
+  {
+   "id": "c2",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    6,
+    114,
+    6
+   ]
+  },
+  {
+   "id": "c3",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    114,
+    6,
+    6
+   ]
+  },
+  {
+   "id": "c4",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    114,
+    114,
+    6
+   ]
+  },
+  {
+   "id": "t1",
+   "kind": "truss",
+   "role": "floor",
+   "length": 96,
+   "start": [
+    12,
+    6,
+    6
+   ],
+   "end": [
+    108,
+    6,
+    6
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t2",
+   "kind": "truss",
+   "role": "floor",
+   "length": 96,
+   "start": [
+    12,
+    114,
+    6
+   ],
+   "end": [
+    108,
+    114,
+    6
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t3",
+   "kind": "truss",
+   "role": "floor",
+   "length": 96,
+   "start": [
+    6,
+    12,
+    6
+   ],
+   "end": [
+    6,
+    108,
+    6
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t4",
+   "kind": "truss",
+   "role": "floor",
+   "length": 96,
+   "start": [
+    114,
+    12,
+    6
+   ],
+   "end": [
+    114,
+    108,
+    6
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c5",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    6,
+    6,
+    114
+   ]
+  },
+  {
+   "id": "c6",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    6,
+    114,
+    114
+   ]
+  },
+  {
+   "id": "c7",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    114,
+    6,
+    114
+   ]
+  },
+  {
+   "id": "c8",
+   "kind": "corner",
+   "size": 12,
+   "ways": 3,
+   "center": [
+    114,
+    114,
+    114
+   ]
+  },
+  {
+   "id": "t5",
+   "kind": "truss",
+   "role": "top",
+   "length": 96,
+   "start": [
+    12,
+    6,
+    114
+   ],
+   "end": [
+    108,
+    6,
+    114
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t6",
+   "kind": "truss",
+   "role": "top",
+   "length": 96,
+   "start": [
+    12,
+    114,
+    114
+   ],
+   "end": [
+    108,
+    114,
+    114
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t7",
+   "kind": "truss",
+   "role": "top",
+   "length": 96,
+   "start": [
+    6,
+    12,
+    114
+   ],
+   "end": [
+    6,
+    108,
+    114
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t8",
+   "kind": "truss",
+   "role": "top",
+   "length": 96,
+   "start": [
+    114,
+    12,
+    114
+   ],
+   "end": [
+    114,
+    108,
+    114
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t9",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    6,
+    6,
+    12
+   ],
+   "end": [
+    6,
+    6,
+    108
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t10",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    6,
+    114,
+    12
+   ],
+   "end": [
+    6,
+    114,
+    108
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t11",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    114,
+    6,
+    12
+   ],
+   "end": [
+    114,
+    6,
+    108
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t12",
+   "kind": "truss",
+   "role": "leg",
+   "length": 96,
+   "start": [
+    114,
+    114,
+    12
+   ],
+   "end": [
+    114,
+    114,
+    108
+   ],
+   "roll": 0
+  },
+  {
+   "id": "p1",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    8.8787,
+    -2,
+    77.1802
+   ],
+   "end": [
+    42.8195,
+    -2,
+    111.121
+   ]
+  },
+  {
+   "id": "k1",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    11,
+    -2,
+    79.3015
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k2",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    40.6985,
+    -2,
+    109
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p2",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    111.1213,
+    -2,
+    77.1802
+   ],
+   "end": [
+    77.1805,
+    -2,
+    111.121
+   ]
+  },
+  {
+   "id": "k3",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    109,
+    -2,
+    79.3015
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k4",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    79.3015,
+    -2,
+    109
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p3",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    8.8787,
+    122,
+    77.1802
+   ],
+   "end": [
+    42.8195,
+    122,
+    111.121
+   ]
+  },
+  {
+   "id": "k5",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    11,
+    122,
+    79.3015
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    -1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k6",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    40.6985,
+    122,
+    109
+   ],
+   "pipeDir": [
+    0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    -1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p4",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    111.1213,
+    122,
+    77.1802
+   ],
+   "end": [
+    77.1805,
+    122,
+    111.121
+   ]
+  },
+  {
+   "id": "k7",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    109,
+    122,
+    79.3015
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    0,
+    -1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k8",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    79.3015,
+    122,
+    109
+   ],
+   "pipeDir": [
+    -0.7071,
+    0,
+    0.7071
+   ],
+   "chordDir": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    -1,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p5",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    -2,
+    8.8787,
+    77.1802
+   ],
+   "end": [
+    -2,
+    42.8195,
+    111.121
+   ]
+  },
+  {
+   "id": "k9",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    -2,
+    11,
+    79.3015
+   ],
+   "pipeDir": [
+    0,
+    0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k10",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    -2,
+    40.6985,
+    109
+   ],
+   "pipeDir": [
+    0,
+    0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p6",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    -2,
+    111.1213,
+    77.1802
+   ],
+   "end": [
+    -2,
+    77.1805,
+    111.121
+   ]
+  },
+  {
+   "id": "k11",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    -2,
+    109,
+    79.3015
+   ],
+   "pipeDir": [
+    0,
+    -0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k12",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    -2,
+    79.3015,
+    109
+   ],
+   "pipeDir": [
+    0,
+    -0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p7",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    122,
+    8.8787,
+    77.1802
+   ],
+   "end": [
+    122,
+    42.8195,
+    111.121
+   ]
+  },
+  {
+   "id": "k13",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    122,
+    11,
+    79.3015
+   ],
+   "pipeDir": [
+    0,
+    0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    -1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k14",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    122,
+    40.6985,
+    109
+   ],
+   "pipeDir": [
+    0,
+    0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    -1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "p8",
+   "kind": "pipe",
+   "od": 1.9,
+   "length": 48,
+   "start": [
+    122,
+    111.1213,
+    77.1802
+   ],
+   "end": [
+    122,
+    77.1805,
+    111.121
+   ]
+  },
+  {
+   "id": "k15",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    122,
+    109,
+    79.3015
+   ],
+   "pipeDir": [
+    0,
+    -0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    0,
+    1
+   ],
+   "normal": [
+    -1,
+    0,
+    0
+   ],
+   "offset": 3
+  },
+  {
+   "id": "k16",
+   "kind": "clamp",
+   "type": "swivel",
+   "at": [
+    122,
+    79.3015,
+    109
+   ],
+   "pipeDir": [
+    0,
+    -0.7071,
+    0.7071
+   ],
+   "chordDir": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    -1,
+    0,
+    0
+   ],
+   "offset": 3
+  }
+ ],
+ "notes": []
+}

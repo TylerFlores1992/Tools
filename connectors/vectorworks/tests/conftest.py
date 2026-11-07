@@ -42,6 +42,13 @@ def fake_vw():
 
 
 @pytest.fixture
+def fake_rig():
+    stop = fake_vectorworks.start_in_thread(rig=True)
+    yield fake_vectorworks.fake_vs
+    stop.set()
+
+
+@pytest.fixture
 def fake_show():
     stop = fake_vectorworks.start_in_thread(show=True)
     yield fake_vectorworks.fake_vs

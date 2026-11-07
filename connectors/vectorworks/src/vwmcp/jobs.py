@@ -44,16 +44,18 @@ class JobQueue:
         settings.jobs_dir.mkdir(parents=True, exist_ok=True)
         settings.results_dir.mkdir(parents=True, exist_ok=True)
 
-    async def call(self, op: str, **args: Any) -> Any:
+    async def call(self, op: str, _timeout: float | None = None, **args: Any) -> Any:
+        """Run one op. `_timeout` overrides the settings' timeout for a long job (a whole rig)."""
+        timeout = float(_timeout) if _timeout else self.settings.timeout
         job_id = uuid.uuid4().hex
         job_path = self.settings.jobs_dir / f"{job_id}.json"
         result_path = self.settings.results_dir / f"{job_id}.json"
         created = time.time()
         # ttl: the bridge drops a job that waited longer than the server was willing to wait.
-        write_json_atomic(job_path, {"id": job_id, "op": op, "args": args, "created": created, "ttl": self.settings.timeout + 5})
+        write_json_atomic(job_path, {"id": job_id, "op": op, "args": args, "created": created, "ttl": timeout + 5})
 
         await asyncio.to_thread(self.trigger.fire, created)
-        deadline = time.monotonic() + self.settings.timeout
+        deadline = time.monotonic() + timeout
         last_fire = time.monotonic()
 
         try:
@@ -82,7 +84,7 @@ class JobQueue:
         job_path.unlink(missing_ok=True)  # don't let a stale job run later by surprise
         if picked_up:
             raise BridgeTimeout(
-                f"Vectorworks started '{op}' but didn't finish within {self.settings.timeout:.0f}s."
+                f"Vectorworks started '{op}' but didn't finish within {timeout:.0f}s."
             )
         raise BridgeTimeout(
             f"Vectorworks never picked up '{op}'. Check that it's open, no dialog is showing, "
