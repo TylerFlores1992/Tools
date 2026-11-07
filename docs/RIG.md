@@ -67,3 +67,42 @@ Every vector is `[x, y, z]`. Directions are unit vectors.
 - Clamps for other brace angles: the library has 0, 15, 30, 45, 60, 75 and 90° versions. Use the
   nearest.
 - OIP angle fields read a bare number as degrees; the Rotate 3D dialog keeps its last settings.
+
+## The page
+
+| Part | Where |
+|---|---|
+| Templates (cube, goal post, tower, flown grid), their limits | `src/tools/rig/templates.ts` |
+| Design → build list (stock splits, braces, clamps) | `src/tools/rig/build.ts` |
+| Rental list, weights, joints | `src/tools/rig/bom.ts` · gear and weights in `catalog.ts` |
+| Checks (planning sanity, not engineering) | `src/tools/rig/checks.ts` |
+| Plain-words edits; the AI's answer uses the same shape | `src/tools/rig/commands.ts` · `src/lib/rig/ai.ts` |
+| Tests (the cube's coordinates are the ones measured in Vectorworks) | `src/tools/rig/rig.test.mts` |
+| 3D view (three.js), tap to pick, USDZ for AR Quick Look | `src/tools/rig/ui/RigViewer.tsx`, `scene.ts` |
+| Page, panel, chat bar, sheets | `src/tools/rig/ui/RigPlanner.tsx` · `src/app/private/rig/` |
+| Storage | `src/lib/rig/store.ts` · `docs/sql/rig-schema.sql` |
+| Connector API | `src/app/api/rig/designs/[id]/route.ts` (GET) and `/built` (POST) |
+| Contract fixtures | `scripts/rig-fixtures.mts` writes `connectors/vectorworks/tests/fixtures/rig-*.json`; `src/tools/rig/fixtures.test.mts` fails if they drift |
+
+Flow: design on the phone → **Save** (draft) or **Send to Vectorworks** (approves it and freezes the
+build list) → at the computer, "build design `<id>`" → the connector fetches it, builds it, and
+marks it Built. Editing an approved design puts it back to draft.
+
+## Setup (one time)
+
+1. **Database:** apply `docs/sql/rig-schema.sql` to the Supabase project as migration `rig_schema`.
+   Until then the page works and keeps the design on the phone; Save says it isn't set up.
+2. **Vercel:** add `RIG_TOKEN` (Sensitive, Production): any long random string. The AI uses the
+   existing `MAIL_GEMINI_API_KEY` (or `RIG_GEMINI_API_KEY` if set).
+3. **The computer:** `git pull`, re-run `vwmcp-install-plugin` (copies the new bridge), and set
+   `VWMCP_RIG_TOKEN` to the same string (see `connectors/vectorworks/README.md`).
+
+## Known limits
+
+- The connector's 3D calls (`Set3DRot` axis order, `Flip3DObj`, `GetSymLoc3D` after rotation,
+  resizing a Straight Truss through `LineLength`) are tested against the fake only. Each build
+  returns Vectorworks' own read-back of every clamp's orientation: check the first real build.
+- 20.5" box: the site plans it, but there's no 20.5" symbol in the file yet, so the connector
+  refuses it until one is imported.
+- AR is iPhone/iPad (AR Quick Look); other browsers get a sentence saying so.
+- Base plates are drawn on the phone and listed to rent; the connector skips them (no symbol yet).
