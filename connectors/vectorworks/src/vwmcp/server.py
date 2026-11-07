@@ -7,12 +7,13 @@ Objects are referred to by the `id` (a UUID) returned when they're created or li
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any, Literal, Union
 
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from . import __version__, config
+from . import __version__, config, rig
 from .jobs import BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
@@ -37,6 +38,9 @@ Draw in, measure and edit the drawing open in Vectorworks (with Spotlight suppor
   Universe/DMX are written together as UniverseAddress (e.g. "2/101"). Only use symbols that
   list_symbols shows: a missing fixture symbol can damage a file.
 - Unsure of a vs function? `vs_lookup` searches the live API with its signatures.
+- 3D rigs: "build design <id>" means `build_rig(design_id=...)`: one call builds an approved Rig
+  Planner design (truss, corner blocks, pipes, clamps). It reports parts it skipped, nearest
+  library parts it used, and symbols to import first. 3D tools take INCHES, Z up.
 
 Working like a head rigger (any mix of files):
 1. `survey_drawing`: what arrived (layers, departments, referenced files, viewports, DWG
@@ -159,6 +163,95 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """Place a Spotlight lighting device using a fixture symbol already in this file
         (check list_symbols). fields sets record values, e.g. {"Channel": "101", "Position": "LX1"}."""
         return await call("place_lighting_device", position=position, symbol=symbol, rotation=rotation, fields=fields, layer=layer, cls=cls)
+
+    # ---- 3D: heights, truss, pipes, clamps, whole rigs (docs/RIG.md) --------------------
+
+    def rig_error(e: Exception):
+        return ToolError(str(e))
+
+    @mcp.tool()
+    async def set_z(ids: list[str], z: Length) -> dict:
+        """Set the height (Z of the insertion point) of symbols and plug-in objects, e.g. z="9'-6\"".
+        All or nothing; undo_last puts them back."""
+        return await call("set_z", ids=ids, z=z)
+
+    @mcp.tool()
+    async def place_truss(
+        start: list[float], end: list[float], series_symbol: str = "Truss Box 12in x 12in x 8ft",
+        width: float = 12, height: float = 12, roll: float = 0, layer: str | None = None,
+    ) -> dict:
+        """Place one straight truss section whose CENTERLINE runs start -> end ([x, y, z] in INCHES,
+        Z up): level along X or Y, or plumb. The symbol is converted to its Spotlight Straight Truss
+        (magnets removed), cut to length, stood up with Hanging Angle 90 when plumb (with the
+        half-width pivot corrected). Sloped truss is refused."""
+        try:
+            pl = rig.truss_placement(start, end, width, height, roll)
+        except rig.RigError as e:
+            raise rig_error(e) from e
+        r = await call("place_truss_section", symbol=series_symbol, insertion=pl["insertion"], rotation=pl["rotation"],
+                       length=pl["length"], hanging_angle=pl["hanging_angle"], layer=layer)
+        r["orientation"] = pl["orientation"]
+        return r
+
+    @mcp.tool()
+    async def place_symbol_3d(
+        symbol: str, at: list[float], x_axis: list[float], z_axis: list[float],
+        y_axis: list[float] | None = None, mirror: bool = False, layer: str | None = None,
+    ) -> dict:
+        """Place a 3D-only symbol (pipe, clamp...) with its insertion at `at` ([x, y, z] INCHES) and
+        its local X and Z pointing along x_axis and z_axis (z is squared up to x). Give y_axis too,
+        or mirror=true, for a left-handed (mirrored) placement. Hybrid symbols can only turn about Z."""
+        try:
+            f = rig.frame_from_axes(x_axis, z_axis, y_axis, mirror)
+            rig.v3(at, "at")
+        except rig.RigError as e:
+            raise rig_error(e) from e
+        rot = list(rig.euler_xyz(f.matrix()))
+        return await call("place_symbol_3d", symbol=symbol, at=at, rot_xyz=rot, mirror=f.mirrored, layer=layer)
+
+    @mcp.tool()
+    async def build_rig(build_list: dict | None = None, design_id: str | None = None, layer: str = "Rig", replace: bool = False) -> dict:
+        """Build a whole truss rig in 3D from a Rig Planner build list (docs/RIG.md, v1), or from an
+        approved design on tylerflores.dev by its id ("build design <id>"). Places every truss
+        section, corner block, pipe and swivel clamp on `layer`; reports each part, nearest library
+        parts used instead (pipe lengths, clamp angles), parts skipped, and symbols to import first.
+        A layer that already has objects is refused unless replace=true (which clears it)."""
+        if (build_list is None) == (design_id is None):
+            raise ToolError("Give either build_list or design_id.")
+        design = None
+        if design_id is not None:
+            try:
+                design = await asyncio.to_thread(rig.fetch_design, settings.rig_url, settings.rig_token, design_id)
+            except rig.RigError as e:
+                raise rig_error(e) from e
+            build_list = design["buildList"]
+        problems = rig.validate_build_list(build_list)
+        if problems:
+            raise ToolError("The build list can't be built: " + "; ".join(problems))
+        syms = await call("list_symbols", limit=100000)
+        try:
+            plan = rig.plan_build(build_list, [s["name"] for s in syms["symbols"]])
+        except rig.RigError as e:
+            raise rig_error(e) from e
+        out: dict[str, Any] = {"name": build_list.get("name"), "layer": layer, "skipped": plan.skipped,
+                               "substituted": plan.substituted, "warnings": plan.warnings}
+        if design is not None:
+            out["design"] = {"id": design.get("id", design_id), "name": design.get("name"), "status": design.get("status")}
+        if plan.missing_symbols:
+            out.update(built=False, missing_symbols=plan.missing_symbols,
+                       how_to_fix="Nothing was placed. Import these symbols into this file (Resource Manager > "
+                                  "Vectorworks libraries: Spotlight truss / rigging hardware), then run build_rig again.")
+            return out
+        res = await call("build_rig_parts", steps=plan.steps, layer=layer, replace=replace, _timeout=settings.rig_timeout)
+        out.update(built=res["failed"] == 0, placed=res["placed"], failed=res["failed"], cleared=res["cleared"], parts=res["results"])
+        if design_id is not None and out["built"]:
+            try:
+                await asyncio.to_thread(rig.mark_built, settings.rig_url, settings.rig_token, design_id)
+                out["marked_built"] = True
+            except rig.RigError as e:
+                out["marked_built"] = False
+                out["mark_built_error"] = "Built fine, but couldn't tell the site: %s" % e
+        return out
 
     # ---- reading & measuring ---------------------------------------------------------
 

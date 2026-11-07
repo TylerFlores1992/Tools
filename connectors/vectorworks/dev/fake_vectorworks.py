@@ -4,6 +4,7 @@
     python dev/fake_vectorworks.py --demo     # truss + four lighting devices
     python dev/fake_vectorworks.py --show     # a whole show: venue steel, hoists, bridles,
                                               # fixtures, scenic, referenced audio, video
+    python dev/fake_vectorworks.py --rig      # the truss, pipe and clamp symbols build_rig uses
 
 Run the real MCP server alongside it with VWMCP_TRIGGER=none and every tool works
 end to end, on any OS, with no Vectorworks installed.
@@ -32,12 +33,14 @@ def serve(stop: threading.Event | None = None, poll: float = 0.02) -> None:
         time.sleep(poll)
 
 
-def start_in_thread(demo: bool = False, show: bool = False) -> threading.Event:
+def start_in_thread(demo: bool = False, show: bool = False, rig: bool = False) -> threading.Event:
     fake_vs.reset()
     if demo:
         fake_vs.seed_demo()
     if show:
         fake_vs.seed_show()
+    if rig:
+        fake_vs.seed_rig_library()
     stop = threading.Event()
     threading.Thread(target=serve, args=(stop,), daemon=True).start()
     return stop
@@ -49,6 +52,8 @@ if __name__ == "__main__":
         fake_vs.seed_demo()
     if "--show" in sys.argv:
         fake_vs.seed_show()
+    if "--rig" in sys.argv:
+        fake_vs.seed_rig_library()
     print(f"Fake Vectorworks watching {vwmcp_bridge.JOBS} (Ctrl+C to stop)")
     try:
         serve()

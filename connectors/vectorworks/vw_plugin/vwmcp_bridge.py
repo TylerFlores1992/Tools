@@ -16,6 +16,7 @@ Rules this file lives by (each learned the hard way, see README "Why it's built 
 
 from __future__ import annotations
 
+import contextlib
 import json
 import math
 import os
@@ -26,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.2.0"
+BRIDGE_VERSION = "0.3.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -998,6 +999,219 @@ def run_python(code):
     result = scope.get("result")
     json.dumps(result, default=str)
     return {"result": result}
+
+
+# ---------------------------------------------------------------------------------------
+# 3D placement: truss, pipes, clamps (Rig Planner, docs/RIG.md)
+#
+# Positions here arrive in INCHES (the build list's unit) and are converted to drawing units.
+# Rotations are applied one world axis at a time (X, then Y, then Z) with Set3DRot, so the
+# result is Rz . Ry . Rx whatever order Set3DRot combines three angles in. A rotation's centre
+# and the user origin don't matter: the insertion point is read back afterwards (GetSymLoc3D)
+# and the object moved onto its target with Move3DObj. That also undoes Flip3DObj's habit of
+# flipping about the bounding-box centre rather than the insertion point.
+# ---------------------------------------------------------------------------------------
+
+STRAIGHT_TRUSS = "Straight Truss"
+
+
+def _in(v, what="length") -> float:
+    try:
+        return float(v) * _units()["units_per_inch"]
+    except (TypeError, ValueError):
+        raise OpError("%s must be a number of inches, got %r" % (what, v))
+
+
+def _p3(p, what="point"):
+    if not isinstance(p, (list, tuple)) or len(p) != 3:
+        raise OpError("Expected %s as [x, y, z] in inches, got %r" % (what, p))
+    return tuple(_in(c, what) for c in p)
+
+
+def _require_3d_placeable(h) -> None:
+    if vs.GetTypeN(h) not in (15, 86):
+        raise OpError("Only symbols and plug-in objects have a 3D insertion point to set.")
+
+
+def _loc3(h):
+    p = vs.GetSymLoc3D(h)
+    return (float(p[0]), float(p[1]), float(p[2]))
+
+
+def _move_insertion_to(h, target) -> None:
+    cur = _loc3(h)
+    d = (target[0] - cur[0], target[1] - cur[1], target[2] - cur[2])
+    if any(abs(c) > 1e-9 for c in d):
+        vs.Move3DObj(h, d[0], d[1], d[2])
+
+
+def _on_layer(layer):
+    return _find(layer=layer, limit=10 ** 6)
+
+
+def _field_home(h, field):
+    """Which record (the plug-in's own, or one attached) has this field."""
+    plugin = _plugin_name(h)
+    if plugin and field in _record_fields(h, plugin):
+        return plugin
+    for i in range(1, vs.NumRecords(h) + 1):
+        rn = _s(vs.GetName(vs.GetRecord(h, i)))
+        if field in _record_fields(h, rn):
+            return rn
+    return None
+
+
+@contextlib.contextmanager
+def _on_active_layer(layer):
+    prev = _active_layer()
+    if layer:
+        _ensure_layer(layer)
+        vs.Layer(layer)
+    try:
+        yield
+    finally:
+        if layer and prev != layer:
+            vs.Layer(prev)
+
+
+@op
+def set_z(ids, z):
+    """Set the height of symbols and plug-in objects' insertion points (all or nothing)."""
+    zz = _len(z, "z")
+    hs = [_resolve(i) for i in ids]
+    for h in hs:
+        _require_editable(h)
+        _require_3d_placeable(h)
+    out = []
+    for h in hs:
+        old = _loc3(h)
+        vs.Move3DObj(h, 0, 0, zz - old[2])
+        if vs.GetTypeN(h) == 86:
+            vs.ResetObject(h)
+        _record("set_z", ids=[_uuid(h)], z=old[2])
+        d = _describe(h)
+        d["z"] = zz
+        out.append(d)
+    return {"objects": out}
+
+
+def _place_truss(symbol, insertion, rotation, length, hanging_angle=0):
+    """A truss symbol -> group -> ungroup -> the Straight Truss plug-in, MagnetObjects deleted,
+    length and Hanging Angle set, insertion moved to `insertion` (inches)."""
+    _require_symbol(symbol)
+    target = _p3(insertion, "insertion")
+    layer = _active_layer()
+    before = set(_uuid(h) for h in _on_layer(layer))
+    vs.Symbol(symbol, (target[0], target[1]), float(rotation))
+    sym = vs.LNewObj()
+    if _nil(sym) or vs.GetTypeN(sym) != 15:
+        raise OpError("Vectorworks didn't place the symbol %r." % symbol)
+    vs.SymbolToGroup(sym, 0)  # keep the plug-in inside as a plug-in; LNewObj is NIL after this
+
+    def fresh():
+        return [h for h in _on_layer(layer) if _uuid(h) not in before]
+
+    groups = [h for h in fresh() if vs.GetTypeN(h) == 11]
+    if len(groups) != 1:
+        raise OpError("Converting %r to a group gave %d groups, expected 1." % (symbol, len(groups)))
+    vs.HUngroup(groups[0])
+    new = fresh()
+    truss = [h for h in new if vs.GetTypeN(h) == 86 and _plugin_name(h) == STRAIGHT_TRUSS]
+    magnets = [h for h in new if vs.GetTypeN(h) == 86 and "magnet" in _plugin_name(h).lower()]
+    if len(truss) != 1:
+        for h in new:
+            vs.DelObject(h)
+        raise OpError("Expected one %r inside symbol %r, found %d. Is it a Spotlight truss symbol?" % (STRAIGHT_TRUSS, symbol, len(truss)))
+    t = truss[0]
+    for m in magnets:
+        vs.DelObject(m)
+    upi = _units()["units_per_inch"]
+    length_field = next((f for f in ("LineLength", "Length") if _field_home(t, f) == STRAIGHT_TRUSS), None)
+    if length_field is None:
+        raise OpError("The Straight Truss has no LineLength or Length field. Fields: %s" % ", ".join(list(_record_fields(t, STRAIGHT_TRUSS))[:30]))
+    vs.SetRField(t, STRAIGHT_TRUSS, length_field, _s(round(float(length) * upi, 6)))
+    if float(hanging_angle):
+        rec = _field_home(t, "Hanging Angle")
+        if rec is None:
+            raise OpError("No 'Hanging Angle' field on the Straight Truss or its records, so it can't stand vertical.")
+        vs.SetRField(t, rec, "Hanging Angle", _s(float(hanging_angle)))
+    vs.ResetObject(t)
+    _move_insertion_to(t, target)
+    tid = _uuid(t)
+    leftovers = [_uuid(h) for h in new if _uuid(h) != tid and not any(_uuid(h) == _uuid(m) for m in magnets)]
+    _record("delete_objects", ids=[tid] + leftovers)
+    return {"id": tid, "symbol": symbol, "insertion": list(insertion), "rotation": float(rotation), "length": float(length),
+            "hanging_angle": float(hanging_angle), "magnets_deleted": len(magnets), "other_objects": len(leftovers)}
+
+
+def _place_symbol_3d(symbol, at, rot_xyz, mirror=False):
+    """A 3D-only symbol with its insertion at `at` (inches), mirrored in its local Y first if
+    asked, then rotated about world X, Y, Z by rot_xyz (degrees)."""
+    _require_symbol(symbol)
+    target = _p3(at, "at")
+    if not isinstance(rot_xyz, (list, tuple)) or len(rot_xyz) != 3:
+        raise OpError("rot_xyz must be [x, y, z] degrees")
+    vs.Symbol(symbol, (target[0], target[1]), 0.0)
+    h = vs.LNewObj()
+    if _nil(h):
+        raise OpError("Vectorworks didn't place the symbol %r." % symbol)
+    if mirror:
+        vs.Flip3DObj(h, False)  # Flip Vertical: local Y -> -Y (about the bbox centre; fixed below)
+    centre = _loc3(h)
+    for axis, ang in enumerate(rot_xyz):
+        if abs(float(ang)) > 1e-9:
+            a = [0.0, 0.0, 0.0]
+            a[axis] = float(ang)
+            vs.Set3DRot(h, a[0], a[1], a[2], centre[0], centre[1], centre[2])
+    _move_insertion_to(h, target)
+    ok, rx, ry, rz, flipped = vs.Get3DOrientation(h)
+    uid = _uuid(h)
+    _record("delete_objects", ids=[uid])
+    return {"id": uid, "symbol": symbol, "at": list(at), "rot_xyz": [float(r) for r in rot_xyz], "mirror": bool(mirror),
+            "readback": {"rot_xyz": [float(rx), float(ry), float(rz)], "mirrored": bool(flipped)} if ok else None}
+
+
+@op
+def place_truss_section(symbol, insertion, rotation=0, length=96, hanging_angle=0, layer=None):
+    with _on_active_layer(layer):
+        return _place_truss(symbol, insertion, rotation, length, hanging_angle)
+
+
+@op
+def place_symbol_3d(symbol, at, rot_xyz, mirror=False, layer=None):
+    with _on_active_layer(layer):
+        return _place_symbol_3d(symbol, at, rot_xyz, mirror)
+
+
+@op
+def build_rig_parts(steps, layer="Rig", replace=False):
+    """Place every step of a planned rig on `layer`. Each part reports on its own: one that fails
+    doesn't stop the rest. undo_last removes everything placed (an empty new layer stays)."""
+    existing = [] if _nil(vs.GetLayerByName(layer)) else _on_layer(layer)
+    if existing and not replace:
+        raise OpError("Layer %r already has %d objects. Build on another layer, or pass replace=true to clear it first." % (layer, len(existing)))
+    for h in existing:
+        _require_editable(h)
+    if existing:
+        for h in existing:
+            vs.DelObject(h)
+        _no_undo("clearing layer %r before building (use Ctrl+Z in Vectorworks)" % layer)
+    results = []
+    with _on_active_layer(layer):
+        for s in steps:
+            try:
+                if s.get("type") == "truss":
+                    r = _place_truss(s["symbol"], s["insertion"], s.get("rotation", 0), s["length"], s.get("hanging_angle", 0))
+                elif s.get("type") == "symbol_3d":
+                    r = _place_symbol_3d(s["symbol"], s["at"], s["rot_xyz"], s.get("mirror", False))
+                else:
+                    raise OpError("unknown step type %r" % s.get("type"))
+                r.update({"part": s.get("id"), "kind": s.get("kind"), "ok": True})
+            except (OpError, KeyError) as e:
+                r = {"part": s.get("id"), "kind": s.get("kind"), "ok": False, "error": str(e)}
+            results.append(r)
+    ok = sum(1 for r in results if r["ok"])
+    return {"layer": layer, "cleared": len(existing), "placed": ok, "failed": len(results) - ok, "results": results}
 
 
 # ---------------------------------------------------------------------------------------
