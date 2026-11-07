@@ -199,6 +199,7 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 | `VWMCP_HOTKEY` | `^+%m` | Shortcut bound to MCP Run Job |
 | `VWMCP_IDLE_MS` | `600` | How long you must pause in Vectorworks before a request runs |
 | `VWMCP_WINDOW_RE` | `.*Vectorworks.*` | Window title to find |
+| `VWMCP_PROCESS_RE` | `(?i)^vectorworks[^\\/]*\.exe$` | The window's program must match too, so a browser tab titled "Vectorworks" (the panel page) is never pressed. If "No Vectorworks window found" names Vectorworks' own program, set this to match it |
 | `VWMCP_RESTORE_FOCUS` | `1` | Hand focus back to where you were |
 | `VWMCP_TIMEOUT` | `30` | Seconds to wait for Vectorworks |
 | `VWMCP_REFIRE_AFTER` | `3` | Press again if a job sits unclaimed this long |
