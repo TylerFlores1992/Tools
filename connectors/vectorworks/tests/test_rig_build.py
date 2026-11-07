@@ -261,6 +261,70 @@ def test_site_build_lists_build(server, fake_rig, name):
     r = call(server, "build_rig", build_list=bl, layer="Rig " + name)
     assert r["built"] is True, r
     assert r["failed"] == 0, r
-    buildable = [p for p in bl["parts"] if p["kind"] in ("truss", "corner", "pipe", "clamp")]
+    buildable = [p for p in bl["parts"] if p["kind"] in rig.KINDS]
     assert r["placed"] == len(buildable), r
-    assert {s["id"] for s in r["skipped"]} == {p["id"] for p in bl["parts"] if p["kind"] == "baseplate"}
+    not_drawn = ("baseplate", "skirt", "rail", "stairs")
+    assert {s["id"] for s in r["skipped"]} == {p["id"] for p in bl["parts"] if p["kind"] in not_drawn}
+
+
+# ---- Stage decks (Vectorworks' library assembly, measured 2026-11-07) ----
+
+
+def stage_list(parts):
+    return {"version": 1, "name": "Stage", "units": "in",
+            "series": {"id": "box12", "label": "12\" box truss", "width": 12, "height": 12, "chordOd": 2, "chordInset": 1},
+            "parts": parts, "notes": []}
+
+
+def test_stage_decks_and_legs_land_where_the_library_assembly_puts_them(server, fake_rig):
+    bl = json.loads((FIXTURES / "rig-stage-full.json").read_text())
+    r = call(server, "build_rig", build_list=bl, layer="Stage")
+    assert r["built"] is True, r
+    by_part = {p["part"]: p for p in r["parts"]}
+    for part in bl["parts"]:
+        if part["kind"] not in ("deck", "leg"):
+            continue
+        o = obj(fake_rig, by_part[part["id"]]["id"])
+        assert (o.loc[0], o.loc[1], o.z) == pytest.approx(tuple(part["at"])), part
+        if part["kind"] == "deck":
+            assert o.symbol == rig.deck_symbol(part["width"], part["length"])
+            assert o.rot == part["rotation"]
+            assert o.z == part["height"] - 3, "frame underside 3\" below nominal"
+        else:
+            assert o.symbol == "Stage Deck Leg %din" % part["height"]
+    reasons = {s["kind"]: s["reason"] for s in r["skipped"]}
+    assert set(reasons) == {"skirt", "rail", "stairs"}
+    assert all("rental list" in why for why in reasons.values())
+
+
+def test_missing_deck_symbols_say_what_to_import(server, fake_rig):
+    bl = stage_list([
+        {"id": "d1", "kind": "deck", "width": 48, "length": 96, "rotation": 0, "height": 48, "at": [48, 24, 45]},
+        {"id": "l1", "kind": "leg", "height": 48, "at": [1.625, 1.625, 0]},
+    ])
+    del fake_rig.DOC.resources["Stage Deck 4ft x 8ft"]
+    r = call(server, "build_rig", build_list=bl, layer="Stage")
+    assert r["built"] is False
+    assert r["missing_symbols"] == ["Stage Deck 4ft x 8ft x 2ft", "Stage Deck Leg 48in"]
+
+
+def test_a_build_where_nothing_could_be_placed_is_not_built(server, fake_rig):
+    bl = stage_list([{"id": "s1", "kind": "skirt", "length": 96, "start": [0, 0, 25], "end": [96, 0, 25], "drop": 25}])
+    r = call(server, "build_rig", build_list=bl, layer="Stage")
+    assert r["placed"] == 0
+    assert r["built"] is False
+
+
+def test_leg_heights_outside_the_library_are_refused_in_words():
+    with pytest.raises(rig.RigError, match="4\" steps"):
+        rig.leg_symbol(30)
+    assert rig.leg_symbol(24) == "Stage Deck Leg 24in"
+    assert rig.deck_symbol(48, 48) == "Stage Deck 4ft x 4ft"
+
+
+def test_place_symbol_on_the_layer_already_active(server, fake_rig):
+    """Seen 2026-11-07: placing onto the active layer by name reported 'Couldn't move the new
+    object' (SetParent onto its own layer fails) and left the object behind with no undo."""
+    call(server, "create_layer", name="Deck Test")
+    r = call(server, "place_symbol", symbol="Stage Deck 4ft x 8ft", position=[200, 0], layer="Deck Test")
+    assert r["layer"] == "Deck Test"

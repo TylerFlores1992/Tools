@@ -1625,6 +1625,35 @@ try {
     await ctx.close();
   });
 
+  await check("rig: a stage of decks, with rails, stairs and skirting on the rental list", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("button", { name: /^Stage/ }).click();
+    await p.getByRole("img", { name: /16' × 8' stage, 2' high: \d+ parts in 3D/ }).waitFor({ timeout: 20000 });
+    await p.getByRole("button", { name: "Deck height: longer" }).click();
+    await p.getByRole("button", { name: "Deck height: longer" }).click();
+    await p.getByRole("button", { name: "Deck height: longer" }).click();
+    await p.getByRole("img", { name: /stage, 3' high/ }).waitFor();
+    await p.getByRole("radio", { name: /^Checks · / }).click();
+    await p.getByText(/over 30": open sides/).waitFor();
+    await p.getByRole("radio", { name: "Design" }).click();
+    await p.getByRole("radiogroup", { name: "Guardrails" }).getByRole("radio", { name: "Back + sides" }).click();
+    await p.getByRole("radiogroup", { name: "Stairs" }).getByRole("radio", { name: "2" }).click();
+    await p.getByRole("radio", { name: /^Checks/ }).click();
+    await p.getByText(/rails on the back and both sides/).waitFor();
+    await p.getByRole("radio", { name: "Parts" }).click();
+    await p.getByText("4' × 8' stage deck", { exact: true }).waitFor();
+    await p.getByText("Stage deck leg, 3'", { exact: true }).waitFor();
+    await p.getByText(/Stage guardrail section, 8'/).first().waitFor();
+    await p.getByText(/Stage stair unit, 4 steps/).first().waitFor();
+    await p.getByText(/Stage skirting, 16' piece/).first().waitFor();
+    // Tapping a rail opens its sheet with the one setting that changes it.
+    await p.getByText(/Pick a part to edit/).click();
+    await p.getByRole("button", { name: /^Guardrail · / }).first().click();
+    const sheet = p.getByRole("dialog", { name: "Guardrail" });
+    await sheet.getByRole("radiogroup", { name: "Guardrails" }).waitFor();
+    await ctx.close();
+  });
+
   await check("rig: the connector API refuses anyone without the key", async () => {
     const r = await fetch(`${BASE}/api/rig/designs/abcde`);
     assert.equal(r.status, 401);

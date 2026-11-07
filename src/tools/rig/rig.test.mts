@@ -181,3 +181,97 @@ test("top and bottom braces that would cross on a short leg are refused, not dra
   const topOnly = buildList(newDesign("cube", { width: 120, depth: 120, height: 72, braces: "top", braceLength: 48 }));
   assert.deepEqual(topOnly.notes, []);
 });
+
+// ---- Stage decks. The deck and leg positions are the ones measured on Vectorworks' own
+// "Stage Deck 4ft x 8ft x 2ft" and "4ft x 4ft x 2ft" on 2026-11-07 (docs/RIG.md).
+
+const stage = (o: Partial<Parameters<typeof newDesign>[1]> = {}) => buildList(newDesign("stage", o));
+
+test("16' × 8' stage at 2': four 4×8 decks, six legs each, placed like the library assembly", () => {
+  const list = stage();
+  const decks = list.parts.filter((p) => p.kind === "deck");
+  assert.equal(decks.length, 4);
+  assert.ok(decks.every((d) => d.kind === "deck" && d.length === 96 && d.rotation === 0 && d.at[2] === 21), "underside 3\" below the 24\" nominal");
+  const legs = list.parts.filter((p) => p.kind === "leg");
+  assert.equal(legs.length, 24);
+  // The first deck is centered at (48, 24): legs 1.625" in from every edge, three along each long side.
+  for (const at of [[1.625, 1.625], [48, 1.625], [94.375, 1.625], [1.625, 46.375], [48, 46.375], [94.375, 46.375]]) {
+    has(legs, (p) => p.kind === "leg" && close(p.at, [at[0], at[1], 0]), `leg at ${at}`);
+  }
+  assert.deepEqual(list.notes, []);
+});
+
+test("odd sizes: a 4×4 fills the leftover 4', and a long narrow stage turns its decks", () => {
+  const twelve = stage({ width: 144, depth: 48 });
+  const sizes = twelve.parts.flatMap((p) => (p.kind === "deck" ? [p.length] : []));
+  assert.deepEqual(sizes, [96, 48]);
+  assert.equal(twelve.parts.filter((p) => p.kind === "leg").length, 6 + 4);
+  const deep = stage({ width: 48, depth: 192 });
+  const d = deep.parts.filter((p) => p.kind === "deck");
+  assert.equal(d.length, 2);
+  assert.ok(d.every((x) => x.kind === "deck" && x.rotation === 90));
+  has(deep.parts, (p) => p.kind === "leg" && close(p.at, [1.625, 48, 0]), "middle leg on the long side, now along Y");
+});
+
+test("skirt, rails and stairs: front and sides skirted, rails back and sides, stairs on the front", () => {
+  const list = stage({ height: 36, skirt: true, rail: "three", stairs: 2 });
+  const skirts = list.parts.filter((p) => p.kind === "skirt");
+  assert.equal(skirts.reduce((a, s) => a + (s.kind === "skirt" ? s.length : 0), 0), 192 + 96 + 96);
+  assert.ok(skirts.every((s) => s.kind === "skirt" && s.drop === 37 && s.start[2] === 37), "hangs from the 37\" surface to the floor");
+  const rails = list.parts.filter((p) => p.kind === "rail");
+  assert.equal(rails.reduce((a, r) => a + (r.kind === "rail" ? r.length : 0), 0), 192 + 96 + 96);
+  assert.ok(rails.every((r) => r.kind === "rail" && !(r.start[1] === 0 && r.end[1] === 0)), "nothing along the front");
+  const stairs = list.parts.filter((p) => p.kind === "stairs");
+  assert.equal(stairs.length, 2);
+  assert.ok(stairs.every((s) => s.kind === "stairs" && s.risers === 5 && s.at[1] === 0), "37\" in 7.5\" risers = 5");
+  const lines = rentalList(list);
+  const qty = (key: string) => lines.find((l) => l.key === key)?.qty;
+  assert.equal(qty("deck-96"), 4);
+  assert.equal(qty("leg-36"), 24);
+  assert.equal(qty("skirt-192"), 1);
+  assert.equal(qty("skirt-96"), 2);
+  assert.equal(qty("rail-96"), 4);
+  assert.equal(qty("stairs-5"), 2);
+  assert.match(rentalText("Stage", lines), /4 × 4' × 8' stage deck/);
+});
+
+test("stage checks: rails over 30\", stairs for a step up", () => {
+  const tall = newDesign("stage", { height: 36, rail: "back" });
+  const f = checks(tall, buildList(tall));
+  assert.ok(f.some((x) => x.id === "rail" && x.level === "warn" && /both sides too/.test(x.text)));
+  assert.ok(f.some((x) => x.id === "stairs" && x.level === "warn"));
+  const low = newDesign("stage", { height: 16, stairs: 1 });
+  const g = checks(low, buildList(low));
+  assert.ok(g.some((x) => x.id === "rail" && x.level === "ok"));
+  assert.ok(!g.some((x) => x.id === "stairs"));
+  assert.ok(!g.some((x) => x.id === "span" || x.id === "tip"), "truss checks don't apply");
+});
+
+test("stage edits in plain words", () => {
+  const e = parseEdit("16x8 stage 2 ft high with skirting and two stairs");
+  assert.ok(e);
+  assert.equal(e.template, "stage");
+  assert.equal(e.width, 192);
+  assert.equal(e.depth, 96);
+  assert.equal(e.height, 24);
+  assert.equal(e.skirt, true);
+  assert.equal(e.stairs, 2);
+  assert.equal(parseEdit("add guardrails")?.rail, "three");
+  assert.equal(parseEdit("rails on the back only")?.rail, "back");
+  assert.equal(parseEdit("no rails")?.rail, "none");
+  assert.equal(parseEdit("lose the skirt")?.skirt, false);
+  assert.equal(parseEdit("no stairs")?.stairs, 0);
+  assert.equal(parseEdit("hang skirting on the stage")?.template, "stage");
+  assert.equal(parseEdit("flown grid 30x20 trim at 22 ft")?.template, "flown");
+  const { design } = applyEdit(newDesign("stage"), parseEdit("make it 3 ft high, rails on the back and sides")!);
+  assert.equal(design.params.height, 36);
+  assert.equal(design.params.rail, "three");
+});
+
+test("deck height snaps to a leg size; truss templates never carry stage extras", () => {
+  const { design } = applyEdit(newDesign("stage"), { ...parseEdit("make it 30 inches high")!, stairs: 9 });
+  assert.equal(design.params.height, 32, "legs come in 4\" steps: 30 rounds to 32");
+  assert.equal(design.params.stairs, 2);
+  const cube = applyEdit(newDesign("cube"), { ...parseEdit("make it 12 ft tall")!, skirt: true, rail: "three", stairs: 2 }).design;
+  assert.deepEqual([cube.params.skirt, cube.params.rail, cube.params.stairs], [false, "none", 0]);
+});

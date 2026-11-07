@@ -1,5 +1,5 @@
 // A tapped part in words, and which design settings change it.
-import { CLAMP, PIPE, SERIES } from "./catalog.ts";
+import { CLAMP, DECK, PIPE, RAIL, SERIES, SKIRT, STAIRS } from "./catalog.ts";
 import { ftIn } from "./templates.ts";
 import type { BuildList, Part, RigParams } from "./types.ts";
 
@@ -24,6 +24,16 @@ export function describePart(part: Part, list: BuildList): PartInfo {
       return { title: "Cheeseborough", detail: `${CLAMP.label}: one jaw on the brace, one on the truss chord`, fields: ["braces", "braceLength"] };
     case "baseplate":
       return { title: "Base plate", detail: `${part.size}" × ${part.size}" steel plate`, fields: ["height"] };
+    case "deck":
+      return { title: "Stage deck", detail: `${DECK.sizes[part.length]?.label ?? "Stage deck"}, top at ${ftIn(part.height + DECK.top)}`, fields: ["width", "depth", "height"] };
+    case "leg":
+      return { title: "Deck leg", detail: `${ftIn(part.height)} leg`, fields: ["height"] };
+    case "skirt":
+      return { title: "Skirting", detail: `${SKIRT.label}, ${ftIn(part.length)} piece, ${ftIn(part.drop)} drop`, fields: ["skirt"] };
+    case "rail":
+      return { title: "Guardrail", detail: `${RAIL.label}, ${ftIn(part.length)}, ${RAIL.height}" tall`, fields: ["rail"] };
+    case "stairs":
+      return { title: "Stairs", detail: `${STAIRS.label}: ${part.risers - 1} steps up to ${ftIn(part.rise)}`, fields: ["stairs"] };
   }
 }
 
@@ -40,6 +50,8 @@ export function partKey(p: Part): string {
       return `pipe:${p.start[2] < p.end[2] - 0.5 && p.start[2] < 30 ? "low" : "high"}`;
     case "clamp":
       return `clamp:${p.chordDir.map((x) => Math.round(Math.abs(x))).join("")}`;
+    case "deck":
+      return `deck:${p.length}`;
     default:
       return p.kind;
   }

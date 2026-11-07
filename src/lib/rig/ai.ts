@@ -21,11 +21,13 @@ export const rigAiReady = () => Boolean(KEY) && process.env.RIG_AI !== "off";
 export function rigPrompt(design: RigDesign, message: string): string {
   const templates = TEMPLATES.map((t) => `- ${t.id} (${t.name}): ${t.blurb} Settings: ${t.fields.map((f) => f.key).join(", ")}.`).join("\n");
   return [
-    "You help a film/TV rigging grip plan ground-support and flown truss rigs.",
+    "You help a film/TV rigging grip plan ground-support and flown truss rigs, and stages built from rental decks.",
     "Turn their message into ONE edit of the current design. Lengths are INCHES (10 ft = 120).",
     "Set a field only if the message asks to change it; leave the rest null.",
     "series: box12 = 12 inch box truss, box20 = 20.5 inch box truss.",
     "braces: knee braces (45 degree pipes with cheeseboroughs) — none, top, bottom or both.",
+    "Stage (template stage): 4x8 decks on legs. height = deck height in inches (8 to 60, 4 inch steps); width/depth in 4 ft steps.",
+    "skirt: true/false (front and both sides). rail: none, back, or three (back and both sides; the front stays open). stairs: 0, 1 or 2 stair units on the front.",
     "Templates:",
     templates,
     "If the request can't be done with these templates and settings, change nothing and say so plainly in `reply`.",

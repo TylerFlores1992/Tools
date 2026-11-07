@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/Button";
 import { Segmented } from "@/components/Segmented";
 import { Spinner } from "@/components/Spinner";
@@ -16,7 +16,7 @@ import { describePart, partKey } from "../describe";
 import { applyEdit, type RigEdit } from "../commands";
 import { readDesign } from "../validate";
 import { autoName, clampParams, ftIn, newDesign, template, TEMPLATES, type Field } from "../templates";
-import type { BraceMode, Part, RigDesign, RigParams, TemplateId } from "../types";
+import type { BraceMode, Part, RailMode, RigDesign, RigParams, TemplateId } from "../types";
 import type { ViewerHandle } from "./RigViewer";
 
 const RigViewer = dynamic(() => import("./RigViewer").then((m) => m.RigViewer), {
@@ -49,6 +49,7 @@ const TABS = [
 type Tab = (typeof TABS)[number]["value"];
 
 const BRACE_LABEL: Record<BraceMode, string> = { none: "None", top: "Top", bottom: "Bottom", both: "Both" };
+const RAIL_LABEL: Record<RailMode, string> = { none: "None", back: "Back", three: "Back + sides" };
 type Status = SavedRigLite["status"] | "changed";
 const STATUS: Record<Status, string> = {
   draft: "Draft",
@@ -351,12 +352,19 @@ function Fields({ design, fields, setParam }: { design: RigDesign; fields: reado
               <div className="mt-2"><Segmented label={f.label} options={Object.values(SERIES).map((s) => ({ value: s.id, label: s.label.replace(" truss", "") }))} value={design.params.series} onChange={(v) => setParam("series", v)} /></div>
             </div>
           );
-        return (
+        const choice = (control: ReactNode) => (
           <div key={f.key}>
             <p className="text-label text-muted">{f.label}</p>
-            <div className="mt-2 overflow-x-auto"><Segmented label={f.label} options={f.options.map((o) => ({ value: o, label: BRACE_LABEL[o] }))} value={design.params.braces} onChange={(v) => setParam("braces", v)} /></div>
+            <div className="mt-2 overflow-x-auto">{control}</div>
           </div>
         );
+        if (f.kind === "toggle")
+          return choice(<Segmented label={f.label} options={[{ value: "off", label: "None" }, { value: "on", label: "Front and sides" }]} value={design.params.skirt ? "on" : "off"} onChange={(v) => setParam("skirt", v === "on")} />);
+        if (f.kind === "rail")
+          return choice(<Segmented label={f.label} options={f.options.map((o) => ({ value: o, label: RAIL_LABEL[o] }))} value={design.params.rail} onChange={(v) => setParam("rail", v)} />);
+        if (f.kind === "count")
+          return choice(<Segmented label={f.label} options={Array.from({ length: f.max + 1 }, (_, n) => ({ value: String(n), label: n ? String(n) : "None" }))} value={String(design.params.stairs)} onChange={(v) => setParam("stairs", Number(v))} />);
+        return choice(<Segmented label={f.label} options={f.options.map((o) => ({ value: o, label: BRACE_LABEL[o] }))} value={design.params.braces} onChange={(v) => setParam("braces", v)} />);
       })}
     </div>
   );

@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.3.0"
+BRIDGE_VERSION = "0.4.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -504,8 +504,11 @@ def op(fn):
 def _place(h, layer=None, cls=None, name=None, created=True) -> dict:
     if _nil(h):
         raise OpError("Vectorworks didn't create the object.")
-    if layer:
+    if layer and _s(vs.GetName(vs.GetLayer(h))) != layer:
+        # SetParent onto the layer it's already on returns false in Vectorworks (seen 2026-11-07
+        # placing on the active layer), so only move it when it's somewhere else.
         if not vs.SetParent(h, _ensure_layer(layer)):
+            vs.DelObject(h)
             raise OpError("Couldn't move the new object to layer %r." % layer)
     if cls:
         _ensure_class(cls)
@@ -1144,6 +1147,21 @@ def _place_truss(symbol, insertion, rotation, length, hanging_angle=0):
             "hanging_angle": float(hanging_angle), "magnets_deleted": len(magnets), "other_objects": len(leftovers)}
 
 
+def _place_symbol_plan(symbol, at, rotation=0.0):
+    """A symbol turned about Z only (decks, legs: hybrid symbols can't turn in 3D), its insertion
+    at `at` (inches), Z included."""
+    _require_symbol(symbol)
+    target = _p3(at, "at")
+    vs.Symbol(symbol, (target[0], target[1]), float(rotation))
+    h = vs.LNewObj()
+    if _nil(h):
+        raise OpError("Vectorworks didn't place the symbol %r." % symbol)
+    _move_insertion_to(h, target)
+    uid = _uuid(h)
+    _record("delete_objects", ids=[uid])
+    return {"id": uid, "symbol": symbol, "at": list(at), "rotation": float(rotation)}
+
+
 def _place_symbol_3d(symbol, at, rot_xyz, mirror=False):
     """A 3D-only symbol with its insertion at `at` (inches), mirrored in its local Y first if
     asked, then rotated about world X, Y, Z by rot_xyz (degrees)."""
@@ -1204,6 +1222,8 @@ def build_rig_parts(steps, layer="Rig", replace=False):
                     r = _place_truss(s["symbol"], s["insertion"], s.get("rotation", 0), s["length"], s.get("hanging_angle", 0))
                 elif s.get("type") == "symbol_3d":
                     r = _place_symbol_3d(s["symbol"], s["at"], s["rot_xyz"], s.get("mirror", False))
+                elif s.get("type") == "symbol":
+                    r = _place_symbol_plan(s["symbol"], s["at"], s.get("rotation", 0))
                 else:
                     raise OpError("unknown step type %r" % s.get("type"))
                 r.update({"part": s.get("id"), "kind": s.get("kind"), "ok": True})

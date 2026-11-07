@@ -93,6 +93,42 @@ function clamp(at: THREE.Vector3, pipeDir: THREE.Vector3, chordDir: THREE.Vector
   return mergeGeometries([ring(at, pipeDir), ring(far, chordDir), body].map((g) => g.toNonIndexed()))!;
 }
 
+/** A hanging panel: its top edge runs a → b (three space), `drop` tall, thin. */
+function panel(a: THREE.Vector3, b: THREE.Vector3, drop: number): THREE.BufferGeometry {
+  const d = new THREE.Vector3().subVectors(b, a);
+  const g = new THREE.BoxGeometry(d.length(), drop, 0.4);
+  g.rotateY(-Math.atan2(d.z, d.x));
+  g.translate((a.x + b.x) / 2, a.y - drop / 2, (a.z + b.z) / 2);
+  return g;
+}
+
+/** Top rail, mid rail and posts at both ends (rig space in, three space out). */
+function guardrail(start: Vec3, end: Vec3, height: number): THREE.BufferGeometry {
+  const a = toThree(start);
+  const b = toThree(end);
+  const up = (p: THREE.Vector3, h: number) => p.clone().add(new THREE.Vector3(0, h, 0));
+  const r = 0.85;
+  return mergeGeometries([tube(a, up(a, height), r), tube(b, up(b, height), r), tube(up(a, height), up(b, height), r), tube(up(a, height / 2), up(b, height / 2), r * 0.8)].map((g) => g.toNonIndexed()))!;
+}
+
+/** Treads stepping down and out from the deck edge. */
+function stairUnit(p: { at: Vec3; out: Vec3; width: number; rise: number; risers: number }, tread: number): THREE.BufferGeometry {
+  const riser = p.rise / p.risers;
+  const parts: THREE.BufferGeometry[] = [];
+  const out = new THREE.Vector3(p.out[0], 0, -p.out[1]).normalize();
+  const base = toThree(p.at);
+  for (let i = 1; i < p.risers; i++) {
+    // Step i from the top: its tread is i treads out, (risers − i) risers up.
+    const h = (p.risers - i) * riser;
+    const g = new THREE.BoxGeometry(p.width, h, tread);
+    g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), out));
+    const c = base.clone().addScaledVector(out, (i - 0.5) * tread).add(new THREE.Vector3(0, h / 2, 0));
+    g.translate(c.x, c.y, c.z);
+    parts.push(g.toNonIndexed());
+  }
+  return parts.length ? mergeGeometries(parts)! : new THREE.BoxGeometry(p.width, 0.5, tread);
+}
+
 export type Look = { truss: string; corner: string; pipe: string; clamp: string; plate: string; selected: string; ground: string; grid: string; bg: string };
 
 export type PartMesh = THREE.Mesh & { userData: { partId: string; kind: Part["kind"] } };
@@ -107,6 +143,11 @@ export function makeMaterials(look: Look): Mats {
     pipe: new THREE.MeshStandardMaterial({ color: look.pipe, metalness: 0.5, roughness: 0.45 }),
     clamp: new THREE.MeshStandardMaterial({ color: look.clamp, metalness: 0.7, roughness: 0.3 }),
     baseplate: new THREE.MeshStandardMaterial({ color: look.plate, metalness: 0.4, roughness: 0.6 }),
+    deck: new THREE.MeshStandardMaterial({ color: look.corner, metalness: 0.1, roughness: 0.8 }),
+    leg: new THREE.MeshStandardMaterial({ color: look.truss, metalness: 0.6, roughness: 0.35 }),
+    skirt: new THREE.MeshStandardMaterial({ color: look.plate, metalness: 0, roughness: 0.95, side: THREE.DoubleSide }),
+    rail: new THREE.MeshStandardMaterial({ color: look.truss, metalness: 0.6, roughness: 0.35 }),
+    stairs: new THREE.MeshStandardMaterial({ color: look.corner, metalness: 0.1, roughness: 0.8 }),
   };
 }
 
@@ -153,6 +194,28 @@ export function buildScene(list: BuildList, mats: Mats): THREE.Group {
         geo.translate(c.x, c.y, c.z);
         break;
       }
+      case "deck": {
+        // Frame plus top: from the underside (at) up to the walking surface, 4" in all.
+        const [x, z] = p.rotation === 0 ? [p.length, p.width] : [p.width, p.length];
+        geo = new THREE.BoxGeometry(x, 4, z);
+        const c = toThree(p.at);
+        geo.translate(c.x, c.y + 2, c.z);
+        break;
+      }
+      case "leg": {
+        const a = toThree(p.at);
+        geo = tube(a, a.clone().add(new THREE.Vector3(0, p.height - 3, 0)), 0.8, 8);
+        break;
+      }
+      case "skirt":
+        geo = panel(toThree(p.start), toThree(p.end), p.drop);
+        break;
+      case "rail":
+        geo = guardrail(p.start, p.end, p.height);
+        break;
+      case "stairs":
+        geo = stairUnit(p, p.run / Math.max(1, p.risers - 1));
+        break;
     }
     const mesh = new THREE.Mesh(geo, mats[p.kind]) as unknown as PartMesh;
     mesh.userData = { partId: p.id, kind: p.kind };

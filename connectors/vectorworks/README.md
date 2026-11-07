@@ -141,7 +141,7 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    `claude mcp add vectorworks -e VWMCP_RIG_TOKEN=… -- …\vwmcp.exe`. Restart Claude.
 2. **After every `git pull`, run `vwmcp-install-plugin` again.** Vectorworks runs the copy in
    `%USERPROFILE%\.vwmcp\plugin`, not this folder; an old copy answers "Unknown op
-   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs).
+   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs, 0.4.0 or newer for stage decks).
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),

@@ -213,8 +213,9 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     async def build_rig(build_list: dict | None = None, design_id: str | None = None, layer: str = "Rig", replace: bool = False) -> dict:
         """Build a whole truss rig in 3D from a Rig Planner build list (docs/RIG.md, v1), or from an
         approved design on tylerflores.dev by its id ("build design <id>"). Places every truss
-        section, corner block, pipe and swivel clamp on `layer`; reports each part, nearest library
-        parts used instead (pipe lengths, clamp angles), parts skipped, and symbols to import first.
+        section, corner block, pipe, swivel clamp, stage deck and deck leg on `layer`; reports each
+        part, nearest library parts used instead (pipe lengths, clamp angles), parts skipped (skirting,
+        guardrails and stairs have no library symbol), and symbols to import first.
         A layer that already has objects is refused unless replace=true (which clears it)."""
         if (build_list is None) == (design_id is None):
             raise ToolError("Give either build_list or design_id.")
@@ -239,11 +240,14 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             out["design"] = {"id": design.get("id", design_id), "name": design.get("name"), "status": design.get("status")}
         if plan.missing_symbols:
             out.update(built=False, missing_symbols=plan.missing_symbols,
-                       how_to_fix="Nothing was placed. Import these symbols into this file (Resource Manager > "
-                                  "Vectorworks libraries: Spotlight truss / rigging hardware), then run build_rig again.")
+                       how_to_fix="Nothing was placed. Import these symbols from Resource Manager > Vectorworks libraries "
+                                  "into this file (truss and rigging hardware; for stages, an assembled deck such as "
+                                  "'Stage Deck 4ft x 8ft x 2ft' brings the bare deck in, and each 'Stage Deck Leg' "
+                                  "height you need), then run build_rig again.")
             return out
         res = await call("build_rig_parts", steps=plan.steps, layer=layer, replace=replace, _timeout=settings.rig_timeout)
-        out.update(built=res["failed"] == 0, placed=res["placed"], failed=res["failed"], cleared=res["cleared"], parts=res["results"])
+        # Nothing placed (every part skipped) is not a build, so the site isn't told it's built.
+        out.update(built=res["failed"] == 0 and res["placed"] > 0, placed=res["placed"], failed=res["failed"], cleared=res["cleared"], parts=res["results"])
         if design_id is not None and out["built"]:
             try:
                 await asyncio.to_thread(rig.mark_built, settings.rig_url, settings.rig_token, design_id, (design or {}).get("approvedAt"))
