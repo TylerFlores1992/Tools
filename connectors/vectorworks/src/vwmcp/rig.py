@@ -206,12 +206,17 @@ def leg_symbol(height: float) -> str:
     return "Stage Deck Leg %gin" % h
 
 
+# 20.5" box isn't in Vectorworks' library. These are the Total Structures (SLV) symbols in the Air
+# Pro self-climber drawing (Aspect Lighting, 2022), used when the open file has them.
+FILE_ONLY_SERIES = {"box20": ["Truss 20.5\" Box 10' (SLV)", "Truss 20.5\" Box 5' (SLV)", "Truss 20.5\" Box 4' (SLV)"]}
+
+
 def truss_symbol_candidates(series_id: str) -> list:
+    if series_id in FILE_ONLY_SERIES:
+        return list(FILE_ONLY_SERIES[series_id])
     prefix = SERIES_SYMBOL_PREFIX.get(series_id)
     if prefix is None:
-        raise RigError(
-            "No truss symbol for series %r. Known: %s. (20.5\" box isn't in the file's library yet: "
-            "import a 'Truss Box 20.5in' symbol and add it here.)" % (series_id, ", ".join(sorted(SERIES_SYMBOL_PREFIX))))
+        raise RigError("No truss symbol for series %r. Known: %s." % (series_id, ", ".join(sorted([*SERIES_SYMBOL_PREFIX, *FILE_ONLY_SERIES]))))
     return ["%s x %dft" % (prefix, ft) for ft in TRUSS_SYMBOL_LENGTHS_FT]
 
 
@@ -446,6 +451,10 @@ def plan_build(bl: dict, available) -> Plan:
             raise RigError(str(e)) from None
         truss_symbol = next((c for c in cands if c in have), None)
         if truss_symbol is None:
+            if series["id"] in FILE_ONLY_SERIES:
+                raise RigError(
+                    "20.5\" box truss isn't in Vectorworks' library: open a file that has the Total Structures symbols "
+                    "(%s), like the Air Pro self-climber drawing, or import them into this one." % cands[0])
             note_missing(cands[1])  # the 8 ft section is what the library usually has
 
     pipe_names = pipe_lengths(have)
