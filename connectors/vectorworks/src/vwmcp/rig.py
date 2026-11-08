@@ -548,7 +548,7 @@ def _request(url: str, token: str, method: str = "GET", timeout: float = 20.0, b
 
 def fetch_design(base: str, token: str, design_id: str) -> dict:
     if not token:
-        raise RigError("set VWMCP_RIG_TOKEN in the MCP config to fetch designs from the site")
+        raise RigError("set VWMCP_RIG_TOKEN (in your Windows user environment or the MCP config) to fetch designs from the site")
     data = _request(design_url(base, design_id), token)
     if not isinstance(data, dict) or not isinstance(data.get("buildList"), dict):
         raise RigError("the site's answer for design %r has no buildList" % design_id)
