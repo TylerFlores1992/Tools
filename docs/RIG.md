@@ -93,6 +93,11 @@ Stage parts (template `stage`, added 2026-11-07):
   edge: six on a 4×8 (corners and mid long sides), four on a 4×4. Leg symbols exist every 4" from
   8" to 60" (plus 4.25"). The bare decks aren't listed in the library on their own: import an
   assembled deck to bring one in. Decks and legs are hybrid, so they turn about Z only.
+- **Missing symbols are imported automatically** (connector 0.5.0): `build_rig` looks the names up
+  in Vectorworks' library files (`BuildResourceListN` + `ImportResourceToCurrentFile`), likeliest
+  files first, and remembers each file's contents in `~/.vwmcp/library_index.json`. Read straight
+  from the files, the bare decks import by name; no assembly needed. Untested on real Vectorworks
+  until the first build after installing 0.5.0.
 
 ## The page
 

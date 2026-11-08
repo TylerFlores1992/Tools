@@ -3,6 +3,7 @@
 import asyncio
 import json
 import math
+import os
 
 import pytest
 from mcp.server.mcpserver.exceptions import ToolError
@@ -305,7 +306,7 @@ def test_missing_deck_symbols_say_what_to_import(server, fake_rig):
     del fake_rig.DOC.resources["Stage Deck 4ft x 8ft"]
     r = call(server, "build_rig", build_list=bl, layer="Stage")
     assert r["built"] is False
-    assert r["missing_symbols"] == ["Stage Deck 4ft x 8ft x 2ft", "Stage Deck Leg 48in"]
+    assert r["missing_symbols"] == ["Stage Deck 4ft x 8ft", "Stage Deck Leg 48in"]
 
 
 def test_a_build_where_nothing_could_be_placed_is_not_built(server, fake_rig):
@@ -328,3 +329,69 @@ def test_place_symbol_on_the_layer_already_active(server, fake_rig):
     call(server, "create_layer", name="Deck Test")
     r = call(server, "place_symbol", symbol="Stage Deck 4ft x 8ft", position=[200, 0], layer="Deck Test")
     assert r["layer"] == "Deck Test"
+
+
+# ---- Importing what a build needs from Vectorworks' libraries ----
+
+
+@pytest.fixture
+def library(tmp_path, monkeypatch, fake_rig, home):
+    """Two library folders, as on the PC: the app's and the user's. Files hold symbols by name."""
+    app = tmp_path / "Vectorworks 2026" / "Libraries"
+    user = tmp_path / "AppData" / "Libraries"
+    files = {
+        app / "Defaults" / "Stage Deck" / "Stage Deck.vwx": [
+            ("Stage Deck 4ft x 8ft x 2ft", 96, 48), ("Stage Deck 4ft x 8ft", 96, 48), ("Stage Deck 4ft x 4ft", 48, 48),
+            ("Stage Deck Leg 24in", 1.66, 1.66), ("Stage Deck Leg 48in", 1.66, 1.66),
+        ],
+        app / "Objects - Furniture" / "Chairs.vwx": [("Chair", 20, 20)],
+        # Named so nothing about its path says what's in it: only the index finds it fast.
+        user / "Misc" / "Odds.vwx": [("Shackle 1/2in", 2, 2)],
+    }
+    for path, items in files.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"")
+        fake_rig.LIBRARY[str(path)] = items
+    monkeypatch.setenv("VWMCP_LIBRARY_ROOTS", os.pathsep.join([str(app), str(user)]))
+    (home / "library_index.json").unlink(missing_ok=True)
+    fake_rig.LIBRARY_OPENS.clear()
+    yield fake_rig
+    fake_rig.LIBRARY.clear()
+
+
+def test_build_rig_imports_missing_deck_symbols_then_builds(server, library):
+    for n in ("Stage Deck 4ft x 8ft", "Stage Deck Leg 24in"):
+        del library.DOC.resources[n]
+    bl = json.loads((FIXTURES / "rig-stage.json").read_text())
+    r = call(server, "build_rig", build_list=bl, layer="Stage")
+    assert r["built"] is True, r
+    assert sorted(r["imported"]["symbols"]) == ["Stage Deck 4ft x 8ft", "Stage Deck Leg 24in"]
+    assert r["imported"]["from"]["Stage Deck 4ft x 8ft"].endswith("Stage Deck.vwx")
+    # The likeliest file was opened first, and the furniture never needed opening.
+    assert library.LIBRARY_OPENS[0].endswith("Stage Deck.vwx")
+
+
+def test_the_second_search_uses_the_index_and_opens_only_the_file_that_has_it(server, library):
+    r1 = call(server, "import_symbols", names=["Shackle 1/2in"])
+    assert r1["imported"] == ["Shackle 1/2in"]
+    del library.DOC.resources["Shackle 1/2in"]
+    library.LIBRARY_OPENS.clear()
+    r2 = call(server, "import_symbols", names=["Shackle 1/2in", "Stage Deck 4ft x 8ft"])
+    assert r2["imported"] == ["Shackle 1/2in"] and r2["already_here"] == ["Stage Deck 4ft x 8ft"]
+    assert [os.path.basename(p) for p in library.LIBRARY_OPENS] == ["Odds.vwx"]
+
+
+def test_symbols_nowhere_in_the_library_are_named_and_nothing_is_built(server, library):
+    bl = stage_list([{"id": "l1", "kind": "leg", "height": 60, "at": [1.625, 1.625, 0]}])
+    r = call(server, "build_rig", build_list=bl, layer="Stage")
+    assert r["built"] is False
+    assert r["missing_symbols"] == ["Stage Deck Leg 60in"]
+    assert r["library_search"]["files"] == 3 and r["library_search"]["unread_files"] == 0
+
+
+def test_auto_import_can_be_turned_off(server, library):
+    del library.DOC.resources["Stage Deck Leg 24in"]
+    bl = stage_list([{"id": "l1", "kind": "leg", "height": 24, "at": [1.625, 1.625, 0]}])
+    r = call(server, "build_rig", build_list=bl, layer="Stage", auto_import=False)
+    assert r["missing_symbols"] == ["Stage Deck Leg 24in"]
+    assert library.LIBRARY_OPENS == []

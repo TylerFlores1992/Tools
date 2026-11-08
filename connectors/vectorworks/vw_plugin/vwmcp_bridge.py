@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.4.0"
+BRIDGE_VERSION = "0.5.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -675,6 +675,144 @@ def list_symbols(contains=None, limit=500):
 
     walk(vs.FSymDef(), [])
     return {"count": len(out), "symbols": out}
+
+
+# ---- importing symbols from Vectorworks' libraries -------------------------------------
+
+LIBRARY_INDEX = HOME / "library_index.json"
+SYMBOL_TYPE = 16
+# Words in a library file's path that make it worth opening first.
+LIBRARY_HINTS = ("stage", "deck", "truss", "rigging", "spotlight", "entertainment", "pipe", "clamp", "scaffold", "shackle", "sling")
+
+
+def _library_roots():
+    """Folders holding Vectorworks' library files. VWMCP_LIBRARY_ROOTS (separated like PATH)
+    overrides; otherwise the application's Libraries folder and the user's downloaded ones."""
+    env = os.environ.get("VWMCP_LIBRARY_ROOTS")
+    if env:
+        cands = [p for p in env.split(os.pathsep) if p]
+    else:
+        import sys
+
+        year = _version().split(" ")[0]
+        cands = []
+        exe = getattr(sys, "executable", "") or ""
+        if exe.lower().endswith(".exe"):
+            cands.append(os.path.join(os.path.dirname(exe), "Libraries"))
+        cands.append(os.path.join(os.environ.get("ProgramFiles", "C:\\Program Files"), "Vectorworks %s" % year, "Libraries"))
+        if os.environ.get("APPDATA"):
+            cands.append(os.path.join(os.environ["APPDATA"], "Nemetschek", "Vectorworks", year, "Libraries"))
+    out, seen = [], set()
+    for r in cands:
+        key = os.path.normcase(os.path.abspath(r))
+        if key not in seen and os.path.isdir(r):
+            seen.add(key)
+            out.append(r)
+    return out
+
+
+def _load_library_index():
+    try:
+        with open(str(LIBRARY_INDEX), encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_library_index(index):
+    HOME.mkdir(parents=True, exist_ok=True)
+    tmp = str(LIBRARY_INDEX) + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(index, f)
+    os.replace(tmp, str(LIBRARY_INDEX))
+
+
+def _symbols_in_file(path):
+    """(listID, [symbol names]) for one library file; listID is 0 when it couldn't be read."""
+    try:
+        lid, n = vs.BuildResourceListN(SYMBOL_TYPE, path)
+    except Exception:
+        return 0, []
+    if not lid:
+        return 0, []
+    return lid, [_s(vs.GetActualNameFromResourceList(lid, i)) for i in range(1, int(n) + 1)]
+
+
+def _has_symbol(name):
+    d = vs.GetObject(name)
+    return not _nil(d) and vs.GetTypeN(d) == 16
+
+
+@op
+def import_symbols(names, budget_s=20.0):
+    """Import symbols by exact name from Vectorworks' library files into this file.
+
+    Opens the library files whose paths look likeliest first (words from the names, then rigging
+    and staging folders), remembers what each file holds in ~/.vwmcp/library_index.json so the
+    next search is instant, and stops after `budget_s` seconds: call again while `scan_left` > 0
+    and something is still `not_found`."""
+    names = [str(n) for n in dict.fromkeys(names or [])]
+    already = [n for n in names if _has_symbol(n)]
+    remaining = [n for n in names if n not in already]
+    roots = _library_roots()
+    index = _load_library_index()
+    files = []
+    for r in roots:
+        for dirpath, _dirs, fnames in os.walk(r):
+            files.extend(os.path.join(dirpath, f) for f in fnames if f.lower().endswith(".vwx"))
+    tokens = {t for n in remaining for t in re.findall(r"[a-z]+", n.lower()) if len(t) > 2}
+
+    def rank(path):
+        low = path.lower()
+        return (-(2 * sum(t in low for t in tokens) + sum(h in low for h in LIBRARY_HINTS)), low)
+
+    def mtime(path):
+        try:
+            return os.path.getmtime(path)
+        except OSError:
+            return None
+
+    def fresh(path):
+        e = index.get(path)
+        return isinstance(e, dict) and e.get("mtime") == mtime(path)
+
+    files.sort(key=rank)
+    imported, sources = [], {}
+
+    def take(path, lid, held):
+        for i, nm in enumerate(held, 1):
+            if nm in remaining:
+                vs.ImportResourceToCurrentFile(lid, i)
+                if _has_symbol(nm):
+                    remaining.remove(nm)
+                    imported.append(nm)
+                    sources[nm] = path
+
+    # Files already indexed: open only those known to hold something wanted.
+    for path in files:
+        if not remaining:
+            break
+        if fresh(path) and any(n in index[path]["names"] for n in remaining):
+            lid, held = _symbols_in_file(path)
+            if lid:
+                take(path, lid, held)
+    deadline = time.time() + float(budget_s)
+    for path in files:
+        if not remaining or time.time() > deadline:
+            break
+        if fresh(path):
+            continue
+        lid, held = _symbols_in_file(path)
+        index[path] = {"mtime": mtime(path), "names": held}
+        if lid:
+            take(path, lid, held)
+    with contextlib.suppress(OSError):
+        _save_library_index(index)
+    return {
+        "imported": imported, "from": sources, "already_here": already, "not_found": remaining,
+        "scan_left": sum(1 for p in files if not fresh(p)), "library_files": len(files), "roots": roots,
+    }
 
 
 def _require_symbol(name):

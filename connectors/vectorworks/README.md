@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 56 tools (58 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 57 tools (59 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -141,7 +141,7 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    `claude mcp add vectorworks -e VWMCP_RIG_TOKEN=… -- …\vwmcp.exe`. Restart Claude.
 2. **After every `git pull`, run `vwmcp-install-plugin` again.** Vectorworks runs the copy in
    `%USERPROFILE%\.vwmcp\plugin`, not this folder; an old copy answers "Unknown op
-   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs, 0.4.0 or newer for stage decks).
+   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs, 0.4.0 or newer for stage decks, 0.5.0 or newer to import missing symbols by itself).
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
@@ -280,3 +280,14 @@ tests/         bridge static checks, round trips, units, trigger, panel API, rig
                show setup, the head-rigger workflow end to end
 make_zip.py    builds the download behind /private/vectorworks
 ```
+
+## Importing symbols by itself (0.5.0)
+
+`build_rig` imports any truss, pipe, clamp, deck or leg symbol the file is missing from
+Vectorworks' own library files before it builds (`auto_import=false` to only list them), and
+`import_symbols` does the same for any names. It reads the files under the application's
+`Libraries` folder and `%APPDATA%\Nemetschek\Vectorworks\<year>\Libraries` (downloaded
+content), likeliest first, and keeps what each file holds in `~/.vwmcp/library_index.json`, so
+only the first search is slow. `VWMCP_LIBRARY_ROOTS` (folders separated by `;`) replaces those
+folders, e.g. to add a workgroup library. Content still in the cloud (red in the Resource
+Manager) isn't on disk, so it can't be found until it's downloaded once.

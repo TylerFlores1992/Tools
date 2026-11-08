@@ -209,13 +209,36 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         rot = list(rig.euler_xyz(f.matrix()))
         return await call("place_symbol_3d", symbol=symbol, at=at, rot_xyz=rot, mirror=f.mirrored, layer=layer)
 
+    async def import_from_library(names: list[str]) -> dict:
+        """Run the bridge's import_symbols until everything's found or every library file is read."""
+        total: dict[str, Any] = {"imported": [], "from": {}, "already_here": [], "not_found": list(names)}
+        for _ in range(30):
+            r = await call("import_symbols", names=total["not_found"], budget_s=20.0, _timeout=90.0)
+            total["imported"] += r["imported"]
+            total["from"].update(r["from"])
+            total["already_here"] += r["already_here"]
+            total["not_found"] = r["not_found"]
+            total.update(scan_left=r["scan_left"], library_files=r["library_files"], roots=r["roots"])
+            if not r["not_found"] or r["scan_left"] == 0:
+                break
+        return total
+
     @mcp.tool()
-    async def build_rig(build_list: dict | None = None, design_id: str | None = None, layer: str = "Rig", replace: bool = False) -> dict:
+    async def import_symbols(names: list[str]) -> dict:
+        """Import symbols by exact name from Vectorworks' own library files into this file (truss,
+        pipes, clamps, stage decks and legs...), so nobody has to find them in the Resource Manager.
+        The first search reads the library files (it can take a few minutes); after that it's quick."""
+        return await import_from_library(names)
+
+    @mcp.tool()
+    async def build_rig(build_list: dict | None = None, design_id: str | None = None, layer: str = "Rig", replace: bool = False, auto_import: bool = True) -> dict:
         """Build a whole truss rig in 3D from a Rig Planner build list (docs/RIG.md, v1), or from an
         approved design on tylerflores.dev by its id ("build design <id>"). Places every truss
         section, corner block, pipe, swivel clamp, stage deck and deck leg on `layer`; reports each
         part, nearest library parts used instead (pipe lengths, clamp angles), parts skipped (skirting,
         guardrails and stairs have no library symbol), and symbols to import first.
+        Symbols the file doesn't have yet are imported from Vectorworks' libraries first
+        (auto_import=false to only list them).
         A layer that already has objects is refused unless replace=true (which clears it)."""
         if (build_list is None) == (design_id is None):
             raise ToolError("Give either build_list or design_id.")
@@ -229,18 +252,31 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         problems = rig.validate_build_list(build_list)
         if problems:
             raise ToolError("The build list can't be built: " + "; ".join(problems))
-        syms = await call("list_symbols", limit=100000)
-        try:
-            plan = rig.plan_build(build_list, [s["name"] for s in syms["symbols"]])
-        except rig.RigError as e:
-            raise rig_error(e) from e
+        async def plan_now():
+            syms = await call("list_symbols", limit=100000)
+            try:
+                return rig.plan_build(build_list, [s["name"] for s in syms["symbols"]])
+            except rig.RigError as e:
+                raise rig_error(e) from e
+
+        plan = await plan_now()
+        imported = None
+        if plan.missing_symbols and auto_import:
+            imported = await import_from_library(plan.missing_symbols)
+            if imported["imported"]:
+                plan = await plan_now()
         out: dict[str, Any] = {"name": build_list.get("name"), "layer": layer, "skipped": plan.skipped,
                                "substituted": plan.substituted, "warnings": plan.warnings}
         if design is not None:
             out["design"] = {"id": design.get("id", design_id), "name": design.get("name"), "status": design.get("status")}
+        if imported is not None:
+            out["imported"] = {"symbols": imported["imported"], "from": imported["from"]}
         if plan.missing_symbols:
+            if imported is not None:
+                out["library_search"] = {"files": imported.get("library_files"), "folders": imported.get("roots"),
+                                         "unread_files": imported.get("scan_left")}
             out.update(built=False, missing_symbols=plan.missing_symbols,
-                       how_to_fix="Nothing was placed. Import these symbols from Resource Manager > Vectorworks libraries "
+                       how_to_fix="Nothing was placed. These weren't found in Vectorworks' library files. Import these symbols from Resource Manager > Vectorworks libraries "
                                   "into this file (truss and rigging hardware; for stages, an assembled deck such as "
                                   "'Stage Deck 4ft x 8ft x 2ft' brings the bare deck in, and each 'Stage Deck Leg' "
                                   "height you need), then run build_rig again.")
