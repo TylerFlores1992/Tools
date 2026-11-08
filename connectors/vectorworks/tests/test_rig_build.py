@@ -259,13 +259,19 @@ FIXTURES = __import__("pathlib").Path(__file__).parent / "fixtures"
 @pytest.mark.parametrize("name", sorted(p.stem for p in FIXTURES.glob("rig-*.json")))
 def test_site_build_lists_build(server, fake_rig, name):
     bl = json.loads((FIXTURES / f"{name}.json").read_text())
+    if bl["series"]["id"] not in rig.SERIES_SYMBOL_PREFIX:
+        # 20.5" box (the ground-support roof) isn't in Vectorworks' library: refused in words.
+        with pytest.raises(ToolError, match='20.5'):
+            call(server, "build_rig", build_list=bl, layer="Rig " + name)
+        return
     r = call(server, "build_rig", build_list=bl, layer="Rig " + name)
     assert r["built"] is True, r
     assert r["failed"] == 0, r
     buildable = [p for p in bl["parts"] if p["kind"] in rig.KINDS]
-    assert r["placed"] == len(buildable), r
     not_drawn = ("baseplate", "skirt", "rail", "stairs")
-    assert {s["id"] for s in r["skipped"]} == {p["id"] for p in bl["parts"] if p["kind"] in not_drawn}
+    skipped = {p["id"] for p in bl["parts"] if p["kind"] in not_drawn or p.get("role") == "head"}
+    assert {s["id"] for s in r["skipped"]} == skipped
+    assert r["placed"] == len(buildable) - len([p for p in bl["parts"] if p.get("role") == "head"]), r
 
 
 # ---- Stage decks (Vectorworks' library assembly, measured 2026-11-07) ----
@@ -395,3 +401,13 @@ def test_auto_import_can_be_turned_off(server, library):
     r = call(server, "build_rig", build_list=bl, layer="Stage", auto_import=False)
     assert r["missing_symbols"] == ["Stage Deck Leg 24in"]
     assert library.LIBRARY_OPENS == []
+
+
+def test_head_blocks_are_skipped_and_sleeves_drawn_as_stubs(server, fake_rig):
+    bl = stage_list([
+        {"id": "c1", "kind": "corner", "size": 28, "ways": 3, "center": [0, 0, 310.25], "role": "sleeve"},
+        {"id": "c2", "kind": "corner", "size": 56, "ways": 1, "center": [0, 0, 365.375], "role": "head", "thick": 7.5},
+    ])
+    r = call(server, "build_rig", build_list=bl, layer="Roof bits")
+    assert r["placed"] == 1
+    assert [s["id"] for s in r["skipped"]] == ["c2"]

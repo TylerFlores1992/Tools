@@ -26,6 +26,7 @@ export function rigPrompt(design: RigDesign, message: string): string {
     "Set a field only if the message asks to change it; leave the rest null.",
     "series: box12 = 12 inch box truss, box20 = 20.5 inch box truss.",
     "braces: knee braces (45 degree pipes with cheeseboroughs) — none, top, bottom or both.",
+    "Ground-support roof (template roof): self-climbing towers down both long sides. width = tower center to center along the long side, depth = across, trim = bottom of the grid, towers = per side (2-6), bays = tower spacings along the long side in inches (sum = width), spine = center purlin, towerLimit = lb per tower.",
     "Stage (template stage): 4x8 decks on legs. height = deck height in inches (8 to 60, 4 inch steps); width/depth in 4 ft steps.",
     "skirt: true/false (front and both sides). rail: none, back, or three (back and both sides; the front stays open). stairs: 0, 1 or 2 stair units on the front.",
     "Templates:",

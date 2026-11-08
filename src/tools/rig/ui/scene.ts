@@ -180,7 +180,12 @@ export function buildScene(list: BuildList, mats: Mats): THREE.Group {
         geo = boxTruss(toThree(p.start), toThree(p.end), width, chordInset, chordR);
         break;
       case "corner":
-        geo = cornerBlock(toThree(p.center), p.size, chordInset, chordR);
+        if (p.role === "head") {
+          // A flat plate on top of the tower.
+          geo = new THREE.BoxGeometry(p.size, p.thick ?? 7.5, p.size);
+          const c = toThree(p.center);
+          geo.translate(c.x, c.y, c.z);
+        } else geo = cornerBlock(toThree(p.center), p.size, chordInset, chordR);
         break;
       case "pipe":
         geo = tube(toThree(p.start), toThree(p.end), p.od / 2, 12);
@@ -189,7 +194,7 @@ export function buildScene(list: BuildList, mats: Mats): THREE.Group {
         geo = clamp(toThree(p.at), toThree(p.pipeDir), toThree(p.chordDir), toThree(p.normal), p.offset);
         break;
       case "baseplate": {
-        geo = new THREE.BoxGeometry(p.size, 0.5, p.size);
+        geo = new THREE.BoxGeometry(p.size, Math.max(0.5, 2 * p.center[2]), p.size);
         const c = toThree(p.center);
         geo.translate(c.x, c.y, c.z);
         break;

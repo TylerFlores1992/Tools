@@ -12,10 +12,11 @@ import { buildList } from "../build";
 import { rentalList, rentalText, totalWeight } from "../bom";
 import { SERIES } from "../catalog";
 import { checks } from "../checks";
+import { towerLoads } from "../loads";
 import { describePart, partKey } from "../describe";
 import { applyEdit, type RigEdit } from "../commands";
 import { readDesign } from "../validate";
-import { autoName, clampParams, ftIn, newDesign, template, TEMPLATES, type Field } from "../templates";
+import { autoName, clampParams, fitBays, ftIn, newDesign, seriesFor, template, TEMPLATES, type Field } from "../templates";
 import type { BraceMode, Part, RailMode, RigDesign, RigParams, TemplateId } from "../types";
 import type { ViewerHandle } from "./RigViewer";
 
@@ -111,6 +112,7 @@ export function RigPlanner({ actions, saved, initial, storeReady }: { actions: R
   const list = useMemo(() => buildList(design), [design]);
   const rental = useMemo(() => rentalList(list), [list]);
   const findings = useMemo(() => checks(design, list), [design, list]);
+  const loads = useMemo(() => towerLoads(design, list), [design, list]);
   const warns = findings.filter((f) => f.level === "warn").length;
   // Ids are counters and can renumber after an edit: follow the same kind of part instead.
   const part: Part | null = !pick ? null : (() => {
@@ -143,7 +145,7 @@ export function RigPlanner({ actions, saved, initial, storeReady }: { actions: R
   };
   const pickTemplate = (t: TemplateId) => {
     if (t === design.template) return;
-    edit(newDesign(t, { series: design.params.series }));
+    edit(newDesign(t, { series: seriesFor(t, design.params.series) }));
     setSelected(null);
   };
 
@@ -201,6 +203,13 @@ export function RigPlanner({ actions, saved, initial, storeReady }: { actions: R
               </span>
             </label>
             <Fields design={design} fields={template(design.template).fields} setParam={setParam} />
+            {design.template === "roof" && (
+              <div>
+                <p className="text-label text-muted">Bays, tower to tower</p>
+                <p className="mt-2 text-body tabular-nums text-ink">{fitBays(design.params.bays, design.params.towers, design.params.width).map(ftIn).join(" · ")}</p>
+                <p className="mt-1 text-small text-muted">To move towers, type the bays in the chat, e.g. “bays 22&apos;4&quot; 42&apos;4&quot; 22&apos;4&quot;”.</p>
+              </div>
+            )}
             <SaveBar
               id={id}
               design={ready(design)}
@@ -268,6 +277,26 @@ export function RigPlanner({ actions, saved, initial, storeReady }: { actions: R
                 </li>
               ))}
             </ul>
+            {loads.length > 0 && (
+              <>
+                <h3 className="mt-6 text-label text-muted">Grid weight on each tower</h3>
+                <ul className="mt-2 divide-y divide-line rounded-card border border-line bg-surface">
+                  {loads.map((l) => {
+                    const over = l.lb > design.params.towerLimit;
+                    return (
+                      <li key={`${l.side}-${l.index}`} className="flex items-baseline gap-3 px-4 py-2.5 text-body">
+                        <span className="flex-1 text-ink-2">{l.side === "front" ? "Front" : "Back"} tower {l.index + 1}</span>
+                        <span className="tabular-nums text-ink">{Math.round(l.lb).toLocaleString("en-US")} lb</span>
+                        <span className={cx("w-28 text-right text-small tabular-nums", over ? "text-wrong" : "text-muted")}>
+                          {over ? "✕ over limit" : `${Math.round((l.lb / design.params.towerLimit) * 100)}% of limit`}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-2 text-small text-muted">The grid&apos;s own weight only, shared by where each piece sits. Lights and cable come on top.</p>
+              </>
+            )}
           </div>
         )}
 
@@ -359,27 +388,29 @@ function Fields({ design, fields, setParam }: { design: RigDesign; fields: reado
           </div>
         );
         if (f.kind === "toggle")
-          return choice(<Segmented label={f.label} options={[{ value: "off", label: "None" }, { value: "on", label: "Front and sides" }]} value={design.params.skirt ? "on" : "off"} onChange={(v) => setParam("skirt", v === "on")} />);
+          return choice(<Segmented label={f.label} options={[{ value: "off", label: f.off }, { value: "on", label: f.on }]} value={design.params[f.key] ? "on" : "off"} onChange={(v) => setParam(f.key, v === "on")} />);
+        if (f.kind === "weight")
+          return <Stepper key={f.key} label={f.label} value={design.params[f.key]} min={f.min} max={f.max} step={f.step} format={(v) => `${v.toLocaleString("en-US")} lb`} less="less" more="more" onChange={(v) => setParam(f.key, v)} />;
         if (f.kind === "rail")
           return choice(<Segmented label={f.label} options={f.options.map((o) => ({ value: o, label: RAIL_LABEL[o] }))} value={design.params.rail} onChange={(v) => setParam("rail", v)} />);
         if (f.kind === "count")
-          return choice(<Segmented label={f.label} options={Array.from({ length: f.max + 1 }, (_, n) => ({ value: String(n), label: n ? String(n) : "None" }))} value={String(design.params.stairs)} onChange={(v) => setParam("stairs", Number(v))} />);
+          return choice(<Segmented label={f.label} options={Array.from({ length: f.max - f.min + 1 }, (_, i) => f.min + i).map((n) => ({ value: String(n), label: n ? String(n) : "None" }))} value={String(design.params[f.key])} onChange={(v) => setParam(f.key, Number(v))} />);
         return choice(<Segmented label={f.label} options={f.options.map((o) => ({ value: o, label: BRACE_LABEL[o] }))} value={design.params.braces} onChange={(v) => setParam("braces", v)} />);
       })}
     </div>
   );
 }
 
-function Stepper({ label, value, min, max, step, onChange }: { label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void }) {
+function Stepper({ label, value, min, max, step, onChange, format = ftIn, less = "shorter", more = "longer" }: { label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void; format?: (v: number) => string; less?: string; more?: string }) {
   const lid = useId();
   const btn = cx("grid size-12 shrink-0 place-items-center rounded-btn border border-control bg-surface text-h3 text-ink disabled:border-line disabled:text-muted", PRESS, PRESS_FILL);
   return (
     <div>
       <p id={lid} className="text-label text-muted">{label}</p>
       <div className="mt-2 flex items-center gap-3" role="group" aria-labelledby={lid}>
-        <button type="button" className={btn} aria-label={`${label}: shorter`} disabled={value <= min} onClick={() => onChange(Math.max(min, value - step))}>−</button>
-        <output aria-live="polite" className="min-w-20 flex-1 text-center text-h3 tabular-nums text-ink">{ftIn(value)}</output>
-        <button type="button" className={btn} aria-label={`${label}: longer`} disabled={value >= max} onClick={() => onChange(Math.min(max, value + step))}>+</button>
+        <button type="button" className={btn} aria-label={`${label}: ${less}`} disabled={value <= min} onClick={() => onChange(Math.max(min, value - step))}>−</button>
+        <output aria-live="polite" className="min-w-20 flex-1 text-center text-h3 tabular-nums text-ink">{format(value)}</output>
+        <button type="button" className={btn} aria-label={`${label}: ${more}`} disabled={value >= max} onClick={() => onChange(Math.min(max, value + step))}>+</button>
       </div>
     </div>
   );

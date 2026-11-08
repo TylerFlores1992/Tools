@@ -1,0 +1,1666 @@
+{
+ "version": 1,
+ "name": "87' × 42'0.5\" roof at 25'",
+ "units": "in",
+ "series": {
+  "id": "box20",
+  "label": "20.5\" box truss",
+  "width": 20.5,
+  "height": 20.5,
+  "chordOd": 2,
+  "chordInset": 1
+ },
+ "parts": [
+  {
+   "id": "b1",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    0,
+    0,
+    0.8125
+   ]
+  },
+  {
+   "id": "t1",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    0,
+    1.625
+   ],
+   "end": [
+    0,
+    0,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t2",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    0,
+    121.625
+   ],
+   "end": [
+    0,
+    0,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t3",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    0,
+    241.625
+   ],
+   "end": [
+    0,
+    0,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c1",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    0,
+    0,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c2",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    0,
+    0,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b2",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    268,
+    0,
+    0.8125
+   ]
+  },
+  {
+   "id": "t4",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    0,
+    1.625
+   ],
+   "end": [
+    268,
+    0,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t5",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    0,
+    121.625
+   ],
+   "end": [
+    268,
+    0,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t6",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    0,
+    241.625
+   ],
+   "end": [
+    268,
+    0,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c3",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    268,
+    0,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c4",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    268,
+    0,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b3",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    776,
+    0,
+    0.8125
+   ]
+  },
+  {
+   "id": "t7",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    0,
+    1.625
+   ],
+   "end": [
+    776,
+    0,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t8",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    0,
+    121.625
+   ],
+   "end": [
+    776,
+    0,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t9",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    0,
+    241.625
+   ],
+   "end": [
+    776,
+    0,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c5",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    776,
+    0,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c6",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    776,
+    0,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b4",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    1044,
+    0,
+    0.8125
+   ]
+  },
+  {
+   "id": "t10",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    0,
+    1.625
+   ],
+   "end": [
+    1044,
+    0,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t11",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    0,
+    121.625
+   ],
+   "end": [
+    1044,
+    0,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t12",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    0,
+    241.625
+   ],
+   "end": [
+    1044,
+    0,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c7",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    1044,
+    0,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c8",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    1044,
+    0,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b5",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    0,
+    504.5,
+    0.8125
+   ]
+  },
+  {
+   "id": "t13",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    504.5,
+    1.625
+   ],
+   "end": [
+    0,
+    504.5,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t14",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    504.5,
+    121.625
+   ],
+   "end": [
+    0,
+    504.5,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t15",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    0,
+    504.5,
+    241.625
+   ],
+   "end": [
+    0,
+    504.5,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c9",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    0,
+    504.5,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c10",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    0,
+    504.5,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b6",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    268,
+    504.5,
+    0.8125
+   ]
+  },
+  {
+   "id": "t16",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    504.5,
+    1.625
+   ],
+   "end": [
+    268,
+    504.5,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t17",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    504.5,
+    121.625
+   ],
+   "end": [
+    268,
+    504.5,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t18",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    268,
+    504.5,
+    241.625
+   ],
+   "end": [
+    268,
+    504.5,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c11",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    268,
+    504.5,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c12",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    268,
+    504.5,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b7",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    776,
+    504.5,
+    0.8125
+   ]
+  },
+  {
+   "id": "t19",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    504.5,
+    1.625
+   ],
+   "end": [
+    776,
+    504.5,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t20",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    504.5,
+    121.625
+   ],
+   "end": [
+    776,
+    504.5,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t21",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    776,
+    504.5,
+    241.625
+   ],
+   "end": [
+    776,
+    504.5,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c13",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    776,
+    504.5,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c14",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    776,
+    504.5,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "b8",
+   "kind": "baseplate",
+   "size": 30,
+   "center": [
+    1044,
+    504.5,
+    0.8125
+   ]
+  },
+  {
+   "id": "t22",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    504.5,
+    1.625
+   ],
+   "end": [
+    1044,
+    504.5,
+    121.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t23",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    504.5,
+    121.625
+   ],
+   "end": [
+    1044,
+    504.5,
+    241.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t24",
+   "kind": "truss",
+   "role": "tower",
+   "length": 120,
+   "start": [
+    1044,
+    504.5,
+    241.625
+   ],
+   "end": [
+    1044,
+    504.5,
+    361.625
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c15",
+   "kind": "corner",
+   "size": 56,
+   "ways": 1,
+   "center": [
+    1044,
+    504.5,
+    365.375
+   ],
+   "role": "head",
+   "thick": 7.5
+  },
+  {
+   "id": "c16",
+   "kind": "corner",
+   "size": 28,
+   "ways": 3,
+   "center": [
+    1044,
+    504.5,
+    310.25
+   ],
+   "role": "sleeve"
+  },
+  {
+   "id": "t25",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    14,
+    0,
+    310.25
+   ],
+   "end": [
+    134,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t26",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    134,
+    0,
+    310.25
+   ],
+   "end": [
+    254,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t27",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    282,
+    0,
+    310.25
+   ],
+   "end": [
+    402,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t28",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    402,
+    0,
+    310.25
+   ],
+   "end": [
+    522,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t29",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    522,
+    0,
+    310.25
+   ],
+   "end": [
+    642,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t30",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    642,
+    0,
+    310.25
+   ],
+   "end": [
+    762,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t31",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    790,
+    0,
+    310.25
+   ],
+   "end": [
+    910,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t32",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    910,
+    0,
+    310.25
+   ],
+   "end": [
+    1030,
+    0,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t33",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    14,
+    504.5,
+    310.25
+   ],
+   "end": [
+    134,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t34",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    134,
+    504.5,
+    310.25
+   ],
+   "end": [
+    254,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t35",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    282,
+    504.5,
+    310.25
+   ],
+   "end": [
+    402,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t36",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    402,
+    504.5,
+    310.25
+   ],
+   "end": [
+    522,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t37",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    522,
+    504.5,
+    310.25
+   ],
+   "end": [
+    642,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t38",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    642,
+    504.5,
+    310.25
+   ],
+   "end": [
+    762,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t39",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    790,
+    504.5,
+    310.25
+   ],
+   "end": [
+    910,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t40",
+   "kind": "truss",
+   "role": "beam",
+   "length": 120,
+   "start": [
+    910,
+    504.5,
+    310.25
+   ],
+   "end": [
+    1030,
+    504.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c17",
+   "kind": "corner",
+   "size": 20.5,
+   "ways": 3,
+   "center": [
+    0,
+    252.25,
+    310.25
+   ]
+  },
+  {
+   "id": "t41",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    0,
+    14,
+    310.25
+   ],
+   "end": [
+    0,
+    134,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t42",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    0,
+    134,
+    310.25
+   ],
+   "end": [
+    0,
+    194,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t43",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    0,
+    194,
+    310.25
+   ],
+   "end": [
+    0,
+    242,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t44",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    0,
+    262.5,
+    310.25
+   ],
+   "end": [
+    0,
+    382.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t45",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    0,
+    382.5,
+    310.25
+   ],
+   "end": [
+    0,
+    442.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t46",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    0,
+    442.5,
+    310.25
+   ],
+   "end": [
+    0,
+    490.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c18",
+   "kind": "corner",
+   "size": 20.5,
+   "ways": 4,
+   "center": [
+    268,
+    252.25,
+    310.25
+   ]
+  },
+  {
+   "id": "t47",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    268,
+    14,
+    310.25
+   ],
+   "end": [
+    268,
+    134,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t48",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    268,
+    134,
+    310.25
+   ],
+   "end": [
+    268,
+    194,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t49",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    268,
+    194,
+    310.25
+   ],
+   "end": [
+    268,
+    242,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t50",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    268,
+    262.5,
+    310.25
+   ],
+   "end": [
+    268,
+    382.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t51",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    268,
+    382.5,
+    310.25
+   ],
+   "end": [
+    268,
+    442.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t52",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    268,
+    442.5,
+    310.25
+   ],
+   "end": [
+    268,
+    490.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c19",
+   "kind": "corner",
+   "size": 20.5,
+   "ways": 4,
+   "center": [
+    776,
+    252.25,
+    310.25
+   ]
+  },
+  {
+   "id": "t53",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    776,
+    14,
+    310.25
+   ],
+   "end": [
+    776,
+    134,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t54",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    776,
+    134,
+    310.25
+   ],
+   "end": [
+    776,
+    194,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t55",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    776,
+    194,
+    310.25
+   ],
+   "end": [
+    776,
+    242,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t56",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    776,
+    262.5,
+    310.25
+   ],
+   "end": [
+    776,
+    382.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t57",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    776,
+    382.5,
+    310.25
+   ],
+   "end": [
+    776,
+    442.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t58",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    776,
+    442.5,
+    310.25
+   ],
+   "end": [
+    776,
+    490.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "c20",
+   "kind": "corner",
+   "size": 20.5,
+   "ways": 3,
+   "center": [
+    1044,
+    252.25,
+    310.25
+   ]
+  },
+  {
+   "id": "t59",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    1044,
+    14,
+    310.25
+   ],
+   "end": [
+    1044,
+    134,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t60",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    1044,
+    134,
+    310.25
+   ],
+   "end": [
+    1044,
+    194,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t61",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    1044,
+    194,
+    310.25
+   ],
+   "end": [
+    1044,
+    242,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t62",
+   "kind": "truss",
+   "role": "cross",
+   "length": 120,
+   "start": [
+    1044,
+    262.5,
+    310.25
+   ],
+   "end": [
+    1044,
+    382.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t63",
+   "kind": "truss",
+   "role": "cross",
+   "length": 60,
+   "start": [
+    1044,
+    382.5,
+    310.25
+   ],
+   "end": [
+    1044,
+    442.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t64",
+   "kind": "truss",
+   "role": "cross",
+   "length": 48,
+   "start": [
+    1044,
+    442.5,
+    310.25
+   ],
+   "end": [
+    1044,
+    490.5,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t65",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    10.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    130.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t66",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    130.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    250.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t67",
+   "kind": "truss",
+   "role": "spine",
+   "length": 7,
+   "start": [
+    250.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    257.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t68",
+   "kind": "truss",
+   "role": "spine",
+   "length": 0.5,
+   "start": [
+    257.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    257.75,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t69",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    278.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    398.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t70",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    398.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    518.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t71",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    518.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    638.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t72",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    638.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    758.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t73",
+   "kind": "truss",
+   "role": "spine",
+   "length": 7,
+   "start": [
+    758.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    765.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t74",
+   "kind": "truss",
+   "role": "spine",
+   "length": 0.5,
+   "start": [
+    765.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    765.75,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t75",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    786.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    906.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t76",
+   "kind": "truss",
+   "role": "spine",
+   "length": 120,
+   "start": [
+    906.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    1026.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t77",
+   "kind": "truss",
+   "role": "spine",
+   "length": 7,
+   "start": [
+    1026.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    1033.25,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  },
+  {
+   "id": "t78",
+   "kind": "truss",
+   "role": "spine",
+   "length": 0.5,
+   "start": [
+    1033.25,
+    252.25,
+    310.25
+   ],
+   "end": [
+    1033.75,
+    252.25,
+    310.25
+   ],
+   "roll": 0
+  }
+ ],
+ "notes": []
+}

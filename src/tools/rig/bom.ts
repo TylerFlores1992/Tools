@@ -1,5 +1,5 @@
 // Build list → what to rent, and roughly what it weighs.
-import { BASEPLATE, CLAMP, CONNECTORS_PER_JOINT, CONNECTOR_LB, DECK, PIPE, RAIL, SERIES, SKIRT, STAIRS } from "./catalog.ts";
+import { BASEPLATE, CLAMP, CONNECTORS_PER_JOINT, CONNECTOR_LB, DECK, PIPE, RAIL, ROOF, SERIES, SKIRT, STAIRS } from "./catalog.ts";
 import { ftIn } from "./templates.ts";
 import type { BuildList, Vec3 } from "./types.ts";
 
@@ -21,8 +21,10 @@ export function countJoints(list: BuildList): number {
       const d = [pt[0] - c.center[0], pt[1] - c.center[1], pt[2] - c.center[2]].map(Math.abs).sort((a, b) => b - a);
       return Math.abs(d[0] - c.size / 2) < 0.01 && d[1] < 0.01 && d[2] < 0.01;
     });
-    const onPlate = plates.some((b) => Math.abs(pt[0] - b.center[0]) < 0.01 && Math.abs(pt[1] - b.center[1]) < 0.01 && Math.abs(pt[2]) < 0.01);
-    if (otherStick || onCorner || onPlate) joints.push(pt);
+    // A plate's top is at 0 for plates sunk below the floor, or twice its center for tower bases.
+    const onPlate = plates.some((b) => Math.abs(pt[0] - b.center[0]) < 0.01 && Math.abs(pt[1] - b.center[1]) < 0.01 && Math.abs(pt[2] - Math.max(0, 2 * b.center[2])) < 0.01);
+    const onHead = corners.some((c) => c.role === "head" && Math.abs(pt[0] - c.center[0]) < 0.01 && Math.abs(pt[1] - c.center[1]) < 0.01 && Math.abs(pt[2] - (c.center[2] - (c.thick ?? 0) / 2)) < 0.01);
+    if (otherStick || onCorner || onPlate || onHead) joints.push(pt);
   }
   return joints.length;
 }
@@ -33,9 +35,14 @@ export function rentalList(list: BuildList): RentalLine[] {
   const byLen = new Map<number, number>();
   for (const p of list.parts) if (p.kind === "truss") byLen.set(p.length, (byLen.get(p.length) ?? 0) + 1);
   for (const [len, qty] of [...byLen].sort((a, b) => b[0] - a[0])) {
-    lines.push({ key: `truss-${len}`, qty, item: `${s.label}, ${ftIn(len)} section`, lb: qty * (len / 12) * s.lbPerFt });
+    const item = len < 12 ? `${s.label} spacer, ${len}"` : `${s.label}, ${ftIn(len)} section`;
+    lines.push({ key: `truss-${len}`, qty, item, lb: qty * (len / 12) * s.lbPerFt });
   }
-  const corners = list.parts.filter((p) => p.kind === "corner");
+  const sleeves = list.parts.filter((p) => p.kind === "corner" && p.role === "sleeve").length;
+  if (sleeves) lines.push({ key: "sleeve", qty: sleeves, item: ROOF.sleeve.label, note: `${s.label.replace(" truss", "")} roof, with its climbing hoist`, lb: sleeves * ROOF.sleeve.lb });
+  const heads = list.parts.filter((p) => p.kind === "corner" && p.role === "head").length;
+  if (heads) lines.push({ key: "head", qty: heads, item: ROOF.head.label, lb: heads * ROOF.head.lb });
+  const corners = list.parts.filter((p) => p.kind === "corner" && !p.role);
   if (corners.length) {
     const maxWays = Math.max(...corners.map((c) => (c.kind === "corner" ? c.ways : 0)));
     lines.push({ key: "corner", qty: corners.length, item: `${s.label} corner block, 6-way`, note: `uses ${maxWays} faces`, lb: corners.length * s.cornerLb });
@@ -45,8 +52,10 @@ export function rentalList(list: BuildList): RentalLine[] {
     const qty = joints * CONNECTORS_PER_JOINT;
     lines.push({ key: "connectors", qty, item: "Truss connector sets (pin + clip, or bolt)", note: `${joints} joints × ${CONNECTORS_PER_JOINT} chords`, lb: qty * CONNECTOR_LB });
   }
-  const plates = list.parts.filter((p) => p.kind === "baseplate").length;
-  if (plates) lines.push({ key: "baseplate", qty: plates, item: BASEPLATE.label, lb: plates * BASEPLATE.lb });
+  const plates = list.parts.filter((p) => p.kind === "baseplate");
+  const bases = plates.filter((p) => p.size === ROOF.base.size).length;
+  if (bases) lines.push({ key: "towerbase", qty: bases, item: ROOF.base.label, lb: bases * ROOF.base.lb });
+  if (plates.length - bases) lines.push({ key: "baseplate", qty: plates.length - bases, item: BASEPLATE.label, lb: (plates.length - bases) * BASEPLATE.lb });
   const pipeLen = new Map<number, number>();
   for (const p of list.parts) if (p.kind === "pipe") pipeLen.set(p.length, (pipeLen.get(p.length) ?? 0) + 1);
   for (const [len, qty] of [...pipeLen].sort((a, b) => b[0] - a[0])) {

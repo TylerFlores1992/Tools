@@ -96,3 +96,20 @@ export const SKIRT = { label: "Stage skirting", stock: [192, 144, 96, 48] as rea
 /** 42" is the usual guard height (IBC); check the venue's rules. */
 export const RAIL = { label: "Stage guardrail section", height: 42, stock: [96, 48] as readonly number[], lbPerFt: 3.2 };
 export const STAIRS = { label: "Stage stair unit", width: 36, maxRise: 7.5, tread: 11, lb: 20, lbPerStep: 15 };
+
+/**
+ * Ground-support roof gear, as drawn in the Air Pro self-climber roof rented from Aspect Lighting
+ * (Total Structures 20.5" box, 2022; measured from the drawing on 2026-11-07): 30" × 30" tower
+ * bases 1.625" thick, a 28" × 28" self-climber sleeve block in the grid at every tower, a 56" ×
+ * 56" × 7.5" head block on top, and 7" and ½" spacers to make runs exact. Weights are typical.
+ */
+export const ROOF = {
+  base: { label: '30" × 30" tower base', size: 30, thickness: 1.625, lb: 100 },
+  sleeve: { label: "Self-climber sleeve block", size: 28, lb: 95 },
+  head: { label: "Tower head block", size: 56, thick: 7.5, lb: 45 },
+  spacers: [7, 0.5] as readonly number[],
+  /** How far the tower runs above the top of the grid so the sleeve and hoist have room, inches. */
+  headroom: 36,
+  /** What we plan per tower when nobody has the rental house's calcs: a 1-ton self-climber hoist. */
+  defaultLimit: 2000,
+};

@@ -11,6 +11,7 @@ export function rigFixtures(): Record<string, BuildList> {
     tower: buildList(newDesign("tower")),
     flown: buildList(newDesign("flown")),
     stage: buildList(newDesign("stage")),
+    roof: buildList(newDesign("roof")),
     "stage-full": buildList(newDesign("stage", { width: 144, depth: 96, height: 36, rail: "three", stairs: 2 })),
   };
 }

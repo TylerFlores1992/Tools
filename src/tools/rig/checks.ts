@@ -1,7 +1,8 @@
 // Planning sanity checks. They catch obvious mistakes early; they are not engineering, and the
 // UI says so. Every finding is words first (the owner is colour-blind), with a level for a glyph.
-import { BASEPLATE, DECK } from "./catalog.ts";
-import { ftIn } from "./templates.ts";
+import { BASEPLATE, DECK, ROOF } from "./catalog.ts";
+import { towerLoads } from "./loads.ts";
+import { fitBays, ftIn } from "./templates.ts";
 import type { BuildList, RigDesign } from "./types.ts";
 
 export type Finding = { id: string; level: "warn" | "ok" | "note"; text: string };
@@ -15,6 +16,7 @@ export function checks(design: RigDesign, list: BuildList): Finding[] {
   for (const [i, n] of list.notes.entries()) out.push({ id: `note-${i}`, level: "warn", text: n });
 
   if (design.template === "stage") return [...out, ...stageChecks(design)];
+  if (design.template === "roof") return [...out, ...roofChecks(design, list)];
 
   const limit = SPAN_LIMIT[p.series];
   const span = design.template === "tower" ? 0 : Math.max(p.width, design.template === "goalpost" ? 0 : p.depth);
@@ -60,5 +62,34 @@ function stageChecks(design: RigDesign): Finding[] {
   if (p.stairs === 0 && top > 12) out.push({ id: "stairs", level: "warn", text: `No stairs: a ${ftIn(top)} step up needs a stair unit (or a ramp if anyone needs step-free access).` });
   if (p.height > 36) out.push({ id: "legs", level: "note", text: `${ftIn(p.height)} legs: check the deck maker's chart for leg bracing at this height.` });
   out.push({ id: "load", level: "note", text: "Check the decks' load rating against what goes on them: people, a drum riser, road cases." });
+  return out;
+}
+
+const lb = (n: number) => `${Math.round(n).toLocaleString("en-US")} lb`;
+
+function roofChecks(design: RigDesign, list: BuildList): Finding[] {
+  const p = design.params;
+  const out: Finding[] = [];
+  const limit = SPAN_LIMIT[p.series];
+  const bays = fitBays(p.bays, p.towers, p.width);
+  const longest = Math.max(...bays);
+  if (longest > limit) out.push({ id: "span-long", level: "warn", text: `The longest bay is ${ftIn(longest)} between towers, past ${ftIn(limit)}: check the truss maker's load table for that span before hanging anything on it.` });
+  if (p.depth > limit) out.push({ id: "span-cross", level: "warn", text: `The cross beams span ${ftIn(p.depth)}, past ${ftIn(limit)}: check the load table for that span${p.spine ? " (the spine adds its weight at mid-span)" : ""}.` });
+  const loads = towerLoads(design, list);
+  const worst = loads.reduce((a, b) => (b.lb > a.lb ? b : a), loads[0]);
+  const guess = p.towerLimit === ROOF.defaultLimit;
+  const of = `${lb(p.towerLimit)}${guess ? " (a planning figure: a typical 1-ton self-climber hoist, not a rating)" : ""}`;
+  if (worst) {
+    const name = `${worst.side} tower ${worst.index + 1}`;
+    const room = p.towerLimit - worst.lb;
+    if (room < 0) out.push({ id: "towers", level: "warn", text: `The ${name} carries ${lb(worst.lb)} of grid alone, over the ${of} limit.` });
+    else
+      out.push({
+        id: "towers",
+        level: "ok",
+        text: `The busiest tower (${name}) carries ${lb(worst.lb)} of grid; ${lb(room)} left for lights and cable at that tower, of ${of}.`,
+      });
+  }
+  out.push({ id: "calcs", level: "note", text: "Get the rental house's structural calcs for this roof: they set the real tower and beam limits, wind limits and ballast." });
   return out;
 }

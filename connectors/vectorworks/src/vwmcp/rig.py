@@ -459,7 +459,10 @@ def plan_build(bl: dict, available) -> Plan:
                     plan.warnings.append("%s: length %s doesn't match start-end %.3f; built start-end" % (pid, p["length"], pl["length"]))
                 if truss_symbol:
                     plan.steps.append(truss_step(truss_symbol, pl, pid))
+            elif kind == "corner" and p.get("role") == "head":
+                plan.skipped.append({"id": pid, "kind": kind, "reason": "no tower head block symbol yet; it's on the rental list"})
             elif kind == "corner":
+                # A self-climber sleeve block is drawn as a stub of truss its own size, like a corner.
                 pl = corner_placement(p["center"], p["size"], w, h)
                 if truss_symbol:
                     plan.steps.append(truss_step(truss_symbol, pl, pid, kind="corner"))

@@ -9,8 +9,9 @@ import { buildList, splitRun } from "./build.ts";
 import { countJoints, rentalList, rentalText, totalWeight } from "./bom.ts";
 import { checks } from "./checks.ts";
 import { applyEdit, parseEdit } from "./commands.ts";
-import { newDesign, TEMPLATES } from "./templates.ts";
-import type { ClampPart, Part, PipePart, TrussPart, Vec3 } from "./types.ts";
+import { fitBays, newDesign, TEMPLATES } from "./templates.ts";
+import { towerLoads } from "./loads.ts";
+import type { BaseplatePart, ClampPart, CornerPart, Part, PipePart, TrussPart, Vec3 } from "./types.ts";
 
 const close = (a: Vec3, b: Vec3, tol = 0.01) => a.every((x, i) => Math.abs(x - b[i]) <= tol);
 const has = (parts: Part[], pred: (p: Part) => boolean, msg: string) => assert.ok(parts.some(pred), msg);
@@ -274,4 +275,98 @@ test("deck height snaps to a leg size; truss templates never carry stage extras"
   assert.equal(design.params.stairs, 2);
   const cube = applyEdit(newDesign("cube"), { ...parseEdit("make it 12 ft tall")!, skirt: true, rail: "three", stairs: 2 }).design;
   assert.deepEqual([cube.params.skirt, cube.params.rail, cube.params.stairs], [false, "none", 0]);
+});
+
+// ---- Ground-support roof. The defaults are the Air Pro self-climber roof (Aspect Lighting, 2022);
+// every number below was read piece by piece from its Vectorworks drawing on 2026-11-07 (towers
+// at x ±522.02, ±254.02 and y ±252.25, grid bottom 300", 20.5" Total Structures box).
+
+
+const roof = (o: Partial<Parameters<typeof newDesign>[1]> = {}) => buildList(newDesign("roof", o));
+const lengths = (parts: Part[], role: string) =>
+  parts.flatMap((p) => (p.kind === "truss" && p.role === role ? [p.length] : [])).sort((a, b) => b - a);
+const tally = (xs: number[]) => xs.reduce<Record<number, number>>((m, x) => ({ ...m, [x]: (m[x] ?? 0) + 1 }), {});
+
+test("Air Pro roof: towers where the drawing has them, 3 × 10' each, head blocks and bases", () => {
+  const list = roof();
+  const plates = list.parts.filter((p): p is BaseplatePart => p.kind === "baseplate");
+  assert.equal(plates.length, 8);
+  assert.ok(plates.every((p) => p.size === 30));
+  // Drawing coordinates are centered: ours start at the front-left tower.
+  const towersAt = plates.map((p) => [Math.round((p.center[0] - 522) * 10) / 10, p.center[1] - 252.25]);
+  for (const x of [-522, -254, 254, 522]) for (const y of [-252.25, 252.25]) assert.ok(towersAt.some(([a, b]) => a === x && b === y), `tower at ${x}, ${y}`);
+  assert.deepEqual(tally(lengths(list.parts, "tower")), { 120: 24 });
+  const heads = list.parts.filter((p): p is CornerPart => p.kind === "corner" && p.role === "head");
+  assert.equal(heads.length, 8);
+  assert.ok(heads.every((h) => h.center[2] === 365.375), "head block 361.625–369.125 in the drawing");
+  const sleeves = list.parts.filter((p): p is CornerPart => p.kind === "corner" && p.role === "sleeve");
+  assert.equal(sleeves.length, 8);
+  assert.ok(sleeves.every((s) => s.center[2] === 310.25 && s.size === 28));
+});
+
+test("Air Pro roof: the grid is the drawing's sticks, spacers and corner blocks, exactly", () => {
+  const list = roof();
+  assert.deepEqual(list.notes, []);
+  assert.deepEqual(tally(lengths(list.parts, "beam")), { 120: 16 });
+  assert.deepEqual(tally(lengths(list.parts, "cross")), { 120: 8, 60: 8, 48: 8 });
+  assert.deepEqual(tally(lengths(list.parts, "spine")), { 120: 8, 7: 3, 0.5: 3 });
+  assert.equal(list.parts.filter((p) => p.kind === "corner" && !p.role).length, 4);
+  // Spine corner blocks sit on the cross beams at mid-span, at the grid's height.
+  const corners = list.parts.filter((p): p is CornerPart => p.kind === "corner" && !p.role);
+  assert.ok(corners.every((c) => c.center[1] === 252.25 && c.center[2] === 310.25));
+  const lines = rentalList(list);
+  const qty = (key: string) => lines.find((l) => l.key === key)?.qty;
+  assert.equal(qty("truss-120"), 56);
+  assert.equal(qty("truss-60"), 8);
+  assert.equal(qty("truss-48"), 8);
+  assert.equal(qty("sleeve"), 8);
+  assert.equal(qty("head"), 8);
+  assert.equal(qty("towerbase"), 8);
+  assert.equal(qty("corner"), 4);
+  assert.match(rentalText("Air Pro", lines), /3 × 20\.5" box truss spacer, 7"/);
+});
+
+test("roof tower loads add up to the grid's weight, and the busiest tower is an inner one", () => {
+  const design = newDesign("roof");
+  const list = buildList(design);
+  const loads = towerLoads(design, list);
+  assert.equal(loads.length, 8);
+  const total = loads.reduce((a, l) => a + l.lb, 0);
+  const grid = (4726.5 / 12) * 7.5 + 4 * 32 + 8 * 95;
+  assert.ok(Math.abs(total - grid) < 0.5, `${total} vs ${grid}`);
+  const worst = loads.reduce((a, b) => (b.lb > a.lb ? b : a));
+  assert.ok(worst.index === 1 || worst.index === 2, "the long middle bay loads the inner towers most");
+  assert.ok(Math.abs(loads[0].lb - loads[3].lb) < 0.01 && Math.abs(loads[0].lb - loads[4].lb) < 0.01, "symmetric");
+});
+
+test("roof checks: long spans flagged, tower limit labelled a guess until set", () => {
+  const d = newDesign("roof");
+  const f = checks(d, buildList(d));
+  assert.ok(f.some((x) => x.id === "span-long" && /42'4"/.test(x.text)));
+  assert.ok(f.some((x) => x.id === "span-cross" && x.level === "warn"));
+  assert.ok(f.some((x) => x.id === "towers" && x.level === "ok" && /planning figure/.test(x.text)));
+  const tight = newDesign("roof", { towerLimit: 500 });
+  assert.ok(checks(tight, buildList(tight)).some((x) => x.id === "towers" && x.level === "warn" && !/planning figure/.test(x.text)));
+});
+
+test("bays: even when the count changes, scaled when the length changes", () => {
+  assert.deepEqual(fitBays([268, 508, 268], 4, 1044), [268, 508, 268]);
+  assert.deepEqual(fitBays([268, 508, 268], 3, 1044), [522, 522]);
+  assert.deepEqual(fitBays([268, 508, 268], 4, 1200), [308, 584, 308]);
+  const e = parseEdit("bays 22'4\" 42'4\" 22'4\"");
+  assert.deepEqual(e?.bays, [268, 508, 268]);
+  const { design } = applyEdit(newDesign("roof", { towers: 3, bays: [] }), e!);
+  assert.equal(design.params.towers, 4);
+  assert.equal(design.params.width, 1044);
+  assert.equal(parseEdit("ground support roof, 3 towers per side")?.towers, 3);
+  assert.equal(parseEdit("no spine")?.spine, false);
+  assert.equal(parseEdit("limit 3,000 lb per tower")?.towerLimit, 3000);
+  assert.equal(parseEdit("self climbing roof")?.template, "roof");
+});
+
+test("switching to the roof starts on 20.5\" box even from a 12\" design", () => {
+  const { design } = applyEdit(newDesign("cube"), parseEdit("ground support roof")!);
+  assert.equal(design.params.series, "box20");
+  assert.equal(applyEdit(newDesign("cube", { series: "box20" }), parseEdit("goal post")!).design.params.series, "box20");
+  assert.equal(applyEdit(newDesign("cube"), parseEdit("goal post")!).design.params.series, "box12");
 });

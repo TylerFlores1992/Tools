@@ -1,13 +1,13 @@
 // Plain-words edits that don't need AI: "10x10x10 cube", "make it 12 feet tall", "20.5 box",
 // "remove the bottom pipes". Anything this can't read goes to the AI (src/lib/rig/ai.ts), whose
 // answer is checked with the same `applyEdit`.
-import { autoName, clampParams, ftIn, newDesign, template } from "./templates.ts";
+import { autoName, clampParams, ftIn, newDesign, seriesFor, template } from "./templates.ts";
 import type { BraceMode, RailMode, RigDesign, RigParams, TemplateId } from "./types.ts";
 import { z } from "zod";
 
 /** One edit, in the shape the AI is asked for too. Lengths in inches. */
 export const EDIT_SCHEMA = z.object({
-  template: z.enum(["cube", "goalpost", "tower", "flown", "stage"]).nullable(),
+  template: z.enum(["cube", "goalpost", "tower", "flown", "stage", "roof"]).nullable(),
   width: z.number().nullable(),
   depth: z.number().nullable(),
   height: z.number().nullable(),
@@ -18,11 +18,15 @@ export const EDIT_SCHEMA = z.object({
   skirt: z.boolean().nullable(),
   rail: z.enum(["none", "back", "three"]).nullable(),
   stairs: z.number().nullable(),
+  towers: z.number().nullable(),
+  bays: z.array(z.number()).nullable(),
+  spine: z.boolean().nullable(),
+  towerLimit: z.number().nullable(),
   reply: z.string(),
 });
 export type RigEdit = z.infer<typeof EDIT_SCHEMA>;
 
-const EMPTY: RigEdit = { template: null, width: null, depth: null, height: null, trim: null, series: null, braces: null, braceLength: null, skirt: null, rail: null, stairs: null, reply: "" };
+const EMPTY: RigEdit = { template: null, width: null, depth: null, height: null, trim: null, series: null, braces: null, braceLength: null, skirt: null, rail: null, stairs: null, towers: null, bays: null, spine: null, towerLimit: null, reply: "" };
 
 const NUM = String.raw`(\d+(?:\.\d+)?)`;
 const UNIT = String.raw`\s*(ft|feet|foot|'|in|inch|inches|")?`;
@@ -40,7 +44,8 @@ export function parseEdit(message: string): RigEdit | null {
     hit = true;
   };
 
-  if (/goal ?post/.test(m)) set("template", "goalpost");
+  if (/\broof\b|ground[- ]support|self[- ]climb/.test(m)) set("template", "roof");
+  else if (/goal ?post/.test(m)) set("template", "goalpost");
   else if (/\btower\b|\bmast\b/.test(m)) set("template", "tower");
   else if (/\bgrid\b|\bflown\b/.test(m)) set("template", "flown");
   else if (/\bcube\b|\bbox frame\b/.test(m)) set("template", "cube");
@@ -104,13 +109,26 @@ export function parseEdit(message: string): RigEdit | null {
     else if (new RegExp(`\\b(?:add|with|needs?|put)\\b[^.]*\\b(?:${stairWord}|steps)\\b`).test(m)) set("stairs", 1);
   }
 
+  // Roof extras.
+  const towers = /\b(\d)\s+towers\b(?:\s+(?:a|per|each)\s+side)?/.exec(m);
+  if (towers) set("towers", Number(towers[1]));
+  if (/\b(?:no|remove|lose|without|drop)\s+(?:the\s+)?(?:center\s+)?spine\b/.test(m)) set("spine", false);
+  else if (/\b(?:add|with|put)\b[^.]*\bspine\b/.test(m)) set("spine", true);
+  const limit = /(\d[\d,]*)\s*(?:lb|lbs|pounds?)\b[^.]*\b(?:per|each|a)\s+tower|tower\s+limit[^\d]*(\d[\d,]*)/.exec(m);
+  if (limit) set("towerLimit", Number((limit[1] ?? limit[2]).replace(/,/g, "")));
+  const bays = /\bbays?\b[^\d]*((?:\d+(?:\.\d+)?\s*(?:'\s*\d*(?:\.\d+)?"?|ft|feet)?[\s,]*(?:and\s+)?){2,})/.exec(m);
+  if (bays) {
+    const list = [...bays[1].matchAll(/(\d+(?:\.\d+)?)\s*(?:'\s*(\d+(?:\.\d+)?)?"?|ft|feet)?/g)].map((x) => Number(x[1]) * 12 + Number(x[2] ?? 0));
+    if (list.length >= 2) set("bays", list);
+  }
+
   return hit ? e : null;
 }
 
 /** Applies an edit to a design, keeping every value inside its template's limits. */
 export function applyEdit(design: RigDesign, edit: RigEdit): { design: RigDesign; changes: string[] } {
   const t: TemplateId = edit.template ?? design.template;
-  let params: RigParams = t === design.template ? { ...design.params } : { ...template(t).defaults, series: design.params.series };
+  let params: RigParams = t === design.template ? { ...design.params } : { ...template(t).defaults, series: seriesFor(t, design.params.series) };
   const changes: string[] = [];
   if (t !== design.template) changes.push(`Switched to a ${template(t).name.toLowerCase()}`);
   const lengths = ["width", "depth", "height", "trim", "braceLength"] as const;
@@ -126,6 +144,15 @@ export function applyEdit(design: RigDesign, edit: RigEdit): { design: RigDesign
   if (edit.skirt !== null) params.skirt = edit.skirt;
   if (edit.rail) params.rail = edit.rail;
   if (edit.stairs !== null && Number.isFinite(edit.stairs)) params.stairs = edit.stairs;
+  if (edit.towers !== null && Number.isFinite(edit.towers)) params.towers = edit.towers;
+  if (edit.spine !== null) params.spine = edit.spine;
+  if (edit.towerLimit !== null && Number.isFinite(edit.towerLimit)) params.towerLimit = edit.towerLimit;
+  if (edit.bays && edit.bays.length >= 1 && edit.bays.every((x) => Number.isFinite(x) && x > 0)) {
+    // Bays say where the towers are: they set the count and the length together.
+    params.bays = edit.bays;
+    params.towers = edit.bays.length + 1;
+    if (edit.width === null) params.width = edit.bays.reduce((a, b) => a + b, 0);
+  } else if (edit.towers !== null || edit.width !== null) params.bays = params.bays.length === params.towers - 1 && edit.towers === null ? params.bays : [];
   params = clampParams(t, params);
   const before = design.params;
   for (const k of lengths) if (params[k] !== before[k] && template(t).fields.some((f) => f.key === k)) changes.push(`${label(k)} ${ftIn(params[k])}`);
@@ -134,6 +161,12 @@ export function applyEdit(design: RigDesign, edit: RigEdit): { design: RigDesign
   if (params.skirt !== before.skirt && t === "stage") changes.push(params.skirt ? "skirt on" : "no skirt");
   if (params.rail !== before.rail && t === "stage") changes.push(`guardrails: ${RAIL_WORDS[params.rail]}`);
   if (params.stairs !== before.stairs && t === "stage") changes.push(params.stairs ? `${params.stairs} stair unit${params.stairs > 1 ? "s" : ""}` : "no stairs");
+  if (t === "roof") {
+    if (params.towers !== before.towers) changes.push(`${params.towers} towers a side`);
+    if (params.bays.join() !== before.bays.join()) changes.push(`bays ${params.bays.map(ftIn).join(", ")}`);
+    if (params.spine !== before.spine) changes.push(params.spine ? "center spine" : "no spine");
+    if (params.towerLimit !== before.towerLimit) changes.push(`limit ${params.towerLimit.toLocaleString("en-US")} lb a tower`);
+  }
   const keepName = design.name !== autoName(design.template, design.params);
   return { design: { version: 1, template: t, params, name: keepName ? design.name : autoName(t, params) }, changes };
 }
