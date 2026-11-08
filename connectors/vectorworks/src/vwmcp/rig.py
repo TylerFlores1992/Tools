@@ -173,6 +173,37 @@ CLAMP_OFFSET = 3.0  # inches between the two bores of the library swivel
 PIPE_RE = re.compile(r"^Pipe 1\.5in-(\d+)ft(?:-(\d+)in)? Length$")
 PIPE_OD = 1.9  # 1-1/2" schedule 40
 
+# Stage decks: Vectorworks' own library (Libraries > Defaults > Stage Deck), measured 2026-11-07.
+# A bare deck symbol ("Stage Deck 4ft x 8ft") has its insertion at its plan center with the long
+# side along X; its frame's underside is the insertion Z. Legs ("Stage Deck Leg 24in") stand on the
+# floor at their insertion. The bare decks aren't listed on their own in the library: they come in
+# with an assembled deck ("Stage Deck 4ft x 8ft x 2ft"), so that's what to import.
+DECK_LEG_HEIGHTS = tuple(range(8, 61, 4))
+NOT_IN_LIBRARY = {
+    "skirt": "the library has no stage skirting; it's on the rental list",
+    "rail": "the library has no stage guardrail; it's on the rental list",
+    "stairs": "the library has no stage stair unit; it's on the rental list",
+}
+
+
+def _ft(inches: float) -> str:
+    return "%gft" % (float(inches) / 12.0)
+
+
+def deck_symbol(width: float, length: float) -> str:
+    return "Stage Deck %s x %s" % (_ft(width), _ft(length))
+
+
+def deck_import_name(width: float, length: float) -> str:
+    return deck_symbol(width, length) + " x 2ft"
+
+
+def leg_symbol(height: float) -> str:
+    h = float(height)
+    if not any(abs(h - x) < 0.01 for x in DECK_LEG_HEIGHTS):
+        raise RigError("no %g\" deck leg in the library: legs come in 4\" steps from 8\" to 60\"" % h)
+    return "Stage Deck Leg %gin" % h
+
 
 def truss_symbol_candidates(series_id: str) -> list:
     prefix = SERIES_SYMBOL_PREFIX.get(series_id)
@@ -291,7 +322,7 @@ def corner_placement(center, size: float, width: float, height: float) -> dict:
 # build lists
 # ---------------------------------------------------------------------------------------
 
-KINDS = ("truss", "corner", "pipe", "clamp")
+KINDS = ("truss", "corner", "pipe", "clamp", "deck", "leg")
 
 
 def validate_build_list(bl) -> list:
@@ -316,7 +347,7 @@ def validate_build_list(bl) -> list:
         return errs
     seen = set()
     need = {"truss": ("start", "end"), "corner": ("center",), "pipe": ("start", "end"),
-            "clamp": ("at", "pipeDir", "chordDir", "normal")}
+            "clamp": ("at", "pipeDir", "chordDir", "normal"), "deck": ("at",), "leg": ("at",)}
     for i, p in enumerate(parts):
         if not isinstance(p, dict):
             errs.append("part %d is not an object" % (i + 1))
@@ -335,6 +366,11 @@ def validate_build_list(bl) -> list:
                 errs.append(str(e))
         if kind == "corner" and not (isinstance(p.get("size"), (int, float)) and p["size"] > 0):
             errs.append("%s.size must be a positive number" % pid)
+        for k in {"deck": ("width", "length", "height"), "leg": ("height",)}.get(kind, ()):
+            if not (isinstance(p.get(k), (int, float)) and p[k] > 0):
+                errs.append("%s.%s must be a positive number" % (pid, k))
+        if kind == "deck" and p.get("rotation", 0) not in (0, 90):
+            errs.append("%s.rotation must be 0 or 90" % pid)
     return errs
 
 
@@ -367,6 +403,14 @@ def symbol_3d_step(symbol: str, at, frame: Frame, part_id=None, kind="symbol") -
 def truss_step(symbol: str, placement: dict, part_id=None, kind="truss") -> dict:
     step = {"kind": kind, "type": "truss", "symbol": symbol, "insertion": placement["insertion"], "rotation": placement["rotation"],
             "length": round(placement["length"], 6), "hanging_angle": placement["hanging_angle"]}
+    if part_id is not None:
+        step["id"] = part_id
+    return step
+
+
+def symbol_step(symbol: str, at, rotation: float, part_id=None, kind="symbol") -> dict:
+    """A symbol placed in plan (turned about Z only), its insertion raised to at's Z."""
+    step = {"kind": kind, "type": "symbol", "symbol": symbol, "at": list(v3(at, "at")), "rotation": float(rotation)}
     if part_id is not None:
         step["id"] = part_id
     return step
@@ -450,6 +494,20 @@ def plan_build(bl: dict, available) -> Plan:
                 plan.steps.append(step)
                 if not ch["exact"]:
                     plan.substituted.append({"id": pid, "wanted": "%.1f° clamp" % ch["angle_needed"], "used": ch["symbol"]})
+            elif kind == "deck":
+                name = deck_symbol(p["width"], p["length"])
+                if name not in have:
+                    note_missing(deck_import_name(p["width"], p["length"]))
+                    continue
+                plan.steps.append(symbol_step(name, p["at"], p.get("rotation", 0), pid, kind="deck"))
+            elif kind == "leg":
+                name = leg_symbol(p["height"])
+                if name not in have:
+                    note_missing(name)
+                    continue
+                plan.steps.append(symbol_step(name, p["at"], 0, pid, kind="leg"))
+            elif kind in NOT_IN_LIBRARY:
+                plan.skipped.append({"id": pid, "kind": kind, "reason": NOT_IN_LIBRARY[kind]})
             elif kind == "baseplate":
                 plan.skipped.append({"id": pid, "kind": kind, "reason": "no base plate symbol yet"})
             else:

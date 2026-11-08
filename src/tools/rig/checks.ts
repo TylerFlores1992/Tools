@@ -1,6 +1,6 @@
 // Planning sanity checks. They catch obvious mistakes early; they are not engineering, and the
 // UI says so. Every finding is words first (the owner is colour-blind), with a level for a glyph.
-import { BASEPLATE } from "./catalog.ts";
+import { BASEPLATE, DECK } from "./catalog.ts";
 import { ftIn } from "./templates.ts";
 import type { BuildList, RigDesign } from "./types.ts";
 
@@ -13,6 +13,8 @@ export function checks(design: RigDesign, list: BuildList): Finding[] {
   const p = design.params;
   const out: Finding[] = [];
   for (const [i, n] of list.notes.entries()) out.push({ id: `note-${i}`, level: "warn", text: n });
+
+  if (design.template === "stage") return [...out, ...stageChecks(design)];
 
   const limit = SPAN_LIMIT[p.series];
   const span = design.template === "tower" ? 0 : Math.max(p.width, design.template === "goalpost" ? 0 : p.depth);
@@ -41,5 +43,22 @@ export function checks(design: RigDesign, list: BuildList): Finding[] {
 
   const clamps = list.parts.filter((x) => x.kind === "clamp").length;
   if (clamps) out.push({ id: "clamps", level: "note", text: `${clamps} cheeseboroughs: make sure they're sized for both the 1.9" pipe and the truss chord.` });
+  return out;
+}
+
+/** Height the walking surface is at, past which open sides usually need a guard (IBC, 30"). */
+export const GUARD_FROM = 30;
+
+function stageChecks(design: RigDesign): Finding[] {
+  const p = design.params;
+  const out: Finding[] = [];
+  const top = p.height + DECK.top;
+  if (top > GUARD_FROM) {
+    if (p.rail === "three") out.push({ id: "rail", level: "ok", text: `Deck top is ${ftIn(top)}: rails on the back and both sides; the front is the open performance edge.` });
+    else out.push({ id: "rail", level: "warn", text: `Deck top is ${ftIn(top)}, over 30": open sides other than the performance edge usually need a 42" guardrail. ${p.rail === "back" ? "Add rails on both sides too." : "Add rails on the back and both sides."}` });
+  } else out.push({ id: "rail", level: "ok", text: `Deck top is ${ftIn(top)}: under 30", so guardrails are usually optional.` });
+  if (p.stairs === 0 && top > 12) out.push({ id: "stairs", level: "warn", text: `No stairs: a ${ftIn(top)} step up needs a stair unit (or a ramp if anyone needs step-free access).` });
+  if (p.height > 36) out.push({ id: "legs", level: "note", text: `${ftIn(p.height)} legs: check the deck maker's chart for leg bracing at this height.` });
+  out.push({ id: "load", level: "note", text: "Check the decks' load rating against what goes on them: people, a drum riser, road cases." });
   return out;
 }

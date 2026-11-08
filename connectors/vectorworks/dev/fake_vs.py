@@ -208,6 +208,8 @@ def SetClass(h, clas):
 def SetParent(obj, container):
     if getattr(container, "type", None) != 31:
         return False
+    if obj.layer is container:
+        return False  # Vectorworks 2026: moving onto the layer it's already on reports failure
     obj.layer = container
     return True
 
@@ -1052,7 +1054,7 @@ def _truss_contents(length_in):
     return [truss, magnet, magnet]
 
 
-def seed_rig_library(clamps=True, truss=True, pipes=True):
+def seed_rig_library(clamps=True, truss=True, pipes=True, decks=True):
     folder = _Obj(92, name="Truss")
     DOC.resources["Truss"] = folder
     DOC.resources["Straight Truss"] = _Obj(47, name="Straight Truss", fields=STRAIGHT_TRUSS_FIELDS)
@@ -1071,3 +1073,11 @@ def seed_rig_library(clamps=True, truss=True, pipes=True):
             # The clamp's bounding box isn't centred on its insertion point: flipping it moves the
             # insertion 0.031" (2 x 0.0155).
             DOC.resources[n] = _Obj(16, name=n, w=3.0, h=4.0, parent=folder, bbox_off=(0.0, 0.0155))
+    if decks:
+        stage = _Obj(92, name="Stage Deck & Legs")
+        DOC.resources["Stage Deck & Legs"] = stage
+        for n, w, h in (("Stage Deck 4ft x 8ft", 96.0, 48.0), ("Stage Deck 4ft x 4ft", 48.0, 48.0)):
+            DOC.resources[n] = _Obj(16, name=n, w=w, h=h, parent=stage)
+        for inch in (24, 36):
+            n = f"Stage Deck Leg {inch}in"
+            DOC.resources[n] = _Obj(16, name=n, w=1.66, h=1.66, parent=stage)

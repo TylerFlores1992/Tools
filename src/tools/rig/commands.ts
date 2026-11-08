@@ -2,12 +2,12 @@
 // "remove the bottom pipes". Anything this can't read goes to the AI (src/lib/rig/ai.ts), whose
 // answer is checked with the same `applyEdit`.
 import { autoName, clampParams, ftIn, newDesign, template } from "./templates.ts";
-import type { BraceMode, RigDesign, RigParams, TemplateId } from "./types.ts";
+import type { BraceMode, RailMode, RigDesign, RigParams, TemplateId } from "./types.ts";
 import { z } from "zod";
 
 /** One edit, in the shape the AI is asked for too. Lengths in inches. */
 export const EDIT_SCHEMA = z.object({
-  template: z.enum(["cube", "goalpost", "tower", "flown"]).nullable(),
+  template: z.enum(["cube", "goalpost", "tower", "flown", "stage"]).nullable(),
   width: z.number().nullable(),
   depth: z.number().nullable(),
   height: z.number().nullable(),
@@ -15,11 +15,14 @@ export const EDIT_SCHEMA = z.object({
   series: z.enum(["box12", "box20"]).nullable(),
   braces: z.enum(["none", "top", "bottom", "both"]).nullable(),
   braceLength: z.number().nullable(),
+  skirt: z.boolean().nullable(),
+  rail: z.enum(["none", "back", "three"]).nullable(),
+  stairs: z.number().nullable(),
   reply: z.string(),
 });
 export type RigEdit = z.infer<typeof EDIT_SCHEMA>;
 
-const EMPTY: RigEdit = { template: null, width: null, depth: null, height: null, trim: null, series: null, braces: null, braceLength: null, reply: "" };
+const EMPTY: RigEdit = { template: null, width: null, depth: null, height: null, trim: null, series: null, braces: null, braceLength: null, skirt: null, rail: null, stairs: null, reply: "" };
 
 const NUM = String.raw`(\d+(?:\.\d+)?)`;
 const UNIT = String.raw`\s*(ft|feet|foot|'|in|inch|inches|")?`;
@@ -39,8 +42,10 @@ export function parseEdit(message: string): RigEdit | null {
 
   if (/goal ?post/.test(m)) set("template", "goalpost");
   else if (/\btower\b|\bmast\b/.test(m)) set("template", "tower");
-  else if (/\bgrid\b|\bflown\b|\bhung\b|\bhang\b/.test(m)) set("template", "flown");
+  else if (/\bgrid\b|\bflown\b/.test(m)) set("template", "flown");
   else if (/\bcube\b|\bbox frame\b/.test(m)) set("template", "cube");
+  else if (/\bstage\b|\bdecks?\b|\bdecking\b|\bplatform\b|\briser\b/.test(m)) set("template", "stage");
+  else if (/\bhung\b|\bhang\b/.test(m) && !/skirt/.test(m)) set("template", "flown");
 
   const series20 = /\b20(\.5)?\s*(in|inch|")?\s*box\b|\b20\.5\b/.test(m);
   const series12 = /\b12\s*(in|inch|")?\s*box\b/.test(m);
@@ -86,6 +91,19 @@ export function parseEdit(message: string): RigEdit | null {
   if (braces === null && new RegExp(`add(?: the)?\\s+top\\s+${pipes}|add\\s+${pipes}|with\\s+${pipes}`).test(m)) braces = "top-add" as BraceMode;
   if (braces) set("braces", braces);
 
+  // Stage extras.
+  if (/\b(?:no|remove|lose|without|drop)\s+(?:the\s+)?skirt(?:ing|s)?\b/.test(m)) set("skirt", false);
+  else if (/\bskirt(?:ing|ed|s)?\b/.test(m)) set("skirt", true);
+  if (/\b(?:no|remove|lose|without|drop)\s+(?:the\s+)?(?:guard\s*)?rail(?:s|ing)?\b/.test(m)) set("rail", "none");
+  else if (/\b(?:guard\s*)?rail(?:s|ing)?\b/.test(m)) set("rail", /\b(?:back|upstage)\b/.test(m) && !/\bsides?\b/.test(m) ? "back" : "three");
+  const stairWord = String.raw`(?:stairs|stair units?|sets? of stairs)`;
+  if (new RegExp(`\\b(?:no|remove|lose|without|drop)\\s+(?:the\\s+)?${stairWord}`).test(m)) set("stairs", 0);
+  else {
+    const n = new RegExp(`\\b(one|two|1|2)\\s+${stairWord}`).exec(m);
+    if (n) set("stairs", /^(two|2)$/.test(n[1]) ? 2 : 1);
+    else if (new RegExp(`\\b(?:add|with|needs?|put)\\b[^.]*\\b(?:${stairWord}|steps)\\b`).test(m)) set("stairs", 1);
+  }
+
   return hit ? e : null;
 }
 
@@ -105,14 +123,22 @@ export function applyEdit(design: RigDesign, edit: RigEdit): { design: RigDesign
   if (b === "bottom-add") b = params.braces === "top" || params.braces === "both" ? "both" : "bottom";
   if (b === "top-add") b = params.braces === "bottom" || params.braces === "both" ? "both" : "top";
   if (b) params.braces = b as BraceMode;
+  if (edit.skirt !== null) params.skirt = edit.skirt;
+  if (edit.rail) params.rail = edit.rail;
+  if (edit.stairs !== null && Number.isFinite(edit.stairs)) params.stairs = edit.stairs;
   params = clampParams(t, params);
   const before = design.params;
   for (const k of lengths) if (params[k] !== before[k] && template(t).fields.some((f) => f.key === k)) changes.push(`${label(k)} ${ftIn(params[k])}`);
   if (params.series !== before.series) changes.push(params.series === "box20" ? '20.5" box truss' : '12" box truss');
   if (params.braces !== before.braces && template(t).fields.some((f) => f.key === "braces")) changes.push(`knee braces: ${params.braces}`);
+  if (params.skirt !== before.skirt && t === "stage") changes.push(params.skirt ? "skirt on" : "no skirt");
+  if (params.rail !== before.rail && t === "stage") changes.push(`guardrails: ${RAIL_WORDS[params.rail]}`);
+  if (params.stairs !== before.stairs && t === "stage") changes.push(params.stairs ? `${params.stairs} stair unit${params.stairs > 1 ? "s" : ""}` : "no stairs");
   const keepName = design.name !== autoName(design.template, design.params);
   return { design: { version: 1, template: t, params, name: keepName ? design.name : autoName(t, params) }, changes };
 }
+
+export const RAIL_WORDS: Record<RailMode, string> = { none: "none", back: "back only", three: "back and sides" };
 
 const label = (k: string) => ({ width: "width", depth: "depth", height: "height", trim: "trim", braceLength: "brace pipe" })[k] ?? k;
 

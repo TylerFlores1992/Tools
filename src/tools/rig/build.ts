@@ -1,7 +1,8 @@
 // Design → build list: every truss section, corner block, pipe and cheeseborough in 3D.
 // Inches; X right, Y away from the front, Z up, floor at Z = 0 (docs/RIG.md).
-import { BASEPLATE, CLAMP, PIPE, PIPE_STICKOUT, SERIES, type TrussSeries } from "./catalog.ts";
-import type { BuildList, Part, RigDesign, TrussRole, Vec3 } from "./types.ts";
+import { BASEPLATE, CLAMP, DECK, PIPE, PIPE_STICKOUT, RAIL, SERIES, SKIRT, STAIRS, type TrussSeries } from "./catalog.ts";
+import { ftIn } from "./templates.ts";
+import type { BuildList, Part, RigDesign, RigParams, TrussRole, Vec3 } from "./types.ts";
 
 const R2 = Math.SQRT1_2;
 const round = (n: number) => Math.round(n * 1e4) / 1e4 + 0; // + 0 turns -0 into 0
@@ -34,7 +35,7 @@ export function splitRun(length: number, stock: readonly number[]): { pieces: nu
 class Builder {
   parts: Part[] = [];
   notes: string[] = [];
-  private n = { t: 0, c: 0, p: 0, k: 0, b: 0 };
+  private n = { t: 0, c: 0, p: 0, k: 0, b: 0, d: 0, l: 0, s: 0, r: 0, st: 0 };
   constructor(readonly s: TrussSeries) {}
 
   corner(center: Vec3, ways: number) {
@@ -61,6 +62,83 @@ class Builder {
 
   baseplate(center: Vec3) {
     this.parts.push({ id: `b${++this.n.b}`, kind: "baseplate", size: BASEPLATE.size, center: v(...center) });
+  }
+
+  /** One deck and its legs, centered at (cx, cy) in plan, `length` along X (rotation 0) or Y (90). */
+  deck(cx: number, cy: number, length: number, rotation: 0 | 90, height: number) {
+    this.parts.push({ id: `d${++this.n.d}`, kind: "deck", width: DECK.width, length, rotation, height, at: v(cx, cy, height - DECK.frame) });
+    const a = length / 2 - DECK.legInset;
+    const b = DECK.width / 2 - DECK.legInset;
+    const along = length > DECK.width ? [-a, 0, a] : [-a, a];
+    for (const u of along)
+      for (const w of [-b, b]) {
+        const [dx, dy] = rotation === 0 ? [u, w] : [w, u];
+        this.parts.push({ id: `l${++this.n.l}`, kind: "leg", height, at: v(cx + dx, cy + dy, 0) });
+      }
+  }
+
+  /** Stock pieces along one deck edge, for skirting or rails. */
+  edge(kind: "skirt" | "rail", a: Vec3, b: Vec3, stock: readonly number[], extra: number) {
+    const d: Vec3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+    const unit = scale(d, 1 / Math.hypot(...d));
+    let at = a;
+    for (const len of splitRun(Math.hypot(...d), stock).pieces) {
+      const end = add(at, scale(unit, len));
+      if (kind === "skirt") this.parts.push({ id: `s${++this.n.s}`, kind, length: len, start: at, end, drop: extra });
+      else this.parts.push({ id: `r${++this.n.r}`, kind, length: len, start: at, end, height: extra });
+      at = end;
+    }
+  }
+
+  stairs(x: number, surface: number) {
+    const risers = Math.ceil(surface / STAIRS.maxRise - 1e-9);
+    this.parts.push({ id: `st${++this.n.st}`, kind: "stairs", width: STAIRS.width, rise: surface, risers, run: (risers - 1) * STAIRS.tread, at: v(x, 0, 0), out: [0, -1, 0] });
+  }
+
+  /** A W × D stage of 4×8 decks (a 4×4 where 4' is left over), long sides whichever way needs fewer. */
+  stage(p: RigParams) {
+    const { width: W, depth: D, height: H } = p;
+    const dw = DECK.width;
+    const count = (along: number, across: number) => (across / dw) * (Math.floor(along / (2 * dw)) + (along % (2 * dw) ? 1 : 0));
+    const alongX = count(W, D) <= count(D, W);
+    const [along, across] = alongX ? [W, D] : [D, W];
+    for (let r = 0; r < across / dw; r++) {
+      const c = dw / 2 + r * dw;
+      let u = 0;
+      const put = (len: number) => {
+        const m = u + len / 2;
+        if (alongX) this.deck(m, c, len, 0, H);
+        else this.deck(c, m, len, 90, H);
+        u += len;
+      };
+      while (u + 2 * dw <= along + 1e-6) put(2 * dw);
+      if (u < along - 1e-6) put(dw);
+    }
+    const S = H + DECK.top;
+    if (p.skirt) {
+      this.edge("skirt", [0, 0, S], [W, 0, S], SKIRT.stock, S);
+      this.edge("skirt", [0, D, S], [0, 0, S], SKIRT.stock, S);
+      this.edge("skirt", [W, 0, S], [W, D, S], SKIRT.stock, S);
+    }
+    if (p.rail !== "none") {
+      this.edge("rail", [0, D, S], [W, D, S], RAIL.stock, RAIL.height);
+      if (p.rail === "three") {
+        this.edge("rail", [0, 0, S], [0, D, S], RAIL.stock, RAIL.height);
+        this.edge("rail", [W, 0, S], [W, D, S], RAIL.stock, RAIL.height);
+      }
+    }
+    // Stairs on the front edge: one in the middle, or one near each end.
+    const inset = STAIRS.width / 2 + 6;
+    if (p.stairs === 1) this.stairs(W / 2, S);
+    else if (p.stairs >= 2) {
+      if (W < 2 * STAIRS.width + 12) {
+        this.notes.push(`Stairs: a ${ftIn(W)} front only has room for one ${ftIn(STAIRS.width)} stair unit.`);
+        this.stairs(W / 2, S);
+      } else {
+        this.stairs(inset, S);
+        this.stairs(W - inset, S);
+      }
+    }
   }
 
   /**
@@ -163,6 +241,9 @@ export function buildList(design: RigDesign): BuildList {
       ring(p.width, p.depth, p.trim + h, "grid", "Grid", 2);
       break;
     }
+    case "stage":
+      b.stage(p);
+      break;
   }
 
   return {

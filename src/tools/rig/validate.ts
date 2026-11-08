@@ -5,7 +5,7 @@ import type { RigDesign } from "./types.ts";
 const DESIGN = z.object({
   version: z.literal(1),
   name: z.string().trim().min(1).max(80),
-  template: z.enum(["cube", "goalpost", "tower", "flown"]),
+  template: z.enum(["cube", "goalpost", "tower", "flown", "stage"]),
   params: z.object({
     series: z.enum(["box12", "box20"]),
     width: z.number().finite(),
@@ -14,6 +14,10 @@ const DESIGN = z.object({
     trim: z.number().finite(),
     braces: z.enum(["none", "top", "bottom", "both"]),
     braceLength: z.number().finite(),
+    // Added with the stage (2026-11-07): designs saved before it don't have them.
+    skirt: z.boolean().default(false),
+    rail: z.enum(["none", "back", "three"]).default("none"),
+    stairs: z.number().finite().default(0),
   }),
 });
 

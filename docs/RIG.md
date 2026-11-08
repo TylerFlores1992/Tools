@@ -46,6 +46,22 @@ Every vector is `[x, y, z]`. Directions are unit vectors.
 }
 ```
 
+Stage parts (template `stage`, added 2026-11-07):
+
+```jsonc
+// A deck: `at` is the library symbol's insertion — plan center, Z = underside of the frame
+// (nominal height − 3). `length` runs along X at rotation 0, along Y at 90.
+{ "id": "d1", "kind": "deck", "width": 48, "length": 96, "rotation": 0, "height": 24, "at": [48, 24, 21] },
+// A leg on the floor; `height` is the deck's nominal height (the leg symbol's name).
+{ "id": "l1", "kind": "leg", "height": 24, "at": [1.625, 1.625, 0] },
+// Skirting: top line start→end on the walking surface (nominal + 1), hanging `drop` to the floor.
+{ "id": "s1", "kind": "skirt", "length": 192, "start": [0, 0, 25], "end": [192, 0, 25], "drop": 25 },
+// A guardrail section standing on the edge, `height` above the surface.
+{ "id": "r1", "kind": "rail", "length": 96, "start": [0, 96, 25], "end": [96, 96, 25], "height": 42 },
+// A stair unit: `at` = middle of its top edge on the floor under the deck edge; runs out along `out`.
+{ "id": "st1", "kind": "stairs", "width": 36, "rise": 25, "risers": 4, "run": 33, "at": [96, 0, 0], "out": [0, -1, 0] }
+```
+
 ## What the connector must know about Vectorworks (measured 2026-11-07)
 
 - **Truss:** place the 12" box *symbol*, convert to group, ungroup → a Spotlight `Straight Truss`
@@ -67,12 +83,22 @@ Every vector is `[x, y, z]`. Directions are unit vectors.
 - Clamps for other brace angles: the library has 0, 15, 30, 45, 60, 75 and 90° versions. Use the
   nearest.
 - OIP angle fields read a bare number as degrees; the Rotate 3D dialog keeps its last settings.
+- **Stage decks** are plain symbols from `Libraries > Defaults > Stage Deck` (not a parametric
+  object: no skirt, rail or stair settings, and the library has no stage skirting, guardrail or
+  stair symbols, so the connector skips those and says they're on the rental list). An assembled
+  deck (`Stage Deck 4ft x 8ft x 2ft`) is a symbol holding the bare deck (`Stage Deck 4ft x 8ft`)
+  and leg symbols (`Stage Deck Leg 24in`). Measured on the 4×8 and 4×4 assemblies: the bare deck's
+  insertion is its plan center, long side along X; its frame runs from Z = height − 3 to height,
+  with a 1" top above it (walking surface = nominal + 1). Legs stand at Z = 0, 1.625" in from each
+  edge: six on a 4×8 (corners and mid long sides), four on a 4×4. Leg symbols exist every 4" from
+  8" to 60" (plus 4.25"). The bare decks aren't listed in the library on their own: import an
+  assembled deck to bring one in. Decks and legs are hybrid, so they turn about Z only.
 
 ## The page
 
 | Part | Where |
 |---|---|
-| Templates (cube, goal post, tower, flown grid), their limits | `src/tools/rig/templates.ts` |
+| Templates (cube, goal post, tower, flown grid, stage), their limits | `src/tools/rig/templates.ts` |
 | Design → build list (stock splits, braces, clamps) | `src/tools/rig/build.ts` |
 | Rental list, weights, joints | `src/tools/rig/bom.ts` · gear and weights in `catalog.ts` |
 | Checks (planning sanity, not engineering) | `src/tools/rig/checks.ts` |
@@ -106,3 +132,6 @@ marks it Built. Editing an approved design puts it back to draft.
   refuses it until one is imported.
 - AR is iPhone/iPad (AR Quick Look); other browsers get a sentence saying so.
 - Base plates are drawn on the phone and listed to rent; the connector skips them (no symbol yet).
+- Stage skirting, guardrails and stairs: drawn on the phone and listed to rent; the connector skips
+  them (Vectorworks' library has none). Stage weights and the stair rise (7.5" max) are typical
+  planning figures, not a code check.

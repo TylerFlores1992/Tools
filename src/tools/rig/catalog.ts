@@ -69,3 +69,30 @@ export const CONNECTOR_LB = 0.4;
 
 /** How far a brace pipe runs past each cheeseborough, inches. */
 export const PIPE_STICKOUT = 3;
+
+/**
+ * Stage decks as Vectorworks' own library draws them (Libraries > Defaults > Stage Deck), measured
+ * on "Stage Deck 4ft x 8ft x 2ft" and "4ft x 4ft x 2ft" on 2026-11-07: a 3" frame whose underside
+ * sits 3" below the nominal height, a 1" top on it (so the walking surface is 1" above nominal),
+ * legs 1.625" in from each edge, six on a 4×8 (corners and the middle of the long sides) and four
+ * on a 4×4. Legs come in 4" steps from 8" to 60". Weights are typical aluminum-frame decks.
+ */
+export const DECK = {
+  sizes: {
+    96: { label: "4' × 8' stage deck", lb: 95 },
+    48: { label: "4' × 4' stage deck", lb: 50 },
+  } as Record<number, { label: string; lb: number }>,
+  width: 48,
+  frame: 3,
+  top: 1,
+  legInset: 1.625,
+  legMin: 8,
+  legMax: 60,
+  legStep: 4,
+  legLbPerIn: 0.15,
+};
+
+export const SKIRT = { label: "Stage skirting", stock: [192, 144, 96, 48] as readonly number[], lbPerFt: 0.3 };
+/** 42" is the usual guard height (IBC); check the venue's rules. */
+export const RAIL = { label: "Stage guardrail section", height: 42, stock: [96, 48] as readonly number[], lbPerFt: 3.2 };
+export const STAIRS = { label: "Stage stair unit", width: 36, maxRise: 7.5, tread: 11, lb: 20, lbPerStep: 15 };
