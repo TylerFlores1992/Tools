@@ -139,24 +139,29 @@ export function parseLength(raw: unknown, upi = 1): number | null {
   }
 }
 
-/** Lighting devices as the connector's get_lighting_devices returns them → fixtures in inches. */
+/**
+ * Lighting devices as the connector's get_lighting_devices returns them ({units, devices: [{id,
+ * location: [x, y], z, fields: {"Inst Type", "Weight": "55 lb", …}, bbox}]}) → fixtures in inches.
+ */
 export function fixturesFromVectorworks(res: unknown): Fixture[] {
   const r = res as { units?: { units_per_inch?: number }; devices?: Record<string, unknown>[] };
   const upi = r?.units?.units_per_inch || 1;
   const out: Fixture[] = [];
   for (const d of r?.devices ?? []) {
     const bbox = d.bbox as [[number, number], [number, number]] | undefined;
-    if (!bbox) continue;
-    const recs = (d.records ?? {}) as Record<string, Record<string, unknown>>;
-    const ld = recs["Lighting Device"] ?? {};
-    const z = parseLength(ld["Z Location"] ?? ld["Z"] ?? ld["Z Height"], upi) ?? 0;
-    const lbRaw = String(ld["Weight"] ?? ld["Inst Weight"] ?? "").replace(/[^\d.]/g, "");
+    const loc = (d.location as [number, number] | undefined) ?? (bbox ? [(bbox[0][0] + bbox[1][0]) / 2, (bbox[0][1] + bbox[1][1]) / 2] : undefined);
+    if (!loc) continue;
+    const f = (d.fields ?? (d.records as Record<string, Record<string, unknown>> | undefined)?.["Lighting Device"] ?? {}) as Record<string, unknown>;
+    const zField = parseLength(f["Z Location"] ?? f["Z"], upi);
+    const z = typeof d.z === "number" ? d.z / upi : (zField ?? 0);
+    const w = String(f["Weight"] ?? "").match(/\d+(?:\.\d+)?/);
+    const kg = /kg/i.test(String(f["Weight"] ?? ""));
     out.push({
-      x: (bbox[0][0] + bbox[1][0]) / 2 / upi,
-      y: (bbox[0][1] + bbox[1][1]) / 2 / upi,
+      x: loc[0] / upi,
+      y: loc[1] / upi,
       z,
-      lb: lbRaw ? Number(lbRaw) : 0,
-      type: String(ld["Instrument Type"] ?? ld["Inst Type"] ?? d.name ?? "Fixture").slice(0, 60),
+      lb: w ? Math.round(Number(w[0]) * (kg ? 2.20462 : 1) * 10) / 10 : 0,
+      type: String(f["Inst Type"] ?? f["Instrument Type"] ?? d.name ?? "Fixture").slice(0, 60),
       id: String(d.id ?? ""),
     });
   }

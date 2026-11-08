@@ -96,7 +96,7 @@ function Notice({ tone, children, onClose }: { tone: "ok" | "warn" | "info"; chi
   );
 }
 
-function JobRow({ j }: { j: Job }) {
+function JobRow({ j, brief }: { j: Job; brief?: boolean }) {
   const word = { queued: "Starting", running: "Working", done: "Done", failed: "Stopped" }[j.status];
   const g = { queued: "◌", running: "◐", done: "✓", failed: "!" }[j.status];
   return (
@@ -113,7 +113,7 @@ function JobRow({ j }: { j: Job }) {
         </div>
         <div className="job-req">{j.request}</div>
         {j.progress && j.status !== "done" && <div className="job-progress">{j.progress}</div>}
-        {j.reply && <div className="job-reply">{j.reply}</div>}
+        {j.reply && !(brief && j.status === "done") && <div className="job-reply">{j.reply}</div>}
         {j.session && (
           <a href={j.session} target="_blank" rel="noreferrer" className="link">
             Open the session
@@ -215,7 +215,10 @@ function Header({ children }: { children?: ReactNode }) {
 
 function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] | null; jobs: Job[]; loadErr: string | null }) {
   const [making, setMaking] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const running = jobs.filter((j) => j.status === "queued" || j.status === "running");
+  const archived = (projects ?? []).filter((p) => (p as Project & { archived?: boolean }).archived);
+  const list = projects ? projects.filter((p) => !!(p as Project & { archived?: boolean }).archived === showArchived) : null;
   return (
     <main className="home">
       <Header>
@@ -230,7 +233,7 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
       {making && <NewProject env={env} onCancel={() => setMaking(false)} />}
       {loadErr && <Notice tone="info">{loadErr}</Notice>}
       {projects === null && !loadErr && <p className="muted">Loading projects…</p>}
-      {projects?.length === 0 && !making && (
+      {list?.length === 0 && !showArchived && !making && (
         <div className="empty">
           <h2>No projects yet</h2>
           <p>Each project starts blank. Name it, link its Dropbox folder, then ask Claude to lay out truss over the venue drawings, or draw it a run at a time.</p>
@@ -239,9 +242,9 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
           </button>
         </div>
       )}
-      {!!projects?.length && (
+      {!!list?.length && (
         <ul className="cards">
-          {projects.map((p) => {
+          {list.map((p) => {
             const busy = running.some((j) => j.pid === p.id);
             return (
               <li key={p.id}>
@@ -260,6 +263,11 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
             );
           })}
         </ul>
+      )}
+      {(archived.length > 0 || showArchived) && (
+        <button className="link small" onClick={() => setShowArchived(!showArchived)}>
+          {showArchived ? "Back to current projects" : `Archived projects (${archived.length})`}
+        </button>
       )}
       {!!jobs.length && (
         <section className="section">
@@ -469,7 +477,8 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
           }),
         ) as Record<string, unknown> | string | undefined;
         const obj = typeof r === "object" && r ? r : {};
-        const sid = (obj.session_url ?? obj.url ?? (obj.session_id ? `https://claude.ai/code/${obj.session_id}` : undefined)) as string | undefined;
+        const rawId = String(obj.session_id ?? (obj.session as { id?: string } | undefined)?.id ?? "");
+        const sid = (obj.session_url ?? obj.url ?? (rawId ? `https://claude.ai/code/${rawId.replace(/^cse_/, "session_")}` : undefined)) as string | undefined;
         if (sid) await ref.update({ session: sid });
       } catch (e) {
         await ref.update({ status: "failed", reply: mcpWords(e, "Starting a session"), updated: now() });
@@ -694,7 +703,19 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
             {tab === "layers" && <LayersPane env={env} pid={pid} layers={layers} show={show} setShow={setShow} flash={flash} />}
             {tab === "checks" && <ChecksPane findings={findings} loads={loads} sketch={sketch} />}
             {tab === "rental" && compiled && sketch && <RentalPane env={env} compiled={compiled} sketch={sketch} name={project.name} version={shown?.n ?? 0} flash={flash} />}
-            {tab === "versions" && <VersionsPane versions={versions} project={project} viewing={shown?.n ?? null} onView={(n) => setViewing(n === latest?.n ? null : n)} onRestore={restore} />}
+            {tab === "versions" && (
+              <VersionsPane
+                versions={versions}
+                project={project}
+                viewing={shown?.n ?? null}
+                onView={(n) => setViewing(n === latest?.n ? null : n)}
+                onRestore={restore}
+                onArchive={async (on) => {
+                  await db.doc(`projects/${pid}`).update({ archived: on, updatedAt: now() });
+                  flash("ok", on ? "Archived. It's under Archived projects on the list; nothing was deleted." : "Back on the project list.");
+                }}
+              />
+            )}
             {tab === "files" && <FilesPane env={env} project={project} layers={layers} startSession={startSession} flash={flash} goChat={() => setTab("chat")} />}
           </div>
         </aside>
@@ -949,9 +970,9 @@ function ChatPane(props: {
                 {m.version ? <span className="vtag">v{m.version}</span> : null}
               </div>
               <div className="msg-text">{m.text}</div>
-              {job && (
+              {job && !m.version && (
                 <ul className="jobs">
-                  <JobRow j={job} />
+                  <JobRow j={job} brief />
                 </ul>
               )}
             </div>
@@ -1105,12 +1126,12 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
     if (!env.caps.mcp) return;
     setBusy("Reading lighting from Vectorworks…");
     try {
-      const info = payloadOf(await env.caps.mcp.callTool(SERVERS.vw, "get_document_info", {})) as { name?: string; file?: string };
+      const info = payloadOf(await env.caps.mcp.callTool(SERVERS.vw, "get_document_info", {})) as { document?: string };
       const res = payloadOf(await env.caps.mcp.callTool(SERVERS.vw, "get_lighting_devices", { limit: 2000 }));
       const fixtures = fixturesFromVectorworks(res);
       if (!fixtures.length) return flash("info", "The drawing open in Vectorworks has no lighting devices.");
-      const name = `Lighting from ${info?.name ?? info?.file ?? "Vectorworks"}`;
-      await col.add({ name, kind: "fixtures", visible: true, onRig: true, at: now(), fixtures, source: { name: String(info?.name ?? "Vectorworks"), from: "vectorworks" } } satisfies Omit<Layer, "id">);
+      const name = `Lighting from ${String(info?.document ?? "Vectorworks").replace(/\.vwx$/i, "")}`;
+      await col.add({ name, kind: "fixtures", visible: true, onRig: true, at: now(), fixtures, source: { name: String(info?.document ?? "Vectorworks"), from: "vectorworks" } } satisfies Omit<Layer, "id">);
       flash("ok", `Added ${fixtures.length} fixtures from Vectorworks.`);
     } catch (e) {
       flash("warn", mcpWords(e, "Vectorworks"));
@@ -1394,7 +1415,9 @@ function RentalPane({ env, compiled, sketch, name, version, flash }: { env: Env;
   );
 }
 
-function VersionsPane({ versions, project, viewing, onView, onRestore }: { versions: Version[]; project: Project; viewing: number | null; onView: (n: number) => void; onRestore: (v: Version) => void }) {
+function VersionsPane({ versions, project, viewing, onView, onRestore, onArchive }: { versions: Version[]; project: Project; viewing: number | null; onView: (n: number) => void; onRestore: (v: Version) => void; onArchive: (on: boolean) => void }) {
+  const [ask, setAsk] = useState(false);
+  const isArchived = !!(project as Project & { archived?: boolean }).archived;
   return (
     <div className="pane">
       <ol className="versions">
@@ -1422,6 +1445,25 @@ function VersionsPane({ versions, project, viewing, onView, onRestore }: { versi
           </li>
         ))}
       </ol>
+      {isArchived ? (
+        <button className="link small" onClick={() => onArchive(false)}>
+          Put this project back on the list
+        </button>
+      ) : ask ? (
+        <div className="row">
+          <span>Archive this project? It leaves the list; nothing is deleted.</span>
+          <button className="btn small" id="archive-yes" onClick={() => (setAsk(false), onArchive(true))}>
+            Archive
+          </button>
+          <button className="btn small" onClick={() => setAsk(false)}>
+            Keep it
+          </button>
+        </div>
+      ) : (
+        <button className="link small" id="archive" onClick={() => setAsk(true)}>
+          Archive this project
+        </button>
+      )}
     </div>
   );
 }
