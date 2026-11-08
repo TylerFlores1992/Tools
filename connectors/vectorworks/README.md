@@ -136,7 +136,8 @@ before anything flies.
 Design and approve a rig at **tylerflores.dev/private/rig**, then have Claude build it here in
 one call. The format both sides share is `docs/RIG.md` (build list v1).
 
-1. **Give the connector the site's token.** Add `VWMCP_RIG_TOKEN` to the MCP config, e.g. for
+1. **Give the connector the site's token.** Set `VWMCP_RIG_TOKEN` in your Windows user
+   environment (the connector reads it from there each time, no restart needed), or add it to the MCP config, e.g. for
    Claude Desktop: `"env": { "VWMCP_RIG_TOKEN": "…" }` next to `"command"`; for Claude Code,
    `claude mcp add vectorworks -e VWMCP_RIG_TOKEN=… -- …\vwmcp.exe`. Restart Claude.
 2. **After every `git pull`, run `vwmcp-install-plugin` again.** Vectorworks runs the copy in

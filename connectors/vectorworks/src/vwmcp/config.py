@@ -54,6 +54,27 @@ class Settings:
         return self.home / "panel_token"
 
 
+def _user_env(name: str) -> str:
+    """A variable from the Windows user environment (HKCU\\Environment). Apps started before it
+    was set (Claude Desktop, and the MCP server it launches) don't have it in os.environ."""
+    try:
+        import winreg  # type: ignore[import-not-found]
+    except ImportError:
+        return ""
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
+            value, _kind = winreg.QueryValueEx(key, name)
+    except OSError:
+        return ""
+    return str(value).strip()
+
+
+def rig_token(settings: "Settings") -> str:
+    """The site key: from the MCP config's env, else the Windows user environment, read each call
+    so setting it doesn't need a restart."""
+    return settings.rig_token or os.environ.get("VWMCP_RIG_TOKEN", "").strip() or _user_env("VWMCP_RIG_TOKEN")
+
+
 def load() -> Settings:
     home = Path(os.environ.get("VWMCP_HOME", Path.home() / ".vwmcp"))
     return Settings(
