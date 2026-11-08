@@ -1081,3 +1081,34 @@ def seed_rig_library(clamps=True, truss=True, pipes=True, decks=True):
         for inch in (24, 36):
             n = f"Stage Deck Leg {inch}in"
             DOC.resources[n] = _Obj(16, name=n, w=1.66, h=1.66, parent=stage)
+
+
+# ---- Vectorworks' library files (resource lists) ----------------------------------------
+# Tests register what each library file holds: LIBRARY[path] = [(symbol name, width, height)].
+# Opening a file counts in LIBRARY_OPENS so tests can see the index save a second search.
+LIBRARY: dict = {}
+LIBRARY_OPENS: list = []
+_RES_LISTS: dict = {}
+
+
+def BuildResourceListN(type, fullPath):
+    if type != 16:
+        raise ScriptErrors("only symbol resource lists are faked")
+    LIBRARY_OPENS.append(fullPath)
+    items = LIBRARY.get(fullPath)
+    if items is None:
+        return 0, 0
+    lid = len(_RES_LISTS) + 1
+    _RES_LISTS[lid] = list(items)
+    return lid, len(items)
+
+
+def GetActualNameFromResourceList(listID, index):
+    return _RES_LISTS[listID][index - 1][0]
+
+
+def ImportResourceToCurrentFile(listID, index):
+    name, w, h = _RES_LISTS[listID][index - 1]
+    if name not in DOC.resources:
+        DOC.resources[name] = _Obj(16, name=name, w=w, h=h)
+    return DOC.resources[name]

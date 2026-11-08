@@ -176,8 +176,9 @@ PIPE_OD = 1.9  # 1-1/2" schedule 40
 # Stage decks: Vectorworks' own library (Libraries > Defaults > Stage Deck), measured 2026-11-07.
 # A bare deck symbol ("Stage Deck 4ft x 8ft") has its insertion at its plan center with the long
 # side along X; its frame's underside is the insertion Z. Legs ("Stage Deck Leg 24in") stand on the
-# floor at their insertion. The bare decks aren't listed on their own in the library: they come in
-# with an assembled deck ("Stage Deck 4ft x 8ft x 2ft"), so that's what to import.
+# floor at their insertion. The bare decks aren't listed on their own in the Resource Manager:
+# by hand, importing an assembled deck ("Stage Deck 4ft x 8ft x 2ft") brings one in. The
+# connector's import_symbols reads the library files directly, so it imports the bare deck.
 DECK_LEG_HEIGHTS = tuple(range(8, 61, 4))
 NOT_IN_LIBRARY = {
     "skirt": "the library has no stage skirting; it's on the rental list",
@@ -497,7 +498,7 @@ def plan_build(bl: dict, available) -> Plan:
             elif kind == "deck":
                 name = deck_symbol(p["width"], p["length"])
                 if name not in have:
-                    note_missing(deck_import_name(p["width"], p["length"]))
+                    note_missing(name)
                     continue
                 plan.steps.append(symbol_step(name, p["at"], p.get("rotation", 0), pid, kind="deck"))
             elif kind == "leg":
