@@ -473,7 +473,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
         const r = payloadOf(
           await env.caps.mcp.callTool(SERVERS.remote, "fire_trigger", {
             trigger_id: trig,
-            text: `Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}`,
+            text: `Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}\n\n(Every at/updated/updatedAt you write is the real current UTC time from \`date -u +%Y-%m-%dT%H:%M:%SZ\`, read fresh each time.)`,
           }),
         ) as Record<string, unknown> | string | undefined;
         const obj = typeof r === "object" && r ? r : {};
