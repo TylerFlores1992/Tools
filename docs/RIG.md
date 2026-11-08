@@ -72,9 +72,10 @@ block, and a spine of 10's with 7" + ½" spacers. The tests check every one of t
 
 - Parts: tower sections are `truss` with role `tower`; sleeves and head blocks are `corner` with
   `role` `sleeve` / `head` (head adds `thick`); tower bases are `baseplate` with size 30.
-- The connector draws sleeves as truss stubs, skips head blocks, and refuses 20.5" box with a
-  message: Vectorworks' library has no 20.5" box truss. Next step: use the Air Pro file's own
-  Total Structures symbols (`Truss 20.5" Box 10' (SLV)` etc.).
+- The connector draws sleeves as truss stubs and skips head blocks. 20.5" box isn't in
+  Vectorworks' library, so since 0.5.3 it builds with the open file's own Total Structures
+  symbols (`Truss 20.5" Box 10' (SLV)`, as in the Air Pro drawing) and refuses, in words, in a
+  file without them. Not yet tried on real VW: check that those symbols resize like the library's.
 - Tower loads (`loads.ts`): the grid's self weight shared by simple spans; the limit defaults to
   2,000 lb (a typical 1-ton self-climber hoist) and is labelled a planning figure until set.
   Aspect publishes no ratings; Total Structures' tower datasheet defers to project calcs.
@@ -150,8 +151,7 @@ marks it Built. Editing an approved design puts it back to draft.
 - The connector's 3D calls (`Set3DRot` axis order, `Flip3DObj`, `GetSymLoc3D` after rotation,
   resizing a Straight Truss through `LineLength`) are tested against the fake only. Each build
   returns Vectorworks' own read-back of every clamp's orientation: check the first real build.
-- 20.5" box: the site plans it, but there's no 20.5" symbol in the file yet, so the connector
-  refuses it until one is imported.
+- 20.5" box builds only in a file that has the Total Structures (SLV) symbols (0.5.3).
 - AR is iPhone/iPad (AR Quick Look); other browsers get a sentence saying so.
 - Base plates are drawn on the phone and listed to rent; the connector skips them (no symbol yet).
 - Stage skirting, guardrails and stairs: drawn on the phone and listed to rent; the connector skips

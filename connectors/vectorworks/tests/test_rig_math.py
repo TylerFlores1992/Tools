@@ -173,8 +173,9 @@ def test_roll_must_be_square():
 
 def test_series_symbols():
     assert rig.truss_symbol_candidates("box12")[0] == "Truss Box 12in x 12in x 10ft"
-    with pytest.raises(rig.RigError, match="box20"):
-        rig.truss_symbol_candidates("box20")
+    assert rig.truss_symbol_candidates("box20")[0] == "Truss 20.5\" Box 10' (SLV)"
+    with pytest.raises(rig.RigError, match="box30"):
+        rig.truss_symbol_candidates("box30")
 
 
 # ---- pipes ----------------------------------------------------------------------------------
@@ -271,11 +272,13 @@ def test_plan_reports_substituted_pipe_lengths():
     assert step["at"] == pytest.approx([8.88 + 6, -2, 77.18])  # the 18" pipe is centered on the 30" span
 
 
-def test_unsupported_series_is_refused():
+def test_box20_needs_the_files_own_symbols():
     bl = cube()
-    bl["series"]["id"] = "box20"
-    with pytest.raises(rig.RigError, match="20.5"):
+    bl["series"].update(id="box20", width=20.5, height=20.5)
+    with pytest.raises(rig.RigError, match="20.5\" box truss isn't in Vectorworks' library"):
         rig.plan_build(bl, LIB)
+    plan = rig.plan_build(bl, [*LIB, "Truss 20.5\" Box 10' (SLV)"])
+    assert {s["symbol"] for s in plan.steps if s["kind"] in ("truss", "corner")} == {"Truss 20.5\" Box 10' (SLV)"}
 
 
 def test_design_ids_are_checked_before_building_a_url():

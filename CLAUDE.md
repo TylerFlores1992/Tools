@@ -66,6 +66,8 @@ detail lives. `scripts/docs.test.mts` fails above 120 lines. Detail → a skill;
   `connectors/vectorworks/` (its README: setup, why it's built that way, first run on real VW)
 - `src/app/private/rig/` Rig Planner: design truss rigs on the phone (three.js), approve, Claude builds them in Vectorworks via
   `build_rig`; logic `src/tools/rig/`, `rig` schema; the build-list contract + measured VW quirks in `docs/RIG.md`
+- Rig Studio: the pinned Claude page (artifact) holding every rig project, blank sketches, chat, full sessions, Dropbox,
+  build in VW; source `studio/rig-studio/`, sketch maths `src/tools/rig/sketch.ts`; `docs/RIG-STUDIO.md`
 - `src/app/private/learn/` "Learn to read code": lessons + spaced review (`learn` schema), Gemini
   marks explanations; lessons are data in `src/tools/learn/lessons/`; `docs/LEARN.md`
 - `src/app/private/mail/` Morning Mail, code rules + an AI read (Gmail Apps Script + Yahoo IMAP → `mail` schema,
