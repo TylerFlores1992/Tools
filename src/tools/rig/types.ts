@@ -2,7 +2,7 @@ import type { SeriesId } from "./catalog.ts";
 
 export type Vec3 = [number, number, number];
 
-export type TemplateId = "cube" | "goalpost" | "tower" | "flown" | "stage";
+export type TemplateId = "cube" | "goalpost" | "tower" | "flown" | "stage" | "roof";
 export type BraceMode = "none" | "top" | "bottom" | "both";
 /** Stage guardrails: none, along the back, or the back and both sides (the front stays open). */
 export type RailMode = "none" | "back" | "three";
@@ -24,6 +24,14 @@ export type RigParams = {
   rail: RailMode;
   /** Stage: stair units on the front edge. */
   stairs: number;
+  /** Roof: towers down each long side. */
+  towers: number;
+  /** Roof: tower center to tower center along the long side, inches; sums to width. Empty = even. */
+  bays: number[];
+  /** Roof: a purlin down the middle, tied into each cross beam. */
+  spine: boolean;
+  /** Roof: what each tower may carry, lb. A planning figure unless the rental house's calcs say so. */
+  towerLimit: number;
 };
 
 export type RigDesign = {
@@ -33,10 +41,15 @@ export type RigDesign = {
   params: RigParams;
 };
 
-export type TrussRole = "floor" | "leg" | "top" | "header" | "mast" | "grid";
+export type TrussRole = "floor" | "leg" | "top" | "header" | "mast" | "grid" | "tower" | "beam" | "cross" | "spine";
 
 export type TrussPart = { id: string; kind: "truss"; role: TrussRole; length: number; start: Vec3; end: Vec3; roll: number };
-export type CornerPart = { id: string; kind: "corner"; size: number; ways: number; center: Vec3 };
+/**
+ * A block at a joint. Plain corner blocks have no role. A "sleeve" is a self-climbing tower's
+ * sleeve block (`size` across, series height tall); a "head" is the tower's head block, a plate
+ * `size` across and `thick` tall. The connector draws sleeves as a truss stub and skips head blocks.
+ */
+export type CornerPart = { id: string; kind: "corner"; size: number; ways: number; center: Vec3; role?: "sleeve" | "head"; thick?: number };
 export type PipePart = { id: string; kind: "pipe"; od: number; length: number; start: Vec3; end: Vec3 };
 export type ClampPart = { id: string; kind: "clamp"; type: "swivel"; at: Vec3; pipeDir: Vec3; chordDir: Vec3; normal: Vec3; offset: number };
 export type BaseplatePart = { id: string; kind: "baseplate"; size: number; center: Vec3 };

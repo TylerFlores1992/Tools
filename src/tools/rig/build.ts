@@ -1,7 +1,7 @@
 // Design → build list: every truss section, corner block, pipe and cheeseborough in 3D.
 // Inches; X right, Y away from the front, Z up, floor at Z = 0 (docs/RIG.md).
-import { BASEPLATE, CLAMP, DECK, PIPE, PIPE_STICKOUT, RAIL, SERIES, SKIRT, STAIRS, type TrussSeries } from "./catalog.ts";
-import { ftIn } from "./templates.ts";
+import { BASEPLATE, CLAMP, DECK, PIPE, PIPE_STICKOUT, RAIL, ROOF, SERIES, SKIRT, STAIRS, type TrussSeries } from "./catalog.ts";
+import { fitBays, ftIn } from "./templates.ts";
 import type { BuildList, Part, RigDesign, RigParams, TrussRole, Vec3 } from "./types.ts";
 
 const R2 = Math.SQRT1_2;
@@ -38,16 +38,17 @@ class Builder {
   private n = { t: 0, c: 0, p: 0, k: 0, b: 0, d: 0, l: 0, s: 0, r: 0, st: 0 };
   constructor(readonly s: TrussSeries) {}
 
-  corner(center: Vec3, ways: number) {
-    this.parts.push({ id: `c${++this.n.c}`, kind: "corner", size: this.s.width, ways, center: v(...center) });
+  corner(center: Vec3, ways: number, extra: { role?: "sleeve" | "head"; size?: number; thick?: number } = {}) {
+    const { size = this.s.width, ...rest } = extra;
+    this.parts.push({ id: `c${++this.n.c}`, kind: "corner", size, ways, center: v(...center), ...rest });
   }
 
   /** Sticks along a straight run from `a` to `b` (centerline points on the faces of what they join). */
-  run(a: Vec3, b: Vec3, role: TrussRole, label: string) {
+  run(a: Vec3, b: Vec3, role: TrussRole, label: string, stock: readonly number[] = this.s.stock) {
     const d: Vec3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
     const len = Math.hypot(...d);
     const unit = scale(d, 1 / len);
-    const { pieces, exact } = splitRun(len, this.s.stock);
+    const { pieces, exact } = splitRun(len, stock);
     if (!exact) {
       const got = pieces.reduce((x, y) => x + y, 0);
       this.notes.push(`${label}: no stock sections add up to ${round(len)}" — closest is ${got}" (${round(len - got)}" short).`);
@@ -60,8 +61,45 @@ class Builder {
     }
   }
 
-  baseplate(center: Vec3) {
-    this.parts.push({ id: `b${++this.n.b}`, kind: "baseplate", size: BASEPLATE.size, center: v(...center) });
+  baseplate(center: Vec3, size: number = BASEPLATE.size) {
+    this.parts.push({ id: `b${++this.n.b}`, kind: "baseplate", size, center: v(...center) });
+  }
+
+  /**
+   * A ground-support roof: self-climbing towers down both long sides (centers at x = 0 and the
+   * bay sums, y = 0 and D), a sleeve block at the grid in each, long beams between sleeves, a cross
+   * beam at every tower and, optionally, a spine down the middle tied in with corner blocks.
+   * Built like the Air Pro self-climber drawing (2022), whose numbers the tests check.
+   */
+  roof(p: RigParams) {
+    const w = this.s.width;
+    const h = w / 2;
+    const D = p.depth;
+    const zc = p.trim + h;
+    const bays = fitBays(p.bays, p.towers, p.width);
+    const xs = bays.reduce((acc, b) => [...acc, acc[acc.length - 1] + b], [0]);
+    // Standard sections first, then the spacers that make a run exact; 10', 5', 4' are preferred
+    // over 8' + 1' when both use as many pieces (that's how the Air Pro cross beams were built).
+    const stock = [120, 60, 48, 96, 30, 24, 12, ...ROOF.spacers].filter((x, i, a) => a.indexOf(x) === i);
+    const sl = ROOF.sleeve.size / 2;
+    const need = p.trim + w + ROOF.headroom - ROOF.base.thickness;
+    const mast = Math.ceil(need / 120) * 120;
+    for (const y of [0, D])
+      for (const x of xs) {
+        this.baseplate([x, y, ROOF.base.thickness / 2], ROOF.base.size);
+        this.run([x, y, ROOF.base.thickness], [x, y, ROOF.base.thickness + mast], "tower", "Tower");
+        this.corner([x, y, ROOF.base.thickness + mast + ROOF.head.thick / 2], 1, { role: "head", size: ROOF.head.size, thick: ROOF.head.thick });
+        this.corner([x, y, zc], 3, { role: "sleeve", size: ROOF.sleeve.size });
+      }
+    for (const y of [0, D]) for (let k = 0; k < bays.length; k++) this.run([xs[k] + sl, y, zc], [xs[k + 1] - sl, y, zc], "beam", "Long beam", stock);
+    for (const [k, x] of xs.entries()) {
+      if (p.spine) {
+        this.corner([x, D / 2, zc], k === 0 || k === xs.length - 1 ? 3 : 4);
+        this.run([x, sl, zc], [x, D / 2 - h, zc], "cross", "Cross beam", stock);
+        this.run([x, D / 2 + h, zc], [x, D - sl, zc], "cross", "Cross beam", stock);
+      } else this.run([x, sl, zc], [x, D - sl, zc], "cross", "Cross beam", stock);
+    }
+    if (p.spine) for (let k = 0; k < bays.length; k++) this.run([xs[k] + h, D / 2, zc], [xs[k + 1] - h, D / 2, zc], "spine", "Spine", stock);
   }
 
   /** One deck and its legs, centered at (cx, cy) in plan, `length` along X (rotation 0) or Y (90). */
@@ -243,6 +281,9 @@ export function buildList(design: RigDesign): BuildList {
     }
     case "stage":
       b.stage(p);
+      break;
+    case "roof":
+      b.roof(p);
       break;
   }
 

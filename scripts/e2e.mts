@@ -1654,6 +1654,20 @@ try {
     await ctx.close();
   });
 
+  await check("rig: a ground-support roof shows its towers' loads and the long spans", async () => {
+    const { ctx, p } = await rigPage({ viewport: { width: 390, height: 844 } });
+    await p.getByRole("button", { name: /^Ground-support roof/ }).click();
+    await p.getByRole("img", { name: /87' × 42'0\.5" roof at 25': \d+ parts in 3D/ }).waitFor({ timeout: 20000 });
+    await p.getByText("22'4\" · 42'4\" · 22'4\"").waitFor();
+    await p.getByRole("radio", { name: /^Checks/ }).click();
+    await p.getByText(/longest bay is 42'4"/).waitFor();
+    await p.getByText("Front tower 1", { exact: true }).waitFor();
+    await p.getByText(/planning figure/).waitFor();
+    await p.getByRole("radio", { name: "Parts" }).click();
+    await p.getByText(/Self-climber sleeve block/).first().waitFor();
+    await ctx.close();
+  });
+
   await check("rig: the connector API refuses anyone without the key", async () => {
     const r = await fetch(`${BASE}/api/rig/designs/abcde`);
     assert.equal(r.status, 401);

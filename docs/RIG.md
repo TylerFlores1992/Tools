@@ -62,6 +62,23 @@ Stage parts (template `stage`, added 2026-11-07):
 { "id": "st1", "kind": "stairs", "width": 36, "rise": 25, "risers": 4, "run": 33, "at": [96, 0, 0], "out": [0, -1, 0] }
 ```
 
+Ground-support roof (template `roof`, added 2026-11-07). Its defaults are the **Air Pro
+self-climber roof** (Aspect Lighting, Total Structures 20.5" box, 2022), read piece by piece from
+its drawing (`Air Pro - Self Climber (09.07.22).vwx`, owner's Dropbox): towers at x ±522.02 and
+±254.02, y ±252.25 (bays 22'4" · 42'4" · 22'4", 42'½" across), grid bottom 300" (max trim),
+3 × 10' sleeve sections on a 30" base, a 56" head block on top, a 28" self-climber sleeve in the
+grid at each tower, 10' long beams, cross beams of 10' + 5' + 4' each side of a center corner
+block, and a spine of 10's with 7" + ½" spacers. The tests check every one of those numbers.
+
+- Parts: tower sections are `truss` with role `tower`; sleeves and head blocks are `corner` with
+  `role` `sleeve` / `head` (head adds `thick`); tower bases are `baseplate` with size 30.
+- The connector draws sleeves as truss stubs, skips head blocks, and refuses 20.5" box with a
+  message: Vectorworks' library has no 20.5" box truss. Next step: use the Air Pro file's own
+  Total Structures symbols (`Truss 20.5" Box 10' (SLV)` etc.).
+- Tower loads (`loads.ts`): the grid's self weight shared by simple spans; the limit defaults to
+  2,000 lb (a typical 1-ton self-climber hoist) and is labelled a planning figure until set.
+  Aspect publishes no ratings; Total Structures' tower datasheet defers to project calcs.
+
 ## What the connector must know about Vectorworks (measured 2026-11-07)
 
 - **Truss:** place the 12" box *symbol*, convert to group, ungroup → a Spotlight `Straight Truss`
@@ -103,7 +120,7 @@ Stage parts (template `stage`, added 2026-11-07):
 
 | Part | Where |
 |---|---|
-| Templates (cube, goal post, tower, flown grid, stage), their limits | `src/tools/rig/templates.ts` |
+| Templates (cube, goal post, tower, flown grid, stage, ground-support roof), their limits | `src/tools/rig/templates.ts` |
 | Design → build list (stock splits, braces, clamps) | `src/tools/rig/build.ts` |
 | Rental list, weights, joints | `src/tools/rig/bom.ts` · gear and weights in `catalog.ts` |
 | Checks (planning sanity, not engineering) | `src/tools/rig/checks.ts` |

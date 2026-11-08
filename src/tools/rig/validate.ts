@@ -5,7 +5,7 @@ import type { RigDesign } from "./types.ts";
 const DESIGN = z.object({
   version: z.literal(1),
   name: z.string().trim().min(1).max(80),
-  template: z.enum(["cube", "goalpost", "tower", "flown", "stage"]),
+  template: z.enum(["cube", "goalpost", "tower", "flown", "stage", "roof"]),
   params: z.object({
     series: z.enum(["box12", "box20"]),
     width: z.number().finite(),
@@ -18,6 +18,11 @@ const DESIGN = z.object({
     skirt: z.boolean().default(false),
     rail: z.enum(["none", "back", "three"]).default("none"),
     stairs: z.number().finite().default(0),
+    // Added with the ground-support roof (2026-11-07).
+    towers: z.number().finite().default(4),
+    bays: z.array(z.number().finite()).max(12).default([]),
+    spine: z.boolean().default(true),
+    towerLimit: z.number().finite().default(2000),
   }),
 });
 
