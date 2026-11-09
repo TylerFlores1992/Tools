@@ -529,7 +529,6 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
 
 function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
   const [name, setName] = useState("");
-  const [series, setSeries] = useState<"box12" | "box20">("box12");
   const [folder, setFolder] = useState<"make" | "link" | "none">(env.caps.mcp ? "make" : "none");
   const [path, setPath] = useState("");
   const [busy, setBusy] = useState(false);
@@ -574,7 +573,7 @@ function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
     }
     const id = slug(n);
     const t = now();
-    const sketch = emptySketch(n, series);
+    const sketch = emptySketch(n);
     await db.doc(`projects/${id}/versions/${vid(1)}`).set({ n: 1, note: "New project", by: "you", at: t, sketch } satisfies Version);
     await db.doc(`projects/${id}`).set({ name: n, createdAt: t, updatedAt: t, status: "draft", current: 1, approved: null, built: null, dropbox, seen: {}, thumb: thumbOf(sketch) });
     location.hash = `p-${id}`;
@@ -585,15 +584,6 @@ function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
       <h2>New project</h2>
       <label htmlFor="np-name">Name</label>
       <input id="np-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Tennis court roof, Sept 2026" autoFocus maxLength={80} />
-      <fieldset>
-        <legend>Truss</legend>
-        <label className="radio">
-          <input type="radio" name="np-series" id="np-s12" checked={series === "box12"} onChange={() => setSeries("box12")} /> 12" box
-        </label>
-        <label className="radio">
-          <input type="radio" name="np-series" id="np-s20" checked={series === "box20"} onChange={() => setSeries("box20")} /> 20.5" box (ground support)
-        </label>
-      </fieldset>
       <fieldset disabled={!env.caps.mcp}>
         <legend>Dropbox folder</legend>
         <label className="radio">

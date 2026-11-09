@@ -10,7 +10,7 @@ export const FORMAT = `RIG FORMAT (inches; X to the right, Y away from the audie
 - towers: ground-support self-climbing towers {id, x, y, height?}. A tower under a joint gets a sleeve block there, a base and a head block; height is worked out if left out.
 - points: hanging points {id, at:[x,y,z], kind:"hoist"|"deadhang", capacity (lb, 2000 = 1 ton)}. Put them on truss joints or along runs.
 - loads: other hung weight {id, at, lb, label} (speakers, video, a drape).
-- series: "box12" (12" box truss, 4.3 lb/ft) or "box20" (20.5" box, 7.5 lb/ft). Stock lengths 10', 8', 5', 4', 2.5', 2', 1' (plus 7" and ½" spacers on 20.5"). Make joint-to-joint lengths add up: block size (12 or 20.5) plus whole stock.
+- series: "box12" (12" box truss, 4.3 lb/ft) or "box20" (20.5" box, 7.5 lb/ft). New projects start on box12 only as a placeholder: the designer picks the truss in the chat (edit_rig set series), and not every project uses truss. Stock lengths 10', 8', 5', 4', 2.5', 2', 1' (plus 7" and ½" spacers on 20.5"). Make joint-to-joint lengths add up: block size (12 or 20.5) plus whole stock.
 - Span guide: 12" box ≤ 30' between points, 20.5" box ≤ 40'. Cantilevers ≤ 4'.`;
 
 export type Ctx = {
