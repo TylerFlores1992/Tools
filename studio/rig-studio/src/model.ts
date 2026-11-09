@@ -19,7 +19,21 @@ export type Project = {
   dropbox: { path: string; display: string } | null;
   /** Dropbox file id → the modified time last looked at, so changed files can be flagged. */
   seen: Record<string, string>;
+  /** Off the main list (nothing deleted). */
+  archived?: boolean;
+  /** Kept at the top of the list; earlier pins first. */
+  pinnedAt?: string | null;
 };
+
+/** The order of the project list: pinned first (in the order they were pinned), then the most
+ * recently changed. */
+export function sortProjects<T extends Pick<Project, "updatedAt" | "pinnedAt">>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+    if (a.pinnedAt && b.pinnedAt) return a.pinnedAt.localeCompare(b.pinnedAt);
+    return b.updatedAt.localeCompare(a.updatedAt);
+  });
+}
 
 /** projects/{pid}/versions/{v0001} */
 export type Version = { n: number; note: string; by: "you" | "claude" | "session"; at: string; sketch: Sketch };

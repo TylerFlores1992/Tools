@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -152,7 +152,7 @@ function App() {
       (s) => {
         clearTimeout(timer);
         setLoadErr(null);
-        setProjects(s.docs.map((d) => ({ ...(d.data() as Project), id: d.id })).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
+        setProjects(sortProjects(s.docs.map((d) => ({ ...(d.data() as Project), id: d.id }))));
       },
       (e) => setLoadErr(`Couldn't read projects: ${e.message}`),
     );
@@ -213,12 +213,82 @@ function Header({ children }: { children?: ReactNode }) {
 
 /* ------------------------------------------------------------------ home */
 
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" className="pin-icon">
+      <path d="M10.5 1.5 14.5 5.5 12 6.5 9.5 9 10 12.5 8.5 14 5.5 11 2 14.5 1.5 14 5 10.5 2 7.5 3.5 6 7 6.5 9.5 4Z" />
+    </svg>
+  );
+}
+
 function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] | null; jobs: Job[]; loadErr: string | null }) {
   const [making, setMaking] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [menu, setMenu] = useState<string | null>(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [note, setNote] = useState<{ tone: "ok" | "warn" | "info"; text: string } | null>(null);
+  const db = env.caps.db!;
   const running = jobs.filter((j) => j.status === "queued" || j.status === "running");
-  const archived = (projects ?? []).filter((p) => (p as Project & { archived?: boolean }).archived);
-  const list = projects ? projects.filter((p) => !!(p as Project & { archived?: boolean }).archived === showArchived) : null;
+  const archived = (projects ?? []).filter((p) => p.archived);
+  const list = projects ? projects.filter((p) => !!p.archived === showArchived) : null;
+  const pinnedCount = (projects ?? []).filter((p) => p.pinnedAt && !p.archived).length;
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = (e: Event) => {
+      if (!(e.target as Element).closest?.(".card-menu, .menu-btn")) setMenu(null);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setMenu(null);
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [menu]);
+
+  const act = async (p: Project, what: "pin" | "unpin" | "archive" | "restore") => {
+    setMenu(null);
+    try {
+      if (what === "pin") await db.doc(`projects/${p.id}`).update({ pinnedAt: now() });
+      if (what === "unpin") await db.doc(`projects/${p.id}`).update({ pinnedAt: null });
+      if (what === "archive") await db.doc(`projects/${p.id}`).update({ archived: true, pinnedAt: null });
+      if (what === "restore") await db.doc(`projects/${p.id}`).update({ archived: false });
+      if (what === "archive") setNote({ tone: "ok", text: `Archived ${p.name}. It's under Archived projects; nothing was deleted.` });
+      if (what === "restore") setNote({ tone: "ok", text: `${p.name} is back on the list.` });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't change ${p.name}: ${(e as Error).message ?? e}` });
+    }
+  };
+
+  /** Delete a project for good: its versions, layers (and their drawings), chat (and its pictures) and its sessions' records. */
+  const remove = async (p: Project) => {
+    setConfirmDel(null);
+    setBusyId(p.id);
+    try {
+      const assets = new Set<string>();
+      for (const sub of ["versions", "layers", "chat"]) {
+        const snap = await db.collection(`projects/${p.id}/${sub}`).get();
+        for (const d of snap.docs) {
+          const data = d.data() as { asset?: string; images?: string[] };
+          if (data.asset) assets.add(data.asset);
+          for (const id of data.images ?? []) assets.add(id);
+          await db.doc(`projects/${p.id}/${sub}/${d.id}`).delete();
+        }
+      }
+      const js = await db.collection("jobs").where("pid", "==", p.id).get();
+      for (const d of js.docs) await db.doc(`jobs/${d.id}`).delete();
+      await db.doc(`projects/${p.id}`).delete();
+      if (env.caps.assets) for (const id of assets) await env.caps.assets.delete(id).catch(() => {});
+      setNote({ tone: "ok", text: `Deleted ${p.name}.` });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't finish deleting ${p.name}: ${(e as Error).message ?? e}. Try again; what's left is still on the list.` });
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <main className="home">
       <Header>
@@ -242,28 +312,101 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
           </button>
         </div>
       )}
+      {note && (
+        <Notice tone={note.tone} onClose={() => setNote(null)}>
+          {note.text}
+        </Notice>
+      )}
+      {showArchived && <h2 className="h3">Archived projects</h2>}
+      {showArchived && list?.length === 0 && <p className="muted">Nothing archived.</p>}
       {!!list?.length && (
         <ul className="cards">
           {list.map((p) => {
             const busy = running.some((j) => j.pid === p.id);
+            const open = menu === p.id;
             return (
-              <li key={p.id}>
-                <a className="card" href={`#p-${p.id}`}>
+              <li key={p.id} className="card-wrap">
+                <a className="card" href={`#p-${p.id}`} aria-busy={busyId === p.id}>
                   <Plan thumb={(p as Project & { thumb?: Thumb }).thumb} />
                   <div className="card-body">
-                    <h3>{p.name}</h3>
+                    <h3>
+                      {p.pinnedAt && (
+                        <span className="pin-mark" title="Pinned">
+                          <PinIcon /> <span className="sr">Pinned:</span>
+                        </span>
+                      )}
+                      {p.name}
+                    </h3>
                     <StatusChip p={p} />
                     <span className="muted small">
-                      Updated {ago(p.updatedAt)}
+                      {busyId === p.id ? "Deleting…" : `Updated ${ago(p.updatedAt)}`}
                       {busy ? " · ◐ Claude is working" : ""}
                     </span>
                   </div>
                 </a>
+                <button className="menu-btn" aria-label={`More for ${p.name}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setMenu(open ? null : p.id)} id={`menu-${p.id}`}>
+                  ⋯
+                </button>
+                {open && (
+                  <div className="card-menu" role="menu">
+                    {!p.archived &&
+                      (p.pinnedAt ? (
+                        <button role="menuitem" onClick={() => act(p, "unpin")}>
+                          Unpin
+                        </button>
+                      ) : (
+                        <button role="menuitem" onClick={() => act(p, "pin")} id={`pin-${p.id}`}>
+                          Pin to top
+                        </button>
+                      ))}
+                    {p.archived ? (
+                      <button role="menuitem" onClick={() => act(p, "restore")} id={`restore-${p.id}`}>
+                        Put back on the list
+                      </button>
+                    ) : (
+                      <button role="menuitem" onClick={() => act(p, "archive")} id={`archive-${p.id}`}>
+                        Archive
+                      </button>
+                    )}
+                    <button
+                      role="menuitem"
+                      className="danger"
+                      onClick={() => {
+                        setMenu(null);
+                        setConfirmDel(p.id);
+                      }}
+                      id={`delete-${p.id}`}
+                    >
+                      Delete…
+                    </button>
+                  </div>
+                )}
+                {confirmDel === p.id && (
+                  <div className="card-confirm" role="alertdialog" aria-label={`Delete ${p.name}`}>
+                    <p>
+                      Delete <strong>{p.name}</strong> for good? Its versions, layers, chat and pictures go too, and it can't be undone. Archive keeps it instead.
+                    </p>
+                    <div className="row">
+                      <button className="btn small danger-btn" onClick={() => remove(p)} id={`delete-yes-${p.id}`}>
+                        Delete for good
+                      </button>
+                      {!p.archived && (
+                        <button className="btn small" onClick={() => (setConfirmDel(null), act(p, "archive"))}>
+                          Archive instead
+                        </button>
+                      )}
+                      <button className="btn small" onClick={() => setConfirmDel(null)}>
+                        Keep it
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             );
           })}
         </ul>
       )}
+      {!showArchived && pinnedCount === 0 && (list?.length ?? 0) > 2 && <p className="muted small">Tip: use ⋯ on a project to pin it to the top.</p>}
       {(archived.length > 0 || showArchived) && (
         <button className="link small" onClick={() => setShowArchived(!showArchived)}>
           {showArchived ? "Back to current projects" : `Archived projects (${archived.length})`}

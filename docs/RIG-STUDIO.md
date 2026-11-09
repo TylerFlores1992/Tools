@@ -5,7 +5,8 @@ The pinned Claude page that holds every rig project: **https://claude.ai/artifac
 `src/tools/rig/sketch.ts` and `sketchOps.ts` (tested in `sketch.test.mts`).
 
 What it does:
-- **Projects, all blank.** No templates. Each one has a free-form *sketch* (truss runs, towers,
+- **Projects, all blank.** Each card has a ⋯ menu: pin to the top, archive (off the list, nothing
+  deleted) or delete for good (versions, layers, chat, pictures and its session records). No templates. Each one has a free-form *sketch* (truss runs, towers,
   hoists, hung loads), a version history, reference layers, a chat and a Dropbox folder.
 - **The view.** 3D, plan, front and side, from the same scene code as the Rig Planner
   (`src/tools/rig/ui/scene.ts`), with load labels on every hoist and tower.
@@ -53,7 +54,7 @@ Command line (what sessions use): `npx tsx scripts/rig-sketch.mts check|build|re
 
 | Path | Shape |
 |---|---|
-| `projects/{pid}` | `{name, createdAt, updatedAt, status: "draft"\|"approved"\|"built", current, approved, built, dropbox: {path, display}\|null, seen: {fileId: modified}, thumb}` |
+| `projects/{pid}` | `{name, createdAt, updatedAt, status: "draft"\|"approved"\|"built", current, approved, built, archived?, pinnedAt?, dropbox: {path, display}\|null, seen: {fileId: modified}, thumb}` |
 | `projects/{pid}/versions/v0001` | `{n, note, by: "you"\|"claude"\|"session", at, sketch, approvedAt?}` (id is `v` + 4 digits) |
 | `projects/{pid}/layers/{lid}` | `{name, kind: "image"\|"fixtures"\|"shapes", visible, at, source?, …}`: image `{asset, px:[w,h], widthIn, x, y, z, rot, opacity}`; fixtures `{fixtures:[{x,y,z,lb,type}], onRig}`; shapes `{shapes:[{pts:[[x,y]…], z, closed, label}]}` |
 | `projects/{pid}/chat/{mid}` | `{role: "you"\|"claude"\|"session", text, at, job?, version?}` |

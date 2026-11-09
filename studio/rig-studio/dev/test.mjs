@@ -143,6 +143,32 @@ for (const scheme of ["dark", "light"]) {
     const proj = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.split("/").length === 2 && k.startsWith("projects/") && v.name === "Test show")?.[1]);
     ok(proj && proj.dropbox?.display === "/Rig Studio/Test show" && proj.current === 1, "a new blank project with its Dropbox folder");
     await p.screenshot({ path: join(shots, "rig-studio-blank.png") });
+
+    console.log("pin, archive and delete from the project list");
+    await p.click(".back");
+    await p.waitForSelector(".card");
+    const testId = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.split("/").length === 2 && v.name === "Test show")[0].split("/")[1]);
+    const names = () => p.$$eval(".card h3", (hs) => hs.map((h) => h.textContent.replace("Pinned:", "").trim()));
+    ok((await names())[0] === "Test show", "newest project first before pinning");
+    await p.click("#menu-air-pro-roof");
+    await p.click("#pin-air-pro-roof");
+    await p.waitForFunction(() => document.querySelector(".card h3")?.textContent.includes("Air Pro"));
+    ok(true, "a pinned project moves to the top");
+    ok(await p.locator(".card").first().locator(".pin-mark").isVisible(), "and shows a pin with a word for screen readers");
+    await p.screenshot({ path: join(shots, "rig-studio-pinned.png") });
+    await p.click(`#menu-${testId}`);
+    await p.click(`#archive-${testId}`);
+    await p.waitForFunction(() => document.querySelectorAll(".card").length === 1);
+    ok(/Archived Test show/.test(await p.locator(".notice").innerText()), "archiving says where it went");
+    await p.click("text=Archived projects (1)");
+    await p.waitForSelector(`#menu-${testId}`);
+    await p.click(`#menu-${testId}`);
+    await p.click(`#delete-${testId}`);
+    ok(/can't be undone/.test(await p.locator(".card-confirm").innerText()), "deleting asks first and says it can't be undone");
+    await p.click(`#delete-yes-${testId}`);
+    await p.waitForFunction((id) => ![...window.__DOCS__.keys()].some((k) => k.startsWith(`projects/${id}`)), testId);
+    ok(true, "deleting removes the project, its versions and chat");
+    ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/versions")).length)) >= 2, "other projects are untouched");
   }
   ok(errors.length === 0, `no page errors (${scheme})${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await ctx.close();

@@ -154,6 +154,18 @@ legend { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase
 .card { display: grid; gap: 0; text-decoration: none; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; height: 100%; }
 .card:hover { border-color: var(--line-2); }
 .card-body { padding: 12px 14px 14px; display: grid; gap: 6px; justify-items: start; }
+.card-wrap { position: relative; }
+.card[aria-busy="true"] { opacity: 0.55; pointer-events: none; }
+.menu-btn { position: absolute; top: 8px; right: 8px; min-width: 36px; min-height: 36px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.menu-btn:hover, .menu-btn[aria-expanded="true"] { border-color: var(--control); }
+.card-menu { position: absolute; z-index: 5; top: 48px; right: 8px; display: grid; min-width: 190px; padding: 6px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line-2); box-shadow: var(--shadow); }
+.card-menu button { text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 0.92rem; }
+.card-menu button:hover, .card-menu button:focus-visible { background: var(--surface-2); }
+.card-menu .danger { color: var(--warn); }
+.card-confirm { position: absolute; z-index: 6; inset: auto 8px 8px 8px; padding: 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--warn); box-shadow: var(--shadow); display: grid; gap: 10px; font-size: 0.9rem; }
+.danger-btn { border-color: var(--warn); color: var(--warn); }
+.pin-mark { display: inline-flex; vertical-align: -1px; margin-right: 6px; }
+.pin-icon { fill: var(--accent); }
 .card h3 { font-size: 1.05rem; }
 .plan { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--stage); border-bottom: 1px solid var(--line); }
 .plan-run { stroke: var(--metal); stroke-width: 2; stroke-linecap: round; }
