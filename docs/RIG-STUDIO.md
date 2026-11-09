@@ -28,6 +28,10 @@ What it does:
   symbols and outlines, in inches, kept under 5 MB. In a Dropbox folder it syncs; the Files tab
   then opens it (Dropbox `fetch`) as layers: fixtures, the existing rig, outlines per Vectorworks
   layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
+  With `VWMCP_WATCH` set on the PC (connector 0.5.6+), new or changed .vwx files in those folders
+  are read out by themselves once nobody has touched the PC or Claude for 10 minutes.
+- **The PC can be asleep.** "PC asleep? Wake it" (beside PC jobs) opens `/private/pc`, which wakes
+  it through the home server (`connectors/pc-waker/`). Setup in that README.
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC

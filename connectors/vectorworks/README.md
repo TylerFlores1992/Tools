@@ -280,7 +280,8 @@ end, on any OS.
 src/vwmcp/     server.py (MCP tools) · panel.py (local HTTP API) · jobs.py (queue) ·
                trigger.py (hotkey, idle wait, guards, capture) · svg.py · install.py · config.py
                update.py (self-update) · symbols.py + symbols.json (symbol names as data)
-               readout.py (read_out: the drawing as <name>.rigread.json beside the .vwx)
+               readout.py (read_out: the drawing as <name>.rigread.json beside the .vwx;
+               VWMCP_WATCH folders are read out by themselves when the PC is quiet)
                service.py (show workflow) · show.py (datum, departments, limits, per file) ·
                rigging.py (bridles, truss reactions, units) · report.py (point list, checks) ·
                rig.py (Rig Planner build lists: frames, clamps, truss insertion; no vs)

@@ -72,3 +72,33 @@ def test_matching_the_open_document_and_finding_files(tmp_path):
     assert readout.needs_read(tmp_path / "Show.vwx")
     readout.target_for(tmp_path / "Show.vwx").write_text("{}")
     assert not readout.needs_read(tmp_path / "Show.vwx")
+
+
+def test_watch_folders_keeps_only_real_folders(tmp_path):
+    (tmp_path / "a").mkdir()
+    got = readout.watch_folders(f'{tmp_path / "a"}; "{tmp_path / "missing"}";;')
+    assert got == [tmp_path / "a"]
+
+
+def test_quiet_needs_both_an_idle_pc_and_no_recent_claude():
+    assert readout.quiet(900, 900)
+    assert not readout.quiet(30, 900)  # someone is at the keyboard
+    assert not readout.quiet(900, 30)  # Claude just used Vectorworks
+    assert not readout.quiet(None, 900)  # can't tell: count it as busy
+
+
+def test_watcher_reads_out_new_files_only_when_quiet(fake_vw, tmp_path, monkeypatch):
+    import asyncio
+
+    vwx = tmp_path / "Show.vwx"
+    vwx.write_bytes(b"x")
+    monkeypatch.setenv("VWMCP_WATCH", str(tmp_path))
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
+    srv = build_server(config.load())
+    monkeypatch.setattr(readout, "idle_seconds", lambda: 30.0)  # someone is working
+    assert asyncio.run(srv.watch_once(now=10_000.0)) == []
+    assert readout.pending([tmp_path]) == [vwx]
+    monkeypatch.setattr(readout, "idle_seconds", lambda: 3600.0)
+    done = asyncio.run(srv.watch_once(now=10_000.0))
+    assert done and done[0].get("saved") == str(tmp_path / "Show.rigread.json"), done
+    assert readout.pending([tmp_path]) == []

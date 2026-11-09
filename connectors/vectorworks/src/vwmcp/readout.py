@@ -94,3 +94,50 @@ def needs_read(vwx: Path) -> bool:
 def vwx_files(folder: Path) -> list[Path]:
     """The .vwx files in a folder and below, leaving out Vectorworks' backup folders."""
     return sorted(p for p in folder.rglob("*.vwx") if not any(part.lower() in ("vw backup", "backup") for part in p.parts) and "-backup-" not in p.name.lower())
+
+
+# ---- watching folders -------------------------------------------------------------------------
+# With VWMCP_WATCH set (folders separated by ";"), the connector reads out any .vwx there that is
+# new or changed, by itself, but only while nobody is using the PC and Claude hasn't asked
+# Vectorworks for anything lately, so it never opens a file under someone's hands.
+
+WATCH_EVERY = 300.0  # seconds between looks
+QUIET_FOR = 600.0  # seconds without keyboard/mouse and without Claude before it may open files
+
+
+def watch_folders(raw: str | None = None) -> list[Path]:
+    raw = os.environ.get("VWMCP_WATCH", "") if raw is None else raw
+    out = []
+    for part in raw.split(";"):
+        p = Path(part.strip().strip('"')).expanduser()
+        if part.strip() and p.is_dir():
+            out.append(p)
+    return out
+
+
+def pending(folders: list[Path]) -> list[Path]:
+    """Every watched .vwx whose read-out is missing or older than the file, oldest change first."""
+    todo = [p for f in folders for p in vwx_files(f) if needs_read(p)]
+    return sorted(todo, key=lambda p: p.stat().st_mtime)
+
+
+def idle_seconds() -> float | None:
+    """Seconds since the last keyboard or mouse input on this PC, or None off Windows."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class LASTINPUTINFO(ctypes.Structure):
+            _fields_ = [("cbSize", wintypes.UINT), ("dwTime", wintypes.DWORD)]
+
+        info = LASTINPUTINFO(ctypes.sizeof(LASTINPUTINFO), 0)
+        if not ctypes.windll.user32.GetLastInputInfo(ctypes.byref(info)):  # type: ignore[attr-defined]
+            return None
+        return (ctypes.windll.kernel32.GetTickCount() - info.dwTime) / 1000.0  # type: ignore[attr-defined]
+    except Exception:
+        return None
+
+
+def quiet(idle: float | None, since_claude: float, quiet_for: float = QUIET_FOR) -> bool:
+    """May the watcher open files now? Unknown idleness counts as busy."""
+    return idle is not None and idle >= quiet_for and since_claude >= quiet_for

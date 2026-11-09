@@ -32,6 +32,7 @@ const CHECKS: { path: string; status: number; contains: string; absent?: string;
   { path: "/private/course", status: 200, contains: "Enter the password", absent: "Show the course" },
   { path: "/private/recordings", status: 200, contains: "Enter the password", absent: "Home DVR" },
   { path: "/private/recordings/record", status: 200, contains: "Enter the password", absent: "Search the TV guide" },
+  { path: "/private/pc", status: 200, contains: "Enter the password", absent: "Wake my PC" },
   { path: "/lab/camphawk", status: 200, contains: "Enter the password", absent: "already booked" },
   { path: "/private/camphawk/golden-hour", status: 200, contains: "Enter the password", absent: "already booked" },
   { path: "/private/camphawk/golden-hour/campground", status: 200, contains: "Enter the password", absent: "Upper Pines" },

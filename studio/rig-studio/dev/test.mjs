@@ -130,6 +130,7 @@ for (const scheme of ["dark", "light"]) {
     console.log("a full session starts from the page");
     await p.fill("#ask", "Read the lighting plot in Dropbox and lay out truss over it");
     await p.selectOption("#where", "pc");
+    ok((await p.locator("a.wake").first().getAttribute("href")) === "https://tylerflores.dev/private/pc", "choosing the PC offers the wake link");
     await p.click("#start-session");
     await p.waitForSelector(".job");
     const fire = await p.evaluate(() => window.__CALLS__.find((c) => c.tool === "fire_trigger"));
