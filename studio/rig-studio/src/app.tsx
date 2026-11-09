@@ -1358,9 +1358,20 @@ function ChatPane(props: {
             <option value="cloud">in the cloud</option>
             <option value="pc">on my PC (Vectorworks, local files)</option>
           </select>
+          {where === "pc" && <WakeLink />}
         </div>
       </form>
     </div>
+  );
+}
+
+/** The PC sleeps; this opens the site page that wakes it through the home server. */
+export const WAKE_URL = "https://tylerflores.dev/private/pc";
+function WakeLink() {
+  return (
+    <a className="link small wake" href={WAKE_URL} target="_blank" rel="noreferrer">
+      PC asleep? Wake it ↗
+    </a>
   );
 }
 
@@ -1964,9 +1975,12 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
                     (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
                     <span className="muted small">✓ Read out (open the .rigread.json below)</span>
                   ) : ["vwx"].includes(ext) ? (
-                    <button className="link small" onClick={() => ask(e, "read")}>
-                      Read it out on my PC (needs the PC on)
-                    </button>
+                    <>
+                      <button className="link small" onClick={() => ask(e, "read")}>
+                        Read it out on my PC (needs the PC on)
+                      </button>
+                      <WakeLink />
+                    </>
                   ) : null}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>

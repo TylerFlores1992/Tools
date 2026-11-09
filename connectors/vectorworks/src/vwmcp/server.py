@@ -8,7 +8,9 @@ Objects are referred to by the `id` (a UUID) returned when they're created or li
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import sys
+import time
 from typing import Any, Literal, Union
 
 from mcp.server.mcpserver import Image, MCPServer
@@ -62,7 +64,18 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     trigger = make_trigger(settings)
     queue = JobQueue(settings, trigger)
     show = Show(queue, settings.home)
-    mcp = MCPServer("vectorworks", instructions=INSTRUCTIONS, version=__version__)
+    last_claude = [0.0]  # monotonic time of Claude's last request to Vectorworks
+
+    @contextlib.asynccontextmanager
+    async def lifespan(_server):
+        task = asyncio.create_task(watch_loop()) if readout.watch_folders() else None
+        try:
+            yield {}
+        finally:
+            if task:
+                task.cancel()
+
+    mcp = MCPServer("vectorworks", instructions=INSTRUCTIONS, version=__version__, lifespan=lifespan)
 
     async def guarded(coro):
         try:
@@ -70,7 +83,9 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         except (BridgeError, BridgeTimeout, TriggerError, ValueError) as e:
             raise ToolError(str(e)) from e
 
-    async def call(op: str, **args: Any) -> Any:
+    async def call(op: str, _watch: bool = False, **args: Any) -> Any:
+        if not _watch:
+            last_claude[0] = time.monotonic()
         try:
             return await queue.call(op, **{k: v for k, v in args.items() if v is not None})
         except (BridgeError, BridgeTimeout, TriggerError) as e:
@@ -88,6 +103,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             out["symbols"] = STARTUP.get("symbols", "built-in")
             if STARTUP.get("update"):
                 out["update"] = STARTUP["update"]
+            folders = readout.watch_folders()
+            out["watching"] = [str(f) for f in folders] if folders else "nothing (set VWMCP_WATCH to read out new files by itself)"
         return out
 
     @mcp.tool()
@@ -416,14 +433,19 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
 
     # ---- Spotlight -------------------------------------------------------------------
 
+    outer_call = call
+
     @mcp.tool()
     async def get_lighting_devices(layer: str | None = None, limit: int = 2000) -> dict:
         """Every Spotlight lighting device with all of its fields (channel, unit, position,
         purpose, color, wattage, weight, universe/address...) and its insertion point."""
         return await call("get_lighting_devices", layer=layer, limit=limit)
 
-    async def _read_out_one(path: str | None, max_objects: int) -> dict:
+    async def _read_out_one(path: str | None, max_objects: int, watch: bool = False) -> dict:
         from pathlib import Path
+
+        async def call(op: str, **args: Any) -> Any:  # the watcher's calls don't count as Claude's
+            return await outer_call(op, _watch=watch, **args)
 
         vwx = Path(path).expanduser() if path else None
         if vwx is not None:
@@ -488,6 +510,30 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             except ToolError as e:
                 failed.append({"file": str(p), "error": str(e)})
         return {"read": done, "failed": failed, "left": max(0, len(todo) - int(limit))}
+
+    async def watch_once(now: float | None = None) -> list[dict]:
+        """One look at the watched folders: reads out what's new, if the PC is quiet."""
+        since = (now if now is not None else time.monotonic()) - last_claude[0]
+        if not readout.quiet(readout.idle_seconds(), since):
+            return []
+        done = []
+        for p in readout.pending(readout.watch_folders())[:3]:
+            try:
+                done.append(await _read_out_one(str(p), 20000, watch=True))
+                _log("read out %s" % p.name)
+            except Exception as e:  # a bad file must not stop the watcher
+                done.append({"file": str(p), "error": str(e)})
+                _log("couldn't read out %s: %s" % (p.name, e))
+        return done
+
+    async def watch_loop() -> None:
+        STARTUP["watch"] = "; ".join(str(f) for f in readout.watch_folders())
+        while True:
+            await asyncio.sleep(readout.WATCH_EVERY)
+            with contextlib.suppress(Exception):
+                await watch_once()
+
+    mcp.watch_once = watch_once  # type: ignore[attr-defined]  # for tests
 
     @mcp.tool()
     async def set_record_fields(id: str, record: str, values: dict[str, str]) -> dict:

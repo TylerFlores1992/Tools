@@ -60,6 +60,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/vectorworks",
   },
   {
+    slug: "pc",
+    name: "Home PC",
+    summary: "Wake the main PC from your phone so Vectorworks can read out drawings and build rigs while you're away.",
+    stage: "Wake-on-LAN through the home server",
+    href: "/private/pc",
+  },
+  {
     slug: "camphawk",
     name: "CampHawk lab",
     summary: "CampHawk's pages in a new look, with fake data. Try ideas here before they ship.",
