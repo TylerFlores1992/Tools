@@ -9,7 +9,7 @@ What it does:
   hoists, hung loads), a version history, reference layers, a chat and a Dropbox folder.
 - **The view.** 3D, plan, front and side, from the same scene code as the Rig Planner
   (`src/tools/rig/ui/scene.ts`), with load labels on every hoist and tower.
-- **Chat bar.** Pictures can go with a message (attach, paste or drop; kept as page assets so a full
+- **Chat bar.** Pictures can go with a message (paste, or drop onto the box; kept as page assets so a full
   session can open them too). Claude inside the page (the artifact `sample` capability) edits the sketch with
   page tools (`edit_rig`, `replace_rig`, `read_layer`) and saves one version per request.
 - **Full sessions for big jobs.** "Start a full session" (or Claude's own `start_session` tool)

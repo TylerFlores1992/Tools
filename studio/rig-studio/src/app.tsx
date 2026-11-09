@@ -1079,7 +1079,7 @@ function ChatPane(props: {
           id="ask"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Change the rig, or describe a big job…"
+          placeholder="Change the rig, or describe a big job… (paste a picture to show Claude)"
           rows={3}
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask();
@@ -1105,20 +1105,6 @@ function ChatPane(props: {
           </ul>
         )}
         <div className="composer-row">
-          <label className="btn attach" htmlFor="chat-img" title="Add pictures (or paste, or drop them here)">
-            + Picture
-          </label>
-          <input
-            id="chat-img"
-            type="file"
-            className="sr"
-            multiple
-            accept={(imgLimits?.mediaTypes ?? ["image/png", "image/jpeg", "image/webp", "image/gif"]).join(",")}
-            onChange={(e) => {
-              addImages([...(e.target.files ?? [])]);
-              e.target.value = "";
-            }}
-          />
           {working ? (
             <button type="button" className="btn" onClick={() => abort.current?.abort()} id="stop">
               Stop

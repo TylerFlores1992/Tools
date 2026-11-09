@@ -89,7 +89,12 @@ for (const scheme of ["dark", "light"]) {
 
     console.log("pictures go to Claude in the chat and are kept with the message");
     const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
-    await p.setInputFiles("#chat-img", { name: "head-block.png", mimeType: "image/png", buffer: png });
+    await p.evaluate((b64) => {
+      const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+      const dt = new DataTransfer();
+      dt.items.add(new File([bytes], "head-block.png", { type: "image/png" }));
+      document.getElementById("ask").dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+    }, png.toString("base64"));
     await p.waitForSelector(".pending-imgs img");
     await p.fill("#ask", "This is what the head block looks like");
     await p.click("#send");
