@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 57 tools (59 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 58 tools (60 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -140,9 +140,16 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    environment (the connector reads it from there each time, no restart needed), or add it to the MCP config, e.g. for
    Claude Desktop: `"env": { "VWMCP_RIG_TOKEN": "…" }` next to `"command"`; for Claude Code,
    `claude mcp add vectorworks -e VWMCP_RIG_TOKEN=… -- …\vwmcp.exe`. Restart Claude.
-2. **After every `git pull`, run `vwmcp-install-plugin` again.** Vectorworks runs the copy in
-   `%USERPROFILE%\.vwmcp\plugin`, not this folder; an old copy answers "Unknown op
-   'build_rig_parts'". `ping` shows the bridge version (0.3.0 or newer for rigs, 0.4.0 or newer for stage decks, 0.5.0 or newer to import missing symbols by itself).
+2. **It keeps itself up to date (0.5.4 and later).** Each time the Claude app starts it, the
+   connector checks tylerflores.dev with the same key; a newer build is downloaded, its SHA-256
+   checked, unpacked over this folder (`pip install -e` installs only), dependencies refreshed if
+   they changed, and the new bridge copied to `%USERPROFILE%\.vwmcp\plugin`; then the new code
+   starts on the same connection. The symbol names it builds with (`src/vwmcp/symbols.json`) are
+   fetched the same way, hourly, so a new truss size or symbol is an edit there plus
+   `make_zip.py` and a deploy, with no update at all. `update_connector` checks on demand; `ping`
+   shows the connector version, the bridge version and the symbol map in use.
+   `VWMCP_AUTO_UPDATE=0` turns this off (then run `vwmcp-install-plugin` after each manual update:
+   an old bridge answers "Unknown op …").
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
@@ -245,6 +252,7 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 | `VWMCP_RIG_TOKEN` | (none) | Bearer token for fetching Rig Planner designs (`build_rig design_id=…`) |
 | `VWMCP_RIG_URL` | `https://tylerflores.dev` | Where designs are fetched from |
 | `VWMCP_RIG_TIMEOUT` | `180` | Seconds a whole `build_rig` may take inside Vectorworks |
+| `VWMCP_AUTO_UPDATE` | `1` | Update the connector and its symbol map from the site at start |
 
 ## Panel API safety
 
@@ -271,6 +279,7 @@ end, on any OS.
 ```
 src/vwmcp/     server.py (MCP tools) · panel.py (local HTTP API) · jobs.py (queue) ·
                trigger.py (hotkey, idle wait, guards, capture) · svg.py · install.py · config.py
+               update.py (self-update) · symbols.py + symbols.json (symbol names as data)
                service.py (show workflow) · show.py (datum, departments, limits, per file) ·
                rigging.py (bridles, truss reactions, units) · report.py (point list, checks) ·
                rig.py (Rig Planner build lists: frames, clamps, truss insertion; no vs)
@@ -279,7 +288,7 @@ vw_plugin/     vwmcp_bridge.py (runs in Vectorworks) · menu_run_job.py · menu_
 dev/           fake_vs.py (strict in-memory Vectorworks) · fake_vectorworks.py (queue watcher)
 tests/         bridge static checks, round trips, units, trigger, panel API, rigging math,
                show setup, the head-rigger workflow end to end
-make_zip.py    builds the download behind /private/vectorworks
+make_zip.py    builds the download behind /private/vectorworks, its update manifest and symbols.json
 ```
 
 ## Importing symbols by itself (0.5.0)

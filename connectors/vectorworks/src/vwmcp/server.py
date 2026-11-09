@@ -8,12 +8,13 @@ Objects are referred to by the `id` (a UUID) returned when they're created or li
 from __future__ import annotations
 
 import asyncio
+import sys
 from typing import Any, Literal, Union
 
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from . import __version__, config, rig
+from . import __version__, config, rig, symbols, update
 from .jobs import BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
@@ -79,8 +80,35 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
 
     @mcp.tool()
     async def ping() -> dict:
-        """Check the connection: document, Vectorworks version, units, selection count."""
-        return await call("ping")
+        """Check the connection: document, Vectorworks version, units, selection count, and this
+        connector's version and symbol map."""
+        out = await call("ping")
+        if isinstance(out, dict):
+            out["connector"] = __version__
+            out["symbols"] = STARTUP.get("symbols", "built-in")
+            if STARTUP.get("update"):
+                out["update"] = STARTUP["update"]
+        return out
+
+    @mcp.tool()
+    async def update_connector(install: bool = True) -> dict:
+        """Check tylerflores.dev for a newer connector (and refresh the symbol map). With
+        install=true a newer build is downloaded, checked and installed, and the Vectorworks
+        bridge is updated at once; the rest takes effect the next time the Claude app starts the
+        connector. It also updates by itself at every start unless VWMCP_AUTO_UPDATE=0."""
+        token = config.rig_token(settings)
+        sym = await asyncio.to_thread(symbols.refresh, settings.rig_url, token, settings.home, 8.0, True)
+        try:
+            m = await asyncio.to_thread(update.check, settings.rig_url, token)
+        except update.UpdateError as e:
+            return {"installed": __version__, "symbols": sym, "error": str(e)}
+        if not m["newer"] or not install:
+            return {"installed": __version__, "latest": m["version"], "newer": m["newer"], "symbols": sym}
+        try:
+            res = await asyncio.to_thread(update.install, settings.rig_url, token, m, settings.plugin_dir)
+        except update.UpdateError as e:
+            raise ToolError(str(e)) from e
+        return {**res, "symbols": sym, "note": "Installed. The Vectorworks bridge is updated now; restart the Claude app to load the new server code."}
 
     @mcp.tool()
     async def get_document_info() -> dict:
@@ -242,6 +270,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         A layer that already has objects is refused unless replace=true (which clears it)."""
         if (build_list is None) == (design_id is None):
             raise ToolError("Give either build_list or design_id.")
+        if settings.auto_update:  # at most hourly; a failure keeps the map already in force
+            await asyncio.to_thread(symbols.refresh, settings.rig_url, config.rig_token(settings), settings.home)
         design = None
         if design_id is not None:
             try:
@@ -676,8 +706,50 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     return mcp
 
 
+STARTUP: dict = {}
+
+
+def _log(msg: str) -> None:
+    # stdout is the MCP pipe: anything for a person goes to stderr (the Claude app's MCP log).
+    print("vwmcp: %s" % msg, file=sys.stderr, flush=True)
+
+
+def startup(settings: config.Settings, allow_update: bool = True) -> bool:
+    """Bring the symbol map and the connector up to date before serving. True when a newer
+    connector was installed and should be started in place of this one. Never raises."""
+    STARTUP["symbols"] = symbols.load_cached(settings.home)
+    if not settings.auto_update:
+        STARTUP["update"] = "off (VWMCP_AUTO_UPDATE=0)"
+        return False
+    token = config.rig_token(settings)
+    status = symbols.refresh(settings.rig_url, token, settings.home)
+    if status.startswith("refreshed"):
+        STARTUP["symbols"] = "site copy, refreshed at start"
+    _log("symbol map: %s" % status)
+    if not allow_update:
+        return False
+    try:
+        m = update.check(settings.rig_url, token)
+        if not m["newer"]:
+            STARTUP["update"] = "up to date (%s)" % __version__
+            return False
+        res = update.install(settings.rig_url, token, m, settings.plugin_dir)
+        _log("updated %s -> %s (%d files)" % (res["from"], res["version"], len(res["changed"])))
+        return True
+    except update.UpdateError as e:
+        STARTUP["update"] = "couldn't check for updates: %s" % e
+        _log(STARTUP["update"])
+    except Exception as e:  # an update must never stop the connector from starting
+        STARTUP["update"] = "update failed: %s" % e
+        _log(STARTUP["update"])
+    return False
+
+
 def main() -> None:
-    build_server().run("stdio")
+    settings = config.load()
+    if startup(settings, allow_update="--no-update" not in sys.argv):
+        sys.exit(update.relaunch())
+    build_server(settings).run("stdio")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "about": "Which Vectorworks symbol each rig part is built from. The connector fetches this from tylerflores.dev (same key as the designs) so a new truss size or symbol needs no update. Edit here, then run make_zip.py.",
+  "truss": {
+    "box12": { "prefix": "Truss Box 12in x 12in" },
+    "box24": { "prefix": "Truss Box 24in x 24in" },
+    "box20": { "names": ["Truss 20.5\" Box 10' (SLV)", "Truss 20.5\" Box 5' (SLV)", "Truss 20.5\" Box 4' (SLV)"], "fileOnly": true }
+  },
+  "trussLengthsFt": [10, 8, 6],
+  "clamps": {
+    "0": "Aluminium Scaffold Clamp- 0 Deg",
+    "15": "Aluminium Scaffold Clamp-15 Deg",
+    "30": "Aluminium Scaffold Clamp-30 Deg",
+    "45": "Aluminium Scaffold Clamp-45 Deg",
+    "60": "Aluminium Scaffold Clamp-60 Deg",
+    "75": "Aluminium Scaffold Clamp-75 Deg",
+    "90": "Aluminium Scaffold Clamp-90deg"
+  },
+  "deck": {
+    "symbol": "Stage Deck {w} x {l}",
+    "import": "Stage Deck {w} x {l} x 2ft",
+    "leg": "Stage Deck Leg {h}in",
+    "legHeights": [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60]
+  },
+  "notInLibrary": {
+    "skirt": "the library has no stage skirting; it's on the rental list",
+    "rail": "the library has no stage guardrail; it's on the rental list",
+    "stairs": "the library has no stage stair unit; it's on the rental list"
+  }
+}

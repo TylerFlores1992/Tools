@@ -323,7 +323,7 @@ def test_a_build_where_nothing_could_be_placed_is_not_built(server, fake_rig):
 
 
 def test_leg_heights_outside_the_library_are_refused_in_words():
-    with pytest.raises(rig.RigError, match="4\" steps"):
+    with pytest.raises(rig.RigError, match="legs come in 8\", 12\""):
         rig.leg_symbol(30)
     assert rig.leg_symbol(24) == "Stage Deck Leg 24in"
     assert rig.deck_symbol(48, 48) == "Stage Deck 4ft x 4ft"

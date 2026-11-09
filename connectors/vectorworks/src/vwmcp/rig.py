@@ -191,19 +191,26 @@ def _ft(inches: float) -> str:
     return "%gft" % (float(inches) / 12.0)
 
 
+# Names as templates: symbols.py replaces these (and the tables above) from the site's map.
+DECK_SYMBOL = "Stage Deck {w} x {l}"
+DECK_IMPORT = "Stage Deck {w} x {l} x 2ft"
+LEG_SYMBOL = "Stage Deck Leg {h}in"
+
+
 def deck_symbol(width: float, length: float) -> str:
-    return "Stage Deck %s x %s" % (_ft(width), _ft(length))
+    return DECK_SYMBOL.format(w=_ft(width), l=_ft(length))
 
 
 def deck_import_name(width: float, length: float) -> str:
-    return deck_symbol(width, length) + " x 2ft"
+    return DECK_IMPORT.format(w=_ft(width), l=_ft(length))
 
 
 def leg_symbol(height: float) -> str:
     h = float(height)
     if not any(abs(h - x) < 0.01 for x in DECK_LEG_HEIGHTS):
-        raise RigError("no %g\" deck leg in the library: legs come in 4\" steps from 8\" to 60\"" % h)
-    return "Stage Deck Leg %gin" % h
+        heights = sorted(DECK_LEG_HEIGHTS)
+        raise RigError("no %g\" deck leg in the library: legs come in %s" % (h, ", ".join('%g"' % x for x in heights)))
+    return LEG_SYMBOL.format(h="%g" % h)
 
 
 # 20.5" box isn't in Vectorworks' library. These are the Total Structures (SLV) symbols in the Air

@@ -32,6 +32,7 @@ class Settings:
     rig_url: str = "https://tylerflores.dev"  # where build_rig fetches approved Rig Planner designs
     rig_token: str = ""  # bearer token for the site's /api/rig endpoints
     rig_timeout: float = 180.0  # seconds a whole build_rig job may take inside Vectorworks
+    auto_update: bool = True  # check the site for a newer connector and symbol map at start (VWMCP_AUTO_UPDATE=0 to stop)
 
     @property
     def jobs_dir(self) -> Path:
@@ -99,6 +100,7 @@ def load() -> Settings:
             if o.strip()
         ),
         rig_url=os.environ.get("VWMCP_RIG_URL", "https://tylerflores.dev").strip().rstrip("/"),
+        auto_update=os.environ.get("VWMCP_AUTO_UPDATE", "1").strip().lower() not in ("0", "false", "no", "off"),
         rig_token=os.environ.get("VWMCP_RIG_TOKEN", "").strip(),
         rig_timeout=float(os.environ.get("VWMCP_RIG_TIMEOUT", "180")),
     )

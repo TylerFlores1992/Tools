@@ -152,6 +152,9 @@ marks it Built. Editing an approved design puts it back to draft.
   resizing a Straight Truss through `LineLength`) are tested against the fake only. Each build
   returns Vectorworks' own read-back of every clamp's orientation: check the first real build.
 - 20.5" box builds only in a file that has the Total Structures (SLV) symbols (0.5.3).
+- Symbol names are data (0.5.4): `connectors/vectorworks/src/vwmcp/symbols.json`, served to the
+  connector at `/private/vectorworks/symbols.json` with its key. A new truss size or a renamed
+  symbol is an edit there, `make_zip.py` and a deploy; connectors pick it up within the hour.
 - AR is iPhone/iPad (AR Quick Look); other browsers get a sentence saying so.
 - Base plates are drawn on the phone and listed to rent; the connector skips them (no symbol yet).
 - Stage skirting, guardrails and stairs: drawn on the phone and listed to rent; the connector skips
