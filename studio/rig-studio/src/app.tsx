@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -233,6 +233,24 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
   const archived = (projects ?? []).filter((p) => p.archived);
   const list = projects ? projects.filter((p) => !!p.archived === showArchived) : null;
   const pinnedCount = (projects ?? []).filter((p) => p.pinnedAt && !p.archived).length;
+  const [showOldJobs, setShowOldJobs] = useState(false);
+  const [allJobs, setAllJobs] = useState(false);
+  const archivedJobs = jobs.filter((j) => j.archived);
+  const jobList = sortJobs(jobs.filter((j) => !!j.archived === showOldJobs));
+  const jobsShown = allJobs ? jobList : jobList.slice(0, 8);
+
+  const actJob = async (j: Job, what: "pin" | "unpin" | "archive" | "restore" | "delete") => {
+    setMenu(null);
+    setConfirmDel(null);
+    try {
+      if (what === "delete") await db.doc(`jobs/${j.id}`).delete();
+      else await db.doc(`jobs/${j.id}`).update(what === "pin" ? { pinnedAt: now() } : what === "unpin" ? { pinnedAt: null } : what === "archive" ? { archived: true, pinnedAt: null } : { archived: false });
+      if (what === "archive") setNote({ tone: "ok", text: "Archived that session. It's under Archived sessions; the record is kept." });
+      if (what === "delete") setNote({ tone: "ok", text: "Deleted that session's record. What the session saved (a version, layers) stays in its project." });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't change that session: ${(e as Error).message ?? e}` });
+    }
+  };
 
   useEffect(() => {
     if (!menu) return;
@@ -414,19 +432,95 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
       )}
       {!!jobs.length && (
         <section className="section">
-          <h2>Full sessions</h2>
+          <h2>{showOldJobs ? "Archived full sessions" : "Full sessions"}</h2>
+          <p className="muted small">The big jobs you handed to a separate Claude session from a project's chat (or a Build when Vectorworks wasn't reachable): what it was asked, how it went, and a link to the session.</p>
+          {showOldJobs && jobList.length === 0 && <p className="muted">Nothing archived.</p>}
           <ul className="jobs">
-            {jobs.slice(0, 8).map((j) => (
-              <li key={j.id} className="job-wrap">
-                <a href={`#p-${j.pid}`} className="job-project">
-                  {j.project}
-                </a>
-                <ul className="jobs">
-                  <JobRow j={j} />
-                </ul>
-              </li>
-            ))}
+            {jobsShown.map((j) => {
+              const mid = `job-${j.id}`;
+              const open = menu === mid;
+              const live = j.status === "queued" || j.status === "running";
+              return (
+                <li key={j.id} className="job-wrap card-wrap">
+                  <a href={`#p-${j.pid}`} className="job-project">
+                    {j.pinnedAt && (
+                      <span className="pin-mark" title="Pinned">
+                        <PinIcon /> <span className="sr">Pinned:</span>
+                      </span>
+                    )}
+                    {j.project}
+                  </a>
+                  <ul className="jobs">
+                    <JobRow j={j} />
+                  </ul>
+                  <button className="menu-btn job-menu-btn" aria-label={`More for this session on ${j.project}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setMenu(open ? null : mid)} id={`menu-${mid}`}>
+                    ⋯
+                  </button>
+                  {open && (
+                    <div className="card-menu job-menu" role="menu">
+                      {!j.archived &&
+                        (j.pinnedAt ? (
+                          <button role="menuitem" onClick={() => actJob(j, "unpin")}>
+                            Unpin
+                          </button>
+                        ) : (
+                          <button role="menuitem" onClick={() => actJob(j, "pin")} id={`pin-${mid}`}>
+                            Pin to top
+                          </button>
+                        ))}
+                      {j.archived ? (
+                        <button role="menuitem" onClick={() => actJob(j, "restore")}>
+                          Put back on the list
+                        </button>
+                      ) : (
+                        <button role="menuitem" onClick={() => actJob(j, "archive")} id={`archive-${mid}`}>
+                          Archive
+                        </button>
+                      )}
+                      <button
+                        role="menuitem"
+                        className="danger"
+                        onClick={() => {
+                          setMenu(null);
+                          setConfirmDel(mid);
+                        }}
+                        id={`delete-${mid}`}
+                      >
+                        Delete…
+                      </button>
+                    </div>
+                  )}
+                  {confirmDel === mid && (
+                    <div className="card-confirm" role="alertdialog" aria-label="Delete this session's record">
+                      <p>
+                        Delete this session's record for good? {live ? "It doesn't stop the session, which is still working. " : ""}Anything it saved to the project stays.
+                      </p>
+                      <div className="row">
+                        <button className="btn small danger-btn" onClick={() => actJob(j, "delete")} id={`delete-yes-${mid}`}>
+                          Delete record
+                        </button>
+                        <button className="btn small" onClick={() => setConfirmDel(null)}>
+                          Keep it
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
+          <div className="row">
+            {jobList.length > 8 && (
+              <button className="link small" onClick={() => setAllJobs(!allJobs)}>
+                {allJobs ? "Show fewer" : `Show all ${jobList.length}`}
+              </button>
+            )}
+            {(archivedJobs.length > 0 || showOldJobs) && (
+              <button className="link small" onClick={() => setShowOldJobs(!showOldJobs)}>
+                {showOldJobs ? "Back to current sessions" : `Archived sessions (${archivedJobs.length})`}
+              </button>
+            )}
+          </div>
         </section>
       )}
     </main>

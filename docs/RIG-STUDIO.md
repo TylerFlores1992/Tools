@@ -58,7 +58,7 @@ Command line (what sessions use): `npx tsx scripts/rig-sketch.mts check|build|re
 | `projects/{pid}/versions/v0001` | `{n, note, by: "you"\|"claude"\|"session", at, sketch, approvedAt?}` (id is `v` + 4 digits) |
 | `projects/{pid}/layers/{lid}` | `{name, kind: "image"\|"fixtures"\|"shapes", visible, at, source?, …}`: image `{asset, px:[w,h], widthIn, x, y, z, rot, opacity}`; fixtures `{fixtures:[{x,y,z,lb,type}], onRig}`; shapes `{shapes:[{pts:[[x,y]…], z, closed, label}]}` |
 | `projects/{pid}/chat/{mid}` | `{role: "you"\|"claude"\|"session", text, at, job?, version?}` |
-| `jobs/{jid}` | `{pid, project, request, where: "cloud"\|"pc", status: "queued"\|"running"\|"done"\|"failed", progress, reply, at, updated, session?, version?}` |
+| `jobs/{jid}` | `{pid, project, request, where: "cloud"\|"pc", status: "queued"\|"running"\|"done"\|"failed", progress, reply, at, updated, session?, version?, archived?, pinnedAt?}` (Home lists them with the same ⋯ menu as projects) |
 | `config/workers` | `{cloud: trig_…, pc: trig_…}`: the two scheduled tasks |
 
 A session saving a version: write `versions/v000N` (N = project `current` + 1), then update the

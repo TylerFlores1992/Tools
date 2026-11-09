@@ -169,6 +169,25 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForFunction((id) => ![...window.__DOCS__.keys()].some((k) => k.startsWith(`projects/${id}`)), testId);
     ok(true, "deleting removes the project, its versions and chat");
     ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/versions")).length)) >= 2, "other projects are untouched");
+
+    console.log("pin, archive and delete full sessions");
+    const reqs = () => p.$$eval(".section .job-req", (els) => els.map((e) => e.textContent));
+    const before = await reqs();
+    ok(before.length === 2, "two sessions listed");
+    await p.locator(".job-menu-btn").nth(1).click();
+    await p.locator("[id^=pin-job-]").click();
+    await p.waitForFunction((first) => document.querySelector(".section .job-req")?.textContent !== first, before[0]);
+    ok((await reqs())[0] === before[1], "a pinned session moves to the top");
+    await p.locator(".job-menu-btn").nth(1).click();
+    await p.locator("[id^=archive-job-]").click();
+    await p.waitForFunction(() => document.querySelectorAll(".section .job-req").length === 1);
+    ok(await p.locator("text=Archived sessions (1)").isVisible(), "an archived session moves to Archived sessions");
+    await p.locator(".job-menu-btn").first().click();
+    await p.locator("[id^=delete-job-]").click();
+    ok(/doesn't stop the session/.test(await p.locator(".card-confirm").innerText()), "deleting a running session's record says it keeps running");
+    await p.locator("[id^=delete-yes-job-]").click();
+    await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("jobs/")).length === 1);
+    ok(true, "deleting removes only that session's record");
   }
   ok(errors.length === 0, `no page errors (${scheme})${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await ctx.close();

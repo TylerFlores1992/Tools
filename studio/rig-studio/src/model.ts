@@ -84,7 +84,19 @@ export type Job = {
   updated?: string;
   session?: string;
   version?: number;
+  /** Off the Home list (the record is kept). */
+  archived?: boolean;
+  pinnedAt?: string | null;
 };
+
+/** Sessions on Home: pinned first (in the order pinned), then newest. */
+export function sortJobs<T extends Pick<Job, "at" | "pinnedAt">>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+    if (a.pinnedAt && b.pinnedAt) return a.pinnedAt.localeCompare(b.pinnedAt);
+    return b.at.localeCompare(a.at);
+  });
+}
 
 /** config/workers: the two scheduled tasks the page starts sessions with. */
 export type Workers = { cloud?: string; pc?: string; artifact?: string };

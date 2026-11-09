@@ -164,6 +164,10 @@ legend { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase
 .card-menu .danger { color: var(--warn); }
 .card-confirm { position: absolute; z-index: 6; inset: auto 8px 8px 8px; padding: 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--warn); box-shadow: var(--shadow); display: grid; gap: 10px; font-size: 0.9rem; }
 .danger-btn { border-color: var(--warn); color: var(--warn); }
+.job-wrap.card-wrap .job-menu-btn { top: 26px; right: 8px; }
+.job-wrap .job { padding-right: 52px; }
+.job-menu { top: 66px; }
+.job-wrap .card-confirm { inset: auto 8px 8px auto; max-width: min(420px, calc(100% - 16px)); }
 .pin-mark { display: inline-flex; vertical-align: -1px; margin-right: 6px; }
 .pin-icon { fill: var(--accent); }
 .card h3 { font-size: 1.05rem; }
