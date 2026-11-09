@@ -1387,6 +1387,100 @@ RIGGING_KINDS = [
 ]
 
 
+def _r(v, k=1.0):
+    """A coordinate in inches, rounded to a hundredth."""
+    return round(float(v) * k, 2)
+
+
+@op
+def read_out(max_objects=20000, max_points=200):
+    """The whole drawing as data, in inches, for working on it away from Vectorworks: document,
+    layers (with elevations), classes, every plug-in object with all its fields (lighting
+    devices, truss, hoists, decks...), every symbol, and the 2D/3D shapes (outlines simplified to
+    max_points). Text, dimensions and objects inside groups' groups are left out."""
+    u = _units()
+    k = 1.0 / (u["units_per_inch"] or 1.0)
+    everything = []
+    vs.ForEachObject(everything.append, "(ALL)")
+    _note_native("(ALL)")
+    objects, skipped, truncated = [], {}, False
+    for h in everything:
+        t = vs.GetTypeN(h)
+        if t in (31, 16, 92, 122, 10, 63) or _inside_group(h):  # layers, classes, dims, text...
+            if t in (10, 63):
+                skipped["text and dimensions"] = skipped.get("text and dimensions", 0) + 1
+            continue
+        lh = vs.GetLayer(h)
+        if not _nil(lh) and vs.GetObjectVariableInt(lh, 154) == 2:  # sheet layer
+            continue
+        if len(objects) >= int(max_objects):
+            truncated = True
+            break
+        p1, p2 = vs.GetBBox(h)
+        o = {
+            "t": TYPE_NAMES.get(t, "type_%d" % t),
+            "layer": _s(vs.GetLName(lh)),
+            "cls": _s(vs.GetClass(h)),
+            "bbox": [_r(min(p1[0], p2[0]), k), _r(min(p1[1], p2[1]), k), _r(max(p1[0], p2[0]), k), _r(max(p1[1], p2[1]), k)],
+        }
+        name = _obj_name(h)
+        if name:
+            o["name"] = name
+        src = _source(h)
+        if src != "native":
+            o["source"] = src
+        if t in (15, 86):
+            loc = vs.GetSymLoc3D(h)
+            o["at"] = [_r(loc[0], k), _r(loc[1], k), _r(loc[2], k)]
+            o["rot"] = round(float(vs.GetSymRot(h)), 3)
+            if t == 15:
+                o["symbol"] = _s(vs.GetSymName(h))
+            else:
+                o["plugin"] = _plugin_name(h)
+                if o["plugin"]:
+                    o["fields"] = _record_fields(h, o["plugin"])
+        else:
+            g = _describe(h)["geometry"]
+            kind = g.get("kind")
+            if kind == "line":
+                o["pts"] = [[_r(g["start"][0], k), _r(g["start"][1], k)], [_r(g["end"][0], k), _r(g["end"][1], k)]]
+            elif kind == "polygon":
+                pts = g["points"]
+                step = max(1, int(math.ceil(len(pts) / float(max_points))))
+                o["pts"] = [[_r(x, k), _r(y, k)] for x, y in pts[::step]]
+                o["closed"] = bool(g.get("closed"))
+            elif kind == "wall":
+                o["pts"] = [[_r(g["start"][0], k), _r(g["start"][1], k)], [_r(g["end"][0], k), _r(g["end"][1], k)]]
+            elif kind == "group":
+                o["parts"] = len(g.get("parts", []))
+            if t not in (11,) and vs.GetObjectVariableBoolean(h, 650):
+                dy, dx, dz = vs.Get3DInfo(h)
+                _c, zc = vs.Get3DCntr(h)
+                o["z"] = [_r(float(zc) - float(dz) / 2, k), _r(float(zc) + float(dz) / 2, k)]
+        objects.append(o)
+    layers = []
+    for info in _layers():
+        lh = vs.GetLayerByName(info["name"])
+        entry = dict(info)
+        if hasattr(vs, "GetLayerElevationN"):
+            base, thick = vs.GetLayerElevationN(lh)
+            entry["elevation"] = _r(base, k)
+        layers.append(entry)
+    return {
+        "readout": 1,
+        "document": _s(vs.GetFName()),
+        "path": _s(vs.GetFPathName()),
+        "version": _version(),
+        "units": "in",
+        "document_units": u,
+        "layers": layers,
+        "classes": _classes(),
+        "objects": objects,
+        "skipped": skipped,
+        "truncated": truncated,
+    }
+
+
 def _rigging_kind(plugin: str) -> str:
     n = plugin.lower()
     for kind, pat in RIGGING_KINDS:

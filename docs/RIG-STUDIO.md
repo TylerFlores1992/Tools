@@ -5,11 +5,13 @@ The pinned Claude page that holds every rig project: **https://claude.ai/artifac
 `src/tools/rig/sketch.ts` and `sketchOps.ts` (tested in `sketch.test.mts`).
 
 What it does:
-- **Projects, all blank.** No templates. Each one has a free-form *sketch* (truss runs, towers,
+- **Projects, all blank.** Each card has a ⋯ menu: pin to the top, archive (off the list, nothing
+  deleted) or delete for good (versions, layers, chat, pictures and its session records). No templates. Each one has a free-form *sketch* (truss runs, towers,
   hoists, hung loads), a version history, reference layers, a chat and a Dropbox folder.
 - **The view.** 3D, plan, front and side, from the same scene code as the Rig Planner
   (`src/tools/rig/ui/scene.ts`), with load labels on every hoist and tower.
-- **Chat bar.** Claude inside the page (the artifact `sample` capability) edits the sketch with
+- **Chat bar.** Pictures can go with a message (paste, or drop onto the box; kept as page assets so a full
+  session can open them too). Claude inside the page (the artifact `sample` capability) edits the sketch with
   page tools (`edit_rig`, `replace_rig`, `read_layer`) and saves one version per request.
 - **Full sessions for big jobs.** "Start a full session" (or Claude's own `start_session` tool)
   writes a `jobs/{id}` document and fires one of two scheduled tasks with `fire_trigger`; the new
@@ -19,6 +21,13 @@ What it does:
 - **Dropbox.** One folder per project (made as `/Rig Studio/<name>` or linked). The page lists it
   every 2 minutes and flags new or changed files. The page can't download from Dropbox (its CSP
   and the connector only give metadata), so reading a file goes to a PC session.
+- **Vectorworks files with the PC off.** Nothing outside Vectorworks reads .vwx (closed format;
+  Dropbox's reader stops at 5 MB and can't preview it), so each file goes through Vectorworks
+  once: the connector's `read_out` (or `read_out_folder`) writes `<name>.rigread.json` beside the
+  .vwx: layers, classes, every plug-in object with its fields (lighting devices, truss, hoists),
+  symbols and outlines, in inches, kept under 5 MB. In a Dropbox folder it syncs; the Files tab
+  then opens it (Dropbox `fetch`) as layers: fixtures, the existing rig, outlines per Vectorworks
+  layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC
@@ -52,11 +61,11 @@ Command line (what sessions use): `npx tsx scripts/rig-sketch.mts check|build|re
 
 | Path | Shape |
 |---|---|
-| `projects/{pid}` | `{name, createdAt, updatedAt, status: "draft"\|"approved"\|"built", current, approved, built, dropbox: {path, display}\|null, seen: {fileId: modified}, thumb}` |
+| `projects/{pid}` | `{name, createdAt, updatedAt, status: "draft"\|"approved"\|"built", current, approved, built, archived?, pinnedAt?, dropbox: {path, display}\|null, seen: {fileId: modified}, thumb}` |
 | `projects/{pid}/versions/v0001` | `{n, note, by: "you"\|"claude"\|"session", at, sketch, approvedAt?}` (id is `v` + 4 digits) |
 | `projects/{pid}/layers/{lid}` | `{name, kind: "image"\|"fixtures"\|"shapes", visible, at, source?, …}`: image `{asset, px:[w,h], widthIn, x, y, z, rot, opacity}`; fixtures `{fixtures:[{x,y,z,lb,type}], onRig}`; shapes `{shapes:[{pts:[[x,y]…], z, closed, label}]}` |
 | `projects/{pid}/chat/{mid}` | `{role: "you"\|"claude"\|"session", text, at, job?, version?}` |
-| `jobs/{jid}` | `{pid, project, request, where: "cloud"\|"pc", status: "queued"\|"running"\|"done"\|"failed", progress, reply, at, updated, session?, version?}` |
+| `jobs/{jid}` | `{pid, project, request, where: "cloud"\|"pc", status: "queued"\|"running"\|"done"\|"failed", progress, reply, at, updated, session?, version?, archived?, pinnedAt?}` (Home lists them with the same ⋯ menu as projects) |
 | `config/workers` | `{cloud: trig_…, pc: trig_…}`: the two scheduled tasks |
 
 A session saving a version: write `versions/v000N` (N = project `current` + 1), then update the
@@ -83,6 +92,6 @@ node studio/rig-studio/dev/test.mjs          # browser flows against a mock wind
 
 Publish with the Artifact tool, same file path in the session that made it, or with `url` from
 another session (read it first). Keep the capabilities: `db`, `user`, `sample`, `assets`,
-`downloads`, and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
+`downloads`, `sample` with `images: true` (pictures in the chat), and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
 get_file_metadata, create_folder] and host:vectorworks [ping, build_rig, get_lighting_devices,
 get_document_info].

@@ -8,7 +8,8 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -152,7 +153,7 @@ function App() {
       (s) => {
         clearTimeout(timer);
         setLoadErr(null);
-        setProjects(s.docs.map((d) => ({ ...(d.data() as Project), id: d.id })).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
+        setProjects(sortProjects(s.docs.map((d) => ({ ...(d.data() as Project), id: d.id }))));
       },
       (e) => setLoadErr(`Couldn't read projects: ${e.message}`),
     );
@@ -213,12 +214,100 @@ function Header({ children }: { children?: ReactNode }) {
 
 /* ------------------------------------------------------------------ home */
 
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" className="pin-icon">
+      <path d="M10.5 1.5 14.5 5.5 12 6.5 9.5 9 10 12.5 8.5 14 5.5 11 2 14.5 1.5 14 5 10.5 2 7.5 3.5 6 7 6.5 9.5 4Z" />
+    </svg>
+  );
+}
+
 function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] | null; jobs: Job[]; loadErr: string | null }) {
   const [making, setMaking] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [menu, setMenu] = useState<string | null>(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [note, setNote] = useState<{ tone: "ok" | "warn" | "info"; text: string } | null>(null);
+  const db = env.caps.db!;
   const running = jobs.filter((j) => j.status === "queued" || j.status === "running");
-  const archived = (projects ?? []).filter((p) => (p as Project & { archived?: boolean }).archived);
-  const list = projects ? projects.filter((p) => !!(p as Project & { archived?: boolean }).archived === showArchived) : null;
+  const archived = (projects ?? []).filter((p) => p.archived);
+  const list = projects ? projects.filter((p) => !!p.archived === showArchived) : null;
+  const pinnedCount = (projects ?? []).filter((p) => p.pinnedAt && !p.archived).length;
+  const [showOldJobs, setShowOldJobs] = useState(false);
+  const [allJobs, setAllJobs] = useState(false);
+  const archivedJobs = jobs.filter((j) => j.archived);
+  const jobList = sortJobs(jobs.filter((j) => !!j.archived === showOldJobs));
+  const jobsShown = allJobs ? jobList : jobList.slice(0, 8);
+
+  const actJob = async (j: Job, what: "pin" | "unpin" | "archive" | "restore" | "delete") => {
+    setMenu(null);
+    setConfirmDel(null);
+    try {
+      if (what === "delete") await db.doc(`jobs/${j.id}`).delete();
+      else await db.doc(`jobs/${j.id}`).update(what === "pin" ? { pinnedAt: now() } : what === "unpin" ? { pinnedAt: null } : what === "archive" ? { archived: true, pinnedAt: null } : { archived: false });
+      if (what === "archive") setNote({ tone: "ok", text: "Archived that session. It's under Archived sessions; the record is kept." });
+      if (what === "delete") setNote({ tone: "ok", text: "Deleted that session's record. What the session saved (a version, layers) stays in its project." });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't change that session: ${(e as Error).message ?? e}` });
+    }
+  };
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = (e: Event) => {
+      if (!(e.target as Element).closest?.(".card-menu, .menu-btn")) setMenu(null);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setMenu(null);
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [menu]);
+
+  const act = async (p: Project, what: "pin" | "unpin" | "archive" | "restore") => {
+    setMenu(null);
+    try {
+      if (what === "pin") await db.doc(`projects/${p.id}`).update({ pinnedAt: now() });
+      if (what === "unpin") await db.doc(`projects/${p.id}`).update({ pinnedAt: null });
+      if (what === "archive") await db.doc(`projects/${p.id}`).update({ archived: true, pinnedAt: null });
+      if (what === "restore") await db.doc(`projects/${p.id}`).update({ archived: false });
+      if (what === "archive") setNote({ tone: "ok", text: `Archived ${p.name}. It's under Archived projects; nothing was deleted.` });
+      if (what === "restore") setNote({ tone: "ok", text: `${p.name} is back on the list.` });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't change ${p.name}: ${(e as Error).message ?? e}` });
+    }
+  };
+
+  /** Delete a project for good: its versions, layers (and their drawings), chat (and its pictures) and its sessions' records. */
+  const remove = async (p: Project) => {
+    setConfirmDel(null);
+    setBusyId(p.id);
+    try {
+      const assets = new Set<string>();
+      for (const sub of ["versions", "layers", "chat"]) {
+        const snap = await db.collection(`projects/${p.id}/${sub}`).get();
+        for (const d of snap.docs) {
+          const data = d.data() as { asset?: string; images?: string[] };
+          if (data.asset) assets.add(data.asset);
+          for (const id of data.images ?? []) assets.add(id);
+          await db.doc(`projects/${p.id}/${sub}/${d.id}`).delete();
+        }
+      }
+      const js = await db.collection("jobs").where("pid", "==", p.id).get();
+      for (const d of js.docs) await db.doc(`jobs/${d.id}`).delete();
+      await db.doc(`projects/${p.id}`).delete();
+      if (env.caps.assets) for (const id of assets) await env.caps.assets.delete(id).catch(() => {});
+      setNote({ tone: "ok", text: `Deleted ${p.name}.` });
+    } catch (e) {
+      setNote({ tone: "warn", text: `Couldn't finish deleting ${p.name}: ${(e as Error).message ?? e}. Try again; what's left is still on the list.` });
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <main className="home">
       <Header>
@@ -242,28 +331,101 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
           </button>
         </div>
       )}
+      {note && (
+        <Notice tone={note.tone} onClose={() => setNote(null)}>
+          {note.text}
+        </Notice>
+      )}
+      {showArchived && <h2 className="h3">Archived projects</h2>}
+      {showArchived && list?.length === 0 && <p className="muted">Nothing archived.</p>}
       {!!list?.length && (
         <ul className="cards">
           {list.map((p) => {
             const busy = running.some((j) => j.pid === p.id);
+            const open = menu === p.id;
             return (
-              <li key={p.id}>
-                <a className="card" href={`#p-${p.id}`}>
+              <li key={p.id} className="card-wrap">
+                <a className="card" href={`#p-${p.id}`} aria-busy={busyId === p.id}>
                   <Plan thumb={(p as Project & { thumb?: Thumb }).thumb} />
                   <div className="card-body">
-                    <h3>{p.name}</h3>
+                    <h3>
+                      {p.pinnedAt && (
+                        <span className="pin-mark" title="Pinned">
+                          <PinIcon /> <span className="sr">Pinned:</span>
+                        </span>
+                      )}
+                      {p.name}
+                    </h3>
                     <StatusChip p={p} />
                     <span className="muted small">
-                      Updated {ago(p.updatedAt)}
+                      {busyId === p.id ? "Deleting…" : `Updated ${ago(p.updatedAt)}`}
                       {busy ? " · ◐ Claude is working" : ""}
                     </span>
                   </div>
                 </a>
+                <button className="menu-btn" aria-label={`More for ${p.name}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setMenu(open ? null : p.id)} id={`menu-${p.id}`}>
+                  ⋯
+                </button>
+                {open && (
+                  <div className="card-menu" role="menu">
+                    {!p.archived &&
+                      (p.pinnedAt ? (
+                        <button role="menuitem" onClick={() => act(p, "unpin")}>
+                          Unpin
+                        </button>
+                      ) : (
+                        <button role="menuitem" onClick={() => act(p, "pin")} id={`pin-${p.id}`}>
+                          Pin to top
+                        </button>
+                      ))}
+                    {p.archived ? (
+                      <button role="menuitem" onClick={() => act(p, "restore")} id={`restore-${p.id}`}>
+                        Put back on the list
+                      </button>
+                    ) : (
+                      <button role="menuitem" onClick={() => act(p, "archive")} id={`archive-${p.id}`}>
+                        Archive
+                      </button>
+                    )}
+                    <button
+                      role="menuitem"
+                      className="danger"
+                      onClick={() => {
+                        setMenu(null);
+                        setConfirmDel(p.id);
+                      }}
+                      id={`delete-${p.id}`}
+                    >
+                      Delete…
+                    </button>
+                  </div>
+                )}
+                {confirmDel === p.id && (
+                  <div className="card-confirm" role="alertdialog" aria-label={`Delete ${p.name}`}>
+                    <p>
+                      Delete <strong>{p.name}</strong> for good? Its versions, layers, chat and pictures go too, and it can't be undone. Archive keeps it instead.
+                    </p>
+                    <div className="row">
+                      <button className="btn small danger-btn" onClick={() => remove(p)} id={`delete-yes-${p.id}`}>
+                        Delete for good
+                      </button>
+                      {!p.archived && (
+                        <button className="btn small" onClick={() => (setConfirmDel(null), act(p, "archive"))}>
+                          Archive instead
+                        </button>
+                      )}
+                      <button className="btn small" onClick={() => setConfirmDel(null)}>
+                        Keep it
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             );
           })}
         </ul>
       )}
+      {!showArchived && pinnedCount === 0 && (list?.length ?? 0) > 2 && <p className="muted small">Tip: use ⋯ on a project to pin it to the top.</p>}
       {(archived.length > 0 || showArchived) && (
         <button className="link small" onClick={() => setShowArchived(!showArchived)}>
           {showArchived ? "Back to current projects" : `Archived projects (${archived.length})`}
@@ -271,19 +433,95 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
       )}
       {!!jobs.length && (
         <section className="section">
-          <h2>Full sessions</h2>
+          <h2>{showOldJobs ? "Archived full sessions" : "Full sessions"}</h2>
+          <p className="muted small">The big jobs you handed to a separate Claude session from a project's chat (or a Build when Vectorworks wasn't reachable): what it was asked, how it went, and a link to the session.</p>
+          {showOldJobs && jobList.length === 0 && <p className="muted">Nothing archived.</p>}
           <ul className="jobs">
-            {jobs.slice(0, 8).map((j) => (
-              <li key={j.id} className="job-wrap">
-                <a href={`#p-${j.pid}`} className="job-project">
-                  {j.project}
-                </a>
-                <ul className="jobs">
-                  <JobRow j={j} />
-                </ul>
-              </li>
-            ))}
+            {jobsShown.map((j) => {
+              const mid = `job-${j.id}`;
+              const open = menu === mid;
+              const live = j.status === "queued" || j.status === "running";
+              return (
+                <li key={j.id} className="job-wrap card-wrap">
+                  <a href={`#p-${j.pid}`} className="job-project">
+                    {j.pinnedAt && (
+                      <span className="pin-mark" title="Pinned">
+                        <PinIcon /> <span className="sr">Pinned:</span>
+                      </span>
+                    )}
+                    {j.project}
+                  </a>
+                  <ul className="jobs">
+                    <JobRow j={j} />
+                  </ul>
+                  <button className="menu-btn job-menu-btn" aria-label={`More for this session on ${j.project}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setMenu(open ? null : mid)} id={`menu-${mid}`}>
+                    ⋯
+                  </button>
+                  {open && (
+                    <div className="card-menu job-menu" role="menu">
+                      {!j.archived &&
+                        (j.pinnedAt ? (
+                          <button role="menuitem" onClick={() => actJob(j, "unpin")}>
+                            Unpin
+                          </button>
+                        ) : (
+                          <button role="menuitem" onClick={() => actJob(j, "pin")} id={`pin-${mid}`}>
+                            Pin to top
+                          </button>
+                        ))}
+                      {j.archived ? (
+                        <button role="menuitem" onClick={() => actJob(j, "restore")}>
+                          Put back on the list
+                        </button>
+                      ) : (
+                        <button role="menuitem" onClick={() => actJob(j, "archive")} id={`archive-${mid}`}>
+                          Archive
+                        </button>
+                      )}
+                      <button
+                        role="menuitem"
+                        className="danger"
+                        onClick={() => {
+                          setMenu(null);
+                          setConfirmDel(mid);
+                        }}
+                        id={`delete-${mid}`}
+                      >
+                        Delete…
+                      </button>
+                    </div>
+                  )}
+                  {confirmDel === mid && (
+                    <div className="card-confirm" role="alertdialog" aria-label="Delete this session's record">
+                      <p>
+                        Delete this session's record for good? {live ? "It doesn't stop the session, which is still working. " : ""}Anything it saved to the project stays.
+                      </p>
+                      <div className="row">
+                        <button className="btn small danger-btn" onClick={() => actJob(j, "delete")} id={`delete-yes-${mid}`}>
+                          Delete record
+                        </button>
+                        <button className="btn small" onClick={() => setConfirmDel(null)}>
+                          Keep it
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
+          <div className="row">
+            {jobList.length > 8 && (
+              <button className="link small" onClick={() => setAllJobs(!allJobs)}>
+                {allJobs ? "Show fewer" : `Show all ${jobList.length}`}
+              </button>
+            )}
+            {(archivedJobs.length > 0 || showOldJobs) && (
+              <button className="link small" onClick={() => setShowOldJobs(!showOldJobs)}>
+                {showOldJobs ? "Back to current sessions" : `Archived sessions (${archivedJobs.length})`}
+              </button>
+            )}
+          </div>
         </section>
       )}
     </main>
@@ -292,7 +530,6 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
 
 function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
   const [name, setName] = useState("");
-  const [series, setSeries] = useState<"box12" | "box20">("box12");
   const [folder, setFolder] = useState<"make" | "link" | "none">(env.caps.mcp ? "make" : "none");
   const [path, setPath] = useState("");
   const [busy, setBusy] = useState(false);
@@ -337,7 +574,7 @@ function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
     }
     const id = slug(n);
     const t = now();
-    const sketch = emptySketch(n, series);
+    const sketch = emptySketch(n);
     await db.doc(`projects/${id}/versions/${vid(1)}`).set({ n: 1, note: "New project", by: "you", at: t, sketch } satisfies Version);
     await db.doc(`projects/${id}`).set({ name: n, createdAt: t, updatedAt: t, status: "draft", current: 1, approved: null, built: null, dropbox, seen: {}, thumb: thumbOf(sketch) });
     location.hash = `p-${id}`;
@@ -348,15 +585,6 @@ function NewProject({ env, onCancel }: { env: Env; onCancel: () => void }) {
       <h2>New project</h2>
       <label htmlFor="np-name">Name</label>
       <input id="np-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Tennis court roof, Sept 2026" autoFocus maxLength={80} />
-      <fieldset>
-        <legend>Truss</legend>
-        <label className="radio">
-          <input type="radio" name="np-series" id="np-s12" checked={series === "box12"} onChange={() => setSeries("box12")} /> 12" box
-        </label>
-        <label className="radio">
-          <input type="radio" name="np-series" id="np-s20" checked={series === "box20"} onChange={() => setSeries("box20")} /> 20.5" box (ground support)
-        </label>
-      </fieldset>
       <fieldset disabled={!env.caps.mcp}>
         <legend>Dropbox folder</legend>
         <label className="radio">
@@ -659,6 +887,11 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
             <span>
               <i className="sw hoist" /> Hoists
             </span>
+            {layers.some((l) => l.kind === "rig" && l.visible) && (
+              <span>
+                <i className="sw existing" /> Existing rig (from the drawing)
+              </span>
+            )}
             {layers.some((l) => l.kind === "fixtures" && l.visible) && (
               <span>
                 <i className="sw fixture" /> Fixtures
@@ -839,6 +1072,16 @@ function PickedCard({ id, sketch, loads, onClose }: { id: string; sketch: Sketch
 
 /* ------------------------------------------------------------------ chat */
 
+function Thumb({ file }: { file: File }) {
+  const [url, setUrl] = useState<string>("");
+  useEffect(() => {
+    const u = URL.createObjectURL(file);
+    setUrl(u);
+    return () => URL.revokeObjectURL(u);
+  }, [file]);
+  return url ? <img src={url} alt={file.name} /> : null;
+}
+
 function ChatPane(props: {
   env: Env;
   project: Project;
@@ -859,6 +1102,38 @@ function ChatPane(props: {
   const [stream, setStream] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [where, setWhere] = useState<"cloud" | "pc">("cloud");
+  const [imgs, setImgs] = useState<File[]>([]);
+  const [imgLimits, setImgLimits] = useState<{ maxCount: number; maxInputBytes: number; mediaTypes: string[] } | null>(null);
+  useEffect(() => {
+    env.caps.sample
+      ?.limits()
+      .then((l) => setImgLimits((l as { images?: { maxCount: number; maxInputBytes: number; mediaTypes: string[] } }).images ?? null))
+      .catch(() => setImgLimits(null));
+  }, [env.caps.sample]);
+  const addImages = (files: File[]) => {
+    const types = imgLimits?.mediaTypes ?? ["image/png", "image/jpeg", "image/webp", "image/gif"];
+    const ok = files.filter((f) => types.includes(f.type));
+    const big = ok.filter((f) => imgLimits && f.size > imgLimits.maxInputBytes);
+    const max = imgLimits?.maxCount ?? 4;
+    const next = [...imgs, ...ok.filter((f) => !big.includes(f))].slice(0, max);
+    if (ok.length < files.length) setErr("Only pictures (PNG, JPG, WebP, GIF) can go in the chat. PDFs and drawings go under Layers.");
+    else if (big.length) setErr(`${big[0].name} is too big to send. Try a smaller picture or a screenshot of the part that matters.`);
+    else if (imgs.length + ok.length > max) setErr(`Up to ${max} pictures at a time.`);
+    setImgs(next);
+  };
+  /** Keep the pictures with the project (so the chat shows them and a full session can open them). */
+  const keepImages = async (files: File[]): Promise<string[]> => {
+    if (!env.caps.assets || !files.length) return [];
+    const ids: string[] = [];
+    for (const f of files) {
+      try {
+        ids.push((await env.caps.assets.upload(f, { type: f.type })).id);
+      } catch {
+        /* the chat still works without the copy */
+      }
+    }
+    return ids;
+  };
   const abort = useRef<AbortController | null>(null);
   const list = useRef<HTMLDivElement>(null);
   useEffect(() => store.set(`draft:${project.id}`, text), [text, project.id]);
@@ -869,13 +1144,16 @@ function ChatPane(props: {
   const active = jobs.filter((j) => j.status === "queued" || j.status === "running");
 
   const ask = async () => {
-    const req = text.trim();
+    const req = text.trim() || (imgs.length ? "Here's a picture for reference." : "");
     if (!req || working) return;
     if (!env.caps.sample) return setErr("Claude can't be asked from this view. Open the page in Claude, signed in.");
     setErr(null);
     setText("");
     props.onLatest();
-    await say({ role: "you", text: req, at: now() });
+    const files = imgs;
+    setImgs([]);
+    const kept = await keepImages(files);
+    await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
     const state = { sketch, changed: false, notes: [] as string[] };
     const ctx: Ctx = {
       sketch,
@@ -886,13 +1164,14 @@ function ChatPane(props: {
       onProgress: setWorking,
       startSession,
     };
-    const msgs = turns(chat, req);
+    const msgs = turns(chat, files.length ? `${req}\n\n(I attached ${files.length === 1 ? "a picture" : `${files.length} pictures`}: look at ${files.length === 1 ? "it" : "them"} before answering.)` : req);
     msgs[0] = { role: "user", content: `${systemPrompt(ctx)}\n\n---\n\n${msgs[0].content}` };
     abort.current = new AbortController();
     setWorking("Thinking…");
     setStream("");
     try {
       const r = await env.caps.sample(msgs, {
+        ...(files.length && imgLimits ? { images: files } : {}),
         tools: aiTools(ctx, state),
         signal: abort.current.signal,
         modelTier: "default",
@@ -915,9 +1194,14 @@ function ChatPane(props: {
         rate_limited: "Too many requests just now. Wait a minute and ask again.",
         cancelled: "Stopped.",
         prompt_too_large: "This rig is too big to edit in the chat. Use “Start a full session” instead.",
+        images_unavailable: "Pictures can't be sent to Claude from this view. Start a full session instead; it can open them.",
+        image_rejected: "Claude couldn't read one of the pictures. Try a PNG or JPG screenshot.",
       };
       if (er.code !== "cancelled" || !state.changed) setErr(words[er.code ?? ""] ?? `Claude couldn't finish: ${er.message ?? "unknown problem"}.`);
-      if (!state.changed && er.code !== "cancelled") setText(req);
+      if (!state.changed && er.code !== "cancelled") {
+        setText(req);
+        setImgs(files);
+      }
     } finally {
       onDraft(null);
       setWorking(null);
@@ -931,8 +1215,15 @@ function ChatPane(props: {
     if (!req) return setErr("Say what the session should do first.");
     setErr(null);
     try {
-      await say({ role: "you", text: req, at: now() });
-      const id = await startSession(req, where);
+      const files = imgs;
+      const kept = await keepImages(files);
+      if (files.length && kept.length < files.length) return setErr("The pictures couldn't be saved with the project, so a session couldn't open them. Try again, or send the request without them.");
+      setImgs([]);
+      await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
+      const id = await startSession(
+        kept.length ? `${req}\n\nAttached pictures (this page's assets): ${kept.join(", ")}. Open each with the Artifact tool: action "read", url = the page, path = the id.` : req,
+        where,
+      );
       setText("");
       await say({ role: "session", text: `Started a full session ${where === "pc" ? "on your PC" : "in the cloud"}. Its progress shows here; it saves a new version when it's done.`, at: now(), job: id });
     } catch (e) {
@@ -970,6 +1261,15 @@ function ChatPane(props: {
                 {m.version ? <span className="vtag">v{m.version}</span> : null}
               </div>
               <div className="msg-text">{m.text}</div>
+              {!!m.images?.length && (
+                <div className="msg-imgs">
+                  {m.images.map((id) => (
+                    <a key={id} href={`/_blob/${id}`} target="_blank" rel="noreferrer">
+                      <img src={`/_blob/${id}`} alt="Picture sent with this message" loading="lazy" />
+                    </a>
+                  ))}
+                </div>
+              )}
               {job && !m.version && (
                 <ul className="jobs">
                   <JobRow j={job} brief />
@@ -999,6 +1299,11 @@ function ChatPane(props: {
           e.preventDefault();
           ask();
         }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          addImages([...e.dataTransfer.files]);
+        }}
       >
         <label htmlFor="ask" className="sr">
           Ask Claude
@@ -1007,19 +1312,38 @@ function ChatPane(props: {
           id="ask"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Change the rig, or describe a big job…"
+          placeholder="Change the rig, or describe a big job… (paste a picture to show Claude)"
           rows={3}
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask();
           }}
+          onPaste={(e) => {
+            const files = [...e.clipboardData.files].filter((f) => f.type.startsWith("image/"));
+            if (files.length) {
+              e.preventDefault();
+              addImages(files);
+            }
+          }}
         />
+        {imgs.length > 0 && (
+          <ul className="pending-imgs" aria-label="Pictures to send">
+            {imgs.map((f, i) => (
+              <li key={i}>
+                <Thumb file={f} />
+                <button type="button" className="icon-btn" aria-label={`Remove ${f.name}`} onClick={() => setImgs(imgs.filter((_, j) => j !== i))}>
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="composer-row">
           {working ? (
             <button type="button" className="btn" onClick={() => abort.current?.abort()} id="stop">
               Stop
             </button>
           ) : (
-            <button type="submit" className="btn primary" disabled={!text.trim()} id="send">
+            <button type="submit" className="btn primary" disabled={!text.trim() && !imgs.length} id="send">
               Change it
             </button>
           )}
@@ -1168,7 +1492,7 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
               <label className="check">
                 <input type="checkbox" id={`vis-${l.id}`} checked={l.visible} onChange={() => patch(l, { visible: !l.visible })} />
                 <span>
-                  {l.name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : `${l.shapes?.length ?? 0} outlines`}</span>
+                  {l.name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${l.rig?.length ?? 0} truss and rigging pieces` : `${l.shapes?.length ?? 0} outlines`}</span>
                 </span>
               </label>
               <button className="link small" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
@@ -1526,11 +1850,39 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
     return db.doc(`projects/${project.id}`).update({ seen });
   };
 
+  const [opening, setOpening] = useState<string | null>(null);
+  /** Turn a read-out from Dropbox into layers (fixtures, the existing rig, outlines). */
+  const openReadout = async (e: Entry) => {
+    const mcp = env.caps.mcp;
+    if (!mcp || !e.file_id) return;
+    setOpening(e.file_id);
+    try {
+      const res = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: e.file_id })) as { text?: string };
+      let r: unknown;
+      try {
+        r = JSON.parse(res?.text ?? "");
+      } catch {
+        throw new Error("that file isn't a read-out (it isn't JSON)");
+      }
+      if (!isReadout(r)) throw new Error("that file isn't a Rig Studio read-out");
+      const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
+      for (const l of old) await db.doc(`projects/${project.id}/layers/${l.id}`).delete();
+      const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
+      for (const l of made) await db.collection(`projects/${project.id}/layers`).add(l);
+      await markSeen([e]);
+      flash("ok", `${readoutSummary(r)} Added as ${made.length} layer${made.length === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}. See Layers; ask Claude in the chat to rebuild the rig from it.`);
+    } catch (er) {
+      flash("warn", /fetch|tool/i.test(String((er as { code?: string }).code ?? "")) ? mcpWords(er, "Dropbox") : `Couldn't open the read-out: ${(er as Error).message ?? mcpWords(er, "Dropbox")}`);
+    } finally {
+      setOpening(null);
+    }
+  };
+
   const ask = async (e: Entry, what: "read" | "layer") => {
     const where = "pc";
     const req =
       what === "read"
-        ? `Open "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) in Vectorworks on my PC and read it: add reference layers for the stage and venue outlines (shapes) and the lighting devices (fixtures, with weights and heights). Don't change the rig.`
+        ? `Read "${e.path_display ?? e.name}" (Dropbox file id ${e.file_id}) out of Vectorworks on my PC: find it in the PC's Dropbox folder and call the connector's read_out tool with its full Windows path. It writes ${e.name.replace(/\.vwx$/i, "")}.rigread.json beside the file, which Dropbox syncs. Then tell me what's in it (fixtures, truss, hoists, layers). Don't change the drawing or the rig.`
         : `Add "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) to this project as a drawing layer, to scale if the drawing shows a scale or dimensions.`;
     try {
       await startSession(req, where);
@@ -1603,11 +1955,19 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
               </div>
               {e.object_type === "file" && (
                 <div className="row">
-                  {["vwx", "dwg", "dxf"].includes(ext) && (
-                    <button className="link small" onClick={() => ask(e, "read")}>
-                      Read it in Vectorworks
+                  {e.name.toLowerCase().endsWith(".rigread.json") && (
+                    <button className="link small" onClick={() => openReadout(e)} disabled={opening === e.file_id} id={`open-readout-${e.file_id}`}>
+                      {opening === e.file_id ? "Opening…" : used ? "Open again (replace the layers)" : "Open read-out as layers"}
                     </button>
                   )}
+                  {["vwx", "dwg", "dxf"].includes(ext) &&
+                    (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
+                    <span className="muted small">✓ Read out (open the .rigread.json below)</span>
+                  ) : ["vwx"].includes(ext) ? (
+                    <button className="link small" onClick={() => ask(e, "read")}>
+                      Read it out on my PC (needs the PC on)
+                    </button>
+                  ) : null}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>
                       Add as a layer (session)
@@ -1619,7 +1979,7 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
           );
         })}
       </ul>
-      <p className="muted small">The page can list Dropbox but can't download from it. Reading a file goes to a session on your PC, or download it and use “Add a drawing or plot” under Layers.</p>
+      <p className="muted small">A Vectorworks file is read once on your PC (it writes a .rigread.json beside it); after that it opens here with the PC off. PDFs and pictures: download them and use “Add a drawing or plot” under Layers.</p>
     </div>
   );
 }

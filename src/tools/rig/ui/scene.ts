@@ -93,7 +93,7 @@ function box(c: THREE.Vector3, x: number, y: number, z: number): THREE.BufferGeo
  * X-braced on each face, guide rollers bearing on the tower's chords, and connection plates where
  * the grid truss bolts on. `size` across, a little taller than the truss.
  */
-function sleeveBlock(center: THREE.Vector3, size: number, trussH: number, towerW: number, inset: number, chordR: number, chainTop?: number): THREE.BufferGeometry {
+function sleeveBlock(center: THREE.Vector3, size: number, trussH: number, towerW: number, inset: number, chordR: number, chain?: { top: number; x: number; r: number }): THREE.BufferGeometry {
   const r = chordR * 1.25;
   const h = size / 2 - r;
   const hy = trussH / 2 + 2;
@@ -145,51 +145,107 @@ function sleeveBlock(center: THREE.Vector3, size: number, trussH: number, towerW
       parts.push(tube(at, P(sx * h, y, sz * h), 0.7, 6).toNonIndexed());
     }
   }
-  // The climbing hoist sits on the sleeve at one corner; its chain runs up to the head block.
-  if (chainTop !== undefined) {
-    const at = P(h + 6, hy + 5, h + 6);
-    const body = new THREE.CylinderGeometry(4.2, 4.2, 10, 16);
-    body.rotateZ(Math.PI / 2);
-    body.translate(at.x, at.y, at.z);
-    parts.push(body, box(at.clone().add(new THREE.Vector3(-6.5, 0, 0)), 3, 7.5, 7.5), box(P(h + 3, hy, h + 3), 9, 1.5, 9));
-    parts.push(tube(at.clone().add(new THREE.Vector3(0, 4, 0)), new THREE.Vector3(at.x, chainTop, at.z), 0.4, 6));
+  // The climbing chain: it hangs from the head block's wheels down to the sleeve, the hoist on
+  // one side and a dead end on the other, both just outside the sleeve on brackets.
+  if (chain) {
+    const fall = chain.x - chain.r; // inner edge of each wheel
+    const bracket = Math.max(fall, h + 2);
+    for (const sx of [-1, 1]) {
+      const at = P(sx * bracket, hy + 4, 0);
+      parts.push(box(P(sx * (h + (bracket - h) / 2), hy - 1, 0), bracket - h + 3, 1.5, 6));
+      if (sx > 0) {
+        const body = new THREE.CylinderGeometry(4.2, 4.2, 10, 16);
+        body.rotateX(Math.PI / 2);
+        body.translate(at.x, at.y + 2, at.z);
+        parts.push(body, box(at.clone().add(new THREE.Vector3(0, 2, 6.5)), 7.5, 7.5, 3));
+      } else {
+        const sh = new THREE.TorusGeometry(1.6, 0.5, 6, 12);
+        sh.translate(at.x, at.y, at.z);
+        parts.push(sh);
+      }
+      parts.push(tube(at.clone().add(new THREE.Vector3(0, 4, 0)), new THREE.Vector3(at.x, chain.top, at.z), 0.4, 6));
+    }
   }
   return mergeGeometries(parts.map((g) => (g.index ? g.toNonIndexed() : g)))!;
 }
 
+/** Where a head block's chain wheels sit, from its centre along X (shared with the sleeve's chain). */
+export const headSheave = (size: number) => ({ x: size / 2 - 6.5, r: 5.5 });
+
 /**
- * A tower head block: a square frame of box beams with a cross through the middle, a sheave plate
- * on top with two chain wheels, and a socket under it that the top tower section pins into.
+ * A ground-support head block, as Total Structures and Tomcat build them: a header of two
+ * back-to-back channels across the top of the tower (along X), a chain wheel in a housing at each
+ * end, gusset plates bolting the header to the top section, and the top section's cap frame.
+ * `size` is the header's length, `thick` its depth; the tower pins in underneath.
  */
-function headBlock(center: THREE.Vector3, size: number, thick: number, towerW: number): THREE.BufferGeometry {
-  const b = 3.5; // beam width
+function headBlock(center: THREE.Vector3, size: number, thick: number, towerW: number, inset: number, chordR: number): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   const P = (x: number, y: number, z: number) => new THREE.Vector3(center.x + x, center.y + y, center.z + z);
-  const e = size / 2 - b / 2;
-  parts.push(box(P(0, 0, e), size, thick, b), box(P(0, 0, -e), size, thick, b), box(P(e, 0, 0), b, thick, size - 2 * b), box(P(-e, 0, 0), b, thick, size - 2 * b));
-  parts.push(box(P(0, 0, 0), size - 2 * b, thick * 0.8, b), box(P(0, 0, 0), b, thick * 0.8, size - 2 * b));
-  // Socket the tower pins into, just under the frame.
-  parts.push(box(P(0, -thick / 2 - 1.5, 0), towerW + 1, 3, towerW + 1));
-  // Sheave plate and two chain wheels on top.
-  parts.push(box(P(0, thick / 2 + 0.4, 0), towerW, 0.8, towerW));
-  for (const z of [-4, 4]) {
-    const g = new THREE.CylinderGeometry(4.2, 4.2, 1.6, 20);
-    g.rotateX(Math.PI / 2);
-    g.translate(center.x, center.y + thick / 2 + 4.6, center.z + z);
-    parts.push(g.toNonIndexed());
-    parts.push(box(P(0, thick / 2 + 3, z + Math.sign(z) * 1.4), 2.5, 5.2, 0.6));
+  const g = 2.4; // half the gap between the channels
+  const web = 0.35;
+  const flange = 2.6;
+  const yb = -thick / 2;
+  // The header: two channels, webs inside, flanges turned out.
+  for (const sz of [-1, 1]) {
+    parts.push(box(P(0, 0, sz * (g + web / 2)), size, thick, web));
+    for (const sy of [-1, 1]) parts.push(box(P(0, sy * (thick / 2 - 0.25), sz * (g + flange / 2)), size, 0.5, flange));
   }
-  // Lifting eyes at the corners.
-  for (const [x, z] of [
-    [e, e],
-    [-e, e],
-    [-e, -e],
-    [e, -e],
-  ]) {
-    const g = new THREE.TorusGeometry(1.5, 0.45, 6, 12);
-    g.translate(center.x + x, center.y + thick / 2 + 1.8, center.z + z);
-    parts.push(g.toNonIndexed());
+  // End plates closing the header.
+  for (const sx of [-1, 1]) parts.push(box(P(sx * (size / 2 - 0.25), 0, 0), 0.5, thick, 2 * g + 2 * flange));
+  // A chain wheel at each end, in a round housing hung below the header.
+  const { x: wx, r } = headSheave(size);
+  for (const sx of [-1, 1]) {
+    const cx = sx * wx;
+    const cy = yb - r * 0.35;
+    // Housing: an open ring plate each side, bolted to the header's end.
+    for (const sz of [-1, 1]) {
+      const ring = new THREE.TorusGeometry(r + 1.1, 0.9, 6, 28);
+      ring.scale(1, 1, 0.3);
+      ring.translate(center.x + cx, center.y + cy, center.z + sz * (g + 0.2));
+      parts.push(ring.toNonIndexed());
+    }
+    // The wheel: a grooved rim on six spokes round a hub, on an axle through the housing.
+    const rim = new THREE.TorusGeometry(r, 0.55, 8, 32);
+    rim.translate(center.x + cx, center.y + cy, center.z);
+    parts.push(rim.toNonIndexed());
+    for (let k = 0; k < 6; k++) {
+      const a = (k * Math.PI) / 3;
+      parts.push(tube(P(cx, cy, 0), P(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 0), 0.35, 5).toNonIndexed());
+    }
+    const hub = new THREE.CylinderGeometry(1.4, 1.4, 1.6, 14);
+    hub.rotateX(Math.PI / 2);
+    hub.translate(center.x + cx, center.y + cy, center.z);
+    parts.push(hub.toNonIndexed());
+    const axle = new THREE.CylinderGeometry(0.6, 0.6, 2 * g + 1.5, 10);
+    axle.rotateX(Math.PI / 2);
+    axle.translate(center.x + cx, center.y + cy, center.z);
+    parts.push(axle.toNonIndexed());
   }
+  // Gusset plates: one each side of the header, bolting it to the top of the tower.
+  const towerTop = yb - 1.5;
+  const half = towerW / 2;
+  const shape = new THREE.Shape();
+  shape.moveTo(-half, 0);
+  shape.lineTo(half, 0);
+  shape.lineTo(half * 0.55, thick + 4);
+  shape.lineTo(-half * 0.55, thick + 4);
+  shape.closePath();
+  for (const sz of [-1, 1]) {
+    const gp = new THREE.ExtrudeGeometry(shape, { depth: 0.45, bevelEnabled: false });
+    gp.translate(center.x, center.y + towerTop, center.z + sz * (g + flange + 0.1) - (sz < 0 ? 0.45 : 0));
+    parts.push(gp.toNonIndexed());
+  }
+  // The top section's cap: a square frame at the chords with an X across it.
+  const c = half - inset;
+  const cap = [
+    [c, c],
+    [-c, c],
+    [-c, -c],
+    [c, -c],
+  ].map(([x, z]) => P(x, towerTop, z));
+  for (let i = 0; i < 4; i++) parts.push(tube(cap[i], cap[(i + 1) % 4], chordR, 8).toNonIndexed());
+  parts.push(tube(cap[0], cap[2], chordR * 0.6, 6).toNonIndexed(), tube(cap[1], cap[3], chordR * 0.6, 6).toNonIndexed());
+  parts.push(box(P(0, towerTop + 0.75, 0), towerW - 2, 1.5, 2 * g + 2 * flange));
   return mergeGeometries(parts)!;
 }
 
@@ -340,11 +396,14 @@ export function buildScene(list: BuildList, mats: Mats): THREE.Group {
         geo = boxTruss(toThree(p.start), toThree(p.end), width, chordInset, chordR);
         break;
       case "corner":
-        if (p.role === "head") geo = headBlock(toThree(p.center), p.size, p.thick ?? 7.5, width);
+        if (p.role === "head") geo = headBlock(toThree(p.center), p.size, p.thick ?? 7.5, width, chordInset, chordR);
         else if (p.role === "sleeve") {
           const head = list.parts.find((q) => q.kind === "corner" && q.role === "head" && Math.abs(q.center[0] - p.center[0]) < 0.5 && Math.abs(q.center[1] - p.center[1]) < 0.5);
-          const top = head && head.kind === "corner" ? head.center[2] - (head.thick ?? 0) / 2 : undefined;
-          geo = sleeveBlock(toThree(p.center), p.size, list.series.height, width, chordInset, chordR, top);
+          const chain =
+            head && head.kind === "corner"
+              ? { top: head.center[2] - (head.thick ?? 0) / 2 - headSheave(head.size).r * 0.35, x: headSheave(head.size).x, r: headSheave(head.size).r }
+              : undefined;
+          geo = sleeveBlock(toThree(p.center), p.size, list.series.height, width, chordInset, chordR, chain);
         }
         else geo = cornerBlock(toThree(p.center), p.size, chordInset, chordR);
         break;

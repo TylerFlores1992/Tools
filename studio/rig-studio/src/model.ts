@@ -19,19 +19,35 @@ export type Project = {
   dropbox: { path: string; display: string } | null;
   /** Dropbox file id → the modified time last looked at, so changed files can be flagged. */
   seen: Record<string, string>;
+  /** Off the main list (nothing deleted). */
+  archived?: boolean;
+  /** Kept at the top of the list; earlier pins first. */
+  pinnedAt?: string | null;
 };
+
+/** The order of the project list: pinned first (in the order they were pinned), then the most
+ * recently changed. */
+export function sortProjects<T extends Pick<Project, "updatedAt" | "pinnedAt">>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+    if (a.pinnedAt && b.pinnedAt) return a.pinnedAt.localeCompare(b.pinnedAt);
+    return b.updatedAt.localeCompare(a.updatedAt);
+  });
+}
 
 /** projects/{pid}/versions/{v0001} */
 export type Version = { n: number; note: string; by: "you" | "claude" | "session"; at: string; sketch: Sketch };
 
 export type Fixture = { x: number; y: number; z: number; lb: number; type?: string; id?: string };
 export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string };
+/** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
+export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 
 /** projects/{pid}/layers/{lid}: reference drawings the rig is laid out over. */
 export type Layer = {
   id: string;
   name: string;
-  kind: "image" | "fixtures" | "shapes";
+  kind: "image" | "fixtures" | "shapes" | "rig";
   visible: boolean;
   at: string;
   /** Where it came from, so a newer copy in Dropbox can be flagged. */
@@ -51,10 +67,12 @@ export type Layer = {
   onRig?: boolean;
   // shapes
   shapes?: Shape[];
+  // rig (existing truss and rigging)
+  rig?: RigItem[];
 };
 
 /** projects/{pid}/chat/{mid} */
-export type Message = { role: "you" | "claude" | "session"; text: string; at: string; job?: string; version?: number };
+export type Message = { role: "you" | "claude" | "session"; text: string; at: string; job?: string; version?: number; images?: string[] };
 
 /** jobs/{jid}: a full Claude session started from the page. */
 export type Job = {
@@ -70,7 +88,19 @@ export type Job = {
   updated?: string;
   session?: string;
   version?: number;
+  /** Off the Home list (the record is kept). */
+  archived?: boolean;
+  pinnedAt?: string | null;
 };
+
+/** Sessions on Home: pinned first (in the order pinned), then newest. */
+export function sortJobs<T extends Pick<Job, "at" | "pinnedAt">>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+    if (a.pinnedAt && b.pinnedAt) return a.pinnedAt.localeCompare(b.pinnedAt);
+    return b.at.localeCompare(a.at);
+  });
+}
 
 /** config/workers: the two scheduled tasks the page starts sessions with. */
 export type Workers = { cloud?: string; pc?: string; artifact?: string };
@@ -210,6 +240,12 @@ export function layerSummary(l: Layer): string {
     const zs = [...new Set(f.map((p) => Math.round(p.z)))].sort((a, b) => a - b);
     const lb = f.reduce((s, p) => s + p.lb, 0);
     return `${l.id} "${l.name}": ${f.length} fixtures, x ${ftIn(Math.min(...xs))} to ${ftIn(Math.max(...xs))}, y ${ftIn(Math.min(...ys))} to ${ftIn(Math.max(...ys))}, heights ${zs.slice(0, 8).map(ftIn).join(", ")}${zs.length > 8 ? "…" : ""}, ${Math.round(lb)} lb${l.onRig ? " (counted on the rig)" : ""}`;
+  }
+  if (l.kind === "rig") {
+    const r = l.rig ?? [];
+    const truss = r.filter((x) => x.kind === "truss");
+    const hoists = r.filter((x) => x.kind === "hoist").length;
+    return `${l.id} "${l.name}": existing rig from the drawing, ${truss.length} truss pieces (${truss.filter((t) => t.b).length} with a length), ${hoists} hoists, ${r.length - truss.length - hoists} other rigging`;
   }
   const s = l.shapes ?? [];
   return `${l.id} "${l.name}": ${s.length} outlines${s[0]?.label ? ` (${s.slice(0, 5).map((x) => x.label).join(", ")})` : ""}`;

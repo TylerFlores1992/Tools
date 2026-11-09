@@ -22,6 +22,18 @@ const MCP = {
   "Dropbox/list_folder": { entries: [{ name: "Air Pro - Self Climber (09.07.22).vwx", path: "ns:1//a.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/Air Pro - Self Climber (09.07.22).vwx", file_id: "id:1", modified_time: "2022-09-08T00:24:32Z", object_type: "file", file: { size: 13508229 } }], has_more: false },
   "Dropbox/create_folder": { folder: { path: "ns:1//Rig Studio/Test show", path_display: "/Rig Studio/Test show" } },
 };
+const READOUT = {
+  readout: 1, document: "CFF-26.vwx", units: "in",
+  layers: [{ name: "Stage", type: "design", elevation: 0 }],
+  classes: ["None"],
+  objects: [
+    { t: "plugin_object", layer: "Lighting", cls: "L", bbox: [0, 0, 1, 1], at: [120, 240, 300], rot: 0, plugin: "Lighting Device", fields: { "Inst Type": "Mac Viper", Weight: "86 lb" } },
+    { t: "plugin_object", layer: "Rigging", cls: "T", bbox: [0, 230, 480, 250], at: [0, 240, 310], rot: 0, plugin: "Truss", fields: { Length: "40'" } },
+    { t: "rectangle", layer: "Stage", cls: "None", bbox: [0, 0, 480, 360], pts: [[0, 0], [480, 0], [480, 360], [0, 360]], closed: true },
+  ],
+};
+MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
+MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: JSON.stringify(READOUT) };
 const SAMPLE = [
   {
     calls: [{ name: "edit_rig", input: { note: "Hoists at the four corners", ops: [{ op: "add_point", at: [0, 0, 310.25], capacity: 2000, label: "DSL" }, { op: "add_point", at: [1044, 0, 310.25], label: "DSR" }] } }],
@@ -74,6 +86,16 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForSelector(".file");
     ok(/New/.test(await p.locator(".file").first().innerText()), "an unseen Dropbox file is flagged New");
     await p.screenshot({ path: join(shots, "rig-studio-files.png") });
+    await p.click('[id="open-readout-id:ro"]');
+    await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length === 3);
+    const kinds = await p.evaluate(() => [...window.__DOCS__.entries()].filter(([k]) => k.startsWith("projects/air-pro-roof/layers/")).map(([, v]) => v.kind).sort().join());
+    ok(kinds === "fixtures,rig,shapes", "a read-out from Dropbox opens as fixtures, the existing rig and outlines");
+    ok(/1 lighting fixtures, 1 truss pieces/.test(await p.locator(".toast-wrap").innerText().catch(() => "")), "and says what was in it");
+    const fetched = await p.evaluate(() => window.__CALLS__.find((c) => c.tool === "fetch"));
+    ok(fetched && fetched.input.id === "id:ro", "read through Dropbox's fetch with the file id");
+    await p.click('[id="open-readout-id:ro"]');
+    await p.waitForTimeout(400);
+    ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length)) === 3, "opening it again replaces the layers instead of doubling them");
 
     console.log("chat edits the rig and saves a version");
     await p.click("#tab-chat");
@@ -86,6 +108,24 @@ for (const scheme of ["dark", "light"]) {
     ok(true, "Claude's reply shows in the chat");
     const prompt = await p.evaluate(() => JSON.stringify(window.__CALLS__.find((c) => c.sample)));
     ok(/RIG FORMAT/.test(prompt) && /Air Pro self-climber roof/.test(prompt), "the prompt carries the format and the project");
+
+    console.log("pictures go to Claude in the chat and are kept with the message");
+    const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+    await p.evaluate((b64) => {
+      const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+      const dt = new DataTransfer();
+      dt.items.add(new File([bytes], "head-block.png", { type: "image/png" }));
+      document.getElementById("ask").dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+    }, png.toString("base64"));
+    await p.waitForSelector(".pending-imgs img");
+    await p.fill("#ask", "This is what the head block looks like");
+    await p.click("#send");
+    await p.waitForSelector(".msg-imgs img");
+    const sent = await p.evaluate(() => window.__CALLS__.filter((c) => c.sample).pop());
+    ok(sent.images === 1 && /I attached a picture/.test(JSON.stringify(sent.sample)), "the picture went to Claude with the request");
+    const kept = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.includes("/chat/") && v.images?.length)?.[1]);
+    ok(kept && kept.images.length === 1 && kept.text === "This is what the head block looks like", "the message keeps the picture");
+    ok((await p.locator(".pending-imgs").count()) === 0, "the composer clears after sending");
 
     console.log("a full session starts from the page");
     await p.fill("#ask", "Read the lighting plot in Dropbox and lay out truss over it");
@@ -109,7 +149,7 @@ for (const scheme of ["dark", "light"]) {
     console.log("approve");
     await p.click("#approve");
     await p.click("#approve-yes");
-    await p.waitForFunction(() => window.__DOCS__.get("projects/air-pro-roof").approved === 2);
+    await p.waitForFunction(() => { const pr = window.__DOCS__.get("projects/air-pro-roof"); return pr.approved && pr.approved === pr.current; });
     ok(true, "approving writes the approved version");
     await p.click("#build");
     await p.waitForTimeout(300);
@@ -125,6 +165,51 @@ for (const scheme of ["dark", "light"]) {
     const proj = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.split("/").length === 2 && k.startsWith("projects/") && v.name === "Test show")?.[1]);
     ok(proj && proj.dropbox?.display === "/Rig Studio/Test show" && proj.current === 1, "a new blank project with its Dropbox folder");
     await p.screenshot({ path: join(shots, "rig-studio-blank.png") });
+
+    console.log("pin, archive and delete from the project list");
+    await p.click(".back");
+    await p.waitForSelector(".card");
+    const testId = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.split("/").length === 2 && v.name === "Test show")[0].split("/")[1]);
+    const names = () => p.$$eval(".card h3", (hs) => hs.map((h) => h.textContent.replace("Pinned:", "").trim()));
+    ok((await names())[0] === "Test show", "newest project first before pinning");
+    await p.click("#menu-air-pro-roof");
+    await p.click("#pin-air-pro-roof");
+    await p.waitForFunction(() => document.querySelector(".card h3")?.textContent.includes("Air Pro"));
+    ok(true, "a pinned project moves to the top");
+    ok(await p.locator(".card").first().locator(".pin-mark").isVisible(), "and shows a pin with a word for screen readers");
+    await p.screenshot({ path: join(shots, "rig-studio-pinned.png") });
+    await p.click(`#menu-${testId}`);
+    await p.click(`#archive-${testId}`);
+    await p.waitForFunction(() => document.querySelectorAll(".card").length === 1);
+    ok(/Archived Test show/.test(await p.locator(".notice").innerText()), "archiving says where it went");
+    await p.click("text=Archived projects (1)");
+    await p.waitForSelector(`#menu-${testId}`);
+    await p.click(`#menu-${testId}`);
+    await p.click(`#delete-${testId}`);
+    ok(/can't be undone/.test(await p.locator(".card-confirm").innerText()), "deleting asks first and says it can't be undone");
+    await p.click(`#delete-yes-${testId}`);
+    await p.waitForFunction((id) => ![...window.__DOCS__.keys()].some((k) => k.startsWith(`projects/${id}`)), testId);
+    ok(true, "deleting removes the project, its versions and chat");
+    ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/versions")).length)) >= 2, "other projects are untouched");
+
+    console.log("pin, archive and delete full sessions");
+    const reqs = () => p.$$eval(".section .job-req", (els) => els.map((e) => e.textContent));
+    const before = await reqs();
+    ok(before.length === 2, "two sessions listed");
+    await p.locator(".job-menu-btn").nth(1).click();
+    await p.locator("[id^=pin-job-]").click();
+    await p.waitForFunction((first) => document.querySelector(".section .job-req")?.textContent !== first, before[0]);
+    ok((await reqs())[0] === before[1], "a pinned session moves to the top");
+    await p.locator(".job-menu-btn").nth(1).click();
+    await p.locator("[id^=archive-job-]").click();
+    await p.waitForFunction(() => document.querySelectorAll(".section .job-req").length === 1);
+    ok(await p.locator("text=Archived sessions (1)").isVisible(), "an archived session moves to Archived sessions");
+    await p.locator(".job-menu-btn").first().click();
+    await p.locator("[id^=delete-job-]").click();
+    ok(/doesn't stop the session/.test(await p.locator(".card-confirm").innerText()), "deleting a running session's record says it keeps running");
+    await p.locator("[id^=delete-yes-job-]").click();
+    await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("jobs/")).length === 1);
+    ok(true, "deleting removes only that session's record");
   }
   ok(errors.length === 0, `no page errors (${scheme})${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await ctx.close();

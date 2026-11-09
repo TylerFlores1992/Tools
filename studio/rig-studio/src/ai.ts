@@ -10,7 +10,7 @@ export const FORMAT = `RIG FORMAT (inches; X to the right, Y away from the audie
 - towers: ground-support self-climbing towers {id, x, y, height?}. A tower under a joint gets a sleeve block there, a base and a head block; height is worked out if left out.
 - points: hanging points {id, at:[x,y,z], kind:"hoist"|"deadhang", capacity (lb, 2000 = 1 ton)}. Put them on truss joints or along runs.
 - loads: other hung weight {id, at, lb, label} (speakers, video, a drape).
-- series: "box12" (12" box truss, 4.3 lb/ft) or "box20" (20.5" box, 7.5 lb/ft). Stock lengths 10', 8', 5', 4', 2.5', 2', 1' (plus 7" and ½" spacers on 20.5"). Make joint-to-joint lengths add up: block size (12 or 20.5) plus whole stock.
+- series: "box12" (12" box truss, 4.3 lb/ft) or "box20" (20.5" box, 7.5 lb/ft). New projects start on box12 only as a placeholder: the designer picks the truss in the chat (edit_rig set series), and not every project uses truss. Stock lengths 10', 8', 5', 4', 2.5', 2', 1' (plus 7" and ½" spacers on 20.5"). Make joint-to-joint lengths add up: block size (12 or 20.5) plus whole stock.
 - Span guide: 12" box ≤ 30' between points, 20.5" box ≤ 40'. Cantilevers ≤ 4'.`;
 
 export type Ctx = {
@@ -38,7 +38,7 @@ export function systemPrompt(ctx: Ctx): string {
 
 ${FORMAT}
 
-Reference layers (drawings and lighting plots from the venue, Vectorworks or Dropbox): ${ctx.layers.length ? ctx.layers.map(layerSummary).join("; ") : "none yet"}. Call read_layer to get fixture positions or outlines before laying truss over them. The usual job: run truss where the fixtures hang (each fixture within about 1' of a run, at its height), then hoists so no span is over the limit, about one per 20-30' and at the corners.
+Reference layers (drawings and lighting plots from the venue, Vectorworks or Dropbox): ${ctx.layers.length ? ctx.layers.map(layerSummary).join("; ") : "none yet"}. Call read_layer to get fixture positions, outlines or the existing rig before laying truss over them. When a drawing's existing rig is there and the designer asks to rebuild or copy it, turn its truss into runs (snap to whole stock, joints where pieces meet) and its hoists into points. The usual job: run truss where the fixtures hang (each fixture within about 1' of a run, at its height), then hoists so no span is over the limit, about one per 20-30' and at the corners.
 
 How to work:
 - For a change you can make with a few edits, call edit_rig (or replace_rig to redraw from scratch). Each call is checked; fix what the problems say and try again. One version is saved when you finish.
@@ -130,6 +130,12 @@ export function tools(ctx: Ctx, state: { sketch: Sketch; changed: boolean; notes
         const r = (n: number) => Math.round(n * 10) / 10;
         if (l.kind === "fixtures") return { name: l.name, fixtures: (l.fixtures ?? []).slice(0, 400).map((f) => [r(f.x), r(f.y), r(f.z), f.lb, f.type ?? ""]), columns: "x, y, z, lb, type" };
         if (l.kind === "shapes") return { name: l.name, shapes: (l.shapes ?? []).slice(0, 200).map((s) => ({ label: s.label, z: s.z ?? 0, closed: !!s.closed, pts: s.pts.map(([x, y]) => [r(x), r(y)]) })) };
+        if (l.kind === "rig")
+          return {
+            name: l.name,
+            note: "Truss and rigging already in the drawing. Truss: at = insertion, b = far end (when its length is known); Z is the insertion height as Vectorworks stores it, check it against the fixtures before reusing it.",
+            items: (l.rig ?? []).slice(0, 400).map((it) => ({ kind: it.kind, name: it.name, at: it.at.map(r), ...(it.b ? { b: it.b.map(r) } : {}), ...(it.bbox ? { bbox: it.bbox.map(r) } : {}), fields: it.fields })),
+          };
         return { name: l.name, note: `An image underlay ${ftIn(l.widthIn ?? 0)} wide. You can't see the picture; ask the designer for the positions or start a session.` };
       },
     },

@@ -55,7 +55,7 @@
     async listTools() { return { servers: [] }; },
   };
   const sample = Object.assign(async (input, opts) => {
-    log.push({ sample: input });
+    log.push({ sample: input, images: opts?.images ? [...opts.images].length : 0 });
     const script = (window.__SAMPLE__ || [])[0];
     if (script && opts?.tools) {
       for (const call of script.calls || []) {
@@ -66,8 +66,8 @@
     const text = script?.text ?? "Done.";
     opts?.onText?.({ text, delta: text });
     return { text, truncated: false, modelTierApplied: "default" };
-  }, { limits: async () => ({ maxPromptBytes: 262144, tools: { maxCount: 16 } }), json: async () => ({}) });
-  const assets = { upload: async (b) => ({ id: "a".repeat(32), url: URL.createObjectURL(b) }), delete: async () => ({ deleted: true }) };
+  }, { limits: async () => ({ maxPromptBytes: 262144, tools: { maxCount: 16 }, images: { maxCount: 4, maxInputBytes: 5000000, mediaTypes: ["image/png", "image/jpeg", "image/webp", "image/gif"] } }), json: async () => ({}) });
+  const assets = { upload: async (b) => { log.push({ upload: b.type }); return { id: "a".repeat(31) + String(log.length % 10), url: URL.createObjectURL(b) }; }, delete: async () => ({ deleted: true }) };
   const caps = { db, mcp, sample, assets, downloads: { save: async (r) => { log.push({ download: r.filename }); return { status: "saved" }; } }, user: { isOwner: async () => true, canEdit: async () => true, id: async () => "u_test" } };
   window.__DOCS__ = docs;
   window.claude = { use: async (name) => caps[name] ?? null };

@@ -416,7 +416,10 @@
   "ImportResourceToCurrentFile": [
    "listID",
    "index"
+  ],
+  "GetSymRot": [
+   "symHd"
   ]
  },
- "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07)."
+ "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09."
 }

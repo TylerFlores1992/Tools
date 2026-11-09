@@ -678,6 +678,10 @@ def GetSymLoc3D(objectHandle):
     return (x, y, getattr(objectHandle, "z", 0.0))
 
 
+def GetSymRot(h):
+    return float(getattr(h, "rot", 0.0))
+
+
 def Get3DInfo(h):
     (x0, y1), (x1, y0) = GetBBox(h)
     return (y1 - y0, x1 - x0, h.dz)  # height (dY), width (dX), depth (dZ), as documented

@@ -14,7 +14,7 @@ from typing import Any, Literal, Union
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from . import __version__, config, rig, symbols, update
+from . import __version__, config, readout, rig, symbols, update
 from .jobs import BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
@@ -421,6 +421,73 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """Every Spotlight lighting device with all of its fields (channel, unit, position,
         purpose, color, wattage, weight, universe/address...) and its insertion point."""
         return await call("get_lighting_devices", layer=layer, limit=limit)
+
+    async def _read_out_one(path: str | None, max_objects: int) -> dict:
+        from pathlib import Path
+
+        vwx = Path(path).expanduser() if path else None
+        if vwx is not None:
+            if not vwx.exists():
+                raise ToolError("No file at %s." % vwx)
+            info = await call("get_document_info")
+            if not readout.same_document(info.get("document", ""), vwx):
+                try:
+                    await asyncio.to_thread(readout.open_in_vectorworks, vwx)
+                except Exception as e:
+                    raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e
+                for _ in range(60):  # big files take a while to open
+                    await asyncio.sleep(3)
+                    try:
+                        info = await call("get_document_info", _timeout=10.0)
+                    except Exception:
+                        continue
+                    if readout.same_document(info.get("document", ""), vwx):
+                        break
+                else:
+                    raise ToolError("Vectorworks didn't show %s within 3 minutes. Open it by hand, then call read_out again without a path." % vwx.name)
+        data = await call("read_out", max_objects=max_objects, _timeout=max(settings.rig_timeout, 300.0))
+        body, trimmed = readout.fit(data)
+        doc_path = Path(data.get("path") or "")
+        if vwx is not None:
+            dest = readout.target_for(vwx)
+        elif doc_path.is_absolute() and doc_path.parent.exists():
+            dest = readout.target_for(doc_path)
+        else:
+            dest = settings.home / "readouts" / (Path(data.get("document") or "drawing").stem + readout.SUFFIX)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(".tmp")
+        tmp.write_bytes(body)
+        tmp.replace(dest)
+        return {"saved": str(dest), "bytes": len(body), "shapes_left_out": trimmed, **readout.summary(data)}
+
+    @mcp.tool()
+    async def read_out(path: str | None = None, max_objects: int = 20000) -> dict:
+        """Read the whole drawing out to <name>.rigread.json beside the .vwx (inches: layers,
+        classes, every plug-in object with all its fields, symbols, shapes), so Rig Studio and
+        Claude can work on it with Vectorworks closed; in a Dropbox folder it syncs by itself.
+        With `path` the file is opened in Vectorworks first (a full Windows path); without it,
+        the open document is read. Under 5 MB: the plainest shapes are left out first, and it
+        says how many."""
+        return await _read_out_one(path, max_objects)
+
+    @mcp.tool()
+    async def read_out_folder(folder: str, only_new: bool = True, limit: int = 10) -> dict:
+        """read_out for every .vwx in a folder and below (backups skipped) whose read-out is
+        missing or older than the file, up to `limit` files, one at a time. Each file is opened
+        in Vectorworks; nothing is saved to the drawings."""
+        from pathlib import Path
+
+        root = Path(folder).expanduser()
+        if not root.is_dir():
+            raise ToolError("No folder at %s." % root)
+        todo = [p for p in readout.vwx_files(root) if not only_new or readout.needs_read(p)]
+        done, failed = [], []
+        for p in todo[: max(1, int(limit))]:
+            try:
+                done.append(await _read_out_one(str(p), 20000))
+            except ToolError as e:
+                failed.append({"file": str(p), "error": str(e)})
+        return {"read": done, "failed": failed, "left": max(0, len(todo) - int(limit))}
 
     @mcp.tool()
     async def set_record_fields(id: str, record: str, values: dict[str, str]) -> dict:
