@@ -17,3 +17,15 @@ test("the download exists, behind the Private sign-in", () => {
   assert.ok(CONNECTOR.download.startsWith("/private/"), "served only to signed-in visitors (src/proxy.ts)");
   assert.ok(existsSync(join(ROOT, "public", CONNECTOR.download)), "run: python connectors/vectorworks/make_zip.py");
 });
+
+test("the update manifest matches the zip and the version, and the site's symbol map is the connector's", async () => {
+  const { createHash } = await import("node:crypto");
+  const dir = join(ROOT, "public/private/vectorworks");
+  const manifest = JSON.parse(readFileSync(join(dir, "vwmcp-win.json"), "utf8"));
+  const zip = readFileSync(join(dir, "vwmcp-win.zip"));
+  const why = "run: python connectors/vectorworks/make_zip.py (connectors update themselves from these files)";
+  assert.equal(manifest.version, CONNECTOR.version, why);
+  assert.equal(manifest.sha256, createHash("sha256").update(zip).digest("hex"), why);
+  assert.equal(manifest.size, zip.length, why);
+  assert.equal(readFileSync(join(dir, "symbols.json"), "utf8"), readFileSync(join(ROOT, "connectors/vectorworks/src/vwmcp/symbols.json"), "utf8"), why);
+});

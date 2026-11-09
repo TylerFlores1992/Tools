@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, SIGN_IN_PATH, verifySession } from "@/lib/private-auth";
+import { bearerOk, CONNECTOR_FILES } from "@/lib/rig/bearer";
 
 /**
  * Guards the private area (/private/*: the CampHawk lab and future projects). A visitor without
@@ -8,6 +9,9 @@ import { SESSION_COOKIE, SIGN_IN_PATH, verifySession } from "@/lib/private-auth"
  *
  * The password is LAB_PASSWORD, set by the owner in Vercel. Unset or empty means locked for
  * everyone: fail closed. `npm run smoke` checks production keeps the area locked.
+ *
+ * One exception: the Vectorworks connector fetches its own update files (CONNECTOR_FILES) with
+ * its key, `Authorization: Bearer RIG_TOKEN`, since it has no browser session.
  *
  * Only /private runs through Proxy (see `matcher`); every other page is untouched.
  */
@@ -20,6 +24,10 @@ export function proxy(request: NextRequest) {
   if (pathname === SIGN_IN_PATH) return withHeaders(NextResponse.next());
 
   if (verifySession(request.cookies.get(SESSION_COOKIE)?.value, process.env.LAB_PASSWORD)) {
+    return withHeaders(NextResponse.next());
+  }
+
+  if (CONNECTOR_FILES.has(pathname) && bearerOk(request, process.env.RIG_TOKEN)) {
     return withHeaders(NextResponse.next());
   }
 
