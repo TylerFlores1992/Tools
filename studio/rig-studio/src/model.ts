@@ -54,7 +54,7 @@ export type Layer = {
 };
 
 /** projects/{pid}/chat/{mid} */
-export type Message = { role: "you" | "claude" | "session"; text: string; at: string; job?: string; version?: number };
+export type Message = { role: "you" | "claude" | "session"; text: string; at: string; job?: string; version?: number; images?: string[] };
 
 /** jobs/{jid}: a full Claude session started from the page. */
 export type Job = {

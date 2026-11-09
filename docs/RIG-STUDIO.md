@@ -9,7 +9,8 @@ What it does:
   hoists, hung loads), a version history, reference layers, a chat and a Dropbox folder.
 - **The view.** 3D, plan, front and side, from the same scene code as the Rig Planner
   (`src/tools/rig/ui/scene.ts`), with load labels on every hoist and tower.
-- **Chat bar.** Claude inside the page (the artifact `sample` capability) edits the sketch with
+- **Chat bar.** Pictures can go with a message (attach, paste or drop; kept as page assets so a full
+  session can open them too). Claude inside the page (the artifact `sample` capability) edits the sketch with
   page tools (`edit_rig`, `replace_rig`, `read_layer`) and saves one version per request.
 - **Full sessions for big jobs.** "Start a full session" (or Claude's own `start_session` tool)
   writes a `jobs/{id}` document and fires one of two scheduled tasks with `fire_trigger`; the new
@@ -83,6 +84,6 @@ node studio/rig-studio/dev/test.mjs          # browser flows against a mock wind
 
 Publish with the Artifact tool, same file path in the session that made it, or with `url` from
 another session (read it first). Keep the capabilities: `db`, `user`, `sample`, `assets`,
-`downloads`, and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
+`downloads`, `sample` with `images: true` (pictures in the chat), and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
 get_file_metadata, create_folder] and host:vectorworks [ping, build_rig, get_lighting_devices,
 get_document_info].

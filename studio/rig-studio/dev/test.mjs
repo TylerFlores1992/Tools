@@ -87,6 +87,19 @@ for (const scheme of ["dark", "light"]) {
     const prompt = await p.evaluate(() => JSON.stringify(window.__CALLS__.find((c) => c.sample)));
     ok(/RIG FORMAT/.test(prompt) && /Air Pro self-climber roof/.test(prompt), "the prompt carries the format and the project");
 
+    console.log("pictures go to Claude in the chat and are kept with the message");
+    const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+    await p.setInputFiles("#chat-img", { name: "head-block.png", mimeType: "image/png", buffer: png });
+    await p.waitForSelector(".pending-imgs img");
+    await p.fill("#ask", "This is what the head block looks like");
+    await p.click("#send");
+    await p.waitForSelector(".msg-imgs img");
+    const sent = await p.evaluate(() => window.__CALLS__.filter((c) => c.sample).pop());
+    ok(sent.images === 1 && /I attached a picture/.test(JSON.stringify(sent.sample)), "the picture went to Claude with the request");
+    const kept = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.includes("/chat/") && v.images?.length)?.[1]);
+    ok(kept && kept.images.length === 1 && kept.text === "This is what the head block looks like", "the message keeps the picture");
+    ok((await p.locator(".pending-imgs").count()) === 0, "the composer clears after sending");
+
     console.log("a full session starts from the page");
     await p.fill("#ask", "Read the lighting plot in Dropbox and lay out truss over it");
     await p.selectOption("#where", "pc");
@@ -109,7 +122,7 @@ for (const scheme of ["dark", "light"]) {
     console.log("approve");
     await p.click("#approve");
     await p.click("#approve-yes");
-    await p.waitForFunction(() => window.__DOCS__.get("projects/air-pro-roof").approved === 2);
+    await p.waitForFunction(() => { const pr = window.__DOCS__.get("projects/air-pro-roof"); return pr.approved && pr.approved === pr.current; });
     ok(true, "approving writes the approved version");
     await p.click("#build");
     await p.waitForTimeout(300);

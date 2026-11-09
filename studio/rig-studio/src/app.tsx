@@ -839,6 +839,16 @@ function PickedCard({ id, sketch, loads, onClose }: { id: string; sketch: Sketch
 
 /* ------------------------------------------------------------------ chat */
 
+function Thumb({ file }: { file: File }) {
+  const [url, setUrl] = useState<string>("");
+  useEffect(() => {
+    const u = URL.createObjectURL(file);
+    setUrl(u);
+    return () => URL.revokeObjectURL(u);
+  }, [file]);
+  return url ? <img src={url} alt={file.name} /> : null;
+}
+
 function ChatPane(props: {
   env: Env;
   project: Project;
@@ -859,6 +869,38 @@ function ChatPane(props: {
   const [stream, setStream] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [where, setWhere] = useState<"cloud" | "pc">("cloud");
+  const [imgs, setImgs] = useState<File[]>([]);
+  const [imgLimits, setImgLimits] = useState<{ maxCount: number; maxInputBytes: number; mediaTypes: string[] } | null>(null);
+  useEffect(() => {
+    env.caps.sample
+      ?.limits()
+      .then((l) => setImgLimits((l as { images?: { maxCount: number; maxInputBytes: number; mediaTypes: string[] } }).images ?? null))
+      .catch(() => setImgLimits(null));
+  }, [env.caps.sample]);
+  const addImages = (files: File[]) => {
+    const types = imgLimits?.mediaTypes ?? ["image/png", "image/jpeg", "image/webp", "image/gif"];
+    const ok = files.filter((f) => types.includes(f.type));
+    const big = ok.filter((f) => imgLimits && f.size > imgLimits.maxInputBytes);
+    const max = imgLimits?.maxCount ?? 4;
+    const next = [...imgs, ...ok.filter((f) => !big.includes(f))].slice(0, max);
+    if (ok.length < files.length) setErr("Only pictures (PNG, JPG, WebP, GIF) can go in the chat. PDFs and drawings go under Layers.");
+    else if (big.length) setErr(`${big[0].name} is too big to send. Try a smaller picture or a screenshot of the part that matters.`);
+    else if (imgs.length + ok.length > max) setErr(`Up to ${max} pictures at a time.`);
+    setImgs(next);
+  };
+  /** Keep the pictures with the project (so the chat shows them and a full session can open them). */
+  const keepImages = async (files: File[]): Promise<string[]> => {
+    if (!env.caps.assets || !files.length) return [];
+    const ids: string[] = [];
+    for (const f of files) {
+      try {
+        ids.push((await env.caps.assets.upload(f, { type: f.type })).id);
+      } catch {
+        /* the chat still works without the copy */
+      }
+    }
+    return ids;
+  };
   const abort = useRef<AbortController | null>(null);
   const list = useRef<HTMLDivElement>(null);
   useEffect(() => store.set(`draft:${project.id}`, text), [text, project.id]);
@@ -869,13 +911,16 @@ function ChatPane(props: {
   const active = jobs.filter((j) => j.status === "queued" || j.status === "running");
 
   const ask = async () => {
-    const req = text.trim();
+    const req = text.trim() || (imgs.length ? "Here's a picture for reference." : "");
     if (!req || working) return;
     if (!env.caps.sample) return setErr("Claude can't be asked from this view. Open the page in Claude, signed in.");
     setErr(null);
     setText("");
     props.onLatest();
-    await say({ role: "you", text: req, at: now() });
+    const files = imgs;
+    setImgs([]);
+    const kept = await keepImages(files);
+    await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
     const state = { sketch, changed: false, notes: [] as string[] };
     const ctx: Ctx = {
       sketch,
@@ -886,13 +931,14 @@ function ChatPane(props: {
       onProgress: setWorking,
       startSession,
     };
-    const msgs = turns(chat, req);
+    const msgs = turns(chat, files.length ? `${req}\n\n(I attached ${files.length === 1 ? "a picture" : `${files.length} pictures`}: look at ${files.length === 1 ? "it" : "them"} before answering.)` : req);
     msgs[0] = { role: "user", content: `${systemPrompt(ctx)}\n\n---\n\n${msgs[0].content}` };
     abort.current = new AbortController();
     setWorking("Thinking…");
     setStream("");
     try {
       const r = await env.caps.sample(msgs, {
+        ...(files.length && imgLimits ? { images: files } : {}),
         tools: aiTools(ctx, state),
         signal: abort.current.signal,
         modelTier: "default",
@@ -915,9 +961,14 @@ function ChatPane(props: {
         rate_limited: "Too many requests just now. Wait a minute and ask again.",
         cancelled: "Stopped.",
         prompt_too_large: "This rig is too big to edit in the chat. Use “Start a full session” instead.",
+        images_unavailable: "Pictures can't be sent to Claude from this view. Start a full session instead; it can open them.",
+        image_rejected: "Claude couldn't read one of the pictures. Try a PNG or JPG screenshot.",
       };
       if (er.code !== "cancelled" || !state.changed) setErr(words[er.code ?? ""] ?? `Claude couldn't finish: ${er.message ?? "unknown problem"}.`);
-      if (!state.changed && er.code !== "cancelled") setText(req);
+      if (!state.changed && er.code !== "cancelled") {
+        setText(req);
+        setImgs(files);
+      }
     } finally {
       onDraft(null);
       setWorking(null);
@@ -931,8 +982,15 @@ function ChatPane(props: {
     if (!req) return setErr("Say what the session should do first.");
     setErr(null);
     try {
-      await say({ role: "you", text: req, at: now() });
-      const id = await startSession(req, where);
+      const files = imgs;
+      const kept = await keepImages(files);
+      if (files.length && kept.length < files.length) return setErr("The pictures couldn't be saved with the project, so a session couldn't open them. Try again, or send the request without them.");
+      setImgs([]);
+      await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
+      const id = await startSession(
+        kept.length ? `${req}\n\nAttached pictures (this page's assets): ${kept.join(", ")}. Open each with the Artifact tool: action "read", url = the page, path = the id.` : req,
+        where,
+      );
       setText("");
       await say({ role: "session", text: `Started a full session ${where === "pc" ? "on your PC" : "in the cloud"}. Its progress shows here; it saves a new version when it's done.`, at: now(), job: id });
     } catch (e) {
@@ -970,6 +1028,15 @@ function ChatPane(props: {
                 {m.version ? <span className="vtag">v{m.version}</span> : null}
               </div>
               <div className="msg-text">{m.text}</div>
+              {!!m.images?.length && (
+                <div className="msg-imgs">
+                  {m.images.map((id) => (
+                    <a key={id} href={`/_blob/${id}`} target="_blank" rel="noreferrer">
+                      <img src={`/_blob/${id}`} alt="Picture sent with this message" loading="lazy" />
+                    </a>
+                  ))}
+                </div>
+              )}
               {job && !m.version && (
                 <ul className="jobs">
                   <JobRow j={job} brief />
@@ -999,6 +1066,11 @@ function ChatPane(props: {
           e.preventDefault();
           ask();
         }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          addImages([...e.dataTransfer.files]);
+        }}
       >
         <label htmlFor="ask" className="sr">
           Ask Claude
@@ -1012,14 +1084,47 @@ function ChatPane(props: {
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask();
           }}
+          onPaste={(e) => {
+            const files = [...e.clipboardData.files].filter((f) => f.type.startsWith("image/"));
+            if (files.length) {
+              e.preventDefault();
+              addImages(files);
+            }
+          }}
         />
+        {imgs.length > 0 && (
+          <ul className="pending-imgs" aria-label="Pictures to send">
+            {imgs.map((f, i) => (
+              <li key={i}>
+                <Thumb file={f} />
+                <button type="button" className="icon-btn" aria-label={`Remove ${f.name}`} onClick={() => setImgs(imgs.filter((_, j) => j !== i))}>
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="composer-row">
+          <label className="btn attach" htmlFor="chat-img" title="Add pictures (or paste, or drop them here)">
+            + Picture
+          </label>
+          <input
+            id="chat-img"
+            type="file"
+            className="sr"
+            multiple
+            accept={(imgLimits?.mediaTypes ?? ["image/png", "image/jpeg", "image/webp", "image/gif"]).join(",")}
+            onChange={(e) => {
+              addImages([...(e.target.files ?? [])]);
+              e.target.value = "";
+            }}
+          />
           {working ? (
             <button type="button" className="btn" onClick={() => abort.current?.abort()} id="stop">
               Stop
             </button>
           ) : (
-            <button type="submit" className="btn primary" disabled={!text.trim()} id="send">
+            <button type="submit" className="btn primary" disabled={!text.trim() && !imgs.length} id="send">
               Change it
             </button>
           )}
