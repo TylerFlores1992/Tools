@@ -9,6 +9,7 @@ import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
 import { ago, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -886,6 +887,11 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
             <span>
               <i className="sw hoist" /> Hoists
             </span>
+            {layers.some((l) => l.kind === "rig" && l.visible) && (
+              <span>
+                <i className="sw existing" /> Existing rig (from the drawing)
+              </span>
+            )}
             {layers.some((l) => l.kind === "fixtures" && l.visible) && (
               <span>
                 <i className="sw fixture" /> Fixtures
@@ -1486,7 +1492,7 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
               <label className="check">
                 <input type="checkbox" id={`vis-${l.id}`} checked={l.visible} onChange={() => patch(l, { visible: !l.visible })} />
                 <span>
-                  {l.name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : `${l.shapes?.length ?? 0} outlines`}</span>
+                  {l.name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${l.rig?.length ?? 0} truss and rigging pieces` : `${l.shapes?.length ?? 0} outlines`}</span>
                 </span>
               </label>
               <button className="link small" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
@@ -1844,11 +1850,39 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
     return db.doc(`projects/${project.id}`).update({ seen });
   };
 
+  const [opening, setOpening] = useState<string | null>(null);
+  /** Turn a read-out from Dropbox into layers (fixtures, the existing rig, outlines). */
+  const openReadout = async (e: Entry) => {
+    const mcp = env.caps.mcp;
+    if (!mcp || !e.file_id) return;
+    setOpening(e.file_id);
+    try {
+      const res = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: e.file_id })) as { text?: string };
+      let r: unknown;
+      try {
+        r = JSON.parse(res?.text ?? "");
+      } catch {
+        throw new Error("that file isn't a read-out (it isn't JSON)");
+      }
+      if (!isReadout(r)) throw new Error("that file isn't a Rig Studio read-out");
+      const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
+      for (const l of old) await db.doc(`projects/${project.id}/layers/${l.id}`).delete();
+      const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
+      for (const l of made) await db.collection(`projects/${project.id}/layers`).add(l);
+      await markSeen([e]);
+      flash("ok", `${readoutSummary(r)} Added as ${made.length} layer${made.length === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}. See Layers; ask Claude in the chat to rebuild the rig from it.`);
+    } catch (er) {
+      flash("warn", /fetch|tool/i.test(String((er as { code?: string }).code ?? "")) ? mcpWords(er, "Dropbox") : `Couldn't open the read-out: ${(er as Error).message ?? mcpWords(er, "Dropbox")}`);
+    } finally {
+      setOpening(null);
+    }
+  };
+
   const ask = async (e: Entry, what: "read" | "layer") => {
     const where = "pc";
     const req =
       what === "read"
-        ? `Open "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) in Vectorworks on my PC and read it: add reference layers for the stage and venue outlines (shapes) and the lighting devices (fixtures, with weights and heights). Don't change the rig.`
+        ? `Read "${e.path_display ?? e.name}" (Dropbox file id ${e.file_id}) out of Vectorworks on my PC: find it in the PC's Dropbox folder and call the connector's read_out tool with its full Windows path. It writes ${e.name.replace(/\.vwx$/i, "")}.rigread.json beside the file, which Dropbox syncs. Then tell me what's in it (fixtures, truss, hoists, layers). Don't change the drawing or the rig.`
         : `Add "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) to this project as a drawing layer, to scale if the drawing shows a scale or dimensions.`;
     try {
       await startSession(req, where);
@@ -1921,11 +1955,19 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
               </div>
               {e.object_type === "file" && (
                 <div className="row">
-                  {["vwx", "dwg", "dxf"].includes(ext) && (
-                    <button className="link small" onClick={() => ask(e, "read")}>
-                      Read it in Vectorworks
+                  {e.name.toLowerCase().endsWith(".rigread.json") && (
+                    <button className="link small" onClick={() => openReadout(e)} disabled={opening === e.file_id} id={`open-readout-${e.file_id}`}>
+                      {opening === e.file_id ? "Opening…" : used ? "Open again (replace the layers)" : "Open read-out as layers"}
                     </button>
                   )}
+                  {["vwx", "dwg", "dxf"].includes(ext) &&
+                    (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
+                    <span className="muted small">✓ Read out (open the .rigread.json below)</span>
+                  ) : ["vwx"].includes(ext) ? (
+                    <button className="link small" onClick={() => ask(e, "read")}>
+                      Read it out on my PC (needs the PC on)
+                    </button>
+                  ) : null}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>
                       Add as a layer (session)
@@ -1937,7 +1979,7 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
           );
         })}
       </ul>
-      <p className="muted small">The page can list Dropbox but can't download from it. Reading a file goes to a session on your PC, or download it and use “Add a drawing or plot” under Layers.</p>
+      <p className="muted small">A Vectorworks file is read once on your PC (it writes a .rigread.json beside it); after that it opens here with the PC off. PDFs and pictures: download them and use “Add a drawing or plot” under Layers.</p>
     </div>
   );
 }

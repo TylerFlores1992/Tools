@@ -22,6 +22,18 @@ const MCP = {
   "Dropbox/list_folder": { entries: [{ name: "Air Pro - Self Climber (09.07.22).vwx", path: "ns:1//a.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/Air Pro - Self Climber (09.07.22).vwx", file_id: "id:1", modified_time: "2022-09-08T00:24:32Z", object_type: "file", file: { size: 13508229 } }], has_more: false },
   "Dropbox/create_folder": { folder: { path: "ns:1//Rig Studio/Test show", path_display: "/Rig Studio/Test show" } },
 };
+const READOUT = {
+  readout: 1, document: "CFF-26.vwx", units: "in",
+  layers: [{ name: "Stage", type: "design", elevation: 0 }],
+  classes: ["None"],
+  objects: [
+    { t: "plugin_object", layer: "Lighting", cls: "L", bbox: [0, 0, 1, 1], at: [120, 240, 300], rot: 0, plugin: "Lighting Device", fields: { "Inst Type": "Mac Viper", Weight: "86 lb" } },
+    { t: "plugin_object", layer: "Rigging", cls: "T", bbox: [0, 230, 480, 250], at: [0, 240, 310], rot: 0, plugin: "Truss", fields: { Length: "40'" } },
+    { t: "rectangle", layer: "Stage", cls: "None", bbox: [0, 0, 480, 360], pts: [[0, 0], [480, 0], [480, 360], [0, 360]], closed: true },
+  ],
+};
+MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
+MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: JSON.stringify(READOUT) };
 const SAMPLE = [
   {
     calls: [{ name: "edit_rig", input: { note: "Hoists at the four corners", ops: [{ op: "add_point", at: [0, 0, 310.25], capacity: 2000, label: "DSL" }, { op: "add_point", at: [1044, 0, 310.25], label: "DSR" }] } }],
@@ -74,6 +86,16 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForSelector(".file");
     ok(/New/.test(await p.locator(".file").first().innerText()), "an unseen Dropbox file is flagged New");
     await p.screenshot({ path: join(shots, "rig-studio-files.png") });
+    await p.click('[id="open-readout-id:ro"]');
+    await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length === 3);
+    const kinds = await p.evaluate(() => [...window.__DOCS__.entries()].filter(([k]) => k.startsWith("projects/air-pro-roof/layers/")).map(([, v]) => v.kind).sort().join());
+    ok(kinds === "fixtures,rig,shapes", "a read-out from Dropbox opens as fixtures, the existing rig and outlines");
+    ok(/1 lighting fixtures, 1 truss pieces/.test(await p.locator(".toast-wrap").innerText().catch(() => "")), "and says what was in it");
+    const fetched = await p.evaluate(() => window.__CALLS__.find((c) => c.tool === "fetch"));
+    ok(fetched && fetched.input.id === "id:ro", "read through Dropbox's fetch with the file id");
+    await p.click('[id="open-readout-id:ro"]');
+    await p.waitForTimeout(400);
+    ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length)) === 3, "opening it again replaces the layers instead of doubling them");
 
     console.log("chat edits the rig and saves a version");
     await p.click("#tab-chat");

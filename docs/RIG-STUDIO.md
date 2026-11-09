@@ -21,6 +21,13 @@ What it does:
 - **Dropbox.** One folder per project (made as `/Rig Studio/<name>` or linked). The page lists it
   every 2 minutes and flags new or changed files. The page can't download from Dropbox (its CSP
   and the connector only give metadata), so reading a file goes to a PC session.
+- **Vectorworks files with the PC off.** Nothing outside Vectorworks reads .vwx (closed format;
+  Dropbox's reader stops at 5 MB and can't preview it), so each file goes through Vectorworks
+  once: the connector's `read_out` (or `read_out_folder`) writes `<name>.rigread.json` beside the
+  .vwx: layers, classes, every plug-in object with its fields (lighting devices, truss, hoists),
+  symbols and outlines, in inches, kept under 5 MB. In a Dropbox folder it syncs; the Files tab
+  then opens it (Dropbox `fetch`) as layers: fixtures, the existing rig, outlines per Vectorworks
+  layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC

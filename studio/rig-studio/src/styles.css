@@ -228,6 +228,7 @@ legend { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase
 .legend { position: absolute; z-index: 2; left: 10px; bottom: 10px; display: flex; gap: 12px; font-size: 0.75rem; color: var(--ink-2); background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 10px; border-radius: 10px; }
 .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
 .sw.truss { background: var(--metal); }
+.sw.existing { background: var(--shape); opacity: 0.6; border: 1px dashed var(--ink-2); }
 .sw.hoist { background: var(--hoist); border-radius: 999px; }
 .sw.fixture { background: var(--fixture); clip-path: polygon(50% 100%, 0 0, 100% 0); border-radius: 0; }
 .blank-hint { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(440px, calc(100% - 32px)); padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px dashed var(--line-2); color: var(--ink-2); font-size: 0.92rem; }

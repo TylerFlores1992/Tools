@@ -1,6 +1,6 @@
 [project]
 name = "vwmcp"
-version = "0.5.4"
+version = "0.5.5"
 description = "MCP server that lets Claude draw in and measure Vectorworks drawings (Windows)"
 requires-python = ">=3.11"
 dependencies = [

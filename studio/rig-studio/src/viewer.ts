@@ -94,16 +94,19 @@ export class Viewer {
     if (this.extraMats.hoist) (this.extraMats.hoist as THREE.MeshStandardMaterial).color.set(css("--hoist"));
     if (this.extraMats.fixture) (this.extraMats.fixture as THREE.MeshStandardMaterial).color.set(css("--fixture"));
     if (this.extraMats.shape) (this.extraMats.shape as THREE.LineBasicMaterial).color.set(css("--shape"));
+    if (this.extraMats.existing) (this.extraMats.existing as THREE.MeshStandardMaterial).color.set(css("--shape"));
     this.makeGrid();
     this.request();
   }
 
-  private mat(name: "hoist" | "fixture" | "shape" | "pick") {
+  private mat(name: "hoist" | "fixture" | "shape" | "pick" | "existing") {
     if (!this.extraMats[name]) {
       this.extraMats[name] =
         name === "shape"
           ? new THREE.LineBasicMaterial({ color: css("--shape") })
-          : new THREE.MeshStandardMaterial({ color: css(name === "hoist" ? "--hoist" : name === "pick" ? "--accent" : "--fixture"), metalness: 0.3, roughness: 0.55 });
+          : name === "existing"
+            ? new THREE.MeshStandardMaterial({ color: css("--shape"), transparent: true, opacity: 0.45, depthWrite: false })
+            : new THREE.MeshStandardMaterial({ color: css(name === "hoist" ? "--hoist" : name === "pick" ? "--accent" : "--fixture"), metalness: 0.3, roughness: 0.55 });
     }
     return this.extraMats[name];
   }
@@ -194,6 +197,33 @@ export class Viewer {
           inst.setMatrixAt(i, m);
         });
         this.refs.add(inst);
+      }
+      if (l.kind === "rig" && l.rig?.length) {
+        for (const it of l.rig) {
+          const a = new THREE.Vector3(it.at[0], it.at[2], -it.at[1]);
+          if (it.kind === "truss" && it.b) {
+            const b = new THREE.Vector3(it.b[0], it.b[2], -it.b[1]);
+            const len = a.distanceTo(b);
+            if (len < 0.5) continue;
+            const geo = new THREE.BoxGeometry(len, 12, 12);
+            const m = new THREE.Mesh(geo, this.mat("existing"));
+            m.position.copy(a.clone().add(b).multiplyScalar(0.5));
+            m.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), b.clone().sub(a).normalize());
+            this.refs.add(m);
+          } else if (it.kind === "truss" && it.bbox) {
+            const [x0, y0, x1, y1] = it.bbox;
+            const geo = new THREE.BoxGeometry(Math.max(1, x1 - x0), 12, Math.max(1, y1 - y0));
+            const m = new THREE.Mesh(geo, this.mat("existing"));
+            m.position.set((x0 + x1) / 2, it.at[2], -(y0 + y1) / 2);
+            this.refs.add(m);
+          } else {
+            const geo = new THREE.ConeGeometry(4, 10, 8);
+            geo.rotateX(Math.PI);
+            const m = new THREE.Mesh(geo, this.mat(it.kind === "hoist" ? "hoist" : "existing"));
+            m.position.copy(a).add(new THREE.Vector3(0, 6, 0));
+            this.refs.add(m);
+          }
+        }
       }
       if (l.kind === "shapes" && l.shapes?.length) {
         for (const s of l.shapes) {

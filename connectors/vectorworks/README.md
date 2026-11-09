@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 58 tools (60 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 60 tools (62 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -280,6 +280,7 @@ end, on any OS.
 src/vwmcp/     server.py (MCP tools) · panel.py (local HTTP API) · jobs.py (queue) ·
                trigger.py (hotkey, idle wait, guards, capture) · svg.py · install.py · config.py
                update.py (self-update) · symbols.py + symbols.json (symbol names as data)
+               readout.py (read_out: the drawing as <name>.rigread.json beside the .vwx)
                service.py (show workflow) · show.py (datum, departments, limits, per file) ·
                rigging.py (bridles, truss reactions, units) · report.py (point list, checks) ·
                rig.py (Rig Planner build lists: frames, clamps, truss insertion; no vs)
