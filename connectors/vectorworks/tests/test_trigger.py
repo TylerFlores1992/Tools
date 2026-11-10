@@ -380,3 +380,41 @@ def test_a_different_drawing_in_front_is_never_closed():
     t, _ = make_menu(win)
     assert t.close_copy("CFF-26_041426_v2025_v2026.vwx") is False
     assert win.log == []
+
+
+def test_a_menu_press_that_times_out_while_vectorworks_runs_the_job_counts_as_pressed(monkeypatch):
+    """UI Automation's Invoke waits for the command; a long job makes it raise although the press
+    went through (measured 2026-11-10 on CFF-26 read-outs). That's not a failed press."""
+    import sys
+    import types
+
+    from vwmcp.trigger import _Win32
+
+    pressed = []
+
+    class Item:
+        def __init__(self, text):
+            self.text = text
+
+        def window_text(self):
+            return self.text
+
+        def invoke(self):
+            pressed.append(self.text)
+            raise TimeoutError("COM call timed out")  # Vectorworks is busy running it
+
+    class Win:
+        def descendants(self, control_type=None):
+            return [Item("MCP Run Job\tCtrl+Shift+Alt+M")] if control_type == "MenuItem" else []
+
+    class Desktop:
+        def __init__(self, backend=None):
+            pass
+
+        def window(self, handle=None):
+            return Win()
+
+    monkeypatch.setitem(sys.modules, "pywinauto", types.SimpleNamespace(Desktop=Desktop))
+    w = _Win32.__new__(_Win32)
+    w.press_menu(types.SimpleNamespace(handle=1), "Tools", "MCP Run Job")  # doesn't raise
+    assert pressed == ["MCP Run Job\tCtrl+Shift+Alt+M"]
