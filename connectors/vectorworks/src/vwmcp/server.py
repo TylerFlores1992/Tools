@@ -69,9 +69,11 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     @contextlib.asynccontextmanager
     async def lifespan(_server):
         task = asyncio.create_task(watch_loop()) if readout.watch_folders() else None
+        req_task = asyncio.create_task(request_loop())
         try:
             yield {}
         finally:
+            req_task.cancel()
             if task:
                 task.cancel()
 
@@ -105,6 +107,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                 out["update"] = STARTUP["update"]
             folders = readout.watch_folders()
             out["watching"] = [str(f) for f in folders] if folders else "nothing (set VWMCP_WATCH to read out new files by itself)"
+            out["requests"] = [str(f) for f in readout.request_folders()] or "no Dropbox 'Rig Studio' folder found (set VWMCP_REQUESTS)"
         return out
 
     @mcp.tool()
@@ -531,7 +534,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         done = []
         for p in readout.pending(readout.watch_folders())[:3]:
             try:
-                done.append(await _read_out_one(str(p), 40000, watch=True))
+                async with reading:
+                    done.append(await _read_out_one(str(p), 40000, watch=True))
                 _log("read out %s" % p.name)
             except Exception as e:  # a bad file must not stop the watcher
                 done.append({"file": str(p), "error": str(e)})
@@ -545,7 +549,45 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             with contextlib.suppress(Exception):
                 await watch_once()
 
+    reading = asyncio.Lock()  # one read-out at a time (requests and the watcher)
+
+    async def requests_once() -> list[dict]:
+        """Answer Rig Studio's read-out requests found in Dropbox (see readout.requests)."""
+        done = []
+        for req, vwx, job in readout.requests(readout.request_folders())[:3]:
+            if vwx is None:
+                _log("request %s names no drawing beside it; ignored" % req.name)
+                with contextlib.suppress(OSError):
+                    req.unlink()
+                continue
+            with contextlib.suppress(OSError):
+                req.unlink()  # taken: a second look won't start it twice
+            readout.write_status(vwx, job=job, state="reading", message="Your PC has it. Reading the drawing in Vectorworks (a big one takes a few minutes)…")
+            try:
+                async with reading:
+                    r = await _read_out_one(str(vwx), 40000)
+                msg = "Read out on your PC: %s objects, %s layers, %s symbols, %s lighting fixtures." % (
+                    r.get("objects", "?"), r.get("layers", "?"), r.get("symbols", "?"), r.get("lighting_devices", 0))
+                if r.get("shapes_left_out"):
+                    msg += " %s of the plainest shapes were left out to keep it under 5 MB." % r["shapes_left_out"]
+                readout.write_status(vwx, job=job, state="done", message=msg, saved=r.get("saved"))
+                done.append(r)
+                _log("request: read out %s" % vwx.name)
+            except Exception as e:
+                text = str(e).replace("Error executing tool read_out: ", "")
+                readout.write_status(vwx, job=job, state="failed", message=text)
+                done.append({"file": str(vwx), "error": text})
+                _log("request: couldn't read out %s: %s" % (vwx.name, text))
+        return done
+
+    async def request_loop() -> None:
+        while True:
+            await asyncio.sleep(readout.REQUEST_EVERY)
+            with contextlib.suppress(Exception):
+                await requests_once()
+
     mcp.watch_once = watch_once  # type: ignore[attr-defined]  # for tests
+    mcp.requests_once = requests_once  # type: ignore[attr-defined]  # for tests
 
     @mcp.tool()
     async def set_record_fields(id: str, record: str, values: dict[str, str]) -> dict:

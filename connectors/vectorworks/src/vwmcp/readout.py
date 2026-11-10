@@ -151,3 +151,87 @@ def idle_seconds() -> float | None:
 def quiet(idle: float | None, since_claude: float, quiet_for: float = QUIET_FOR) -> bool:
     """May the watcher open files now? Unknown idleness counts as busy."""
     return idle is not None and idle >= quiet_for and since_claude >= quiet_for
+
+
+# ---- read-out requests ------------------------------------------------------------------------
+# Rig Studio on the phone asks for a read-out by dropping "<drawing>.<job>.rigrequest.json" beside
+# the drawing in Dropbox. Dropbox syncs it to the PC, the connector sees it within seconds (no
+# scheduled task, no link to the PC needed), reads the drawing out, and writes
+# "<drawing>.rigstatus.json" beside it so the page can say how it went. Requests are explicit, so
+# they don't wait for the PC to be quiet.
+
+REQUEST_SUFFIX = ".rigrequest.json"
+STATUS_SUFFIX = ".rigstatus.json"
+REQUEST_EVERY = 5.0  # seconds between looks for requests
+
+
+def dropbox_roots() -> list[Path]:
+    """Where Dropbox keeps its folders on this PC, from Dropbox's own info.json."""
+    out = []
+    for base in (os.environ.get("LOCALAPPDATA"), os.environ.get("APPDATA")):
+        if not base:
+            continue
+        info = Path(base) / "Dropbox" / "info.json"
+        try:
+            data = json.loads(info.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for acct in data.values():
+            if isinstance(acct, dict) and acct.get("path"):
+                p = Path(acct["path"])
+                if p.is_dir() and p not in out:
+                    out.append(p)
+    return out
+
+
+def request_folders() -> list[Path]:
+    """Folders to look in for requests: VWMCP_REQUESTS if set, else the watched folders plus Dropbox's
+    "Rig Studio" folder."""
+    raw = os.environ.get("VWMCP_REQUESTS")
+    if raw is not None:
+        return watch_folders(raw)
+    out = list(watch_folders())
+    for root in dropbox_roots():
+        rs = root / "Rig Studio"
+        if rs.is_dir() and rs not in out:
+            out.append(rs)
+    return out
+
+
+def requests(folders: list[Path]) -> list[tuple[Path, Path | None, str]]:
+    """Every request as (request file, the drawing it names or None, job id), oldest first."""
+    found = []
+    for f in folders:
+        try:
+            reqs = list(f.rglob("*" + REQUEST_SUFFIX))
+        except OSError:
+            continue
+        for r in reqs:
+            base = r.name[: -len(REQUEST_SUFFIX)]
+            best = None
+            for v in sorted(r.parent.glob("*.vwx")):
+                if base.lower().startswith(v.stem.lower() + ".") and (best is None or len(v.stem) > len(best.stem)):
+                    best = v
+            job = base[len(best.stem) + 1 :] if best else ""
+            try:
+                found.append((r.stat().st_mtime, r, best, job))
+            except OSError:
+                continue
+    return [(r, v, j) for _, r, v, j in sorted(found, key=lambda t: t[0])]
+
+
+def status_path(vwx: Path) -> Path:
+    return vwx.with_name(vwx.stem + STATUS_SUFFIX)
+
+
+def write_status(vwx: Path, **fields) -> Path:
+    """Write <drawing>.rigstatus.json beside the drawing (whole file at once, so Dropbox never syncs
+    half of it)."""
+    import datetime as _dt
+
+    fields["at"] = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    dest = status_path(vwx)
+    tmp = dest.with_name(dest.name + ".tmp")
+    tmp.write_text(json.dumps(fields, indent=1), encoding="utf-8")
+    tmp.replace(dest)
+    return dest

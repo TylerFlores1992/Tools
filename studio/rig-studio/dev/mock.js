@@ -43,7 +43,7 @@
   const mcp = {
     async callTool(server, tool, input) {
       log.push({ server, tool, input });
-      const a = answers[`${server}/${tool}`];
+      const a = answers[`${server}/${tool}/${input?.id ?? ""}`] ?? answers[`${server}/${tool}`];
       if (!a) throw { code: "server_not_connected", message: "not here", server };
       if (a.error) throw a.error;
       return { content: [{ type: "text", text: JSON.stringify(a) }], payload: a };
