@@ -73,3 +73,24 @@ test("3D objects come as blocks in their own colour, and layers start shown as i
   assert.equal(out.find((l) => l.name === "Set: CNC LAYOUT")!.visible, false);
   assert.ok(!out.some((l) => l.kind === "rig"), "a truss symbol nested inside another symbol isn't a separate rig piece");
 });
+
+test("real 3D faces come through to the layer, also from part files", async () => {
+  const { attachMeshes } = await import("./readout.ts");
+  const box = { q: 0.25, v: [0, 0, 0, 40, 0, 0, 40, 40, 0, 0, 40, 0], f: [4, 0, 1, 2, 3] };
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [{ name: "Set", type: "design", elevation: 24, visible: true }],
+    objects: [
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 0], mid: 0 },
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 0], mid: 7 },
+    ],
+    mesh_parts: ["Set.rigmesh1.json"],
+  };
+  assert.equal(attachMeshes(r, [{ meshes: { "0": box } }]), 1, "only the object whose faces arrived gets them");
+  const shapes = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "2026-11-10T00:00:00Z").find((l) => l.kind === "shapes")!.shapes!;
+  const withFaces = shapes.filter((s) => s.m);
+  assert.equal(withFaces.length, 1);
+  assert.deepEqual(withFaces[0].m, box);
+  assert.equal(withFaces[0].mz, 24, "the layer's elevation goes with the faces");
+  assert.equal(shapes.filter((s) => !s.m).length, 1, "the other still draws as its block");
+});

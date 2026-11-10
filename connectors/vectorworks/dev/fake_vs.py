@@ -1151,3 +1151,30 @@ def ImportResourceToCurrentFile(listID, index):
     if name not in DOC.resources:
         DOC.resources[name] = _Obj(16, name=name, w=w, h=h)
     return DOC.resources[name]
+
+
+# ---- 3D polygons (read-outs draw an object's real faces) ----------------------------------
+
+
+def ConvertTo3DPolys(original):
+    """A 3D object's faces as a new group of 3D polygons (the original stays). The fake builds a
+    prism from the outline and its bottom/top: a bottom, a top and a face per side."""
+    if not getattr(original, "is3d", False) or not getattr(original, "pts", None):
+        return None
+    z0 = original.zc - original.dz / 2
+    z1 = original.zc + original.dz / 2
+    ring = [(float(x), float(y)) for x, y in original.pts]
+    faces = [[(x, y, z0) for x, y in ring], [(x, y, z1) for x, y in reversed(ring)]]
+    for i in range(len(ring)):
+        (ax, ay), (bx, by) = ring[i], ring[(i + 1) % len(ring)]
+        faces.append([(ax, ay, z0), (bx, by, z0), (bx, by, z1), (ax, ay, z1)])
+    members = [_Obj(25, pts=[(x, y) for x, y, _ in f], pts3d=f, closed=True) for f in faces]
+    g = DOC.add(_Obj(11, members=members))
+    for m in members:
+        m.parent_obj = g
+    DOC.converted = getattr(DOC, "converted", 0) + 1
+    return g
+
+
+def GetPolyPt3D(objectHd, index):
+    return objectHd.pts3d[index]  # counted from 0, as measured on Vectorworks 2026

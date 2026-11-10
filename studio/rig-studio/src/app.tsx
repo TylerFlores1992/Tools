@@ -8,8 +8,8 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fromStatus, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
-import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
+import { ago, fromStatus, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { attachMeshes, isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -1899,12 +1899,36 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
         throw new Error("that file isn't a read-out (it isn't JSON)");
       }
       if (!isReadout(r)) throw new Error("that file isn't a Rig Studio read-out");
+      let missingParts = 0;
+      if (r.mesh_parts?.length && project.dropbox) {
+        // A big read-out keeps its 3D faces in part files beside it: fetch those too.
+        const listing = payloadOf(await mcp.callTool(SERVERS.dropbox, "list_folder", { path: project.dropbox.path, recursive: false })) as { entries?: Entry[] };
+        const byName = new Map((listing?.entries ?? []).map((x) => [x.name.toLowerCase(), x]));
+        const parts: { meshes?: Record<string, Mesh> }[] = [];
+        for (const name of r.mesh_parts) {
+          const pe = byName.get(name.toLowerCase());
+          if (!pe?.file_id) {
+            missingParts++;
+            continue;
+          }
+          try {
+            const pr = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: pe.file_id })) as { text?: string };
+            parts.push(JSON.parse(pr?.text ?? "{}"));
+          } catch {
+            missingParts++;
+          }
+        }
+        attachMeshes(r, parts);
+      }
       const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
       for (const l of old) await db.doc(`projects/${project.id}/layers/${l.id}`).delete();
       const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
       for (const l of made) await db.collection(`projects/${project.id}/layers`).add(l);
       await markSeen([e]);
-      flash("ok", `${readoutSummary(r)} Added as ${made.length} layer${made.length === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}. See Layers; ask Claude in the chat to rebuild the rig from it.`);
+      flash(
+        missingParts ? "warn" : "ok",
+        `${readoutSummary(r)} Added as ${made.length} layer${made.length === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
+      );
     } catch (er) {
       flash("warn", /fetch|tool/i.test(String((er as { code?: string }).code ?? "")) ? mcpWords(er, "Dropbox") : `Couldn't open the read-out: ${(er as Error).message ?? mcpWords(er, "Dropbox")}`);
     } finally {

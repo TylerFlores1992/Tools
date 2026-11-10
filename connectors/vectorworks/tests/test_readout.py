@@ -153,12 +153,12 @@ def test_a_very_detailed_symbol_comes_as_one_block(server, fake_vw, tmp_path):
     vs = fake_vw
     d = vs.DOC
     person = vs._Obj(16, name="Person", w=20.0, h=10.0, members=[])
-    for i in range(200):  # a figure drawn with 200 little lines
+    for i in range(2600):  # a figure drawn with 2,600 little lines (past DETAIL_CAP)
         person.members.append(vs._Obj(2, pts=[(0.0, i * 0.1), (1.0, i * 0.1)], parent_obj=person, layer=None))
     d.resources["Person"] = person
     vs.Symbol("Person", (50.0, 50.0), 0.0)
     d.path = str(tmp_path / "Crowd.vwx")
-    r = call(server, "read_out", max_objects=1000)
+    r = call(server, "read_out", max_objects=4000)
     data = json.loads(Path(r["saved"]).read_text())
     from_person = [o for o in data["objects"] if o.get("in") == "Person"]
     assert len(from_person) == 1 and from_person[0]["simplified"] and from_person[0]["closed"]
@@ -321,3 +321,87 @@ def test_a_request_that_fails_says_why_in_the_status(fake_vw, tmp_path, monkeypa
     asyncio.run(srv.requests_once())
     status = json.loads((tmp_path / "Show.rigstatus.json").read_text())
     assert status["state"] == "failed" and "Vectorworks isn't running" in status["message"]
+
+
+# ---- real faces (ConvertTo3DPolys) ----
+
+
+def _faces(mesh):
+    """[[ (x, y, z) inches, ...], ...] from a read-out mesh."""
+    v, f, q = mesh["v"], mesh["f"], mesh["q"]
+    out, i = [], 0
+    while i < len(f):
+        n = f[i]
+        out.append([(v[3 * j] * q, v[3 * j + 1] * q, v[3 * j + 2] * q) for j in f[i + 1 : i + 1 + n]])
+        i += n + 1
+    return out
+
+
+def test_a_3d_object_comes_with_its_real_faces_placed_where_it_sits(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Riser", w=10.0, h=4.0, members=[])
+    box = vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None)
+    sym.members += [box]
+    d.resources["Riser"] = sym
+    vs.Symbol("Riser", (100.0, 0.0), 90.0)
+    before = len(d.objects)
+    d.path = str(tmp_path / "Set.vwx")
+    r = call(server, "read_out")
+    data = json.loads(Path(r["saved"]).read_text())
+    part = next(o for o in data["objects"] if o.get("in") == "Riser")
+    faces = _faces(part["mesh"])
+    assert len(faces) == 6  # bottom, top and four sides
+    corners = {p for f in faces for p in f}
+    # turned 90 degrees and moved to (100, 0): (10, 4) at the top lands on (96, 10, 36)
+    assert (96.0, 10.0, 36.0) in corners and (100.0, 0.0, 0.0) in corners
+    assert len(part["mesh"]["v"]) == 8 * 3  # shared corners stored once
+    assert len(d.objects) == before and d.converted >= 1  # each converted copy was deleted again
+    assert data["faces"] >= 6
+
+
+def test_a_small_read_out_stays_one_file():
+    body, parts, trimmed = readout.split({"readout": 1, "objects": [{"t": "x", "mesh": {"q": 0.25, "v": [0, 0, 0], "f": []}}]}, "Show")
+    assert parts == [] and trimmed == 0 and b'"mesh"' in body
+
+
+def test_a_big_read_out_moves_its_faces_into_parts_that_each_fit():
+    objs = [{"t": "extrude", "layer": "Set", "bbox": [0, 0, 1, 1], "mesh": {"q": 0.25, "v": list(range(3000)), "f": [3, 0, 1, 2] * 200}} for _ in range(40)]
+    body, parts, trimmed = readout.split({"readout": 1, "objects": objs}, "Show", limit=60_000)
+    main = json.loads(body)
+    assert len(parts) >= 2 and all(len(p) <= 60_000 for p in parts) and len(body) <= 60_000
+    assert main["mesh_parts"] == ["Show.rigmesh%d.json" % (i + 1) for i in range(len(parts))]
+    got = {}
+    for p in parts:
+        got.update(json.loads(p)["meshes"])
+    assert all("mesh" not in o for o in main["objects"])
+    assert sorted(got) == sorted(str(o["mid"]) for o in main["objects"])  # every object finds its faces
+    assert trimmed == 0
+
+
+def test_parts_are_written_beside_the_read_out_and_old_extra_parts_removed(fake_vw, tmp_path, monkeypatch):
+    stale = tmp_path / "Set.rigmesh9.json"
+    (tmp_path / "Set.rigmesh1.json").write_text("old")
+    stale.write_text("old")
+    monkeypatch.setattr(readout, "LIMIT", 10**9)
+    srv = build_server(config.load())
+    fake_vw.DOC.path = str(tmp_path / "Set.vwx")
+    r = call(srv, "read_out")
+    assert r["mesh_parts"] == 0
+    assert not (tmp_path / "Set.rigmesh1.json").exists()  # a small read-out leaves no parts behind
+    assert stale.exists()  # not part of an unbroken run from 1: never touched
+
+
+def test_a_camera_sized_symbol_is_drawn_part_by_part(server, fake_vw, tmp_path):
+    """Symbols of a few hundred parts (cameras, peds, podiums) used to come as one box."""
+    vs = fake_vw
+    d = vs.DOC
+    cam = vs._Obj(16, name="PED w OPERATOR", w=20.0, h=10.0, members=[])
+    for i in range(300):
+        cam.members.append(vs._Obj(2, pts=[(0.0, i * 0.1), (1.0, i * 0.1)], parent_obj=cam, layer=None))
+    d.resources["PED w OPERATOR"] = cam
+    vs.Symbol("PED w OPERATOR", (0.0, 0.0), 0.0)
+    d.path = str(tmp_path / "Cams.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    parts = [o for o in data["objects"] if o.get("in") == "PED w OPERATOR"]
+    assert len(parts) == 300 and not any(o.get("simplified") for o in parts)

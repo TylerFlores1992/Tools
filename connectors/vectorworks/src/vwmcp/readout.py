@@ -49,6 +49,47 @@ def fit(readout: dict, limit: int = LIMIT) -> tuple[bytes, int]:
     return best
 
 
+MESH_PART = ".rigmesh%d.json"
+
+
+def mesh_part_name(readout_path: Path, n: int) -> Path:
+    """<drawing>.rigmesh<n>.json beside <drawing>.rigread.json."""
+    return readout_path.with_name(readout_path.name[: -len(SUFFIX)] + MESH_PART % n)
+
+
+def split(readout: dict, stem: str, limit: int = LIMIT) -> tuple[bytes, list[bytes], int]:
+    """The read-out as files Dropbox can hand Rig Studio (each under `limit`): when the whole thing
+    is too big, the 3D faces move into "<stem>.rigmesh<n>.json" parts ({"rigmesh": 1, "meshes":
+    {"<mid>": mesh}}) and each object keeps "mid"; the main file lists the parts in "mesh_parts".
+    Returns (main, parts, shapes left out of the main file)."""
+    def dump(r):
+        return json.dumps(r, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+    whole = dump(readout)
+    if len(whole) <= limit:
+        return whole, [], 0
+    objs, meshes = [], []
+    for o in readout["objects"]:
+        if "mesh" in o:
+            o = dict(o)
+            meshes.append((len(meshes), o.pop("mesh")))
+            o["mid"] = meshes[-1][0]
+        objs.append(o)
+    parts, cur, size = [], {}, 0
+    for mid, m in meshes:
+        b = len(dump(m)) + 12
+        if cur and size + b > limit - 64:
+            parts.append(cur)
+            cur, size = {}, 0
+        cur[str(mid)] = m
+        size += b
+    if cur:
+        parts.append(cur)
+    names = [stem + MESH_PART % (i + 1) for i in range(len(parts))]
+    main, trimmed = fit(dict(readout, objects=objs, mesh_parts=names), limit)
+    return main, [dump({"rigmesh": 1, "meshes": p}) for p in parts], trimmed
+
+
 def summary(readout: dict) -> dict:
     """Counts a person can read: plug-in types, lighting devices, symbols, shapes, layers."""
     plugins: dict[str, int] = {}

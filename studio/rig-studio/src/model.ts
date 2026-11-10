@@ -41,7 +41,10 @@ export type Version = { n: number; note: string; by: "you" | "claude" | "session
 export type Fixture = { x: number; y: number; z: number; lb: number; type?: string; id?: string };
 /** A drawn outline, in inches. `h` (from a Vectorworks read-out): a 3D object's height above `z`,
  * drawn as a block; `fill`: its fill colour from the drawing. */
-export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string };
+/** A drawing's real 3D faces (from a read-out): corners `v` as x, y, z in steps of `q` inches (each
+ * corner once), faces `f` as [n, i1..in, n, ...]. */
+export type Mesh = { q: number; v: number[]; f: number[] };
+export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** The layer's elevation, added to the faces' heights. */ mz?: number };
 /** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
 export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 
@@ -298,7 +301,7 @@ export function layerSummary(l: Layer): string {
 export const REQUEST_SUFFIX = ".rigrequest.json";
 export const STATUS_SUFFIX = ".rigstatus.json";
 export const READOUT_PICKUP_MS = 20 * 60_000;
-export const isNoteFile = (name: string) => name.toLowerCase().endsWith(REQUEST_SUFFIX) || name.toLowerCase().endsWith(STATUS_SUFFIX);
+export const isNoteFile = (name: string) => name.toLowerCase().endsWith(REQUEST_SUFFIX) || name.toLowerCase().endsWith(STATUS_SUFFIX) || /\.rigmesh\d+\.json$/i.test(name);
 export const statusName = (vwxName: string) => vwxName.replace(/\.vwx$/i, "") + STATUS_SUFFIX;
 export const requestName = (vwxName: string, job: string) => `${vwxName.replace(/\.vwx$/i, "")}.${job}${REQUEST_SUFFIX}`;
 

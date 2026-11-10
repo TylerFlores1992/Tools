@@ -1,7 +1,7 @@
 // A Vectorworks read-out (<name>.rigread.json, written by the connector's read_out tool) turned
 // into Rig Studio reference layers: lighting fixtures, the existing truss and rigging, and the
 // drawing's outlines one layer per Vectorworks layer. Inches throughout; the drawing's own origin.
-import type { Fixture, Layer, RigItem, Shape } from "./model.ts";
+import type { Fixture, Layer, Mesh, RigItem, Shape } from "./model.ts";
 import { parseLength } from "./model.ts";
 
 export type ReadoutObject = {
@@ -22,6 +22,10 @@ export type ReadoutObject = {
   fill?: string;
   /** The symbol this shape was drawn from (read-outs draw what's inside symbols). */
   in?: string;
+  /** Its real 3D faces (connector 0.7+). */
+  mesh?: Mesh;
+  /** Where its faces are when they came in a separate part file (mesh_parts). */
+  mid?: number;
 };
 
 export type Readout = {
@@ -35,7 +39,25 @@ export type Readout = {
   objects: ReadoutObject[];
   trimmed?: number;
   truncated?: boolean;
+  /** Part files beside this one holding the 3D faces ("<drawing>.rigmesh1.json"…), when it was too big for one. */
+  mesh_parts?: string[];
 };
+
+/** Put the faces from the part files back on their objects. Returns how many objects got faces. */
+export function attachMeshes(r: Readout, parts: { meshes?: Record<string, Mesh> }[]): number {
+  const all: Record<string, Mesh> = {};
+  for (const p of parts) Object.assign(all, p.meshes ?? {});
+  let n = 0;
+  for (const o of r.objects) {
+    if (o.mid === undefined) continue;
+    const m = all[String(o.mid)];
+    if (m && Array.isArray(m.v) && Array.isArray(m.f)) {
+      o.mesh = m;
+      n++;
+    }
+  }
+  return n;
+}
 
 export function isReadout(x: unknown): x is Readout {
   const r = x as Readout;
@@ -116,7 +138,8 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
       const z = o.z ? o.z[0] + base : base;
       const h = o.z ? Math.max(0, o.z[1] - o.z[0]) : 0;
       const list = shapes.get(o.layer) ?? [];
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}) });
+      const mesh = o.mesh && o.mesh.v.length >= 9 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
+      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }
@@ -131,7 +154,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     let part: Shape[] = [];
     const parts: Shape[][] = [];
     for (const s of list) {
-      const n = 40 + s.pts.length * 18;
+      const n = 40 + s.pts.length * 18 + (s.m ? (s.m.v.length + s.m.f.length) * 6 : 0);
       if (size + n > 150_000 && part.length) {
         parts.push(part);
         part = [];
