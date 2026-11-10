@@ -240,6 +240,7 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 | `VWMCP_TRIGGER` | `hotkey` | `hotkey`, `session`, or `none` (fake/dev) |
 | `VWMCP_HOTKEY` | `^+%m` | Shortcut bound to MCP Run Job |
 | `VWMCP_IDLE_MS` | `600` | How long you must pause in Vectorworks before a request runs |
+| `VWMCP_BLANK` | `Documents\Claude connector.vwx` | A blank drawing opened by itself when Vectorworks is running with no drawing (its menu commands are off until one is open). The shortcut also refuses, with a plain reason, while Windows is on the lock screen |
 | `VWMCP_WINDOW_RE` | `.*Vectorworks.*` | Window title to find |
 | `VWMCP_PROCESS_RE` | `(?i)^vectorworks[^\\/]*\.exe$` | The window's program must match too, so a browser tab titled "Vectorworks" (the panel page) is never pressed. If "No Vectorworks window found" names Vectorworks' own program, set this to match it |
 | `VWMCP_RESTORE_FOCUS` | `1` | Hand focus back to where you were |

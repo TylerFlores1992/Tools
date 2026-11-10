@@ -148,6 +148,26 @@ class _Win32:
         finally:
             k.CloseHandle(handle)
 
+    def locked(self) -> bool:
+        """Is Windows on the lock screen? (No keystroke reaches any program there.) The input
+        desktop can't be switched to while the secure lock-screen desktop owns it."""
+        u = self._user32
+        h = u.OpenInputDesktop(0, False, 0x0100)  # DESKTOP_SWITCHDESKTOP
+        if not h:
+            return True
+        try:
+            return not u.SwitchDesktop(h)
+        finally:
+            u.CloseDesktop(h)
+
+    def title(self, window) -> str:
+        return window.window_text() or ""
+
+    def open_file(self, path) -> None:
+        import os
+
+        os.startfile(str(path))  # type: ignore[attr-defined]  # Windows: opens it in Vectorworks
+
     def capture_png(self, window) -> bytes:
         import io
 
@@ -171,6 +191,7 @@ class HotkeyTrigger(Trigger):
         process_re: str = DEFAULT_PROCESS_RE,
         idle_ms: int = 600,
         idle_max_s: float = 20.0,
+        blank=None,
         win=None,
         sleep=time.sleep,
         clock=time.monotonic,
@@ -182,6 +203,7 @@ class HotkeyTrigger(Trigger):
         self.restore_focus = restore_focus
         self.idle_ms = idle_ms
         self.idle_max_s = idle_max_s
+        self.blank = blank
         self._win = win
         self._sleep = sleep
         self._clock = clock
@@ -223,7 +245,46 @@ class HotkeyTrigger(Trigger):
             )
         return TriggerError(msg)
 
+    LOCKED = (
+        "Your PC is on the lock screen, where Windows lets no keystroke through, so Vectorworks can't be"
+        " told to run the job. Sign in on the PC once, or stop Windows asking after sleep: Settings >"
+        " Accounts > Sign-in options > 'If you've been away, when should Windows require you to sign in"
+        " again?' > Never."
+    )
+    BLANK_WAIT_S = 60.0
+
+    @staticmethod
+    def has_drawing(title: str) -> bool:
+        """Vectorworks names the open drawing in its title ("Vectorworks Design Suite 2026 - [x.vwx]").
+        A bare product name means no drawing. Anything unexpected counts as a drawing: opening the
+        blank on top of someone's real drawing would send the next job to the wrong file."""
+        bare = re.fullmatch(r"\s*Vectorworks[\w .]*\s*", title or "")
+        return not bare
+
+    def _ensure_drawing(self, target):
+        """Vectorworks with no drawing has its menu commands off; open the blank drawing so the
+        shortcut works. Returns the window to press the shortcut in."""
+        title = getattr(self.win, "title", lambda w: "Vectorworks - [drawing]")(target)
+        if self.has_drawing(title):
+            return target
+        if not self.blank or not self.blank.exists():
+            raise TriggerError(
+                "Vectorworks is open but no drawing is, and its menu commands only work with one open."
+                f" Open any drawing, or save a blank one as {self.blank} (the connector then opens it by itself)."
+            )
+        self.win.open_file(self.blank)
+        deadline = self._clock() + self.BLANK_WAIT_S
+        while self._clock() < deadline:
+            self._sleep(1.0)
+            w = self.find_window()
+            if w is not None and self.has_drawing(self.win.title(w)):
+                self._sleep(2.0)  # let it finish opening before the keystroke
+                return w
+        raise TriggerError(f"Opened {self.blank.name} but Vectorworks didn't show it within a minute.")
+
     def _target(self):
+        if getattr(self.win, "locked", lambda: False)():
+            raise TriggerError(self.LOCKED)
         target = self.find_window()
         if target is None:
             raise self._not_found("")
@@ -231,7 +292,7 @@ class HotkeyTrigger(Trigger):
             raise TriggerError("Vectorworks only just started. Give it 30 seconds to settle, then try again.")
         if not self.win.enabled(target):
             raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
-        return target
+        return self._ensure_drawing(target)
 
     def capture_png(self) -> bytes:
         target = self.find_window()
@@ -285,6 +346,7 @@ def make_trigger(settings: Settings) -> Trigger:
             settings.restore_focus,
             process_re=settings.process_re,
             idle_ms=settings.idle_ms,
+            blank=settings.blank,
         )
     if settings.trigger in {"session", "none"}:
         return NoopTrigger()

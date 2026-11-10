@@ -32,6 +32,9 @@ class Settings:
     rig_url: str = "https://tylerflores.dev"  # where build_rig fetches approved Rig Planner designs
     rig_token: str = ""  # bearer token for the site's /api/rig endpoints
     rig_timeout: float = 180.0  # seconds a whole build_rig job may take inside Vectorworks
+    # A blank drawing the hotkey trigger opens when Vectorworks is running with no drawing (its menu
+    # commands, "MCP Run Job" among them, are off until one is open). VWMCP_BLANK to move it.
+    blank: Path = Path.home() / "Documents" / "Claude connector.vwx"
     auto_update: bool = True  # check the site for a newer connector and symbol map at start (VWMCP_AUTO_UPDATE=0 to stop)
 
     @property
@@ -103,4 +106,5 @@ def load() -> Settings:
         auto_update=os.environ.get("VWMCP_AUTO_UPDATE", "1").strip().lower() not in ("0", "false", "no", "off"),
         rig_token=os.environ.get("VWMCP_RIG_TOKEN", "").strip(),
         rig_timeout=float(os.environ.get("VWMCP_RIG_TIMEOUT", "180")),
+        blank=Path(os.environ.get("VWMCP_BLANK", Path.home() / "Documents" / "Claude connector.vwx")).expanduser(),
     )
