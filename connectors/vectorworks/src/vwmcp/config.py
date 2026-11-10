@@ -34,7 +34,9 @@ class Settings:
     rig_timeout: float = 180.0  # seconds a whole build_rig job may take inside Vectorworks
     # A blank drawing the hotkey trigger opens when Vectorworks is running with no drawing (its menu
     # commands, "MCP Run Job" among them, are off until one is open). VWMCP_BLANK to move it.
-    blank: Path = Path.home() / "Documents" / "Claude connector.vwx"
+    blank: Path = Path.home() / "Desktop" / "Claude connector.vwx"
+    menu: str = "Tools"  # the Vectorworks menu holding the command (VWMCP_MENU)
+    menu_item: str = "MCP Run Job"  # the command the menu trigger presses (VWMCP_MENU_ITEM)
     auto_update: bool = True  # check the site for a newer connector and symbol map at start (VWMCP_AUTO_UPDATE=0 to stop)
 
     @property
@@ -79,11 +81,25 @@ def rig_token(settings: "Settings") -> str:
     return settings.rig_token or os.environ.get("VWMCP_RIG_TOKEN", "").strip() or _user_env("VWMCP_RIG_TOKEN")
 
 
+def _blank() -> Path:
+    """VWMCP_BLANK, else the first 'Claude connector.vwx' on the Desktop or in Documents."""
+    if os.environ.get("VWMCP_BLANK"):
+        return Path(os.environ["VWMCP_BLANK"]).expanduser()
+    for d in ("Desktop", "Documents", "OneDrive/Desktop", "OneDrive/Documents"):
+        p = Path.home() / d / "Claude connector.vwx"
+        if p.exists():
+            return p
+    return Path.home() / "Desktop" / "Claude connector.vwx"
+
+
 def load() -> Settings:
     home = Path(os.environ.get("VWMCP_HOME", Path.home() / ".vwmcp"))
     return Settings(
         home=home,
-        trigger=os.environ.get("VWMCP_TRIGGER", "hotkey").lower(),
+        # "menu" presses Tools > MCP Run Job through Windows' accessibility interface: no keystrokes,
+        # so it works while Windows is locked (measured on the owner's PC, 2026-11-10). It falls back
+        # to the shortcut when the PC is unlocked and the menu can't be reached.
+        trigger=os.environ.get("VWMCP_TRIGGER", "menu").lower(),
         # Ctrl+Shift+Alt+M by default. Assign the same shortcut to "MCP Run Job" in the Workspace Editor.
         hotkey=os.environ.get("VWMCP_HOTKEY", "^+%m"),
         window_title_re=os.environ.get("VWMCP_WINDOW_RE", ".*Vectorworks.*"),
@@ -106,5 +122,7 @@ def load() -> Settings:
         auto_update=os.environ.get("VWMCP_AUTO_UPDATE", "1").strip().lower() not in ("0", "false", "no", "off"),
         rig_token=os.environ.get("VWMCP_RIG_TOKEN", "").strip(),
         rig_timeout=float(os.environ.get("VWMCP_RIG_TIMEOUT", "180")),
-        blank=Path(os.environ.get("VWMCP_BLANK", Path.home() / "Documents" / "Claude connector.vwx")).expanduser(),
+        blank=_blank(),
+        menu=os.environ.get("VWMCP_MENU", "Tools"),
+        menu_item=os.environ.get("VWMCP_MENU_ITEM", "MCP Run Job"),
     )

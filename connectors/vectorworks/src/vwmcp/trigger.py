@@ -5,6 +5,9 @@ Vectorworks can't host a long-running server, so something has to make it run th
 focus the Vectorworks window and press a keyboard shortcut bound to that command.
 
 Triggers:
+  menu    - (default) press Tools > MCP Run Job through Windows' accessibility interface (UI
+            Automation): no keystrokes and no focus change, so it works while Windows is locked.
+            Falls back to the hotkey when the PC is unlocked and the menu can't be reached.
   hotkey  - focus Vectorworks, send VWMCP_HOTKEY (needs `pip install "vwmcp[windows]"`)
   session - do nothing; the user started "MCP Session" in Vectorworks, which polls the queue
   none    - do nothing; used by the fake Vectorworks in tests
@@ -149,16 +152,57 @@ class _Win32:
             k.CloseHandle(handle)
 
     def locked(self) -> bool:
-        """Is Windows on the lock screen? (No keystroke reaches any program there.) The input
-        desktop can't be switched to while the secure lock-screen desktop owns it."""
-        u = self._user32
-        h = u.OpenInputDesktop(0, False, 0x0100)  # DESKTOP_SWITCHDESKTOP
-        if not h:
-            return True
-        try:
-            return not u.SwitchDesktop(h)
-        finally:
-            u.CloseDesktop(h)
+        """Is Windows on the lock screen? LogonUI.exe runs exactly while it shows. (Measured on the
+        owner's PC: the input-desktop and WTS session-flag tests both read wrong there.)"""
+        import subprocess
+
+        out = subprocess.run(
+            ["tasklist", "/FI", "IMAGENAME eq LogonUI.exe", "/NH"],
+            capture_output=True, text=True, creationflags=0x08000000,  # CREATE_NO_WINDOW
+        ).stdout
+        return "logonui.exe" in out.lower()
+
+    def press_menu(self, window, menu: str, item: str, open_wait: float = 4.0) -> None:
+        """Press `menu > item` in Vectorworks through UI Automation (no keys, no focus change).
+
+        What Vectorworks 2026 shows to UI Automation, measured: its menu bar items answer Invoke
+        (not Expand); an open menu's items appear inside the main window; and after a command runs,
+        that menu's items STAY listed while the menu bar drops out, so the next press goes straight
+        to the item. Raises TriggerError when it can't."""
+        import time as _t
+
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+        want = item.strip().lower()
+
+        def listed():
+            for m in vw.descendants(control_type="MenuItem"):
+                if m.window_text().split("\t")[0].strip().lower() == want:
+                    return m
+            return None
+
+        hit = listed()
+        if hit is None:
+            top = None
+            for bar in vw.descendants(control_type="MenuBar"):
+                top = next((m for m in bar.children() if m.window_text() == menu), None) or top
+            if top is None:
+                top = next((m for m in vw.descendants(control_type="MenuItem") if m.window_text() == menu), None)
+            if top is None:
+                raise TriggerError(f"Vectorworks' {menu} menu isn't visible to Windows' accessibility interface.")
+            top.invoke()
+            deadline = _t.monotonic() + open_wait
+            while hit is None and _t.monotonic() < deadline:
+                _t.sleep(0.1)
+                hit = listed()
+            if hit is None:
+                try:
+                    top.invoke()  # close it again
+                except Exception:
+                    pass
+                raise TriggerError(f"'{item}' isn't in Vectorworks' {menu} menu. Set VWMCP_MENU to the menu you put it in.")
+        hit.invoke()
 
     def title(self, window) -> str:
         return window.window_text() or ""
@@ -338,7 +382,54 @@ class HotkeyTrigger(Trigger):
                     pass  # focus restore is a nicety, never fail the job over it
 
 
+class MenuTrigger(HotkeyTrigger):
+    """Presses Tools > MCP Run Job without the keyboard, so it works on a locked PC. If that fails
+    and the PC is unlocked, it presses the shortcut instead (the old way)."""
+
+    def __init__(self, hotkey: str, title_re: str, menu: str = "Tools", item: str = "MCP Run Job", **kw):
+        super().__init__(hotkey, title_re, **kw)
+        self.menu, self.item = menu, item
+
+    def _menu_target(self):
+        target = self.find_window()
+        if target is None:
+            raise self._not_found("")
+        if self.win.process_age_s(target) < self.STARTUP_GRACE_S:
+            raise TriggerError("Vectorworks only just started. Give it 30 seconds to settle, then try again.")
+        if not self.win.enabled(target):
+            raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
+        return self._ensure_drawing(target)
+
+    def fire(self, job_created: float | None = None) -> None:
+        with self._lock:
+            if job_created is not None and job_created <= self._last_press_wall:
+                return
+            target = self._menu_target()
+            if self.win.foreground() == target.handle:
+                self._wait_until_user_pauses(target.handle)  # never pop a menu mid-drag
+            try:
+                self.win.press_menu(target, self.menu, self.item)
+                self._last_press_wall = self._wall()
+                return
+            except Exception as e:
+                menu_error = e
+            if self.win.locked():
+                raise TriggerError(f"Couldn't press {self.menu} > {self.item} on the locked PC: {menu_error}")
+        super().fire(job_created)  # unlocked: the shortcut still works
+
+
 def make_trigger(settings: Settings) -> Trigger:
+    if settings.trigger == "menu":
+        return MenuTrigger(
+            settings.hotkey,
+            settings.window_title_re,
+            menu=settings.menu,
+            item=settings.menu_item,
+            restore_focus=settings.restore_focus,
+            process_re=settings.process_re,
+            idle_ms=settings.idle_ms,
+            blank=settings.blank,
+        )
     if settings.trigger == "hotkey":
         return HotkeyTrigger(
             settings.hotkey,
@@ -350,4 +441,4 @@ def make_trigger(settings: Settings) -> Trigger:
         )
     if settings.trigger in {"session", "none"}:
         return NoopTrigger()
-    raise ValueError(f"Unknown VWMCP_TRIGGER: {settings.trigger!r} (use hotkey, session or none)")
+    raise ValueError(f"Unknown VWMCP_TRIGGER: {settings.trigger!r} (use menu, hotkey, session or none)")

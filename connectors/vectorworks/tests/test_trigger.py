@@ -239,3 +239,71 @@ def test_no_drawing_and_no_blank_explains_what_to_do(tmp_path):
     with pytest.raises(TriggerError, match="no drawing"):
         t.fire()
     assert win.opened == []
+
+
+# ---- the menu trigger: no keys, works on a locked PC (measured 2026-11-10) ------------------
+
+from vwmcp.trigger import MenuTrigger  # noqa: E402
+
+
+class MenuWin(TitledWin):
+    def __init__(self, titles=("Vectorworks Design Suite 2026 - [Show.vwx]",), menu_ok=True, **kw):
+        super().__init__(list(titles), **kw)
+        self.menu_ok = menu_ok
+
+    def press_menu(self, w, menu, item):
+        self.log.append(f"menu {menu} > {item}")
+        if not self.menu_ok:
+            raise TriggerError("menu not reachable")
+
+
+def make_menu(win, **kw):
+    clock = Clock()
+    return MenuTrigger("^+%m", ".*Vectorworks.*", win=win, sleep=clock.sleep, clock=clock, wall=clock.wall, **kw), clock
+
+
+def test_the_menu_trigger_presses_the_menu_and_no_keys():
+    win = MenuWin()
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log == ["menu Tools > MCP Run Job"]
+
+
+def test_on_a_locked_pc_the_menu_still_works():
+    win = MenuWin(locked=True)
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log == ["menu Tools > MCP Run Job"]
+
+
+def test_locked_and_the_menu_fails_says_so_without_trying_keys():
+    win = MenuWin(locked=True, menu_ok=False)
+    t, _ = make_menu(win)
+    with pytest.raises(TriggerError, match="locked PC"):
+        t.fire()
+    assert not any(e.startswith("keys") for e in win.log)
+
+
+def test_unlocked_and_the_menu_fails_falls_back_to_the_shortcut():
+    win = MenuWin(menu_ok=False)
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log[0] == "menu Tools > MCP Run Job" and "keys ^+%m" in win.log
+
+
+def test_the_menu_trigger_opens_the_blank_drawing_first_when_none_is_open(tmp_path):
+    blank = tmp_path / "Claude connector.vwx"
+    blank.write_bytes(b"vwx")
+    win = MenuWin(titles=["Vectorworks Design Suite 2026", "Vectorworks Design Suite 2026 - [Claude connector.vwx]"], locked=True)
+    t, _ = make_menu(win, blank=blank)
+    t.fire()
+    assert win.opened == [str(blank)] and win.log[-1] == "menu Tools > MCP Run Job"
+
+
+def test_menu_is_the_default_trigger(monkeypatch):
+    from vwmcp import config
+    from vwmcp.trigger import make_trigger
+
+    monkeypatch.delenv("VWMCP_TRIGGER", raising=False)
+    s = config.load()
+    assert s.trigger == "menu" and isinstance(make_trigger(s), MenuTrigger)
