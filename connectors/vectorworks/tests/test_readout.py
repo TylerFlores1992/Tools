@@ -30,7 +30,8 @@ def test_read_out_writes_every_plugin_object_symbol_and_shape_in_inches(server, 
     assert ld["fields"]["Channel"] == "101" and "rot" in ld
     stage = next(o for o in data["objects"] if o.get("name") == "Stage")
     assert stage["closed"] and [480, 360] in stage["pts"]
-    assert not any(o["t"] == "text" for o in data["objects"]) and data["skipped"]["text and dimensions"] >= 1
+    texts = [o for o in data["objects"] if o["t"] == "text"]
+    assert texts and all(o["text"] and o["size"] > 0 and len(o["at"]) == 2 for o in texts)  # text is drawn now
     assert r["lighting_devices"] >= 1 and r["bytes"] == len(Path(r["saved"]).read_bytes())
 
 
@@ -491,3 +492,27 @@ def test_split_files_keep_each_objects_place_in_the_drawings_order():
     got = json.loads(body)["objects"] + [o for p in parts for o in json.loads(p).get("objects", [])]
     assert sorted(o["k"] for o in got) == list(range(300))
     assert all(o["pts"][0][0] == o["k"] for o in got)  # each k names the object it was
+
+
+def test_lines_keep_their_colour_and_weight_and_hidden_classes_are_flagged(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    d.hidden_classes = {"HIDE-ME"}
+    red = d.add(vs._Obj(2, pts=[(0.0, 0.0), (10.0, 0.0)], pen=(255, 0, 0), lw=35))
+    black = d.add(vs._Obj(2, pts=[(0.0, 5.0), (10.0, 5.0)]))
+    bare = d.add(vs._Obj(3, pts=[(0.0, 0.0), (5.0, 5.0)], line_style=0))
+    gone = d.add(vs._Obj(2, pts=[(0.0, 9.0), (10.0, 9.0)]))
+    gone.cls = "HIDE-ME"
+    sym = vs._Obj(16, name="Box", w=1.0, h=1.0, members=[])
+    sym.members.append(vs._Obj(2, pts=[(0.0, 0.0), (1.0, 0.0)], parent_obj=sym, layer=None))
+    d.resources["Box"] = sym
+    vs.Symbol("Box", (50.0, 0.0), 0.0)
+    next(o for o in d.objects if getattr(o, "symbol", None) == "Box").cls = "HIDE-ME"
+    d.path = str(tmp_path / "Lines.vwx")
+    objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
+    by = lambda y: next(o for o in objs if o["t"] in ("line", "rectangle") and o["bbox"][1] == y and not o.get("in"))
+    assert by(0.0).get("pen") == "#ff0000" and by(0.0).get("lw") == 35
+    assert "pen" not in by(5.0) and "lw" not in by(5.0)  # black hairline: the default, left out
+    assert by(9.0).get("hid") == 1
+    assert any(o.get("np") == 1 for o in objs if o["t"] == "rectangle")
+    assert all(o.get("hid") == 1 for o in objs if o.get("in") == "Box")  # inside a hidden symbol: hidden too

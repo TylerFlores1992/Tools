@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.8.0"
+BRIDGE_VERSION = "0.9.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1456,6 +1456,33 @@ def _ro_fill(h):
         return None
 
 
+def _ro_pen(h):
+    """The object's line as Vectorworks draws it: {"pen": "#rrggbb"} unless black, {"lw": mils} when
+    thicker than hairline, {"np": 1} when it has no line at all. Empty when it can't say."""
+    out = {}
+    try:
+        if int(vs.GetLSN(h)) == 0:  # line style 0: no line
+            return {"np": 1}
+        r, g, b = vs.GetPenFore(h)
+        c = "#%02x%02x%02x" % (int(r) // 257, int(g) // 257, int(b) // 257)
+        if c != "#000000":
+            out["pen"] = c
+        lw = int(vs.GetLW(h))
+        if lw > 7:
+            out["lw"] = lw
+    except Exception:
+        pass
+    return out
+
+
+def _ro_hatch(h):
+    """True when the fill is a hatch (a negative fill pattern), drawn as lines over what's under it."""
+    try:
+        return int(vs.GetFPat(h)) < 0
+    except Exception:
+        return False
+
+
 def _ro_fill_opacity(h):
     """The object's fill opacity, 0-100 (Vectorworks 2020+), or None when it can't say."""
     try:
@@ -1623,6 +1650,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         return 1.0, 1.0, 1.0
 
     state["faces"] = 0
+    state["texts"] = 0
     import time as _time
     t_start = _time.time()
 
@@ -1656,17 +1684,85 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         objects.append(o)
         return True
 
-    def walk(h, layer, xf, depth, in_sym, skip2d, clip=None):
-        t = vs.GetTypeN(h)
-        if t in (10, 63):
-            skipped["text and dimensions"] = skipped.get("text and dimensions", 0) + 1
+    cvis = {}
+
+    def class_hidden(cls):
+        """Vectorworks' class visibility: GetCVis is 0 shown, -1 hidden, 2 greyed (shown)."""
+        if cls not in cvis:
+            try:
+                cvis[cls] = int(vs.GetCVis(cls)) == -1
+            except Exception:
+                cvis[cls] = False
+        return cvis[cls]
+
+    lscale = {}
+
+    def texty(h, t, layer, cls, xf, in_sym, skip2d, hid):
+        """Text and dimensions, drawn in the plan: the words, where they sit, how big on paper."""
+        if state["texts"] >= 4000:
+            skipped["text past 4,000"] = skipped.get("text past 4,000", 0) + 1
             return
+        try:
+            p1, p2 = vs.GetBBox(h)
+            c = place([(float(p1[0]) + float(p2[0])) / 2, (float(p1[1]) + float(p2[1])) / 2], xf)
+            if layer not in lscale:
+                lh = vs.GetLayerByName(layer)
+                lscale[layer] = float(vs.GetLScale(lh)) if not _nil(lh) else 1.0
+            o = {"t": "text" if t == 10 else "dimension", "layer": layer, "cls": cls, "at": c, "bbox": [c[0], c[1], c[0], c[1]]}
+            if t == 10:
+                words = _s(vs.GetText(h))
+                pts = float(vs.GetTextSize(h, 0))
+                try:
+                    _orig, ang, _mir = vs.GetTextOrientation(h)
+                except Exception:
+                    ang = 0.0
+                o["rot"] = round(float(ang) + xf[3], 2)
+            else:
+                words = _s(vs.GetDimText(h))
+                pts = 9.0
+                try:
+                    a, b = place(_xy(vs.GetSegPt1(h)), xf), place(_xy(vs.GetSegPt2(h)), xf)
+                    o["pts"] = [a, b]
+                    o["rot"] = round(math.degrees(math.atan2(b[1] - a[1], b[0] - a[0])), 2)
+                except Exception:
+                    o["rot"] = xf[3]
+            if not words.strip():
+                return
+            o["text"] = words[:400]
+            # The letters' height in the drawing, from the text's own box (points times the layer scale
+            # came out 3,170" for an "UP" on CFF-26): the box's height across the text, per line.
+            w_ = abs(float(p2[0]) - float(p1[0])) * k * abs(xf[4] or 1)
+            h_ = abs(float(p2[1]) - float(p1[1])) * k * abs(xf[5] or 1)
+            turned = abs(math.sin(math.radians(o.get("rot", 0.0)))) > 0.7
+            lines = max(1, len([ln for ln in words.replace("\r\n", "\r").replace("\n", "\r").split("\r") if ln.strip()]))
+            across = (w_ if turned else h_) / lines
+            o["size"] = round(max(0.5, across * 0.8 if t == 10 else 9.0), 2)  # cap height is ~80% of the line
+            if in_sym:
+                o["in"] = in_sym
+            if skip2d:
+                o["view"] = "plan"
+            if hid:
+                o["hid"] = 1
+            o.update(_ro_pen(h))
+            state["texts"] += 1
+            add(o)
+        except Exception:
+            skipped["text that couldn't be read"] = skipped.get("text that couldn't be read", 0) + 1
+
+    def walk(h, layer, xf, depth, in_sym, skip2d, clip=None, hid=False):
+        t = vs.GetTypeN(h)
         if t in (31, 16, 92, 122, 17):
             return
         cls = _s(vs.GetClass(h))
+        # Switched off in Vectorworks (by its own class or one of the group or symbol it's in): kept,
+        # flagged, so Rig Studio can hide it the way Vectorworks does.
+        hid = hid or class_hidden(cls)
+        if t in (10, 63):
+            texty(h, t, layer, cls, xf, in_sym, skip2d, hid)
+            return
         if t == 11:
             for c in _children(vs.FInGroup(h)):
-                walk(c, layer, xf, depth + 1, in_sym, skip2d, clip)
+                walk(c, layer, xf, depth + 1, in_sym, skip2d, clip, hid)
             return
         p1, p2 = vs.GetBBox(h)
         corners = [place(q, xf) for q in ([p1[0], p1[1]], [p2[0], p1[1]], [p2[0], p2[1]], [p1[0], p2[1]])]
@@ -1674,6 +1770,8 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         o = {"t": TYPE_NAMES.get(t, "type_%d" % t), "layer": layer, "cls": cls, "bbox": [min(xs), min(ys), max(xs), max(ys)]}
         if in_sym:
             o["in"] = in_sym
+        if hid:
+            o["hid"] = 1
         name = _obj_name(h)
         if name:
             o["name"] = name
@@ -1727,7 +1825,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                 m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
                 clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
                 for c in _children(vs.FInSymDef(defh)):
-                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip)
+                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip, hid)
             return
         z = _ro_z(h, t)
         if skip2d:
@@ -1752,9 +1850,12 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                 m3 = mesh(h, xf)
                 if m3:
                     o["mesh"] = m3
+        o.update(_ro_pen(h))
         fill = _ro_fill(h) if (closed or z is not None) else None
         if fill:
             o["fill"] = fill
+            if _ro_hatch(h):
+                o["hatch"] = 1
             op = _ro_fill_opacity(h)
             if op is not None and op < 100:
                 o["fo"] = op  # see-through fill, 0-100 (a stage floor tinted at 15%, say)
