@@ -656,6 +656,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
   const [tab, setTab] = useState<Tab>(() => store.get<Tab>("tab", "chat"));
   const [view, setView] = useState<ViewName>(() => store.get<ViewName>("view", "3d"));
   const [show, setShow] = useState<Show>(() => store.get<Show>("show", { truss: true, towers: true, points: true, labels: true }));
+  const [paper, setPaper] = useState<boolean>(() => store.get<boolean>("paper", true));
   const [picked, setPicked] = useState<string | null>(null);
   const [toast, setToast] = useState<{ tone: "ok" | "warn" | "info"; text: string } | null>(null);
   const [confirm, setConfirm] = useState<null | "approve" | "build-replace">(null);
@@ -663,6 +664,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
 
   useEffect(() => store.set("tab", tab), [tab]);
   useEffect(() => store.set("view", view), [view]);
+  useEffect(() => store.set("paper", paper), [paper]);
   useEffect(() => store.set("show", show), [show]);
 
   useEffect(() => {
@@ -902,9 +904,12 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
             <button className={`seg ${show.labels ? "on" : ""}`} aria-pressed={show.labels} onClick={() => setShow({ ...show, labels: !show.labels })}>
               Loads
             </button>
+            <button className={`seg ${paper ? "on" : ""}`} aria-pressed={paper} title="White paper behind the drawing, as Vectorworks shows it" onClick={() => setPaper(!paper)}>
+              Paper
+            </button>
           </div>
           {sketch && compiled ? (
-            <ViewerPane sketch={sketch} compiled={compiled} layers={layers} view={view} show={show} labels={labels} picked={picked} onPick={setPicked} />
+            <ViewerPane sketch={sketch} compiled={compiled} layers={layers} view={view} show={show} paper={paper} labels={labels} picked={picked} onPick={setPicked} />
           ) : (
             <div className="boot">Loading the drawing…</div>
           )}
@@ -1017,7 +1022,7 @@ function NameField({ name, onSave }: { name: string; onSave: (n: string) => void
   );
 }
 
-function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]; view: ViewName; show: Show; labels: Label[]; picked: string | null; onPick: (id: string | null) => void }) {
+function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]; view: ViewName; show: Show; paper: boolean; labels: Label[]; picked: string | null; onPick: (id: string | null) => void }) {
   const host = useRef<HTMLDivElement>(null);
   const viewer = useRef<Viewer | null>(null);
   const first = useRef(true);
@@ -1059,6 +1064,9 @@ function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]
   useEffect(() => {
     viewer.current?.setView(view);
   }, [view]);
+  useEffect(() => {
+    viewer.current?.setPaper(props.paper);
+  }, [props.paper, viewer.current]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     viewer.current?.setLabels(labels, show.labels);
   }, [labels, show.labels]);
@@ -1499,6 +1507,7 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
   };
 
   const patch = (l: Layer, d: Partial<Layer>) => db.doc(`projects/${pid}/layers/${l.id}`).update(d);
+  const [want, setWant] = useState<Record<string, boolean>>({}); // a row's switch while it saves
 
   return (
     <div className="pane">
@@ -1526,7 +1535,29 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
           const all = part.every((x) => x.visible);
           const some = part.some((x) => x.visible);
           const count = part.reduce((n, x) => n + (x.shapes?.length ?? 0), 0);
-          const setAll = (d: Partial<Layer>) => Promise.all(part.map((x) => patch(x, d)));
+          // A big drawing layer is many documents: save them a few at a time, retry once, and say so if
+          // any still didn't save (all at once, some were refused and the row ended up half on).
+          const setAll = async (d: Partial<Layer>) => {
+            const queue = [...part];
+            let failed = 0;
+            await Promise.all(
+              Array.from({ length: Math.min(4, queue.length) }, async () => {
+                for (let x = queue.shift(); x; x = queue.shift()) {
+                  try {
+                    await patch(x, d);
+                  } catch {
+                    try {
+                      await new Promise((r) => setTimeout(r, 400));
+                      await patch(x, d);
+                    } catch {
+                      failed++;
+                    }
+                  }
+                }
+              }),
+            );
+            if (failed) flash("warn", `${failed} of the ${part.length} parts of ${name} didn't save. Tap it again.`);
+          };
           return (
           <li key={key} className="layer">
             <div className="layer-row">
@@ -1534,11 +1565,20 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
                 <input
                   type="checkbox"
                   id={`vis-${l.id}`}
-                  checked={all}
+                  checked={want[key] ?? all}
                   ref={(el) => {
-                    if (el) el.indeterminate = some && !all;
+                    if (el) el.indeterminate = want[key] === undefined && some && !all;
                   }}
-                  onChange={() => setAll({ visible: !all })}
+                  onChange={async () => {
+                    // Answer the tap at once; a big layer's documents take a moment to save.
+                    const next = !(want[key] ?? all);
+                    setWant((w) => ({ ...w, [key]: next }));
+                    await setAll({ visible: next });
+                    setWant((w) => {
+                      const { [key]: _done, ...rest } = w;
+                      return rest;
+                    });
+                  }}
                 />
                 <span>
                   {name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${part.reduce((n, x) => n + (x.rig?.length ?? 0), 0)} truss and rigging pieces` : `${count} outlines`}</span>

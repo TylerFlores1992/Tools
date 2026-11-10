@@ -144,3 +144,30 @@ test("flat fills keep the drawing's order: layer order first, then each object's
   assert.equal(by("#ffff00").fo, 22, "a see-through fill keeps its opacity");
   assert.equal(by("#ffff00").m, undefined, "a flat shape is a fill, not faces");
 });
+
+test("pens, weights, words and switched-off classes come through as Vectorworks draws them", () => {
+  const sq: [number, number][] = [[0, 0], [10, 0], [10, 10], [0, 10]];
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [{ name: "Plan", type: "design", elevation: 24, visible: true }],
+    objects: [
+      { t: "rectangle", layer: "Plan", cls: "Walls", bbox: [0, 0, 10, 10], pts: sq, closed: true, pen: "#ff0000", lw: 20, hatch: 1 },
+      { t: "rectangle", layer: "Plan", cls: "Off", bbox: [0, 0, 10, 10], pts: sq, closed: true, hid: 1 },
+      { t: "rectangle", layer: "Plan", cls: "Thin", bbox: [0, 0, 10, 10], pts: sq, closed: true, lw: 5, fill: "#ffffff", np: 1 },
+      { t: "text", layer: "Plan", cls: "Notes", bbox: [5, 5, 5, 5], at: [5, 5, 0], text: "\rELEPHANT\rDOOR", size: 14, rot: 90 },
+      { t: "dimension", layer: "Plan", cls: "Dimension", bbox: [0, 0, 0, 0], at: [0, -5, 0], pts: [[0, 0], [10, 0]], text: "10\"", size: 9 },
+      { t: "text", layer: "Plan", cls: "Off", bbox: [0, 0, 0, 0], at: [0, 0, 0], text: "hidden", size: 9, hid: 1 },
+    ],
+  };
+  const all = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "t").flatMap((l) => l.shapes ?? []);
+  assert.equal(all.length, 4, "the two objects in a switched-off class are left out");
+  const wall = all[0];
+  assert.deepEqual([wall.pen, wall.lw, wall.hatch], ["#ff0000", 20, 1]);
+  assert.equal(all[1].lw, undefined, "a hairline stays a plain line");
+  assert.equal(all[1].np, 1, "no pen: fill only");
+  const text = all.find((s) => s.text && !s.dim)!;
+  assert.equal(text.text, "ELEPHANT\nDOOR", "Vectorworks' line breaks, without the leading one");
+  assert.deepEqual([text.pts, text.size, text.rot, text.z], [[[5, 5]], 14, 90, 24]);
+  const dim = all.find((s) => s.dim)!;
+  assert.deepEqual(dim.pts, [[0, -5], [0, 0], [10, 0]], "a dimension: its figure's point, then its two ends");
+});

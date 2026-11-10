@@ -44,7 +44,12 @@ export type Fixture = { x: number; y: number; z: number; lb: number; type?: stri
 /** A drawing's real 3D faces (from a read-out): corners `v` as x, y, z in steps of `q` inches (each
  * corner once), faces `f` as [n, i1..in, n, ...]. */
 export type Mesh = { q: number; v: number[]; f: number[] };
-export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** Only in this view (a hybrid symbol's 2D plan graphics or its 3D part). */ v?: "plan" | "3d"; /** The layer's elevation, added to the faces' heights. */ mz?: number; /** Its place in the drawing's order, for a flat fill: later ones are drawn on top. */ n?: number; /** Fill opacity 0-100 when see-through. */ fo?: number };
+export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** Only in this view (a hybrid symbol's 2D plan graphics or its 3D part). */ v?: "plan" | "3d"; /** The layer's elevation, added to the faces' heights. */ mz?: number; /** Its place in the drawing's order, for a flat fill: later ones are drawn on top. */ n?: number; /** Fill opacity 0-100 when see-through. */ fo?: number;
+  /** The line's colour in the drawing ("#rrggbb"); absent = black. */ pen?: string;
+  /** Line weight in mils, when heavier than hairline. */ lw?: number;
+  /** No outline (its pen is off). */ np?: 1;
+  /** Hatched: drawn with diagonal lines over its fill. */ hatch?: 1;
+  /** Text (or a dimension's figure) at pts[0], height in inches, turned by rot degrees; a dimension's line is pts[1]-pts[2]. */ text?: string; size?: number; rot?: number; dim?: 1 };
 /** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
 export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 

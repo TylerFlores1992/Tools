@@ -107,7 +107,13 @@
   "GetBBox": [
    "h"
   ],
+  "GetCVis": [
+   "className"
+  ],
   "GetClass": [
+   "h"
+  ],
+  "GetDimText": [
    "h"
   ],
   "GetFName": [],
@@ -125,10 +131,16 @@
   "GetLName": [
    "h"
   ],
+  "GetLSN": [
+   "h"
+  ],
   "GetLScale": [
    "h"
   ],
   "GetLVis": [
+   "h"
+  ],
+  "GetLW": [
    "h"
   ],
   "GetLayer": [
@@ -177,6 +189,9 @@
   "GetParent": [
    "h"
   ],
+  "GetPenFore": [
+   "h"
+  ],
   "GetPolyPt": [
    "objectHd",
    "index"
@@ -218,6 +233,13 @@
   ],
   "GetText": [
    "objectHd"
+  ],
+  "GetTextOrientation": [
+   "theText"
+  ],
+  "GetTextSize": [
+   "TextHd",
+   "Position"
   ],
   "GetTypeN": [
    "h"

@@ -3,6 +3,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
+import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
 import { buildScene, disposeGeometries, hoistGeometry, makeMaterials, partMeshes, toThree, type Look, type Mats } from "../../../src/tools/rig/ui/scene.ts";
 import type { Compiled, Sketch } from "../../../src/tools/rig/sketch.ts";
 import type { Vec3 } from "../../../src/tools/rig/types.ts";
@@ -89,7 +92,7 @@ export class Viewer {
   /** Colours follow the page's light or dark theme. */
   retheme() {
     const l = look();
-    this.scene.background = new THREE.Color(l.bg);
+    this.scene.background = new THREE.Color(this.paper ? css("--paper") : l.bg);
     const fresh = makeMaterials(l);
     for (const k of Object.keys(this.mats) as (keyof Mats)[]) this.mats[k].color.copy(fresh[k].color);
     if (this.extraMats.hoist) (this.extraMats.hoist as THREE.MeshStandardMaterial).color.set(css("--hoist"));
@@ -97,8 +100,55 @@ export class Viewer {
     if (this.extraMats.shape) (this.extraMats.shape as THREE.LineBasicMaterial).color.set(css("--shape"));
     if (this.extraMats.existing) (this.extraMats.existing as THREE.MeshStandardMaterial).color.set(css("--shape"));
     this.makeGrid();
+    // Drawing lines and words take their colours from the background they're on: rebuild them.
+    this.rebuildAll();
     this.request();
   }
+
+  /** White paper behind the drawing, as Vectorworks shows it: its see-through fills and pens read
+   * as they do there (a 22% cream floor over dark reads olive). */
+  private paper = false;
+  setPaper(on: boolean) {
+    if (on === this.paper) return;
+    this.paper = on;
+    this.retheme();
+  }
+
+  private rebuildAll() {
+    if (!this.lastLayers) return;
+    for (const had of this.built.values()) {
+      this.refs.remove(had.obj);
+      this.disposeTree(had.obj);
+    }
+    this.built.clear();
+    this.applyLayers(this.lastLayers);
+  }
+
+  /** A pen's colour on the current background. Black (no pen) is the page's line colour on the
+   * dark or light page and black on paper; on the dark page dark pens are lifted so they read. */
+  private ink(pen?: string): THREE.Color {
+    if (this.paper) return new THREE.Color(pen ?? css("--paper-ink"));
+    if (!pen) return new THREE.Color(css("--shape"));
+    const c = new THREE.Color(pen);
+    const dark = document.documentElement.dataset.theme !== "light" && !matchMedia("(prefers-color-scheme: light)").matches;
+    const lum = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+    if (dark && lum < 0.45) c.lerp(new THREE.Color(1, 1, 1), 0.45);
+    return c;
+  }
+
+  /** Fat lines for heavy pens, one material per width (WebGL lines are always 1 pixel). */
+  private fatMats = new Map<number, LineMaterial>();
+  private fatMat(px: number): LineMaterial {
+    let m = this.fatMats.get(px);
+    if (!m) {
+      m = new LineMaterial({ linewidth: px * this.renderer.getPixelRatio(), vertexColors: true, worldUnits: false });
+      const size = this.renderer.getDrawingBufferSize(new THREE.Vector2());
+      m.resolution.set(size.x, size.y);
+      this.fatMats.set(px, m);
+    }
+    return m;
+  }
+  private colorLines?: THREE.LineBasicMaterial;
 
   private mat(name: "hoist" | "fixture" | "shape" | "pick" | "existing") {
     if (!this.extraMats[name]) {
@@ -118,7 +168,7 @@ export class Viewer {
       this.grid.geometry.dispose();
     }
     const size = Math.max(480, Math.ceil(Math.max(this.bounds.max.x - this.bounds.min.x, this.bounds.max.z - this.bounds.min.z) / 120 + 1) * 120);
-    this.grid = new THREE.GridHelper(size, size / 60, new THREE.Color(css("--grid-major")), new THREE.Color(css("--grid")));
+    this.grid = new THREE.GridHelper(size, size / 60, new THREE.Color(css(this.paper ? "--paper-grid-major" : "--grid-major")), new THREE.Color(css(this.paper ? "--paper-grid" : "--grid")));
     const c = this.bounds.getCenter(new THREE.Vector3());
     this.grid.position.set(Math.round(c.x / 12) * 12, 0, Math.round(c.z / 12) * 12);
     this.scene.add(this.grid);
@@ -185,11 +235,16 @@ export class Viewer {
     root.traverse((o) => {
       const m = o as THREE.Mesh;
       m.geometry?.dispose();
-      if (m.material && (m.material as THREE.MeshBasicMaterial).map) (m.material as THREE.Material).dispose();
+      if (m.material && (m.material as THREE.MeshBasicMaterial).map) {
+        if (o.userData.ownMap) (m.material as THREE.MeshBasicMaterial).map?.dispose();
+        (m.material as THREE.Material).dispose();
+      }
     });
   }
 
+  private lastLayers: Layer[] | null = null;
   private applyLayers(layers: Layer[]) {
+    this.lastLayers = layers;
     const keep = new Set<string>();
     for (const l of layers) {
       const id = l.id ?? `${l.name}|${l.at}`;
@@ -305,6 +360,7 @@ export class Viewer {
   }
 
   private flatFill?: THREE.Material;
+  private edgeMat?: THREE.LineBasicMaterial;
   private fillMat(): THREE.Material {
     this.flatFill ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, depthFunc: THREE.LessEqualDepth, side: THREE.DoubleSide, toneMapped: false });
     return this.flatFill;
@@ -322,6 +378,19 @@ export class Viewer {
   private shapesPart(shapes: Shape[]): THREE.Object3D {
     const g = new THREE.Group();
     const seg: number[] = [];
+    const segCol: number[] = [];
+    const fat = new Map<number, { p: number[]; c: number[] }>();
+    const texts: Shape[] = [];
+    const inks = new Map<string, THREE.Color>();
+    const inkOf = (pen?: string) => inks.get(pen ?? "") ?? inks.set(pen ?? "", this.ink(pen)).get(pen ?? "")!;
+    // A line from (x0,y0) to (x1,y1) in the drawing at height z, in its pen's colour and weight.
+    const line = (x0: number, y0: number, x1: number, y1: number, z: number, s: Shape) => {
+      const c = inkOf(s.pen);
+      const px = s.lw ? Math.round(Math.min(6, Math.max(1.5, s.lw / 7)) * 2) / 2 : 0;
+      const into = px ? (fat.get(px) ?? fat.set(px, { p: [], c: [] }).get(px)!) : { p: seg, c: segCol };
+      into.p.push(x0, z, -y0, x1, z, -y1);
+      into.c.push(c.r, c.g, c.b, c.r, c.g, c.b);
+    };
     const byFill = new Map<string, THREE.BufferGeometry[]>();
     const edges: THREE.BufferGeometry[] = [];
     let fillOrder = 0;
@@ -361,6 +430,20 @@ export class Viewer {
         }
         continue;
       }
+      if (s.text) {
+        texts.push(s);
+        if (s.dim && s.pts.length === 3) {
+          // A dimension's line and its two end ticks.
+          const z = (s.z ?? 0) + 0.3;
+          const [, a, b] = s.pts;
+          line(a[0], a[1], b[0], b[1], z, s);
+          const L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+          const t = Math.max(2, s.size ?? 9) * 0.4;
+          const ux = ((b[0] - a[0]) / L) * t, uy = ((b[1] - a[1]) / L) * t;
+          for (const p of [a, b]) line(p[0] - ux + uy, p[1] - uy - ux, p[0] + ux - uy, p[1] + uy + ux, z, s);
+        }
+        continue;
+      }
       if (s.pts.length < 2) continue;
       if (s.closed && (s.h ?? 0) > 0 && s.pts.length >= 3) {
         let geo: THREE.BufferGeometry;
@@ -396,14 +479,25 @@ export class Viewer {
         }
       }
       const z = (s.z ?? 0) + 0.3;
+      if (s.hatch && s.closed && s.pts.length >= 3) for (const [a, b] of hatchLines(s.pts, 6)) line(a[0], a[1], b[0], b[1], z, s);
+      if (s.np) continue; // its pen is off: fill only
       const pts = s.closed ? [...s.pts, s.pts[0]] : s.pts;
-      for (let i = 0; i + 1 < pts.length; i++) seg.push(pts[i][0], z, -pts[i][1], pts[i + 1][0], z, -pts[i + 1][1]);
+      for (let i = 0; i + 1 < pts.length; i++) line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], z, s);
     }
     if (seg.length) {
       const lg = new THREE.BufferGeometry();
       lg.setAttribute("position", new THREE.Float32BufferAttribute(seg, 3));
-      g.add(new THREE.LineSegments(lg, this.mat("shape")));
+      lg.setAttribute("color", new THREE.Float32BufferAttribute(segCol, 3));
+      this.colorLines ??= new THREE.LineBasicMaterial({ vertexColors: true, toneMapped: false });
+      g.add(new THREE.LineSegments(lg, this.colorLines));
     }
+    for (const [px, { p, c }] of fat) {
+      const fg = new LineSegmentsGeometry();
+      fg.setPositions(p);
+      fg.setColors(c);
+      g.add(new LineSegments2(fg, this.fatMat(px)));
+    }
+    if (texts.length) for (const m of textMeshes(texts, (pen) => inkOf(pen))) g.add(m);
     for (const [key, geos] of byFill) {
       let mat = this.blockMats.get(key);
       if (!mat) {
@@ -428,7 +522,11 @@ export class Viewer {
       }
     }
     const e = edges.length ? mergeGeometries(edges, false) : null;
-    if (e) g.add(new THREE.LineSegments(e, this.mat("shape")));
+    if (e) {
+      this.edgeMat ??= new THREE.LineBasicMaterial();
+      this.edgeMat.color.copy(this.ink());
+      g.add(new THREE.LineSegments(e, this.edgeMat));
+    }
     return g;
   }
 
@@ -542,6 +640,8 @@ export class Viewer {
     const { clientWidth: W, clientHeight: H } = this.host;
     if (!W || !H) return;
     this.renderer.setSize(W, H, false);
+    const buf = this.renderer.getDrawingBufferSize(new THREE.Vector2());
+    for (const m of this.fatMats.values()) m.resolution.set(buf.x, buf.y);
     this.persp.aspect = W / H;
     this.persp.updateProjectionMatrix();
     const half = (this.ortho.top - this.ortho.bottom) / 2;
@@ -633,3 +733,116 @@ function triangulateFace(p: Float32Array, ids: number[]): number[][] {
   }
 }
 
+
+/** A hatch's lines: diagonals every `gap` inches, clipped to the outline (even-odd). */
+export function hatchLines(pts: [number, number][], gap: number, deg = 45): [[number, number], [number, number]][] {
+  const a = (deg * Math.PI) / 180;
+  const c = Math.cos(a), s = Math.sin(a);
+  // Turn the outline so the hatch runs along x, cut it with horizontal lines, turn the pieces back.
+  const r = pts.map(([x, y]) => [x * c + y * s, -x * s + y * c] as const);
+  const ys = r.map((p) => p[1]);
+  const lo = Math.min(...ys), hi = Math.max(...ys);
+  const out: [[number, number], [number, number]][] = [];
+  if (!(hi > lo) || (hi - lo) / gap > 2000) return out;
+  for (let y = Math.ceil(lo / gap) * gap; y < hi; y += gap) {
+    const xs: number[] = [];
+    for (let i = 0; i < r.length; i++) {
+      const [x0, y0] = r[i];
+      const [x1, y1] = r[(i + 1) % r.length];
+      if ((y0 <= y && y1 > y) || (y1 <= y && y0 > y)) xs.push(x0 + ((y - y0) / (y1 - y0)) * (x1 - x0));
+    }
+    xs.sort((p, q) => p - q);
+    for (let i = 0; i + 1 < xs.length; i += 2) {
+      const back = (x: number): [number, number] => [x * c - y * s, x * s + y * c];
+      out.push([back(xs[i]), back(xs[i + 1])]);
+    }
+  }
+  return out;
+}
+
+/** Texts as flat quads on the floor, their words painted (white, tinted per text) into shared
+ * canvas atlases. Size is the text's height in inches; the read-out's point is the middle of the
+ * text's box, so each is centred on it, turned by its rotation. */
+function textMeshes(texts: Shape[], ink: (pen?: string) => THREE.Color): THREE.Mesh[] {
+  const F = 40; // canvas pixels per text height
+  const LH = 1.15;
+  const W = 2048, H = 2048;
+  const out: THREE.Mesh[] = [];
+  let ctx: CanvasRenderingContext2D | null = null;
+  let canvas: HTMLCanvasElement | null = null;
+  let x = 0, y = 0, rowH = 0;
+  let pos: number[] = [], uv: number[] = [], col: number[] = [];
+  const font = `${F}px "Mona Sans", system-ui, sans-serif`;
+  const flush = () => {
+    if (!canvas || !pos.length) return;
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+    const mat = new THREE.MeshBasicMaterial({ map: tex, vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, toneMapped: false });
+    const m = new THREE.Mesh(geo, mat);
+    m.renderOrder = 2;
+    m.userData.ownMap = true;
+    out.push(m);
+    pos = [];
+    uv = [];
+    col = [];
+  };
+  const fresh = () => {
+    flush();
+    canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.font = font;
+      ctx.fillStyle = "#fff";
+      ctx.textBaseline = "top";
+    }
+    x = y = rowH = 0;
+  };
+  fresh();
+  for (const t of texts) {
+    if (!ctx) break;
+    const lines = (t.text ?? "").split("\n").slice(0, 12);
+    const bw = Math.min(W - 4, Math.ceil(Math.max(...lines.map((l) => ctx!.measureText(l).width))) + 4);
+    const bh = Math.ceil(lines.length * F * LH) + 4;
+    if (x + bw > W) {
+      x = 0;
+      y += rowH;
+      rowH = 0;
+    }
+    if (y + bh > H) fresh();
+    if (!ctx) break;
+    lines.forEach((l, i) => ctx!.fillText(l, x + 2, y + 2 + i * F * LH, bw - 4));
+    // The quad, in the text's own frame (right, up) then turned and moved to its point.
+    const k = (t.size ?? 9) / F;
+    const w = bw * k, h = bh * k;
+    const ox = -w / 2, oy = h / 2;
+    // Kept readable: the read-out's angle adds a symbol's turn but can't see its mirror, so a
+    // mirrored symbol's words would come out upside down.
+    let deg = (((t.rot ?? 0) % 360) + 360) % 360;
+    if (deg > 90 && deg <= 270) deg -= 180;
+    const a = (deg * Math.PI) / 180;
+    const [px, py] = t.pts[0];
+    const z = (t.z ?? 0) + 0.4;
+    const at = (u: number, v: number) => {
+      const X = px + (u + ox) * Math.cos(a) - (v + oy) * Math.sin(a);
+      const Y = py + (u + ox) * Math.sin(a) + (v + oy) * Math.cos(a);
+      return [X, z, -Y];
+    };
+    const tl = at(0, 0), tr = at(w, 0), bl = at(0, -h), br = at(w, -h);
+    pos.push(...tl, ...bl, ...tr, ...tr, ...bl, ...br);
+    const u0 = x / W, u1 = (x + bw) / W, v0 = 1 - y / H, v1 = 1 - (y + bh) / H;
+    uv.push(u0, v0, u0, v1, u1, v0, u1, v0, u0, v1, u1, v1);
+    const c = ink(t.pen);
+    for (let i = 0; i < 6; i++) col.push(c.r, c.g, c.b);
+    x += bw;
+    rowH = Math.max(rowH, bh);
+  }
+  flush();
+  return out;
+}

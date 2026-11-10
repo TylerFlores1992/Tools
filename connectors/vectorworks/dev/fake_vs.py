@@ -1210,3 +1210,34 @@ def HDuplicate(objectHandle, x, y):
 
 def GetPolyPt3D(objectHd, index):
     return objectHd.pts3d[index]  # counted from 0, as measured on Vectorworks 2026
+
+
+# ---- lines, classes and text (read-outs draw them as Vectorworks does) ----------------------
+
+def GetLSN(h):
+    return getattr(h, "line_style", 2)  # 0 = no line
+
+
+def GetPenFore(h):
+    r, g, b = getattr(h, "pen", (0, 0, 0))
+    return (r * 257, g * 257, b * 257)
+
+
+def GetLW(h):
+    return getattr(h, "lw", 1)
+
+
+def GetCVis(className):
+    return -1 if className in getattr(DOC, "hidden_classes", set()) else 0
+
+
+def GetTextSize(TextHd, Position):
+    return getattr(TextHd, "pt", 12.0)
+
+
+def GetTextOrientation(theText):
+    return ((0.0, 0.0), getattr(theText, "angle", 0.0), False)
+
+
+def GetDimText(h):
+    return getattr(h, "dim_text", "")

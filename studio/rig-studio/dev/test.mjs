@@ -83,6 +83,16 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     await p.click("text=Plan");
     await p.waitForTimeout(400);
     await p.screenshot({ path: join(shots, "rig-studio-plan.png") });
+    const paperBtn = p.getByRole("button", { name: "Paper", exact: true });
+    ok((await paperBtn.getAttribute("aria-pressed")) === "true", "Paper starts on: the drawing on white, as in Vectorworks");
+    const corner = async () => (await p.locator(".stagebox canvas").first().screenshot()).toString("base64");
+    const paperShot = await corner();
+    await paperBtn.click();
+    await p.waitForTimeout(400);
+    ok((await paperBtn.getAttribute("aria-pressed")) === "false", "Paper switches off");
+    ok((await corner()) !== paperShot, "and the drawing's background changes with it");
+    await paperBtn.click();
+    await p.waitForTimeout(300);
     await p.click("text=Front");
     await p.waitForTimeout(400);
     await p.screenshot({ path: join(shots, "rig-studio-front.png") });
@@ -131,6 +141,12 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
         await p.waitForTimeout(1500);
         await p.screenshot({ path: join(shots, `rig-studio-real-close${i + 1}.png`) });
       }
+      // The same plan on the page's own background, Paper off.
+      await p.getByRole("button", { name: "Plan", exact: true }).click().catch(() => {});
+      await p.getByRole("button", { name: "Fit", exact: true }).click().catch(() => {});
+      await p.getByRole("button", { name: "Paper", exact: true }).click().catch(() => {});
+      await p.waitForTimeout(2500);
+      await p.screenshot({ path: join(shots, "rig-studio-real-plan-nopaper.png") });
       console.log("errors:", errors.join(" | ") || "none");
       process.exit(0);
     }

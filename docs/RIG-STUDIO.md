@@ -37,6 +37,16 @@ What it does:
   CFF-26: 67,708 faces in ~5 s. Symbols only become one block past 2,500 parts (was 150). Over 4.8 MB
   the faces move to `<drawing>.rigmesh<n>.json` parts (main file lists `mesh_parts`, objects keep
   `mid`); Rig Studio fetches them and draws the faces solid in the drawing's colours, edges over 30°.
+  Since 0.9.0 the read-out also carries what makes the plan look like Vectorworks: each object's pen
+  colour (`pen`, absent = black), weight in mils past hairline (`lw`), no outline (`np`), hatch (`hatch`,
+  drawn here as 45° lines every 6"), texts and dimensions (`t: "text"|"dimension"`, `at` = middle of the
+  text's box, `size` = letter height in inches from that box, `rot`), and `hid: 1` on objects in a class
+  switched off in Vectorworks (GetCVis = -1, inherited by a symbol's parts), which Rig Studio leaves out.
+  Rig Studio draws heavy pens as fat lines, keeps texts readable (a mirrored symbol's angle can't be read)
+  and has a Paper switch (on by default): white behind the drawing as in Vectorworks; on the page's dark
+  background dark pens are lifted and see-through fills read darker (CFF's 22% cream floor looks olive).
+  Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
+  the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
   definition every point (GetBBox, GetSegPt, GetPolyPt, GetSymLoc, GetPolyPt3D) reads back as true − user
   origin, so 0.7.1 adds the user origin back before placing it (CFF-26: 3 → 356 of 362 symbols aligned); opening an older
