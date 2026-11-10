@@ -35,6 +35,7 @@ const READOUT = {
   ],
 };
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
+MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.vwx", path: "ns:1//CFF-26.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.vwx", file_id: "id:cff", modified_time: "2026-11-09T07:00:00Z", object_type: "file", file: { size: 79000000 } });
 MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: process.env.RS_READOUT ? (await import("node:fs")).readFileSync(process.env.RS_READOUT, "utf8") : JSON.stringify(READOUT) };
 const SAMPLE = [
   {
@@ -122,6 +123,9 @@ for (const scheme of ["dark", "light"]) {
       return n;
     });
     ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
+
+    ok(/Read it out again on my PC/.test(await p.locator('[id="read-id:cff"]').innerText().catch(() => "")), "a drawing already read out can be read out again");
+    ok(/Read it out on my PC/.test(await p.locator('[id="read-id:1"]').innerText()), "one never read out says so plainly");
 
     console.log("reading a drawing out: a request in Dropbox for the PC's connector, waking the PC first");
     await p.evaluate(() => window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc", wake: true }));
