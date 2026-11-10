@@ -31,8 +31,9 @@ What it does:
   more than 150 parts (people, cameras) one block. Inches, kept under 5 MB. Rig Studio draws the
   blocks merged per colour, so a whole set (CFF-26: 13k shapes) opens in about 4 s.
   Since 0.7.0 every 3D object (extrudes, sweeps, meshes, solids, walls, 3D plug-ins) comes with its
-  real faces: Vectorworks converts a copy to 3D polygons (ConvertTo3DPolys; GetPolyPt3D counts from 0),
-  they're read and the copy deleted. `mesh: {q: 0.25, v: corners in quarter inches, f: [n, i..]}`.
+  real faces: ConvertTo3DPolys REPLACES the object it's given (0.7.0-0.7.1 converted the drawing's own
+  objects and so deleted them from the open document; found 2026-11-10 on a throwaway CFF copy), so since
+  0.7.2 it only gets an HDuplicate, which is read and deleted (GetPolyPt3D counts from 0). `mesh: {q: 0.25, v: corners in quarter inches, f: [n, i..]}`.
   CFF-26: 67,708 faces in ~5 s. Symbols only become one block past 2,500 parts (was 150). Over 4.8 MB
   the faces move to `<drawing>.rigmesh<n>.json` parts (main file lists `mesh_parts`, objects keep
   `mid`); Rig Studio fetches them and draws the faces solid in the drawing's colours, edges over 30°.

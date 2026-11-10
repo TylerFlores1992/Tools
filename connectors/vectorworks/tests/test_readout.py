@@ -428,3 +428,24 @@ def test_parts_inside_a_symbol_get_the_user_origin_added_back(server, fake_vw, t
     assert [96, 10] in part["pts"] and [100, 0] in part["pts"], part["pts"]  # where it really sits
     corners = {p for f in _faces(part["mesh"]) for p in f}
     assert (96.0, 10.0, 36.0) in corners and (100.0, 0.0, 0.0) in corners  # the faces too
+
+
+def test_a_read_out_never_destroys_the_drawings_3d_objects(server, fake_vw, tmp_path):
+    """ConvertTo3DPolys replaces the object it's given (real Vectorworks, measured 2026-11-10: a
+    read-out that converted the drawing's own objects deleted them). Only duplicates may be converted;
+    the drawing comes out exactly as it went in, and the faces still come through."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Riser", w=10.0, h=4.0, members=[])
+    box = vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None)
+    sym.members.append(box)
+    d.resources["Riser"] = sym
+    vs.Symbol("Riser", (0.0, 0.0), 0.0)
+    flat = d.add(vs._Obj(5, pts=[(0.0, 0.0), (5.0, 0.0), (5.0, 5.0)], closed=True, is3d=True, zc=6.0, dz=12.0))
+    before_doc, before_sym = list(d.objects), list(sym.members)
+    d.path = str(tmp_path / "Set.vwx")
+    for _ in range(2):  # and again: a second read-out still finds the 3D objects
+        data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+        assert sum(1 for o in data["objects"] if o.get("mesh")) == 2
+    assert d.objects == before_doc and sym.members == before_sym  # nothing replaced, nothing left over
+    assert flat in d.objects and box in sym.members
