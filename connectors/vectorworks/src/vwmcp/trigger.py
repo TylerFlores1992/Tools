@@ -23,6 +23,7 @@ import re
 import sys
 import threading
 import time
+from typing import NamedTuple
 
 from .config import Settings
 
@@ -47,6 +48,44 @@ class NoopTrigger(Trigger):
 
 
 # ---- Windows plumbing, kept apart so the logic below is testable on any OS ---------------
+
+
+class Prompt(NamedTuple):
+    phrase: str  # words in the dialog, lower case
+    buttons: tuple[str, ...]  # the button to press (first one found)
+    tick: str = ""  # a checkbox to tick first, by its words
+
+
+# Prompts Vectorworks shows that are safe to answer for the user, measured on Vectorworks 2026.
+PROMPTS = (
+    # Opening an older file converts it into a renamed copy; the original file is never changed.
+    Prompt("created with an older version of vectorworks", ("OK",)),
+    # A converted copy has no name, so 30 minutes later autosave asks to name and save it. No
+    # (and stop asking): the copy is only read, and saving it would put files in the user's folders.
+    Prompt(
+        "a backup copy cannot be created until this document has been named",
+        ("No",),
+        tick="don't back up this document",
+    ),
+)
+DISCARD_BUTTONS = ("No", "Don't Save", "Do not save")
+
+
+def pick_prompt(words: str) -> Prompt | None:
+    words = _plain(words)
+    return next((p for p in PROMPTS if _plain(p.phrase) in words), None)
+
+
+def is_save_prompt_for(words: str, name: str) -> bool:
+    """A "save changes to <name>?" dialog for exactly this document. Matching the name is what keeps
+    the user's own drawings safe: only the copy the connector opened is ever discarded."""
+    words = _plain(words)
+    stem = _plain(re.sub(r"\.vwx$", "", name, flags=re.I).strip())
+    return bool(stem) and "save" in words and stem in words
+
+
+def _plain(s: str) -> str:
+    return (s or "").lower().replace("\u2019", "'").replace("\u2018", "'")
 
 
 class _Win32:
@@ -162,37 +201,75 @@ class _Win32:
         ).stdout
         return "logonui.exe" in out.lower()
 
-    # Prompts Vectorworks shows while opening a file that are safe to accept for the user, by the
-    # words in them and the button to press. Converting an older file makes a renamed copy; the
-    # original file is never changed.
-    PROMPTS = (("created with an older version of vectorworks", "OK"),)
-
     def accept_prompts(self, window) -> list[str]:
-        """Press OK on a known Vectorworks prompt (UI Automation, no keys: works locked). Returns
-        what it pressed. Unknown dialogs are left alone."""
+        """Answer a known Vectorworks prompt (UI Automation, no keys: works locked). Returns what it
+        answered. Unknown dialogs are left alone."""
+        pressed = []
+        for w in self._dialogs(window):
+            hit = pick_prompt(self._words(w))
+            if hit is None:
+                continue
+            if hit.tick:
+                self._tick(w, hit.tick)
+            if self._press(w, hit.buttons):
+                pressed.append(hit.phrase)
+        return pressed
+
+    def discard_copy(self, window, name: str, wait: float = 10.0) -> bool:
+        """After File > Close: say No to "save changes?" for this one document (by name), so a
+        converted copy is thrown away. Any other dialog is left alone. True when it answered."""
+        import time as _t
+
+        deadline = _t.monotonic() + wait
+        while _t.monotonic() < deadline:
+            for w in self._dialogs(window):
+                if is_save_prompt_for(self._words(w), name) and self._press(w, DISCARD_BUTTONS):
+                    return True
+            _t.sleep(0.3)
+        return False
+
+    # -- UI Automation plumbing for the two above --
+    def _dialogs(self, window) -> list:
         from pywinauto import Desktop
 
-        pressed = []
-        pid = window.process_id()
         try:
-            candidates = [w for w in Desktop(backend="uia").windows(process=pid)]
-            main = Desktop(backend="uia").window(handle=window.handle)
-            candidates += main.descendants(control_type="Window")
+            found = list(Desktop(backend="uia").windows(process=window.process_id()))
+            found += Desktop(backend="uia").window(handle=window.handle).descendants(control_type="Window")
         except Exception:
-            return pressed
-        for w in candidates:
-            try:
-                words = " ".join(t.window_text() for t in w.descendants(control_type="Text")).lower()
-            except Exception:
-                continue
-            for phrase, button in self.PROMPTS:
-                if phrase in words:
-                    for b in w.descendants(control_type="Button"):
-                        if b.window_text().strip().lower() == button.lower():
-                            b.invoke()
-                            pressed.append(phrase)
-                            break
-        return pressed
+            return []
+        return found
+
+    @staticmethod
+    def _words(w) -> str:
+        try:
+            return " ".join(t.window_text() for t in w.descendants(control_type="Text")).lower()
+        except Exception:
+            return ""
+
+    @staticmethod
+    def _press(w, names) -> bool:
+        want = [n.lower() for n in names]
+        try:
+            buttons = w.descendants(control_type="Button")
+        except Exception:
+            return False
+        for name in want:
+            for b in buttons:
+                if b.window_text().replace("&", "").strip().lower() == name:
+                    b.invoke()
+                    return True
+        return False
+
+    @staticmethod
+    def _tick(w, words: str) -> None:
+        try:
+            for c in w.descendants(control_type="CheckBox"):
+                if words in c.window_text().replace("&", "").lower():
+                    if c.get_toggle_state() == 0:
+                        c.toggle()
+                    return
+        except Exception:
+            pass  # the tick is a nicety; the button press is what matters
 
     def press_menu(self, window, menu: str, item: str, open_wait: float = 4.0) -> None:
         """Press `menu > item` in Vectorworks through UI Automation (no keys, no focus change).
@@ -369,6 +446,25 @@ class HotkeyTrigger(Trigger):
         if not self.win.enabled(target):
             raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
         return self._ensure_drawing(target)
+
+    def close_copy(self, name: str) -> bool:
+        """Close the converted copy of a drawing the connector opened for a read-out, without saving
+        (File > Close, then No to "save changes?" for that name only). Only when Vectorworks' title
+        shows that copy in front, so the user's own drawing is never the one closed. Works locked."""
+        with self._lock:
+            target = self.find_window()
+            if target is None:
+                return False
+            stem = re.sub(r"\.vwx$", "", name, flags=re.I).strip().lower()
+            title = getattr(self.win, "title", lambda w: "")(target).lower()
+            if not stem or stem not in title:
+                return False
+            self.win.accept_prompts(target)  # the 30-minute backup box would block the menu
+            self.win.press_menu(target, "File", "Close")
+            self.win.discard_copy(target, name)
+            self._sleep(1.0)
+            after = self.find_window()
+            return after is None or stem not in getattr(self.win, "title", lambda w: "")(after).lower()
 
     def capture_png(self) -> bytes:
         target = self.find_window()

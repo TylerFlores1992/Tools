@@ -326,3 +326,57 @@ def test_a_convert_prompt_is_accepted_before_pressing_the_menu():
     t, _ = make_menu(win)
     t.fire()
     assert win.log == ["accepted convert prompt", "menu Tools > MCP Run Job"]
+
+
+# ---- answering prompts and closing converted copies ----
+
+BACKUP_BOX = (
+    "30 minutes have elapsed since the first operation was performed on this document, but a backup "
+    "copy cannot be created until this document has been named and saved. Do you want to name and "
+    "save this document now, and have a backup copy created?"
+)
+
+
+def test_the_30_minute_backup_box_gets_no_and_stop_asking():
+    from vwmcp.trigger import pick_prompt
+
+    p = pick_prompt(BACKUP_BOX)
+    assert p is not None and p.buttons == ("No",) and "don't back up" in p.tick
+    convert = pick_prompt("This file was created with an older version of Vectorworks and will be converted.")
+    assert convert is not None and convert.buttons == ("OK",)
+    assert pick_prompt("Are you sure you want to delete these objects?") is None  # unknown: left alone
+
+
+def test_save_changes_is_discarded_only_for_the_named_copy():
+    from vwmcp.trigger import is_save_prompt_for
+
+    copy = "CFF-26_041426_v2025_v2026.vwx"
+    assert is_save_prompt_for("Save changes to \u201cCFF-26_041426_v2025_v2026\u201d?", copy)
+    assert not is_save_prompt_for("Save changes to \u201cRealShow\u201d?", copy)  # someone's own drawing
+    assert not is_save_prompt_for("CFF-26_041426_v2025_v2026 is read-only.", copy)  # not a save prompt
+    assert not is_save_prompt_for("Save changes?", "")
+
+
+class CloseWin(MenuWin):
+    def accept_prompts(self, w):
+        self.log.append("prompts")
+        return []
+
+    def discard_copy(self, w, name):
+        self.log.append(f"discard {name}")
+        self.titles = ["Vectorworks Design Suite 2026 - [Claude connector.vwx]"]
+        return True
+
+
+def test_the_converted_copy_is_closed_without_saving_when_it_is_in_front():
+    win = CloseWin(titles=["Vectorworks Design Suite 2026 - [CFF-26_041426_v2025_v2026.vwx]"])
+    t, _ = make_menu(win)
+    assert t.close_copy("CFF-26_041426_v2025_v2026.vwx") is True
+    assert win.log == ["prompts", "menu File > Close", "discard CFF-26_041426_v2025_v2026.vwx"]
+
+
+def test_a_different_drawing_in_front_is_never_closed():
+    win = CloseWin(titles=["Vectorworks Design Suite 2026 - [RealShow.vwx]"])
+    t, _ = make_menu(win)
+    assert t.close_copy("CFF-26_041426_v2025_v2026.vwx") is False
+    assert win.log == []

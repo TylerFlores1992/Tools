@@ -81,6 +81,14 @@ def same_document(open_name: str, path: Path) -> bool:
     return a == b or bool(re.fullmatch(re.escape(b) + r"[ _]v20\d\d", a)) or (bool(a) and b.startswith(a))
 
 
+def is_converted_copy(open_name: str, path: Path) -> bool:
+    """The open document is the renamed copy Vectorworks made converting this older file (not the
+    file itself, and not some other drawing)."""
+    a = re.sub(r"\.vwx$", "", open_name or "", flags=re.I).strip().lower()
+    b = path.stem.strip().lower()
+    return bool(re.fullmatch(re.escape(b) + r"[ _]v20\d\d", a))
+
+
 def open_in_vectorworks(path: Path) -> None:
     """Ask Windows to open the file; Vectorworks takes it (a running copy opens it in a new window)."""
     if not hasattr(os, "startfile"):
