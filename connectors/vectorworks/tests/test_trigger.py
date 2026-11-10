@@ -307,3 +307,22 @@ def test_menu_is_the_default_trigger(monkeypatch):
     monkeypatch.delenv("VWMCP_TRIGGER", raising=False)
     s = config.load()
     assert s.trigger == "menu" and isinstance(make_trigger(s), MenuTrigger)
+
+
+def test_a_convert_prompt_is_accepted_before_pressing_the_menu():
+    class PromptWin(MenuWin):
+        def __init__(self):
+            super().__init__()
+            self.prompt = True
+
+        def accept_prompts(self, w):
+            if self.prompt:
+                self.prompt = False
+                self.log.append("accepted convert prompt")
+                return ["created with an older version of vectorworks"]
+            return []
+
+    win = PromptWin()
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log == ["accepted convert prompt", "menu Tools > MCP Run Job"]

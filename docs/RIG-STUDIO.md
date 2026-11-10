@@ -24,8 +24,14 @@ What it does:
 - **Vectorworks files with the PC off.** Nothing outside Vectorworks reads .vwx (closed format;
   Dropbox's reader stops at 5 MB and can't preview it), so each file goes through Vectorworks
   once: the connector's `read_out` (or `read_out_folder`) writes `<name>.rigread.json` beside the
-  .vwx: layers, classes, every plug-in object with its fields (lighting devices, truss, hoists),
-  symbols and outlines, in inches, kept under 5 MB. In a Dropbox folder it syncs; the Files tab
+  .vwx: layers (with whether they're shown), classes, every plug-in object with its fields
+  (lighting devices, truss, hoists), symbols, and the shapes the drawing is made of: inside groups
+  and inside every symbol (moved, turned and scaled to where it sits), 3D objects as blocks with
+  their bottom, height and fill colour; a symbol with a 3D part gives its 3D part, a symbol with
+  more than 150 parts (people, cameras) one block. Inches, kept under 5 MB. Rig Studio draws the
+  blocks merged per colour, so a whole set (CFF-26: 13k shapes) opens in about 4 s.
+  Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); opening an older
+  file stops on a 'convert' prompt, which the connector accepts by itself. In a Dropbox folder it syncs; the Files tab
   then opens it (Dropbox `fetch`) as layers: fixtures, the existing rig, outlines per Vectorworks
   layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
   With `VWMCP_WATCH` set on the PC (connector 0.5.6+), new or changed .vwx files in those folders

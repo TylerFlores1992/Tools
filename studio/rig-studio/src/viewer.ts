@@ -2,10 +2,11 @@
 // (src/tools/rig/ui/scene.ts), hoists, reference layers, and load labels as HTML over the canvas.
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { buildScene, disposeGeometries, hoistGeometry, makeMaterials, partMeshes, toThree, type Look, type Mats } from "../../../src/tools/rig/ui/scene.ts";
 import type { Compiled, Sketch } from "../../../src/tools/rig/sketch.ts";
 import type { Vec3 } from "../../../src/tools/rig/types.ts";
-import type { Layer } from "./model.ts";
+import type { Layer, Shape } from "./model.ts";
 
 export type ViewName = "3d" | "plan" | "front" | "side";
 export type Label = { at: Vec3; text: string; tone: "ok" | "warn" | "plain"; id?: string };
@@ -225,17 +226,59 @@ export class Viewer {
           }
         }
       }
-      if (l.kind === "shapes" && l.shapes?.length) {
-        for (const s of l.shapes) {
-          if (s.pts.length < 2) continue;
-          const pts = s.pts.map(([x, y]) => new THREE.Vector3(x, (s.z ?? 0) + 0.3, -y));
-          if (s.closed) pts.push(pts[0].clone());
-          this.refs.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), this.mat("shape")));
-        }
-      }
+      if (l.kind === "shapes" && l.shapes?.length) this.refs.add(this.shapesGroup(l.shapes));
     }
     this.measure();
     this.request();
+  }
+
+  /** A drawing's outlines and 3D objects as a handful of meshes (a set can have thousands): flat
+   * outlines as one set of lines; 3D objects raised to their height, one mesh per fill colour (the
+   * drawing's own colours, data rather than page colours), with their edges drawn so they read in
+   * either theme. */
+  private blockMats = new Map<string, THREE.Material>();
+  private shapesGroup(shapes: Shape[]): THREE.Object3D {
+    const g = new THREE.Group();
+    const seg: number[] = [];
+    const byFill = new Map<string, THREE.BufferGeometry[]>();
+    const edges: THREE.BufferGeometry[] = [];
+    for (const s of shapes) {
+      if (s.pts.length < 2) continue;
+      if (s.closed && (s.h ?? 0) > 0 && s.pts.length >= 3) {
+        let geo: THREE.BufferGeometry;
+        try {
+          geo = new THREE.ExtrudeGeometry(new THREE.Shape(s.pts.map(([x, y]) => new THREE.Vector2(x, y))), { depth: s.h ?? 1, bevelEnabled: false });
+        } catch {
+          continue;
+        }
+        geo.rotateX(-Math.PI / 2); // drawing XY onto the floor, height up
+        geo.translate(0, s.z ?? 0, 0);
+        const key = s.fill ?? "none";
+        (byFill.get(key) ?? byFill.set(key, []).get(key)!).push(geo.index ? geo.toNonIndexed() : geo);
+        edges.push(new THREE.EdgesGeometry(geo, 30));
+        continue;
+      }
+      const z = (s.z ?? 0) + 0.3;
+      const pts = s.closed ? [...s.pts, s.pts[0]] : s.pts;
+      for (let i = 0; i + 1 < pts.length; i++) seg.push(pts[i][0], z, -pts[i][1], pts[i + 1][0], z, -pts[i + 1][1]);
+    }
+    if (seg.length) {
+      const lg = new THREE.BufferGeometry();
+      lg.setAttribute("position", new THREE.Float32BufferAttribute(seg, 3));
+      g.add(new THREE.LineSegments(lg, this.mat("shape")));
+    }
+    for (const [key, geos] of byFill) {
+      let mat = this.blockMats.get(key);
+      if (!mat) {
+        mat = new THREE.MeshStandardMaterial({ color: key === "none" ? 0x8a8f99 : key, transparent: true, opacity: key === "none" ? 0.55 : 0.9, roughness: 0.8 });
+        this.blockMats.set(key, mat);
+      }
+      const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos.map((q) => (q.deleteAttribute("uv"), q)), false);
+      if (merged) g.add(new THREE.Mesh(merged, mat));
+    }
+    const e = edges.length ? mergeGeometries(edges, false) : null;
+    if (e) g.add(new THREE.LineSegments(e, this.mat("shape")));
+    return g;
   }
 
   setLabels(labels: Label[], on: boolean) {

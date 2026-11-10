@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.5.0"
+BRIDGE_VERSION = "0.6.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1392,72 +1392,254 @@ def _r(v, k=1.0):
     return round(float(v) * k, 2)
 
 
+def _ro_local_shape(h, t, max_points):
+    """An object's outline in its own coordinates: (points, closed), or (None, None)."""
+    p1, p2 = vs.GetBBox(h)
+    x0, x1 = sorted((float(p1[0]), float(p2[0])))
+    y0, y1 = sorted((float(p1[1]), float(p2[1])))
+    if t == 2:
+        return [_xy(vs.GetSegPt1(h)), _xy(vs.GetSegPt2(h))], False
+    if t in (3, 13):
+        return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], True
+    if t == 4:
+        cx, cy, rx, ry = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
+        return [[cx + rx * math.cos(2 * math.pi * i / 24), cy + ry * math.sin(2 * math.pi * i / 24)] for i in range(24)], True
+    if t in (5, 21):
+        n = vs.GetVertNum(h)
+        if t == 5:
+            pts = [_xy(vs.GetPolyPt(h, i)) for i in range(1, n + 1)]
+        else:
+            pts = [_xy(vs.GetPolylineVertex(h, i)[0]) for i in range(1, n + 1)]
+        step = max(1, int(math.ceil(len(pts) / float(max_points))))
+        return pts[::step], bool(vs.IsPolyClosed(h))
+    if t == 6:
+        start, sweep = vs.GetArc(h)
+        c = _xy(vs.HCenter(h))
+        ux0, uy0, ux1, uy1 = _unit_arc_bbox(float(start), float(sweep))
+        spans = [(x1 - x0, ux1 - ux0), (y1 - y0, uy1 - uy0)]
+        w, u = max(spans, key=lambda q: q[1])
+        r = w / u if u > 1e-9 else 0.0
+        n = max(4, int(abs(float(sweep)) / 15))
+        a0 = math.radians(float(start))
+        sw = math.radians(float(sweep))
+        return [[c[0] + r * math.cos(a0 + sw * i / n), c[1] + r * math.sin(a0 + sw * i / n)] for i in range(n + 1)], False
+    if t == 68:
+        a, b = _xy(vs.GetSegPt1(h)), _xy(vs.GetSegPt2(h))
+        ok, thick = vs.GetWallThickness(h)
+        th = float(thick) if ok else 0.0
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / L * th / 2, dx / L * th / 2
+        return [[a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny], [a[0] - nx, a[1] - ny]], True
+    return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], True  # anything else: its footprint
+
+
+def _ro_z(h, t):
+    """[bottom, top] of a 3D object (or a wall), else None."""
+    if t == 68:
+        s_top, s_bot, e_top, e_bot = vs.GetWallCornerHeights(h)
+        return [float(min(s_bot, e_bot)), float(max(s_top, e_top))]
+    if t in (11, 15, 86) or not vs.GetObjectVariableBoolean(h, 650):
+        return None
+    dy, dx, dz = vs.Get3DInfo(h)
+    _p, zc = vs.Get3DCntr(h)
+    return [float(zc) - float(dz) / 2, float(zc) + float(dz) / 2]
+
+
+def _ro_fill(h):
+    try:
+        if vs.GetFPat(h) == 0:
+            return None
+        r, g, b = vs.GetFillBack(h)
+        return "#%02x%02x%02x" % (int(r) // 257, int(g) // 257, int(b) // 257)
+    except Exception:
+        return None
+
+
+def _children(first):
+    out, m = [], first
+    while not _nil(m) and len(out) < 100000:
+        out.append(m)
+        m = vs.NextObj(m)
+    return out
+
+
+DETAIL_CAP = 150  # a symbol drawn with more parts than this (a 3D person, a camera) comes as one block
+
+
 @op
-def read_out(max_objects=20000, max_points=200):
+def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     """The whole drawing as data, in inches, for working on it away from Vectorworks: document,
-    layers (with elevations), classes, every plug-in object with all its fields (lighting
-    devices, truss, hoists, decks...), every symbol, and the 2D/3D shapes (outlines simplified to
-    max_points). Text, dimensions and objects inside groups' groups are left out."""
+    layers (with elevations and whether they're shown), classes, every plug-in object with all
+    its fields (lighting devices, truss, hoists, decks...), every symbol, and the shapes it's drawn
+    with: inside groups, and inside every symbol (placed where the symbol sits, turned with it).
+    3D objects come with their bottom and top and a solid fill colour, so Rig Studio can show them
+    as blocks. In a symbol that has a 3D part, its 2D plan lines are left out (the 3D part draws
+    it). A symbol drawn with more than `detail_cap` parts (people, cameras, detailed props) comes
+    as one block its size, so the set itself isn't crowded out. Text and dimensions are left out."""
     u = _units()
     k = 1.0 / (u["units_per_inch"] or 1.0)
-    everything = []
-    vs.ForEachObject(everything.append, "(ALL)")
-    _note_native("(ALL)")
-    objects, skipped, truncated = [], {}, False
-    for h in everything:
-        t = vs.GetTypeN(h)
-        if t in (31, 16, 92, 122, 10, 63) or _inside_group(h):  # layers, classes, dims, text...
-            if t in (10, 63):
-                skipped["text and dimensions"] = skipped.get("text and dimensions", 0) + 1
-            continue
-        lh = vs.GetLayer(h)
-        if not _nil(lh) and vs.GetObjectVariableInt(lh, 154) == 2:  # sheet layer
-            continue
+    objects, skipped = [], {}
+    state = {"truncated": False}
+    defs3d = {}
+    parts = {}
+
+    def part_count(defh, depth=0):
+        """Leaf objects a symbol definition draws, nested groups and symbols included (cached)."""
+        key = str(defh)
+        if key in parts:
+            return parts[key]
+        parts[key] = 0  # guards a symbol that (somehow) contains itself
+        n, stack = 0, _children(vs.FInSymDef(defh))
+        while stack and n <= detail_cap * 4:
+            c = stack.pop()
+            ct = vs.GetTypeN(c)
+            if ct == 11:
+                stack.extend(_children(vs.FInGroup(c)))
+            elif ct == 15 and depth < 6:
+                inner = vs.GetObject(_s(vs.GetSymName(c)))
+                n += part_count(inner, depth + 1) if not _nil(inner) else 1
+            elif ct not in (10, 63):
+                n += 1
+        parts[key] = n
+        return n
+
+    def has3d(defh):
+        key = str(defh)
+        if key not in defs3d:
+            defs3d[key] = any(vs.GetTypeN(c) not in (11, 15, 86) and vs.GetObjectVariableBoolean(c, 650)
+                              for c in _children(vs.FInSymDef(defh)))
+        return defs3d[key]
+
+    def place(pt, xf):
+        ox, oy, oz, rot, sx, sy, sz = xf
+        x, y = pt[0] * sx, pt[1] * sy
+        c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
+        return [_r(ox + x * c - y * s_, k), _r(oy + x * s_ + y * c, k)]
+
+    def scale_of(h):
+        """A symbol's own scale (2019+: none, symmetric or asymmetric; DWG blocks often use it)."""
+        try:
+            kind = vs.GetObjectVariableInt(h, 101)
+            if kind == 2:
+                f = float(vs.GetObjectVariableReal(h, 102))
+                return f, f, f
+            if kind == 3:
+                return (float(vs.GetObjectVariableReal(h, 102)), float(vs.GetObjectVariableReal(h, 103)),
+                        float(vs.GetObjectVariableReal(h, 104)))
+        except Exception:
+            pass
+        return 1.0, 1.0, 1.0
+
+    def add(o):
         if len(objects) >= int(max_objects):
-            truncated = True
-            break
+            state["truncated"] = True
+            return False
+        objects.append(o)
+        return True
+
+    def walk(h, layer, xf, depth, in_sym, skip2d, clip=None):
+        t = vs.GetTypeN(h)
+        if t in (10, 63):
+            skipped["text and dimensions"] = skipped.get("text and dimensions", 0) + 1
+            return
+        if t in (31, 16, 92, 122, 17):
+            return
+        cls = _s(vs.GetClass(h))
+        if t == 11:
+            for c in _children(vs.FInGroup(h)):
+                walk(c, layer, xf, depth + 1, in_sym, skip2d, clip)
+            return
         p1, p2 = vs.GetBBox(h)
-        o = {
-            "t": TYPE_NAMES.get(t, "type_%d" % t),
-            "layer": _s(vs.GetLName(lh)),
-            "cls": _s(vs.GetClass(h)),
-            "bbox": [_r(min(p1[0], p2[0]), k), _r(min(p1[1], p2[1]), k), _r(max(p1[0], p2[0]), k), _r(max(p1[1], p2[1]), k)],
-        }
+        corners = [place(q, xf) for q in ([p1[0], p1[1]], [p2[0], p1[1]], [p2[0], p2[1]], [p1[0], p2[1]])]
+        xs, ys = [q[0] for q in corners], [q[1] for q in corners]
+        o = {"t": TYPE_NAMES.get(t, "type_%d" % t), "layer": layer, "cls": cls, "bbox": [min(xs), min(ys), max(xs), max(ys)]}
+        if in_sym:
+            o["in"] = in_sym
         name = _obj_name(h)
         if name:
             o["name"] = name
-        src = _source(h)
-        if src != "native":
-            o["source"] = src
         if t in (15, 86):
-            loc = vs.GetSymLoc3D(h)
-            o["at"] = [_r(loc[0], k), _r(loc[1], k), _r(loc[2], k)]
-            o["rot"] = round(float(vs.GetSymRot(h)), 3)
-            if t == 15:
-                o["symbol"] = _s(vs.GetSymName(h))
-            else:
+            # GetSymLoc3D measures x and y from the internal origin, everything else here from the
+            # user origin (measured on CFF-26: off by exactly the user origin), so x, y come from
+            # GetSymLoc and only z from GetSymLoc3D.
+            xy = _xy(vs.GetSymLoc(h))
+            loc = (xy[0], xy[1], float(vs.GetSymLoc3D(h)[2]))
+            at = place([loc[0], loc[1]], xf)
+            o["at"] = [at[0], at[1], _r(float(loc[2]) * xf[6] + xf[2], k)]
+            o["rot"] = round(float(vs.GetSymRot(h)) + xf[3], 3)
+            if t == 86:
                 o["plugin"] = _plugin_name(h)
                 if o["plugin"]:
                     o["fields"] = _record_fields(h, o["plugin"])
-        else:
-            g = _describe(h)["geometry"]
-            kind = g.get("kind")
-            if kind == "line":
-                o["pts"] = [[_r(g["start"][0], k), _r(g["start"][1], k)], [_r(g["end"][0], k), _r(g["end"][1], k)]]
-            elif kind == "polygon":
-                pts = g["points"]
-                step = max(1, int(math.ceil(len(pts) / float(max_points))))
-                o["pts"] = [[_r(x, k), _r(y, k)] for x, y in pts[::step]]
-                o["closed"] = bool(g.get("closed"))
-            elif kind == "wall":
-                o["pts"] = [[_r(g["start"][0], k), _r(g["start"][1], k)], [_r(g["end"][0], k), _r(g["end"][1], k)]]
-            elif kind == "group":
-                o["parts"] = len(g.get("parts", []))
-            if t not in (11,) and vs.GetObjectVariableBoolean(h, 650):
-                dy, dx, dz = vs.Get3DInfo(h)
-                _c, zc = vs.Get3DCntr(h)
-                o["z"] = [_r(float(zc) - float(dz) / 2, k), _r(float(zc) + float(dz) / 2, k)]
-        objects.append(o)
+                if vs.GetObjectVariableBoolean(h, 650):  # a 3D plug-in (a door, a deck): its block too
+                    dy, dx, dz = vs.Get3DInfo(h)
+                    _c, zc = vs.Get3DCntr(h)
+                    o["pts"] = corners
+                    o["closed"] = True
+                    o["z"] = [_r((float(zc) - float(dz) / 2) * xf[6] + xf[2], k), _r((float(zc) + float(dz) / 2) * xf[6] + xf[2], k)]
+                add(o)
+                return
+            sym = _s(vs.GetSymName(h))
+            o["symbol"] = sym
+            if not add(o):
+                return
+            defh = vs.GetObject(sym)
+            if not _nil(defh) and part_count(defh) > int(detail_cap):
+                # Too detailed to draw part by part: one block its size (and height, if it's 3D).
+                b = {"t": "block", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True, "simplified": True}
+                try:
+                    dy, dx, dz = vs.Get3DInfo(h)
+                    _c, zc = vs.Get3DCntr(h)
+                    if float(dz) > 0:
+                        b["z"] = [_r((float(zc) - float(dz) / 2) * xf[6] + xf[2], k), _r((float(zc) + float(dz) / 2) * xf[6] + xf[2], k)]
+                except Exception:
+                    pass
+                add(b)
+                return
+            if depth < 6 and not _nil(defh):
+                sx, sy, sz = scale_of(h)
+                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy, xf[6] * sz)
+                bx0, by0, bx1, by1 = o["bbox"]
+                # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
+                # tight margin dropped half the set). This only catches parts placed absurdly far off.
+                m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
+                clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
+                for c in _children(vs.FInSymDef(defh)):
+                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip)
+            return
+        z = _ro_z(h, t)
+        if skip2d and z is None and t in (2, 3, 4, 5, 6, 13, 21):
+            return  # a hybrid symbol's 2D plan graphics: its 3D part is drawn instead
+        pts, closed = _ro_local_shape(h, t, max_points)
+        if pts is None:
+            return
+        if clip is not None and (o["bbox"][2] < clip[0] or o["bbox"][0] > clip[2] or o["bbox"][3] < clip[1] or o["bbox"][1] > clip[3]):
+            skipped["parts far outside their symbol"] = skipped.get("parts far outside their symbol", 0) + 1
+            return  # something this transform can't place (a mirrored or 3D-rotated symbol): better left out
+        o["pts"] = [place(q, xf) for q in pts]
+        o["closed"] = bool(closed)
+        if z is not None:
+            o["z"] = [_r(z[0] * xf[6] + xf[2], k), _r(z[1] * xf[6] + xf[2], k)]
+        fill = _ro_fill(h) if (closed or z is not None) else None
+        if fill:
+            o["fill"] = fill
+        add(o)
+
+    design, lh = [], vs.FLayer()
+    while not _nil(lh):
+        if vs.GetObjectVariableInt(lh, 154) != 2:  # design layers only
+            design.append(lh)
+        lh = vs.NextLayer(lh)
+    # Shown layers first, so a cut-off (max_objects) falls on hidden ones.
+    for lh in sorted(design, key=lambda h: vs.GetLVis(h) != 0):
+        name = _s(vs.GetLName(lh))
+        for h in _children(vs.FInLayer(lh)):
+            if state["truncated"]:
+                break
+            walk(h, name, (0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0), 0, None, False)
+    _note_native("(ALL)")
+    truncated = state["truncated"]
     layers = []
     for info in _layers():
         lh = vs.GetLayerByName(info["name"])
@@ -1465,6 +1647,7 @@ def read_out(max_objects=20000, max_points=200):
         if hasattr(vs, "GetLayerElevationN"):
             base, thick = vs.GetLayerElevationN(lh)
             entry["elevation"] = _r(base, k)
+        entry["visible"] = vs.GetLVis(lh) == 0  # 0 shown, -1 hidden, 2 grayed
         layers.append(entry)
     return {
         "readout": 1,

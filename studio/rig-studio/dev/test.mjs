@@ -30,10 +30,11 @@ const READOUT = {
     { t: "plugin_object", layer: "Lighting", cls: "L", bbox: [0, 0, 1, 1], at: [120, 240, 300], rot: 0, plugin: "Lighting Device", fields: { "Inst Type": "Mac Viper", Weight: "86 lb" } },
     { t: "plugin_object", layer: "Rigging", cls: "T", bbox: [0, 230, 480, 250], at: [0, 240, 310], rot: 0, plugin: "Truss", fields: { Length: "40'" } },
     { t: "rectangle", layer: "Stage", cls: "None", bbox: [0, 0, 480, 360], pts: [[0, 0], [480, 0], [480, 360], [0, 360]], closed: true },
+    { t: "polygon", layer: "Stage", cls: "None", bbox: [40, 40, 136, 88], pts: [[40, 40], [136, 40], [136, 88], [40, 88]], closed: true, z: [0, 48], fill: "#3366cc", in: "Riser" },
   ],
 };
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
-MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: JSON.stringify(READOUT) };
+MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: process.env.RS_READOUT ? (await import("node:fs")).readFileSync(process.env.RS_READOUT, "utf8") : JSON.stringify(READOUT) };
 const SAMPLE = [
   {
     calls: [{ name: "edit_rig", input: { note: "Hoists at the four corners", ops: [{ op: "add_point", at: [0, 0, 310.25], capacity: 2000, label: "DSL" }, { op: "add_point", at: [1044, 0, 310.25], label: "DSR" }] } }],
@@ -87,6 +88,24 @@ for (const scheme of ["dark", "light"]) {
     ok(/New/.test(await p.locator(".file").first().innerText()), "an unseen Dropbox file is flagged New");
     await p.screenshot({ path: join(shots, "rig-studio-files.png") });
     await p.click('[id="open-readout-id:ro"]');
+    if (process.env.RS_READOUT) {
+      // A real read-out: just open it and take pictures (dev aid, not part of the checks).
+      const t0 = Date.now();
+      await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length > 3, null, { timeout: 60000 });
+      await p.waitForTimeout(4000);
+      console.log("real read-out opened in", Date.now() - t0, "ms; layers:", await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length));
+      await p.click("#tab-layers").catch(() => {});
+      await p.waitForTimeout(1500);
+      await p.screenshot({ path: join(shots, "rig-studio-real-readout.png") });
+      for (const [b, f] of [["3D", "rig-studio-real-3d.png"], ["Plan", "rig-studio-real-plan.png"]]) {
+        await p.getByRole("button", { name: b, exact: true }).click().catch(() => {});
+        await p.getByRole("button", { name: "Fit", exact: true }).click().catch(() => {});
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, f) });
+      }
+      console.log("errors:", errors.join(" | ") || "none");
+      process.exit(0);
+    }
     await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length === 3);
     const kinds = await p.evaluate(() => [...window.__DOCS__.entries()].filter(([k]) => k.startsWith("projects/air-pro-roof/layers/")).map(([, v]) => v.kind).sort().join());
     ok(kinds === "fixtures,rig,shapes", "a read-out from Dropbox opens as fixtures, the existing rig and outlines");
@@ -96,6 +115,12 @@ for (const scheme of ["dark", "light"]) {
     await p.click('[id="open-readout-id:ro"]');
     await p.waitForTimeout(400);
     ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length)) === 3, "opening it again replaces the layers instead of doubling them");
+    const blocks = await p.evaluate(() => {
+      let n = 0;
+      window.__rsViewer?.refs?.traverse((o) => { if (o.isMesh && o.material?.type === "MeshStandardMaterial" && o.geometry?.attributes?.position?.count >= 36) n++; });
+      return n;
+    });
+    ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
 
     console.log("reading a drawing out wakes the PC first and says so under the file");
     await p.evaluate(() => window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc", wake: true }));

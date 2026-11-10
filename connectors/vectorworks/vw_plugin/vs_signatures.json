@@ -16,6 +16,10 @@
    "sweepAngle"
   ],
   "BeginPoly": [],
+  "BuildResourceListN": [
+   "type",
+   "fullPath"
+  ],
   "ClassList": [
    "index"
   ],
@@ -65,6 +69,12 @@
   "FInGroup": [
    "ObjectHd"
   ],
+  "FInLayer": [
+   "h"
+  ],
+  "FInSymDef": [
+   "sdHd"
+  ],
   "FLayer": [],
   "FSymDef": [],
   "Flip3DObj": [
@@ -84,6 +94,10 @@
   "Get3DOrientation": [
    "h"
   ],
+  "GetActualNameFromResourceList": [
+   "listID",
+   "index"
+  ],
   "GetArc": [
    "h"
   ],
@@ -94,7 +108,13 @@
    "h"
   ],
   "GetFName": [],
+  "GetFPat": [
+   "h"
+  ],
   "GetFPathName": [],
+  "GetFillBack": [
+   "h"
+  ],
   "GetFldName": [
    "h",
    "index"
@@ -103,6 +123,9 @@
    "h"
   ],
   "GetLScale": [
+   "h"
+  ],
+  "GetLVis": [
    "h"
   ],
   "GetLayer": [
@@ -131,6 +154,10 @@
    "index"
   ],
   "GetObjectVariableInt": [
+   "h",
+   "index"
+  ],
+  "GetObjectVariableReal": [
    "h",
    "index"
   ],
@@ -171,6 +198,9 @@
    "objectHandle"
   ],
   "GetSymName": [
+   "symHd"
+  ],
+  "GetSymRot": [
    "symHd"
   ],
   "GetText": [
@@ -232,6 +262,10 @@
   "ImportDXFDWGFile": [
    "fileName",
    "isBatch"
+  ],
+  "ImportResourceToCurrentFile": [
+   "listID",
+   "index"
   ],
   "IsLayerReferenced": [
    "layer"
@@ -404,21 +438,6 @@
   "Wall": [
    "p1",
    "p2"
-  ],
-  "BuildResourceListN": [
-   "type",
-   "fullPath"
-  ],
-  "GetActualNameFromResourceList": [
-   "listID",
-   "index"
-  ],
-  "ImportResourceToCurrentFile": [
-   "listID",
-   "index"
-  ],
-  "GetSymRot": [
-   "symHd"
   ]
  },
  "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09."

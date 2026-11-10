@@ -483,7 +483,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         return {"saved": str(dest), "bytes": len(body), "shapes_left_out": trimmed, **readout.summary(data)}
 
     @mcp.tool()
-    async def read_out(path: str | None = None, max_objects: int = 20000) -> dict:
+    async def read_out(path: str | None = None, max_objects: int = 40000) -> dict:
         """Read the whole drawing out to <name>.rigread.json beside the .vwx (inches: layers,
         classes, every plug-in object with all its fields, symbols, shapes), so Rig Studio and
         Claude can work on it with Vectorworks closed; in a Dropbox folder it syncs by itself.
@@ -506,7 +506,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         done, failed = [], []
         for p in todo[: max(1, int(limit))]:
             try:
-                done.append(await _read_out_one(str(p), 20000))
+                done.append(await _read_out_one(str(p), 40000))
             except ToolError as e:
                 failed.append({"file": str(p), "error": str(e)})
         return {"read": done, "failed": failed, "left": max(0, len(todo) - int(limit))}
@@ -519,7 +519,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         done = []
         for p in readout.pending(readout.watch_folders())[:3]:
             try:
-                done.append(await _read_out_one(str(p), 20000, watch=True))
+                done.append(await _read_out_one(str(p), 40000, watch=True))
                 _log("read out %s" % p.name)
             except Exception as e:  # a bad file must not stop the watcher
                 done.append({"file": str(p), "error": str(e)})

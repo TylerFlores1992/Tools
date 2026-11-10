@@ -73,10 +73,12 @@ def summary(readout: dict) -> dict:
 
 
 def same_document(open_name: str, path: Path) -> bool:
-    """Whether the document open in Vectorworks is this file (by name; VW may add ' v2026')."""
+    """Whether the document open in Vectorworks is this file, by name. Converting an older file
+    renames the open copy: 'x_v2025.vwx' opens as 'x_v2025_v2026.vwx' (seen on Vectorworks 2026),
+    other versions add ' v2026'."""
     a = re.sub(r"\.vwx$", "", open_name, flags=re.I).strip().lower()
     b = path.stem.strip().lower()
-    return a == b or a.startswith(b + " v20") or b.startswith(a)
+    return a == b or bool(re.fullmatch(re.escape(b) + r"[ _]v20\d\d", a)) or (bool(a) and b.startswith(a))
 
 
 def open_in_vectorworks(path: Path) -> None:

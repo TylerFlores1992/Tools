@@ -162,6 +162,38 @@ class _Win32:
         ).stdout
         return "logonui.exe" in out.lower()
 
+    # Prompts Vectorworks shows while opening a file that are safe to accept for the user, by the
+    # words in them and the button to press. Converting an older file makes a renamed copy; the
+    # original file is never changed.
+    PROMPTS = (("created with an older version of vectorworks", "OK"),)
+
+    def accept_prompts(self, window) -> list[str]:
+        """Press OK on a known Vectorworks prompt (UI Automation, no keys: works locked). Returns
+        what it pressed. Unknown dialogs are left alone."""
+        from pywinauto import Desktop
+
+        pressed = []
+        pid = window.process_id()
+        try:
+            candidates = [w for w in Desktop(backend="uia").windows(process=pid)]
+            main = Desktop(backend="uia").window(handle=window.handle)
+            candidates += main.descendants(control_type="Window")
+        except Exception:
+            return pressed
+        for w in candidates:
+            try:
+                words = " ".join(t.window_text() for t in w.descendants(control_type="Text")).lower()
+            except Exception:
+                continue
+            for phrase, button in self.PROMPTS:
+                if phrase in words:
+                    for b in w.descendants(control_type="Button"):
+                        if b.window_text().strip().lower() == button.lower():
+                            b.invoke()
+                            pressed.append(phrase)
+                            break
+        return pressed
+
     def press_menu(self, window, menu: str, item: str, open_wait: float = 4.0) -> None:
         """Press `menu > item` in Vectorworks through UI Automation (no keys, no focus change).
 
@@ -396,6 +428,9 @@ class MenuTrigger(HotkeyTrigger):
             raise self._not_found("")
         if self.win.process_age_s(target) < self.STARTUP_GRACE_S:
             raise TriggerError("Vectorworks only just started. Give it 30 seconds to settle, then try again.")
+        if getattr(self.win, "accept_prompts", lambda w: [])(target):
+            self._sleep(3.0)  # let it carry on opening the file
+            target = self.find_window() or target
         if not self.win.enabled(target):
             raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
         return self._ensure_drawing(target)
