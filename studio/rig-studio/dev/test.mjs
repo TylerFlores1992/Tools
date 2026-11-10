@@ -64,7 +64,11 @@ for (const scheme of ["dark", "light"]) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme, deviceScaleFactor: 1 });
   const p = await ctx.newPage();
   const errors = [];
-  p.on("pageerror", (e) => errors.push(e.message));
+  p.on("pageerror", (e) => {
+  errors.push(e.message);
+  if (process.env.RS_DEV) console.log("PAGEERROR STACK:", e.stack);
+});
+if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.log("CONSOLE ERROR:", m.text().slice(0, 3000)));
   p.on("console", (m) => m.type() === "error" && !/fonts\.g|ERR_|net::/.test(m.text()) && errors.push(m.text()));
   await p.goto(`file://${join(here, "harness.html")}`);
   await p.waitForSelector(".card");
@@ -95,11 +99,12 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForSelector(".file");
     ok(/New/.test(await p.locator(".file").first().innerText()), "an unseen Dropbox file is flagged New");
     await p.screenshot({ path: join(shots, "rig-studio-files.png") });
-    await p.click('[id="open-readout-id:ro"]');
+    const t0 = Date.now();
+    await p.click('[id="open-readout-id:ro"]', { timeout: process.env.RS_READOUT ? 300000 : 30000 });
     if (process.env.RS_READOUT) {
       // A real read-out: just open it and take pictures (dev aid, not part of the checks).
-      const t0 = Date.now();
-      await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length > 3, null, { timeout: 60000 });
+      console.log("click returned after", Date.now() - t0, "ms");
+      await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length > 3, null, { timeout: 300000 });
       await p.waitForTimeout(4000);
       console.log("real read-out opened in", Date.now() - t0, "ms; layers:", await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length));
       await p.click("#tab-layers").catch(() => {});
@@ -114,7 +119,8 @@ for (const scheme of ["dark", "light"]) {
       // Close-ups (RS_CLOSE="x,y,steps;x,y,steps"): back to 3D, zoom in on a screen point.
       for (const [i, spec] of (process.env.RS_CLOSE ?? "").split(";").filter(Boolean).entries()) {
         const [x, y, steps] = spec.split(",").map(Number);
-        await p.getByRole("button", { name: "3D", exact: true }).click().catch(() => {});
+        const view = spec.split(",")[3] === "plan" ? "Plan" : "3D";
+        await p.getByRole("button", { name: view, exact: true }).click().catch(() => {});
         await p.getByRole("button", { name: "Fit", exact: true }).click().catch(() => {});
         await p.waitForTimeout(800);
         await p.mouse.move(x, y);

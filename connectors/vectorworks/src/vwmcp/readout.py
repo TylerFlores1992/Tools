@@ -58,10 +58,12 @@ def mesh_part_name(readout_path: Path, n: int) -> Path:
 
 
 def split(readout: dict, stem: str, limit: int = LIMIT) -> tuple[bytes, list[bytes], int]:
-    """The read-out as files Dropbox can hand Rig Studio (each under `limit`): when the whole thing
-    is too big, the 3D faces move into "<stem>.rigmesh<n>.json" parts ({"rigmesh": 1, "meshes":
-    {"<mid>": mesh}}) and each object keeps "mid"; the main file lists the parts in "mesh_parts".
-    Returns (main, parts, shapes left out of the main file)."""
+    """The read-out as files Dropbox can hand Rig Studio (each under `limit`). When the whole thing is
+    too big, the 3D faces move into "<stem>.rigmesh<n>.json" parts ({"rigmesh": 1, "meshes":
+    {"<mid>": mesh}}, each object keeps "mid"), and if the rest is still too big, the plainest shapes
+    move into parts too ({"rigmesh": 1, "objects": [...]}) instead of being left out (CFF-26 lost
+    2,908 lines that way). The main file lists every part in "mesh_parts". Returns (main, parts,
+    shapes left out), and nothing is left out unless even the symbols and plug-ins don't fit."""
     def dump(r):
         return json.dumps(r, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
@@ -69,25 +71,56 @@ def split(readout: dict, stem: str, limit: int = LIMIT) -> tuple[bytes, list[byt
     if len(whole) <= limit:
         return whole, [], 0
     objs, meshes = [], []
-    for o in readout["objects"]:
+    for i, o in enumerate(readout["objects"]):
+        o = dict(o, k=i)  # its place in the drawing's order: the files below don't keep it
         if "mesh" in o:
-            o = dict(o)
             meshes.append((len(meshes), o.pop("mesh")))
             o["mid"] = meshes[-1][0]
         objs.append(o)
+
+    # What stays in the main file: plug-ins and symbols always, then the plainest shapes that fit
+    # (the same order `fit` keeps them in); the rest spills into parts.
+    room = limit - 4096  # the part names go in later
+    keep = [o for o in objs if "plugin" in o or "symbol" in o]
+    shapes = sorted((o for o in objs if not ("plugin" in o or "symbol" in o)), key=lambda o: len(o.get("pts", [])))
+    n = len(shapes)
+    if len(dump(dict(readout, objects=keep + shapes))) > room:
+        lo, hi, n = 0, len(shapes), -1
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            if len(dump(dict(readout, objects=keep + shapes[:mid]))) <= room:
+                n, lo = mid, mid + 1
+            else:
+                hi = mid - 1
+        if n < 0:  # not even the symbols and plug-ins: the old trimming, which says what it left out
+            main, trimmed = fit(dict(readout, objects=objs), limit)
+            return main, [], trimmed
+    spill = shapes[n:]
+
     parts, cur, size = [], {}, 0
+
+    def close():
+        nonlocal cur, size
+        if cur:
+            parts.append(cur)
+        cur, size = {}, 0
+
     for mid, m in meshes:
         b = len(dump(m)) + 12
         if cur and size + b > limit - 64:
-            parts.append(cur)
-            cur, size = {}, 0
-        cur[str(mid)] = m
+            close()
+        cur.setdefault("meshes", {})[str(mid)] = m
         size += b
-    if cur:
-        parts.append(cur)
+    for o in spill:
+        b = len(dump(o)) + 2
+        if cur and size + b > limit - 64:
+            close()
+        cur.setdefault("objects", []).append(o)
+        size += b
+    close()
     names = [stem + MESH_PART % (i + 1) for i in range(len(parts))]
-    main, trimmed = fit(dict(readout, objects=objs, mesh_parts=names), limit)
-    return main, [dump({"rigmesh": 1, "meshes": p}) for p in parts], trimmed
+    main = dump(dict(readout, objects=keep + shapes[:n], mesh_parts=names))
+    return main, [dump(dict(rigmesh=1, **p)) for p in parts], 0
 
 
 def summary(readout: dict) -> dict:

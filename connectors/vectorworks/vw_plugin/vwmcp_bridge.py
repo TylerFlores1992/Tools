@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.7.2"
+BRIDGE_VERSION = "0.8.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1456,6 +1456,18 @@ def _ro_fill(h):
         return None
 
 
+def _ro_fill_opacity(h):
+    """The object's fill opacity, 0-100 (Vectorworks 2020+), or None when it can't say."""
+    try:
+        r = vs.GetOpacityN(h)
+        return int(round(float(r[-1])))
+    except Exception:
+        try:
+            return int(round(float(vs.GetOpacity(h))))
+        except Exception:
+            return None
+
+
 FACE_CAP = 3000  # an object with more faces than this keeps its plain block (a scanned prop, a dense mesh)
 
 
@@ -1718,8 +1730,14 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     walk(c, layer, inner, depth + 1, sym, has3d(defh), clip)
             return
         z = _ro_z(h, t)
-        if skip2d and z is None and t in (2, 3, 4, 5, 6, 13, 21):
-            return  # a hybrid symbol's 2D plan graphics: its 3D part is drawn instead
+        if skip2d:
+            # A hybrid symbol: Vectorworks shows its 2D graphics in Top/Plan and its 3D part in
+            # every other view. Both are read, tagged with the view they belong to, so Rig Studio's
+            # Plan can look like Vectorworks' plan (the dark decks, the fills) and 3D like the model.
+            if z is None and t in (2, 3, 4, 5, 6, 13, 21):
+                o["view"] = "plan"
+            elif z is not None:
+                o["view"] = "3d"
         pts, closed = _ro_local_shape(h, t, max_points)
         if pts is None:
             return
@@ -1730,12 +1748,16 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         o["closed"] = bool(closed)
         if z is not None:
             o["z"] = [_r(z[0] * xf[6] + xf[2], k), _r(z[1] * xf[6] + xf[2], k)]
-            m3 = mesh(h, xf)
-            if m3:
-                o["mesh"] = m3
+            if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
+                m3 = mesh(h, xf)
+                if m3:
+                    o["mesh"] = m3
         fill = _ro_fill(h) if (closed or z is not None) else None
         if fill:
             o["fill"] = fill
+            op = _ro_fill_opacity(h)
+            if op is not None and op < 100:
+                o["fo"] = op  # see-through fill, 0-100 (a stage floor tinted at 15%, say)
         add(o)
 
     design, lh = [], vs.FLayer()

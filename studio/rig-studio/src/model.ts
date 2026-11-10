@@ -44,7 +44,7 @@ export type Fixture = { x: number; y: number; z: number; lb: number; type?: stri
 /** A drawing's real 3D faces (from a read-out): corners `v` as x, y, z in steps of `q` inches (each
  * corner once), faces `f` as [n, i1..in, n, ...]. */
 export type Mesh = { q: number; v: number[]; f: number[] };
-export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** The layer's elevation, added to the faces' heights. */ mz?: number };
+export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** Only in this view (a hybrid symbol's 2D plan graphics or its 3D part). */ v?: "plan" | "3d"; /** The layer's elevation, added to the faces' heights. */ mz?: number; /** Its place in the drawing's order, for a flat fill: later ones are drawn on top. */ n?: number; /** Fill opacity 0-100 when see-through. */ fo?: number };
 /** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
 export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 
@@ -52,6 +52,9 @@ export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [nu
 export type Layer = {
   id: string;
   name: string;
+  /** The drawing layer this is part of, when a big one is stored in several documents (each holds
+   * at most 256 KB): the Layers list shows one row per group. */
+  group?: string;
   kind: "image" | "fixtures" | "shapes" | "rig";
   visible: boolean;
   at: string;
@@ -312,4 +315,25 @@ export function fromStatus(st: { job?: string; state?: string; message?: string 
   if (st.state === "failed") return { status: "failed", reply: st.message ?? "Your PC couldn't read it out." };
   if (st.state === "reading") return { status: "running", progress: st.message ?? "Your PC is reading it out…" };
   return null;
+}
+
+/** Rows for the Layers list: a drawing layer stored in several documents is one row. Older layers
+ * without `group` are grouped by their "<name> (n)" names from the same source. */
+export type LayerRow = { key: string; name: string; layers: Layer[] };
+export function layerRows(layers: Layer[]): LayerRow[] {
+  const rows: LayerRow[] = [];
+  const byKey = new Map<string, LayerRow>();
+  for (const l of layers) {
+    const m = /^(.*) \((\d+)\)$/.exec(l.name);
+    const name = l.group ?? (m && l.source ? m[1] : l.name);
+    const key = l.group || (m && l.source) ? `${l.source?.dropboxId ?? l.source?.name ?? ""}|${l.kind}|${name}` : `id|${l.id}`;
+    let row = byKey.get(key);
+    if (!row) {
+      row = { key, name, layers: [] };
+      byKey.set(key, row);
+      rows.push(row);
+    }
+    row.layers.push(l);
+  }
+  return rows;
 }
