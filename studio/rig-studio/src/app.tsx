@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, jobActive, jobWords, needsHandoff, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
@@ -98,8 +98,8 @@ function Notice({ tone, children, onClose }: { tone: "ok" | "warn" | "info"; chi
 }
 
 function JobRow({ j, brief }: { j: Job; brief?: boolean }) {
-  const word = { queued: "Starting", running: "Working", done: "Done", failed: "Stopped" }[j.status];
-  const g = { queued: "◌", running: "◐", done: "✓", failed: "!" }[j.status];
+  const word = { queued: "Starting", waking: "Waking your PC", running: "Working", done: "Done", failed: "Stopped" }[j.status];
+  const g = { queued: "◌", waking: "◌", running: "◐", done: "✓", failed: "!" }[j.status];
   return (
     <li className={`job ${j.status}`}>
       <span className="job-glyph" aria-hidden="true">
@@ -126,6 +126,13 @@ function JobRow({ j, brief }: { j: Job; brief?: boolean }) {
 }
 
 /* ------------------------------------------------------------------ app */
+
+/** The claude.ai link for a fire_trigger result, if it names the session. */
+function sessionLink(r: unknown): string | undefined {
+  const obj = typeof r === "object" && r ? (r as Record<string, unknown>) : {};
+  const rawId = String(obj.session_id ?? (obj.session as { id?: string } | undefined)?.id ?? "");
+  return (obj.session_url ?? obj.url ?? (rawId ? `https://claude.ai/code/${rawId.replace(/^cse_/, "session_")}` : undefined)) as string | undefined;
+}
 
 type Env = { caps: Caps; workers: Workers | null; vw: "unknown" | "ready" | "absent"; remoteOk: boolean | null };
 
@@ -180,6 +187,29 @@ function App() {
     );
   }, [caps]);
 
+  // A woken PC job is handed to the PC worker from here: the cloud worker that woke the PC may not
+  // start another scheduled task itself.
+  const handing = useRef(new Set<string>());
+  useEffect(() => {
+    const db = caps?.db;
+    const mcp = caps?.mcp;
+    const pc = workers?.pc;
+    if (!db || !mcp || !pc) return;
+    for (const j of jobs) {
+      if (!needsHandoff(j, Date.now()) || handing.current.has(j.id)) continue;
+      handing.current.add(j.id);
+      (async () => {
+        await db.doc(`jobs/${j.id}`).update({ handed: true, status: "queued", progress: "Your PC is awake. Starting the job on it…", updated: now() });
+        try {
+          const sid = sessionLink(payloadOf(await mcp.callTool(SERVERS.remote, "fire_trigger", { trigger_id: pc, text: j.text })));
+          if (sid) await db.doc(`jobs/${j.id}`).update({ session: sid });
+        } catch (e) {
+          await db.doc(`jobs/${j.id}`).update({ status: "failed", reply: mcpWords(e, "Starting the session on your PC"), updated: now() });
+        }
+      })();
+    }
+  }, [jobs, caps, workers]);
+
   if (!caps) return <div className="boot">Opening Rig Studio…</div>;
   const env: Env = { caps, workers, vw, remoteOk: null };
   const pid = route.startsWith("p-") ? route.slice(2) : null;
@@ -230,7 +260,7 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
   const [busyId, setBusyId] = useState<string | null>(null);
   const [note, setNote] = useState<{ tone: "ok" | "warn" | "info"; text: string } | null>(null);
   const db = env.caps.db!;
-  const running = jobs.filter((j) => j.status === "queued" || j.status === "running");
+  const running = jobs.filter(jobActive);
   const archived = (projects ?? []).filter((p) => p.archived);
   const list = projects ? projects.filter((p) => !!p.archived === showArchived) : null;
   const pinnedCount = (projects ?? []).filter((p) => p.pinnedAt && !p.archived).length;
@@ -440,7 +470,7 @@ function Home({ env, projects, jobs, loadErr }: { env: Env; projects: Project[] 
             {jobsShown.map((j) => {
               const mid = `job-${j.id}`;
               const open = menu === mid;
-              const live = j.status === "queued" || j.status === "running";
+              const live = jobActive(j);
               return (
                 <li key={j.id} className="job-wrap card-wrap">
                   <a href={`#p-${j.pid}`} className="job-project">
@@ -690,24 +720,28 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
   const say = useCallback((m: Message) => db.collection(`projects/${pid}/chat`).add(m), [db, pid]);
 
   const startSession = useCallback(
-    async (request: string, where: "cloud" | "pc"): Promise<string> => {
-      const trig = where === "pc" ? env.workers?.pc : env.workers?.cloud;
+    async (request: string, where: "cloud" | "pc", file?: string): Promise<string> => {
+      const { trigger: trig, wake } = routeJob(env.workers, where);
       if (!env.caps.mcp) throw new Error("Full sessions need this page open in Claude.");
       if (!trig) throw new Error("Full sessions aren't set up for this page yet. Ask Claude in a chat to set up Rig Studio's sessions.");
       const ref = db.collection("jobs").doc();
-      const job: Omit<Job, "id"> = { pid, project: project?.name ?? pid, request: request.slice(0, 4000), where, status: "queued", at: now(), progress: "Waiting for the session to start" };
+      const text = `Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}\n\n(Every at/updated/updatedAt you write is the real current UTC time from \`date -u +%Y-%m-%dT%H:%M:%SZ\`, read fresh each time.)`;
+      const job: Omit<Job, "id"> = {
+        pid,
+        project: project?.name ?? pid,
+        request: request.slice(0, 4000),
+        where,
+        status: wake ? "waking" : "queued",
+        at: now(),
+        progress: wake ? "Checking whether your PC is on…" : "Waiting for the session to start",
+        ...(wake ? { text } : {}),
+        ...(file ? { file } : {}),
+      };
       await ref.set(job);
       try {
-        const r = payloadOf(
-          await env.caps.mcp.callTool(SERVERS.remote, "fire_trigger", {
-            trigger_id: trig,
-            text: `Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}\n\n(Every at/updated/updatedAt you write is the real current UTC time from \`date -u +%Y-%m-%dT%H:%M:%SZ\`, read fresh each time.)`,
-          }),
-        ) as Record<string, unknown> | string | undefined;
-        const obj = typeof r === "object" && r ? r : {};
-        const rawId = String(obj.session_id ?? (obj.session as { id?: string } | undefined)?.id ?? "");
-        const sid = (obj.session_url ?? obj.url ?? (rawId ? `https://claude.ai/code/${rawId.replace(/^cse_/, "session_")}` : undefined)) as string | undefined;
-        if (sid) await ref.update({ session: sid });
+        const r = payloadOf(await env.caps.mcp.callTool(SERVERS.remote, "fire_trigger", { trigger_id: trig, text: wake ? `wake the PC for job ${ref.id}\n${text}` : text })) as Record<string, unknown> | string | undefined;
+        const sid = sessionLink(r);
+        if (sid && !wake) await ref.update({ session: sid });
       } catch (e) {
         await ref.update({ status: "failed", reply: mcpWords(e, "Starting a session"), updated: now() });
         throw new Error(mcpWords(e, "Starting a session"));
@@ -949,7 +983,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
                 }}
               />
             )}
-            {tab === "files" && <FilesPane env={env} project={project} layers={layers} startSession={startSession} flash={flash} goChat={() => setTab("chat")} />}
+            {tab === "files" && <FilesPane env={env} project={project} layers={layers} jobs={jobs} startSession={startSession} flash={flash} goChat={() => setTab("chat")} />}
           </div>
         </aside>
       </div>
@@ -1091,7 +1125,7 @@ function ChatPane(props: {
   layers: Layer[];
   say: (m: Message) => Promise<unknown>;
   saveVersion: (sk: Sketch, note: string, by: Version["by"]) => Promise<number>;
-  startSession: (request: string, where: "cloud" | "pc") => Promise<string>;
+  startSession: (request: string, where: "cloud" | "pc", file?: string) => Promise<string>;
   onDraft: (s: Sketch | null) => void;
   viewingOld: boolean;
   onLatest: () => void;
@@ -1141,7 +1175,7 @@ function ChatPane(props: {
     list.current?.scrollTo({ top: list.current.scrollHeight });
   }, [chat.length, stream, working]);
 
-  const active = jobs.filter((j) => j.status === "queued" || j.status === "running");
+  const active = jobs.filter(jobActive);
 
   const ask = async () => {
     const req = text.trim() || (imgs.length ? "Here's a picture for reference." : "");
@@ -1358,20 +1392,9 @@ function ChatPane(props: {
             <option value="cloud">in the cloud</option>
             <option value="pc">on my PC (Vectorworks, local files)</option>
           </select>
-          {where === "pc" && <WakeLink />}
         </div>
       </form>
     </div>
-  );
-}
-
-/** The PC sleeps; this opens the site page that wakes it through the home server. */
-export const WAKE_URL = "https://tylerflores.dev/private/pc";
-function WakeLink() {
-  return (
-    <a className="link small wake" href={WAKE_URL} target="_blank" rel="noreferrer">
-      PC asleep? Wake it ↗
-    </a>
   );
 }
 
@@ -1807,7 +1830,7 @@ function VersionsPane({ versions, project, viewing, onView, onRestore, onArchive
 
 type Entry = { name: string; path: string; path_display?: string; file_id?: string; modified_time?: string; object_type: string; file?: { size?: number } };
 
-function FilesPane({ env, project, layers, startSession, flash, goChat }: { env: Env; project: Project; layers: Layer[]; startSession: (r: string, w: "cloud" | "pc") => Promise<string>; flash: (t: "ok" | "warn" | "info", s: string) => void; goChat: () => void }) {
+function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: { env: Env; project: Project; layers: Layer[]; jobs: Job[]; startSession: (r: string, w: "cloud" | "pc", file?: string) => Promise<string>; flash: (t: "ok" | "warn" | "info", s: string) => void; goChat: () => void }) {
   const db = env.caps.db!;
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -1895,15 +1918,23 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
       what === "read"
         ? `Read "${e.path_display ?? e.name}" (Dropbox file id ${e.file_id}) out of Vectorworks on my PC: find it in the PC's Dropbox folder and call the connector's read_out tool with its full Windows path. It writes ${e.name.replace(/\.vwx$/i, "")}.rigread.json beside the file, which Dropbox syncs. Then tell me what's in it (fixtures, truss, hoists, layers). Don't change the drawing or the rig.`
         : `Add "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) to this project as a drawing layer, to scale if the drawing shows a scale or dimensions.`;
+    setStarting(e.file_id ?? null);
     try {
-      await startSession(req, where);
+      await startSession(req, where, e.file_id);
       await markSeen([e]);
-      goChat();
-      flash("info", "A session on your PC is on it. Progress shows in the chat.");
+      if (what === "read") flash("info", env.workers?.wake ? "Started. It checks your PC first and wakes it if it's asleep; the status shows under the file." : "Started. The status shows under the file.");
+      else {
+        goChat();
+        flash("info", "A session on your PC is on it. Progress shows in the chat.");
+      }
     } catch (er) {
       flash("warn", (er as Error).message);
+    } finally {
+      setStarting(null);
     }
   };
+  const [starting, setStarting] = useState<string | null>(null);
+  const fileJob = (id?: string) => (id ? jobs.filter((j) => j.file === id).sort((a, b) => (a.at < b.at ? 1 : -1))[0] : undefined);
 
   if (!env.caps.mcp) return <div className="pane muted">Dropbox needs this page open in Claude.</div>;
   if (!project.dropbox)
@@ -1975,12 +2006,17 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
                     (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
                     <span className="muted small">✓ Read out (open the .rigread.json below)</span>
                   ) : ["vwx"].includes(ext) ? (
-                    <>
-                      <button className="link small" onClick={() => ask(e, "read")}>
-                        Read it out on my PC (needs the PC on)
-                      </button>
-                      <WakeLink />
-                    </>
+                    (() => {
+                      const j = fileJob(e.file_id);
+                      const busy = starting === e.file_id || (j && jobActive(j));
+                      return (
+                        <>
+                          <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
+                            {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : "Read it out on my PC"}
+                          </button>
+                        </>
+                      );
+                    })()
                   ) : null}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>
@@ -1988,6 +2024,20 @@ function FilesPane({ env, project, layers, startSession, flash, goChat }: { env:
                     </button>
                   )}
                 </div>
+              )}
+              {e.object_type === "file" && fileJob(e.file_id) && (
+                <p className={`job-line small${fileJob(e.file_id)!.status === "failed" ? " bad" : ""}`} role="status" aria-live="polite" id={`job-${e.file_id}`}>
+                  {jobWords(fileJob(e.file_id)!)}
+                  {jobActive(fileJob(e.file_id)!) && <span className="muted"> · started {ago(fileJob(e.file_id)!.at)}; a big drawing takes 5–10 minutes in all.</span>}
+                  {fileJob(e.file_id)!.session && (
+                    <>
+                      {" "}
+                      <a className="link" href={fileJob(e.file_id)!.session} target="_blank" rel="noreferrer">
+                        Open the session ↗
+                      </a>
+                    </>
+                  )}
+                </p>
               )}
             </li>
           );

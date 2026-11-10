@@ -81,8 +81,17 @@ export type Job = {
   project: string;
   request: string;
   where: "cloud" | "pc";
-  status: "queued" | "running" | "done" | "failed";
+  /** waking: the cloud worker is checking or waking the PC; the page hands the job over after. */
+  status: "queued" | "waking" | "running" | "done" | "failed";
   progress?: string;
+  /** Waking: the PC answered (the cloud worker sets it). */
+  awake?: boolean;
+  /** Waking: the page has started the PC worker with `text`. */
+  handed?: boolean;
+  /** Waking: the job message for the PC worker. */
+  text?: string;
+  /** The Dropbox file id a file job is about (its status shows under that file). */
+  file?: string;
   reply?: string;
   at: string;
   updated?: string;
@@ -103,7 +112,37 @@ export function sortJobs<T extends Pick<Job, "at" | "pinnedAt">>(list: T[]): T[]
 }
 
 /** config/workers: the two scheduled tasks the page starts sessions with. */
-export type Workers = { cloud?: string; pc?: string; artifact?: string };
+export type Workers = { cloud?: string; pc?: string; artifact?: string; wake?: boolean };
+
+/**
+ * Which scheduled task a job fires. With `wake` on (the PC waker is set up, config/pcwaker), a PC
+ * job first goes to the cloud worker, which checks the PC and wakes it if it's asleep; when the
+ * job says `awake`, the page starts the PC worker itself (an unattended session may not start
+ * another scheduled task, and a sleeping PC can't start one on itself).
+ */
+export function routeJob(w: Workers | null, where: "cloud" | "pc"): { trigger?: string; wake: boolean } {
+  if (where === "pc" && w?.wake && w.cloud && w.pc) return { trigger: w.cloud, wake: true };
+  return { trigger: where === "pc" ? w?.pc : w?.cloud, wake: false };
+}
+
+const HANDOFF_WINDOW_MS = 30 * 60_000;
+
+/** A waking job the page should now hand to the PC worker (awake, not yet handed, not stale). */
+export function needsHandoff(j: Job, now: number): boolean {
+  return j.status === "waking" && !!j.awake && !j.handed && !!j.text && now - Date.parse(j.at) < HANDOFF_WINDOW_MS;
+}
+
+/** Is a job still going? (A file's button waits while one is.) */
+export const jobActive = (j: Job) => j.status === "queued" || j.status === "waking" || j.status === "running";
+
+/** The job's state in words, with a symbol that isn't colour: ◌ going, ✓ done, ✕ stopped. */
+export function jobWords(j: Job): string {
+  if (j.status === "done") return `✓ Done. ${j.reply ?? ""}`.trim();
+  if (j.status === "failed") return `✕ Stopped. ${j.reply ?? j.progress ?? ""}`.trim();
+  if (j.status === "waking") return `◌ ${j.progress || "Checking whether your PC is on…"}`;
+  if (j.status === "queued") return `◌ ${j.progress || "Starting the session…"}`;
+  return `◌ ${j.progress || "Working…"}`;
+}
 
 export const vid = (n: number) => `v${String(n).padStart(4, "0")}`;
 

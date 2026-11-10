@@ -30,8 +30,14 @@ What it does:
   layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
   With `VWMCP_WATCH` set on the PC (connector 0.5.6+), new or changed .vwx files in those folders
   are read out by themselves once nobody has touched the PC or Claude for 10 minutes.
-- **The PC can be asleep.** "PC asleep? Wake it" (beside PC jobs) opens `/private/pc`, which wakes
-  it through the home server (`connectors/pc-waker/`). Setup in that README.
+- **The PC can be asleep.** With `wake: true` in `config/workers` (and the waker's `{url, token}` in
+  `config/pcwaker`), a PC job starts as `status: "waking"` and fires the cloud worker with the line
+  `wake the PC for job <id>`: it checks the PC, wakes it if asleep, and sets `awake: true`. The
+  page then fires the PC worker itself with the job's `text` and marks it `handed` (an unattended
+  session may not start another scheduled task; `routeJob`/`needsHandoff` in `model.ts`). A file
+  job keeps `file` (the Dropbox id): its status shows under that file and its button waits while it
+  runs. The waker runs on the CampHawk mini PC (`desktop-mdc5q6e`), setup in `connectors/pc-waker/`.
+  The PC worker scheduled task must have "Require this computer" on (it does: DESKTOP-M9OCUDL).
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC

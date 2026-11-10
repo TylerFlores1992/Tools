@@ -97,6 +97,30 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForTimeout(400);
     ok((await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length)) === 3, "opening it again replaces the layers instead of doubling them");
 
+    console.log("reading a drawing out wakes the PC first and says so under the file");
+    await p.evaluate(() => window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc", wake: true }));
+    await p.click('[id="read-id:1"]');
+    await p.waitForSelector('[id="job-id:1"]');
+    const wf = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").at(-1));
+    ok(wf.input.trigger_id === "trig_cloud" && /^wake the PC for job \S+\nRig Studio job /.test(wf.input.text), "the cloud worker is asked to check and wake the PC");
+    ok(/Checking whether your PC is on/.test(await p.locator('[id="job-id:1"]').innerText()), "the status shows under the file at once");
+    ok(await p.locator('[id="read-id:1"]').isDisabled(), "the button waits while the job runs (no second copy)");
+    ok((await p.locator(".tabs [aria-selected=true], #tab-files[aria-selected=true]").count()) >= 1 && (await p.locator(".file").count()) > 0, "and the page stays on Files");
+    const jk = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("jobs/") && v.file === "id:1")?.[0]);
+    await p.evaluate((k) => window.claude.use("db").then((db) => db.doc(k).update({ awake: true, progress: "Your PC is awake." })), jk);
+    await p.waitForFunction(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").length >= 1);
+    const hf = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").at(-1));
+    ok(/^Rig Studio job /.test(hf.input.text) && /read_out/.test(hf.input.text), "once awake, the page hands the job to the PC worker");
+    const hj = await p.evaluate((k) => window.__DOCS__.get(k), jk);
+    ok(hj.handed === true && hj.status === "queued", "and marks it handed, so it's started once");
+    await p.waitForFunction(() => /Starting the job on it/.test(document.querySelector('[id="job-id:1"]')?.textContent ?? ""));
+    ok(true, "the status follows along");
+    await p.evaluate((k) => {
+      window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc" });
+      window.__DOCS__.delete(k);
+      for (let i = window.__CALLS__.length - 1; i >= 0; i--) if (window.__CALLS__[i].tool === "fire_trigger") window.__CALLS__.splice(i, 1);
+    }, jk);
+
     console.log("chat edits the rig and saves a version");
     await p.click("#tab-chat");
     await p.fill("#ask", "Put hoists on the two downstage corners");
@@ -130,7 +154,7 @@ for (const scheme of ["dark", "light"]) {
     console.log("a full session starts from the page");
     await p.fill("#ask", "Read the lighting plot in Dropbox and lay out truss over it");
     await p.selectOption("#where", "pc");
-    ok((await p.locator("a.wake").first().getAttribute("href")) === "https://tylerflores.dev/private/pc", "choosing the PC offers the wake link");
+    ok((await p.locator("a.wake").count()) === 0, "no separate wake button: the job wakes the PC itself");
     await p.click("#start-session");
     await p.waitForSelector(".job");
     const fire = await p.evaluate(() => window.__CALLS__.find((c) => c.tool === "fire_trigger"));
