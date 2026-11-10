@@ -115,6 +115,8 @@ def unpack(data: bytes, root: Path) -> dict:
     if not any(str(rel) == "pyproject.toml" for rel, _ in members) or not any(str(rel).endswith("vwmcp_bridge.py") for rel, _ in members):
         raise UpdateError("the update zip isn't a vwmcp build")
     changed: list[str] = []
+    old_deps = _deps((root / "pyproject.toml").read_bytes() if (root / "pyproject.toml").exists() else b"")
+    new_deps = old_deps
     with tempfile.TemporaryDirectory(prefix="vwmcp-update-", dir=root.parent) as tmp:
         staged = Path(tmp)
         for rel, info in members:
@@ -127,10 +129,32 @@ def unpack(data: bytes, root: Path) -> dict:
             old = dest.read_bytes() if dest.exists() else None
             if old == src.read_bytes():
                 continue
+            if str(rel) == "pyproject.toml":
+                new_deps = _deps(src.read_bytes())
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, dest)
             changed.append(rel.as_posix())
-    return {"changed": changed, "deps": "pyproject.toml" in changed}
+    # Only a change in what the connector depends on needs pip. A new version number alone doesn't:
+    # reinstalling the running connector on Windows can break halfway (2026-11-09: it left the Claude
+    # app's Python unable to import vwmcp), and an editable install picks the new code up anyway.
+    return {"changed": changed, "deps": new_deps != old_deps}
+
+
+def dependency_specs(pyproject: bytes) -> list[str]:
+    """The requirement strings a pyproject depends on (for `pip install`), never the project itself."""
+    d = _deps(pyproject)
+    return list(d[0]) if d else []
+
+
+def _deps(pyproject: bytes):
+    """What a pyproject installs: its dependencies and optional dependencies (None if unreadable)."""
+    try:
+        import tomllib
+
+        project = tomllib.loads(pyproject.decode("utf-8")).get("project", {})
+    except Exception:
+        return None
+    return (sorted(project.get("dependencies", [])), {k: sorted(v) for k, v in project.get("optional-dependencies", {}).items()})
 
 
 def install(base: str, token: str, manifest: dict, plugin_dir: Path, timeout: float = 60.0, pip=None) -> dict:
@@ -143,7 +167,11 @@ def install(base: str, token: str, manifest: dict, plugin_dir: Path, timeout: fl
         raise UpdateError("the downloaded update doesn't match the site's checksum; nothing was changed")
     out = unpack(data, root)
     if out["deps"]:
-        run = pip or (lambda: subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-e", str(root)], capture_output=True, text=True, timeout=600))
+        # Install the dependencies themselves, not the connector: reinstalling the connector while it
+        # runs replaces vwmcp.exe, which Windows keeps locked, and pip stops halfway with the old copy
+        # already removed. The editable install already points at the new code.
+        specs = dependency_specs((root / "pyproject.toml").read_bytes())
+        run = pip or (lambda: subprocess.run([sys.executable, "-m", "pip", "install", "-q", *specs], capture_output=True, text=True, timeout=600))
         res = run()
         out["pip"] = "ok" if getattr(res, "returncode", 0) == 0 else (getattr(res, "stderr", "") or "failed")[-400:]
     plugin_dir.mkdir(parents=True, exist_ok=True)

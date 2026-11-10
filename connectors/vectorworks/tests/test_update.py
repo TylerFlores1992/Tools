@@ -47,11 +47,25 @@ def test_versions_compare_as_numbers():
         update.parse_version("latest")
 
 
+def test_only_a_change_in_dependencies_reinstalls(root):
+    (root / "pyproject.toml").write_text('[project]\nname = "vwmcp"\nversion = "0.0.1"\ndependencies = ["mcp>=2,<3"]\n')
+    same = dict(BUILD, **{"vwmcp-win/pyproject.toml": '[project]\nname = "vwmcp"\nversion = "9.9.9"\ndependencies = ["mcp>=2,<3"]\n'})
+    assert update.unpack(make_zip(same), root)["deps"] is False
+    more = dict(BUILD, **{"vwmcp-win/pyproject.toml": '[project]\nname = "vwmcp"\nversion = "9.9.10"\ndependencies = ["mcp>=2,<3", "httpx"]\n'})
+    assert update.unpack(make_zip(more), root)["deps"] is True
+
+
+def test_new_dependencies_are_installed_without_reinstalling_the_connector():
+    specs = update.dependency_specs(b'[project]\nname = "vwmcp"\nversion = "1"\ndependencies = ["mcp>=2,<3", "httpx"]\n')
+    assert specs == ["httpx", "mcp>=2,<3"]
+    assert "-e" not in specs and not any("vwmcp" in s for s in specs)
+
+
 def test_unpack_writes_the_build_and_keeps_the_users_own_files(root):
     out = update.unpack(make_zip(BUILD), root)
     assert (root / "vw_plugin" / "vwmcp_bridge.py").read_text() == "BRIDGE = 'new'\n"
     assert (root / ".env").read_text() == "SECRET=mine\n"
-    assert out["deps"] is True and "src/vwmcp/__init__.py" in out["changed"]
+    assert out["deps"] is False and "src/vwmcp/__init__.py" in out["changed"]  # a new version alone needs no pip
     again = update.unpack(make_zip(BUILD), root)
     assert again["changed"] == [] and again["deps"] is False
 
@@ -78,7 +92,7 @@ def test_install_checks_the_checksum_before_touching_anything(root, tmp_path, mo
 
     ran = []
     res = update.install("https://x", "k", {"version": "9.9.9", "sha256": hashlib.sha256(data).hexdigest()}, plugin, pip=lambda: ran.append(1))
-    assert res["version"] == "9.9.9" and res["pip"] == "ok" and ran == [1]
+    assert res["version"] == "9.9.9" and "pip" not in res and ran == []  # same dependencies: no pip
     assert (plugin / "vwmcp_bridge.py").read_text() == "BRIDGE = 'new'\n"
 
 
