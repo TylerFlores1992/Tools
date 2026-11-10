@@ -473,7 +473,6 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                 else:
                     raise ToolError("Vectorworks didn't show %s within 3 minutes. Open it by hand, then call read_out again without a path." % vwx.name)
         data = await call("read_out", max_objects=max_objects, _timeout=max(settings.rig_timeout, 300.0))
-        body, trimmed = readout.fit(data)
         doc_path = Path(data.get("path") or "")
         if vwx is not None:
             dest = readout.target_for(vwx)
@@ -482,10 +481,23 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         else:
             dest = settings.home / "readouts" / (Path(data.get("document") or "drawing").stem + readout.SUFFIX)
         dest.parent.mkdir(parents=True, exist_ok=True)
-        tmp = dest.with_suffix(".tmp")
-        tmp.write_bytes(body)
-        tmp.replace(dest)
-        out = {"saved": str(dest), "bytes": len(body), "shapes_left_out": trimmed, **readout.summary(data)}
+        stem = dest.name[: -len(readout.SUFFIX)]
+        body, parts, trimmed = readout.split(data, stem)
+
+        def put(path, b):
+            tmp = path.with_name(path.name + ".tmp")
+            tmp.write_bytes(b)
+            tmp.replace(path)
+
+        for i, b in enumerate(parts, 1):  # the parts first, so the main file never names a missing one
+            put(readout.mesh_part_name(dest, i), b)
+        n = len(parts) + 1
+        while readout.mesh_part_name(dest, n).exists():  # an older, bigger read-out's leftovers
+            with contextlib.suppress(OSError):
+                readout.mesh_part_name(dest, n).unlink()
+            n += 1
+        put(dest, body)
+        out = {"saved": str(dest), "bytes": len(body) + sum(len(b) for b in parts), "mesh_parts": len(parts), "shapes_left_out": trimmed, **readout.summary(data)}
         open_name = str(data.get("document") or "")
         if opened and readout.is_converted_copy(open_name, vwx) and hasattr(trigger, "close_copy"):
             # Opening an older file made an unsaved converted copy. Left open, it blocks the next job

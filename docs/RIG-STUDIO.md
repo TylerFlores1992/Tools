@@ -30,6 +30,12 @@ What it does:
   their bottom, height and fill colour; a symbol with a 3D part gives its 3D part, a symbol with
   more than 150 parts (people, cameras) one block. Inches, kept under 5 MB. Rig Studio draws the
   blocks merged per colour, so a whole set (CFF-26: 13k shapes) opens in about 4 s.
+  Since 0.7.0 every 3D object (extrudes, sweeps, meshes, solids, walls, 3D plug-ins) comes with its
+  real faces: Vectorworks converts a copy to 3D polygons (ConvertTo3DPolys; GetPolyPt3D counts from 0),
+  they're read and the copy deleted. `mesh: {q: 0.25, v: corners in quarter inches, f: [n, i..]}`.
+  CFF-26: 67,708 faces in ~5 s. Symbols only become one block past 2,500 parts (was 150). Over 4.8 MB
+  the faces move to `<drawing>.rigmesh<n>.json` parts (main file lists `mesh_parts`, objects keep
+  `mid`); Rig Studio fetches them and draws the faces solid in the drawing's colours, edges over 30°.
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); opening an older
   file stops on a 'convert' prompt, which the connector accepts by itself; the converted copy is unsaved, so
   after the read-out the connector closes it without saving (0.6.1; File > Close, then No only to a save prompt

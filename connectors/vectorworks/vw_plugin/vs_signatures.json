@@ -25,6 +25,9 @@
   ],
   "ClassNum": [],
   "ClosePoly": [],
+  "ConvertTo3DPolys": [
+   "original"
+  ],
   "CreateCustomObjectN": [
    "objectName",
    "p",
@@ -169,6 +172,10 @@
    "h"
   ],
   "GetPolyPt": [
+   "objectHd",
+   "index"
+  ],
+  "GetPolyPt3D": [
    "objectHd",
    "index"
   ],

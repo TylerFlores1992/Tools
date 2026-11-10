@@ -32,8 +32,14 @@ const READOUT = {
     { t: "plugin_object", layer: "Rigging", cls: "T", bbox: [0, 230, 480, 250], at: [0, 240, 310], rot: 0, plugin: "Truss", fields: { Length: "40'" } },
     { t: "rectangle", layer: "Stage", cls: "None", bbox: [0, 0, 480, 360], pts: [[0, 0], [480, 0], [480, 360], [0, 360]], closed: true },
     { t: "polygon", layer: "Stage", cls: "None", bbox: [40, 40, 136, 88], pts: [[40, 40], [136, 40], [136, 88], [40, 88]], closed: true, z: [0, 48], fill: "#3366cc", in: "Riser" },
+    { t: "extrude", layer: "Stage", cls: "None", bbox: [200, 40, 240, 80], pts: [[200, 40], [240, 40], [240, 80], [200, 80]], closed: true, z: [0, 30], fill: "#cc6633", mid: 0 },
   ],
+  mesh_parts: ["CFF-26.rigmesh1.json"],
 };
+// Its 3D faces come in a part file beside it: a 40" cube (quarter-inch steps).
+const CUBE = { q: 0.25, v: [800,160,0, 960,160,0, 960,320,0, 800,320,0, 800,160,120, 960,160,120, 960,320,120, 800,320,120], f: [4,0,1,2,3, 4,4,5,6,7, 4,0,1,5,4, 4,1,2,6,5, 4,2,3,7,6, 4,3,0,4,7] };
+MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigmesh1.json", path: "ns:1//CFF-26.rigmesh1.json", file_id: "id:mesh1", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 400 } });
+MCP["Dropbox/fetch/id:mesh1"] = { id: "id:mesh1", text: JSON.stringify({ rigmesh: 1, meshes: { "0": CUBE } }) };
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.vwx", path: "ns:1//CFF-26.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.vwx", file_id: "id:cff", modified_time: "2026-11-09T07:00:00Z", object_type: "file", file: { size: 79000000 } });
 MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: process.env.RS_READOUT ? (await import("node:fs")).readFileSync(process.env.RS_READOUT, "utf8") : JSON.stringify(READOUT) };
@@ -105,6 +111,20 @@ for (const scheme of ["dark", "light"]) {
         await p.waitForTimeout(1500);
         await p.screenshot({ path: join(shots, f) });
       }
+      // Close-ups (RS_CLOSE="x,y,steps;x,y,steps"): back to 3D, zoom in on a screen point.
+      for (const [i, spec] of (process.env.RS_CLOSE ?? "").split(";").filter(Boolean).entries()) {
+        const [x, y, steps] = spec.split(",").map(Number);
+        await p.getByRole("button", { name: "3D", exact: true }).click().catch(() => {});
+        await p.getByRole("button", { name: "Fit", exact: true }).click().catch(() => {});
+        await p.waitForTimeout(800);
+        await p.mouse.move(x, y);
+        for (let k = 0; k < steps; k++) {
+          await p.mouse.wheel(0, -240);
+          await p.waitForTimeout(60);
+        }
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, `rig-studio-real-close${i + 1}.png`) });
+      }
       console.log("errors:", errors.join(" | ") || "none");
       process.exit(0);
     }
@@ -123,6 +143,9 @@ for (const scheme of ["dark", "light"]) {
       return n;
     });
     ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
+    const faced = await p.evaluate(() => window.__DOCS__ && [...window.__DOCS__.entries()].some(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && (v.shapes ?? []).some((s) => s.m && s.m.f.length === 30)));
+    ok(faced, "its real faces came from the part file in Dropbox and are kept on the layer");
+    ok(!(await p.locator(".file", { hasText: "rigmesh" }).count()), "the part files stay out of the file list");
 
     ok(/Read it out again on my PC/.test(await p.locator('[id="read-id:cff"]').innerText().catch(() => "")), "a drawing already read out can be read out again");
     ok(/Read it out on my PC/.test(await p.locator('[id="read-id:1"]').innerText()), "one never read out says so plainly");

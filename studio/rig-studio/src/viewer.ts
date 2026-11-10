@@ -243,6 +243,34 @@ export class Viewer {
     const byFill = new Map<string, THREE.BufferGeometry[]>();
     const edges: THREE.BufferGeometry[] = [];
     for (const s of shapes) {
+      if (s.m) {
+        // The drawing's real faces: each face fanned into triangles, drawing XY onto the floor.
+        const { q, v, f } = s.m;
+        const zb = s.mz ?? 0;
+        const pos = new Float32Array(v.length);
+        for (let i = 0; i < v.length; i += 3) {
+          pos[i] = v[i] * q;
+          pos[i + 1] = v[i + 2] * q + zb;
+          pos[i + 2] = -v[i + 1] * q;
+        }
+        const idx: number[] = [];
+        for (let i = 0; i < f.length; ) {
+          const n = f[i];
+          for (let j = 2; j < n; j++) idx.push(f[i + 1], f[i + j], f[i + j + 1]);
+          i += n + 1;
+        }
+        if (idx.length) {
+          const geo = new THREE.BufferGeometry();
+          geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+          geo.setIndex(idx);
+          edges.push(new THREE.EdgesGeometry(geo, 30));
+          const flat = geo.toNonIndexed();
+          flat.computeVertexNormals();
+          const key = s.fill ?? "none";
+          (byFill.get(key) ?? byFill.set(key, []).get(key)!).push(flat);
+        }
+        continue;
+      }
       if (s.pts.length < 2) continue;
       if (s.closed && (s.h ?? 0) > 0 && s.pts.length >= 3) {
         let geo: THREE.BufferGeometry;
@@ -270,7 +298,8 @@ export class Viewer {
     for (const [key, geos] of byFill) {
       let mat = this.blockMats.get(key);
       if (!mat) {
-        mat = new THREE.MeshStandardMaterial({ color: key === "none" ? 0x8a8f99 : key, transparent: true, opacity: key === "none" ? 0.55 : 0.9, roughness: 0.8 });
+        // Solid, in the drawing's own colours, like Vectorworks' shaded view (no see-through boxes).
+        mat = new THREE.MeshStandardMaterial({ color: key === "none" ? 0xc9ccd1 : key, roughness: 0.85, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
         this.blockMats.set(key, mat);
       }
       const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos.map((q) => (q.deleteAttribute("uv"), q)), false);

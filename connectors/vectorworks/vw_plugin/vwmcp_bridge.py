@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.6.0"
+BRIDGE_VERSION = "0.7.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1456,6 +1456,62 @@ def _ro_fill(h):
         return None
 
 
+FACE_CAP = 3000  # an object with more faces than this keeps its plain block (a scanned prop, a dense mesh)
+
+
+def _pt3(p):
+    """GetPolyPt3D's answer as [x, y, z], whichever shape this Vectorworks gives it in."""
+    flat = []
+    stack = [p]
+    while stack:
+        q = stack.pop(0)
+        if isinstance(q, (list, tuple)):
+            stack = list(q) + stack
+        else:
+            flat.append(float(q))
+    return flat[:3] if len(flat) >= 3 else None
+
+
+def _ro_faces(h, cap=FACE_CAP):
+    """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each):
+    Vectorworks converts a copy to 3D polygons (ConvertTo3DPolys), they're read and the copy is
+    deleted. None when it can't, or there are more than `cap` faces."""
+    try:
+        g = vs.ConvertTo3DPolys(h)
+    except Exception:
+        return None
+    if _nil(g):
+        return None
+    faces, over = [], False
+    try:
+        stack = [g]
+        while stack:
+            c = stack.pop()
+            ct = vs.GetTypeN(c)
+            if ct == 11:
+                stack.extend(_children(vs.FInGroup(c)))
+                continue
+            try:
+                n = int(vs.GetVertNum(c))
+            except Exception:
+                continue
+            if n < 3:
+                continue
+            pts = []
+            for i in range(n):  # GetPolyPt3D counts from 0 (measured on Vectorworks 2026)
+                q = _pt3(vs.GetPolyPt3D(c, i))
+                if q is not None:
+                    pts.append(q)
+            if len(pts) >= 3:
+                faces.append(pts)
+            if len(faces) > cap:
+                over = True
+                break
+    finally:
+        vs.DelObject(g)
+    return None if over else faces
+
+
 def _children(first):
     out, m = [], first
     while not _nil(m) and len(out) < 100000:
@@ -1464,7 +1520,8 @@ def _children(first):
     return out
 
 
-DETAIL_CAP = 150  # a symbol drawn with more parts than this (a 3D person, a camera) comes as one block
+DETAIL_CAP = 2500  # a symbol drawn with more parts than this comes as one block (was 150: cameras and people became boxes)
+FACE_BUDGET = 400000  # faces in one read-out; past it, 3D objects fall back to plain blocks
 
 
 @op
@@ -1531,6 +1588,33 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             pass
         return 1.0, 1.0, 1.0
 
+    state["faces"] = 0
+    import time as _time
+    t_start = _time.time()
+
+    def mesh(h, xf):
+        """The object's real faces placed in the drawing, as {"q": step, "v": [x, y, z, ...] in
+        quarter inches, "f": [n, i1..in, n, ...]} (shared corners stored once), or None."""
+        if state["faces"] >= FACE_BUDGET:
+            return None
+        faces = _ro_faces(h)
+        if not faces:
+            return None
+        state["faces"] += len(faces)
+        ox, oy, oz, rot, sx, sy, sz = xf
+        seen, v, f = {}, [], []
+        for face in faces:
+            f.append(len(face))
+            for x, y, z in face:
+                X, Y = place([x, y], xf)
+                key = (int(round(X * 4)), int(round(Y * 4)), int(round(_r(z * sz + oz, k) * 4)))
+                i = seen.get(key)
+                if i is None:
+                    i = seen[key] = len(seen)
+                    v.extend(key)
+                f.append(i)
+        return {"q": 0.25, "v": v, "f": f}
+
     def add(o):
         if len(objects) >= int(max_objects):
             state["truncated"] = True
@@ -1578,6 +1662,9 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     o["pts"] = corners
                     o["closed"] = True
                     o["z"] = [_r((float(zc) - float(dz) / 2) * xf[6] + xf[2], k), _r((float(zc) + float(dz) / 2) * xf[6] + xf[2], k)]
+                    m3 = mesh(h, xf)
+                    if m3:
+                        o["mesh"] = m3
                 add(o)
                 return
             sym = _s(vs.GetSymName(h))
@@ -1621,6 +1708,9 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         o["closed"] = bool(closed)
         if z is not None:
             o["z"] = [_r(z[0] * xf[6] + xf[2], k), _r(z[1] * xf[6] + xf[2], k)]
+            m3 = mesh(h, xf)
+            if m3:
+                o["mesh"] = m3
         fill = _ro_fill(h) if (closed or z is not None) else None
         if fill:
             o["fill"] = fill
@@ -1661,6 +1751,8 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         "objects": objects,
         "skipped": skipped,
         "truncated": truncated,
+        "faces": state["faces"],
+        "seconds": round(_time.time() - t_start, 1),
     }
 
 
