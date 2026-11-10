@@ -253,3 +253,71 @@ def test_a_file_already_open_is_never_closed(fake_vw, tmp_path, monkeypatch):
     srv = build_server(config.load())
     call(srv, "read_out", path=str(vwx))
     assert closed == []
+
+
+# ---- read-out requests from Rig Studio (through Dropbox) ----
+
+
+def test_a_request_names_its_drawing_and_job(tmp_path):
+    (tmp_path / "CFF_v2025.vwx").write_bytes(b"x")
+    (tmp_path / "CFF.vwx").write_bytes(b"x")  # a shorter name that also matches: the longest wins
+    (tmp_path / "CFF_v2025.job42.rigrequest.json").write_text("{}")
+    (tmp_path / "Ghost.job7.rigrequest.json").write_text("{}")
+    got = {r.name: (v.name if v else None, j) for r, v, j in readout.requests([tmp_path])}
+    assert got["CFF_v2025.job42.rigrequest.json"] == ("CFF_v2025.vwx", "job42")
+    assert got["Ghost.job7.rigrequest.json"] == (None, "")
+    # "Show.a.vwx" sorts before "Show.vwx": the longer name must still win, not the last one seen.
+    (tmp_path / "Show.a.vwx").write_bytes(b"x")
+    (tmp_path / "Show.vwx").write_bytes(b"x")
+    (tmp_path / "Show.a.j9.rigrequest.json").write_text("{}")
+    got = {r.name: (v.name if v else None, j) for r, v, j in readout.requests([tmp_path])}
+    assert got["Show.a.j9.rigrequest.json"] == ("Show.a.vwx", "j9")
+
+
+def test_dropbox_rig_studio_folder_is_found_from_dropbox_info(tmp_path, monkeypatch):
+    box = tmp_path / "Dropbox"
+    (box / "Rig Studio").mkdir(parents=True)
+    info = tmp_path / "local" / "Dropbox"
+    info.mkdir(parents=True)
+    (info / "info.json").write_text(json.dumps({"personal": {"path": str(box)}}))
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "local"))
+    monkeypatch.delenv("APPDATA", raising=False)
+    monkeypatch.delenv("VWMCP_REQUESTS", raising=False)
+    monkeypatch.delenv("VWMCP_WATCH", raising=False)
+    assert readout.request_folders() == [box / "Rig Studio"]
+
+
+def _request_server(fake_vw, monkeypatch, tmp_path):
+    monkeypatch.setenv("VWMCP_REQUESTS", str(tmp_path))
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
+    return build_server(config.load())
+
+
+def test_a_request_is_read_out_and_answered_with_a_status_file(fake_vw, tmp_path, monkeypatch):
+    import asyncio
+
+    vwx = tmp_path / "Show.vwx"
+    vwx.write_bytes(b"x")
+    req = tmp_path / "Show.abc123.rigrequest.json"
+    req.write_text("{}")
+    srv = _request_server(fake_vw, monkeypatch, tmp_path)
+    done = asyncio.run(srv.requests_once())
+    assert done and done[0]["saved"] == str(tmp_path / "Show.rigread.json")
+    status = json.loads((tmp_path / "Show.rigstatus.json").read_text())
+    assert status["job"] == "abc123" and status["state"] == "done" and "objects" in status["message"]
+    assert not req.exists()  # taken, so it never runs twice
+    assert asyncio.run(srv.requests_once()) == []
+
+
+def test_a_request_that_fails_says_why_in_the_status(fake_vw, tmp_path, monkeypatch):
+    import asyncio
+
+    vwx = tmp_path / "Show.vwx"
+    vwx.write_bytes(b"x")
+    (tmp_path / "Show.j1.rigrequest.json").write_text("{}")
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: (_ for _ in ()).throw(RuntimeError("Vectorworks isn't running")))
+    monkeypatch.setenv("VWMCP_REQUESTS", str(tmp_path))
+    srv = build_server(config.load())
+    asyncio.run(srv.requests_once())
+    status = json.loads((tmp_path / "Show.rigstatus.json").read_text())
+    assert status["state"] == "failed" and "Vectorworks isn't running" in status["message"]

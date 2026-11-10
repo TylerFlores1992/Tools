@@ -20,6 +20,7 @@ const mock = readFileSync(join(here, "mock.js"), "utf8");
 const MCP = {
   "Claude Code Remote/fire_trigger": { ok: true },
   "Dropbox/list_folder": { entries: [{ name: "Air Pro - Self Climber (09.07.22).vwx", path: "ns:1//a.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/Air Pro - Self Climber (09.07.22).vwx", file_id: "id:1", modified_time: "2022-09-08T00:24:32Z", object_type: "file", file: { size: 13508229 } }], has_more: false },
+  "Dropbox/create_file": { file: { name: "x.rigrequest.json", path: "ns:1//x" } },
   "Dropbox/create_folder": { folder: { path: "ns:1//Rig Studio/Test show", path_display: "/Rig Studio/Test show" } },
 };
 const READOUT = {
@@ -34,6 +35,7 @@ const READOUT = {
   ],
 };
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
+MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.vwx", path: "ns:1//CFF-26.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.vwx", file_id: "id:cff", modified_time: "2026-11-09T07:00:00Z", object_type: "file", file: { size: 79000000 } });
 MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: process.env.RS_READOUT ? (await import("node:fs")).readFileSync(process.env.RS_READOUT, "utf8") : JSON.stringify(READOUT) };
 const SAMPLE = [
   {
@@ -122,28 +124,37 @@ for (const scheme of ["dark", "light"]) {
     });
     ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
 
-    console.log("reading a drawing out wakes the PC first and says so under the file");
+    ok(/Read it out again on my PC/.test(await p.locator('[id="read-id:cff"]').innerText().catch(() => "")), "a drawing already read out can be read out again");
+    ok(/Read it out on my PC/.test(await p.locator('[id="read-id:1"]').innerText()), "one never read out says so plainly");
+
+    console.log("reading a drawing out: a request in Dropbox for the PC's connector, waking the PC first");
     await p.evaluate(() => window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc", wake: true }));
     await p.click('[id="read-id:1"]');
     await p.waitForSelector('[id="job-id:1"]');
+    const jk = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("jobs/") && v.file === "id:1")?.[0]);
+    const jid = jk.split("/")[1];
+    const cf = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "create_file").at(-1));
+    ok(cf && cf.input.path === `ns:1915330336//Pickle/Pickled/Plans/Accurate/Air Pro - Self Climber (09.07.22).${jid}.rigrequest.json` && JSON.parse(cf.input.content).job === jid, "a request file naming the job goes beside the drawing in Dropbox");
     const wf = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").at(-1));
     ok(wf.input.trigger_id === "trig_cloud" && /^wake the PC for job \S+\nRig Studio job /.test(wf.input.text), "the cloud worker is asked to check and wake the PC");
     ok(/Checking whether your PC is on/.test(await p.locator('[id="job-id:1"]').innerText()), "the status shows under the file at once");
     ok(await p.locator('[id="read-id:1"]').isDisabled(), "the button waits while the job runs (no second copy)");
     ok((await p.locator(".tabs [aria-selected=true], #tab-files[aria-selected=true]").count()) >= 1 && (await p.locator(".file").count()) > 0, "and the page stays on Files");
-    const jk = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("jobs/") && v.file === "id:1")?.[0]);
     await p.evaluate((k) => window.claude.use("db").then((db) => db.doc(k).update({ awake: true, progress: "Your PC is awake." })), jk);
-    await p.waitForFunction(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").length >= 1);
-    const hf = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").at(-1));
-    ok(/^Rig Studio job /.test(hf.input.text) && /read_out/.test(hf.input.text), "once awake, the page hands the job to the PC worker");
-    const hj = await p.evaluate((k) => window.__DOCS__.get(k), jk);
-    ok(hj.handed === true && hj.status === "queued", "and marks it handed, so it's started once");
-    await p.waitForFunction(() => /Starting the job on it/.test(document.querySelector('[id="job-id:1"]')?.textContent ?? ""));
-    ok(true, "the status follows along");
+    await p.waitForTimeout(600);
+    ok((await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").length)) === 0, "no PC session is started: the connector answers the request itself");
+    await p.evaluate((id) => {
+      window.__MCP__["Dropbox/list_folder"].entries.push({ name: "Air Pro - Self Climber (09.07.22).rigstatus.json", path: "ns:1//s", file_id: "id:st", modified_time: new Date(Date.now() + 2000).toISOString().slice(0, 19) + "Z", object_type: "file", file: { size: 90 } });
+      window.__MCP__["Dropbox/fetch/id:st"] = { id: "id:st", text: JSON.stringify({ job: id, state: "done", message: "Read out on your PC: 12 objects, 3 layers, 4 symbols, 1 lighting fixtures." }) };
+    }, jid);
+    await p.waitForFunction(() => /✓ Done\. Read out on your PC: 12 objects/.test(document.querySelector('[id="job-id:1"]')?.textContent ?? ""), null, { timeout: 15000 });
+    ok(true, "the PC's status file finishes the job, in its words");
+    ok(!(await p.locator(".file", { hasText: "rigstatus" }).count()), "the request and status files stay out of the file list");
     await p.evaluate((k) => {
       window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc" });
       window.__DOCS__.delete(k);
       for (let i = window.__CALLS__.length - 1; i >= 0; i--) if (window.__CALLS__[i].tool === "fire_trigger") window.__CALLS__.splice(i, 1);
+      window.__MCP__["Dropbox/list_folder"].entries = window.__MCP__["Dropbox/list_folder"].entries.filter((e) => e.file_id !== "id:st");
     }, jk);
 
     console.log("chat edits the rig and saves a version");

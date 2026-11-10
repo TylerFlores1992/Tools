@@ -68,3 +68,14 @@ test("the page hands a woken job over once, and never a stale one", () => {
   assert.match(jobWords({ ...j, status: "failed", reply: "No." }), /^✕ Stopped\. No\./);
   assert.ok(jobActive(j) && !jobActive({ ...j, status: "done" }));
 });
+
+test("a read-out request and its answer are files named after the drawing and the job", async () => {
+  const { requestName, statusName, isNoteFile, fromStatus } = await import("./model.ts");
+  assert.equal(requestName("CFF_v2025.vwx", "j1"), "CFF_v2025.j1.rigrequest.json");
+  assert.equal(statusName("CFF_v2025.vwx"), "CFF_v2025.rigstatus.json");
+  assert.ok(isNoteFile("CFF_v2025.j1.rigrequest.json") && isNoteFile("CFF_v2025.rigstatus.json") && !isNoteFile("CFF_v2025.rigread.json"));
+  assert.deepEqual(fromStatus({ job: "j1", state: "done", message: "Read out." }, "j1"), { status: "done", reply: "Read out." });
+  assert.equal(fromStatus({ job: "j0", state: "done" }, "j1"), null, "an answer to an older request never finishes this one");
+  assert.equal(fromStatus({ job: "j1", state: "failed", message: "No Vectorworks." }, "j1")?.status, "failed");
+  assert.equal(fromStatus({ job: "j1", state: "reading" }, "j1")?.status, "running");
+});

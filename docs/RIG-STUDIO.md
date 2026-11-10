@@ -35,7 +35,14 @@ What it does:
   after the read-out the connector closes it without saving (0.6.1; File > Close, then No only to a save prompt
   naming that copy), and answers No (don't ask again) to the 30-minute 'name and save for backup?' box. In a Dropbox folder it syncs; the Files tab
   then opens it (Dropbox `fetch`) as layers: fixtures, the existing rig, outlines per Vectorworks
-  layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" asks the PC worker to do it.
+  layer (`studio/rig-studio/src/readout.ts`). "Read it out on my PC" does NOT use a scheduled task
+  (measured 2026-11-10: a run the page starts never gets the link to the PC, even with "Require this
+  computer" on). It leaves `<drawing>.<job>.rigrequest.json` beside the drawing in Dropbox; the
+  connector (0.6.2+) looks in Dropbox's "Rig Studio" folder (from Dropbox's info.json; or
+  `VWMCP_REQUESTS`) every 5 s, reads the drawing out, and writes `<drawing>.rigstatus.json`
+  {job, state reading|done|failed, message}. The page looks every 10 s while a request is out and
+  shows the PC's words under the file; no pickup in 20 min says so. A sleeping PC is woken first
+  by the cloud worker (wake only); the request waits in Dropbox meanwhile.
   With `VWMCP_WATCH` set on the PC (connector 0.5.6+), new or changed .vwx files in those folders
   are read out by themselves once nobody has touched the PC or Claude for 10 minutes.
 - **The PC can be asleep.** With `wake: true` in `config/workers` (and the waker's `{url, token}` in
@@ -111,5 +118,5 @@ node studio/rig-studio/dev/test.mjs          # browser flows against a mock wind
 Publish with the Artifact tool, same file path in the session that made it, or with `url` from
 another session (read it first). Keep the capabilities: `db`, `user`, `sample`, `assets`,
 `downloads`, `sample` with `images: true` (pictures in the chat), and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
-get_file_metadata, create_folder] and host:vectorworks [ping, build_rig, get_lighting_devices,
+get_file_metadata, create_folder, fetch, create_file] and host:vectorworks [ping, build_rig, get_lighting_devices,
 get_document_info].

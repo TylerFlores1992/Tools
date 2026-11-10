@@ -92,6 +92,8 @@ export type Job = {
   handed?: boolean;
   /** Waking: the job message for the PC worker. */
   text?: string;
+  /** "readout": asked of the PC's connector through a request file in Dropbox (no session). */
+  kind?: "readout";
   /** The Dropbox file id a file job is about (its status shows under that file). */
   file?: string;
   reply?: string;
@@ -290,4 +292,21 @@ export function layerSummary(l: Layer): string {
   }
   const s = l.shapes ?? [];
   return `${l.id} "${l.name}": ${s.length} outlines${s[0]?.label ? ` (${s.slice(0, 5).map((x) => x.label).join(", ")})` : ""}`;
+}
+
+/** Read-out requests and answers travel as small files beside the drawing in Dropbox. */
+export const REQUEST_SUFFIX = ".rigrequest.json";
+export const STATUS_SUFFIX = ".rigstatus.json";
+export const READOUT_PICKUP_MS = 20 * 60_000;
+export const isNoteFile = (name: string) => name.toLowerCase().endsWith(REQUEST_SUFFIX) || name.toLowerCase().endsWith(STATUS_SUFFIX);
+export const statusName = (vwxName: string) => vwxName.replace(/\.vwx$/i, "") + STATUS_SUFFIX;
+export const requestName = (vwxName: string, job: string) => `${vwxName.replace(/\.vwx$/i, "")}.${job}${REQUEST_SUFFIX}`;
+
+/** What the PC's status file says, as job fields (or null if it's about another job). */
+export function fromStatus(st: { job?: string; state?: string; message?: string } | null, jobId: string): Partial<Job> | null {
+  if (!st || st.job !== jobId) return null;
+  if (st.state === "done") return { status: "done", reply: st.message ?? "Read out on your PC." };
+  if (st.state === "failed") return { status: "failed", reply: st.message ?? "Your PC couldn't read it out." };
+  if (st.state === "reading") return { status: "running", progress: st.message ?? "Your PC is reading it out…" };
+  return null;
 }

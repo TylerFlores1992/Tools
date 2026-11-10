@@ -313,6 +313,13 @@ class _Win32:
                 raise TriggerError(f"'{item}' isn't in Vectorworks' {menu} menu. Set VWMCP_MENU to the menu you put it in.")
         hit.invoke()
 
+    def cancel_menus(self, window) -> None:
+        """Close a menu left open (Vectorworks keeps Tools open after the job's menu press) with
+        WM_CANCELMODE: a window message, not a key, so it works on the lock screen too."""
+        import ctypes
+
+        ctypes.windll.user32.SendMessageW(window.handle, 0x001F, 0, 0)  # type: ignore[attr-defined]
+
     def title(self, window) -> str:
         return window.window_text() or ""
 
@@ -460,6 +467,8 @@ class HotkeyTrigger(Trigger):
             if not stem or stem not in title:
                 return False
             self.win.accept_prompts(target)  # the 30-minute backup box would block the menu
+            getattr(self.win, "cancel_menus", lambda w: None)(target)  # the job's Tools menu stays open
+            self._sleep(0.5)
             self.win.press_menu(target, "File", "Close")
             self.win.discard_copy(target, name)
             self._sleep(1.0)

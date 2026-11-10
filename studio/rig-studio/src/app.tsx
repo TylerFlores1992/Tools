@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, jobActive, jobWords, needsHandoff, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, fromStatus, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
@@ -1849,7 +1849,7 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       (ev) => {
         if (ev.type === "data") {
           const p = payloadOf(ev.result as never) as { entries?: Entry[] };
-          setEntries((p?.entries ?? []).filter((e) => !e.name.startsWith(".")).sort((a, b) => (b.modified_time ?? "").localeCompare(a.modified_time ?? "")));
+          setEntries((p?.entries ?? []).filter((e) => !e.name.startsWith(".") && !isNoteFile(e.name)).sort((a, b) => (b.modified_time ?? "").localeCompare(a.modified_time ?? "")));
           setStamp(ev.result.cache?.storedAt ?? Date.now());
           setErr(null);
         } else {
@@ -1912,21 +1912,112 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
     }
   };
 
+  /** Ask the PC for a read-out: a note file beside the drawing in Dropbox, which the connector on
+   * the PC picks up within seconds (no scheduled task: those can't reach the PC). A sleeping PC is
+   * woken first by the cloud worker; the note waits in Dropbox until the PC is up. */
+  const requestReadout = async (e: Entry) => {
+    const mcp = env.caps.mcp;
+    if (!mcp || !project.dropbox || !e.file_id) return;
+    const wakeTrig = env.workers?.wake ? env.workers.cloud : undefined;
+    const ref = db.collection("jobs").doc();
+    const job: Omit<Job, "id"> = {
+      pid: project.id,
+      project: project.name,
+      request: `Read out ${e.name} on my PC`,
+      where: "pc",
+      kind: "readout",
+      status: wakeTrig ? "waking" : "queued",
+      progress: wakeTrig ? "Checking whether your PC is on…" : "Asked your PC through Dropbox. Waiting for it to pick it up…",
+      file: e.file_id,
+      at: now(),
+    };
+    await ref.set(job);
+    try {
+      await mcp.callTool(SERVERS.dropbox, "create_file", {
+        path: `${project.dropbox.path.replace(/\/$/, "")}/${requestName(e.name, ref.id)}`,
+        content: JSON.stringify({ job: ref.id, file: e.name, at: now() }),
+      });
+    } catch (er) {
+      await ref.update({ status: "failed", reply: `Couldn't leave the request in Dropbox: ${mcpWords(er, "Dropbox")}`, updated: now() });
+      throw new Error(mcpWords(er, "Dropbox"));
+    }
+    if (wakeTrig) {
+      try {
+        await mcp.callTool(SERVERS.remote, "fire_trigger", { trigger_id: wakeTrig, text: `wake the PC for job ${ref.id}\nRig Studio job ${ref.id}\nproject: ${project.id} ("${project.name}")\nwhere: pc\nrequest:\nRead out ${e.name}` });
+      } catch {
+        await ref.update({ status: "queued", progress: "Couldn't check whether your PC is on. The request is waiting in Dropbox for it.", updated: now() });
+      }
+    }
+  };
+
+  // While a read-out is asked for, look at the folder every 10 seconds for the PC's answer.
+  const readJobs = jobs.filter((j) => j.kind === "readout" && jobActive(j) && (entries ?? []).some((e) => e.file_id === j.file));
+  const watching = readJobs.map((j) => j.id).join();
+  useEffect(() => {
+    const mcp = env.caps.mcp;
+    if (!mcp || !project.dropbox || !watching) return;
+    let stop = false;
+    const look = async () => {
+      try {
+        const p = payloadOf(await mcp.callTool(SERVERS.dropbox, "list_folder", { path: project.dropbox!.path, recursive: false })) as { entries?: Entry[] };
+        const all = p?.entries ?? [];
+        for (const j of readJobs) {
+          const vwx = all.find((x) => x.file_id === j.file);
+          const st = vwx && all.find((x) => x.name.toLowerCase() === statusName(vwx.name).toLowerCase());
+          if (st?.file_id && (st.modified_time ?? "") >= j.at.slice(0, 19)) {
+            const res = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: st.file_id })) as { text?: string };
+            let parsed: { job?: string; state?: string; message?: string } | null = null;
+            try {
+              parsed = JSON.parse(res?.text ?? "");
+            } catch {
+              parsed = null;
+            }
+            const upd = fromStatus(parsed, j.id);
+            if (upd && (upd.status !== j.status || upd.progress !== j.progress)) await db.doc(`jobs/${j.id}`).update({ ...upd, updated: now() });
+            if (upd?.status === "done") setTick((t) => t + 1); // show the new read-out
+            if (upd) continue;
+          }
+          if (Date.now() - Date.parse(j.at) > READOUT_PICKUP_MS)
+            await db.doc(`jobs/${j.id}`).update({
+              status: "failed",
+              reply: "Your PC didn't pick up the request within 20 minutes. Check that the PC is on and the Claude app is open on it, then press Try again.",
+              updated: now(),
+            });
+        }
+      } catch {
+        // Dropbox hiccup: look again next time
+      }
+    };
+    look();
+    const t = setInterval(() => !stop && look(), 10000);
+    return () => {
+      stop = true;
+      clearInterval(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watching, env.caps.mcp, project.dropbox]);
+
   const ask = async (e: Entry, what: "read" | "layer") => {
-    const where = "pc";
-    const req =
-      what === "read"
-        ? `Read "${e.path_display ?? e.name}" (Dropbox file id ${e.file_id}) out of Vectorworks on my PC: find it in the PC's Dropbox folder and call the connector's read_out tool with its full Windows path. It writes ${e.name.replace(/\.vwx$/i, "")}.rigread.json beside the file, which Dropbox syncs. Then tell me what's in it (fixtures, truss, hoists, layers). Don't change the drawing or the rig.`
-        : `Add "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) to this project as a drawing layer, to scale if the drawing shows a scale or dimensions.`;
+    if (what === "read") {
+      setStarting(e.file_id ?? null);
+      try {
+        await requestReadout(e);
+        await markSeen([e]);
+        flash("info", env.workers?.wake ? "Asked your PC. It checks whether the PC is on first and wakes it if needed; the status shows under the file." : "Asked your PC. The status shows under the file.");
+      } catch (er) {
+        flash("warn", (er as Error).message);
+      } finally {
+        setStarting(null);
+      }
+      return;
+    }
+    const req = `Add "${e.path_display ?? e.name}" from Dropbox (file id ${e.file_id}) to this project as a drawing layer, to scale if the drawing shows a scale or dimensions.`;
     setStarting(e.file_id ?? null);
     try {
-      await startSession(req, where, e.file_id);
+      await startSession(req, "pc", e.file_id);
       await markSeen([e]);
-      if (what === "read") flash("info", env.workers?.wake ? "Started. It checks your PC first and wakes it if it's asleep; the status shows under the file." : "Started. The status shows under the file.");
-      else {
-        goChat();
-        flash("info", "A session on your PC is on it. Progress shows in the chat.");
-      }
+      goChat();
+      flash("info", "A session on your PC is on it. Progress shows in the chat.");
     } catch (er) {
       flash("warn", (er as Error).message);
     } finally {
@@ -2002,22 +2093,22 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
                       {opening === e.file_id ? "Opening…" : used ? "Open again (replace the layers)" : "Open read-out as layers"}
                     </button>
                   )}
-                  {["vwx", "dwg", "dxf"].includes(ext) &&
-                    (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
-                    <span className="muted small">✓ Read out (open the .rigread.json below)</span>
-                  ) : ["vwx"].includes(ext) ? (
-                    (() => {
-                      const j = fileJob(e.file_id);
-                      const busy = starting === e.file_id || (j && jobActive(j));
-                      return (
-                        <>
-                          <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
-                            {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : "Read it out on my PC"}
-                          </button>
-                        </>
-                      );
-                    })()
-                  ) : null}
+                  {(() => {
+                    const done =
+                      ["vwx", "dwg", "dxf"].includes(ext) &&
+                      (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? ""));
+                    if (ext !== "vwx") return done ? <span className="muted small">✓ Read out (open the .rigread.json below)</span> : null;
+                    const j = fileJob(e.file_id);
+                    const busy = starting === e.file_id || (j && jobActive(j));
+                    return (
+                      <>
+                        {done && <span className="muted small">✓ Read out (open the .rigread.json below)</span>}
+                        <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
+                          {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : done ? "Read it out again on my PC" : "Read it out on my PC"}
+                        </button>
+                      </>
+                    );
+                  })()}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>
                       Add as a layer (session)
