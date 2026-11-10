@@ -1499,6 +1499,7 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
   };
 
   const patch = (l: Layer, d: Partial<Layer>) => db.doc(`projects/${pid}/layers/${l.id}`).update(d);
+  const [want, setWant] = useState<Record<string, boolean>>({}); // a row's switch while it saves
 
   return (
     <div className="pane">
@@ -1526,7 +1527,29 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
           const all = part.every((x) => x.visible);
           const some = part.some((x) => x.visible);
           const count = part.reduce((n, x) => n + (x.shapes?.length ?? 0), 0);
-          const setAll = (d: Partial<Layer>) => Promise.all(part.map((x) => patch(x, d)));
+          // A big drawing layer is many documents: save them a few at a time, retry once, and say so if
+          // any still didn't save (all at once, some were refused and the row ended up half on).
+          const setAll = async (d: Partial<Layer>) => {
+            const queue = [...part];
+            let failed = 0;
+            await Promise.all(
+              Array.from({ length: Math.min(4, queue.length) }, async () => {
+                for (let x = queue.shift(); x; x = queue.shift()) {
+                  try {
+                    await patch(x, d);
+                  } catch {
+                    try {
+                      await new Promise((r) => setTimeout(r, 400));
+                      await patch(x, d);
+                    } catch {
+                      failed++;
+                    }
+                  }
+                }
+              }),
+            );
+            if (failed) flash("warn", `${failed} of the ${part.length} parts of ${name} didn't save. Tap it again.`);
+          };
           return (
           <li key={key} className="layer">
             <div className="layer-row">
@@ -1534,11 +1557,20 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
                 <input
                   type="checkbox"
                   id={`vis-${l.id}`}
-                  checked={all}
+                  checked={want[key] ?? all}
                   ref={(el) => {
-                    if (el) el.indeterminate = some && !all;
+                    if (el) el.indeterminate = want[key] === undefined && some && !all;
                   }}
-                  onChange={() => setAll({ visible: !all })}
+                  onChange={async () => {
+                    // Answer the tap at once; a big layer's documents take a moment to save.
+                    const next = !(want[key] ?? all);
+                    setWant((w) => ({ ...w, [key]: next }));
+                    await setAll({ visible: next });
+                    setWant((w) => {
+                      const { [key]: _done, ...rest } = w;
+                      return rest;
+                    });
+                  }}
                 />
                 <span>
                   {name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${part.reduce((n, x) => n + (x.rig?.length ?? 0), 0)} truss and rigging pieces` : `${count} outlines`}</span>
