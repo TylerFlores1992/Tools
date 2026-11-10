@@ -656,6 +656,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
   const [tab, setTab] = useState<Tab>(() => store.get<Tab>("tab", "chat"));
   const [view, setView] = useState<ViewName>(() => store.get<ViewName>("view", "3d"));
   const [show, setShow] = useState<Show>(() => store.get<Show>("show", { truss: true, towers: true, points: true, labels: true }));
+  const [paper, setPaper] = useState<boolean>(() => store.get<boolean>("paper", true));
   const [picked, setPicked] = useState<string | null>(null);
   const [toast, setToast] = useState<{ tone: "ok" | "warn" | "info"; text: string } | null>(null);
   const [confirm, setConfirm] = useState<null | "approve" | "build-replace">(null);
@@ -663,6 +664,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
 
   useEffect(() => store.set("tab", tab), [tab]);
   useEffect(() => store.set("view", view), [view]);
+  useEffect(() => store.set("paper", paper), [paper]);
   useEffect(() => store.set("show", show), [show]);
 
   useEffect(() => {
@@ -902,9 +904,12 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
             <button className={`seg ${show.labels ? "on" : ""}`} aria-pressed={show.labels} onClick={() => setShow({ ...show, labels: !show.labels })}>
               Loads
             </button>
+            <button className={`seg ${paper ? "on" : ""}`} aria-pressed={paper} title="White paper behind the drawing, as Vectorworks shows it" onClick={() => setPaper(!paper)}>
+              Paper
+            </button>
           </div>
           {sketch && compiled ? (
-            <ViewerPane sketch={sketch} compiled={compiled} layers={layers} view={view} show={show} labels={labels} picked={picked} onPick={setPicked} />
+            <ViewerPane sketch={sketch} compiled={compiled} layers={layers} view={view} show={show} paper={paper} labels={labels} picked={picked} onPick={setPicked} />
           ) : (
             <div className="boot">Loading the drawing…</div>
           )}
@@ -1017,7 +1022,7 @@ function NameField({ name, onSave }: { name: string; onSave: (n: string) => void
   );
 }
 
-function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]; view: ViewName; show: Show; labels: Label[]; picked: string | null; onPick: (id: string | null) => void }) {
+function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]; view: ViewName; show: Show; paper: boolean; labels: Label[]; picked: string | null; onPick: (id: string | null) => void }) {
   const host = useRef<HTMLDivElement>(null);
   const viewer = useRef<Viewer | null>(null);
   const first = useRef(true);
@@ -1059,6 +1064,9 @@ function ViewerPane(props: { sketch: Sketch; compiled: Compiled; layers: Layer[]
   useEffect(() => {
     viewer.current?.setView(view);
   }, [view]);
+  useEffect(() => {
+    viewer.current?.setPaper(props.paper);
+  }, [props.paper, viewer.current]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     viewer.current?.setLabels(labels, show.labels);
   }, [labels, show.labels]);

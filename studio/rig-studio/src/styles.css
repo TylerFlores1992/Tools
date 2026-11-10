@@ -24,6 +24,11 @@
   --plate: #5d667a;
   --hoist: #ffb27a;
   --fixture: #8fb4ff;
+  /* Vectorworks' own paper behind a drawing: the same in every theme. */
+  --paper: #ffffff;
+  --paper-ink: #000000;
+  --paper-grid: #ececec;
+  --paper-grid-major: #d2d2d2;
   --shape: #8a93a8;
   --shadow: 0 24px 48px -16px rgb(0 0 0 / 0.7);
   --sans: "Mona Sans", "Segoe UI", system-ui, -apple-system, sans-serif;

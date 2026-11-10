@@ -32,6 +32,16 @@ export type ReadoutObject = {
   fo?: number;
   /** Its place in the drawing's order, when the read-out came in several files. */
   k?: number;
+  /** Line colour ("#rrggbb", absent = black), weight in mils (absent = hairline), no outline, hatched (connector 0.9+). */
+  pen?: string;
+  lw?: number;
+  np?: 1;
+  hatch?: 1;
+  /** In a class that's switched off in Vectorworks: not drawn there, so not here. */
+  hid?: 1;
+  /** A text or dimension's words and height in inches. */
+  text?: string;
+  size?: number;
 };
 
 export type Readout = {
@@ -73,6 +83,7 @@ export function isReadout(x: unknown): x is Readout {
 }
 
 const TRUSS = /truss/i;
+const HEX = /^#[0-9a-f]{6}$/i;
 const RIGGING = /hoist|motor|chain|rigging point|bridle|dead ?hang|load|base plate|tower|sleeve|head ?block|ground support/i;
 const FIXTURE = "Lighting Device";
 
@@ -146,6 +157,21 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     } else if ((o.plugin || o.symbol) && !o.in && RIGGING.test(name)) {
       rig.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
     }
+    // Classes switched off in Vectorworks don't draw there, so they don't here either.
+    if (o.hid) continue;
+    const ink = { ...(o.pen && HEX.test(o.pen) ? { pen: o.pen } : {}), ...(o.lw && o.lw > 7 ? { lw: o.lw } : {}) };
+    if ((o.t === "text" || o.t === "dimension") && o.at && o.text) {
+      // Words as the plan shows them: the text itself, or a dimension's figure and its line.
+      const text = o.text.replace(/\r\n?|\n/g, "\n").replace(/^\n+|\n+$/g, "");
+      if (!text) continue;
+      const base = elev.get(o.layer) ?? 0;
+      const at: [number, number] = [o.at[0], o.at[1]];
+      const pts: [number, number][] = o.t === "dimension" && o.pts?.length === 2 ? [at, o.pts[0], o.pts[1]] : [at];
+      const list = shapes.get(o.layer) ?? [];
+      list.push({ pts, z: base, text, size: Math.max(1, o.size ?? 9), ...(o.rot ? { rot: o.rot } : {}), ...(o.t === "dimension" ? { dim: 1 as const } : {}), ...(o.view ? { v: o.view } : {}), ...ink });
+      shapes.set(o.layer, list);
+      continue;
+    }
     // Every outline is drawn too, rig pieces included: a 3D plug-in (a door, a deck) or a symbol's
     // parts come as blocks with their bottom, height and fill colour.
     if (o.pts && o.pts.length >= 2 && o.plugin !== FIXTURE) {
@@ -156,7 +182,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
       // Real faces for things with height; a flat object (bottom = top) is drawn as a flat fill, so it
       // keeps its opacity and its place in the drawing's order.
       const mesh = o.mesh && o.mesh.v.length >= 9 && h > 0 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...mesh });
+      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...ink, ...(o.np ? { np: 1 as const } : {}), ...(o.hatch && o.closed ? { hatch: 1 as const } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }
@@ -171,7 +197,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     let part: Shape[] = [];
     const parts: Shape[][] = [];
     for (const s of list) {
-      const n = 40 + s.pts.length * 18 + (s.m ? (s.m.v.length + s.m.f.length) * 6 : 0);
+      const n = 40 + (s.text?.length ?? 0) + s.pts.length * 18 + (s.m ? (s.m.v.length + s.m.f.length) * 6 : 0);
       if (size + n > 150_000 && part.length) {
         parts.push(part);
         part = [];
