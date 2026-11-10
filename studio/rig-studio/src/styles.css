@@ -311,3 +311,7 @@ tr.over td:first-child::before { content: "✕ "; color: var(--warn); }
   .pbar-actions { margin-left: 0; width: 100%; }
   .pbar-actions .btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* A file job's status under the file: symbol + words, never colour alone. */
+.job-line { margin: 6px 0 0; line-height: 1.45; }
+.job-line.bad { color: var(--warn); }

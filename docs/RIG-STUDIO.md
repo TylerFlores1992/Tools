@@ -31,11 +31,13 @@ What it does:
   With `VWMCP_WATCH` set on the PC (connector 0.5.6+), new or changed .vwx files in those folders
   are read out by themselves once nobody has touched the PC or Claude for 10 minutes.
 - **The PC can be asleep.** With `wake: true` in `config/workers` (and the waker's `{url, token}` in
-  `config/pcwaker`), a PC job fires the cloud worker first with the line `wake the PC, then hand
-  off to: <pc trigger>`: it wakes the PC, waits until it answers plus a minute for the Claude app,
-  then fires the PC worker with the same job (`route()` in `model.ts`). Without it, "PC asleep?
-  Wake it" opens `/private/pc`. Any chat can wake it the same way from `config/pcwaker`. The
-  waker runs on the CampHawk mini PC (`desktop-mdc5q6e`), setup in `connectors/pc-waker/`.
+  `config/pcwaker`), a PC job starts as `status: "waking"` and fires the cloud worker with the line
+  `wake the PC for job <id>`: it checks the PC, wakes it if asleep, and sets `awake: true`. The
+  page then fires the PC worker itself with the job's `text` and marks it `handed` (an unattended
+  session may not start another scheduled task; `routeJob`/`needsHandoff` in `model.ts`). A file
+  job keeps `file` (the Dropbox id): its status shows under that file and its button waits while it
+  runs. The waker runs on the CampHawk mini PC (`desktop-mdc5q6e`), setup in `connectors/pc-waker/`.
+  The PC worker scheduled task must have "Require this computer" on, or it runs in the cloud.
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC

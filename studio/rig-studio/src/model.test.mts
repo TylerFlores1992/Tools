@@ -39,7 +39,7 @@ test("fixtures from a CSV in feet, or inches when the header says so", () => {
   assert.match(fixturesFromCsv("a,b\n1,2").problem ?? "", /x and y/);
 });
 
-import { route, sortProjects } from "./model.ts";
+import { jobActive, jobWords, needsHandoff, routeJob, sortProjects } from "./model.ts";
 
 test("the project list: pinned first in the order pinned, then most recently changed", () => {
   const p = (id: string, updatedAt: string, pinnedAt?: string | null) => ({ id, updatedAt, pinnedAt });
@@ -47,11 +47,24 @@ test("the project list: pinned first in the order pinned, then most recently cha
   assert.deepEqual(out.map((x) => x.id), ["pin1", "pin2", "new", "unpinned", "old"]);
 });
 
-test("a PC job wakes the PC through the cloud worker only when the waker is set up", () => {
+test("a PC job checks and wakes the PC through the cloud worker only when the waker is set up", () => {
   const w = { cloud: "c", pc: "p" };
-  assert.deepEqual(route(w, "pc"), { trigger: "p" });
-  assert.deepEqual(route({ ...w, wake: true }, "pc"), { trigger: "c", handoff: "p" });
-  assert.deepEqual(route({ ...w, wake: true }, "cloud"), { trigger: "c" });
-  assert.deepEqual(route({ cloud: "c", wake: true }, "pc"), { trigger: undefined });
-  assert.deepEqual(route(null, "cloud"), { trigger: undefined });
+  assert.deepEqual(routeJob(w, "pc"), { trigger: "p", wake: false });
+  assert.deepEqual(routeJob({ ...w, wake: true }, "pc"), { trigger: "c", wake: true });
+  assert.deepEqual(routeJob({ ...w, wake: true }, "cloud"), { trigger: "c", wake: false });
+  assert.deepEqual(routeJob({ cloud: "c", wake: true }, "pc"), { trigger: undefined, wake: false });
+});
+
+test("the page hands a woken job over once, and never a stale one", () => {
+  const at = "2026-11-10T04:00:00Z";
+  const t = Date.parse(at);
+  const j = { id: "j", pid: "p", project: "P", request: "r", where: "pc" as const, status: "waking" as const, at, text: "job" };
+  assert.equal(needsHandoff(j, t + 1000), false); // not awake yet
+  assert.equal(needsHandoff({ ...j, awake: true }, t + 1000), true);
+  assert.equal(needsHandoff({ ...j, awake: true, handed: true }, t + 1000), false);
+  assert.equal(needsHandoff({ ...j, awake: true }, t + 31 * 60_000), false);
+  assert.equal(needsHandoff({ ...j, awake: true, status: "failed" }, t + 1000), false);
+  assert.match(jobWords({ ...j, progress: "Your PC is asleep. Waking it…" }), /^◌ Your PC is asleep/);
+  assert.match(jobWords({ ...j, status: "failed", reply: "No." }), /^✕ Stopped\. No\./);
+  assert.ok(jobActive(j) && !jobActive({ ...j, status: "done" }));
 });
