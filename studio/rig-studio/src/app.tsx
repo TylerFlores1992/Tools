@@ -2002,22 +2002,22 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
                       {opening === e.file_id ? "Opening…" : used ? "Open again (replace the layers)" : "Open read-out as layers"}
                     </button>
                   )}
-                  {["vwx", "dwg", "dxf"].includes(ext) &&
-                    (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? "")) ? (
-                    <span className="muted small">✓ Read out (open the .rigread.json below)</span>
-                  ) : ["vwx"].includes(ext) ? (
-                    (() => {
-                      const j = fileJob(e.file_id);
-                      const busy = starting === e.file_id || (j && jobActive(j));
-                      return (
-                        <>
-                          <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
-                            {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : "Read it out on my PC"}
-                          </button>
-                        </>
-                      );
-                    })()
-                  ) : null}
+                  {(() => {
+                    const done =
+                      ["vwx", "dwg", "dxf"].includes(ext) &&
+                      (entries ?? []).some((x) => x.name.toLowerCase() === e.name.replace(/\.vwx$/i, "").toLowerCase() + ".rigread.json" && (x.modified_time ?? "") >= (e.modified_time ?? ""));
+                    if (ext !== "vwx") return done ? <span className="muted small">✓ Read out (open the .rigread.json below)</span> : null;
+                    const j = fileJob(e.file_id);
+                    const busy = starting === e.file_id || (j && jobActive(j));
+                    return (
+                      <>
+                        {done && <span className="muted small">✓ Read out (open the .rigread.json below)</span>}
+                        <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
+                          {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : done ? "Read it out again on my PC" : "Read it out on my PC"}
+                        </button>
+                      </>
+                    );
+                  })()}
                   {["pdf", "png", "jpg", "jpeg"].includes(ext) && (
                     <button className="link small" onClick={() => ask(e, "layer")}>
                       Add as a layer (session)
