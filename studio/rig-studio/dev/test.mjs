@@ -95,11 +95,12 @@ for (const scheme of ["dark", "light"]) {
     await p.waitForSelector(".file");
     ok(/New/.test(await p.locator(".file").first().innerText()), "an unseen Dropbox file is flagged New");
     await p.screenshot({ path: join(shots, "rig-studio-files.png") });
-    await p.click('[id="open-readout-id:ro"]');
+    const t0 = Date.now();
+    await p.click('[id="open-readout-id:ro"]', { timeout: process.env.RS_READOUT ? 300000 : 30000 });
     if (process.env.RS_READOUT) {
       // A real read-out: just open it and take pictures (dev aid, not part of the checks).
-      const t0 = Date.now();
-      await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length > 3, null, { timeout: 60000 });
+      console.log("click returned after", Date.now() - t0, "ms");
+      await p.waitForFunction(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length > 3, null, { timeout: 300000 });
       await p.waitForTimeout(4000);
       console.log("real read-out opened in", Date.now() - t0, "ms; layers:", await p.evaluate(() => [...window.__DOCS__.keys()].filter((k) => k.startsWith("projects/air-pro-roof/layers/")).length));
       await p.click("#tab-layers").catch(() => {});
