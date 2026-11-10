@@ -50,17 +50,3 @@ If it never wakes: the BIOS setting (step 1) is the usual cause; then check the 
 ## Tests
 `node --test waker.test.mjs` (the packet, the key, repeat-wake refusal, the two routes).
 
-
-## Remote Desktop (once)
-
-Closing Remote Desktop on the phone leaves your Windows session with no screen, and then the
-Vectorworks connector can't find or press anything ("No Vectorworks window found"; the lock screen
-is fine). Run `rdp-setup.ps1` once in an admin PowerShell, signed in as yourself:
-
-```
-powershell -ExecutionPolicy Bypass -File .\rdp-setup.ps1
-```
-
-It adds two scheduled tasks: when your Remote Desktop session disconnects, the session goes back to
-the PC's own screen (`tscon`, as SYSTEM), and then the PC locks itself. Undo with
-`Unregister-ScheduledTask "Remote Desktop: back to the PC screen","Remote Desktop: lock after returning"`.

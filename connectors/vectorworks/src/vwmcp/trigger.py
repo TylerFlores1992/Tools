@@ -396,12 +396,7 @@ class HotkeyTrigger(Trigger):
         return None
 
     def _not_found(self, doing: str) -> TriggerError:
-        msg = (
-            f"No Vectorworks window found{doing}. Is Vectorworks open with a drawing? If you just closed"
-            " Remote Desktop, Windows parks the session with no screen and no window can be found:"
-            " run connectors/pc-waker/rdp-setup.ps1 once (it sends the session back to the PC's screen"
-            " and locks it), or sign in on the PC itself."
-        )
+        msg = f"No Vectorworks window found{doing}. Is Vectorworks open with a drawing?"
         if self._skipped:
             seen = ", ".join(sorted(set(self._skipped)))
             msg += (
