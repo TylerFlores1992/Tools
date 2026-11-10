@@ -448,6 +448,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             return await outer_call(op, _watch=watch, **args)
 
         vwx = Path(path).expanduser() if path else None
+        opened = False
         if vwx is not None:
             if not vwx.exists():
                 raise ToolError("No file at %s." % vwx)
@@ -455,6 +456,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             if not readout.same_document(info.get("document", ""), vwx):
                 try:
                     await asyncio.to_thread(readout.open_in_vectorworks, vwx)
+                    opened = True
                 except Exception as e:
                     raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e
                 for _ in range(60):  # big files take a while to open
@@ -480,7 +482,17 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         tmp = dest.with_suffix(".tmp")
         tmp.write_bytes(body)
         tmp.replace(dest)
-        return {"saved": str(dest), "bytes": len(body), "shapes_left_out": trimmed, **readout.summary(data)}
+        out = {"saved": str(dest), "bytes": len(body), "shapes_left_out": trimmed, **readout.summary(data)}
+        open_name = str(data.get("document") or "")
+        if opened and readout.is_converted_copy(open_name, vwx) and hasattr(trigger, "close_copy"):
+            # Opening an older file made an unsaved converted copy. Left open, it blocks the next job
+            # with a "name and save for backup?" box after 30 minutes. Close it without saving.
+            try:
+                out["closed_copy"] = await asyncio.to_thread(trigger.close_copy, open_name)
+            except Exception as e:
+                out["closed_copy"] = False
+                out["close_note"] = "Couldn't close the converted copy %s: %s" % (open_name, e)
+        return out
 
     @mcp.tool()
     async def read_out(path: str | None = None, max_objects: int = 40000) -> dict:

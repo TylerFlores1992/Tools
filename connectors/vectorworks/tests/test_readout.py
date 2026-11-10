@@ -193,3 +193,63 @@ def test_symbol_positions_use_the_same_origin_as_the_shapes(server, fake_vw, tmp
     inst = next(o for o in objs if o.get("symbol") == "Box")
     part = next(o for o in objs if o.get("in") == "Box")
     assert inst["at"][:2] == [100, 50] and [95, 45] in part["pts"] and [105, 55] in part["pts"]
+
+
+def test_a_converted_copy_is_told_apart_from_the_file():
+    p = Path("C:/Dropbox/Rig Studio/CFF/CFF-26_041426_v2025.vwx")
+    assert readout.is_converted_copy("CFF-26_041426_v2025_v2026.vwx", p)
+    assert readout.is_converted_copy("CFF-26_041426_v2025 v2026.vwx", p)
+    assert not readout.is_converted_copy("CFF-26_041426_v2025.vwx", p)  # the file itself
+    assert not readout.is_converted_copy("Claude connector.vwx", p)
+
+
+def test_after_reading_a_converted_file_its_copy_is_closed(fake_vw, tmp_path, monkeypatch):
+    from vwmcp import server as server_mod
+
+    closed = []
+
+    class Trig:
+        def fire(self, job_created=None):
+            pass
+
+        def close_copy(self, name):
+            closed.append(name)
+            return True
+
+    vwx = tmp_path / "CFF_v2025.vwx"
+    vwx.write_bytes(b"x")
+
+    def opens_as_copy(p):
+        fake_vw.DOC.path = ""
+        fake_vw.DOC.fname = p.stem + "_v2026.vwx"
+
+    monkeypatch.setattr(readout, "open_in_vectorworks", opens_as_copy)
+    monkeypatch.setattr(server_mod, "make_trigger", lambda s: Trig())
+    real_sleep = server_mod.asyncio.sleep
+    monkeypatch.setattr(server_mod.asyncio, "sleep", lambda s: real_sleep(0))
+    srv = build_server(config.load())
+    r = call(srv, "read_out", path=str(vwx))
+    assert r["saved"] == str(tmp_path / "CFF_v2025.rigread.json")
+    assert closed == ["CFF_v2025_v2026.vwx"] and r["closed_copy"] is True
+
+
+def test_a_file_already_open_is_never_closed(fake_vw, tmp_path, monkeypatch):
+    from vwmcp import server as server_mod
+
+    closed = []
+
+    class Trig:
+        def fire(self, job_created=None):
+            pass
+
+        def close_copy(self, name):
+            closed.append(name)
+            return True
+
+    vwx = tmp_path / "CFF_v2025.vwx"
+    vwx.write_bytes(b"x")
+    fake_vw.DOC.fname = "CFF_v2025_v2026.vwx"  # the user opened it themselves
+    monkeypatch.setattr(server_mod, "make_trigger", lambda s: Trig())
+    srv = build_server(config.load())
+    call(srv, "read_out", path=str(vwx))
+    assert closed == []
