@@ -311,7 +311,15 @@ class _Win32:
                 except Exception:
                     pass
                 raise TriggerError(f"'{item}' isn't in Vectorworks' {menu} menu. Set VWMCP_MENU to the menu you put it in.")
-        hit.invoke()
+        try:
+            hit.invoke()
+        except Exception:
+            # Invoke waits for the command, and a long one (a read-out with 3D faces keeps Vectorworks
+            # busy 20 s and more) makes it give up with an error although the press went through.
+            # Measured 2026-11-10: treating that as a failed press sent the connector to the keyboard
+            # fallback, which found no window in the busy Vectorworks, so every big read-out "failed"
+            # while Vectorworks finished it. The queue presses again only if the job sits unclaimed.
+            pass
 
     def cancel_menus(self, window) -> None:
         """Close a menu left open (Vectorworks keeps Tools open after the job's menu press) with
