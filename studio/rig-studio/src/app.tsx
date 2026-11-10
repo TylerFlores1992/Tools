@@ -1392,20 +1392,9 @@ function ChatPane(props: {
             <option value="cloud">in the cloud</option>
             <option value="pc">on my PC (Vectorworks, local files)</option>
           </select>
-          {where === "pc" && <WakeLink />}
         </div>
       </form>
     </div>
-  );
-}
-
-/** The PC sleeps; this opens the site page that wakes it through the home server. */
-export const WAKE_URL = "https://tylerflores.dev/private/pc";
-function WakeLink() {
-  return (
-    <a className="link small wake" href={WAKE_URL} target="_blank" rel="noreferrer">
-      PC asleep? Wake it ↗
-    </a>
   );
 }
 
@@ -2023,9 +2012,8 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
                       return (
                         <>
                           <button className="link small" onClick={() => ask(e, "read")} disabled={!!busy} id={`read-${e.file_id}`}>
-                            {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : env.workers?.wake ? "Read it out on my PC" : "Read it out on my PC (needs the PC on)"}
+                            {starting === e.file_id ? "Starting…" : busy ? "Reading it out…" : j?.status === "failed" ? "Try again" : "Read it out on my PC"}
                           </button>
-                          {!env.workers?.wake && <WakeLink />}
                         </>
                       );
                     })()

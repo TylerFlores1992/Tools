@@ -37,7 +37,7 @@ What it does:
   session may not start another scheduled task; `routeJob`/`needsHandoff` in `model.ts`). A file
   job keeps `file` (the Dropbox id): its status shows under that file and its button waits while it
   runs. The waker runs on the CampHawk mini PC (`desktop-mdc5q6e`), setup in `connectors/pc-waker/`.
-  The PC worker scheduled task must have "Require this computer" on, or it runs in the cloud.
+  The PC worker scheduled task must have "Require this computer" on (it does: DESKTOP-M9OCUDL).
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC
