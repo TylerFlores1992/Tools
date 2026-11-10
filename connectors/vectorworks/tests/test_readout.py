@@ -185,7 +185,8 @@ def test_symbol_positions_use_the_same_origin_as_the_shapes(server, fake_vw, tmp
     d = vs.DOC
     d.origin = (-573.0, 910.0)
     sym = vs._Obj(16, name="Box", w=10.0, h=10.0, members=[])
-    sym.members.append(vs._Obj(3, pts=[(-5.0, -5.0), (5.0, 5.0)], parent_obj=sym, layer=None))
+    # Points inside a definition read back from the internal origin (real Vectorworks, measured).
+    sym.members.append(vs._Obj(3, pts=[(-5.0 + 573.0, -5.0 - 910.0), (5.0 + 573.0, 5.0 - 910.0)], parent_obj=sym, layer=None))
     d.resources["Box"] = sym
     vs.Symbol("Box", (100.0, 50.0), 0.0)
     d.path = str(tmp_path / "Origin.vwx")
@@ -405,3 +406,25 @@ def test_a_camera_sized_symbol_is_drawn_part_by_part(server, fake_vw, tmp_path):
     data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
     parts = [o for o in data["objects"] if o.get("in") == "PED w OPERATOR"]
     assert len(parts) == 300 and not any(o.get("simplified") for o in parts)
+
+
+def test_parts_inside_a_symbol_get_the_user_origin_added_back(server, fake_vw, tmp_path):
+    """Vectorworks measures points inside a symbol definition from the internal origin (measured on
+    CFF-26: 327 of 356 symbols' parts sat one user origin away). The fake stores them that way here:
+    a box drawn 0..10 x 0..4 about the symbol's origin reads back shifted by minus the user origin."""
+    vs = fake_vw
+    d = vs.DOC
+    d.origin = (-573.26, 909.77)
+    ox, oy = d.origin
+    sym = vs._Obj(16, name="Riser", w=10.0, h=4.0, members=[])
+    measured = [(0.0 - ox, 0.0 - oy), (10.0 - ox, 0.0 - oy), (10.0 - ox, 4.0 - oy), (0.0 - ox, 4.0 - oy)]
+    box = vs._Obj(5, pts=measured, closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None)
+    sym.members += [box]
+    d.resources["Riser"] = sym
+    vs.Symbol("Riser", (100.0, 0.0), 90.0)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    part = next(o for o in data["objects"] if o.get("in") == "Riser")
+    assert [96, 10] in part["pts"] and [100, 0] in part["pts"], part["pts"]  # where it really sits
+    corners = {p for f in _faces(part["mesh"]) for p in f}
+    assert (96.0, 10.0, 36.0) in corners and (100.0, 0.0, 0.0) in corners  # the faces too
