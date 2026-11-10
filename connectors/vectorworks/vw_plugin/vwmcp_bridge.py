@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.7.2"
+BRIDGE_VERSION = "0.8.0"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1718,8 +1718,14 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     walk(c, layer, inner, depth + 1, sym, has3d(defh), clip)
             return
         z = _ro_z(h, t)
-        if skip2d and z is None and t in (2, 3, 4, 5, 6, 13, 21):
-            return  # a hybrid symbol's 2D plan graphics: its 3D part is drawn instead
+        if skip2d:
+            # A hybrid symbol: Vectorworks shows its 2D graphics in Top/Plan and its 3D part in
+            # every other view. Both are read, tagged with the view they belong to, so Rig Studio's
+            # Plan can look like Vectorworks' plan (the dark decks, the fills) and 3D like the model.
+            if z is None and t in (2, 3, 4, 5, 6, 13, 21):
+                o["view"] = "plan"
+            elif z is not None:
+                o["view"] = "3d"
         pts, closed = _ro_local_shape(h, t, max_points)
         if pts is None:
             return

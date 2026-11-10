@@ -26,6 +26,8 @@ export type ReadoutObject = {
   mesh?: Mesh;
   /** Where its faces are when they came in a separate part file (mesh_parts). */
   mid?: number;
+  /** A hybrid symbol's part: its 2D graphics ("plan") or its 3D part ("3d"). */
+  view?: "plan" | "3d";
 };
 
 export type Readout = {
@@ -43,10 +45,12 @@ export type Readout = {
   mesh_parts?: string[];
 };
 
-/** Put the faces from the part files back on their objects. Returns how many objects got faces. */
-export function attachMeshes(r: Readout, parts: { meshes?: Record<string, Mesh> }[]): number {
+/** Put the part files back together with the read-out: the faces onto their objects, and the
+ * shapes that didn't fit in the main file back into its objects. Returns how many objects got faces. */
+export function attachMeshes(r: Readout, parts: { meshes?: Record<string, Mesh>; objects?: ReadoutObject[] }[]): number {
   const all: Record<string, Mesh> = {};
   for (const p of parts) Object.assign(all, p.meshes ?? {});
+  for (const p of parts) if (Array.isArray(p.objects)) r.objects.push(...p.objects);
   let n = 0;
   for (const o of r.objects) {
     if (o.mid === undefined) continue;
@@ -139,7 +143,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
       const h = o.z ? Math.max(0, o.z[1] - o.z[0]) : 0;
       const list = shapes.get(o.layer) ?? [];
       const mesh = o.mesh && o.mesh.v.length >= 9 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...mesh });
+      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }
@@ -147,7 +151,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
   const doc = (source?.name ?? r.document).replace(/\.rigread\.json$/i, "").replace(/\.vwx$/i, "");
   const out: Omit<Layer, "id">[] = [];
   if (fixtures.length) out.push({ name: `${doc}: lighting`, kind: "fixtures", visible: true, onRig: true, at, fixtures, source });
-  for (const [i, part] of chunk(rig, 600).entries()) out.push({ name: `${doc}: existing rig${i ? ` (${i + 1})` : ""}`, kind: "rig", visible: true, at, rig: part, source });
+  for (const [i, part] of chunk(rig, 600).entries()) out.push({ name: `${doc}: existing rig${i ? ` (${i + 1})` : ""}`, group: `${doc}: existing rig`, kind: "rig", visible: true, at, rig: part, source });
   const looksLikeStage = /stage|deck|venue|site|floor|ground|plan|audience|house|base/i;
   for (const [layer, list] of shapes) {
     let size = 0;
@@ -166,7 +170,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     if (part.length) parts.push(part);
     // Shown as in the drawing: the layers visible there start visible here (older read-outs: by name).
     const vis = r.layers.find((l) => l.name === layer)?.visible;
-    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
+    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, group: `${doc}: ${layer}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
   }
   return out;
 }

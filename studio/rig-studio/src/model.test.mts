@@ -79,3 +79,23 @@ test("a read-out request and its answer are files named after the drawing and th
   assert.equal(fromStatus({ job: "j1", state: "failed", message: "No Vectorworks." }, "j1")?.status, "failed");
   assert.equal(fromStatus({ job: "j1", state: "reading" }, "j1")?.status, "running");
 });
+
+test("a drawing layer stored in several documents is one row in the Layers list", async () => {
+  const { layerRows } = await import("./model.ts");
+  const src = { name: "CFF.rigread.json", from: "dropbox" as const, dropboxId: "id:1" };
+  const L = (id: string, name: string, extra = {}) => ({ id, name, kind: "shapes" as const, visible: true, at: "t", shapes: [], source: src, ...extra });
+  const rows = layerRows([
+    L("a", "CFF: SET (1)", { group: "CFF: SET" }),
+    L("b", "CFF: SET (2)", { group: "CFF: SET" }),
+    L("c", "CFF: CAMERA"),
+    L("d", "CFF: AUDIENCE (1)"), // older layers without `group`: grouped by name and source
+    L("e", "CFF: AUDIENCE (2)"),
+    { id: "f", name: "Venue plan (2)", kind: "image" as const, visible: true, at: "t" }, // an upload named like that stays itself
+  ]);
+  assert.deepEqual(rows.map((r) => [r.name, r.layers.map((l) => l.id).join("")]), [
+    ["CFF: SET", "ab"],
+    ["CFF: CAMERA", "c"],
+    ["CFF: AUDIENCE", "de"],
+    ["Venue plan (2)", "f"],
+  ]);
+});

@@ -12,13 +12,13 @@ mkdirSync(out, { recursive: true });
 const r = await build({
   entryPoints: [join(here, "src/app.tsx")],
   bundle: true,
-  minify: true,
+  minify: !process.env.RS_DEV, // RS_DEV=1: readable React errors with component stacks (debugging only)
   format: "iife",
   target: "es2022",
   jsx: "automatic",
   write: false,
   legalComments: "none",
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: { "process.env.NODE_ENV": process.env.RS_DEV ? '"development"' : '"production"' },
   logLevel: "warning",
 });
 const js = r.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");

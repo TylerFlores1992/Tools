@@ -137,8 +137,10 @@ def test_read_out_draws_what_is_inside_groups_and_symbols(server, fake_vw, tmp_p
     r = call(server, "read_out")
     data = json.loads(Path(r["saved"]).read_text())
     objs = data["objects"]
-    inside = [o for o in objs if o.get("in") == "Podium"]
-    assert len(inside) == 1, inside  # the 3D box only; its 2D plan rectangle is left out
+    allin = [o for o in objs if o.get("in") == "Podium"]
+    assert [o.get("view") for o in allin].count("plan") == 1  # its 2D plan rectangle, tagged for Plan
+    inside = [o for o in allin if o.get("view") != "plan"]
+    assert len(inside) == 1, inside  # and the 3D box
     blk = inside[0]
     assert blk["z"] == [0, 36] and blk["fill"] == "#ff0000" and blk["closed"]
     # turned 90 degrees about the insertion point and moved to (100, 0): (10, 4) lands on (96, 10)
@@ -449,3 +451,35 @@ def test_a_read_out_never_destroys_the_drawings_3d_objects(server, fake_vw, tmp_
         assert sum(1 for o in data["objects"] if o.get("mesh")) == 2
     assert d.objects == before_doc and sym.members == before_sym  # nothing replaced, nothing left over
     assert flat in d.objects and box in sym.members
+
+
+def test_a_hybrid_symbol_gives_its_plan_graphics_and_its_3d_part_each_tagged(server, fake_vw, tmp_path):
+    """Vectorworks shows a hybrid symbol's 2D graphics in Top/Plan and its 3D part elsewhere; both
+    come out, tagged, so Rig Studio's plan can look like Vectorworks' plan."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Deck 4x8", w=96.0, h=48.0, members=[])
+    plan = vs._Obj(3, pts=[(0.0, 0.0), (96.0, 48.0)], closed=True, parent_obj=sym, layer=None)
+    solid = vs._Obj(5, pts=[(0.0, 0.0), (96.0, 0.0), (96.0, 48.0), (0.0, 48.0)], closed=True, is3d=True, zc=12.0, dz=24.0, parent_obj=sym, layer=None)
+    sym.members += [plan, solid]
+    d.resources["Deck 4x8"] = sym
+    vs.Symbol("Deck 4x8", (0.0, 0.0), 0.0)
+    flat = d.add(vs._Obj(3, pts=[(500.0, 0.0), (600.0, 50.0)], closed=True))  # not in a symbol: no tag
+    d.path = str(tmp_path / "Set.vwx")
+    objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
+    parts = {o.get("view"): o for o in objs if o.get("in") == "Deck 4x8"}
+    assert set(parts) == {"plan", "3d"}
+    assert "mesh" in parts["3d"] and "mesh" not in parts["plan"]
+    assert all("view" not in o for o in objs if not o.get("in"))
+
+
+def test_shapes_that_do_not_fit_move_into_parts_instead_of_being_left_out():
+    lines = [{"t": "line", "layer": "Plan", "bbox": [0, 0, 1, 1], "pts": [[i, 0], [i + 1, 0]] * 20} for i in range(400)]
+    sym = {"t": "symbol", "layer": "Set", "bbox": [0, 0, 1, 1], "symbol": "Deck", "at": [0, 0, 0]}
+    body, parts, trimmed = readout.split({"readout": 1, "objects": [sym] + lines}, "Show", limit=40_000)
+    main = json.loads(body)
+    assert trimmed == 0 and len(parts) >= 1 and len(body) <= 40_000 and all(len(p) <= 40_000 for p in parts)
+    spilled = [o for p in parts for o in json.loads(p).get("objects", [])]
+    assert len(main["objects"]) - 1 + len(spilled) == 400  # every line is somewhere
+    assert any(o.get("symbol") == "Deck" for o in main["objects"])  # symbols stay in the main file
+    assert main["mesh_parts"] == ["Show.rigmesh%d.json" % (i + 1) for i in range(len(parts))]

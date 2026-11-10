@@ -1,3 +1,3 @@
 """vwmcp: an MCP bridge between Claude and Vectorworks."""
 
-__version__ = "0.7.4"
+__version__ = "0.8.0"

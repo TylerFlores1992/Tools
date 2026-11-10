@@ -64,7 +64,11 @@ for (const scheme of ["dark", "light"]) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme, deviceScaleFactor: 1 });
   const p = await ctx.newPage();
   const errors = [];
-  p.on("pageerror", (e) => errors.push(e.message));
+  p.on("pageerror", (e) => {
+  errors.push(e.message);
+  if (process.env.RS_DEV) console.log("PAGEERROR STACK:", e.stack);
+});
+if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.log("CONSOLE ERROR:", m.text().slice(0, 3000)));
   p.on("console", (m) => m.type() === "error" && !/fonts\.g|ERR_|net::/.test(m.text()) && errors.push(m.text()));
   await p.goto(`file://${join(here, "harness.html")}`);
   await p.waitForSelector(".card");

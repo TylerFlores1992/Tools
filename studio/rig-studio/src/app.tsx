@@ -8,8 +8,8 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fromStatus, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
-import { attachMeshes, isReadout, readoutLayers, readoutSummary } from "./readout.ts";
+import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { attachMeshes, isReadout, readoutLayers, readoutSummary, type Readout } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -1520,13 +1520,28 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
       <h2 className="h3">Drawings and plots</h2>
       {!layers.length && <p className="muted">Nothing yet. Add the venue plan, a stage drawing or the lighting plot to lay the rig out over.</p>}
       <ul className="layers">
-        {layers.map((l) => (
-          <li key={l.id} className="layer">
+        {layerRows(layers).map(({ key, name, layers: part }) => {
+          const l = part[0];
+          const many = part.length > 1;
+          const all = part.every((x) => x.visible);
+          const some = part.some((x) => x.visible);
+          const count = part.reduce((n, x) => n + (x.shapes?.length ?? 0), 0);
+          const setAll = (d: Partial<Layer>) => Promise.all(part.map((x) => patch(x, d)));
+          return (
+          <li key={key} className="layer">
             <div className="layer-row">
               <label className="check">
-                <input type="checkbox" id={`vis-${l.id}`} checked={l.visible} onChange={() => patch(l, { visible: !l.visible })} />
+                <input
+                  type="checkbox"
+                  id={`vis-${l.id}`}
+                  checked={all}
+                  ref={(el) => {
+                    if (el) el.indeterminate = some && !all;
+                  }}
+                  onChange={() => setAll({ visible: !all })}
+                />
                 <span>
-                  {l.name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${l.rig?.length ?? 0} truss and rigging pieces` : `${l.shapes?.length ?? 0} outlines`}</span>
+                  {name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${part.reduce((n, x) => n + (x.rig?.length ?? 0), 0)} truss and rigging pieces` : `${count} outlines`}</span>
                 </span>
               </label>
               <button className="link small" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
@@ -1558,11 +1573,11 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
                 )}
                 {del === l.id ? (
                   <div className="row">
-                    <span>Remove this layer?</span>
+                    <span>{many ? `Remove this layer (stored in ${part.length} parts)?` : "Remove this layer?"}</span>
                     <button
                       className="btn small"
                       onClick={async () => {
-                        await db.doc(`projects/${pid}/layers/${l.id}`).delete();
+                        await Promise.all(part.map((x) => db.doc(`projects/${pid}/layers/${x.id}`).delete()));
                         if (l.asset && env.caps.assets) env.caps.assets.delete(l.asset).catch(() => {});
                         setDel(null);
                       }}
@@ -1581,7 +1596,8 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
               </div>
             )}
           </li>
-        ))}
+          );
+        })}
       </ul>
       <div className="adder">
         <label className="btn" htmlFor="layer-file">
@@ -1861,7 +1877,11 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       { refetchInterval: 120000, cache: { staleTime: 60000, gcTime: 600000 } },
     );
     return un;
-  }, [env.caps.mcp, project.dropbox, tick]);
+    // The folder's path, not the project object: that object is new on every database update, and
+    // depending on it restarted this watcher on each of a read-out's layer writes until React gave up
+    // ("Maximum update depth exceeded", measured 2026-11-10).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [env.caps.mcp, project.dropbox?.path, tick]);
 
   const link = async () => {
     const mcp = env.caps.mcp;
@@ -1904,7 +1924,7 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
         // A big read-out keeps its 3D faces in part files beside it: fetch those too.
         const listing = payloadOf(await mcp.callTool(SERVERS.dropbox, "list_folder", { path: project.dropbox.path, recursive: false })) as { entries?: Entry[] };
         const byName = new Map((listing?.entries ?? []).map((x) => [x.name.toLowerCase(), x]));
-        const parts: { meshes?: Record<string, Mesh> }[] = [];
+        const parts: { meshes?: Record<string, Mesh>; objects?: Readout["objects"] }[] = [];
         for (const name of r.mesh_parts) {
           const pe = byName.get(name.toLowerCase());
           if (!pe?.file_id) {
@@ -1921,13 +1941,21 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
         attachMeshes(r, parts);
       }
       const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
-      for (const l of old) await db.doc(`projects/${project.id}/layers/${l.id}`).delete();
+      await Promise.all(old.map((l) => db.doc(`projects/${project.id}/layers/${l.id}`).delete()));
       const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
-      for (const l of made) await db.collection(`projects/${project.id}/layers`).add(l);
+      // A few writes at a time (the database caps concurrent writes): one by one, CFF-26's 75 layer
+      // documents took 15 s to save.
+      const queue = [...made];
+      await Promise.all(
+        Array.from({ length: Math.min(4, queue.length) }, async () => {
+          for (let l = queue.shift(); l; l = queue.shift()) await db.collection(`projects/${project.id}/layers`).add(l);
+        }),
+      );
       await markSeen([e]);
+      const rowsMade = layerRows(made.map((l, i) => ({ ...l, id: `new${i}` }))).length;
       flash(
         missingParts ? "warn" : "ok",
-        `${readoutSummary(r)} Added as ${made.length} layer${made.length === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
+        `${readoutSummary(r)} Added as ${rowsMade} layer${rowsMade === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
       );
     } catch (er) {
       flash("warn", /fetch|tool/i.test(String((er as { code?: string }).code ?? "")) ? mcpWords(er, "Dropbox") : `Couldn't open the read-out: ${(er as Error).message ?? mcpWords(er, "Dropbox")}`);
@@ -2019,7 +2047,7 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       clearInterval(t);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watching, env.caps.mcp, project.dropbox]);
+  }, [watching, env.caps.mcp, project.dropbox?.path]);
 
   const ask = async (e: Entry, what: "read" | "layer") => {
     if (what === "read") {

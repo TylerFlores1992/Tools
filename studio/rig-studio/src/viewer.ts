@@ -157,15 +157,69 @@ export class Viewer {
     this.request();
   }
 
+  /** Built geometry per layer, so a change to one layer (or a read-out writing its 75 layer documents
+   * one after another) doesn't rebuild every other one. Measured 2026-11-10: rebuilding everything
+   * on each write took 52 s to open CFF-26 (196k faces). */
+  private built = new Map<string, { key: string; obj: THREE.Object3D }>();
+  private pendingLayers: Layer[] | null = null;
+  private layerTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Show these layers. Rapid calls are gathered (the last one wins) and only changed layers rebuild. */
   setLayers(layers: Layer[]) {
-    this.refs.traverse((o) => {
+    this.pendingLayers = layers;
+    if (this.layerTimer) return;
+    this.layerTimer = setTimeout(() => {
+      this.layerTimer = null;
+      const next = this.pendingLayers;
+      this.pendingLayers = null;
+      if (next) this.applyLayers(next);
+    }, 120);
+  }
+
+  private static layerKey(l: Layer): string {
+    const heavy = l.shapes ?? l.rig ?? l.fixtures ?? [];
+    return [l.id, l.at, l.kind, l.visible, l.opacity, l.x, l.y, l.z, l.rot, l.widthIn, l.asset, heavy.length].join("|");
+  }
+
+  private disposeTree(root: THREE.Object3D) {
+    root.traverse((o) => {
       const m = o as THREE.Mesh;
       m.geometry?.dispose();
       if (m.material && (m.material as THREE.MeshBasicMaterial).map) (m.material as THREE.Material).dispose();
     });
-    this.refs.clear();
+  }
+
+  private applyLayers(layers: Layer[]) {
+    const keep = new Set<string>();
     for (const l of layers) {
-      if (!l.visible) continue;
+      const id = l.id ?? `${l.name}|${l.at}`;
+      keep.add(id);
+      const key = Viewer.layerKey(l);
+      const had = this.built.get(id);
+      if (had && had.key === key) continue;
+      if (had) {
+        this.refs.remove(had.obj);
+        this.disposeTree(had.obj);
+      }
+      const obj = this.buildLayer(l);
+      this.built.set(id, { key, obj });
+      this.refs.add(obj);
+    }
+    for (const [id, had] of this.built) {
+      if (keep.has(id)) continue;
+      this.refs.remove(had.obj);
+      this.disposeTree(had.obj);
+      this.built.delete(id);
+    }
+    this.applyViewTags();
+    this.measure();
+    this.request();
+  }
+
+  private buildLayer(l: Layer): THREE.Group {
+    const group = new THREE.Group();
+    {
+      if (!l.visible) return group;
       if (l.kind === "image" && l.asset && l.px) {
         const w = l.widthIn ?? 480;
         const h = (w * l.px[1]) / l.px[0];
@@ -186,7 +240,7 @@ export class Viewer {
         mesh.rotation.y = ((l.rot ?? 0) * Math.PI) / 180;
         mesh.position.set(l.x ?? 0, (l.z ?? 0) + 0.2, -(l.y ?? 0));
         mesh.renderOrder = -1;
-        this.refs.add(mesh);
+        group.add(mesh);
       }
       if (l.kind === "fixtures" && l.fixtures?.length) {
         const geo = new THREE.CylinderGeometry(3.2, 5.5, 13, 10);
@@ -197,7 +251,7 @@ export class Viewer {
           m.makeTranslation(f.x, f.z, -f.y);
           inst.setMatrixAt(i, m);
         });
-        this.refs.add(inst);
+        group.add(inst);
       }
       if (l.kind === "rig" && l.rig?.length) {
         for (const it of l.rig) {
@@ -210,26 +264,25 @@ export class Viewer {
             const m = new THREE.Mesh(geo, this.mat("existing"));
             m.position.copy(a.clone().add(b).multiplyScalar(0.5));
             m.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), b.clone().sub(a).normalize());
-            this.refs.add(m);
+            group.add(m);
           } else if (it.kind === "truss" && it.bbox) {
             const [x0, y0, x1, y1] = it.bbox;
             const geo = new THREE.BoxGeometry(Math.max(1, x1 - x0), 12, Math.max(1, y1 - y0));
             const m = new THREE.Mesh(geo, this.mat("existing"));
             m.position.set((x0 + x1) / 2, it.at[2], -(y0 + y1) / 2);
-            this.refs.add(m);
+            group.add(m);
           } else {
             const geo = new THREE.ConeGeometry(4, 10, 8);
             geo.rotateX(Math.PI);
             const m = new THREE.Mesh(geo, this.mat(it.kind === "hoist" ? "hoist" : "existing"));
             m.position.copy(a).add(new THREE.Vector3(0, 6, 0));
-            this.refs.add(m);
+            group.add(m);
           }
         }
       }
-      if (l.kind === "shapes" && l.shapes?.length) this.refs.add(this.shapesGroup(l.shapes));
+      if (l.kind === "shapes" && l.shapes?.length) group.add(this.shapesGroup(l.shapes));
     }
-    this.measure();
-    this.request();
+    return group;
   }
 
   /** A drawing's outlines and 3D objects as a handful of meshes (a set can have thousands): flat
@@ -238,10 +291,34 @@ export class Viewer {
    * either theme. */
   private blockMats = new Map<string, THREE.Material>();
   private shapesGroup(shapes: Shape[]): THREE.Object3D {
+    // A hybrid symbol's 2D graphics show only in Plan and its 3D part only in the other views, as in
+    // Vectorworks; everything else shows in both.
+    const out = new THREE.Group();
+    for (const tag of ["both", "plan", "3d"] as const) {
+      const list = shapes.filter((s) => (s.v ?? "both") === tag);
+      if (!list.length) continue;
+      const g = this.shapesPart(list);
+      g.userData.view = tag;
+      out.add(g);
+    }
+    return out;
+  }
+
+  /** Show a hybrid symbol's 2D graphics in Plan and its 3D part elsewhere. */
+  private applyViewTags() {
+    this.refs.traverse((o) => {
+      const tag = o.userData.view as string | undefined;
+      if (tag === "plan") o.visible = this.view === "plan";
+      else if (tag === "3d") o.visible = this.view !== "plan";
+    });
+  }
+
+  private shapesPart(shapes: Shape[]): THREE.Object3D {
     const g = new THREE.Group();
     const seg: number[] = [];
     const byFill = new Map<string, THREE.BufferGeometry[]>();
     const edges: THREE.BufferGeometry[] = [];
+    let fillOrder = 0;
     for (const s of shapes) {
       if (s.m) {
         // The drawing's real faces: each face fanned into triangles, drawing XY onto the floor.
@@ -286,7 +363,18 @@ export class Viewer {
         edges.push(new THREE.EdgesGeometry(geo, 30));
         continue;
       }
-      const z = (s.z ?? 0) + 0.3;
+      if (s.closed && s.fill && s.pts.length >= 3) {
+        // A flat filled shape (a deck's plan, a riser, a floor area): filled in its colour, as the plan shows it.
+        try {
+          const geo = new THREE.ShapeGeometry(new THREE.Shape(s.pts.map(([x, y]) => new THREE.Vector2(x, y))));
+          geo.rotateX(-Math.PI / 2);
+          geo.translate(0, (s.z ?? 0) + 0.1 + Math.min(fillOrder++ * 0.002, 6), 0); // later shapes on top, as in the drawing
+          (byFill.get(s.fill) ?? byFill.set(s.fill, []).get(s.fill)!).push(geo.index ? geo.toNonIndexed() : geo);
+        } catch {
+          // a shape three.js can't triangulate: its outline below still shows
+        }
+      }
+      const z = (s.z ?? 0) + 0.3 + Math.min(fillOrder * 0.002, 6);
       const pts = s.closed ? [...s.pts, s.pts[0]] : s.pts;
       for (let i = 0; i + 1 < pts.length; i++) seg.push(pts[i][0], z, -pts[i][1], pts[i + 1][0], z, -pts[i + 1][1]);
     }
@@ -354,6 +442,7 @@ export class Viewer {
 
   setView(v: ViewName, fit = true) {
     this.view = v;
+    this.applyViewTags();
     const ortho = v !== "3d";
     this.camera = ortho ? this.ortho : this.persp;
     this.controls.object = this.camera;
