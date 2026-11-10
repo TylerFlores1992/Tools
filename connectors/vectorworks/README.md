@@ -237,7 +237,6 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `VWMCP_TRIGGER` | `hotkey` | `hotkey`, `session`, or `none` (fake/dev) |
 | `VWMCP_TRIGGER` | `menu` | `menu` presses Tools > MCP Run Job through Windows' accessibility interface (no keys, works while Windows is locked; measured on the owner's PC 2026-11-10), falling back to the shortcut when unlocked. `hotkey`, `session`, `none` as before |
 | `VWMCP_MENU` / `VWMCP_MENU_ITEM` | `Tools` / `MCP Run Job` | Where the menu trigger finds the command |
 | `VWMCP_HOTKEY` | `^+%m` | Shortcut bound to MCP Run Job |
