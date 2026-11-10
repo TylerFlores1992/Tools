@@ -81,8 +81,8 @@ test("real 3D faces come through to the layer, also from part files", async () =
     readout: 1, document: "Set.vwx", units: "in", classes: [],
     layers: [{ name: "Set", type: "design", elevation: 24, visible: true }],
     objects: [
-      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 0], mid: 0 },
-      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 0], mid: 7 },
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 30], mid: 0 },
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: [[0, 0], [10, 0], [10, 10], [0, 10]], closed: true, z: [0, 30], mid: 7 },
     ],
     mesh_parts: ["Set.rigmesh1.json"],
   };
@@ -121,4 +121,26 @@ test("shapes spilled into part files come back", async () => {
   attachMeshes(r, [{ objects: [{ t: "line", layer: "Plan", cls: "None", bbox: [0, 1, 1, 1], pts: [[0, 1], [1, 1]] }] }]);
   const shapes = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "t").find((l) => l.kind === "shapes")!.shapes!;
   assert.equal(shapes.length, 2);
+});
+
+test("flat fills keep the drawing's order: layer order first, then each object's place", () => {
+  const sq = (x: number): [number, number][] => [[x, 0], [x + 10, 0], [x + 10, 10], [x, 10]];
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [
+      { name: "Venue", type: "design", elevation: 0, visible: true },
+      { name: "Set", type: "design", elevation: 0, visible: true },
+    ],
+    objects: [
+      // as split files return them: out of order, with k
+      { t: "rectangle", layer: "Set", cls: "None", bbox: [0, 0, 10, 10], pts: sq(0), closed: true, fill: "#555555", k: 2 },
+      { t: "polyline", layer: "Venue", cls: "None", bbox: [0, 0, 10, 10], pts: sq(0), closed: true, fill: "#ffff00", fo: 22, z: [0, 0], k: 0 },
+      { t: "rectangle", layer: "Venue", cls: "None", bbox: [0, 0, 10, 10], pts: sq(20), closed: true, fill: "#ffffff", k: 1 },
+    ],
+  };
+  const all = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "t").flatMap((l) => l.shapes ?? []);
+  const by = (fill: string) => all.find((s) => s.fill === fill)!;
+  assert.ok(by("#ffff00").n! < by("#ffffff").n! && by("#ffffff").n! < by("#555555").n!, "the venue floor under the set's deck");
+  assert.equal(by("#ffff00").fo, 22, "a see-through fill keeps its opacity");
+  assert.equal(by("#ffff00").m, undefined, "a flat shape is a fill, not faces");
 });

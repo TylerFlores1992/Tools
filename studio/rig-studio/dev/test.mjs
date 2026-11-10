@@ -119,7 +119,8 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
       // Close-ups (RS_CLOSE="x,y,steps;x,y,steps"): back to 3D, zoom in on a screen point.
       for (const [i, spec] of (process.env.RS_CLOSE ?? "").split(";").filter(Boolean).entries()) {
         const [x, y, steps] = spec.split(",").map(Number);
-        await p.getByRole("button", { name: "3D", exact: true }).click().catch(() => {});
+        const view = spec.split(",")[3] === "plan" ? "Plan" : "3D";
+        await p.getByRole("button", { name: view, exact: true }).click().catch(() => {});
         await p.getByRole("button", { name: "Fit", exact: true }).click().catch(() => {});
         await p.waitForTimeout(800);
         await p.mouse.move(x, y);

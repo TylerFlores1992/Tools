@@ -44,7 +44,7 @@ export type Fixture = { x: number; y: number; z: number; lb: number; type?: stri
 /** A drawing's real 3D faces (from a read-out): corners `v` as x, y, z in steps of `q` inches (each
  * corner once), faces `f` as [n, i1..in, n, ...]. */
 export type Mesh = { q: number; v: number[]; f: number[] };
-export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** Only in this view (a hybrid symbol's 2D plan graphics or its 3D part). */ v?: "plan" | "3d"; /** The layer's elevation, added to the faces' heights. */ mz?: number };
+export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string; m?: Mesh; /** Only in this view (a hybrid symbol's 2D plan graphics or its 3D part). */ v?: "plan" | "3d"; /** The layer's elevation, added to the faces' heights. */ mz?: number; /** Its place in the drawing's order, for a flat fill: later ones are drawn on top. */ n?: number; /** Fill opacity 0-100 when see-through. */ fo?: number };
 /** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
 export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 

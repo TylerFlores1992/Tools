@@ -28,6 +28,10 @@ export type ReadoutObject = {
   mid?: number;
   /** A hybrid symbol's part: its 2D graphics ("plan") or its 3D part ("3d"). */
   view?: "plan" | "3d";
+  /** Fill opacity 0-100, when under 100. */
+  fo?: number;
+  /** Its place in the drawing's order, when the read-out came in several files. */
+  k?: number;
 };
 
 export type Readout = {
@@ -125,7 +129,14 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
   const rig: RigItem[] = [];
   const shapes = new Map<string, Shape[]>();
   const elev = new Map(r.layers.map((l) => [l.name, l.elevation ?? 0]));
-  for (const o of r.objects) {
+  // The drawing's own order (what Vectorworks paints on top comes later): layers in the read-out's
+  // layer order, then each object's place in the drawing (`k`, kept when the read-out was split).
+  const layerRank = new Map(r.layers.map((l, i) => [l.name, i]));
+  const ordered = r.objects.some((o) => o.k !== undefined) ? [...r.objects].sort((a, b) => (a.k ?? 0) - (b.k ?? 0)) : r.objects;
+  let seq = 0;
+  let order = 0;
+  for (const o of ordered) {
+    order = (layerRank.get(o.layer) ?? 0) * 1_000_000 + seq++;
     const name = `${o.plugin ?? ""} ${o.symbol ?? ""} ${o.name ?? ""} ${o.cls}`;
     if (o.plugin === FIXTURE && o.at) {
       const f = o.fields ?? {};
@@ -142,8 +153,10 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
       const z = o.z ? o.z[0] + base : base;
       const h = o.z ? Math.max(0, o.z[1] - o.z[0]) : 0;
       const list = shapes.get(o.layer) ?? [];
-      const mesh = o.mesh && o.mesh.v.length >= 9 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...mesh });
+      // Real faces for things with height; a flat object (bottom = top) is drawn as a flat fill, so it
+      // keeps its opacity and its place in the drawing's order.
+      const mesh = o.mesh && o.mesh.v.length >= 9 && h > 0 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
+      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }

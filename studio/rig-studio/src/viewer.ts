@@ -304,6 +304,12 @@ export class Viewer {
     return out;
   }
 
+  private flatFill?: THREE.Material;
+  private fillMat(): THREE.Material {
+    this.flatFill ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, depthFunc: THREE.LessEqualDepth, side: THREE.DoubleSide, toneMapped: false });
+    return this.flatFill;
+  }
+
   /** Show a hybrid symbol's 2D graphics in Plan and its 3D part elsewhere. */
   private applyViewTags() {
     this.refs.traverse((o) => {
@@ -319,6 +325,7 @@ export class Viewer {
     const byFill = new Map<string, THREE.BufferGeometry[]>();
     const edges: THREE.BufferGeometry[] = [];
     let fillOrder = 0;
+    const fills: { n: number; geo: THREE.BufferGeometry }[] = [];
     for (const s of shapes) {
       if (s.m) {
         // The drawing's real faces: each face fanned into triangles, drawing XY onto the floor.
@@ -333,7 +340,13 @@ export class Viewer {
         const idx: number[] = [];
         for (let i = 0; i < f.length; ) {
           const n = f[i];
-          for (let j = 2; j < n; j++) idx.push(f[i + 1], f[i + j], f[i + j + 1]);
+          if (n === 3 || (n === 4 && convexQuad(pos, f[i + 1], f[i + 2], f[i + 3], f[i + 4]))) {
+            for (let j = 2; j < n; j++) idx.push(f[i + 1], f[i + j], f[i + j + 1]);
+          } else if (n > 3) {
+            // A face with a notch (a stage outline, a cap of a curved extrude): fanning from one corner
+            // would fill the notch, so triangulate it in its own plane.
+            for (const t of triangulateFace(pos, f.slice(i + 1, i + 1 + n))) idx.push(t[0], t[1], t[2]);
+          }
           i += n + 1;
         }
         if (idx.length) {
@@ -364,17 +377,25 @@ export class Viewer {
         continue;
       }
       if (s.closed && s.fill && s.pts.length >= 3) {
-        // A flat filled shape (a deck's plan, a riser, a floor area): filled in its colour, as the plan shows it.
+        // A flat filled shape (a deck's plan, a floor area): filled in its colour, as the plan shows it.
         try {
           const geo = new THREE.ShapeGeometry(new THREE.Shape(s.pts.map(([x, y]) => new THREE.Vector2(x, y))));
           geo.rotateX(-Math.PI / 2);
-          geo.translate(0, (s.z ?? 0) + 0.1 + Math.min(fillOrder++ * 0.002, 6), 0); // later shapes on top, as in the drawing
-          (byFill.get(s.fill) ?? byFill.set(s.fill, []).get(s.fill)!).push(geo.index ? geo.toNonIndexed() : geo);
+          geo.translate(0, (s.z ?? 0) + 0.05, 0);
+          const flat = geo.index ? geo.toNonIndexed() : geo;
+          flat.deleteAttribute("uv");
+          flat.deleteAttribute("normal");
+          const c = new THREE.Color(s.fill);
+          const a = s.fo !== undefined ? Math.max(0, Math.min(1, s.fo / 100)) : 1;
+          const col = new Float32Array(flat.getAttribute("position").count * 4);
+          for (let i = 0; i < col.length; i += 4) col.set([c.r, c.g, c.b, a], i);
+          flat.setAttribute("color", new THREE.BufferAttribute(col, 4));
+          fills.push({ n: s.n ?? fillOrder++, geo: flat });
         } catch {
           // a shape three.js can't triangulate: its outline below still shows
         }
       }
-      const z = (s.z ?? 0) + 0.3 + Math.min(fillOrder * 0.002, 6);
+      const z = (s.z ?? 0) + 0.3;
       const pts = s.closed ? [...s.pts, s.pts[0]] : s.pts;
       for (let i = 0; i + 1 < pts.length; i++) seg.push(pts[i][0], z, -pts[i][1], pts[i + 1][0], z, -pts[i + 1][1]);
     }
@@ -392,6 +413,19 @@ export class Viewer {
       }
       const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos.map((q) => (q.deleteAttribute("uv"), q)), false);
       if (merged) g.add(new THREE.Mesh(merged, mat));
+    }
+    if (fills.length) {
+      // Every flat fill at the same height, in the drawing's order, in one mesh, solid and see-through
+      // alike: equal depths pass (LessEqual) and nothing writes depth, so each fill is painted over the
+      // ones before it, as Vectorworks paints its plan (decks over the stage floor tinted under them).
+      // Unlit, so the colours are the drawing's.
+      fills.sort((a, b) => a.n - b.n);
+      const merged = mergeGeometries(fills.map((f) => f.geo), false);
+      if (merged) {
+        const m = new THREE.Mesh(merged, this.fillMat());
+        m.renderOrder = -2 + fills[0].n / 1e9; // layer documents paint in the drawing's order too
+        g.add(m);
+      }
     }
     const e = edges.length ? mergeGeometries(edges, false) : null;
     if (e) g.add(new THREE.LineSegments(e, this.mat("shape")));
@@ -557,3 +591,45 @@ export class Viewer {
     this.labelsEl.remove();
   }
 }
+
+/** Is the quad a, b, c, d (corner indices into xyz positions) convex in its own plane? */
+function convexQuad(p: Float32Array, a: number, b: number, c: number, d: number): boolean {
+  const v = (i: number) => new THREE.Vector3(p[i * 3], p[i * 3 + 1], p[i * 3 + 2]);
+  const q = [v(a), v(b), v(c), v(d)];
+  const n = new THREE.Vector3();
+  let sign = 0;
+  for (let k = 0; k < 4; k++) {
+    const e1 = q[(k + 1) % 4].clone().sub(q[k]);
+    const e2 = q[(k + 2) % 4].clone().sub(q[(k + 1) % 4]);
+    const c2 = e1.cross(e2);
+    if (k === 0) n.copy(c2);
+    const s = Math.sign(c2.dot(n));
+    if (s === 0) continue;
+    if (sign === 0) sign = s;
+    else if (s !== sign) return false;
+  }
+  return true;
+}
+
+/** Triangles for one planar face (its corner indices), triangulated in the face's own plane. */
+function triangulateFace(p: Float32Array, ids: number[]): number[][] {
+  const pts = ids.map((i) => new THREE.Vector3(p[i * 3], p[i * 3 + 1], p[i * 3 + 2]));
+  const normal = new THREE.Vector3();
+  for (let k = 0; k < pts.length; k++) {
+    const a = pts[k];
+    const b = pts[(k + 1) % pts.length];
+    normal.x += (a.y - b.y) * (a.z + b.z);
+    normal.y += (a.z - b.z) * (a.x + b.x);
+    normal.z += (a.x - b.x) * (a.y + b.y);
+  }
+  const ax = Math.abs(normal.x);
+  const ay = Math.abs(normal.y);
+  const az = Math.abs(normal.z);
+  const flat = pts.map((q) => (az >= ax && az >= ay ? new THREE.Vector2(q.x, q.y) : ay >= ax ? new THREE.Vector2(q.x, q.z) : new THREE.Vector2(q.y, q.z)));
+  try {
+    return THREE.ShapeUtils.triangulateShape(flat, []).map((t) => [ids[t[0]], ids[t[1]], ids[t[2]]]);
+  } catch {
+    return ids.slice(2).map((_, j) => [ids[0], ids[j + 1], ids[j + 2]]);
+  }
+}
+

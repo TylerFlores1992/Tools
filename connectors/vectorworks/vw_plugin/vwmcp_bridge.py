@@ -1456,6 +1456,18 @@ def _ro_fill(h):
         return None
 
 
+def _ro_fill_opacity(h):
+    """The object's fill opacity, 0-100 (Vectorworks 2020+), or None when it can't say."""
+    try:
+        r = vs.GetOpacityN(h)
+        return int(round(float(r[-1])))
+    except Exception:
+        try:
+            return int(round(float(vs.GetOpacity(h))))
+        except Exception:
+            return None
+
+
 FACE_CAP = 3000  # an object with more faces than this keeps its plain block (a scanned prop, a dense mesh)
 
 
@@ -1736,12 +1748,16 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         o["closed"] = bool(closed)
         if z is not None:
             o["z"] = [_r(z[0] * xf[6] + xf[2], k), _r(z[1] * xf[6] + xf[2], k)]
-            m3 = mesh(h, xf)
-            if m3:
-                o["mesh"] = m3
+            if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
+                m3 = mesh(h, xf)
+                if m3:
+                    o["mesh"] = m3
         fill = _ro_fill(h) if (closed or z is not None) else None
         if fill:
             o["fill"] = fill
+            op = _ro_fill_opacity(h)
+            if op is not None and op < 100:
+                o["fo"] = op  # see-through fill, 0-100 (a stage floor tinted at 15%, say)
         add(o)
 
     design, lh = [], vs.FLayer()

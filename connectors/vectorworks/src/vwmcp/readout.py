@@ -71,9 +71,9 @@ def split(readout: dict, stem: str, limit: int = LIMIT) -> tuple[bytes, list[byt
     if len(whole) <= limit:
         return whole, [], 0
     objs, meshes = [], []
-    for o in readout["objects"]:
+    for i, o in enumerate(readout["objects"]):
+        o = dict(o, k=i)  # its place in the drawing's order: the files below don't keep it
         if "mesh" in o:
-            o = dict(o)
             meshes.append((len(meshes), o.pop("mesh")))
             o["mid"] = meshes[-1][0]
         objs.append(o)

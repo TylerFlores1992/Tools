@@ -164,6 +164,12 @@
    "h",
    "index"
   ],
+  "GetOpacity": [
+   "h"
+  ],
+  "GetOpacityN": [
+   "h"
+  ],
   "GetOriginInDocUnits": [],
   "GetParametricRecord": [
    "h"

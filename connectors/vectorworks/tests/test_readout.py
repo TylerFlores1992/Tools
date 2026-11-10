@@ -483,3 +483,11 @@ def test_shapes_that_do_not_fit_move_into_parts_instead_of_being_left_out():
     assert len(main["objects"]) - 1 + len(spilled) == 400  # every line is somewhere
     assert any(o.get("symbol") == "Deck" for o in main["objects"])  # symbols stay in the main file
     assert main["mesh_parts"] == ["Show.rigmesh%d.json" % (i + 1) for i in range(len(parts))]
+
+
+def test_split_files_keep_each_objects_place_in_the_drawings_order():
+    objs = [{"t": "line", "layer": "Plan", "bbox": [0, 0, 1, 1], "pts": [[i, 0], [i + 1, 0]] * (1 + i % 30)} for i in range(300)]
+    body, parts, _ = readout.split({"readout": 1, "objects": objs}, "Show", limit=30_000)
+    got = json.loads(body)["objects"] + [o for p in parts for o in json.loads(p).get("objects", [])]
+    assert sorted(o["k"] for o in got) == list(range(300))
+    assert all(o["pts"][0][0] == o["k"] for o in got)  # each k names the object it was
