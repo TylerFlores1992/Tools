@@ -57,6 +57,7 @@ class JobQueue:
         await asyncio.to_thread(self.trigger.fire, created)
         deadline = time.monotonic() + timeout
         last_fire = time.monotonic()
+        refire_error: Exception | None = None
 
         try:
             while time.monotonic() < deadline:
@@ -71,8 +72,16 @@ class JobQueue:
                     raise BridgeError(msg)
 
                 # Hotkey got lost (Vectorworks busy, a dialog open, focus fight): press it again.
+                # A press that fails here doesn't end the job: the first press usually got through and
+                # Vectorworks is just busy starting it (a big read-out keeps it "Not Responding" for a
+                # while, and then no window can be found). Measured 2026-11-10: the re-press raised
+                # "No Vectorworks window found", the job was dropped, and Vectorworks finished it anyway.
                 if job_path.exists() and time.monotonic() - last_fire > self.settings.refire_after:
-                    await asyncio.to_thread(self.trigger.fire)  # no job time: always press
+                    try:
+                        await asyncio.to_thread(self.trigger.fire)  # no job time: always press
+                        refire_error = None
+                    except Exception as e:
+                        refire_error = e
                     last_fire = time.monotonic()
 
                 await asyncio.sleep(self.poll_interval)
@@ -86,6 +95,8 @@ class JobQueue:
             raise BridgeTimeout(
                 f"Vectorworks started '{op}' but didn't finish within {timeout:.0f}s."
             )
+        if refire_error is not None:
+            raise BridgeTimeout(f"Vectorworks never picked up '{op}': {refire_error}")
         raise BridgeTimeout(
             f"Vectorworks never picked up '{op}'. Check that it's open, no dialog is showing, "
             f"and the 'MCP Run Job' shortcut matches VWMCP_HOTKEY ({self.settings.hotkey})."

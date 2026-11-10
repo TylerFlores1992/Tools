@@ -49,3 +49,4 @@ If it never wakes: the BIOS setting (step 1) is the usual cause; then check the 
 
 ## Tests
 `node --test waker.test.mjs` (the packet, the key, repeat-wake refusal, the two routes).
+

@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.7.1"
+BRIDGE_VERSION = "0.7.2"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1473,14 +1473,26 @@ def _pt3(p):
 
 
 def _ro_faces(h, cap=FACE_CAP):
-    """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each):
-    Vectorworks converts a copy to 3D polygons (ConvertTo3DPolys), they're read and the copy is
-    deleted. None when it can't, or there are more than `cap` faces."""
+    """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each).
+    ConvertTo3DPolys REPLACES the object it's given (measured on Vectorworks 2026, 2026-11-10: a
+    read-out that converted the drawing's own objects deleted them), so it only ever gets a
+    duplicate made here; the converted duplicate is read and deleted. The drawing's object is never
+    passed to it. None when it can't, or there are more than `cap` faces."""
     try:
-        g = vs.ConvertTo3DPolys(h)
+        dup = vs.HDuplicate(h, 0, 0)
     except Exception:
         return None
+    if _nil(dup):
+        return None
+    try:
+        g = vs.ConvertTo3DPolys(dup)
+    except Exception:
+        g = None
     if _nil(g):
+        try:
+            vs.DelObject(dup)  # not converted: the duplicate is still there
+        except Exception:
+            pass
         return None
     faces, over = [], False
     try:

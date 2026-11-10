@@ -491,7 +491,11 @@ def ResetObject(objectHandle):
 
 
 def DelObject(h):
-    DOC.objects.remove(h)
+    parent = getattr(h, "parent_obj", None)
+    if parent is not None and hasattr(parent, "members") and h in parent.members:
+        parent.members.remove(h)
+    else:
+        DOC.objects.remove(h)
 
 
 def ReDrawAll():
@@ -1169,11 +1173,39 @@ def ConvertTo3DPolys(original):
         (ax, ay), (bx, by) = ring[i], ring[(i + 1) % len(ring)]
         faces.append([(ax, ay, z0), (bx, by, z0), (bx, by, z1), (ax, ay, z1)])
     members = [_Obj(25, pts=[(x, y) for x, y, _ in f], pts3d=f, closed=True) for f in faces]
-    g = DOC.add(_Obj(11, members=members))
+    g = _Obj(11, members=members, layer=original.layer)
     for m in members:
         m.parent_obj = g
+    # Like real Vectorworks (measured on CFF-26, 2026-11-10): the ORIGINAL is replaced by the group,
+    # so converting the drawing's own object destroys it. Read-outs must convert a duplicate.
+    _replace(original, g)
     DOC.converted = getattr(DOC, "converted", 0) + 1
     return g
+
+
+def _replace(old, new):
+    parent = getattr(old, "parent_obj", None)
+    if parent is not None and hasattr(parent, "members") and old in parent.members:
+        parent.members[parent.members.index(old)] = new
+        new.parent_obj = parent
+    elif old in DOC.objects:
+        DOC.objects[DOC.objects.index(old)] = new
+    else:
+        DOC.objects.append(new)
+
+
+def HDuplicate(objectHandle, x, y):
+    import copy
+
+    dup = copy.copy(objectHandle)
+    dup.uuid = "{" + str(uuid.uuid4()).upper() + "}"
+    dup.pts = [(px + x, py + y) for px, py in getattr(objectHandle, "pts", [])]
+    parent = getattr(objectHandle, "parent_obj", None)
+    if parent is not None and hasattr(parent, "members") and objectHandle in parent.members:
+        parent.members.append(dup)
+    else:
+        DOC.objects.append(dup)
+    return dup
 
 
 def GetPolyPt3D(objectHd, index):
