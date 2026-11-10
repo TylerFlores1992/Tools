@@ -237,9 +237,11 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `VWMCP_TRIGGER` | `hotkey` | `hotkey`, `session`, or `none` (fake/dev) |
+| `VWMCP_TRIGGER` | `menu` | `menu` presses Tools > MCP Run Job through Windows' accessibility interface (no keys, works while Windows is locked; measured on the owner's PC 2026-11-10), falling back to the shortcut when unlocked. `hotkey`, `session`, `none` as before |
+| `VWMCP_MENU` / `VWMCP_MENU_ITEM` | `Tools` / `MCP Run Job` | Where the menu trigger finds the command |
 | `VWMCP_HOTKEY` | `^+%m` | Shortcut bound to MCP Run Job |
 | `VWMCP_IDLE_MS` | `600` | How long you must pause in Vectorworks before a request runs |
+| `VWMCP_BLANK` | `Claude connector.vwx` on the Desktop (or in Documents) | A blank drawing opened by itself when Vectorworks is running with no drawing (its menu commands are off until one is open). The shortcut also refuses, with a plain reason, while Windows is on the lock screen |
 | `VWMCP_WINDOW_RE` | `.*Vectorworks.*` | Window title to find |
 | `VWMCP_PROCESS_RE` | `(?i)^vectorworks[^\\/]*\.exe$` | The window's program must match too, so a browser tab titled "Vectorworks" (the panel page) is never pressed. If "No Vectorworks window found" names Vectorworks' own program, set this to match it |
 | `VWMCP_RESTORE_FOCUS` | `1` | Hand focus back to where you were |

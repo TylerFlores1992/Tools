@@ -178,3 +178,132 @@ def test_config_and_trigger_share_one_default(monkeypatch):
 
     monkeypatch.delenv("VWMCP_PROCESS_RE", raising=False)
     assert config.load().process_re == DEFAULT_PROCESS_RE
+
+
+# ---- the lock screen and "Vectorworks with no drawing" (2026-11-10) -------------------------
+
+
+class TitledWin(FakeWin):
+    def __init__(self, titles, locked=False, **kw):
+        super().__init__(**kw)
+        self.titles, self.is_locked, self.opened = list(titles), locked, []
+
+    def locked(self):
+        return self.is_locked
+
+    def title(self, w):
+        return self.titles.pop(0) if len(self.titles) > 1 else self.titles[0]
+
+    def open_file(self, path):
+        self.opened.append(str(path))
+
+
+def test_a_locked_pc_says_so_and_sends_nothing():
+    win = TitledWin(["Vectorworks Design Suite 2026 - [Show.vwx]"], locked=True)
+    t, _ = make(win)
+    with pytest.raises(TriggerError, match="lock screen"):
+        t.fire()
+    assert not any(e.startswith("keys") for e in win.log)
+
+
+def test_the_title_tells_a_drawing_from_none():
+    assert not HotkeyTrigger.has_drawing("Vectorworks Design Suite 2026")
+    assert not HotkeyTrigger.has_drawing("Vectorworks 2026")
+    assert HotkeyTrigger.has_drawing("Vectorworks Design Suite 2026 - [CFF-26_041426_v2025.vwx]")
+    assert HotkeyTrigger.has_drawing("Untitled1 - Vectorworks")
+    assert HotkeyTrigger.has_drawing("Something unexpected")  # unknown counts as a drawing: never open over one
+
+
+def test_no_drawing_opens_the_blank_one_then_presses(tmp_path):
+    blank = tmp_path / "Claude connector.vwx"
+    blank.write_bytes(b"vwx")
+    win = TitledWin(["Vectorworks Design Suite 2026", "Vectorworks Design Suite 2026", "Vectorworks Design Suite 2026 - [Claude connector.vwx]"])
+    t, _ = make(win, blank=blank)
+    t.fire()
+    assert win.opened == [str(blank)]
+    assert any(e.startswith("keys") for e in win.log)
+
+
+def test_a_drawing_already_open_is_left_alone(tmp_path):
+    blank = tmp_path / "Claude connector.vwx"
+    blank.write_bytes(b"vwx")
+    win = TitledWin(["Vectorworks Design Suite 2026 - [Show.vwx]"])
+    t, _ = make(win, blank=blank)
+    t.fire()
+    assert win.opened == []
+
+
+def test_no_drawing_and_no_blank_explains_what_to_do(tmp_path):
+    win = TitledWin(["Vectorworks Design Suite 2026"])
+    t, _ = make(win, blank=tmp_path / "missing.vwx")
+    with pytest.raises(TriggerError, match="no drawing"):
+        t.fire()
+    assert win.opened == []
+
+
+# ---- the menu trigger: no keys, works on a locked PC (measured 2026-11-10) ------------------
+
+from vwmcp.trigger import MenuTrigger  # noqa: E402
+
+
+class MenuWin(TitledWin):
+    def __init__(self, titles=("Vectorworks Design Suite 2026 - [Show.vwx]",), menu_ok=True, **kw):
+        super().__init__(list(titles), **kw)
+        self.menu_ok = menu_ok
+
+    def press_menu(self, w, menu, item):
+        self.log.append(f"menu {menu} > {item}")
+        if not self.menu_ok:
+            raise TriggerError("menu not reachable")
+
+
+def make_menu(win, **kw):
+    clock = Clock()
+    return MenuTrigger("^+%m", ".*Vectorworks.*", win=win, sleep=clock.sleep, clock=clock, wall=clock.wall, **kw), clock
+
+
+def test_the_menu_trigger_presses_the_menu_and_no_keys():
+    win = MenuWin()
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log == ["menu Tools > MCP Run Job"]
+
+
+def test_on_a_locked_pc_the_menu_still_works():
+    win = MenuWin(locked=True)
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log == ["menu Tools > MCP Run Job"]
+
+
+def test_locked_and_the_menu_fails_says_so_without_trying_keys():
+    win = MenuWin(locked=True, menu_ok=False)
+    t, _ = make_menu(win)
+    with pytest.raises(TriggerError, match="locked PC"):
+        t.fire()
+    assert not any(e.startswith("keys") for e in win.log)
+
+
+def test_unlocked_and_the_menu_fails_falls_back_to_the_shortcut():
+    win = MenuWin(menu_ok=False)
+    t, _ = make_menu(win)
+    t.fire()
+    assert win.log[0] == "menu Tools > MCP Run Job" and "keys ^+%m" in win.log
+
+
+def test_the_menu_trigger_opens_the_blank_drawing_first_when_none_is_open(tmp_path):
+    blank = tmp_path / "Claude connector.vwx"
+    blank.write_bytes(b"vwx")
+    win = MenuWin(titles=["Vectorworks Design Suite 2026", "Vectorworks Design Suite 2026 - [Claude connector.vwx]"], locked=True)
+    t, _ = make_menu(win, blank=blank)
+    t.fire()
+    assert win.opened == [str(blank)] and win.log[-1] == "menu Tools > MCP Run Job"
+
+
+def test_menu_is_the_default_trigger(monkeypatch):
+    from vwmcp import config
+    from vwmcp.trigger import make_trigger
+
+    monkeypatch.delenv("VWMCP_TRIGGER", raising=False)
+    s = config.load()
+    assert s.trigger == "menu" and isinstance(make_trigger(s), MenuTrigger)

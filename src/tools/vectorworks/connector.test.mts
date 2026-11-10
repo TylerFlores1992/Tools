@@ -7,8 +7,7 @@ import { CONNECTOR } from "./connector.ts";
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 
 test("the page offers the connector version that's in the repo", () => {
-  const pyproject = readFileSync(join(ROOT, "connectors/vectorworks/pyproject.toml"), "utf8");
-  assert.equal(pyproject.match(/^version = "([^"]+)"/m)?.[1], CONNECTOR.version);
+  // pyproject.toml's version is held at 0.5.6 through 0.5.8 (make_zip.py says why); __init__ is the truth.
   const init = readFileSync(join(ROOT, "connectors/vectorworks/src/vwmcp/__init__.py"), "utf8");
   assert.match(init, new RegExp(`__version__ = "${CONNECTOR.version.replace(/\./g, "\\.")}"`));
 });

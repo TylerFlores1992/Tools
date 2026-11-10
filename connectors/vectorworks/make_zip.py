@@ -44,7 +44,11 @@ def main() -> None:
             info.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(info, data)
     data = OUT.read_bytes()
-    version = re.search(r'^version = "([^"]+)"', (HERE / "pyproject.toml").read_text(encoding="utf-8"), re.M).group(1)
+    # The version comes from __init__.py. pyproject.toml's version stayed at 0.5.6 for 0.5.7 on purpose:
+    # 0.5.6's updater reinstalls with pip whenever pyproject.toml changes at all, and that reinstall
+    # breaks on Windows (the running vwmcp.exe is locked). From 0.5.7 the updater only reacts to a
+    # change in dependencies, so pyproject's version can move again once PCs are past 0.5.7.
+    version = re.search(r'^__version__ = "([^"]+)"', (HERE / "src" / "vwmcp" / "__init__.py").read_text(encoding="utf-8"), re.M).group(1)
     MANIFEST.write_text(json.dumps({"version": version, "sha256": hashlib.sha256(data).hexdigest(), "size": len(data)}, indent=1) + "\n", encoding="utf-8")
     shutil.copyfile(HERE / "src" / "vwmcp" / "symbols.json", SYMBOLS)
     print(f"wrote {OUT.relative_to(REPO)} ({len(data) // 1024} KB), {MANIFEST.name} ({version}) and {SYMBOLS.name}")
