@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.7.0"
+BRIDGE_VERSION = "0.7.1"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1568,9 +1568,19 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                               for c in _children(vs.FInSymDef(defh)))
         return defs3d[key]
 
+    # Inside a symbol definition Vectorworks measures x, y from the internal origin, so every point
+    # read there is off by the user origin (measured on CFF-26: 327 of 356 symbols' parts sat exactly
+    # one user origin away, turned with the symbol). Points read inside a definition get it added back
+    # before they're placed (`pre` in the transform); points on a layer are already right.
+    try:
+        uo = tuple(float(c) for c in vs.GetOriginInDocUnits())
+    except Exception:
+        uo = (0.0, 0.0)
+
     def place(pt, xf):
-        ox, oy, oz, rot, sx, sy, sz = xf
-        x, y = pt[0] * sx, pt[1] * sy
+        ox, oy, oz, rot, sx, sy, sz = xf[:7]
+        px, py = xf[7] if len(xf) > 7 else (0.0, 0.0)
+        x, y = (pt[0] + px) * sx, (pt[1] + py) * sy
         c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
         return [_r(ox + x * c - y * s_, k), _r(oy + x * s_ + y * c, k)]
 
@@ -1601,7 +1611,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         if not faces:
             return None
         state["faces"] += len(faces)
-        ox, oy, oz, rot, sx, sy, sz = xf
+        ox, oy, oz, rot, sx, sy, sz = xf[:7]
         seen, v, f = {}, [], []
         for face in faces:
             f.append(len(face))
@@ -1686,7 +1696,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                 return
             if depth < 6 and not _nil(defh):
                 sx, sy, sz = scale_of(h)
-                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy, xf[6] * sz)
+                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy, xf[6] * sz, uo)
                 bx0, by0, bx1, by1 = o["bbox"]
                 # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
                 # tight margin dropped half the set). This only catches parts placed absurdly far off.

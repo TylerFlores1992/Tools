@@ -36,7 +36,9 @@ What it does:
   CFF-26: 67,708 faces in ~5 s. Symbols only become one block past 2,500 parts (was 150). Over 4.8 MB
   the faces move to `<drawing>.rigmesh<n>.json` parts (main file lists `mesh_parts`, objects keep
   `mid`); Rig Studio fetches them and draws the faces solid in the drawing's colours, edges over 30°.
-  Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); opening an older
+  Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
+  definition every point (GetBBox, GetSegPt, GetPolyPt, GetSymLoc, GetPolyPt3D) reads back as true − user
+  origin, so 0.7.1 adds the user origin back before placing it (CFF-26: 3 → 356 of 362 symbols aligned); opening an older
   file stops on a 'convert' prompt, which the connector accepts by itself; the converted copy is unsaved, so
   after the read-out the connector closes it without saving (0.6.1; File > Close, then No only to a save prompt
   naming that copy), and answers No (don't ask again) to the 30-minute 'name and save for backup?' box. In a Dropbox folder it syncs; the Files tab
