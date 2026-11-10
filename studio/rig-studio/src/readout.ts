@@ -19,6 +19,9 @@ export type ReadoutObject = {
   closed?: boolean;
   z?: [number, number];
   source?: string;
+  fill?: string;
+  /** The symbol this shape was drawn from (read-outs draw what's inside symbols). */
+  in?: string;
 };
 
 export type Readout = {
@@ -27,7 +30,7 @@ export type Readout = {
   path?: string;
   version?: string;
   units: "in";
-  layers: { name: string; type: string; elevation?: number }[];
+  layers: { name: string; type: string; elevation?: number; visible?: boolean }[];
   classes: string[];
   objects: ReadoutObject[];
   trimmed?: number;
@@ -101,18 +104,24 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     if (o.plugin === FIXTURE && o.at) {
       const f = o.fields ?? {};
       fixtures.push({ x: o.at[0], y: o.at[1], z: o.at[2] || len(f, "Z Location", "Z") || 0, lb: weight(f), type: String(f["Inst Type"] ?? f["Instrument Type"] ?? f["Symbol Name"] ?? "Fixture").slice(0, 60), id: f["Channel"] ? `ch ${f["Channel"]}` : undefined });
-    } else if ((o.plugin || o.symbol) && TRUSS.test(name)) {
+    } else if ((o.plugin || o.symbol) && !o.in && TRUSS.test(name)) {
       rig.push(trussItem(o));
-    } else if ((o.plugin || o.symbol) && RIGGING.test(name)) {
+    } else if ((o.plugin || o.symbol) && !o.in && RIGGING.test(name)) {
       rig.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
-    } else if (o.pts && o.pts.length >= 2) {
-      const z = o.z ? o.z[0] : (elev.get(o.layer) ?? 0);
+    }
+    // Every outline is drawn too, rig pieces included: a 3D plug-in (a door, a deck) or a symbol's
+    // parts come as blocks with their bottom, height and fill colour.
+    if (o.pts && o.pts.length >= 2 && o.plugin !== FIXTURE) {
+      const base = elev.get(o.layer) ?? 0;
+      const z = o.z ? o.z[0] + base : base;
+      const h = o.z ? Math.max(0, o.z[1] - o.z[0]) : 0;
       const list = shapes.get(o.layer) ?? [];
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(o.name ? { label: o.name } : {}) });
+      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}) });
       shapes.set(o.layer, list);
     }
   }
-  const doc = r.document.replace(/\.vwx$/i, "");
+  // Named after the file in Dropbox (a converted older drawing reads out as "x_v2025_v2026").
+  const doc = (source?.name ?? r.document).replace(/\.rigread\.json$/i, "").replace(/\.vwx$/i, "");
   const out: Omit<Layer, "id">[] = [];
   if (fixtures.length) out.push({ name: `${doc}: lighting`, kind: "fixtures", visible: true, onRig: true, at, fixtures, source });
   for (const [i, part] of chunk(rig, 600).entries()) out.push({ name: `${doc}: existing rig${i ? ` (${i + 1})` : ""}`, kind: "rig", visible: true, at, rig: part, source });
@@ -122,7 +131,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     let part: Shape[] = [];
     const parts: Shape[][] = [];
     for (const s of list) {
-      const n = 24 + s.pts.length * 18;
+      const n = 40 + s.pts.length * 18;
       if (size + n > 150_000 && part.length) {
         parts.push(part);
         part = [];
@@ -132,7 +141,9 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
       size += n;
     }
     if (part.length) parts.push(part);
-    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, kind: "shapes", visible: looksLikeStage.test(layer), at, shapes: p, source });
+    // Shown as in the drawing: the layers visible there start visible here (older read-outs: by name).
+    const vis = r.layers.find((l) => l.name === layer)?.visible;
+    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
   }
   return out;
 }

@@ -112,3 +112,84 @@ def test_a_converted_older_file_counts_as_the_same_document():
     assert readout.same_document("CFF-26_041426_v2025.vwx", p)
     assert not readout.same_document("Claude connector.vwx", p)
     assert not readout.same_document("CFF-26_041426_v2025_backup.vwx", p)
+
+
+def test_read_out_draws_what_is_inside_groups_and_symbols(server, fake_vw, tmp_path):
+    """Symbols are drawn from their definition, moved and turned to where they sit; a symbol with a
+    3D part gives its 3D part (a block with bottom, top and fill), not its 2D plan lines; groups
+    give their members; hidden layers say so."""
+    vs = fake_vw
+    d = vs.DOC
+    # A symbol: a 2D plan rectangle plus a 3D box 10" x 4" from 0 to 36" high, drawn about its origin.
+    sym = vs._Obj(16, name="Podium", w=10.0, h=4.0, members=[])
+    plan = vs._Obj(3, pts=[(-5.0, -2.0), (5.0, 2.0)], parent_obj=sym, layer=None)
+    box = vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None)
+    box.attrs["fill_rgb"] = (65535, 0, 0)
+    sym.members += [plan, box]
+    d.resources["Podium"] = sym
+    vs.Symbol("Podium", (100.0, 0.0), 90.0)
+    # A group of two lines.
+    vs.MoveTo((0.0, 50.0)); vs.LineTo((20.0, 50.0)); vs.SetSelect(d.last)
+    vs.MoveTo((0.0, 60.0)); vs.LineTo((20.0, 60.0)); vs.SetSelect(d.last)
+    vs.Group()
+    d.layers[0].visibility = -1
+    d.path = str(tmp_path / "Set.vwx")
+    r = call(server, "read_out")
+    data = json.loads(Path(r["saved"]).read_text())
+    objs = data["objects"]
+    inside = [o for o in objs if o.get("in") == "Podium"]
+    assert len(inside) == 1, inside  # the 3D box only; its 2D plan rectangle is left out
+    blk = inside[0]
+    assert blk["z"] == [0, 36] and blk["fill"] == "#ff0000" and blk["closed"]
+    # turned 90 degrees about the insertion point and moved to (100, 0): (10, 4) lands on (96, 10)
+    assert [96, 10] in blk["pts"] and [100, 0] in blk["pts"]
+    assert any(o.get("symbol") == "Podium" and o["at"][:2] == [100, 0] for o in objs)
+    lines = [o for o in objs if o["t"] == "line"]
+    assert {tuple(map(tuple, o["pts"])) for o in lines} >= {((0, 50), (20, 50)), ((0, 60), (20, 60))}
+    assert data["layers"][0]["visible"] is False
+
+
+def test_a_very_detailed_symbol_comes_as_one_block(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    person = vs._Obj(16, name="Person", w=20.0, h=10.0, members=[])
+    for i in range(200):  # a figure drawn with 200 little lines
+        person.members.append(vs._Obj(2, pts=[(0.0, i * 0.1), (1.0, i * 0.1)], parent_obj=person, layer=None))
+    d.resources["Person"] = person
+    vs.Symbol("Person", (50.0, 50.0), 0.0)
+    d.path = str(tmp_path / "Crowd.vwx")
+    r = call(server, "read_out", max_objects=1000)
+    data = json.loads(Path(r["saved"]).read_text())
+    from_person = [o for o in data["objects"] if o.get("in") == "Person"]
+    assert len(from_person) == 1 and from_person[0]["simplified"] and from_person[0]["closed"]
+
+
+def test_a_scaled_symbol_is_drawn_at_its_scale(server, fake_vw, tmp_path):
+    """DWG blocks come in as scaled symbols (seen on CFF-26: parts landed 15 miles away unscaled)."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Sign", w=1000.0, h=1000.0, members=[])
+    sym.members.append(vs._Obj(3, pts=[(0.0, 0.0), (1000.0, 500.0)], parent_obj=sym, layer=None))
+    d.resources["Sign"] = sym
+    vs.Symbol("Sign", (10.0, 10.0), 0.0)
+    d.last.scale_type, d.last.sx, d.last.sy, d.last.w, d.last.h = 2, 0.01, 0.01, 10.0, 10.0
+    d.path = str(tmp_path / "Plan.vwx")
+    r = call(server, "read_out")
+    rect = next(o for o in json.loads(Path(r["saved"]).read_text())["objects"] if o.get("in") == "Sign")
+    assert [20, 15] in rect["pts"] and [10, 10] in rect["pts"]
+
+
+def test_symbol_positions_use_the_same_origin_as_the_shapes(server, fake_vw, tmp_path):
+    """A drawing with a user origin: symbols and their parts land with the shapes, not off by it."""
+    vs = fake_vw
+    d = vs.DOC
+    d.origin = (-573.0, 910.0)
+    sym = vs._Obj(16, name="Box", w=10.0, h=10.0, members=[])
+    sym.members.append(vs._Obj(3, pts=[(-5.0, -5.0), (5.0, 5.0)], parent_obj=sym, layer=None))
+    d.resources["Box"] = sym
+    vs.Symbol("Box", (100.0, 50.0), 0.0)
+    d.path = str(tmp_path / "Origin.vwx")
+    objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
+    inst = next(o for o in objs if o.get("symbol") == "Box")
+    part = next(o for o in objs if o.get("in") == "Box")
+    assert inst["at"][:2] == [100, 50] and [95, 45] in part["pts"] and [105, 55] in part["pts"]

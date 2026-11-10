@@ -39,7 +39,9 @@ export function sortProjects<T extends Pick<Project, "updatedAt" | "pinnedAt">>(
 export type Version = { n: number; note: string; by: "you" | "claude" | "session"; at: string; sketch: Sketch };
 
 export type Fixture = { x: number; y: number; z: number; lb: number; type?: string; id?: string };
-export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string };
+/** A drawn outline, in inches. `h` (from a Vectorworks read-out): a 3D object's height above `z`,
+ * drawn as a block; `fill`: its fill colour from the drawing. */
+export type Shape = { pts: [number, number][]; z?: number; closed?: boolean; label?: string; h?: number; fill?: string };
 /** Truss and rigging already in a drawing (from a Vectorworks read-out). `b` when a truss's length is known. */
 export type RigItem = { kind: "truss" | "hoist" | "other"; name: string; at: [number, number, number]; b?: [number, number, number]; bbox?: [number, number, number, number]; fields?: Record<string, string>; layer?: string };
 

@@ -129,7 +129,13 @@ def NextLayer(h):
     return DOC.layers[i + 1] if i + 1 < len(DOC.layers) else NIL
 
 
+def GetObjectVariableReal(h, index):
+    return float({102: getattr(h, "sx", 1.0), 103: getattr(h, "sy", 1.0), 104: getattr(h, "sz", 1.0)}.get(index, 0.0))
+
+
 def GetObjectVariableInt(h, index):
+    if index == 101:  # symbol scale type: 1 none, 2 symmetric, 3 asymmetric
+        return int(getattr(h, "scale_type", 1))
     if index == 154:
         return h.layer_type
     if index == 153:
@@ -507,6 +513,8 @@ def Group():
         DOC.objects.remove(m)
     g = DOC.add(_Obj(11, members=members))
     g.layer = members[0].layer if members else DOC.active_layer
+    for m in members:
+        m.parent_obj = g
 
 
 def DoMenuTextByName(subMenu, index):
@@ -665,17 +673,44 @@ def FInGroup(ObjectHd):
     return m[0] if m else NIL
 
 
+def FInLayer(h):
+    top = [o for o in DOC.objects if o.layer is h and getattr(o, "parent_obj", None) is None]
+    return top[0] if top else NIL
+
+
+def FInSymDef(sdHd):
+    m = getattr(sdHd, "members", [])
+    return m[0] if m else NIL
+
+
+def GetLVis(h):
+    return int(getattr(h, "visibility", 0))
+
+
+def GetFPat(h):
+    return int(h.attrs.get("fpat", 1))
+
+
+def GetFillBack(h):
+    return tuple(h.attrs.get("fill_rgb", (65535, 65535, 65535)))
+
+
 def NextObj(h):
     sib = getattr(getattr(h, "parent_obj", None), "members", None)
-    if sib is None:
+    if sib is None and getattr(h, "layer", None) is not None:
+        sib = [o for o in DOC.objects if o.layer is h.layer and getattr(o, "parent_obj", None) is None]
+    if sib is None or h not in sib:
         return NIL
     i = sib.index(h)
     return sib[i + 1] if i + 1 < len(sib) else NIL
 
 
 def GetSymLoc3D(objectHandle):
+    # Like real Vectorworks (measured on CFF-26): x, y from the INTERNAL origin, i.e. shifted by the
+    # user origin, unlike GetSymLoc and GetBBox.
     x, y = objectHandle.loc
-    return (x, y, getattr(objectHandle, "z", 0.0))
+    ox, oy = DOC.origin
+    return (x + ox, y + oy, getattr(objectHandle, "z", 0.0))
 
 
 def GetSymRot(h):

@@ -49,3 +49,27 @@ test("big outline layers are split so no layer document is too big to store", ()
   for (const l of layers) assert.ok(JSON.stringify(l).length < 200_000, `${l.name} is ${JSON.stringify(l).length} bytes`);
   assert.equal(layers.reduce((s, l) => s + (l.shapes?.length ?? 0), 0), 3000);
 });
+
+test("3D objects come as blocks in their own colour, and layers start shown as in the drawing", () => {
+  const r: Readout = {
+    readout: 1,
+    document: "Set.vwx",
+    units: "in",
+    layers: [
+      { name: "CFF SET-26", type: "design", visible: true, elevation: 12 },
+      { name: "CNC LAYOUT", type: "design", visible: false },
+    ],
+    classes: [],
+    objects: [
+      { t: "polygon", layer: "CFF SET-26", cls: "None", bbox: [0, 0, 10, 4], pts: [[0, 0], [10, 0], [10, 4], [0, 4]], closed: true, z: [0, 36], fill: "#ff0000", in: "Podium" },
+      { t: "line", layer: "CNC LAYOUT", cls: "None", bbox: [0, 0, 5, 0], pts: [[0, 0], [5, 0]] },
+      { t: "symbol", layer: "CFF SET-26", cls: "None", bbox: [0, 0, 1, 1], symbol: "Truss 10ft", at: [0, 0, 0], in: "Big Set" },
+    ],
+  };
+  const out = readoutLayers(r, { name: "Set.vwx", from: "vectorworks" } as never, "now");
+  const set = out.find((l) => l.name === "Set: CFF SET-26")!;
+  assert.deepEqual(set.shapes![0], { pts: [[0, 0], [10, 0], [10, 4], [0, 4]], z: 12, closed: true, h: 36, fill: "#ff0000" });
+  assert.equal(set.visible, true);
+  assert.equal(out.find((l) => l.name === "Set: CNC LAYOUT")!.visible, false);
+  assert.ok(!out.some((l) => l.kind === "rig"), "a truss symbol nested inside another symbol isn't a separate rig piece");
+});
