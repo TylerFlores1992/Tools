@@ -16,7 +16,8 @@ then someone has to sign in to Windows before Vectorworks can start.
 2. **On the main PC**, in an admin PowerShell, from this folder:
    `powershell -ExecutionPolicy Bypass -File .\pc-setup.ps1`
    It lets the wired card wake the PC (magic packet only), turns off Fast Startup, sets sleep
-   after 30 idle minutes, and prints `-Mac … -Ip …`.
+   after 30 idle minutes, lets the home network ping the PC (so the page can tell it's awake),
+   and prints `-Mac … -Ip …`.
 3. **In the Deco app**: reserve that IP for the PC (More → Advanced → Address Reservation).
 4. **On the home server**, admin PowerShell, from this folder (Node 22+ needed, already there for
    Page Turner):
@@ -25,7 +26,7 @@ then someone has to sign in to Windows before Vectorworks can start.
    scheduled task, `pc-waker`) and publishes `/pc` through Tailscale Funnel. `/dvr` and `/course`
    are left alone.
 5. **In Vercel** (project `tylerflores-dev`, Production) add, then redeploy:
-   - `PC_WAKER_URL` = `https://home-server.tailef3c66.ts.net/pc`
+   - `PC_WAKER_URL` = `https://desktop-mdc5q6e.tailef3c66.ts.net/pc`
    - `PC_WAKER_TOKEN` = the text in `pc-waker.token` (mark it Sensitive)
 6. **Connector (optional, recommended):** set `VWMCP_WATCH` on the PC to your Dropbox folders
    with show files, separated by `;` (e.g. `C:\Users\you\Dropbox\Rig Studio;C:\Users\you\Dropbox\Shows`).

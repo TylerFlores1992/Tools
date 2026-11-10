@@ -1,7 +1,7 @@
 # Run once on the MAIN PC (the one with Vectorworks), in an admin PowerShell:
 #   powershell -ExecutionPolicy Bypass -File .\pc-setup.ps1
 # Lets the wired network card wake the PC, makes the PC sleep instead of staying on, and prints
-# the two values the home server needs. It changes nothing else. The BIOS part is by hand (README).
+# the two values the home server needs; it also lets the home network ping it. Nothing else. The BIOS part is by hand (README).
 $ErrorActionPreference = "Stop"
 
 $nic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" -and $_.MediaType -eq "802.3" } | Select-Object -First 1
@@ -22,7 +22,14 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\P
 powercfg /change standby-timeout-ac 30
 powercfg /change hibernate-timeout-ac 0
 
-$ip = (Get-NetIPAddress -InterfaceIndex $nic.ifIndex -AddressFamily IPv4 | Select-Object -First 1).IPAddress
+# 4. Let the home server see that the PC is awake: Windows refuses pings by default. Only from
+#    this home network (LocalSubnet), only echo requests.
+if (-not (Get-NetFirewallRule -DisplayName "PC waker: ping from home network" -ErrorAction SilentlyContinue)) {
+  New-NetFirewallRule -DisplayName "PC waker: ping from home network" -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -RemoteAddress LocalSubnet -Profile Any -Action Allow | Out-Null
+}
+
+$ip = (Get-NetIPConfiguration -InterfaceIndex $nic.ifIndex).IPv4Address | Where-Object { $_.IPAddress -notlike "169.254.*" } | Select-Object -First 1 -ExpandProperty IPAddress
+if (-not $ip) { throw "The wired connection has no address on the home network. Is the cable plugged into the router?" }
 Write-Host ""
 Write-Host "Done on this PC. Give these two to setup.ps1 on the home server:"
 Write-Host "  -Mac $($nic.MacAddress) -Ip $ip"
