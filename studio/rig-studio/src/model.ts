@@ -103,7 +103,18 @@ export function sortJobs<T extends Pick<Job, "at" | "pinnedAt">>(list: T[]): T[]
 }
 
 /** config/workers: the two scheduled tasks the page starts sessions with. */
-export type Workers = { cloud?: string; pc?: string; artifact?: string };
+export type Workers = { cloud?: string; pc?: string; artifact?: string; wake?: boolean };
+
+/**
+ * Which scheduled task a job fires, and the line that tells it what to do. With `wake` on (the PC
+ * waker is set up, config/pcwaker), a PC job goes to the cloud worker first: it wakes the PC,
+ * waits for it to answer, then hands the same job to the PC worker. A sleeping PC can't start a
+ * session on itself.
+ */
+export function route(w: Workers | null, where: "cloud" | "pc"): { trigger?: string; handoff?: string } {
+  if (where === "pc" && w?.wake && w.cloud && w.pc) return { trigger: w.cloud, handoff: w.pc };
+  return { trigger: where === "pc" ? w?.pc : w?.cloud };
+}
 
 export const vid = (n: number) => `v${String(n).padStart(4, "0")}`;
 

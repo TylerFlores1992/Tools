@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, route, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { isReadout, readoutLayers, readoutSummary } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
@@ -691,17 +691,17 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
 
   const startSession = useCallback(
     async (request: string, where: "cloud" | "pc"): Promise<string> => {
-      const trig = where === "pc" ? env.workers?.pc : env.workers?.cloud;
+      const { trigger: trig, handoff } = route(env.workers, where);
       if (!env.caps.mcp) throw new Error("Full sessions need this page open in Claude.");
       if (!trig) throw new Error("Full sessions aren't set up for this page yet. Ask Claude in a chat to set up Rig Studio's sessions.");
       const ref = db.collection("jobs").doc();
-      const job: Omit<Job, "id"> = { pid, project: project?.name ?? pid, request: request.slice(0, 4000), where, status: "queued", at: now(), progress: "Waiting for the session to start" };
+      const job: Omit<Job, "id"> = { pid, project: project?.name ?? pid, request: request.slice(0, 4000), where, status: "queued", at: now(), progress: handoff ? "Waking your PC first (a minute or two)" : "Waiting for the session to start" };
       await ref.set(job);
       try {
         const r = payloadOf(
           await env.caps.mcp.callTool(SERVERS.remote, "fire_trigger", {
             trigger_id: trig,
-            text: `Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}\n\n(Every at/updated/updatedAt you write is the real current UTC time from \`date -u +%Y-%m-%dT%H:%M:%SZ\`, read fresh each time.)`,
+            text: `${handoff ? `wake the PC, then hand off to: ${handoff}\n` : ""}Rig Studio job ${ref.id}\nproject: ${pid} ("${project?.name ?? ""}")\nwhere: ${where}\nviewing version: ${shown?.n ?? 0}\nrequest:\n${request}\n\n(Every at/updated/updatedAt you write is the real current UTC time from \`date -u +%Y-%m-%dT%H:%M:%SZ\`, read fresh each time.)`,
           }),
         ) as Record<string, unknown> | string | undefined;
         const obj = typeof r === "object" && r ? r : {};

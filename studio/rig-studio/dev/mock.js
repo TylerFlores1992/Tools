@@ -70,5 +70,6 @@
   const assets = { upload: async (b) => { log.push({ upload: b.type }); return { id: "a".repeat(31) + String(log.length % 10), url: URL.createObjectURL(b) }; }, delete: async () => ({ deleted: true }) };
   const caps = { db, mcp, sample, assets, downloads: { save: async (r) => { log.push({ download: r.filename }); return { status: "saved" }; } }, user: { isOwner: async () => true, canEdit: async () => true, id: async () => "u_test" } };
   window.__DOCS__ = docs;
+  window.__setDoc = (p, d) => { docs.set(p, structuredClone(d)); notify(); };
   window.claude = { use: async (name) => caps[name] ?? null };
 })();

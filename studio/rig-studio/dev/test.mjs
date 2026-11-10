@@ -137,6 +137,21 @@ for (const scheme of ["dark", "light"]) {
     ok(fire && fire.input.trigger_id === "trig_pc" && /Rig Studio job \S+\nproject: air-pro-roof/.test(fire.input.text) && /Read the lighting plot/.test(fire.input.text), "fire_trigger went to the PC worker with the job and request");
     const job = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k]) => k.startsWith("jobs/"))?.[1]);
     ok(job && job.status === "queued" && job.where === "pc" && job.pid === "air-pro-roof", "a queued job document was written");
+    // With the waker set up, a PC job goes to the cloud worker to wake the PC first.
+    await p.evaluate(() => window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc", wake: true }));
+    await p.fill("#ask", "Wake test request");
+    await p.selectOption("#where", "pc");
+    await p.click("#start-session");
+    await p.waitForFunction(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").length >= 2);
+    const fire2 = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").at(-1));
+    ok(fire2.input.trigger_id === "trig_cloud" && /^wake the PC, then hand off to: trig_pc\nRig Studio job /.test(fire2.input.text) && /where: pc/.test(fire2.input.text), "with the waker on, a PC job wakes the PC through the cloud worker and hands off");
+    // Put things back so the rest of the run counts one PC job.
+    await p.evaluate(() => {
+      window.__setDoc("config/workers", { cloud: "trig_cloud", pc: "trig_pc" });
+      const k = [...window.__DOCS__.entries()].find(([, v]) => v.request === "Wake test request")?.[0];
+      if (k) window.__DOCS__.delete(k);
+      window.__CALLS__.splice(window.__CALLS__.lastIndexOf(window.__CALLS__.filter((c) => c.tool === "fire_trigger").at(-1)), 1);
+    });
     // A session's progress shows live.
     await p.evaluate(() => {
       const [k, v] = [...window.__DOCS__.entries()].find(([k]) => k.startsWith("jobs/"));

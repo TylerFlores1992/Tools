@@ -39,10 +39,19 @@ test("fixtures from a CSV in feet, or inches when the header says so", () => {
   assert.match(fixturesFromCsv("a,b\n1,2").problem ?? "", /x and y/);
 });
 
-import { sortProjects } from "./model.ts";
+import { route, sortProjects } from "./model.ts";
 
 test("the project list: pinned first in the order pinned, then most recently changed", () => {
   const p = (id: string, updatedAt: string, pinnedAt?: string | null) => ({ id, updatedAt, pinnedAt });
   const out = sortProjects([p("old", "2026-01-01"), p("new", "2026-03-01"), p("pin2", "2026-01-02", "2026-02-02"), p("pin1", "2025-01-01", "2026-02-01"), p("unpinned", "2026-02-01", null)]);
   assert.deepEqual(out.map((x) => x.id), ["pin1", "pin2", "new", "unpinned", "old"]);
+});
+
+test("a PC job wakes the PC through the cloud worker only when the waker is set up", () => {
+  const w = { cloud: "c", pc: "p" };
+  assert.deepEqual(route(w, "pc"), { trigger: "p" });
+  assert.deepEqual(route({ ...w, wake: true }, "pc"), { trigger: "c", handoff: "p" });
+  assert.deepEqual(route({ ...w, wake: true }, "cloud"), { trigger: "c" });
+  assert.deepEqual(route({ cloud: "c", wake: true }, "pc"), { trigger: undefined });
+  assert.deepEqual(route(null, "cloud"), { trigger: undefined });
 });
