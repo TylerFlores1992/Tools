@@ -102,3 +102,13 @@ def test_watcher_reads_out_new_files_only_when_quiet(fake_vw, tmp_path, monkeypa
     done = asyncio.run(srv.watch_once(now=10_000.0))
     assert done and done[0].get("saved") == str(tmp_path / "Show.rigread.json"), done
     assert readout.pending([tmp_path]) == []
+
+
+def test_a_converted_older_file_counts_as_the_same_document():
+    from pathlib import Path
+
+    p = Path("C:/Dropbox/Rig Studio/CFF/CFF-26_041426_v2025.vwx")
+    assert readout.same_document("CFF-26_041426_v2025_v2026.vwx", p)
+    assert readout.same_document("CFF-26_041426_v2025.vwx", p)
+    assert not readout.same_document("Claude connector.vwx", p)
+    assert not readout.same_document("CFF-26_041426_v2025_backup.vwx", p)
