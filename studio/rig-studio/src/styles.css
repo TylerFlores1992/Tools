@@ -320,3 +320,18 @@ tr.over td:first-child::before { content: "✕ "; color: var(--warn); }
 /* A file job's status under the file: symbol + words, never colour alone. */
 .job-line { margin: 6px 0 0; line-height: 1.45; }
 .job-line.bad { color: var(--warn); }
+
+/* Loading the read-out's drawing: over the stage, below the view buttons. */
+.geo-note {
+  position: absolute;
+  left: 12px;
+  top: 64px;
+  z-index: 5;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  max-width: calc(100% - 24px);
+}

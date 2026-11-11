@@ -45,6 +45,13 @@ What it does:
   Rig Studio draws heavy pens as fat lines, keeps texts readable (a mirrored symbol's angle can't be read)
   and has a Paper switch (on by default): white behind the drawing as in Vectorworks; on the page's dark
   background dark pens are lifted and see-through fills read darker (CFF's 22% cream floor looks olive).
+  Since 2026-11-11 a read-out's drawing is NOT copied into the page's database: CFF-26 made 111-148
+  documents (~40 MB), saving took minutes, a phone that put the app away left half a copy, and the
+  database's live view didn't deliver them all ("got less"). The database keeps one small row per
+  drawing layer (`readout: {file, layer}`: name, shown, where from); the shapes are read from the
+  read-out file in Dropbox when the project opens and kept on the device (memory + IndexedDB, keyed
+  by file, Dropbox version and sheet) — src/geometry.ts. CFF-26 now opens in ~12 s as 19 rows.
+  (Older read-outs saved with shapes still show as they are.)
   Opening a read-out saves the layers Vectorworks shows first, retries a busy database, shows
   "Saving … n of N parts" and, if saving stops (the phone put the app away: CFF-26 stopped at 24 of
   111 parts on 2026-11-10), says how many were saved; opening it again replaces the partial copy.

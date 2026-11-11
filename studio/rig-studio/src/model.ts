@@ -81,6 +81,8 @@ export type Layer = {
   onRig?: boolean;
   // shapes
   shapes?: Shape[];
+  /** A read-out's drawing layer: its shapes are read from that read-out file (Dropbox), not stored here. */
+  readout?: { file: string; layer: string };
   // rig (existing truss and rigging)
   rig?: RigItem[];
 };

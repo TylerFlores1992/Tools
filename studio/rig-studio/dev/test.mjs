@@ -185,8 +185,25 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
       return n;
     });
     ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
-    const faced = await p.evaluate(() => window.__DOCS__ && [...window.__DOCS__.entries()].some(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && (v.shapes ?? []).some((s) => s.m && s.m.f.length === 30)));
-    ok(faced, "its real faces came from the part file in Dropbox and are kept on the layer");
+    const row = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && v.kind === "shapes")?.[1]);
+    ok(row && row.readout && !row.shapes, "the database keeps one small row per drawing layer; the shapes stay in the read-out file");
+    // Next visit, on a device that kept nothing: the drawing comes back from Dropbox, faces and all.
+    await p.evaluate(() => window.__rsGeometry.forget());
+    const fetchesBefore = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fetch").length);
+    await p.click("text=← Projects").catch(() => p.click("text=Projects"));
+    await p.waitForSelector(".card");
+    await p.click(".card");
+    await p.waitForSelector(".viewer canvas");
+    await p.waitForFunction(() => !document.querySelector("#geo-note"), null, { timeout: 15000 }).catch(() => {});
+    await p.waitForTimeout(600);
+    const fetchesAfter = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fetch").length);
+    ok(fetchesAfter > fetchesBefore, "coming back, the drawing is read from Dropbox again");
+    await p.click("#tab-layers").catch(() => p.click("text=Layers"));
+    await p.waitForTimeout(300);
+    const outlines = await p.locator(".layers").innerText().catch(() => "");
+    ok(/[1-9]\d* outlines/.test(outlines), `and its outlines are back in Layers (${(outlines.match(/\d+ outlines/) ?? ["none"])[0]})`);
+    await p.click("#tab-files");
+    await p.waitForTimeout(400);
     ok(!(await p.locator(".file", { hasText: "rigmesh" }).count()), "the part files stay out of the file list");
 
     ok(/Read it out again on my PC/.test(await p.locator('[id="read-id:cff"]').innerText().catch(() => "")), "a drawing already read out can be read out again");

@@ -9,7 +9,8 @@ import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
 import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
-import { attachMeshes, isReadout, readoutLayers, readoutSummary, readoutViews, type Readout } from "./readout.ts";
+import { readoutLayers, readoutSummary, readoutViews } from "./readout.ts";
+import { fetchReadout, geoKey, geometryOf, loadGeometry, readoutRows, remember, remembered, type Geometry } from "./geometry.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -649,7 +650,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
   const db = env.caps.db!;
   const [project, setProject] = useState<Project | null | undefined>(undefined);
   const [versions, setVersions] = useState<Version[]>([]);
-  const [layers, setLayers] = useState<Layer[]>([]);
+  const [rawLayers, setRawLayers] = useState<Layer[]>([]);
   const [chat, setChat] = useState<Message[]>([]);
   const [viewing, setViewing] = useState<number | null>(null);
   const [draft, setDraft] = useState<Sketch | null>(null);
@@ -675,7 +676,7 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
       .orderBy("n", "desc")
       .limit(60)
       .onSnapshot((s) => setVersions(s.docs.map((d) => d.data() as Version)));
-    const u3 = p.collection("layers").onSnapshot((s) => setLayers(s.docs.map((d) => ({ ...(d.data() as Layer), id: d.id })).sort((a, b) => a.at.localeCompare(b.at))));
+    const u3 = p.collection("layers").onSnapshot((s) => setRawLayers(s.docs.map((d) => ({ ...(d.data() as Layer), id: d.id })).sort((a, b) => a.at.localeCompare(b.at))));
     const u4 = p
       .collection("chat")
       .orderBy("at", "asc")
@@ -688,6 +689,52 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
       u4();
     };
   }, [db, pid]);
+
+  // Read-out layers: their shapes come from the read-out file (memory, this device, or Dropbox).
+  const [geo, setGeo] = useState<Record<string, Geometry>>({});
+  const [geoNote, setGeoNote] = useState<string | null>(null);
+  useEffect(() => {
+    const mcp = env.caps.mcp;
+    const want = new Map<string, Layer>();
+    for (const l of rawLayers) if (l.readout && l.source) want.set(geoKey(l.readout.file, l.source.modified, l.source.view), l);
+    const missing = [...want.entries()].filter(([k]) => !geo[k]);
+    if (!missing.length) return;
+    let gone = false;
+    const ready: Record<string, Geometry> = {};
+    for (const [k] of missing) {
+      const m = remembered(k);
+      if (m) ready[k] = m;
+    }
+    if (Object.keys(ready).length) setGeo((g) => ({ ...g, ...ready }));
+    const rest = missing.filter(([k]) => !ready[k]);
+    if (!rest.length) return;
+    if (!mcp) {
+      setGeoNote("The drawing comes from Dropbox, which isn't connected here.");
+      return;
+    }
+    setGeoNote("Loading the drawing from Dropbox…");
+    (async () => {
+      for (const [k, row] of rest) {
+        try {
+          const g = await loadGeometry(row, (srv, tool, args) => mcp.callTool(srv, tool, args), project?.dropbox?.path, (x) => payloadOf(x as Parameters<typeof payloadOf>[0]), SERVERS.dropbox);
+          if (gone) return;
+          setGeo((all) => ({ ...all, [k]: g }));
+        } catch (er) {
+          if (!gone) setGeoNote(`Couldn't load the drawing from Dropbox: ${(er as Error).message ?? mcpWords(er, "Dropbox")}. Open it again from Files.`);
+          return;
+        }
+      }
+      if (!gone) setGeoNote(null);
+    })();
+    return () => {
+      gone = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawLayers, project?.dropbox?.path]);
+  const layers = useMemo(
+    () => rawLayers.map((l) => (l.readout && l.source ? { ...l, shapes: geo[geoKey(l.readout.file, l.source.modified, l.source.view)]?.get(l.readout.layer) ?? [] } : l)),
+    [rawLayers, geo],
+  );
 
   const latest = versions[0];
   const shown = viewing !== null ? versions.find((v) => v.n === viewing) ?? latest : latest;
@@ -908,6 +955,11 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
               Paper
             </button>
           </div>
+          {geoNote && (
+            <p className="geo-note small" role="status" aria-live="polite" id="geo-note">
+              {geoNote}
+            </p>
+          )}
           {sketch && compiled ? (
             <ViewerPane sketch={sketch} compiled={compiled} layers={layers} view={view} show={show} paper={paper} labels={labels} picked={picked} onPick={setPicked} />
           ) : (
@@ -1952,54 +2004,29 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
     if (!mcp || !e.file_id) return;
     setOpening(e.file_id);
     try {
-      const res = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: e.file_id })) as { text?: string };
-      let r: unknown;
-      try {
-        r = JSON.parse(res?.text ?? "");
-      } catch {
-        throw new Error("that file isn't a read-out (it isn't JSON)");
-      }
-      if (!isReadout(r)) throw new Error("that file isn't a Rig Studio read-out");
-      let missingParts = 0;
-      if (r.mesh_parts?.length && project.dropbox) {
-        // A big read-out keeps its 3D faces in part files beside it: fetch those too.
-        const listing = payloadOf(await mcp.callTool(SERVERS.dropbox, "list_folder", { path: project.dropbox.path, recursive: false })) as { entries?: Entry[] };
-        const byName = new Map((listing?.entries ?? []).map((x) => [x.name.toLowerCase(), x]));
-        const parts: { meshes?: Record<string, Mesh>; objects?: Readout["objects"] }[] = [];
-        for (const name of r.mesh_parts) {
-          const pe = byName.get(name.toLowerCase());
-          if (!pe?.file_id) {
-            missingParts++;
-            continue;
-          }
-          try {
-            const pr = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: pe.file_id })) as { text?: string };
-            parts.push(JSON.parse(pr?.text ?? "{}"));
-          } catch {
-            missingParts++;
-          }
-        }
-        attachMeshes(r, parts);
-      }
+      const call = (srv: string, tool: string, args: Record<string, unknown>) => mcp.callTool(srv, tool, args);
+      const { r, missingParts } = await fetchReadout(call, project.dropbox?.path, e.file_id, (x) => payloadOf(x as Parameters<typeof payloadOf>[0]), SERVERS.dropbox);
       const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
       await Promise.all(old.map((l) => db.doc(`projects/${project.id}/layers/${l.id}`).delete()));
       const shown = readoutViews(r);
       const key = shown.some((x) => x.key === viewKey) ? viewKey : "";
-      const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox", ...(shown.length > 1 ? { views: shown, view: key } : {}) }, now(), key);
-      // A few writes at a time (the database caps concurrent writes): one by one, CFF-26's 75 layer
-      // documents took 15 s to save. The layers Vectorworks shows go first, so if saving stops (the
-      // phone put the app away: CFF-26 stopped at 24 of 111 parts), what you see is what got saved.
-      const queue = [...made.filter((l) => l.visible), ...made.filter((l) => !l.visible)];
+      const src = { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" as const, ...(shown.length > 1 ? { views: shown, view: key } : {}) };
+      const made = readoutLayers(r, src, now(), key);
+      // The database keeps one small row per drawing layer; the shapes stay in the read-out file and
+      // on this device (geometry.ts): copying them in (CFF-26: 148 documents, 40 MB) went missing.
+      remember(geoKey(e.file_id, e.modified_time, key), geometryOf(made), e.file_id);
+      const rows = readoutRows(made, e.file_id);
+      const queue = [...rows.filter((l) => l.visible), ...rows.filter((l) => !l.visible)];
       let saved = 0;
       let stopped: unknown = null;
-      flash("info", `Saving the read-out: 0 of ${made.length} parts. Keep Rig Studio open until it says done.`);
+      flash("info", `Saving the read-out's ${rows.length} layers…`);
       await Promise.all(
         Array.from({ length: Math.min(4, queue.length) }, async () => {
           for (let l = queue.shift(); l && !stopped; l = queue.shift()) {
             try {
               await saveWithRetry(() => db.collection(`projects/${project.id}/layers`).add(l));
               saved++;
-              if (saved % 8 === 0) flash("info", `Saving the read-out: ${saved} of ${made.length} parts. Keep Rig Studio open until it says done.`);
+              if (saved % 8 === 0) flash("info", `Saving the read-out: ${saved} of ${rows.length} layers…`);
             } catch (er) {
               stopped = er;
             }
@@ -2010,13 +2037,13 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
         const code = (stopped as { code?: string }).code;
         flash(
           "warn",
-          `Saved ${saved} of ${made.length} parts of the read-out, then the database ${code === "quota_exceeded" ? "said it's full" : "stopped answering"}. ` +
+          `Saved ${saved} of ${rows.length} layers of the read-out, then the database ${code === "quota_exceeded" ? "said it's full" : "stopped answering"}. ` +
             (code === "quota_exceeded" ? "Delete an old project or read-out, then open it again." : "Open it again with Rig Studio in front: it replaces the partial copy."),
         );
         return;
       }
       await markSeen([e]);
-      const rowsMade = layerRows(made.map((l, i) => ({ ...l, id: `new${i}` }))).length;
+      const rowsMade = layerRows(rows.map((l, i) => ({ ...l, id: `new${i}` }))).length;
       flash(
         missingParts ? "warn" : "ok",
         `${readoutSummary(r)}${key ? ` Shown as ${shown.find((x) => x.key === key)?.label}.` : ""} Added as ${rowsMade} layer${rowsMade === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
