@@ -556,3 +556,73 @@ def test_a_symbol_inside_a_mirrored_one_turns_the_other_way(server, fake_vw, tmp
     line = next(o for o in data["objects"] if o.get("in") == "Leg" and o.get("pts"))
     # the leg's end: turned 30 about (10, 0) to (14.33, 2.5), then the frame's mirror: (14.33, -2.5)
     assert any(abs(p[0] - 14.33) < 0.02 and abs(p[1] + 2.5) < 0.02 for p in line["pts"]), line["pts"]
+
+
+def test_a_symbol_deep_inside_groups_is_still_drawn(server, fake_vw, tmp_path):
+    """CFF-26's set deck held its video-logo symbol inside nested groups; counting the groups as
+    depth cut it off at 6 and left a hole in the deck. Only symbols inside symbols count."""
+    vs = fake_vw
+    d = vs.DOC
+    logo = vs._Obj(16, name="Logo", w=10.0, h=10.0, members=[])
+    logo.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)], closed=True, parent_obj=logo, layer=None))
+    d.resources["Logo"] = logo
+    deck = vs._Obj(16, name="Deck", w=10.0, h=10.0, members=[])
+    holder = deck
+    for _ in range(12):  # twelve groups deep
+        g = vs._Obj(11, members=[], parent_obj=holder, layer=None)
+        holder.members.append(g)
+        holder = g
+    holder.members.append(vs._Obj(15, symbol="Logo", loc=(0.0, 0.0), w=10.0, h=10.0, rot=0.0, z=0.0, mat=vs._rz(0.0), bbox_off=(0.0, 0.0), parent_obj=holder, layer=None))
+    d.resources["Deck"] = deck
+    vs.Symbol("Deck", (50.0, 50.0), 0.0)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    part = next((o for o in data["objects"] if o.get("in") == "Logo" and o.get("pts")), None)
+    assert part is not None, "the logo inside twelve groups is drawn"
+    assert [50, 50] in part["pts"] and [60, 60] in part["pts"]
+
+
+def test_a_read_out_says_what_each_sheet_viewport_shows(server, fake_vw, tmp_path):
+    """A sheet's viewport can show layers and classes the design layers hide (CFF-26's A-1)."""
+    vs = fake_vw
+    d = vs.DOC
+    parts = d._new_layer("PARTS", 1)
+    parts.visibility = -1
+    sheet = d._new_layer("A-1", 2)
+    d.classes.append("Logos")
+    d.hidden_classes = {"Logos"}
+    vp = vs._Obj(122, name="Plan VP", layer_vis={"PARTS": 0, "Design Layer-1": -1}, class_vis={"Logos": 0})
+    vp.layer, vp.cls = sheet, "None"
+    d.objects.append(vp)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    [v] = data["viewports"]
+    assert v["sheet"] == "A-1" and v["layers"]["PARTS"] == 0 and v["layers"]["Design Layer-1"] == -1
+    assert v["classes"] == {"Logos": 0}, "only classes that differ from the drawing's own"
+
+
+def test_a_symbol_tipped_up_in_3d_stands_up(server, fake_vw, tmp_path):
+    """CFF-26's camera jib arm is a symbol turned 90 degrees about X. Turned in plan only, it lay
+    flat in the wrong place; its faces now follow the whole 3D turn."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Arm", w=10.0, h=4.0, members=[])
+    sym.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None))
+    d.resources["Arm"] = sym
+    vs.Symbol("Arm", (100.0, 0.0), 0.0)
+    d.last.mat = [[1.0, 0, 0], [0, 0, -1.0], [0, 1.0, 0]]  # Rx(90): (x, y, z) -> (x, -z, y)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    part = next(o for o in data["objects"] if o.get("in") == "Arm" and o.get("mesh"))
+    corners = {p for f in _faces(part["mesh"]) for p in f}
+    assert (110.0, -36.0, 4.0) in corners and (100.0, 0.0, 0.0) in corners, sorted(corners)
+
+
+def test_a_read_out_lists_the_classes_switched_off(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    d.classes += ["Logos", "Decks"]
+    d.hidden_classes = {"Logos"}
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    assert data["hidden_classes"] == ["Logos"]

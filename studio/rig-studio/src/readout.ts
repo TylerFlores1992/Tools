@@ -57,7 +57,28 @@ export type Readout = {
   truncated?: boolean;
   /** Part files beside this one holding the 3D faces ("<drawing>.rigmesh1.json"…), when it was too big for one. */
   mesh_parts?: string[];
+  /** Classes switched off in the drawing (connector 0.9.3+). */
+  hidden_classes?: string[];
+  /** Each sheet's viewports: design layers (0 shown, -1 hidden, 2 greyed) and the classes they show
+   * differently from the drawing (connector 0.9.2+). */
+  viewports?: SheetView[];
 };
+
+export type SheetView = { sheet: string; name: string; layers: Record<string, number>; classes: Record<string, number> };
+
+/** The ways a read-out can be shown: the design layers as Vectorworks has them, or as a sheet's
+ * viewport does (a sheet can show layers and classes the design layers hide). */
+export function readoutViews(r: Pick<Readout, "viewports">): { key: string; label: string }[] {
+  const seen = new Set<string>();
+  const out = [{ key: "", label: "Design layers" }];
+  for (const v of r.viewports ?? []) {
+    const key = `${v.sheet}/${v.name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ key, label: v.name && v.name !== v.sheet ? `Sheet ${v.sheet} (${v.name})` : `Sheet ${v.sheet}` });
+  }
+  return out;
+}
 
 /** Put the part files back together with the read-out: the faces onto their objects, and the
  * shapes that didn't fit in the main file back into its objects. Returns how many objects got faces. */
@@ -135,7 +156,12 @@ const chunk = <T,>(xs: T[], size: number) => Array.from({ length: Math.ceil(xs.l
  * The layers for a read-out. Shapes come one layer per Vectorworks design layer, split so no
  * layer document passes ~150 KB; only the stage- and venue-looking ones start visible.
  */
-export function readoutLayers(r: Readout, source: Layer["source"], at: string): Omit<Layer, "id">[] {
+export function readoutLayers(r: Readout, source: Layer["source"], at: string, viewKey = ""): Omit<Layer, "id">[] {
+  // Shown as a sheet's viewport: its layer and class visibility instead of the design layers'.
+  const view = viewKey ? r.viewports?.find((v) => `${v.sheet}/${v.name}` === viewKey) : undefined;
+  const docHidden = new Set(r.hidden_classes ?? []);
+  const clsHidden = (c: string) => (view && c in view.classes ? view.classes[c] === -1 : docHidden.has(c));
+  let topCls = "";
   const fixtures: Fixture[] = [];
   const rig: RigItem[] = [];
   const shapes = new Map<string, Shape[]>();
@@ -157,8 +183,10 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     } else if ((o.plugin || o.symbol) && !o.in && RIGGING.test(name)) {
       rig.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
     }
-    // Classes switched off in Vectorworks don't draw there, so they don't here either.
-    if (o.hid) continue;
+    // Classes switched off in Vectorworks don't draw there, so they don't here either. As a sheet: the
+    // viewport's classes, the object's own and the class of the symbol it's part of.
+    if (!o.in) topCls = o.cls;
+    if (view && r.hidden_classes ? clsHidden(o.cls) || (!!o.in && clsHidden(topCls)) : o.hid) continue;
     const ink = { ...(o.pen && HEX.test(o.pen) ? { pen: o.pen } : {}), ...(o.lw && o.lw > 7 ? { lw: o.lw } : {}) };
     if ((o.t === "text" || o.t === "dimension") && o.at && o.text) {
       // Words as the plan shows them: the text itself, or a dimension's figure and its line.
@@ -208,7 +236,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string): 
     }
     if (part.length) parts.push(part);
     // Shown as in the drawing: the layers visible there start visible here (older read-outs: by name).
-    const vis = r.layers.find((l) => l.name === layer)?.visible;
+    const vis = view && layer in view.layers ? view.layers[layer] !== -1 : r.layers.find((l) => l.name === layer)?.visible;
     for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, group: `${doc}: ${layer}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
   }
   return out;

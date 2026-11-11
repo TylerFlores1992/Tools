@@ -55,7 +55,15 @@ What it does:
   mirrored in local Y, then turned by GetSymRot (measured on CFF-26: the stage-left family arch,
   GetSymRot -61, fits its outline only that way; drawn unmirrored it swung through the set). Inside a
   mirrored symbol, angles turn the other way. 152 of CFF-26's symbols are mirrored.
-  Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
+  Symbols tipped in 3D (0.9.3): the transform carries a full 3x3 matrix. Get3DOrientation is
+  Rz . Ry . Rx, then a flip of local Z when flagged (a plan mirror reads rx 180 + flipped; measured on
+  CFF-26). CFF-26's camera jib arm is turned 90 degrees about X. Groups don't count towards the symbol
+  depth limit (10): CFF-26's video-logo deck sat inside nested groups and was cut off at 6, leaving a
+  hole. Checked on CFF-26: every visible symbol's parts fit its own outline, or both mirrored copies
+  miss by the same amount (outlines that count only the 2D part).
+  Sheets (0.9.2+): the read-out lists each sheet viewport's layer visibility and the classes it shows
+  differently, plus the drawing's hidden classes; Files offers "Show as" (design layers or a sheet).
+  Not yet read: a sheet's annotations (drawn on the sheet over the viewport) and its viewport overrides (its own class and layer visibility), so a read-out matches
   the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
   definition every point (GetBBox, GetSegPt, GetPolyPt, GetSymLoc, GetPolyPt3D) reads back as true − user

@@ -64,7 +64,8 @@ export type Layer = {
   visible: boolean;
   at: string;
   /** Where it came from, so a newer copy in Dropbox can be flagged. */
-  source?: { name: string; dropboxId?: string; modified?: string; from: "upload" | "dropbox" | "vectorworks" | "session" };
+  /** Where it came from; a read-out also keeps the ways it can be shown (design layers, each sheet) and which one it is. */
+  source?: { name: string; dropboxId?: string; modified?: string; from: "upload" | "dropbox" | "vectorworks" | "session"; views?: { key: string; label: string }[]; view?: string };
   // image
   asset?: string;
   px?: [number, number];

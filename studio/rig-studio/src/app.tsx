@@ -9,7 +9,7 @@ import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
 import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
-import { attachMeshes, isReadout, readoutLayers, readoutSummary, type Readout } from "./readout.ts";
+import { attachMeshes, isReadout, readoutLayers, readoutSummary, readoutViews, type Readout } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
 /* ------------------------------------------------------------------ small pieces */
@@ -1946,7 +1946,8 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
 
   const [opening, setOpening] = useState<string | null>(null);
   /** Turn a read-out from Dropbox into layers (fixtures, the existing rig, outlines). */
-  const openReadout = async (e: Entry) => {
+  // A read-out opens the way it was last shown (design layers or a sheet), kept on its layers.
+  const openReadout = async (e: Entry, viewKey = layers.find((l) => l.source?.dropboxId === e.file_id)?.source?.view ?? "") => {
     const mcp = env.caps.mcp;
     if (!mcp || !e.file_id) return;
     setOpening(e.file_id);
@@ -1982,7 +1983,9 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       }
       const old = layers.filter((l) => l.source?.dropboxId === e.file_id);
       await Promise.all(old.map((l) => db.doc(`projects/${project.id}/layers/${l.id}`).delete()));
-      const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
+      const shown = readoutViews(r);
+      const key = shown.some((x) => x.key === viewKey) ? viewKey : "";
+      const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox", ...(shown.length > 1 ? { views: shown, view: key } : {}) }, now(), key);
       // A few writes at a time (the database caps concurrent writes): one by one, CFF-26's 75 layer
       // documents took 15 s to save. The layers Vectorworks shows go first, so if saving stops (the
       // phone put the app away: CFF-26 stopped at 24 of 111 parts), what you see is what got saved.
@@ -2016,7 +2019,7 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       const rowsMade = layerRows(made.map((l, i) => ({ ...l, id: `new${i}` }))).length;
       flash(
         missingParts ? "warn" : "ok",
-        `${readoutSummary(r)} Added as ${rowsMade} layer${rowsMade === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
+        `${readoutSummary(r)}${key ? ` Shown as ${shown.find((x) => x.key === key)?.label}.` : ""} Added as ${rowsMade} layer${rowsMade === 1 ? "" : "s"}${old.length ? ", replacing the older copy" : ""}.${missingParts ? ` ${missingParts} of its 3D part files ${missingParts === 1 ? "isn't" : "aren't"} in Dropbox yet, so some objects show as plain blocks: open it again in a minute.` : " See Layers; ask Claude in the chat to rebuild the rig from it."}`,
       );
     } catch (er) {
       flash("warn", /fetch|tool/i.test(String((er as { code?: string }).code ?? "")) ? mcpWords(er, "Dropbox") : `Couldn't open the read-out: ${(er as Error).message ?? mcpWords(er, "Dropbox")}`);
@@ -2205,6 +2208,25 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
                     <button className="link small" onClick={() => openReadout(e)} disabled={opening === e.file_id} id={`open-readout-${e.file_id}`}>
                       {opening === e.file_id ? "Opening…" : used ? "Open again (replace the layers)" : "Open read-out as layers"}
                     </button>
+                  )}
+                  {e.name.toLowerCase().endsWith(".rigread.json") && (used?.source?.views?.length ?? 0) > 1 && (
+                    <label className="small">
+                      Show as{" "}
+                      <select
+                        value={used?.source?.view ?? ""}
+                        disabled={opening === e.file_id}
+                        aria-label="Show the read-out as"
+                        onChange={(ev) => {
+                          void openReadout(e, ev.target.value);
+                        }}
+                      >
+                        {used!.source!.views!.map((v) => (
+                          <option key={v.key} value={v.key}>
+                            {v.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   )}
                   {(() => {
                     const done =

@@ -126,6 +126,19 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
         await p.waitForTimeout(1500);
         await p.screenshot({ path: join(shots, f) });
       }
+      // Shown as a sheet (RS_VIEW="A-1"): pick it in the read-out's "Show as" list and wait for it.
+      if (process.env.RS_VIEW) {
+        await p.click("#tab-files").catch(() => {});
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, "rig-studio-real-files.png") });
+        const sel = p.getByLabel("Show the read-out as");
+        const label = await sel.locator("option").filter({ hasText: process.env.RS_VIEW }).first().textContent();
+        await sel.selectOption({ label });
+        await p.waitForTimeout(3000);
+        await p.waitForFunction(() => !document.querySelector('[id^="open-readout-"]')?.textContent?.includes("Opening"), null, { timeout: 300000 });
+        await p.waitForTimeout(4000);
+        console.log("shown as", label);
+      }
       // Camera shots (RS_LOOK="px,py,pz,tx,ty,tz;...", three space: y up, z = minus drawing y).
       for (const [i, spec] of (process.env.RS_LOOK ?? "").split(";").filter(Boolean).entries()) {
         const n = spec.split(",").map(Number);

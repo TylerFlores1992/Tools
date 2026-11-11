@@ -910,7 +910,9 @@ def Get3DOrientation(h):
     m = h.mat
     mirrored = _det(m) < 0
     if mirrored:
-        m = _mm(m, [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+        # Real Vectorworks reports a mirror as a flip of local Z (measured 2026-11-11 on CFF-26: a
+        # symbol mirrored in plan reads rx 180 and flipped, i.e. Rx(180) . flipZ = mirror in Y).
+        m = _mm(m, [[1.0, 0, 0], [0, 1.0, 0], [0, 0, -1.0]])
     b = math.asin(max(-1.0, min(1.0, -m[2][0])))
     a = math.atan2(m[2][1], m[2][2])
     c = math.atan2(m[1][0], m[0][0])
@@ -1241,3 +1243,18 @@ def GetTextOrientation(theText):
 
 def GetDimText(h):
     return getattr(h, "dim_text", "")
+
+
+# ---- sheet viewports: what each shows -----------------------------------------------------------
+
+
+def GetVPLayerVisibility(viewportHandle, layerHandle):
+    return (True, int(getattr(viewportHandle, "layer_vis", {}).get(layerHandle.name, 0)))
+
+
+def GetVPClassVisibility(viewportHandle, className):
+    return (True, int(getattr(viewportHandle, "class_vis", {}).get(className, GetCVis(className))))
+
+
+for _n in ("GetVPLayerVisibility", "GetVPClassVisibility"):
+    globals()[_n] = _strict(_n, globals()[_n])
