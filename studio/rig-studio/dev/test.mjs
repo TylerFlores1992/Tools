@@ -227,6 +227,20 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     ok((await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger" && c.input.trigger_id === "trig_pc").length)) === 0, "no PC session is started: the connector answers the request itself");
     await p.evaluate((id) => {
       window.__MCP__["Dropbox/list_folder"].entries.push({ name: "Air Pro - Self Climber (09.07.22).rigstatus.json", path: "ns:1//s", file_id: "id:st", modified_time: new Date(Date.now() + 2000).toISOString().slice(0, 19) + "Z", object_type: "file", file: { size: 90 } });
+      window.__MCP__["Dropbox/fetch/id:st"] = { id: "id:st", text: JSON.stringify({ job: id, state: "asking", message: "Vectorworks is asking something on your PC.", prompt: { title: "Vectorworks", text: "Some textures could not be found.", buttons: ["Locate…", "Ignore"] } }) };
+    }, jid);
+    await p.waitForSelector("#ask-box", { timeout: 15000 });
+    const askText = await p.locator("#ask-box").innerText();
+    ok(/Some textures could not be found/.test(askText) && (await p.locator("#ask-box button").count()) === 2, "a box Vectorworks waits on shows on the phone with its own buttons");
+    await p.check("#ask-box input[type=checkbox]");
+    await p.click("#ask-box button:has-text('Ignore')");
+    await p.waitForFunction(() => !document.querySelector("#ask-box"));
+    const af = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "create_file").at(-1));
+    ok(af.input.path.endsWith(`Air Pro - Self Climber (09.07.22).${jid}.riganswer.json`) && JSON.parse(af.input.content).button === "Ignore" && JSON.parse(af.input.content).remember === true, "the tap goes to the PC as an answer file beside the drawing, remembered when asked");
+    ok(/Sent “Ignore” to your PC/.test(await p.locator('[id="job-id:1"]').innerText()), "and the status says what was sent, in words");
+    await p.evaluate((id) => {
+      const st = window.__MCP__["Dropbox/list_folder"].entries.find((e) => e.file_id === "id:st");
+      st.modified_time = new Date(Date.now() + 4000).toISOString().slice(0, 19) + "Z";
       window.__MCP__["Dropbox/fetch/id:st"] = { id: "id:st", text: JSON.stringify({ job: id, state: "done", message: "Read out on your PC: 12 objects, 3 layers, 4 symbols, 1 lighting fixtures." }) };
     }, jid);
     await p.waitForFunction(() => /✓ Done\. Read out on your PC: 12 objects/.test(document.querySelector('[id="job-id:1"]')?.textContent ?? ""), null, { timeout: 15000 });
@@ -248,6 +262,23 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     ok(v2.sketch.points.length === 2 && v2.by === "claude" && /corners/.test(v2.note), "version 2 has the two hoists, by Claude, with its note");
     await p.waitForSelector("text=Added a 1-ton hoist");
     ok(true, "Claude's reply shows in the chat");
+    ok(await p.evaluate(() => window.__CALLS__.some((l) => l.sample && l.model === "claude-opus-5-5" && l.tier === "complex")), "the chat asks for Opus 5.5 (the most capable tier if it can't)");
+    ok(!/wasn't available/.test(await p.locator("body").innerText()), "no lighter-model note when the top tier answered");
+
+    console.log("the chat draws the X and Y reference lines");
+    await p.evaluate(() => { window.__SAMPLE__ = [{ calls: [{ name: "set_reference", input: { origin: [522, 0], x_line: "DS edge", y_line: "CL" } }], text: "Added CL and the DS edge as the X and Y reference." }]; });
+    await p.fill("#ask", "Add an X and Y reference off the center line and the downstage edge");
+    await p.click("#send");
+    await p.waitForSelector("text=Added CL and the DS edge");
+    const refDoc = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && v.reference)?.[1]);
+    ok(refDoc && refDoc.name === "Reference: CL / DS edge" && refDoc.visible && refDoc.shapes.some((s) => s.text === "CL (X = 0)"), "a reference layer with its named lines is added, shown");
+    ok(!(await p.evaluate(() => [...window.__DOCS__.keys()].some((k) => k.endsWith("versions/v0003")))), "no version: the rig didn't change");
+    await p.click("#tab-layers");
+    ok(await p.locator("text=Reference: CL / DS edge").count() > 0, "it's in the Layers list, where it can be hidden");
+    await p.click("text=Plan");
+    await p.waitForTimeout(500);
+    await p.screenshot({ path: join(shots, "rig-studio-reference.png") });
+    await p.click("#tab-chat");
     const prompt = await p.evaluate(() => JSON.stringify(window.__CALLS__.find((c) => c.sample)));
     ok(/RIG FORMAT/.test(prompt) && /Air Pro self-climber roof/.test(prompt), "the prompt carries the format and the project");
 

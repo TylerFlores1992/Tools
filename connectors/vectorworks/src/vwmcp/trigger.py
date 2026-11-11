@@ -19,10 +19,12 @@ If you're in another app (a browser, Claude) it fires straight away and hands fo
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 import threading
 import time
+from pathlib import Path
 from typing import NamedTuple
 
 from .config import Settings
@@ -60,6 +62,10 @@ class Prompt(NamedTuple):
 PROMPTS = (
     # Opening an older file converts it into a renamed copy; the original file is never changed.
     Prompt("created with an older version of vectorworks", ("OK",)),
+    # A drawing that uses fonts this PC doesn't have asks which to show instead (measured
+    # 2026-11-11 on the Bili Bili rigging file: "Font Mapping", Bank Gothic -> Arial). OK keeps
+    # Vectorworks' suggestion; it only changes how text looks here, and the copy is never saved.
+    Prompt("font mapping", ("OK",)),
     # A converted copy has no name, so 30 minutes later autosave asks to name and save it. No
     # (and stop asking): the copy is only read, and saving it would put files in the user's folders.
     Prompt(
@@ -68,12 +74,65 @@ PROMPTS = (
         tick="don't back up this document",
     ),
 )
+# Common prompts when opening someone else's drawing, from Vectorworks' help and how its alerts are
+# worded; each answer is the one that changes and saves nothing. Not all measured yet: a wording that
+# differs simply isn't matched, and the box is passed to the designer instead (pending_prompt).
+PROMPTS += (
+    # A referenced file (a design layer viewport's source) isn't on this PC: don't go looking.
+    Prompt("would you like to locate", ("No", "Skip", "Cancel")),
+    # Plug-in objects this Vectorworks doesn't have: they show as boxes; carry on.
+    Prompt("plug-in objects could not be found", ("OK", "Continue")),
+    Prompt("missing plug-in", ("OK", "Continue")),
+    # Textures or images missing: carry on without them.
+    Prompt("textures could not be found", ("OK", "Continue", "Ignore")),
+    # Someone else has it open: read it, don't take it over.
+    Prompt("open it read-only", ("Open Read-Only", "Read-Only", "Read Only")),
+    Prompt("is in use by", ("Open Read-Only", "Read-Only", "Read Only")),
+)
 DISCARD_BUTTONS = ("No", "Don't Save", "Do not save")
+
+# Answers the designer chose for boxes the connector didn't know ("Remember this answer").
+LEARNED_FILE = Path.home() / ".vwmcp" / "prompts.json"
+
+
+def learned_prompts() -> list[Prompt]:
+    try:
+        rows = json.loads(LEARNED_FILE.read_text(encoding="utf-8"))
+        return [Prompt(str(r["phrase"]), tuple(str(b) for b in r["buttons"])) for r in rows if r.get("phrase") and r.get("buttons")]
+    except (OSError, ValueError, TypeError, KeyError):
+        return []
+
+
+def remember_prompt(phrase: str, button: str) -> None:
+    """Keep the designer's answer, so the same box is answered by itself next time."""
+    phrase = _plain(phrase)
+    if len(phrase) < 8:
+        return  # too short to tell boxes apart: better asked again than answered wrong
+    rows = [r for r in (json.loads(LEARNED_FILE.read_text(encoding="utf-8")) if LEARNED_FILE.exists() else []) if r.get("phrase") != phrase]
+    rows.append({"phrase": phrase, "buttons": [button]})
+    LEARNED_FILE.parent.mkdir(parents=True, exist_ok=True)
+    LEARNED_FILE.write_text(json.dumps(rows, indent=1), encoding="utf-8")
+
+
+def _clean(text: str) -> str:
+    """A box's words without what changes from file to file: quoted names, paths, file names, numbers."""
+    body = re.sub(r"[\"'\u201c\u201d\u2018\u2019][^\"'\u201c\u201d\u2018\u2019]*[\"'\u201c\u201d\u2018\u2019]", " ", text or "")
+    body = re.sub(r"\S*[\\/]\S*|\S+\.\w{2,4}\b|\d+", " ", body)
+    return " ".join(_plain(body).split())
+
+
+def prompt_phrase(title: str, text: str) -> str:
+    """Words that pick out a box next time: its message without file names, paths and numbers, or
+    its title when the message is too short."""
+    phrase = " ".join(_clean(text).split()[:10])
+    return phrase if len(phrase) >= 15 else _plain(title)
 
 
 def pick_prompt(words: str) -> Prompt | None:
-    words = _plain(words)
-    return next((p for p in PROMPTS if _plain(p.phrase) in words), None)
+    plain, clean = _plain(words), _clean(words)
+    known = next((p for p in PROMPTS if _plain(p.phrase) in plain), None)
+    # Remembered answers are kept without names and numbers, so they're matched the same way.
+    return known or next((p for p in learned_prompts() if p.phrase in clean or p.phrase in plain), None)
 
 
 def is_save_prompt_for(words: str, name: str) -> bool:
@@ -215,6 +274,43 @@ class _Win32:
                 pressed.append(hit.phrase)
         return pressed
 
+    def pending_prompts(self, window) -> list[dict]:
+        """Boxes Vectorworks is waiting on that the connector doesn't know how to answer: their
+        title, message and buttons. Only while a box holds Vectorworks (its main window is
+        disabled), so floating palettes never count."""
+        if self.enabled(window):
+            return []
+        out = []
+        for w in self._dialogs(window):
+            try:
+                if w.handle == window.handle or pick_prompt(self._words(w)):
+                    continue
+                buttons = [b.window_text().replace("&", "").strip() for b in w.descendants(control_type="Button")]
+            except Exception:
+                continue
+            buttons = [b for b in buttons if b and b not in ("?", "×", "Close", "Help")]
+            if not buttons:
+                continue
+            out.append({"title": (w.window_text() or "").strip(), "text": self._body(w), "buttons": buttons[:8]})
+        return out
+
+    def answer_prompt(self, window, button: str) -> dict | None:
+        """Press `button` in the box Vectorworks is waiting on. Returns what the box said."""
+        for p in self.pending_prompts(window):
+            if button.lower() in (b.lower() for b in p["buttons"]):
+                for w in self._dialogs(window):
+                    if w.handle != window.handle and (w.window_text() or "").strip() == p["title"] and self._body(w) == p["text"]:
+                        if self._press(w, (button,)):
+                            return p
+        return None
+
+    @staticmethod
+    def _body(w) -> str:
+        try:
+            return " ".join(t.window_text().strip() for t in w.descendants(control_type="Text") if t.window_text().strip())
+        except Exception:
+            return ""
+
     def discard_copy(self, window, name: str, wait: float = 10.0) -> bool:
         """After File > Close: say No to "save changes?" for this one document (by name), so a
         converted copy is thrown away. Any other dialog is left alone. True when it answered."""
@@ -242,7 +338,8 @@ class _Win32:
     @staticmethod
     def _words(w) -> str:
         try:
-            return " ".join(t.window_text() for t in w.descendants(control_type="Text")).lower()
+            # The title too: "Font Mapping" says what it is only there (its list headers aren't text).
+            return " ".join([w.window_text()] + [t.window_text() for t in w.descendants(control_type="Text")]).lower()
         except Exception:
             return ""
 
@@ -459,8 +556,40 @@ class HotkeyTrigger(Trigger):
         if self.win.process_age_s(target) < self.STARTUP_GRACE_S:
             raise TriggerError("Vectorworks only just started. Give it 30 seconds to settle, then try again.")
         if not self.win.enabled(target):
-            raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
+            raise self._dialog_error(target)
         return self._ensure_drawing(target)
+
+    def _dialog_error(self, target) -> TriggerError:
+        found = getattr(self.win, "pending_prompts", lambda w: [])(target)
+        if found:
+            p = found[0]
+            said = p["text"] or p["title"]
+            return TriggerError(
+                f"Vectorworks is asking: \u201c{said}\u201d (buttons: {', '.join(p['buttons'])}). "
+                "Answer it with answer_prompt (or from Rig Studio, or on the PC), then try again."
+            )
+        return TriggerError("Vectorworks has a dialog open. Close it, then try again.")
+
+    def pending_prompt(self) -> dict | None:
+        """The box Vectorworks is waiting on that the connector can't answer by itself, or None."""
+        target = self.find_window()
+        if target is None:
+            return None
+        found = getattr(self.win, "pending_prompts", lambda w: [])(target)
+        return found[0] if found else None
+
+    def answer_prompt(self, button: str, remember: bool = False) -> dict:
+        """Press the designer's choice in that box; with remember, the same box is answered so
+        from now on (~/.vwmcp/prompts.json)."""
+        target = self.find_window()
+        if target is None:
+            raise self._not_found("")
+        hit = getattr(self.win, "answer_prompt", lambda w, b: None)(target, button)
+        if hit is None:
+            raise TriggerError(f"Vectorworks isn't asking anything with a '{button}' button right now.")
+        if remember:
+            remember_prompt(prompt_phrase(hit["title"], hit["text"]), button)
+        return hit
 
     def close_copy(self, name: str) -> bool:
         """Close the converted copy of a drawing the connector opened for a read-out, without saving
@@ -545,7 +674,7 @@ class MenuTrigger(HotkeyTrigger):
             self._sleep(3.0)  # let it carry on opening the file
             target = self.find_window() or target
         if not self.win.enabled(target):
-            raise TriggerError("Vectorworks has a dialog open. Close it, then try again.")
+            raise self._dialog_error(target)
         return self._ensure_drawing(target)
 
     def fire(self, job_created: float | None = None) -> None:

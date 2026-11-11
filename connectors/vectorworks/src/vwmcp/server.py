@@ -25,6 +25,8 @@ from .trigger import HotkeyTrigger, TriggerError, make_trigger
 
 # Objects in one read-out at most (a guard, not a target: CFF-26 with its game board drawn whole is ~40,000).
 MAX_OBJECTS = 60000
+# How long a read-out waits for the designer to answer a box Vectorworks shows (then it says so).
+ASK_WAIT_S = 1200
 
 Length = Union[float, str]
 Point = list[Length]
@@ -81,6 +83,13 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                 task.cancel()
 
     mcp = MCPServer("vectorworks", instructions=INSTRUCTIONS, version=__version__, lifespan=lifespan)
+
+    def pending_prompt() -> dict | None:
+        """A box Vectorworks is waiting on that the connector can't answer by itself."""
+        try:
+            return getattr(trigger, "pending_prompt", lambda: None)()
+        except Exception:
+            return None
 
     async def guarded(coro):
         try:
@@ -465,8 +474,16 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                     opened = True
                 except Exception as e:
                     raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e
-                for _ in range(60):  # big files take a while to open
+                waited = asked = 0.0
+                while waited < 180.0:  # big files take a while to open
                     await asyncio.sleep(3)
+                    box = await asyncio.to_thread(pending_prompt)
+                    if box and asked < ASK_WAIT_S:
+                        asked += 3
+                        continue  # a box is waiting on the designer: their answer, not the clock
+                    if box:
+                        raise ToolError("Vectorworks is still asking \u201c%s\u201d (buttons: %s) after %d minutes. Answer it, then try again." % (box["text"] or box["title"], ", ".join(box["buttons"]), ASK_WAIT_S // 60))
+                    waited += 3
                     try:
                         info = await call("get_document_info", _timeout=10.0)
                     except Exception:
@@ -580,7 +597,9 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             readout.write_status(vwx, job=job, state="reading", message="Your PC has it. Reading the drawing in Vectorworks (a big one takes a few minutes)…")
             try:
                 async with reading:
-                    r = await _read_out_one(str(vwx), MAX_OBJECTS)
+                    work = asyncio.ensure_future(_read_out_one(str(vwx), MAX_OBJECTS))
+                    await relay_prompts(work, vwx, job)
+                    r = await work
                 msg = "Read out on your PC: %s objects, %s layers, %s symbols, %s lighting fixtures." % (
                     r.get("objects", "?"), r.get("layers", "?"), r.get("symbols", "?"), r.get("lighting_devices", 0))
                 if r.get("shapes_left_out"):
@@ -595,11 +614,53 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                 _log("request: couldn't read out %s: %s" % (vwx.name, text))
         return done
 
+    async def relay_prompts(work: "asyncio.Future", vwx, job: str) -> None:
+        """While a read-out runs, pass any box Vectorworks waits on (one the connector doesn't know)
+        to Rig Studio through the status file, and press what the designer taps there (an answer
+        file beside the drawing)."""
+        asked = None
+        while not work.done():
+            await asyncio.wait({work}, timeout=readout.PROMPT_EVERY)
+            if work.done():
+                break
+            p = await asyncio.to_thread(pending_prompt)
+            if p and p != asked:
+                asked = p
+                said = p["text"] or p["title"]
+                readout.write_status(vwx, job=job, state="asking", message="Vectorworks is asking: \u201c%s\u201d" % said, prompt=p)
+                _log("request: Vectorworks asks %r %s" % (said, p["buttons"]))
+            if asked:
+                ans = readout.take_answer(vwx, job)
+                if ans:
+                    try:
+                        await asyncio.to_thread(trigger.answer_prompt, ans["button"], bool(ans.get("remember")))
+                        readout.write_status(vwx, job=job, state="reading", message="Pressed \u201c%s\u201d. Carrying on reading the drawing…" % ans["button"])
+                    except Exception as e:
+                        readout.write_status(vwx, job=job, state="asking", message="Couldn't press \u201c%s\u201d (%s). Answer it on the PC." % (ans["button"], e), prompt=asked)
+                    asked = None
+                elif not p:
+                    asked = None  # answered on the PC
+                    readout.write_status(vwx, job=job, state="reading", message="Carrying on reading the drawing…")
+
     async def request_loop() -> None:
         while True:
             await asyncio.sleep(readout.REQUEST_EVERY)
             with contextlib.suppress(Exception):
                 await requests_once()
+
+    @mcp.tool()
+    async def answer_prompt(button: str, remember: bool = False) -> dict:
+        """Answer a box Vectorworks is waiting on (one the connector didn't know): press `button`
+        (as its error said). remember=True answers the same box that way by itself from now on.
+        Only when the designer chose the answer, or it changes and saves nothing (Skip, Cancel on
+        a search, Open Read-Only)."""
+        try:
+            hit = await asyncio.to_thread(trigger.answer_prompt, button, remember)
+        except AttributeError as e:
+            raise ToolError("This connector can't answer Vectorworks' boxes here.") from e
+        except TriggerError as e:
+            raise ToolError(str(e)) from e
+        return {"answered": button, "box": hit, "remembered": remember}
 
     mcp.watch_once = watch_once  # type: ignore[attr-defined]  # for tests
     mcp.requests_once = requests_once  # type: ignore[attr-defined]  # for tests

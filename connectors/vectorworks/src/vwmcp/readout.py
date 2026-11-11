@@ -237,6 +237,8 @@ def quiet(idle: float | None, since_claude: float, quiet_for: float = QUIET_FOR)
 REQUEST_SUFFIX = ".rigrequest.json"
 STATUS_SUFFIX = ".rigstatus.json"
 REQUEST_EVERY = 5.0  # seconds between looks for requests
+ANSWER_SUFFIX = ".riganswer.json"  # Rig Studio's answer to a box Vectorworks is waiting on
+PROMPT_EVERY = 3.0  # seconds between looks for a box while a read-out runs
 
 
 def dropbox_roots() -> list[Path]:
@@ -309,3 +311,18 @@ def write_status(vwx: Path, **fields) -> Path:
     tmp.write_text(json.dumps(fields, indent=1), encoding="utf-8")
     tmp.replace(dest)
     return dest
+
+
+def take_answer(vwx: Path, job: str) -> dict | None:
+    """Rig Studio's answer to a box (<drawing>.<job>.riganswer.json beside it: {"button", "remember"}),
+    removed once read; None if there's none yet."""
+    f = vwx.with_name("%s.%s%s" % (vwx.stem, job, ANSWER_SUFFIX))
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    try:
+        f.unlink()
+    except OSError:
+        pass
+    return data if isinstance(data, dict) and data.get("button") else None

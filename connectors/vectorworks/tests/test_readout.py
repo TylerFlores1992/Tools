@@ -673,3 +673,71 @@ def test_a_symbol_with_too_many_faces_keeps_its_biggest(server, fake_vw, tmp_pat
     assert len(faces) == 6, "twelve faces, the six biggest kept"
     spans = [max(max(p[i] for p in f) - min(p[i] for p in f) for i in range(3)) for f in faces]
     assert min(spans) >= 4, "the half-inch cube's faces went first"
+
+
+def test_a_box_vectorworks_waits_on_is_passed_to_rig_studio_and_answered_from_there(fake_vw, tmp_path, monkeypatch):
+    """A box the connector doesn't know (measured: a Font Mapping box held the Bili Bili file for 3
+    minutes until the read-out gave up) goes to Rig Studio in the status file; the designer's tap
+    comes back as an answer file and is pressed; the open waits on them, not the clock."""
+    import asyncio
+
+    from vwmcp import server as srv_mod
+    from vwmcp.trigger import NoopTrigger
+
+    box = {"title": "Missing Things", "text": "Some things are missing.", "buttons": ["Skip", "Locate"]}
+
+    class AskingTrigger(NoopTrigger):
+        answered: list = []
+
+        def pending_prompt(self):
+            return None if self.answered else box
+
+        def answer_prompt(self, button, remember=False):
+            self.answered.append((button, remember))
+            return box
+
+    trig = AskingTrigger()
+    monkeypatch.setattr(srv_mod, "make_trigger", lambda s: trig)
+    monkeypatch.setattr(readout, "PROMPT_EVERY", 0.01)
+    said = []
+    real = readout.write_status
+    monkeypatch.setattr(readout, "write_status", lambda vwx, **f: said.append(dict(f)) or real(vwx, **f))
+    vwx = tmp_path / "Show.vwx"
+    vwx.write_bytes(b"x")
+    (tmp_path / "Show.abc123.rigrequest.json").write_text("{}")
+    (tmp_path / "Show.abc123.riganswer.json").write_text(json.dumps({"button": "Skip", "remember": True}))
+    srv = _request_server(fake_vw, monkeypatch, tmp_path)
+    done = asyncio.run(srv.requests_once())
+    assert done and done[0].get("saved"), done
+    asking = [f for f in said if f.get("state") == "asking"]
+    assert asking and asking[0]["prompt"] == box and "Some things are missing." in asking[0]["message"]
+    assert trig.answered == [("Skip", True)]
+    assert not (tmp_path / "Show.abc123.riganswer.json").exists(), "the answer is used once"
+    assert json.loads((tmp_path / "Show.rigstatus.json").read_text())["state"] == "done"
+
+
+def test_a_box_nobody_answers_ends_the_wait_and_says_what_it_asked(fake_vw, tmp_path, monkeypatch):
+    import asyncio
+
+    from vwmcp import server as srv_mod
+    from vwmcp.trigger import NoopTrigger
+
+    box = {"title": "Missing Things", "text": "Some things are missing.", "buttons": ["Skip"]}
+
+    class StuckTrigger(NoopTrigger):
+        def pending_prompt(self):
+            return box
+
+        def answer_prompt(self, button, remember=False):
+            raise AssertionError("nobody answered")
+
+    monkeypatch.setattr(srv_mod, "make_trigger", lambda s: StuckTrigger())
+    monkeypatch.setattr(srv_mod, "ASK_WAIT_S", 3)
+    monkeypatch.setattr(readout, "PROMPT_EVERY", 0.01)
+    vwx = tmp_path / "Show.vwx"
+    vwx.write_bytes(b"x")
+    (tmp_path / "Show.j1.rigrequest.json").write_text("{}")
+    srv = _request_server(fake_vw, monkeypatch, tmp_path)
+    done = asyncio.run(asyncio.wait_for(srv.requests_once(), 30))
+    assert "still asking" in done[0]["error"] and "Some things are missing." in done[0]["error"]
+    assert json.loads((tmp_path / "Show.rigstatus.json").read_text())["state"] == "failed"

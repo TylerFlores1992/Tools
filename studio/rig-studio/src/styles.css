@@ -335,3 +335,7 @@ tr.over td:first-child::before { content: "✕ "; color: var(--warn); }
   border: 1px solid var(--line);
   max-width: calc(100% - 24px);
 }
+
+/* A question from Vectorworks on the PC, answered from here. */
+.ask-box { margin: 8px 0 4px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); display: grid; gap: 8px; }
+.ask-box .row.wrap { display: flex; flex-wrap: wrap; gap: 8px; }

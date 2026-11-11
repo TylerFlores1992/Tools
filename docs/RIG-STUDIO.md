@@ -180,3 +180,24 @@ The chat's **Ask** button runs Claude in the page with the page's own tools. Onl
 hide reference layers), `read_layer` (with an `area` box; outlines come with their boxes and heights)
 and `add_measurements` (a "Measurements: …" layer of dimension lines with their figures, replaced by
 name). The Vectorworks drawing is never touched from the chat; that takes a full session.
+The chat asks for **Opus 5.5** by name (`CHAT_MODEL` in `app.tsx`, owner's call 2026-11-11), with
+the most capable tier as the fallback; if a lighter model answers, the reply says so. A dropped
+connection (`upstream_error`: phone asleep, app in the background) puts the question back in the box.
+
+## X and Y reference lines
+Plans are measured on site off two lines (center line plus a beam, plaster line, DS edge or stage
+wall). The chat's `set_reference` draws them as the project's one "Reference: …" layer
+(`src/reference.ts`): both lines across the drawing and the rig, named past their ends ("CL (X = 0)"),
+a figure every 5' saying distance and side (HL/HR of the Y line, US/DS of the X line). The layer keeps
+`reference {origin, xLine, yLine, stepFt}`, so the chat then says positions from it. `show_layers`
+"only" keeps it shown. Nothing in the rig or the Vectorworks drawing changes.
+
+## Boxes Vectorworks asks on the PC
+Opening someone else's drawing can raise a box (Font Mapping, missing textures, "would you like to
+locate", read-only). The connector answers the common ones itself with the answer that changes and
+saves nothing (`PROMPTS` in `trigger.py`). Anything else is passed to the phone: the status file says
+`state: "asking"` with `prompt {title, text, buttons}`, the Files row shows the box's words and one
+button per answer, and a tap writes `<stem>.<job>.riganswer.json {button, remember}` beside the
+drawing; the connector presses it within seconds and carries on. **Answer it this way from now on**
+adds it to `~/.vwmcp/prompts.json` on the PC. Nobody answering ends the wait after 20 minutes
+(`ASK_WAIT_S`) with the box's words in the failure. Claude can answer too (`answer_prompt`).

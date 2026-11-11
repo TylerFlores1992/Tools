@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 60 tools (62 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 61 tools (63 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -190,6 +190,10 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
   another app it fires at once and hands focus back. It refuses while a Vectorworks dialog is
   open, and in the first 30 seconds after launch, because scripting a just-started Vectorworks
   can crash it.
+- **Boxes get answered, not waited on.** Known boxes (Font Mapping, missing textures or plug-ins,
+  "locate", read-only) get the answer that changes nothing; answers you chose are kept in
+  `~/.vwmcp/prompts.json`. An unknown box is reported with its words and buttons (`answer_prompt`),
+  and a phone read-out passes it to Rig Studio to tap.
 - **Objects are addressed by UUID** (`GetObjectUuid`), because handles only live for one run.
   `GetName` says `"none"` for unnamed objects; the bridge reports `""`.
 - **Ctrl+Z merges consecutive scripted runs**, so the bridge keeps its own journal and

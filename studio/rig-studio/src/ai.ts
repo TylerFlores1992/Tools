@@ -4,6 +4,7 @@ import { compileSketch, readSketch, sketchChecks, type Sketch } from "../../../s
 import { applyOps, type SketchOp } from "../../../src/tools/rig/sketchOps.ts";
 import type { SampleTool } from "./cap.ts";
 import { ftIn, layerLoads, layerSummary, type Layer, type Message, type Shape } from "./model.ts";
+import { drawingExtent, referenceName, referenceShapes } from "./reference.ts";
 
 export const FORMAT = `RIG FORMAT (inches; X to the right, Y away from the audience/front, Z up, floor Z=0):
 - runs: truss lines {id, a:[x,y,z], b:[x,y,z], label?}. a and b are JOINT CENTERS on the truss centerline. Where run ends meet, the page adds the corner block (or a straight joint if two runs continue in a line) and fills the run with stock sections. Grid truss: Z is the centerline (trim to the bottom chord + half the truss height). Keep runs level along X or Y, or plumb (vertical legs from Z=0): Vectorworks can only build those.
@@ -26,6 +27,8 @@ export type Ctx = {
   setVisible(ids: string[], visible: boolean): Promise<void>;
   /** Add (or replace, by name) a layer of dimension lines with their figures. */
   putMeasurements(name: string, shapes: Shape[]): Promise<string>;
+  /** Add or move the project's one X and Y reference layer. */
+  putReference(name: string, shapes: Shape[], reference: NonNullable<Layer["reference"]>): Promise<string>;
 };
 
 function summary(sk: Sketch, layers: Layer[]): string {
@@ -46,6 +49,7 @@ Reference layers (drawings and lighting plots from the venue, Vectorworks or Dro
 
 How to work:
 - Looking is not changing. Questions, showing or hiding layers (show_layers), reading positions (read_layer) and measuring (add_measurements: a layer of dimension lines with their figures) never touch the rig or the Vectorworks drawing and save no version. Only edit_rig/replace_rig change the rig. When the designer asks to see something or to measure, do just that.
+- Every drawing is measured on site off two reference lines, X and Y (usually the center line and a beam, the plaster line, the downstage edge or a stage wall). When the designer asks for them, or there are none and you're measuring, find them with read_layer (lines or text named CL, PL, DSE, a beam, 0,0) and call set_reference; if you can't tell which lines, ask. Once set, say positions and measurements from them (12'-6" HR of CL, 8' US of Beam A) and measure off them.
 - To measure a layout: read_layer the layer (give an area to zoom in on part of the drawing; each item comes with its outline's box), work out the dimensions that matter in X and Y (overall sizes, offsets from the center line and the front edge, gaps, steps between pieces), then add_measurements. Say the key figures in your answer too.
 - For a change you can make with a few edits, call edit_rig (or replace_rig to redraw from scratch). Each call is checked; fix what the problems say and try again. One version is saved when you finish.
 - For big jobs, call start_session instead and say you did: reading a Vectorworks file, working through a Dropbox file the page can't open, building in Vectorworks, or a design that needs many careful passes. where:"pc" when it needs Vectorworks or files on the designer's computer, otherwise "cloud".
@@ -188,7 +192,7 @@ export function tools(ctx: Ctx, state: { sketch: Sketch; changed: boolean; notes
           const only = new Set(pick(input.only));
           const drawings = ctx.layers.filter((l) => l.kind !== "fixtures" || !l.onRig);
           await ctx.setVisible(drawings.filter((l) => only.has(l.id) && !l.visible).map((l) => l.id), true);
-          await ctx.setVisible(drawings.filter((l) => !only.has(l.id) && l.visible && !l.name.startsWith("Measurements:")).map((l) => l.id), false);
+          await ctx.setVisible(drawings.filter((l) => !only.has(l.id) && l.visible && !l.name.startsWith("Measurements:") && !l.reference).map((l) => l.id), false);
         }
         if (pick(input.show).length) await ctx.setVisible(pick(input.show), true);
         if (pick(input.hide).length) await ctx.setVisible(pick(input.hide), false);
@@ -223,6 +227,30 @@ export function tools(ctx: Ctx, state: { sketch: Sketch; changed: boolean; notes
         const name = `Measurements: ${String(input.name).replace(/^Measurements:\s*/i, "")}`;
         await ctx.putMeasurements(name, shapes);
         return { layer: name, dims: shapes.map((s) => s.text) };
+      },
+    },
+    {
+      name: "set_reference",
+      description: "Draw the X and Y reference lines the drawing is measured off on site, across the drawing with their names and a figure every step_ft feet (a layer of its own; replaces the earlier reference; nothing in the rig or the drawing changes). origin [x, y] in drawing inches is where they cross. x_line names the line running across the drawing (Y = 0 on it, e.g. \"Beam A\", \"Plaster line\", \"DS edge\"); y_line the one running up and downstage (X = 0 on it, usually \"CL\").",
+      inputSchema: {
+        type: "object",
+        properties: {
+          origin: { type: "array", items: { type: "number" }, minItems: 2, maxItems: 2 },
+          x_line: { type: "string" },
+          y_line: { type: "string" },
+          step_ft: { type: "number", description: "Feet between figures, default 5." },
+        },
+        required: ["origin", "x_line", "y_line"],
+      },
+      async execute(input) {
+        const o = input.origin as number[];
+        if (!Array.isArray(o) || o.length !== 2 || !o.every(Number.isFinite)) throw new Error("origin must be [x, y] in inches.");
+        const reference = { origin: [o[0], o[1]] as [number, number], xLine: String(input.x_line).trim() || "X", yLine: String(input.y_line).trim() || "CL", stepFt: typeof input.step_ft === "number" && input.step_ft >= 1 ? input.step_ft : 5 };
+        ctx.onProgress("Drawing the reference lines…");
+        const shapes = referenceShapes(reference, drawingExtent(ctx.layers, reference.origin, rigPoints(ctx.sketch)));
+        const name = referenceName(reference);
+        await ctx.putReference(name, shapes, reference);
+        return { layer: name, note: `Positions are now said from here: X is HL (-) / HR (+) of ${reference.yLine}, Y is DS (-) / US (+) of ${reference.xLine}. Subtract the origin from drawing coordinates.` };
       },
     },
     {
@@ -270,4 +298,13 @@ export function measurement(a: [number, number], b: [number, number], label: str
   let rot = (Math.atan2(dy, dx) * 180) / Math.PI;
   if (rot > 90 || rot <= -90) rot += 180;
   return { pts: [at, A, B], z, closed: false, label: "", h: 0, text: label?.trim() || ftIn(L), size, rot, dim: 1, pen: "#0050c8", lw: 14 };
+}
+
+/** The rig's own points (run ends, towers, hoists), so the reference lines reach past it too. */
+function rigPoints(sk: Sketch): [number, number][] {
+  const out: [number, number][] = [];
+  for (const r of sk.runs ?? []) out.push([r.a[0], r.a[1]], [r.b[0], r.b[1]]);
+  for (const t of sk.towers ?? []) out.push([t.x, t.y]);
+  for (const p of sk.points ?? []) out.push([p.at[0], p.at[1]]);
+  return out;
 }
