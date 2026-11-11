@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.3"
+BRIDGE_VERSION = "0.9.4"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1495,6 +1495,7 @@ def _ro_fill_opacity(h):
             return None
 
 
+FACE_HARD_LIMIT = 500000  # never read more faces than this from one object
 FACE_CAP = 3000  # an object with more faces than this keeps its plain block (a scanned prop, a dense mesh)
 
 
@@ -1511,7 +1512,18 @@ def _pt3(p):
     return flat[:3] if len(flat) >= 3 else None
 
 
-def _ro_faces(h, cap=FACE_CAP):
+def _face_area(f):
+    ax = ay = az = 0.0
+    x0, y0, z0 = f[0]
+    for (x1, y1, z1), (x2, y2, z2) in zip(f[1:], f[2:]):
+        ux, uy, uz, vx, vy, vz = x1 - x0, y1 - y0, z1 - z0, x2 - x0, y2 - y0, z2 - z0
+        ax += uy * vz - uz * vy
+        ay += uz * vx - ux * vz
+        az += ux * vy - uy * vx
+    return (ax * ax + ay * ay + az * az) ** 0.5
+
+
+def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
     """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each).
     ConvertTo3DPolys REPLACES the object it's given (measured on Vectorworks 2026, 2026-11-10: a
     read-out that converted the drawing's own objects deleted them), so it only ever gets a
@@ -1555,12 +1567,17 @@ def _ro_faces(h, cap=FACE_CAP):
                     pts.append(q)
             if len(pts) >= 3:
                 faces.append(pts)
-            if len(faces) > cap:
+            if len(faces) > (FACE_HARD_LIMIT if keep_largest else cap):
                 over = True
                 break
     finally:
         vs.DelObject(g)
-    return None if over else faces
+    if over:
+        return None
+    if keep_largest and len(faces) > cap:
+        # The biggest surfaces carry the shape; screws, rivets and tiny bevels go first.
+        faces = sorted(faces, key=_face_area, reverse=True)[:cap]
+    return faces
 
 
 def _children(first):
@@ -1616,6 +1633,7 @@ def _ro_viewports(design):
 
 
 DETAIL_CAP = 2500  # a symbol drawn with more parts than this comes as one block (was 150: cameras and people became boxes)
+SYMBOL_FACE_CAP = 30000  # a symbol too detailed to walk part by part still comes with its real faces up to this
 SYMBOL_DEPTH = 10  # symbols inside symbols, drawn this deep (groups don't count: CFF-26's set deck held its
 # video-logo symbol inside nested groups, and counting the groups cut it off at 6, leaving a hole)
 FACE_BUDGET = 400000  # faces in one read-out; past it, 3D objects fall back to plain blocks
@@ -1761,12 +1779,12 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     import time as _time
     t_start = _time.time()
 
-    def mesh(h, xf):
+    def mesh(h, xf, cap=FACE_CAP, keep_largest=False):
         """The object's real faces placed in the drawing, as {"q": step, "v": [x, y, z, ...] in
         quarter inches, "f": [n, i1..in, n, ...]} (shared corners stored once), or None."""
         if state["faces"] >= FACE_BUDGET:
             return None
-        faces = _ro_faces(h)
+        faces = _ro_faces(h, cap, keep_largest)
         if not faces:
             return None
         state["faces"] += len(faces)
@@ -1922,7 +1940,8 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                 return
             defh = vs.GetObject(sym)
             if not _nil(defh) and part_count(defh) > int(detail_cap):
-                # Too detailed to draw part by part: one block its size (and height, if it's 3D).
+                # Too detailed to draw part by part: the whole symbol's real faces in one go (CFF-26's
+                # game board, thousands of parts, came out a plain box), or else one block its size.
                 b = {"t": "block", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True, "simplified": True}
                 try:
                     dy, dx, dz = vs.Get3DInfo(h)
@@ -1931,6 +1950,12 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                         b["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
                 except Exception:
                     pass
+                if "z" in b:
+                    # A hidden layer's copy (CFF-26's PARTS) gets fewer faces: it's rarely looked at.
+                    whole = mesh(h, xf, SYMBOL_FACE_CAP if state.get("layer_shown", True) else SYMBOL_FACE_CAP // 4, keep_largest=True)
+                    if whole:
+                        b["mesh"] = whole
+                        b.pop("simplified")
                 add(b)
                 return
             if depth < SYMBOL_DEPTH and not _nil(defh):
@@ -1992,6 +2017,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     # Shown layers first, so a cut-off (max_objects) falls on hidden ones.
     for lh in sorted(design, key=lambda h: vs.GetLVis(h) != 0):
         name = _s(vs.GetLName(lh))
+        state["layer_shown"] = vs.GetLVis(lh) == 0
         for h in _children(vs.FInLayer(lh)):
             if state["truncated"]:
                 break

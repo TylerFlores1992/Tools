@@ -61,6 +61,10 @@ What it does:
   depth limit (10): CFF-26's video-logo deck sat inside nested groups and was cut off at 6, leaving a
   hole. Checked on CFF-26: every visible symbol's parts fit its own outline, or both mirrored copies
   miss by the same amount (outlines that count only the 2D part).
+  Over-detailed symbols (0.9.4): past DETAIL_CAP parts a symbol isn't walked part by part; the whole
+  instance (a duplicate) is converted to faces in one go, keeping the 30,000 biggest (7,500 on a hidden
+  layer) so screws and bevels go first. CFF-26's game board (frame, screens, bulb grid) was a plain
+  box; now it reads as the piece. A box remains only if that conversion fails.
   Sheets (0.9.2+): the read-out lists each sheet viewport's layer visibility and the classes it shows
   differently, plus the drawing's hidden classes; Files offers "Show as" (design layers or a sheet).
   Not yet read: a sheet's annotations (drawn on the sheet over the viewport) and its viewport overrides (its own class and layer visibility), so a read-out matches

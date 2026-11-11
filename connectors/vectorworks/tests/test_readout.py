@@ -626,3 +626,48 @@ def test_a_read_out_lists_the_classes_switched_off(server, fake_vw, tmp_path):
     d.path = str(tmp_path / "Set.vwx")
     data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
     assert data["hidden_classes"] == ["Logos"]
+
+
+def test_a_very_detailed_symbol_comes_with_its_real_faces(server, fake_vw, tmp_path):
+    """CFF-26's game board has thousands of parts, too many to walk one by one, and came out a plain
+    box. The whole symbol is converted to faces in one go instead (a box only if that fails)."""
+    vs = fake_vw
+    d = vs.DOC
+    board = vs._Obj(16, name="Board", w=40.0, h=4.0, members=[])
+    for i in range(2600):
+        board.members.append(vs._Obj(2, pts=[(0.0, i * 0.01), (1.0, i * 0.01)], parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (40.0, 0.0), (40.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=60.0, dz=120.0, parent_obj=board, layer=None))
+    d.resources["Board"] = board
+    vs.Symbol("Board", (100.0, 0.0), 0.0)
+    d.last.is3d, d.last.zc, d.last.dz = True, 60.0, 120.0
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out", max_objects=4000)["saved"]).read_text())
+    [b] = [o for o in data["objects"] if o.get("in") == "Board"]
+    assert b["t"] == "block" and "simplified" not in b and b.get("mesh"), b
+    corners = {p for f in _faces(b["mesh"]) for p in f}
+    assert (140.0, 4.0, 120.0) in corners and (100.0, 0.0, 0.0) in corners
+    assert d.converted == 1 and any(o.type == 15 for o in d.objects), "the drawing's own symbol stays"
+
+
+def test_a_symbol_with_too_many_faces_keeps_its_biggest(server, fake_vw, tmp_path, monkeypatch):
+    """Past the cap, the biggest surfaces are kept (they carry the shape), the tiny ones go."""
+    import vwmcp_bridge
+
+    monkeypatch.setattr(vwmcp_bridge, "SYMBOL_FACE_CAP", 6)
+    vs = fake_vw
+    d = vs.DOC
+    board = vs._Obj(16, name="Board", w=40.0, h=4.0, members=[])
+    for i in range(2600):
+        board.members.append(vs._Obj(2, pts=[(0.0, i * 0.01), (1.0, i * 0.01)], parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (40.0, 0.0), (40.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=60.0, dz=120.0, parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (0.5, 0.0), (0.5, 0.5), (0.0, 0.5)], closed=True, is3d=True, zc=0.25, dz=0.5, parent_obj=board, layer=None))
+    d.resources["Board"] = board
+    vs.Symbol("Board", (100.0, 0.0), 0.0)
+    d.last.is3d, d.last.zc, d.last.dz = True, 60.0, 120.0
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out", max_objects=4000)["saved"]).read_text())
+    [b] = [o for o in data["objects"] if o.get("in") == "Board"]
+    faces = _faces(b["mesh"])
+    assert len(faces) == 6, "twelve faces, the six biggest kept"
+    spans = [max(max(p[i] for p in f) - min(p[i] for p in f) for i in range(3)) for f in faces]
+    assert min(spans) >= 4, "the half-inch cube's faces went first"
