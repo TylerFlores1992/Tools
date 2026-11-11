@@ -48,6 +48,9 @@ What it does:
   Opening a read-out saves the layers Vectorworks shows first, retries a busy database, shows
   "Saving … n of N parts" and, if saving stops (the phone put the app away: CFF-26 stopped at 24 of
   111 parts on 2026-11-10), says how many were saved; opening it again replaces the partial copy.
+  Plan shows 3D objects as Vectorworks' Top/Plan wireframe does: edges only, no faces (CFF's black
+  upper header 25' up and the celeb gameboard covered the stage with their solid tops). 3D, Front and
+  Side keep the faces.
   Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
   the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
