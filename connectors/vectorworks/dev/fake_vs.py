@@ -910,7 +910,9 @@ def Get3DOrientation(h):
     m = h.mat
     mirrored = _det(m) < 0
     if mirrored:
-        m = _mm(m, [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+        # Real Vectorworks reports a mirror as a flip of local Z (measured 2026-11-11 on CFF-26: a
+        # symbol mirrored in plan reads rx 180 and flipped, i.e. Rx(180) . flipZ = mirror in Y).
+        m = _mm(m, [[1.0, 0, 0], [0, 1.0, 0], [0, 0, -1.0]])
     b = math.asin(max(-1.0, min(1.0, -m[2][0])))
     a = math.atan2(m[2][1], m[2][2])
     c = math.atan2(m[1][0], m[0][0])
@@ -1163,6 +1165,29 @@ def ImportResourceToCurrentFile(listID, index):
 def ConvertTo3DPolys(original):
     """A 3D object's faces as a new group of 3D polygons (the original stays). The fake builds a
     prism from the outline and its bottom/top: a bottom, a top and a face per side."""
+    if original.type == 15:
+        # A symbol: its definition's 3D parts as faces, turned and moved to where it sits.
+        defn = DOC.resources.get(original.symbol)
+        boxes = [m for m in getattr(defn, "members", []) if getattr(m, "is3d", False) and getattr(m, "pts", None)]
+        if not boxes:
+            return None
+        c, s_ = math.cos(math.radians(original.rot)), math.sin(math.radians(original.rot))
+        lx, ly = original.loc[0], original.loc[1]
+        faces = []
+        for b in boxes:
+            z0, z1 = b.zc - b.dz / 2, b.zc + b.dz / 2
+            ring = [(lx + x * c - y * s_, ly + x * s_ + y * c) for x, y in b.pts]
+            faces += [[(x, y, z0) for x, y in ring], [(x, y, z1) for x, y in reversed(ring)]]
+            for i in range(len(ring)):
+                (ax, ay), (bx, by) = ring[i], ring[(i + 1) % len(ring)]
+                faces.append([(ax, ay, z0), (bx, by, z0), (bx, by, z1), (ax, ay, z1)])
+        members = [_Obj(25, pts=[(x, y) for x, y, _ in f], pts3d=f, closed=True) for f in faces]
+        g = _Obj(11, members=members, layer=original.layer)
+        for m in members:
+            m.parent_obj = g
+        _replace(original, g)
+        DOC.converted = getattr(DOC, "converted", 0) + 1
+        return g
     if not getattr(original, "is3d", False) or not getattr(original, "pts", None):
         return None
     z0 = original.zc - original.dz / 2
@@ -1241,3 +1266,18 @@ def GetTextOrientation(theText):
 
 def GetDimText(h):
     return getattr(h, "dim_text", "")
+
+
+# ---- sheet viewports: what each shows -----------------------------------------------------------
+
+
+def GetVPLayerVisibility(viewportHandle, layerHandle):
+    return (True, int(getattr(viewportHandle, "layer_vis", {}).get(layerHandle.name, 0)))
+
+
+def GetVPClassVisibility(viewportHandle, className):
+    return (True, int(getattr(viewportHandle, "class_vis", {}).get(className, GetCVis(className))))
+
+
+for _n in ("GetVPLayerVisibility", "GetVPClassVisibility"):
+    globals()[_n] = _strict(_n, globals()[_n])

@@ -372,6 +372,9 @@ export class Viewer {
       const tag = o.userData.view as string | undefined;
       if (tag === "plan") o.visible = this.view === "plan";
       else if (tag === "3d") o.visible = this.view !== "plan";
+      // Top/Plan shows a 3D object as Vectorworks' wireframe does: its edges, no faces. Its solid top
+      // (a black header 25' up) would otherwise cover the stage and the plan drawn under it.
+      else if (o.userData.solid) o.visible = this.view !== "plan";
     });
   }
 
@@ -506,7 +509,11 @@ export class Viewer {
         this.blockMats.set(key, mat);
       }
       const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos.map((q) => (q.deleteAttribute("uv"), q)), false);
-      if (merged) g.add(new THREE.Mesh(merged, mat));
+      if (merged) {
+        const m = new THREE.Mesh(merged, mat);
+        m.userData.solid = true;
+        g.add(m);
+      }
     }
     if (fills.length) {
       // Every flat fill at the same height, in the drawing's order, in one mesh, solid and see-through

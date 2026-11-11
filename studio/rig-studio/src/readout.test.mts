@@ -1,7 +1,7 @@
 // A Vectorworks read-out becomes fixtures, the existing rig and outlines.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isReadout, readoutLayers, readoutSummary, type Readout } from "./readout.ts";
+import { isReadout, readoutLayers, readoutViews, readoutSummary, type Readout } from "./readout.ts";
 
 export const SAMPLE: Readout = {
   readout: 1,
@@ -170,4 +170,29 @@ test("pens, weights, words and switched-off classes come through as Vectorworks 
   assert.deepEqual([text.pts, text.size, text.rot, text.z], [[[5, 5]], 14, 90, 24]);
   const dim = all.find((s) => s.dim)!;
   assert.deepEqual(dim.pts, [[0, -5], [0, 0], [10, 0]], "a dimension: its figure's point, then its two ends");
+});
+
+test("a read-out can be shown as a sheet's viewport: its layers and classes", () => {
+  const sq: [number, number][] = [[0, 0], [10, 0], [10, 10], [0, 10]];
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [{ name: "Set", type: "design", visible: true }, { name: "Venue 3D", type: "design", visible: false }],
+    hidden_classes: ["Logos"],
+    viewports: [{ sheet: "A-1", name: "Plan", layers: { Set: 0, "Venue 3D": 0 }, classes: { Logos: 0, Cameras: -1 } }],
+    objects: [
+      { t: "rectangle", layer: "Set", cls: "Logos", bbox: [0, 0, 10, 10], pts: sq, closed: true, hid: 1 },
+      { t: "symbol", layer: "Set", cls: "Cameras", bbox: [0, 0, 10, 10], symbol: "Ped", at: [0, 0, 0] },
+      { t: "rectangle", layer: "Set", cls: "None", in: "Ped", bbox: [0, 0, 10, 10], pts: sq, closed: true },
+      { t: "rectangle", layer: "Venue 3D", cls: "None", bbox: [0, 0, 10, 10], pts: sq, closed: true },
+    ],
+  };
+  assert.deepEqual(readoutViews(r).map((v) => v.label), ["Design layers", "Sheet A-1 (Plan)"]);
+  const src = { name: "Set.rigread.json", from: "dropbox" as const };
+  const design = readoutLayers(r, src, "t");
+  assert.equal(design.flatMap((l) => l.shapes ?? []).length, 2, "design layers: the logo's class is off");
+  assert.equal(design.find((l) => l.name.endsWith("Venue 3D"))?.visible, false);
+  const sheet = readoutLayers(r, src, "t", "A-1/Plan");
+  const set = sheet.find((l) => l.name.endsWith(": Set"))!;
+  assert.equal(set.shapes!.length, 1, "the sheet shows the logo and hides the camera with its parts");
+  assert.equal(sheet.find((l) => l.name.endsWith("Venue 3D"))?.visible, true, "the sheet shows the venue layer");
 });

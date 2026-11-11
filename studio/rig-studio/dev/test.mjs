@@ -126,6 +126,26 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
         await p.waitForTimeout(1500);
         await p.screenshot({ path: join(shots, f) });
       }
+      // Shown as a sheet (RS_VIEW="A-1"): pick it in the read-out's "Show as" list and wait for it.
+      if (process.env.RS_VIEW) {
+        await p.click("#tab-files").catch(() => {});
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, "rig-studio-real-files.png") });
+        const sel = p.getByLabel("Show the read-out as");
+        const label = await sel.locator("option").filter({ hasText: process.env.RS_VIEW }).first().textContent();
+        await sel.selectOption({ label });
+        await p.waitForTimeout(3000);
+        await p.waitForFunction(() => !document.querySelector('[id^="open-readout-"]')?.textContent?.includes("Opening"), null, { timeout: 300000 });
+        await p.waitForTimeout(4000);
+        console.log("shown as", label);
+      }
+      // Camera shots (RS_LOOK="px,py,pz,tx,ty,tz;...", three space: y up, z = minus drawing y).
+      for (const [i, spec] of (process.env.RS_LOOK ?? "").split(";").filter(Boolean).entries()) {
+        const n = spec.split(",").map(Number);
+        await p.evaluate((n) => window.__rsViewer.lookFrom([n[0], n[1], n[2]], [n[3], n[4], n[5]]), n);
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, `rig-studio-real-look${i + 1}.png`) });
+      }
       // Close-ups (RS_CLOSE="x,y,steps;x,y,steps"): back to 3D, zoom in on a screen point.
       for (const [i, spec] of (process.env.RS_CLOSE ?? "").split(";").filter(Boolean).entries()) {
         const [x, y, steps] = spec.split(",").map(Number);
@@ -165,8 +185,25 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
       return n;
     });
     ok(blocks >= 1, `a 3D object from the drawing is drawn as a block (${blocks})`);
-    const faced = await p.evaluate(() => window.__DOCS__ && [...window.__DOCS__.entries()].some(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && (v.shapes ?? []).some((s) => s.m && s.m.f.length === 30)));
-    ok(faced, "its real faces came from the part file in Dropbox and are kept on the layer");
+    const row = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && v.kind === "shapes")?.[1]);
+    ok(row && row.readout && !row.shapes, "the database keeps one small row per drawing layer; the shapes stay in the read-out file");
+    // Next visit, on a device that kept nothing: the drawing comes back from Dropbox, faces and all.
+    await p.evaluate(() => window.__rsGeometry.forget());
+    const fetchesBefore = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fetch").length);
+    await p.click("text=← Projects").catch(() => p.click("text=Projects"));
+    await p.waitForSelector(".card");
+    await p.click(".card");
+    await p.waitForSelector(".viewer canvas");
+    await p.waitForFunction(() => !document.querySelector("#geo-note"), null, { timeout: 15000 }).catch(() => {});
+    await p.waitForTimeout(600);
+    const fetchesAfter = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fetch").length);
+    ok(fetchesAfter > fetchesBefore, "coming back, the drawing is read from Dropbox again");
+    await p.click("#tab-layers").catch(() => p.click("text=Layers"));
+    await p.waitForTimeout(300);
+    const outlines = await p.locator(".layers").innerText().catch(() => "");
+    ok(/[1-9]\d* outlines/.test(outlines), `and its outlines are back in Layers (${(outlines.match(/\d+ outlines/) ?? ["none"])[0]})`);
+    await p.click("#tab-files");
+    await p.waitForTimeout(400);
     ok(!(await p.locator(".file", { hasText: "rigmesh" }).count()), "the part files stay out of the file list");
 
     ok(/Read it out again on my PC/.test(await p.locator('[id="read-id:cff"]').innerText().catch(() => "")), "a drawing already read out can be read out again");

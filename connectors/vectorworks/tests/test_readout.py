@@ -516,3 +516,160 @@ def test_lines_keep_their_colour_and_weight_and_hidden_classes_are_flagged(serve
     assert by(9.0).get("hid") == 1
     assert any(o.get("np") == 1 for o in objs if o["t"] == "rectangle")
     assert all(o.get("hid") == 1 for o in objs if o.get("in") == "Box")  # inside a hidden symbol: hidden too
+
+
+def test_a_mirrored_symbol_is_drawn_mirrored(server, fake_vw, tmp_path):
+    """Measured on CFF-26: the stage-left family arch is the stage-right one mirrored (GetSymRot -61,
+    Get3DOrientation flagged). Drawn turned but not mirrored it swung through the set. Vectorworks
+    places it as its definition mirrored in local Y, then turned."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Arm", w=10.0, h=2.0, members=[])
+    sym.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 2.0), (0.0, 2.0)], closed=True, parent_obj=sym, layer=None))
+    d.resources["Arm"] = sym
+    vs.Symbol("Arm", (100.0, 0.0), 90.0)
+    d.last.mat = vs._mm(vs._rz(90.0), [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    inst = next(o for o in data["objects"] if o.get("symbol") == "Arm")
+    assert inst["mirror"] == 1 and inst["rot"] == 90
+    part = next(o for o in data["objects"] if o.get("in") == "Arm" and o.get("pts"))
+    # local (10, 0) -> mirrored (10, 0) -> turned 90: (0, 10); local (0, 2) -> (0, -2) -> (2, 0)
+    assert [100, 10] in part["pts"] and [102, 0] in part["pts"] and [102, 10] in part["pts"], part["pts"]
+
+
+def test_a_symbol_inside_a_mirrored_one_turns_the_other_way(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    inner = vs._Obj(16, name="Leg", w=5.0, h=1.0, members=[])
+    inner.members.append(vs._Obj(2, pts=[(0.0, 0.0), (5.0, 0.0)], parent_obj=inner, layer=None))
+    d.resources["Leg"] = inner
+    outer = vs._Obj(16, name="Frame", w=20.0, h=5.0, members=[])
+    outer.members.append(vs._Obj(15, symbol="Leg", loc=(10.0, 0.0), w=5.0, h=1.0, rot=30.0, z=0.0, mat=vs._rz(30.0), bbox_off=(0.0, 0.0), parent_obj=outer, layer=None))
+    d.resources["Frame"] = outer
+    vs.Symbol("Frame", (0.0, 0.0), 0.0)
+    d.last.mat = [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]]
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    leg = next(o for o in data["objects"] if o.get("symbol") == "Leg")
+    assert leg["rot"] == -30, leg
+    line = next(o for o in data["objects"] if o.get("in") == "Leg" and o.get("pts"))
+    # the leg's end: turned 30 about (10, 0) to (14.33, 2.5), then the frame's mirror: (14.33, -2.5)
+    assert any(abs(p[0] - 14.33) < 0.02 and abs(p[1] + 2.5) < 0.02 for p in line["pts"]), line["pts"]
+
+
+def test_a_symbol_deep_inside_groups_is_still_drawn(server, fake_vw, tmp_path):
+    """CFF-26's set deck held its video-logo symbol inside nested groups; counting the groups as
+    depth cut it off at 6 and left a hole in the deck. Only symbols inside symbols count."""
+    vs = fake_vw
+    d = vs.DOC
+    logo = vs._Obj(16, name="Logo", w=10.0, h=10.0, members=[])
+    logo.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)], closed=True, parent_obj=logo, layer=None))
+    d.resources["Logo"] = logo
+    deck = vs._Obj(16, name="Deck", w=10.0, h=10.0, members=[])
+    holder = deck
+    for _ in range(12):  # twelve groups deep
+        g = vs._Obj(11, members=[], parent_obj=holder, layer=None)
+        holder.members.append(g)
+        holder = g
+    holder.members.append(vs._Obj(15, symbol="Logo", loc=(0.0, 0.0), w=10.0, h=10.0, rot=0.0, z=0.0, mat=vs._rz(0.0), bbox_off=(0.0, 0.0), parent_obj=holder, layer=None))
+    d.resources["Deck"] = deck
+    vs.Symbol("Deck", (50.0, 50.0), 0.0)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    part = next((o for o in data["objects"] if o.get("in") == "Logo" and o.get("pts")), None)
+    assert part is not None, "the logo inside twelve groups is drawn"
+    assert [50, 50] in part["pts"] and [60, 60] in part["pts"]
+
+
+def test_a_read_out_says_what_each_sheet_viewport_shows(server, fake_vw, tmp_path):
+    """A sheet's viewport can show layers and classes the design layers hide (CFF-26's A-1)."""
+    vs = fake_vw
+    d = vs.DOC
+    parts = d._new_layer("PARTS", 1)
+    parts.visibility = -1
+    sheet = d._new_layer("A-1", 2)
+    d.classes.append("Logos")
+    d.hidden_classes = {"Logos"}
+    vp = vs._Obj(122, name="Plan VP", layer_vis={"PARTS": 0, "Design Layer-1": -1}, class_vis={"Logos": 0})
+    vp.layer, vp.cls = sheet, "None"
+    d.objects.append(vp)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    [v] = data["viewports"]
+    assert v["sheet"] == "A-1" and v["layers"]["PARTS"] == 0 and v["layers"]["Design Layer-1"] == -1
+    assert v["classes"] == {"Logos": 0}, "only classes that differ from the drawing's own"
+
+
+def test_a_symbol_tipped_up_in_3d_stands_up(server, fake_vw, tmp_path):
+    """CFF-26's camera jib arm is a symbol turned 90 degrees about X. Turned in plan only, it lay
+    flat in the wrong place; its faces now follow the whole 3D turn."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Arm", w=10.0, h=4.0, members=[])
+    sym.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=18.0, dz=36.0, parent_obj=sym, layer=None))
+    d.resources["Arm"] = sym
+    vs.Symbol("Arm", (100.0, 0.0), 0.0)
+    d.last.mat = [[1.0, 0, 0], [0, 0, -1.0], [0, 1.0, 0]]  # Rx(90): (x, y, z) -> (x, -z, y)
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    part = next(o for o in data["objects"] if o.get("in") == "Arm" and o.get("mesh"))
+    corners = {p for f in _faces(part["mesh"]) for p in f}
+    assert (110.0, -36.0, 4.0) in corners and (100.0, 0.0, 0.0) in corners, sorted(corners)
+
+
+def test_a_read_out_lists_the_classes_switched_off(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    d.classes += ["Logos", "Decks"]
+    d.hidden_classes = {"Logos"}
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    assert data["hidden_classes"] == ["Logos"]
+
+
+def test_a_very_detailed_symbol_is_drawn_whole_without_its_little_parts(server, fake_vw, tmp_path):
+    """CFF-26's game board has thousands of parts. It came out a plain box, then (whole-symbol faces,
+    biggest kept) with holes in its curved frame. Now it's drawn part by part with only its little
+    parts (bulbs, screws: under 4" in plan and height) left out, so every surface comes whole."""
+    vs = fake_vw
+    d = vs.DOC
+    board = vs._Obj(16, name="Board", w=200.0, h=4.0, members=[])
+    for i in range(2600):
+        board.members.append(vs._Obj(2, pts=[(0.0, i * 0.001), (1.0, i * 0.001)], parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (200.0, 0.0), (200.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=60.0, dz=120.0, parent_obj=board, layer=None))
+    d.resources["Board"] = board
+    vs.Symbol("Board", (100.0, 0.0), 0.0)
+    d.last.is3d, d.last.zc, d.last.dz = True, 60.0, 120.0
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out", max_objects=4000)["saved"]).read_text())
+    parts = [o for o in data["objects"] if o.get("in") == "Board"]
+    assert len(parts) == 1 and parts[0].get("mesh") and parts[0]["t"] != "block", parts
+    corners = {p for f in _faces(parts[0]["mesh"]) for p in f}
+    assert (300.0, 4.0, 120.0) in corners and (100.0, 0.0, 0.0) in corners
+    assert data["skipped"]["little parts of very detailed symbols"] == 2600
+
+
+def test_a_symbol_with_too_many_faces_keeps_its_biggest(server, fake_vw, tmp_path, monkeypatch):
+    """Past the cap, the biggest surfaces are kept (they carry the shape), the tiny ones go."""
+    import vwmcp_bridge
+
+    monkeypatch.setattr(vwmcp_bridge, "SYMBOL_FACE_CAP", 6)
+    monkeypatch.setattr(vwmcp_bridge, "DETAIL_CAP", 50)  # past four times this, the whole symbol's faces
+    vs = fake_vw
+    d = vs.DOC
+    board = vs._Obj(16, name="Board", w=40.0, h=4.0, members=[])
+    for i in range(2600):
+        board.members.append(vs._Obj(2, pts=[(0.0, i * 0.01), (1.0, i * 0.01)], parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (40.0, 0.0), (40.0, 4.0), (0.0, 4.0)], closed=True, is3d=True, zc=60.0, dz=120.0, parent_obj=board, layer=None))
+    board.members.append(vs._Obj(5, pts=[(0.0, 0.0), (0.5, 0.0), (0.5, 0.5), (0.0, 0.5)], closed=True, is3d=True, zc=0.25, dz=0.5, parent_obj=board, layer=None))
+    d.resources["Board"] = board
+    vs.Symbol("Board", (100.0, 0.0), 0.0)
+    d.last.is3d, d.last.zc, d.last.dz = True, 60.0, 120.0
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out", max_objects=4000)["saved"]).read_text())
+    [b] = [o for o in data["objects"] if o.get("in") == "Board"]
+    faces = _faces(b["mesh"])
+    assert len(faces) == 6, "twelve faces, the six biggest kept"
+    spans = [max(max(p[i] for p in f) - min(p[i] for p in f) for i in range(3)) for f in faces]
+    assert min(spans) >= 4, "the half-inch cube's faces went first"

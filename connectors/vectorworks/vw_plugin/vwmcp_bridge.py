@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.0"
+BRIDGE_VERSION = "0.9.5"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1495,6 +1495,7 @@ def _ro_fill_opacity(h):
             return None
 
 
+FACE_HARD_LIMIT = 500000  # never read more faces than this from one object
 FACE_CAP = 3000  # an object with more faces than this keeps its plain block (a scanned prop, a dense mesh)
 
 
@@ -1511,7 +1512,18 @@ def _pt3(p):
     return flat[:3] if len(flat) >= 3 else None
 
 
-def _ro_faces(h, cap=FACE_CAP):
+def _face_area(f):
+    ax = ay = az = 0.0
+    x0, y0, z0 = f[0]
+    for (x1, y1, z1), (x2, y2, z2) in zip(f[1:], f[2:]):
+        ux, uy, uz, vx, vy, vz = x1 - x0, y1 - y0, z1 - z0, x2 - x0, y2 - y0, z2 - z0
+        ax += uy * vz - uz * vy
+        ay += uz * vx - ux * vz
+        az += ux * vy - uy * vx
+    return (ax * ax + ay * ay + az * az) ** 0.5
+
+
+def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
     """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each).
     ConvertTo3DPolys REPLACES the object it's given (measured on Vectorworks 2026, 2026-11-10: a
     read-out that converted the drawing's own objects deleted them), so it only ever gets a
@@ -1555,12 +1567,17 @@ def _ro_faces(h, cap=FACE_CAP):
                     pts.append(q)
             if len(pts) >= 3:
                 faces.append(pts)
-            if len(faces) > cap:
+            if len(faces) > (FACE_HARD_LIMIT if keep_largest else cap):
                 over = True
                 break
     finally:
         vs.DelObject(g)
-    return None if over else faces
+    if over:
+        return None
+    if keep_largest and len(faces) > cap:
+        # The biggest surfaces carry the shape; screws, rivets and tiny bevels go first.
+        faces = sorted(faces, key=_face_area, reverse=True)[:cap]
+    return faces
 
 
 def _children(first):
@@ -1571,12 +1588,61 @@ def _children(first):
     return out
 
 
+def _mm3(a, b):
+    return tuple(tuple(sum(a[i][n] * b[n][j] for n in range(3)) for j in range(3)) for i in range(3))
+
+
+def _ro_viewports(design):
+    """Each sheet's viewports and what they show: the design layers (0 shown, -1 hidden, 2 greyed)
+    and the classes that differ from the drawing's own visibility. A sheet can show what the design
+    layers hide (CFF-26's A-1 sheet), so Rig Studio can show the drawing as that sheet does."""
+    out = []
+    try:
+        doc_cls = {}
+        for i in range(1, int(vs.ClassNum()) + 1):
+            c = _s(vs.ClassList(i))
+            if c:
+                doc_cls[c] = int(vs.GetCVis(c))
+        lh = vs.FLayer()
+        while not _nil(lh):
+            if vs.GetObjectVariableInt(lh, 154) == 2:  # a sheet
+                sheet = _s(vs.GetLName(lh))
+                for h in _children(vs.FInLayer(lh)):
+                    if vs.GetTypeN(h) != 122:
+                        continue
+                    vp = {"sheet": sheet, "name": _obj_name(h) or sheet, "layers": {}, "classes": {}}
+                    for dl in design:
+                        try:
+                            ok, v = vs.GetVPLayerVisibility(h, dl)
+                            if ok:
+                                vp["layers"][_s(vs.GetLName(dl))] = int(v)
+                        except Exception:
+                            pass
+                    for c, dv in doc_cls.items():
+                        try:
+                            ok, v = vs.GetVPClassVisibility(h, c)
+                            if ok and int(v) != dv:
+                                vp["classes"][c] = int(v)
+                        except Exception:
+                            pass
+                    out.append(vp)
+            lh = vs.NextLayer(lh)
+    except Exception:
+        pass
+    return out
+
+
 DETAIL_CAP = 2500  # a symbol drawn with more parts than this comes as one block (was 150: cameras and people became boxes)
+BIG_PIECE = 120.0  # inches: a very detailed symbol this wide (scenery, not a person or a camera) is drawn part by part
+TINY_PART = 4.0  # inches: inside a very detailed symbol, parts smaller than this in plan and height are left out
+SYMBOL_FACE_CAP = 30000  # a symbol too detailed to walk part by part still comes with its real faces up to this
+SYMBOL_DEPTH = 10  # symbols inside symbols, drawn this deep (groups don't count: CFF-26's set deck held its
+# video-logo symbol inside nested groups, and counting the groups cut it off at 6, leaving a hole)
 FACE_BUDGET = 400000  # faces in one read-out; past it, 3D objects fall back to plain blocks
 
 
 @op
-def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
+def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
     """The whole drawing as data, in inches, for working on it away from Vectorworks: document,
     layers (with elevations and whether they're shown), classes, every plug-in object with all
     its fields (lighting devices, truss, hoists, decks...), every symbol, and the shapes it's drawn
@@ -1604,7 +1670,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             ct = vs.GetTypeN(c)
             if ct == 11:
                 stack.extend(_children(vs.FInGroup(c)))
-            elif ct == 15 and depth < 6:
+            elif ct == 15 and depth < SYMBOL_DEPTH:
                 inner = vs.GetObject(_s(vs.GetSymName(c)))
                 n += part_count(inner, depth + 1) if not _nil(inner) else 1
             elif ct not in (10, 63):
@@ -1628,12 +1694,73 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     except Exception:
         uo = (0.0, 0.0)
 
-    def place(pt, xf):
-        ox, oy, oz, rot, sx, sy, sz = xf[:7]
+    def lin(xf):
+        """The transform's linear part, a 3x3 matrix: given (a symbol tipped in 3D), or built from
+        its turn about Z and its scales."""
+        if len(xf) > 8 and xf[8] is not None:
+            return xf[8]
+        c, s_ = math.cos(math.radians(xf[3])), math.sin(math.radians(xf[3]))
+        return ((c * xf[4], -s_ * xf[5], 0.0), (s_ * xf[4], c * xf[5], 0.0), (0.0, 0.0, xf[6]))
+
+    def place3(p3, xf):
+        """A point inside a definition, in drawing units (not rounded)."""
         px, py = xf[7] if len(xf) > 7 else (0.0, 0.0)
-        x, y = (pt[0] + px) * sx, (pt[1] + py) * sy
-        c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
-        return [_r(ox + x * c - y * s_, k), _r(oy + x * s_ + y * c, k)]
+        x, y, z = p3[0] + px, p3[1] + py, p3[2]
+        m_ = lin(xf)
+        return (xf[0] + m_[0][0] * x + m_[0][1] * y + m_[0][2] * z,
+                xf[1] + m_[1][0] * x + m_[1][1] * y + m_[1][2] * z,
+                xf[2] + m_[2][0] * x + m_[2][1] * y + m_[2][2] * z)
+
+    def place(pt, xf):
+        X, Y, _Z = place3((pt[0], pt[1], 0.0), xf)
+        return [_r(X, k), _r(Y, k)]
+
+    def zof(z, xf):
+        """A height inside a definition, in the drawing (inches)."""
+        return _r(xf[2] + lin(xf)[2][2] * z, k)
+
+    def zrange(z0, z1, xf):
+        a, b = zof(z0, xf), zof(z1, xf)
+        return [min(a, b), max(a, b)]
+
+    def orient(h, mir):
+        """A symbol's own linear map: Vectorworks' Get3DOrientation is Rz . Ry . Rx, then a flip of
+        local Z when flagged (measured on CFF-26: a symbol mirrored in plan reads rx 180 and flipped,
+        which is exactly a mirror in local Y: Rx(180) . flipZ = diag(1, -1, 1)). Falls back to the
+        turn in plan (GetSymRot) and the mirror flag."""
+        try:
+            ok, rx, ry, rz, fl = vs.Get3DOrientation(h)
+        except Exception:
+            ok = False
+        if ok:
+            def rot(axis, a):
+                c, s_ = math.cos(math.radians(a)), math.sin(math.radians(a))
+                if axis == 0:
+                    return ((1.0, 0.0, 0.0), (0.0, c, -s_), (0.0, s_, c))
+                if axis == 1:
+                    return ((c, 0.0, s_), (0.0, 1.0, 0.0), (-s_, 0.0, c))
+                return ((c, -s_, 0.0), (s_, c, 0.0), (0.0, 0.0, 1.0))
+            m_ = _mm3(_mm3(rot(2, float(rz)), rot(1, float(ry))), rot(0, float(rx)))
+            if fl:
+                m_ = _mm3(m_, ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, -1.0)))
+            return m_
+        c, s_ = math.cos(math.radians(float(vs.GetSymRot(h)))), math.sin(math.radians(float(vs.GetSymRot(h))))
+        f = -1.0 if mir else 1.0
+        return ((c, -s_ * f, 0.0), (s_, c * f, 0.0), (0.0, 0.0, 1.0))
+
+    def mirrored(h):
+        """A mirrored symbol (Vectorworks' Mirror tool): Get3DOrientation's flag. Measured on CFF-26:
+        the stage-left family arch reads GetSymRot -61 and fits its outline only as rotate(-61) of
+        its definition mirrored in local Y; unmirrored it sat 64" off, swung through the set."""
+        try:
+            ok, _rx, _ry, _rz, fl = vs.Get3DOrientation(h)
+            return bool(ok and fl)
+        except Exception:
+            return False
+
+    def turn(ang, xf):
+        """An angle inside a definition, in the drawing: a mirrored parent turns it the other way."""
+        return xf[3] - ang if xf[4] * xf[5] < 0 else xf[3] + ang
 
     def scale_of(h):
         """A symbol's own scale (2019+: none, symmetric or asymmetric; DWG blocks often use it)."""
@@ -1654,22 +1781,21 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     import time as _time
     t_start = _time.time()
 
-    def mesh(h, xf):
+    def mesh(h, xf, cap=FACE_CAP, keep_largest=False):
         """The object's real faces placed in the drawing, as {"q": step, "v": [x, y, z, ...] in
         quarter inches, "f": [n, i1..in, n, ...]} (shared corners stored once), or None."""
         if state["faces"] >= FACE_BUDGET:
             return None
-        faces = _ro_faces(h)
+        faces = _ro_faces(h, cap, keep_largest)
         if not faces:
             return None
         state["faces"] += len(faces)
-        ox, oy, oz, rot, sx, sy, sz = xf[:7]
         seen, v, f = {}, [], []
         for face in faces:
             f.append(len(face))
             for x, y, z in face:
-                X, Y = place([x, y], xf)
-                key = (int(round(X * 4)), int(round(Y * 4)), int(round(_r(z * sz + oz, k) * 4)))
+                X, Y, Z = place3((x, y, z), xf)
+                key = (int(round(_r(X, k) * 4)), int(round(_r(Y, k) * 4)), int(round(_r(Z, k) * 4)))
                 i = seen.get(key)
                 if i is None:
                     i = seen[key] = len(seen)
@@ -1716,7 +1842,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     _orig, ang, _mir = vs.GetTextOrientation(h)
                 except Exception:
                     ang = 0.0
-                o["rot"] = round(float(ang) + xf[3], 2)
+                o["rot"] = round(turn(float(ang), xf), 2)
             else:
                 words = _s(vs.GetDimText(h))
                 pts = 9.0
@@ -1749,6 +1875,26 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         except Exception:
             skipped["text that couldn't be read"] = skipped.get("text that couldn't be read", 0) + 1
 
+    def walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid):
+        """A symbol's parts, each placed through the symbol's own map after its parent's."""
+        if True:
+            if depth < SYMBOL_DEPTH and not _nil(defh):
+                sx, sy, sz = scale_of(h)
+                # The symbol's own map (turned, mirrored, tipped in 3D), scaled, after its parent's.
+                own = _mm3(orient(h, mir), ((sx, 0.0, 0.0), (0.0, sy, 0.0), (0.0, 0.0, sz)))
+                m_ = _mm3(lin(xf), own)
+                T = place3(loc, xf)
+                det2 = m_[0][0] * m_[1][1] - m_[0][1] * m_[1][0]
+                inner = (T[0], T[1], T[2], math.degrees(math.atan2(m_[1][0], m_[0][0])), math.hypot(m_[0][0], m_[1][0]),
+                         math.hypot(m_[0][1], m_[1][1]) * (-1 if det2 < 0 else 1), m_[2][2], uo, m_)
+                bx0, by0, bx1, by1 = o["bbox"]
+                # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
+                # tight margin dropped half the set). This only catches parts placed absurdly far off.
+                m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
+                clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
+                for c in _children(vs.FInSymDef(defh)):
+                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip, hid)
+
     def walk(h, layer, xf, depth, in_sym, skip2d, clip=None, hid=False):
         t = vs.GetTypeN(h)
         if t in (31, 16, 92, 122, 17):
@@ -1762,12 +1908,23 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             return
         if t == 11:
             for c in _children(vs.FInGroup(h)):
-                walk(c, layer, xf, depth + 1, in_sym, skip2d, clip, hid)
+                walk(c, layer, xf, depth, in_sym, skip2d, clip, hid)  # groups don't count towards depth
             return
         p1, p2 = vs.GetBBox(h)
         corners = [place(q, xf) for q in ([p1[0], p1[1]], [p2[0], p1[1]], [p2[0], p2[1]], [p1[0], p2[1]])]
         xs, ys = [q[0] for q in corners], [q[1] for q in corners]
         o = {"t": TYPE_NAMES.get(t, "type_%d" % t), "layer": layer, "cls": cls, "bbox": [min(xs), min(ys), max(xs), max(ys)]}
+        tiny = state.get("tiny")
+        if tiny and t not in (15, 86) and max(max(xs) - min(xs), max(ys) - min(ys)) < tiny:
+            # Inside a very detailed symbol: the little parts (bulbs, screws) are left out, the rest
+            # drawn whole. Something small in plan but tall still counts.
+            try:
+                tall = float(vs.Get3DInfo(h)[2]) * k
+            except Exception:
+                tall = 0.0
+            if tall < tiny:
+                skipped["little parts of very detailed symbols"] = skipped.get("little parts of very detailed symbols", 0) + 1
+                return
         if in_sym:
             o["in"] = in_sym
         if hid:
@@ -1782,8 +1939,19 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             xy = _xy(vs.GetSymLoc(h))
             loc = (xy[0], xy[1], float(vs.GetSymLoc3D(h)[2]))
             at = place([loc[0], loc[1]], xf)
-            o["at"] = [at[0], at[1], _r(float(loc[2]) * xf[6] + xf[2], k)]
-            o["rot"] = round(float(vs.GetSymRot(h)) + xf[3], 3)
+            o["at"] = [at[0], at[1], zof(float(loc[2]), xf)]
+            o["rot"] = round(turn(float(vs.GetSymRot(h)), xf), 3)
+            mir = t == 15 and mirrored(h)
+            if mir:
+                o["mirror"] = 1
+            try:
+                ok3, rx3, ry3, rz3, _f3 = vs.Get3DOrientation(h)
+                if ok3 and (abs(float(rx3)) > 0.01 or abs(float(ry3)) > 0.01):
+                    # Tipped in 3D (about X or Y): its parts are placed turned about Z only, so flag it.
+                    o["rot3d"] = [round(float(rx3), 2), round(float(ry3), 2), round(float(rz3), 2)]
+                    skipped["symbols tipped in 3D (drawn turned flat)"] = skipped.get("symbols tipped in 3D (drawn turned flat)", 0) + 1
+            except Exception:
+                pass
             if t == 86:
                 o["plugin"] = _plugin_name(h)
                 if o["plugin"]:
@@ -1793,7 +1961,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     _c, zc = vs.Get3DCntr(h)
                     o["pts"] = corners
                     o["closed"] = True
-                    o["z"] = [_r((float(zc) - float(dz) / 2) * xf[6] + xf[2], k), _r((float(zc) + float(dz) / 2) * xf[6] + xf[2], k)]
+                    o["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
                     m3 = mesh(h, xf)
                     if m3:
                         o["mesh"] = m3
@@ -1804,28 +1972,42 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             if not add(o):
                 return
             defh = vs.GetObject(sym)
-            if not _nil(defh) and part_count(defh) > int(detail_cap):
-                # Too detailed to draw part by part: one block its size (and height, if it's 3D).
+            detailed = not _nil(defh) and part_count(defh) > int(detail_cap)
+            bw, bh = o["bbox"][2] - o["bbox"][0], o["bbox"][3] - o["bbox"][1]
+            big = max(bw, bh) >= BIG_PIECE
+            if detailed and big and part_count(defh) <= int(detail_cap) * 4 and not state.get("tiny"):
+                # Very detailed (CFF-26's game board): drawn part by part with its little parts left
+                # out, so every surface comes whole. Keeping only the biggest faces of the whole
+                # symbol left holes in its curved frame (a curve is many small faces).
+                state["tiny"] = TINY_PART
+                before = len(objects)
+                try:
+                    walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid)
+                finally:
+                    state["tiny"] = None
+                if len(objects) > before:
+                    return
+                # All little parts (a figure drawn in short strokes): drawn as a whole below.
+            if detailed:
+                # Too detailed to draw part by part: the whole symbol's real faces in one go (CFF-26's
+                # game board, thousands of parts, came out a plain box), or else one block its size.
                 b = {"t": "block", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True, "simplified": True}
                 try:
                     dy, dx, dz = vs.Get3DInfo(h)
                     _c, zc = vs.Get3DCntr(h)
                     if float(dz) > 0:
-                        b["z"] = [_r((float(zc) - float(dz) / 2) * xf[6] + xf[2], k), _r((float(zc) + float(dz) / 2) * xf[6] + xf[2], k)]
+                        b["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
                 except Exception:
                     pass
+                if "z" in b:
+                    # A hidden layer's copy (CFF-26's PARTS) gets fewer faces: it's rarely looked at.
+                    whole = mesh(h, xf, SYMBOL_FACE_CAP if state.get("layer_shown", True) else SYMBOL_FACE_CAP // 4, keep_largest=True)
+                    if whole:
+                        b["mesh"] = whole
+                        b.pop("simplified")
                 add(b)
                 return
-            if depth < 6 and not _nil(defh):
-                sx, sy, sz = scale_of(h)
-                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy, xf[6] * sz, uo)
-                bx0, by0, bx1, by1 = o["bbox"]
-                # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
-                # tight margin dropped half the set). This only catches parts placed absurdly far off.
-                m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
-                clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
-                for c in _children(vs.FInSymDef(defh)):
-                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip, hid)
+            walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid)
             return
         z = _ro_z(h, t)
         if skip2d:
@@ -1845,7 +2027,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         o["pts"] = [place(q, xf) for q in pts]
         o["closed"] = bool(closed)
         if z is not None:
-            o["z"] = [_r(z[0] * xf[6] + xf[2], k), _r(z[1] * xf[6] + xf[2], k)]
+            o["z"] = zrange(z[0], z[1], xf)
             if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
                 m3 = mesh(h, xf)
                 if m3:
@@ -1869,12 +2051,14 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
     # Shown layers first, so a cut-off (max_objects) falls on hidden ones.
     for lh in sorted(design, key=lambda h: vs.GetLVis(h) != 0):
         name = _s(vs.GetLName(lh))
+        state["layer_shown"] = vs.GetLVis(lh) == 0
         for h in _children(vs.FInLayer(lh)):
             if state["truncated"]:
                 break
             walk(h, name, (0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0), 0, None, False)
     _note_native("(ALL)")
     truncated = state["truncated"]
+    viewports = _ro_viewports(design)
     layers = []
     for info in _layers():
         lh = vs.GetLayerByName(info["name"])
@@ -1894,6 +2078,8 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         "layers": layers,
         "classes": _classes(),
         "objects": objects,
+        "viewports": viewports,
+        "hidden_classes": [c for c in _classes() if class_hidden(c)],
         "skipped": skipped,
         "truncated": truncated,
         "faces": state["faces"],

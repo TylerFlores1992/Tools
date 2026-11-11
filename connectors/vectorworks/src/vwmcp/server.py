@@ -23,6 +23,9 @@ from .service import Show
 from .svg import render_svg
 from .trigger import HotkeyTrigger, TriggerError, make_trigger
 
+# Objects in one read-out at most (a guard, not a target: CFF-26 with its game board drawn whole is ~40,000).
+MAX_OBJECTS = 60000
+
 Length = Union[float, str]
 Point = list[Length]
 
@@ -510,7 +513,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         return out
 
     @mcp.tool()
-    async def read_out(path: str | None = None, max_objects: int = 40000) -> dict:
+    async def read_out(path: str | None = None, max_objects: int = MAX_OBJECTS) -> dict:
         """Read the whole drawing out to <name>.rigread.json beside the .vwx (inches: layers,
         classes, every plug-in object with all its fields, symbols, shapes), so Rig Studio and
         Claude can work on it with Vectorworks closed; in a Dropbox folder it syncs by itself.
@@ -533,7 +536,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         done, failed = [], []
         for p in todo[: max(1, int(limit))]:
             try:
-                done.append(await _read_out_one(str(p), 40000))
+                done.append(await _read_out_one(str(p), MAX_OBJECTS))
             except ToolError as e:
                 failed.append({"file": str(p), "error": str(e)})
         return {"read": done, "failed": failed, "left": max(0, len(todo) - int(limit))}
@@ -547,7 +550,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         for p in readout.pending(readout.watch_folders())[:3]:
             try:
                 async with reading:
-                    done.append(await _read_out_one(str(p), 40000, watch=True))
+                    done.append(await _read_out_one(str(p), MAX_OBJECTS, watch=True))
                 _log("read out %s" % p.name)
             except Exception as e:  # a bad file must not stop the watcher
                 done.append({"file": str(p), "error": str(e)})
@@ -577,7 +580,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             readout.write_status(vwx, job=job, state="reading", message="Your PC has it. Reading the drawing in Vectorworks (a big one takes a few minutes)…")
             try:
                 async with reading:
-                    r = await _read_out_one(str(vwx), 40000)
+                    r = await _read_out_one(str(vwx), MAX_OBJECTS)
                 msg = "Read out on your PC: %s objects, %s layers, %s symbols, %s lighting fixtures." % (
                     r.get("objects", "?"), r.get("layers", "?"), r.get("symbols", "?"), r.get("lighting_devices", 0))
                 if r.get("shapes_left_out"):

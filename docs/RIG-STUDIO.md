@@ -45,10 +45,41 @@ What it does:
   Rig Studio draws heavy pens as fat lines, keeps texts readable (a mirrored symbol's angle can't be read)
   and has a Paper switch (on by default): white behind the drawing as in Vectorworks; on the page's dark
   background dark pens are lifted and see-through fills read darker (CFF's 22% cream floor looks olive).
+  Since 2026-11-11 a read-out's drawing is NOT copied into the page's database: CFF-26 made 111-148
+  documents (~40 MB), saving took minutes, a phone that put the app away left half a copy, and the
+  database's live view didn't deliver them all ("got less"). The database keeps one small row per
+  drawing layer (`readout: {file, layer}`: name, shown, where from); the shapes are read from the
+  read-out file in Dropbox when the project opens and kept on the device (memory + IndexedDB, keyed
+  by file, Dropbox version and sheet) — src/geometry.ts. CFF-26 now opens in ~12 s as 19 rows.
+  (Older read-outs saved with shapes still show as they are.)
   Opening a read-out saves the layers Vectorworks shows first, retries a busy database, shows
   "Saving … n of N parts" and, if saving stops (the phone put the app away: CFF-26 stopped at 24 of
   111 parts on 2026-11-10), says how many were saved; opening it again replaces the partial copy.
-  Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
+  Plan shows 3D objects as Vectorworks' Top/Plan wireframe does: edges only, no faces (CFF's black
+  upper header 25' up and the celeb gameboard covered the stage with their solid tops). 3D, Front and
+  Side keep the faces.
+  Mirrored symbols (0.9.1): Get3DOrientation's flag; Vectorworks places one as its definition
+  mirrored in local Y, then turned by GetSymRot (measured on CFF-26: the stage-left family arch,
+  GetSymRot -61, fits its outline only that way; drawn unmirrored it swung through the set). Inside a
+  mirrored symbol, angles turn the other way. 152 of CFF-26's symbols are mirrored.
+  Symbols tipped in 3D (0.9.3): the transform carries a full 3x3 matrix. Get3DOrientation is
+  Rz . Ry . Rx, then a flip of local Z when flagged (a plan mirror reads rx 180 + flipped; measured on
+  CFF-26). CFF-26's camera jib arm is turned 90 degrees about X. Groups don't count towards the symbol
+  depth limit (10): CFF-26's video-logo deck sat inside nested groups and was cut off at 6, leaving a
+  hole. Checked on CFF-26: every visible symbol's parts fit its own outline, or both mirrored copies
+  miss by the same amount (outlines that count only the 2D part).
+  Very detailed scenery (0.9.5): a symbol past DETAIL_CAP parts and at least 10' wide (BIG_PIECE) is
+  drawn part by part with its little parts (under 4" in plan and height, TINY_PART) left out, so
+  every surface comes whole: keeping only the biggest faces of the whole symbol (0.9.4) left holes in
+  CFF-26's game board frame, because a curve is many small faces. Smaller detailed symbols (people,
+  cameras) still come as whole-symbol faces. A read-out holds up to 60,000 objects (MAX_OBJECTS).
+  Over-detailed symbols (0.9.4): past DETAIL_CAP parts a symbol isn't walked part by part; the whole
+  instance (a duplicate) is converted to faces in one go, keeping the 30,000 biggest (7,500 on a hidden
+  layer) so screws and bevels go first. CFF-26's game board (frame, screens, bulb grid) was a plain
+  box; now it reads as the piece. A box remains only if that conversion fails.
+  Sheets (0.9.2+): the read-out lists each sheet viewport's layer visibility and the classes it shows
+  differently, plus the drawing's hidden classes; Files offers "Show as" (design layers or a sheet).
+  Not yet read: a sheet's annotations (drawn on the sheet over the viewport) and its viewport overrides (its own class and layer visibility), so a read-out matches
   the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
   definition every point (GetBBox, GetSegPt, GetPolyPt, GetSymLoc, GetPolyPt3D) reads back as true − user
@@ -142,3 +173,10 @@ another session (read it first). Keep the capabilities: `db`, `user`, `sample`, 
 `downloads`, `sample` with `images: true` (pictures in the chat), and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
 get_file_metadata, create_folder, fetch, create_file] and host:vectorworks [ping, build_rig, get_lighting_devices,
 get_document_info].
+
+## Asking without changing (chat)
+The chat's **Ask** button runs Claude in the page with the page's own tools. Only `edit_rig` /
+`replace_rig` change the rig (and save a version). Looking never does: `show_layers` (only / show /
+hide reference layers), `read_layer` (with an `area` box; outlines come with their boxes and heights)
+and `add_measurements` (a "Measurements: …" layer of dimension lines with their figures, replaced by
+name). The Vectorworks drawing is never touched from the chat; that takes a full session.
