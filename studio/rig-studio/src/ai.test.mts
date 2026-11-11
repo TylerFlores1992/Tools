@@ -19,7 +19,7 @@ function ctxWith(layers: Layer[]) {
     putMeasurements: async (name, shapes) => (put.push({ name, shapes }), "m1"),
   };
   const state = { sketch: ctx.sketch, changed: false, notes: [] as string[] };
-  return { ctx, state, visible, put, run: (name: string, input: Record<string, unknown>) => tools(ctx, state).find((t) => t.name === name)!.execute(input) };
+  return { ctx, state, visible, put, run: (name: string, input: Record<string, unknown>) => tools(ctx, state).find((t) => t.name === name)!.execute(input, { signal: new AbortController().signal }) };
 }
 
 const deck: Layer = { id: "d", name: "CFF: CFF SET-26", kind: "shapes", visible: true, at: "t", shapes: [{ pts: [[0, 0], [96, 0], [96, 48], [0, 48]], closed: true, z: 24 }, { pts: [[500, 500], [510, 500], [510, 510]], closed: true }] };
