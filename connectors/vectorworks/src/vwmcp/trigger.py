@@ -60,6 +60,10 @@ class Prompt(NamedTuple):
 PROMPTS = (
     # Opening an older file converts it into a renamed copy; the original file is never changed.
     Prompt("created with an older version of vectorworks", ("OK",)),
+    # A drawing that uses fonts this PC doesn't have asks which to show instead (measured
+    # 2026-11-11 on the Bili Bili rigging file: "Font Mapping", Bank Gothic -> Arial). OK keeps
+    # Vectorworks' suggestion; it only changes how text looks here, and the copy is never saved.
+    Prompt("font mapping", ("OK",)),
     # A converted copy has no name, so 30 minutes later autosave asks to name and save it. No
     # (and stop asking): the copy is only read, and saving it would put files in the user's folders.
     Prompt(
@@ -242,7 +246,8 @@ class _Win32:
     @staticmethod
     def _words(w) -> str:
         try:
-            return " ".join(t.window_text() for t in w.descendants(control_type="Text")).lower()
+            # The title too: "Font Mapping" says what it is only there (its list headers aren't text).
+            return " ".join([w.window_text()] + [t.window_text() for t in w.descendants(control_type="Text")]).lower()
         except Exception:
             return ""
 

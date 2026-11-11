@@ -418,3 +418,12 @@ def test_a_menu_press_that_times_out_while_vectorworks_runs_the_job_counts_as_pr
     w = _Win32.__new__(_Win32)
     w.press_menu(types.SimpleNamespace(handle=1), "Tools", "MCP Run Job")  # doesn't raise
     assert pressed == ["MCP Run Job\tCtrl+Shift+Alt+M"]
+
+
+def test_the_font_mapping_box_gets_ok():
+    """Measured 2026-11-11 opening the Bili Bili rigging file: "Font Mapping" (Bank Gothic -> Arial)
+    stopped the open; read_out gave up after 3 minutes. OK keeps Vectorworks' suggested fonts."""
+    from vwmcp.trigger import pick_prompt
+
+    p = pick_prompt("Font Mapping Replace: With: For Help, press F1 or click the ? icon.")
+    assert p is not None and p.buttons == ("OK",)
