@@ -1196,7 +1196,6 @@ function ChatPane(props: {
   const [working, setWorking] = useState<string | null>(null);
   const [stream, setStream] = useState("");
   const [err, setErr] = useState<string | null>(null);
-  const [where, setWhere] = useState<"cloud" | "pc">("cloud");
   const [imgs, setImgs] = useState<File[]>([]);
   const [imgLimits, setImgLimits] = useState<{ maxCount: number; maxInputBytes: number; mediaTypes: string[] } | null>(null);
   useEffect(() => {
@@ -1249,7 +1248,16 @@ function ChatPane(props: {
     setImgs([]);
     const kept = await keepImages(files);
     await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
-    const state = { sketch, changed: false, notes: [] as string[] };
+    const state = { sketch, changed: false, notes: [] as string[], handedOff: false };
+    const handOff = async (request: string, where: "cloud" | "pc", pics: string[], why?: string) => {
+      const id = await startSession(
+        pics.length ? `${request}\n\nAttached pictures (this page's assets): ${pics.join(", ")}. Open each with the Artifact tool: action "read", url = the page, path = the id.` : request,
+        where,
+      );
+      state.handedOff = true;
+      await say({ role: "session", text: `${why ? `${why}, so I s` : "S"}tarted a full session ${where === "pc" ? "on your PC" : "in the cloud"}. Its progress shows here; it saves a new version when it's done.`, at: now(), job: id });
+      return id;
+    };
     const ctx: Ctx = {
       sketch,
       layers,
@@ -1257,7 +1265,8 @@ function ChatPane(props: {
       projectName: project.name,
       onDraft: (s) => onDraft(s),
       onProgress: setWorking,
-      startSession,
+      // A session Claude starts carries the pictures and shows in the chat with its progress.
+      startSession: (request, where) => handOff(request, where, kept),
       setVisible: async (ids, visible) => {
         for (const id of ids) await saveWithRetry(() => db.doc(`projects/${project.id}/layers/${id}`).update({ visible }));
       },
@@ -1314,11 +1323,23 @@ function ChatPane(props: {
         not_granted: "Claude isn't allowed on this page yet. Allow it when asked, or from the page's Permissions menu.",
         rate_limited: "Too many requests just now. Wait a minute and ask again.",
         cancelled: "Stopped.",
-        prompt_too_large: "This rig is too big to edit in the chat. Use “Start a full session” instead.",
-        images_unavailable: "Pictures can't be sent to Claude from this view. Start a full session instead; it can open them.",
+        prompt_too_large: "This rig is too big for the chat.",
+        images_unavailable: "Pictures can't be sent to Claude from this view.",
         image_rejected: "Claude couldn't read one of the pictures. Try a PNG or JPG screenshot.",
         upstream_error: "The connection to Claude dropped before it finished (the phone went to sleep, the app went to the background, or the signal blipped). Your question is back in the box: tap Ask again, and keep Rig Studio open while it works.",
       };
+      // Too big for the chat, or pictures it can't take here: a full session picks it up by itself.
+      if (!state.changed && !state.handedOff && (er.code === "prompt_too_large" || er.code === "images_unavailable")) {
+        try {
+          await handOff(req, guessWhere(req), kept, er.code === "prompt_too_large" ? "That was too big for the chat" : "The chat can't open pictures here");
+          return;
+        } catch (e2) {
+          setErr(`${words[er.code]} A full session couldn't start either: ${(e2 as Error).message}`);
+          setText(req);
+          setImgs(files);
+          return;
+        }
+      }
       if (er.code !== "cancelled" || !state.changed) setErr(words[er.code ?? ""] ?? `Claude couldn't finish: ${er.message ?? "unknown problem"}.`);
       if (!state.changed && er.code !== "cancelled") {
         setText(req);
@@ -1332,26 +1353,7 @@ function ChatPane(props: {
     }
   };
 
-  const session = async () => {
-    const req = text.trim();
-    if (!req) return setErr("Say what the session should do first.");
-    setErr(null);
-    try {
-      const files = imgs;
-      const kept = await keepImages(files);
-      if (files.length && kept.length < files.length) return setErr("The pictures couldn't be saved with the project, so a session couldn't open them. Try again, or send the request without them.");
-      setImgs([]);
-      await say({ role: "you", text: req, at: now(), ...(kept.length ? { images: kept } : {}) });
-      const id = await startSession(
-        kept.length ? `${req}\n\nAttached pictures (this page's assets): ${kept.join(", ")}. Open each with the Artifact tool: action "read", url = the page, path = the id.` : req,
-        where,
-      );
-      setText("");
-      await say({ role: "session", text: `Started a full session ${where === "pc" ? "on your PC" : "in the cloud"}. Its progress shows here; it saves a new version when it's done.`, at: now(), job: id });
-    } catch (e) {
-      setErr((e as Error).message);
-    }
-  };
+
 
   return (
     <div className="chat">
@@ -1470,17 +1472,7 @@ function ChatPane(props: {
               Ask
             </button>
           )}
-          <span className="or">or</span>
-          <button type="button" className="btn" onClick={session} disabled={!text.trim() || !!working} id="start-session">
-            Start a full session
-          </button>
-          <label className="sr" htmlFor="where">
-            Where the session runs
-          </label>
-          <select id="where" value={where} onChange={(e) => setWhere(e.target.value as "cloud" | "pc")}>
-            <option value="cloud">in the cloud</option>
-            <option value="pc">on my PC (Vectorworks, local files)</option>
-          </select>
+          <span className="small muted or-note">Claude answers here, or hands big jobs to a full session by itself.</span>
         </div>
       </form>
     </div>
@@ -2354,6 +2346,11 @@ const root = document.getElementById("app")!;
 createRoot(root).render(<App />);
 
 /** A box Vectorworks is waiting on, shown with its own buttons: a tap answers it on the PC. */
+/** Where a job the chat couldn't take should run: the PC when it needs Vectorworks or its files. */
+export function guessWhere(request: string): "cloud" | "pc" {
+  return /vectorworks|\bvwx?\b|\.vwx|my pc|my computer|on the pc|desktop|build (it|this)/i.test(request) ? "pc" : "cloud";
+}
+
 /** The model the chat asks for (owner's call, 2026-11-11). */
 const CHAT_MODEL = "claude-opus-5-5";
 

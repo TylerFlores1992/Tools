@@ -52,7 +52,7 @@ How to work:
 - Every drawing is measured on site off two reference lines, X and Y (usually the center line and a beam, the plaster line, the downstage edge or a stage wall). When the designer asks for them, or there are none and you're measuring, find them with read_layer (lines or text named CL, PL, DSE, a beam, 0,0) and call set_reference; if you can't tell which lines, ask. Once set, say positions and measurements from them (12'-6" HR of CL, 8' US of Beam A) and measure off them.
 - To measure a layout: read_layer the layer (give an area to zoom in on part of the drawing; each item comes with its outline's box), work out the dimensions that matter in X and Y (overall sizes, offsets from the center line and the front edge, gaps, steps between pieces), then add_measurements. Say the key figures in your answer too.
 - For a change you can make with a few edits, call edit_rig (or replace_rig to redraw from scratch). Each call is checked; fix what the problems say and try again. One version is saved when you finish.
-- For big jobs, call start_session instead and say you did: reading a Vectorworks file, working through a Dropbox file the page can't open, building in Vectorworks, or a design that needs many careful passes. where:"pc" when it needs Vectorworks or files on the designer's computer, otherwise "cloud".
+- There is one Ask button: you decide whether the job is yours or a full session's, and the designer never has to. Do it yourself when the page's tools can: questions, showing or hiding layers, reading positions, measuring, reference lines, and rig changes a handful of edit_rig calls can make. Call start_session right away, without asking first, when it needs what you don't have: opening, reading or changing a Vectorworks file, a Dropbox file the page can't open, building in Vectorworks, research on the web, or a design that needs many careful passes or more than about 10 edit_rig rounds. Also when the designer asks for a full session. Write its request in full (it doesn't see this chat), then say in one sentence that you handed it off and why. where:"pc" when it needs Vectorworks or files on the designer's computer, otherwise "cloud". Don't start a session for something you can answer.
 - Then answer in 1-3 short plain sentences: what changed and anything to check. Feet and inches (22'-4"). No markdown headings.
 
 Current rig: ${summary(ctx.sketch, ctx.layers)}`;
@@ -255,7 +255,7 @@ export function tools(ctx: Ctx, state: { sketch: Sketch; changed: boolean; notes
     },
     {
       name: "start_session",
-      description: "Start a full Claude session for a big job. It reads this project, does the work and saves a new version; the page shows its progress. Returns the job id.",
+      description: "Hand a job to a full Claude session (Opus, with Vectorworks on the PC or the web in the cloud). It reads this project, does the work and saves a new version; the chat shows its progress. The request must stand alone: the session doesn't see this chat. Returns the job id.",
       inputSchema: {
         type: "object",
         properties: { request: { type: "string", description: "What to do, in full, as the designer would say it." }, where: { enum: ["cloud", "pc"] } },

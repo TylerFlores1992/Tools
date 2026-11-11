@@ -180,6 +180,12 @@ The chat's **Ask** button runs Claude in the page with the page's own tools. Onl
 hide reference layers), `read_layer` (with an `area` box; outlines come with their boxes and heights)
 and `add_measurements` (a "Measurements: …" layer of dimension lines with their figures, replaced by
 name). The Vectorworks drawing is never touched from the chat; that takes a full session.
+**One button** (owner's call 2026-11-11): there's only **Ask**. Claude decides: the page's tools for
+questions, layers, measuring, reference lines and small rig edits; `start_session` (cloud, or the PC
+when it needs Vectorworks or local files) for anything else, without asking, saying in one line that
+it handed it off. A request too big for the chat (`prompt_too_large`) or pictures it can't take
+(`images_unavailable`) start a session by themselves (`guessWhere` picks cloud or PC). Sessions carry
+the message's pictures and show in the chat with their progress.
 The chat asks for **Opus 5.5** by name (`CHAT_MODEL` in `app.tsx`, owner's call 2026-11-11), with
 the most capable tier as the fallback; if a lighter model answers, the reply says so. A dropped
 connection (`upstream_error`: phone asleep, app in the background) puts the question back in the box.

@@ -300,12 +300,14 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     ok(kept && kept.images.length === 1 && kept.text === "This is what the head block looks like", "the message keeps the picture");
     ok((await p.locator(".pending-imgs").count()) === 0, "the composer clears after sending");
 
-    console.log("a full session starts from the page");
+    console.log("one Ask button: Claude hands big jobs to a full session by itself");
+    ok((await p.locator("#start-session, #where").count()) === 0, "no session button or place picker: one Ask button");
+    await p.evaluate(() => { window.__SAMPLE__ = [{ calls: [{ name: "start_session", input: { request: "Read the lighting plot in Dropbox and lay out truss over it", where: "pc" } }], text: "That needs your PC, so I handed it to a full session." }]; });
     await p.fill("#ask", "Read the lighting plot in Dropbox and lay out truss over it");
-    await p.selectOption("#where", "pc");
     ok((await p.locator("a.wake").count()) === 0, "no separate wake button: the job wakes the PC itself");
-    await p.click("#start-session");
+    await p.click("#send");
     await p.waitForSelector(".job");
+    ok(/Started a full session on your PC/.test(await p.locator("body").innerText()), "the chat says it started a session, where, with its progress under it");
     const fire = await p.evaluate(() => window.__CALLS__.find((c) => c.tool === "fire_trigger"));
     ok(fire && fire.input.trigger_id === "trig_pc" && /Rig Studio job \S+\nproject: air-pro-roof/.test(fire.input.text) && /Read the lighting plot/.test(fire.input.text), "fire_trigger went to the PC worker with the job and request");
     const job = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k]) => k.startsWith("jobs/"))?.[1]);
@@ -319,6 +321,23 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     await p.waitForSelector("text=Reading the drawing in Vectorworks");
     ok(true, "session progress shows live");
     await p.screenshot({ path: join(shots, "rig-studio-chat.png") });
+    await p.evaluate(() => { window.__SAMPLE__ = [{ reject: "prompt_too_large" }]; });
+    const firedBefore = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").length);
+    await p.fill("#ask", "Redo the whole roof over every fixture in the plot");
+    await p.click("#send");
+    await p.waitForSelector("text=That was too big for the chat, so I started a full session in the cloud");
+    const auto = await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").at(-1));
+    ok((await p.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").length)) === firedBefore + 1 && auto.input.trigger_id === "trig_cloud" && /Redo the whole roof/.test(auto.input.text), "too big for the chat: a cloud session takes it by itself");
+    ok(!(await p.locator(".err, [role=alert]").filter({ hasText: "too big" }).count()), "and no error asks the designer to decide");
+    // Put things back as the rest of the checks expect them (one session so far).
+    await p.evaluate((jobText) => {
+      const i = window.__CALLS__.findLastIndex((c) => c.tool === "fire_trigger");
+      window.__CALLS__.splice(i, 1);
+      const k = [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("jobs/") && /Redo the whole roof/.test(v.request ?? ""))?.[0];
+      if (k) window.__DOCS__.delete(k);
+      for (const [ck, v] of [...window.__DOCS__.entries()]) if (ck.includes("/chat/") && (v.text === jobText || /too big for the chat/.test(v.text ?? ""))) window.__DOCS__.delete(ck);
+      window.__SAMPLE__ = [];
+    }, "Redo the whole roof over every fixture in the plot");
 
     console.log("approve");
     await p.click("#approve");
