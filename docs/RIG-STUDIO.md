@@ -184,6 +184,14 @@ The chat asks for **Opus 5.5** by name (`CHAT_MODEL` in `app.tsx`, owner's call 
 the most capable tier as the fallback; if a lighter model answers, the reply says so. A dropped
 connection (`upstream_error`: phone asleep, app in the background) puts the question back in the box.
 
+## X and Y reference lines
+Plans are measured on site off two lines (center line plus a beam, plaster line, DS edge or stage
+wall). The chat's `set_reference` draws them as the project's one "Reference: …" layer
+(`src/reference.ts`): both lines across the drawing and the rig, named past their ends ("CL (X = 0)"),
+a figure every 5' saying distance and side (HL/HR of the Y line, US/DS of the X line). The layer keeps
+`reference {origin, xLine, yLine, stepFt}`, so the chat then says positions from it. `show_layers`
+"only" keeps it shown. Nothing in the rig or the Vectorworks drawing changes.
+
 ## Boxes Vectorworks asks on the PC
 Opening someone else's drawing can raise a box (Font Mapping, missing textures, "would you like to
 locate", read-only). The connector answers the common ones itself with the answer that changes and

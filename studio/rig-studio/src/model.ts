@@ -75,6 +75,8 @@ export type Layer = {
   z?: number;
   rot?: number;
   opacity?: number;
+  /** X and Y reference lines (reference.ts): where the two named lines cross, in drawing inches. */
+  reference?: { origin: [number, number]; xLine: string; yLine: string; stepFt: number };
   // fixtures
   fixtures?: Fixture[];
   /** Fixtures' weight counts on the rig. */
@@ -305,6 +307,10 @@ export function layerSummary(l: Layer): string {
     const truss = r.filter((x) => x.kind === "truss");
     const hoists = r.filter((x) => x.kind === "hoist").length;
     return `${l.id} "${l.name}": existing rig from the drawing, ${truss.length} truss pieces (${truss.filter((t) => t.b).length} with a length), ${hoists} hoists, ${r.length - truss.length - hoists} other rigging`;
+  }
+  if (l.reference) {
+    const r = l.reference;
+    return `${l.id} "${l.name}": the X and Y reference lines, ${l.visible ? "shown" : "hidden"}. They cross at x ${r.origin[0]}, y ${r.origin[1]} (drawing inches): "${r.yLine}" runs up and downstage (X = 0 on it), "${r.xLine}" runs across (Y = 0 on it). Say positions from them: HL/HR of ${r.yLine}, US/DS of ${r.xLine}`;
   }
   const s = l.shapes ?? [];
   return `${l.id} "${l.name}": ${s.length} outlines${s[0]?.label ? ` (${s.slice(0, 5).map((x) => x.label).join(", ")})` : ""}`;

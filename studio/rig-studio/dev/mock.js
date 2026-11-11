@@ -65,7 +65,7 @@
     }
     const text = script?.text ?? "Done.";
     opts?.onText?.({ text, delta: text });
-    return { text, truncated: false, modelTierApplied: "default" };
+    return { text, truncated: false, modelTierApplied: opts?.modelTier ?? "default" };
   }, { limits: async () => ({ maxPromptBytes: 262144, tools: { maxCount: 16 }, images: { maxCount: 4, maxInputBytes: 5000000, mediaTypes: ["image/png", "image/jpeg", "image/webp", "image/gif"] } }), json: async () => ({}) });
   const assets = { upload: async (b) => { log.push({ upload: b.type }); return { id: "a".repeat(31) + String(log.length % 10), url: URL.createObjectURL(b) }; }, delete: async () => ({ deleted: true }) };
   const caps = { db, mcp, sample, assets, downloads: { save: async (r) => { log.push({ download: r.filename }); return { status: "saved" }; } }, user: { isOwner: async () => true, canEdit: async () => true, id: async () => "u_test" } };

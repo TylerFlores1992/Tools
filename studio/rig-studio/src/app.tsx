@@ -1261,6 +1261,15 @@ function ChatPane(props: {
       setVisible: async (ids, visible) => {
         for (const id of ids) await saveWithRetry(() => db.doc(`projects/${project.id}/layers/${id}`).update({ visible }));
       },
+      putReference: async (name, shapes, reference) => {
+        const had = layers.find((l) => l.reference);
+        if (had) {
+          await saveWithRetry(() => db.doc(`projects/${project.id}/layers/${had.id}`).update({ name, shapes, reference, visible: true, at: now() }));
+          return had.id;
+        }
+        const ref = await saveWithRetry(() => db.collection(`projects/${project.id}/layers`).add({ name, kind: "shapes", visible: true, at: now(), shapes, reference } satisfies Omit<Layer, "id">));
+        return (ref as { id: string }).id;
+      },
       putMeasurements: async (name, shapes) => {
         const had = layers.find((l) => l.name === name);
         if (had) {
@@ -1653,7 +1662,7 @@ function LayersPane({ env, pid, layers, show, setShow, flash }: { env: Env; pid:
                   }}
                 />
                 <span>
-                  {name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${part.reduce((n, x) => n + (x.rig?.length ?? 0), 0)} truss and rigging pieces` : `${count} outlines`}</span>
+                  {name} <span className="muted small">{l.kind === "image" ? "drawing" : l.kind === "fixtures" ? `${l.fixtures?.length ?? 0} fixtures` : l.kind === "rig" ? `${part.reduce((n, x) => n + (x.rig?.length ?? 0), 0)} truss and rigging pieces` : l.reference ? "X and Y lines to measure from" : `${count} outlines`}</span>
                 </span>
               </label>
               <button className="link small" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>

@@ -263,6 +263,22 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
     await p.waitForSelector("text=Added a 1-ton hoist");
     ok(true, "Claude's reply shows in the chat");
     ok(await p.evaluate(() => window.__CALLS__.some((l) => l.sample && l.model === "claude-opus-5-5" && l.tier === "complex")), "the chat asks for Opus 5.5 (the most capable tier if it can't)");
+    ok(!/wasn't available/.test(await p.locator("body").innerText()), "no lighter-model note when the top tier answered");
+
+    console.log("the chat draws the X and Y reference lines");
+    await p.evaluate(() => { window.__SAMPLE__ = [{ calls: [{ name: "set_reference", input: { origin: [522, 0], x_line: "DS edge", y_line: "CL" } }], text: "Added CL and the DS edge as the X and Y reference." }]; });
+    await p.fill("#ask", "Add an X and Y reference off the center line and the downstage edge");
+    await p.click("#send");
+    await p.waitForSelector("text=Added CL and the DS edge");
+    const refDoc = await p.evaluate(() => [...window.__DOCS__.entries()].find(([k, v]) => k.startsWith("projects/air-pro-roof/layers/") && v.reference)?.[1]);
+    ok(refDoc && refDoc.name === "Reference: CL / DS edge" && refDoc.visible && refDoc.shapes.some((s) => s.text === "CL (X = 0)"), "a reference layer with its named lines is added, shown");
+    ok(!(await p.evaluate(() => [...window.__DOCS__.keys()].some((k) => k.endsWith("versions/v0003")))), "no version: the rig didn't change");
+    await p.click("#tab-layers");
+    ok(await p.locator("text=Reference: CL / DS edge").count() > 0, "it's in the Layers list, where it can be hidden");
+    await p.click("text=Plan");
+    await p.waitForTimeout(500);
+    await p.screenshot({ path: join(shots, "rig-studio-reference.png") });
+    await p.click("#tab-chat");
     const prompt = await p.evaluate(() => JSON.stringify(window.__CALLS__.find((c) => c.sample)));
     ok(/RIG FORMAT/.test(prompt) && /Air Pro self-climber roof/.test(prompt), "the prompt carries the format and the project");
 
