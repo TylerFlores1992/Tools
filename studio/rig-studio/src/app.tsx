@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 import { rentalList, totalWeight } from "../../../src/tools/rig/bom.ts";
 import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type Compiled, type Sketch } from "../../../src/tools/rig/sketch.ts";
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
-import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
+import { systemPrompt, tools as aiTools, turns, type Ctx, unanswered } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
 import { ago, answerName, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { readoutLayers, readoutSummary, readoutViews } from "./readout.ts";
@@ -1383,6 +1383,7 @@ function ChatPane(props: {
             <div key={i} className={`msg ${m.role}`}>
               <div className="msg-who">
                 {m.role === "you" ? "You" : m.role === "claude" ? "Claude" : "Full session"} <span className="muted">· {ago(m.at)}</span>
+                {!working && unanswered(chat, i) && <span className="muted small"> · not answered, left out of the chat</span>}
                 {m.version ? <span className="vtag">v{m.version}</span> : null}
               </div>
               <div className="msg-text">{m.text}</div>

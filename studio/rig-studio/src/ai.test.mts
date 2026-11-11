@@ -71,3 +71,19 @@ test("the X and Y reference lines are drawn across the drawing, named, with dist
   assert.deepEqual(withRef.visible, { v: false }, "showing only the deck keeps the reference lines");
   void visible;
 });
+
+test("questions that never got an answer are left out, so Claude answers only the new one", async () => {
+  const { turns } = await import("./ai.ts");
+  const m = (role: "you" | "claude", text: string) => ({ role, text, at: "t" });
+  const history = [
+    m("you", "How deep is the FOH deck?"),
+    m("claude", "20' deep."),
+    m("you", "This is just the FOH, I want all deck"),
+    m("you", "Does vectorworks have a labeled x and y axis?"),
+    m("you", "Does vectorworks have a labeled x and y axis?"),
+  ];
+  const t = turns(history, "Restore all layers back to normal");
+  assert.deepEqual(t.map((x) => x.role), ["user", "assistant", "user"]);
+  assert.equal(t[2].content, "Restore all layers back to normal", "the dropped questions don't ride along");
+  assert.equal(turns([m("you", "a"), m("claude", "b")], "c")[2].content, "c", "an answered question stays");
+});
