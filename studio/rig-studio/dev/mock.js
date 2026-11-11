@@ -57,6 +57,7 @@
   const sample = Object.assign(async (input, opts) => {
     log.push({ sample: input, images: opts?.images ? [...opts.images].length : 0, model: opts?.model, tier: opts?.modelTier });
     const script = (window.__SAMPLE__ || [])[0];
+    if (script?.reject) throw { code: script.reject, message: script.reject };
     if (script && opts?.tools) {
       for (const call of script.calls || []) {
         const t = opts.tools.find((x) => x.name === call.name);
