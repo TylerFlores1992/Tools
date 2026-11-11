@@ -274,7 +274,10 @@ export function tools(ctx: Ctx, state: { sketch: Sketch; changed: boolean; notes
 /** The chat so far, as turns Claude reads (newest last), ending on the new request. */
 export function turns(history: Message[], request: string): { role: "user" | "assistant"; content: string }[] {
   const out: { role: "user" | "assistant"; content: string }[] = [];
-  for (const m of history.slice(-12)) {
+  // A message that never got an answer (the connection dropped; the designer asked again) is left
+  // out: otherwise Claude answers old questions on top of the new one.
+  const kept = history.filter((_, i) => !unanswered(history, i));
+  for (const m of kept.slice(-12)) {
     const role = m.role === "you" ? "user" : "assistant";
     const text = m.role === "session" ? `[Full session] ${m.text}` : m.text;
     if (out.length && out[out.length - 1].role === role) out[out.length - 1].content += `\n\n${text}`;
@@ -284,6 +287,11 @@ export function turns(history: Message[], request: string): { role: "user" | "as
   if (out.length && out[out.length - 1].role === "user") out[out.length - 1].content += `\n\n${request}`;
   else out.push({ role: "user", content: request });
   return out;
+}
+
+/** A "you" message nothing answered: the next message is the designer's again, or there is none. */
+export function unanswered(history: Message[], i: number): boolean {
+  return history[i]?.role === "you" && (i === history.length - 1 || history[i + 1].role === "you");
 }
 
 /** A dimension line from a to b, moved `offset` inches to its left, with its figure in the middle. */

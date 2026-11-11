@@ -186,6 +186,9 @@ when it needs Vectorworks or local files) for anything else, without asking, say
 it handed it off. A request too big for the chat (`prompt_too_large`) or pictures it can't take
 (`images_unavailable`) start a session by themselves (`guessWhere` picks cloud or PC). Sessions carry
 the message's pictures and show in the chat with their progress.
+A question that never got an answer (the connection dropped and the designer asked again) is left
+out of what Claude reads (`unanswered` in `ai.ts`) and marked "not answered" in the chat, so Claude
+answers only the new request instead of every old one at once.
 The chat asks for **Opus 5.5** by name (`CHAT_MODEL` in `app.tsx`, owner's call 2026-11-11), with
 the most capable tier as the fallback; if a lighter model answers, the reply says so. A dropped
 connection (`upstream_error`: phone asleep, app in the background) puts the question back in the box.
