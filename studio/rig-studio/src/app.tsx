@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, answerName, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { readoutLayers, readoutSummary, readoutViews } from "./readout.ts";
 import { fetchReadout, geoKey, geometryOf, loadGeometry, readoutRows, remember, remembered, type Geometry } from "./geometry.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
@@ -1281,7 +1281,10 @@ function ChatPane(props: {
         ...(files.length && imgLimits ? { images: files } : {}),
         tools: aiTools(ctx, state),
         signal: abort.current.signal,
-        modelTier: "default",
+        // The owner's call (2026-11-11): the chat answers with Opus 5.5. If it can't (busy, not on
+        // this plan) the most capable tier answers instead, and the reply says so.
+        model: CHAT_MODEL,
+        modelTier: "complex",
         onText: ({ text: t }: { text: string }) => {
           setStream(t);
           setWorking(null);
@@ -1289,7 +1292,9 @@ function ChatPane(props: {
       });
       let version: number | undefined;
       if (state.changed) version = await saveVersion(state.sketch, state.notes.join("; ") || req, "claude");
-      await say({ role: "claude", text: r.text.trim() || (state.changed ? "Done." : "…"), at: now(), ...(version ? { version } : {}) });
+      const tier = (r as { modelTierApplied?: string }).modelTierApplied;
+      const fallback = tier && tier !== "complex" ? "\n\n(Opus 5.5 wasn't available just now, so a lighter model answered.)" : "";
+      await say({ role: "claude", text: (r.text.trim() || (state.changed ? "Done." : "…")) + fallback, at: now(), ...(version ? { version } : {}) });
     } catch (e) {
       const er = e as { code?: string; message?: string; text?: string };
       if (state.changed) {
@@ -1303,6 +1308,7 @@ function ChatPane(props: {
         prompt_too_large: "This rig is too big to edit in the chat. Use “Start a full session” instead.",
         images_unavailable: "Pictures can't be sent to Claude from this view. Start a full session instead; it can open them.",
         image_rejected: "Claude couldn't read one of the pictures. Try a PNG or JPG screenshot.",
+        upstream_error: "The connection to Claude dropped before it finished (the phone went to sleep, the app went to the background, or the signal blipped). Your question is back in the box: tap Ask again, and keep Rig Studio open while it works.",
       };
       if (er.code !== "cancelled" || !state.changed) setErr(words[er.code ?? ""] ?? `Claude couldn't finish: ${er.message ?? "unknown problem"}.`);
       if (!state.changed && er.code !== "cancelled") {
@@ -2069,6 +2075,21 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
     }
   };
 
+  /** Send the designer's tap to the PC: an answer file beside the drawing, pressed within seconds. */
+  const answerAsk = async (e: Entry, j: Job, button: string, remember: boolean) => {
+    const mcp = env.caps.mcp;
+    if (!mcp || !project.dropbox) return;
+    try {
+      await mcp.callTool(SERVERS.dropbox, "create_file", {
+        path: `${project.dropbox.path.replace(/\/$/, "")}/${answerName(e.name, j.id)}`,
+        content: JSON.stringify({ button, remember, at: now() }),
+      });
+      await db.doc(`jobs/${j.id}`).update({ ask: null, progress: `Sent \u201c${button}\u201d to your PC${remember ? " (and it'll answer that way from now on)" : ""}. Carrying on…`, updated: now() });
+    } catch (er) {
+      flash("warn", `Couldn't send the answer: ${mcpWords(er, "Dropbox")}. Answer it on the PC.`);
+    }
+  };
+
   /** Ask the PC for a read-out: a note file beside the drawing in Dropbox, which the connector on
    * the PC picks up within seconds (no scheduled task: those can't reach the PC). A sleeping PC is
    * woken first by the cloud worker; the note waits in Dropbox until the PC is up. */
@@ -2123,14 +2144,14 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
           const st = vwx && all.find((x) => x.name.toLowerCase() === statusName(vwx.name).toLowerCase());
           if (st?.file_id && (st.modified_time ?? "") >= j.at.slice(0, 19)) {
             const res = payloadOf(await mcp.callTool(SERVERS.dropbox, "fetch", { id: st.file_id })) as { text?: string };
-            let parsed: { job?: string; state?: string; message?: string } | null = null;
+            let parsed: Parameters<typeof fromStatus>[0] = null;
             try {
               parsed = JSON.parse(res?.text ?? "");
             } catch {
               parsed = null;
             }
             const upd = fromStatus(parsed, j.id);
-            if (upd && (upd.status !== j.status || upd.progress !== j.progress)) await db.doc(`jobs/${j.id}`).update({ ...upd, updated: now() });
+            if (upd && (upd.status !== j.status || upd.progress !== j.progress || JSON.stringify(upd.ask ?? null) !== JSON.stringify(j.ask ?? null))) await db.doc(`jobs/${j.id}`).update({ ...upd, updated: now() });
             if (upd?.status === "done") setTick((t) => t + 1); // show the new read-out
             if (upd) continue;
           }
@@ -2306,6 +2327,9 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
                   )}
                 </p>
               )}
+              {e.object_type === "file" && fileJob(e.file_id)?.ask && jobActive(fileJob(e.file_id)!) && (
+                <AskBox ask={fileJob(e.file_id)!.ask!} onAnswer={(button, remember) => answerAsk(e, fileJob(e.file_id)!, button, remember)} />
+              )}
             </li>
           );
         })}
@@ -2319,3 +2343,42 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
 
 const root = document.getElementById("app")!;
 createRoot(root).render(<App />);
+
+/** A box Vectorworks is waiting on, shown with its own buttons: a tap answers it on the PC. */
+/** The model the chat asks for (owner's call, 2026-11-11). */
+const CHAT_MODEL = "claude-opus-5-5";
+
+function AskBox({ ask, onAnswer }: { ask: { title: string; text: string; buttons: string[] }; onAnswer: (button: string, remember: boolean) => Promise<void> }) {
+  const [remember, setRemember] = useState(false);
+  const [sending, setSending] = useState<string | null>(null);
+  return (
+    <div className="ask-box" role="group" aria-label="Vectorworks is asking" id="ask-box">
+      <p className="small">
+        <strong>Vectorworks is asking{ask.title && !/^vectorworks/i.test(ask.title) ? ` (${ask.title})` : ""}:</strong> {ask.text || ask.title}
+      </p>
+      <div className="row wrap">
+        {ask.buttons.map((b) => (
+          <button
+            key={b}
+            type="button"
+            className="btn small"
+            disabled={!!sending}
+            onClick={async () => {
+              setSending(b);
+              try {
+                await onAnswer(b, remember);
+              } finally {
+                setSending(null);
+              }
+            }}
+          >
+            {sending === b ? "Sending…" : b}
+          </button>
+        ))}
+      </div>
+      <label className="small">
+        <input type="checkbox" checked={remember} onChange={() => setRemember(!remember)} /> Answer it this way from now on
+      </label>
+    </div>
+  );
+}

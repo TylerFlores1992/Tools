@@ -55,7 +55,7 @@
     async listTools() { return { servers: [] }; },
   };
   const sample = Object.assign(async (input, opts) => {
-    log.push({ sample: input, images: opts?.images ? [...opts.images].length : 0 });
+    log.push({ sample: input, images: opts?.images ? [...opts.images].length : 0, model: opts?.model, tier: opts?.modelTier });
     const script = (window.__SAMPLE__ || [])[0];
     if (script && opts?.tools) {
       for (const call of script.calls || []) {

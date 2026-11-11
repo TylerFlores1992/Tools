@@ -74,10 +74,22 @@ test("a read-out request and its answer are files named after the drawing and th
   assert.equal(requestName("CFF_v2025.vwx", "j1"), "CFF_v2025.j1.rigrequest.json");
   assert.equal(statusName("CFF_v2025.vwx"), "CFF_v2025.rigstatus.json");
   assert.ok(isNoteFile("CFF_v2025.j1.rigrequest.json") && isNoteFile("CFF_v2025.rigstatus.json") && !isNoteFile("CFF_v2025.rigread.json"));
-  assert.deepEqual(fromStatus({ job: "j1", state: "done", message: "Read out." }, "j1"), { status: "done", reply: "Read out." });
+  assert.deepEqual(fromStatus({ job: "j1", state: "done", message: "Read out." }, "j1"), { status: "done", reply: "Read out.", ask: null });
   assert.equal(fromStatus({ job: "j0", state: "done" }, "j1"), null, "an answer to an older request never finishes this one");
   assert.equal(fromStatus({ job: "j1", state: "failed", message: "No Vectorworks." }, "j1")?.status, "failed");
   assert.equal(fromStatus({ job: "j1", state: "reading" }, "j1")?.status, "running");
+});
+
+test("a box Vectorworks waits on comes to the phone, and the answer goes back beside the drawing", async () => {
+  const { answerName, isNoteFile, fromStatus } = await import("./model.ts");
+  const prompt = { title: "Font Mapping", text: "Some fonts are missing.", buttons: ["OK", "Cancel"] };
+  const up = fromStatus({ job: "j1", state: "asking", message: "Vectorworks is asking.", prompt }, "j1");
+  assert.equal(up?.status, "running");
+  assert.deepEqual(up?.ask, prompt);
+  assert.equal(fromStatus({ job: "j1", state: "asking" }, "j1"), null, "a question with no buttons isn't shown (nothing to tap)");
+  assert.equal(fromStatus({ job: "j1", state: "reading" }, "j1")?.ask, null, "once the PC carries on the question goes away");
+  assert.equal(answerName("CFF_v2025.vwx", "j1"), "CFF_v2025.j1.riganswer.json");
+  assert.ok(isNoteFile("CFF_v2025.j1.riganswer.json"), "answer files stay out of the file list");
 });
 
 test("a drawing layer stored in several documents is one row in the Layers list", async () => {

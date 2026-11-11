@@ -1,5 +1,6 @@
 """The Windows hotkey trigger's decisions, with Windows itself faked out."""
 
+import json
 import pytest
 
 from vwmcp.trigger import HotkeyTrigger, TriggerError
@@ -427,3 +428,74 @@ def test_the_font_mapping_box_gets_ok():
 
     p = pick_prompt("Font Mapping Replace: With: For Help, press F1 or click the ? icon.")
     assert p is not None and p.buttons == ("OK",)
+
+
+# ---- boxes the connector doesn't know: passed on, answered, remembered ----
+
+
+def test_common_boxes_from_someone_elses_drawing_get_the_answer_that_changes_nothing():
+    from vwmcp.trigger import pick_prompt
+
+    assert pick_prompt("The referenced file 'X.vwx' could not be found. Would you like to locate it?").buttons[0] == "No"
+    assert pick_prompt("Some plug-in objects could not be found and will be shown as boxes.").buttons[0] == "OK"
+    assert pick_prompt("Show.vwx is in use by Dana. Open it read-only?").buttons[0] == "Open Read-Only"
+    assert pick_prompt("Update all references now?") is None, "a real choice is asked, not guessed"
+
+
+def test_an_answer_the_designer_chose_is_remembered_for_the_same_box(tmp_path, monkeypatch):
+    from vwmcp import trigger as tr
+
+    monkeypatch.setattr(tr, "LEARNED_FILE", tmp_path / "prompts.json")
+    msg = 'The texture "Brick 4" in C:\\Libs\\a.vwx is out of date (12 items). Refresh it?'
+    phrase = tr.prompt_phrase("Textures", msg)
+    assert "brick" not in phrase and "12" not in phrase and "\\\\" not in phrase, "names and numbers change file to file"
+    assert tr.pick_prompt(msg) is None
+    tr.remember_prompt(phrase, "Not Now")
+    other = 'The texture "Oak" in D:\\x\\b.vwx is out of date (3 items). Refresh it?'
+    hit = tr.pick_prompt(other)
+    assert hit is not None and hit.buttons == ("Not Now",), "the same box in another file is answered the same way"
+    tr.remember_prompt("ok", "OK")
+    assert len(json.loads((tmp_path / "prompts.json").read_text())) == 1, "too short to tell boxes apart: not kept"
+
+
+class AskingWin(MenuWin):
+    box = {"title": "Missing Things", "text": "Some things are missing.", "buttons": ["Skip", "Locate"]}
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.open_box = True
+
+    def enabled(self, w):
+        return not self.open_box
+
+    def pending_prompts(self, w):
+        return [self.box] if self.open_box else []
+
+    def answer_prompt(self, w, button):
+        if self.open_box and button in self.box["buttons"]:
+            self.open_box = False
+            self.log.append(f"pressed {button}")
+            return self.box
+        return None
+
+
+def test_a_box_it_doesnt_know_is_said_and_can_be_answered(tmp_path, monkeypatch):
+    from vwmcp import trigger as tr
+
+    monkeypatch.setattr(tr, "LEARNED_FILE", tmp_path / "prompts.json")
+    win = AskingWin()
+    t, _ = make_menu(win)
+    try:
+        t.fire()
+        raise AssertionError("fired through a box")
+    except TriggerError as e:
+        assert "Some things are missing." in str(e) and "Skip, Locate" in str(e), "the error says what Vectorworks asks"
+    assert t.pending_prompt() == win.box
+    try:
+        t.answer_prompt("Delete")
+        raise AssertionError("pressed a button the box doesn't have")
+    except TriggerError:
+        pass
+    t.answer_prompt("Skip", remember=True)
+    assert win.log[-1] == "pressed Skip" and t.pending_prompt() is None
+    assert tr.pick_prompt("Some things are missing.").buttons == ("Skip",)
