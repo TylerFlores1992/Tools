@@ -99,3 +99,25 @@ test("a drawing layer stored in several documents is one row in the Layers list"
     ["Venue plan (2)", "f"],
   ]);
 });
+
+test("a busy database write is tried again; a full or bad one fails at once", async () => {
+  const { saveWithRetry } = await import("./model.ts");
+  const noWait = async () => {};
+  let n = 0;
+  const busyTwice = async () => {
+    if (++n < 3) throw Object.assign(new Error("busy"), { code: "resource_exhausted" });
+    return "saved";
+  };
+  assert.equal(await saveWithRetry(busyTwice, 4, noWait), "saved");
+  assert.equal(n, 3);
+  let m = 0;
+  const full = async () => {
+    m++;
+    throw Object.assign(new Error("full"), { code: "quota_exceeded" });
+  };
+  await assert.rejects(saveWithRetry(full, 4, noWait), /full/);
+  assert.equal(m, 1, "a full database isn't hammered");
+  let k = 0;
+  await assert.rejects(saveWithRetry(async () => { k++; throw Object.assign(new Error("blip"), { code: "unavailable" }); }, 3, noWait));
+  assert.equal(k, 3, "gives up after its tries");
+});

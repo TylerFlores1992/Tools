@@ -342,3 +342,17 @@ export function layerRows(layers: Layer[]): LayerRow[] {
   }
   return rows;
 }
+
+/** A database write that waits and tries again when the store is busy (too many writes at once, a
+ * blip); anything else (full, bad document) fails at once. */
+export async function saveWithRetry<T>(write: () => Promise<T>, tries = 4, wait = (ms: number) => new Promise((ok) => setTimeout(ok, ms))): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await write();
+    } catch (er) {
+      const code = (er as { code?: string }).code;
+      if (i >= tries || (code !== "resource_exhausted" && code !== "unavailable")) throw er;
+      await wait(800 * i + Math.random() * 400);
+    }
+  }
+}

@@ -45,6 +45,9 @@ What it does:
   Rig Studio draws heavy pens as fat lines, keeps texts readable (a mirrored symbol's angle can't be read)
   and has a Paper switch (on by default): white behind the drawing as in Vectorworks; on the page's dark
   background dark pens are lifted and see-through fills read darker (CFF's 22% cream floor looks olive).
+  Opening a read-out saves the layers Vectorworks shows first, retries a busy database, shows
+  "Saving … n of N parts" and, if saving stops (the phone put the app away: CFF-26 stopped at 24 of
+  111 parts on 2026-11-10), says how many were saved; opening it again replaces the partial copy.
   Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
   the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
