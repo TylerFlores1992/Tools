@@ -173,3 +173,10 @@ another session (read it first). Keep the capabilities: `db`, `user`, `sample`, 
 `downloads`, `sample` with `images: true` (pictures in the chat), and `mcp` with Claude Code Remote [fire_trigger], Dropbox [list_folder,
 get_file_metadata, create_folder, fetch, create_file] and host:vectorworks [ping, build_rig, get_lighting_devices,
 get_document_info].
+
+## Asking without changing (chat)
+The chat's **Ask** button runs Claude in the page with the page's own tools. Only `edit_rig` /
+`replace_rig` change the rig (and save a version). Looking never does: `show_layers` (only / show /
+hide reference layers), `read_layer` (with an `area` box; outlines come with their boxes and heights)
+and `add_measurements` (a "Measurements: …" layer of dimension lines with their figures, replaced by
+name). The Vectorworks drawing is never touched from the chat; that takes a full session.

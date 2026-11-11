@@ -5,7 +5,7 @@ import type { Layer } from "./model.ts";
 
 test("a read-out is kept as one small row per drawing layer, its shapes beside it", () => {
   const sq: [number, number][] = [[0, 0], [1, 0], [1, 1]];
-  const shape = { pts: sq, z: 0, closed: true, label: "", h: 0, fill: false };
+  const shape = { pts: sq, z: 0, closed: true, label: "", h: 0 };
   const src = { name: "Set.rigread.json", dropboxId: "id:ro", from: "dropbox" as const };
   const made: Omit<Layer, "id">[] = [
     { name: "Set: Deck (1)", group: "Set: Deck", kind: "shapes", visible: true, at: "t", source: src, shapes: [shape, shape] },

@@ -1191,6 +1191,7 @@ function ChatPane(props: {
   onLatest: () => void;
 }) {
   const { env, project, chat, jobs, sketch, layers, say, saveVersion, startSession, onDraft } = props;
+  const db = env.caps.db!;
   const [text, setText] = useState(() => store.get(`draft:${project.id}`, ""));
   const [working, setWorking] = useState<string | null>(null);
   const [stream, setStream] = useState("");
@@ -1257,6 +1258,18 @@ function ChatPane(props: {
       onDraft: (s) => onDraft(s),
       onProgress: setWorking,
       startSession,
+      setVisible: async (ids, visible) => {
+        for (const id of ids) await saveWithRetry(() => db.doc(`projects/${project.id}/layers/${id}`).update({ visible }));
+      },
+      putMeasurements: async (name, shapes) => {
+        const had = layers.find((l) => l.name === name);
+        if (had) {
+          await saveWithRetry(() => db.doc(`projects/${project.id}/layers/${had.id}`).update({ shapes, visible: true, at: now() }));
+          return had.id;
+        }
+        const ref = await saveWithRetry(() => db.collection(`projects/${project.id}/layers`).add({ name, kind: "shapes", visible: true, at: now(), shapes } satisfies Omit<Layer, "id">));
+        return (ref as { id: string }).id;
+      },
     };
     const msgs = turns(chat, files.length ? `${req}\n\n(I attached ${files.length === 1 ? "a picture" : `${files.length} pictures`}: look at ${files.length === 1 ? "it" : "them"} before answering.)` : req);
     msgs[0] = { role: "user", content: `${systemPrompt(ctx)}\n\n---\n\n${msgs[0].content}` };
@@ -1330,12 +1343,13 @@ function ChatPane(props: {
       <div className="msgs" ref={list} aria-live="polite">
         {!chat.length && !working && (
           <div className="muted chat-empty">
-            <p>Ask for changes in plain words. Claude edits the drawing here and saves each change as a version.</p>
+            <p>Ask in plain words. A change to the rig is saved as a version; looking (show just the deck, measure it, where's this) changes nothing.</p>
             <ul className="examples">
               {[
                 "Lay out 12\" box over the lighting plot, a run over each row of fixtures, hoists every 25'",
                 "Add a 40' upstage truss at 24' trim, 6' behind the last row",
                 "Move all hoists on the downstage truss 2' offstage",
+                "Show me just the deck with its layout measurements in X and Y",
               ].map((x) => (
                 <li key={x}>
                   <button className="link" onClick={() => setText(x)}>
@@ -1438,7 +1452,7 @@ function ChatPane(props: {
             </button>
           ) : (
             <button type="submit" className="btn primary" disabled={!text.trim() && !imgs.length} id="send">
-              Change it
+              Ask
             </button>
           )}
           <span className="or">or</span>
