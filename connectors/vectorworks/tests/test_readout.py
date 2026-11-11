@@ -516,3 +516,43 @@ def test_lines_keep_their_colour_and_weight_and_hidden_classes_are_flagged(serve
     assert by(9.0).get("hid") == 1
     assert any(o.get("np") == 1 for o in objs if o["t"] == "rectangle")
     assert all(o.get("hid") == 1 for o in objs if o.get("in") == "Box")  # inside a hidden symbol: hidden too
+
+
+def test_a_mirrored_symbol_is_drawn_mirrored(server, fake_vw, tmp_path):
+    """Measured on CFF-26: the stage-left family arch is the stage-right one mirrored (GetSymRot -61,
+    Get3DOrientation flagged). Drawn turned but not mirrored it swung through the set. Vectorworks
+    places it as its definition mirrored in local Y, then turned."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Arm", w=10.0, h=2.0, members=[])
+    sym.members.append(vs._Obj(5, pts=[(0.0, 0.0), (10.0, 0.0), (10.0, 2.0), (0.0, 2.0)], closed=True, parent_obj=sym, layer=None))
+    d.resources["Arm"] = sym
+    vs.Symbol("Arm", (100.0, 0.0), 90.0)
+    d.last.mat = vs._mm(vs._rz(90.0), [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]])
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    inst = next(o for o in data["objects"] if o.get("symbol") == "Arm")
+    assert inst["mirror"] == 1 and inst["rot"] == 90
+    part = next(o for o in data["objects"] if o.get("in") == "Arm" and o.get("pts"))
+    # local (10, 0) -> mirrored (10, 0) -> turned 90: (0, 10); local (0, 2) -> (0, -2) -> (2, 0)
+    assert [100, 10] in part["pts"] and [102, 0] in part["pts"] and [102, 10] in part["pts"], part["pts"]
+
+
+def test_a_symbol_inside_a_mirrored_one_turns_the_other_way(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    inner = vs._Obj(16, name="Leg", w=5.0, h=1.0, members=[])
+    inner.members.append(vs._Obj(2, pts=[(0.0, 0.0), (5.0, 0.0)], parent_obj=inner, layer=None))
+    d.resources["Leg"] = inner
+    outer = vs._Obj(16, name="Frame", w=20.0, h=5.0, members=[])
+    outer.members.append(vs._Obj(15, symbol="Leg", loc=(10.0, 0.0), w=5.0, h=1.0, rot=30.0, z=0.0, mat=vs._rz(30.0), bbox_off=(0.0, 0.0), parent_obj=outer, layer=None))
+    d.resources["Frame"] = outer
+    vs.Symbol("Frame", (0.0, 0.0), 0.0)
+    d.last.mat = [[1.0, 0, 0], [0, -1.0, 0], [0, 0, 1.0]]
+    d.path = str(tmp_path / "Set.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    leg = next(o for o in data["objects"] if o.get("symbol") == "Leg")
+    assert leg["rot"] == -30, leg
+    line = next(o for o in data["objects"] if o.get("in") == "Leg" and o.get("pts"))
+    # the leg's end: turned 30 about (10, 0) to (14.33, 2.5), then the frame's mirror: (14.33, -2.5)
+    assert any(abs(p[0] - 14.33) < 0.02 and abs(p[1] + 2.5) < 0.02 for p in line["pts"]), line["pts"]

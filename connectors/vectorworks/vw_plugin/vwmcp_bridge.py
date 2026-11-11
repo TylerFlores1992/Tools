@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.0"
+BRIDGE_VERSION = "0.9.1"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1635,6 +1635,20 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
         return [_r(ox + x * c - y * s_, k), _r(oy + x * s_ + y * c, k)]
 
+    def mirrored(h):
+        """A mirrored symbol (Vectorworks' Mirror tool): Get3DOrientation's flag. Measured on CFF-26:
+        the stage-left family arch reads GetSymRot -61 and fits its outline only as rotate(-61) of
+        its definition mirrored in local Y; unmirrored it sat 64" off, swung through the set."""
+        try:
+            ok, _rx, _ry, _rz, fl = vs.Get3DOrientation(h)
+            return bool(ok and fl)
+        except Exception:
+            return False
+
+    def turn(ang, xf):
+        """An angle inside a definition, in the drawing: a mirrored parent turns it the other way."""
+        return xf[3] - ang if xf[4] * xf[5] < 0 else xf[3] + ang
+
     def scale_of(h):
         """A symbol's own scale (2019+: none, symmetric or asymmetric; DWG blocks often use it)."""
         try:
@@ -1716,7 +1730,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                     _orig, ang, _mir = vs.GetTextOrientation(h)
                 except Exception:
                     ang = 0.0
-                o["rot"] = round(float(ang) + xf[3], 2)
+                o["rot"] = round(turn(float(ang), xf), 2)
             else:
                 words = _s(vs.GetDimText(h))
                 pts = 9.0
@@ -1783,7 +1797,10 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             loc = (xy[0], xy[1], float(vs.GetSymLoc3D(h)[2]))
             at = place([loc[0], loc[1]], xf)
             o["at"] = [at[0], at[1], _r(float(loc[2]) * xf[6] + xf[2], k)]
-            o["rot"] = round(float(vs.GetSymRot(h)) + xf[3], 3)
+            o["rot"] = round(turn(float(vs.GetSymRot(h)), xf), 3)
+            mir = t == 15 and mirrored(h)
+            if mir:
+                o["mirror"] = 1
             if t == 86:
                 o["plugin"] = _plugin_name(h)
                 if o["plugin"]:
@@ -1818,7 +1835,8 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                 return
             if depth < 6 and not _nil(defh):
                 sx, sy, sz = scale_of(h)
-                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy, xf[6] * sz, uo)
+                # Mirrored: its definition flipped in local Y, then turned (R(rot) . M_y).
+                inner = (o["at"][0] / k, o["at"][1] / k, float(loc[2]) * xf[6] + xf[2], o["rot"], xf[4] * sx, xf[5] * sy * (-1 if mir else 1), xf[6] * sz, uo)
                 bx0, by0, bx1, by1 = o["bbox"]
                 # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
                 # tight margin dropped half the set). This only catches parts placed absurdly far off.

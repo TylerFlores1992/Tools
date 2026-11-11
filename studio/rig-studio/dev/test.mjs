@@ -126,6 +126,13 @@ if (process.env.RS_DEV) p.on("console", (m) => m.type() === "error" && console.l
         await p.waitForTimeout(1500);
         await p.screenshot({ path: join(shots, f) });
       }
+      // Camera shots (RS_LOOK="px,py,pz,tx,ty,tz;...", three space: y up, z = minus drawing y).
+      for (const [i, spec] of (process.env.RS_LOOK ?? "").split(";").filter(Boolean).entries()) {
+        const n = spec.split(",").map(Number);
+        await p.evaluate((n) => window.__rsViewer.lookFrom([n[0], n[1], n[2]], [n[3], n[4], n[5]]), n);
+        await p.waitForTimeout(1500);
+        await p.screenshot({ path: join(shots, `rig-studio-real-look${i + 1}.png`) });
+      }
       // Close-ups (RS_CLOSE="x,y,steps;x,y,steps"): back to 3D, zoom in on a screen point.
       for (const [i, spec] of (process.env.RS_CLOSE ?? "").split(";").filter(Boolean).entries()) {
         const [x, y, steps] = spec.split(",").map(Number);

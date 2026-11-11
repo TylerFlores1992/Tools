@@ -51,6 +51,10 @@ What it does:
   Plan shows 3D objects as Vectorworks' Top/Plan wireframe does: edges only, no faces (CFF's black
   upper header 25' up and the celeb gameboard covered the stage with their solid tops). 3D, Front and
   Side keep the faces.
+  Mirrored symbols (0.9.1): Get3DOrientation's flag; Vectorworks places one as its definition
+  mirrored in local Y, then turned by GetSymRot (measured on CFF-26: the stage-left family arch,
+  GetSymRot -61, fits its outline only that way; drawn unmirrored it swung through the set). Inside a
+  mirrored symbol, angles turn the other way. 152 of CFF-26's symbols are mirrored.
   Not yet read: a sheet's viewport overrides (its own class and layer visibility), so a read-out matches
   the design layers, not a sheet (CFF's A-1 viewport hides the yellow floor areas the design layer shows).
   Measured quirks: GetSymLoc3D's x, y are from the internal origin (use GetSymLoc); inside a symbol
