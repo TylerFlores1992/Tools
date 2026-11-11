@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { attachMeshes, isReadout, readoutLayers, readoutSummary, type Readout } from "./readout.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
@@ -1984,13 +1984,34 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
       await Promise.all(old.map((l) => db.doc(`projects/${project.id}/layers/${l.id}`).delete()));
       const made = readoutLayers(r, { name: e.name, dropboxId: e.file_id, modified: e.modified_time, from: "dropbox" }, now());
       // A few writes at a time (the database caps concurrent writes): one by one, CFF-26's 75 layer
-      // documents took 15 s to save.
-      const queue = [...made];
+      // documents took 15 s to save. The layers Vectorworks shows go first, so if saving stops (the
+      // phone put the app away: CFF-26 stopped at 24 of 111 parts), what you see is what got saved.
+      const queue = [...made.filter((l) => l.visible), ...made.filter((l) => !l.visible)];
+      let saved = 0;
+      let stopped: unknown = null;
+      flash("info", `Saving the read-out: 0 of ${made.length} parts. Keep Rig Studio open until it says done.`);
       await Promise.all(
         Array.from({ length: Math.min(4, queue.length) }, async () => {
-          for (let l = queue.shift(); l; l = queue.shift()) await db.collection(`projects/${project.id}/layers`).add(l);
+          for (let l = queue.shift(); l && !stopped; l = queue.shift()) {
+            try {
+              await saveWithRetry(() => db.collection(`projects/${project.id}/layers`).add(l));
+              saved++;
+              if (saved % 8 === 0) flash("info", `Saving the read-out: ${saved} of ${made.length} parts. Keep Rig Studio open until it says done.`);
+            } catch (er) {
+              stopped = er;
+            }
+          }
         }),
       );
+      if (stopped) {
+        const code = (stopped as { code?: string }).code;
+        flash(
+          "warn",
+          `Saved ${saved} of ${made.length} parts of the read-out, then the database ${code === "quota_exceeded" ? "said it's full" : "stopped answering"}. ` +
+            (code === "quota_exceeded" ? "Delete an old project or read-out, then open it again." : "Open it again with Rig Studio in front: it replaces the partial copy."),
+        );
+        return;
+      }
       await markSeen([e]);
       const rowsMade = layerRows(made.map((l, i) => ({ ...l, id: `new${i}` }))).length;
       flash(
