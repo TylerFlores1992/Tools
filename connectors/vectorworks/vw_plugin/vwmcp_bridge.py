@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.4"
+BRIDGE_VERSION = "0.9.5"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1633,6 +1633,8 @@ def _ro_viewports(design):
 
 
 DETAIL_CAP = 2500  # a symbol drawn with more parts than this comes as one block (was 150: cameras and people became boxes)
+BIG_PIECE = 120.0  # inches: a very detailed symbol this wide (scenery, not a person or a camera) is drawn part by part
+TINY_PART = 4.0  # inches: inside a very detailed symbol, parts smaller than this in plan and height are left out
 SYMBOL_FACE_CAP = 30000  # a symbol too detailed to walk part by part still comes with its real faces up to this
 SYMBOL_DEPTH = 10  # symbols inside symbols, drawn this deep (groups don't count: CFF-26's set deck held its
 # video-logo symbol inside nested groups, and counting the groups cut it off at 6, leaving a hole)
@@ -1640,7 +1642,7 @@ FACE_BUDGET = 400000  # faces in one read-out; past it, 3D objects fall back to 
 
 
 @op
-def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
+def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
     """The whole drawing as data, in inches, for working on it away from Vectorworks: document,
     layers (with elevations and whether they're shown), classes, every plug-in object with all
     its fields (lighting devices, truss, hoists, decks...), every symbol, and the shapes it's drawn
@@ -1873,6 +1875,26 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         except Exception:
             skipped["text that couldn't be read"] = skipped.get("text that couldn't be read", 0) + 1
 
+    def walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid):
+        """A symbol's parts, each placed through the symbol's own map after its parent's."""
+        if True:
+            if depth < SYMBOL_DEPTH and not _nil(defh):
+                sx, sy, sz = scale_of(h)
+                # The symbol's own map (turned, mirrored, tipped in 3D), scaled, after its parent's.
+                own = _mm3(orient(h, mir), ((sx, 0.0, 0.0), (0.0, sy, 0.0), (0.0, 0.0, sz)))
+                m_ = _mm3(lin(xf), own)
+                T = place3(loc, xf)
+                det2 = m_[0][0] * m_[1][1] - m_[0][1] * m_[1][0]
+                inner = (T[0], T[1], T[2], math.degrees(math.atan2(m_[1][0], m_[0][0])), math.hypot(m_[0][0], m_[1][0]),
+                         math.hypot(m_[0][1], m_[1][1]) * (-1 if det2 < 0 else 1), m_[2][2], uo, m_)
+                bx0, by0, bx1, by1 = o["bbox"]
+                # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
+                # tight margin dropped half the set). This only catches parts placed absurdly far off.
+                m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
+                clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
+                for c in _children(vs.FInSymDef(defh)):
+                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip, hid)
+
     def walk(h, layer, xf, depth, in_sym, skip2d, clip=None, hid=False):
         t = vs.GetTypeN(h)
         if t in (31, 16, 92, 122, 17):
@@ -1892,6 +1914,17 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
         corners = [place(q, xf) for q in ([p1[0], p1[1]], [p2[0], p1[1]], [p2[0], p2[1]], [p1[0], p2[1]])]
         xs, ys = [q[0] for q in corners], [q[1] for q in corners]
         o = {"t": TYPE_NAMES.get(t, "type_%d" % t), "layer": layer, "cls": cls, "bbox": [min(xs), min(ys), max(xs), max(ys)]}
+        tiny = state.get("tiny")
+        if tiny and t not in (15, 86) and max(max(xs) - min(xs), max(ys) - min(ys)) < tiny:
+            # Inside a very detailed symbol: the little parts (bulbs, screws) are left out, the rest
+            # drawn whole. Something small in plan but tall still counts.
+            try:
+                tall = float(vs.Get3DInfo(h)[2]) * k
+            except Exception:
+                tall = 0.0
+            if tall < tiny:
+                skipped["little parts of very detailed symbols"] = skipped.get("little parts of very detailed symbols", 0) + 1
+                return
         if in_sym:
             o["in"] = in_sym
         if hid:
@@ -1939,7 +1972,23 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
             if not add(o):
                 return
             defh = vs.GetObject(sym)
-            if not _nil(defh) and part_count(defh) > int(detail_cap):
+            detailed = not _nil(defh) and part_count(defh) > int(detail_cap)
+            bw, bh = o["bbox"][2] - o["bbox"][0], o["bbox"][3] - o["bbox"][1]
+            big = max(bw, bh) >= BIG_PIECE
+            if detailed and big and part_count(defh) <= int(detail_cap) * 4 and not state.get("tiny"):
+                # Very detailed (CFF-26's game board): drawn part by part with its little parts left
+                # out, so every surface comes whole. Keeping only the biggest faces of the whole
+                # symbol left holes in its curved frame (a curve is many small faces).
+                state["tiny"] = TINY_PART
+                before = len(objects)
+                try:
+                    walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid)
+                finally:
+                    state["tiny"] = None
+                if len(objects) > before:
+                    return
+                # All little parts (a figure drawn in short strokes): drawn as a whole below.
+            if detailed:
                 # Too detailed to draw part by part: the whole symbol's real faces in one go (CFF-26's
                 # game board, thousands of parts, came out a plain box), or else one block its size.
                 b = {"t": "block", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True, "simplified": True}
@@ -1958,22 +2007,7 @@ def read_out(max_objects=40000, max_points=200, detail_cap=DETAIL_CAP):
                         b.pop("simplified")
                 add(b)
                 return
-            if depth < SYMBOL_DEPTH and not _nil(defh):
-                sx, sy, sz = scale_of(h)
-                # The symbol's own map (turned, mirrored, tipped in 3D), scaled, after its parent's.
-                own = _mm3(orient(h, mir), ((sx, 0.0, 0.0), (0.0, sy, 0.0), (0.0, 0.0, sz)))
-                m_ = _mm3(lin(xf), own)
-                T = place3(loc, xf)
-                det2 = m_[0][0] * m_[1][1] - m_[0][1] * m_[1][0]
-                inner = (T[0], T[1], T[2], math.degrees(math.atan2(m_[1][0], m_[0][0])), math.hypot(m_[0][0], m_[1][0]),
-                         math.hypot(m_[0][1], m_[1][1]) * (-1 if det2 < 0 else 1), m_[2][2], uo, m_)
-                bx0, by0, bx1, by1 = o["bbox"]
-                # Generous: a symbol's 3D parts can reach past its plan outline (measured on CFF-26: a
-                # tight margin dropped half the set). This only catches parts placed absurdly far off.
-                m = 10 * max(bx1 - bx0, by1 - by0) + 1200.0 / k
-                clip = (bx0 - m, by0 - m, bx1 + m, by1 + m)
-                for c in _children(vs.FInSymDef(defh)):
-                    walk(c, layer, inner, depth + 1, sym, has3d(defh), clip, hid)
+            walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid)
             return
         z = _ro_z(h, t)
         if skip2d:

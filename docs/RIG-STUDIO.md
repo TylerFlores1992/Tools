@@ -68,6 +68,11 @@ What it does:
   depth limit (10): CFF-26's video-logo deck sat inside nested groups and was cut off at 6, leaving a
   hole. Checked on CFF-26: every visible symbol's parts fit its own outline, or both mirrored copies
   miss by the same amount (outlines that count only the 2D part).
+  Very detailed scenery (0.9.5): a symbol past DETAIL_CAP parts and at least 10' wide (BIG_PIECE) is
+  drawn part by part with its little parts (under 4" in plan and height, TINY_PART) left out, so
+  every surface comes whole: keeping only the biggest faces of the whole symbol (0.9.4) left holes in
+  CFF-26's game board frame, because a curve is many small faces. Smaller detailed symbols (people,
+  cameras) still come as whole-symbol faces. A read-out holds up to 60,000 objects (MAX_OBJECTS).
   Over-detailed symbols (0.9.4): past DETAIL_CAP parts a symbol isn't walked part by part; the whole
   instance (a duplicate) is converted to faces in one go, keeping the 30,000 biggest (7,500 on a hidden
   layer) so screws and bevels go first. CFF-26's game board (frame, screens, bulb grid) was a plain
