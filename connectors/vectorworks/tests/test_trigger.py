@@ -195,8 +195,12 @@ class TitledWin(FakeWin):
     def title(self, w):
         return self.titles.pop(0) if len(self.titles) > 1 else self.titles[0]
 
-    def open_file(self, path):
+    def open_file(self, path, exe=None):
         self.opened.append(str(path))
+        self.opened_with = exe
+
+    def exe_path(self, w):
+        return "C:\\Program Files\\Vectorworks 2026\\" + w.exe
 
 
 def test_a_locked_pc_says_so_and_sends_nothing():
@@ -223,6 +227,7 @@ def test_no_drawing_opens_the_blank_one_then_presses(tmp_path):
     t.fire()
     assert win.opened == [str(blank)]
     assert any(e.startswith("keys") for e in win.log)
+    assert win.opened_with == r"C:\Program Files\Vectorworks 2026\Vectorworks2026.exe", "opened by the running Vectorworks, not by whatever app .vwx is set to"
 
 
 def test_a_drawing_already_open_is_left_alone(tmp_path):
@@ -499,3 +504,28 @@ def test_a_box_it_doesnt_know_is_said_and_can_be_answered(tmp_path, monkeypatch)
     t.answer_prompt("Skip", remember=True)
     assert win.log[-1] == "pressed Skip" and t.pending_prompt() is None
     assert tr.pick_prompt("Some things are missing.").buttons == ("Skip",)
+
+
+def test_files_open_in_vectorworks_itself_never_the_app_windows_has_for_vwx(monkeypatch, tmp_path):
+    import os
+    import subprocess
+
+    from vwmcp import trigger as trig
+
+    ran = []
+    monkeypatch.setattr(subprocess, "Popen", lambda args, **kw: ran.append(args))
+    monkeypatch.setattr(os, "startfile", lambda p: ran.append(["startfile", p]), raising=False)
+    trig.open_with(tmp_path / "Show.vwx", r"C:\VW\Vectorworks2026.exe")
+    assert ran == [[r"C:\VW\Vectorworks2026.exe", str(tmp_path / "Show.vwx")]]
+    monkeypatch.setattr(trig, "installed_vectorworks", lambda: r"C:\Program Files\Vectorworks 2026\Vectorworks2026.exe")
+    trig.open_with(tmp_path / "Show.vwx")
+    assert ran[-1][0].endswith("Vectorworks2026.exe"), "with Vectorworks closed, the installed one opens it"
+    assert not any(r[0] == "startfile" for r in ran)
+
+
+def test_the_vectorworks_window_with_a_drawing_is_the_one_used():
+    palette, main = FakeWindow(handle=7), FakeWindow(handle=8)
+    win = FakeWin(window=False, front=(palette, main))
+    win.title = lambda w: "Vectorworks Design Suite 2026" if w is palette else "Vectorworks Design Suite 2026 - [CFF.vwx]"
+    t, _ = make(win)
+    assert t.find_window() is main

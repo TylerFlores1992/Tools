@@ -163,11 +163,12 @@ def is_converted_copy(open_name: str, path: Path) -> bool:
     return bool(re.fullmatch(re.escape(b) + r"[ _]v20\d\d", a))
 
 
-def open_in_vectorworks(path: Path) -> None:
-    """Ask Windows to open the file; Vectorworks takes it (a running copy opens it in a new window)."""
-    if not hasattr(os, "startfile"):
-        raise RuntimeError("opening files needs Windows")
-    os.startfile(str(path))  # noqa: S606 - a file the user asked for, opened by its own app
+def open_in_vectorworks(path: Path, exe: str | None = None) -> None:
+    """Open the file in Vectorworks (the running copy's program when known; it opens it in a new
+    window), never in whatever app Windows has .vwx set to."""
+    from .trigger import open_with
+
+    open_with(path, exe)
 
 
 def needs_read(vwx: Path) -> bool:

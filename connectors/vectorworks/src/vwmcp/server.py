@@ -470,7 +470,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             info = await call("get_document_info")
             if not readout.same_document(info.get("document", ""), vwx):
                 try:
-                    await asyncio.to_thread(readout.open_in_vectorworks, vwx)
+                    exe = await asyncio.to_thread(lambda: getattr(trigger, "vectorworks_exe", lambda: None)())
+                    await asyncio.to_thread(readout.open_in_vectorworks, vwx, exe)
                     opened = True
                 except Exception as e:
                     raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e

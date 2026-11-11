@@ -94,7 +94,7 @@ def test_watcher_reads_out_new_files_only_when_quiet(fake_vw, tmp_path, monkeypa
     vwx = tmp_path / "Show.vwx"
     vwx.write_bytes(b"x")
     monkeypatch.setenv("VWMCP_WATCH", str(tmp_path))
-    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p, *_: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
     srv = build_server(config.load())
     monkeypatch.setattr(readout, "idle_seconds", lambda: 30.0)  # someone is working
     assert asyncio.run(srv.watch_once(now=10_000.0)) == []
@@ -223,7 +223,7 @@ def test_after_reading_a_converted_file_its_copy_is_closed(fake_vw, tmp_path, mo
     vwx = tmp_path / "CFF_v2025.vwx"
     vwx.write_bytes(b"x")
 
-    def opens_as_copy(p):
+    def opens_as_copy(p, *_):
         fake_vw.DOC.path = ""
         fake_vw.DOC.fname = p.stem + "_v2026.vwx"
 
@@ -293,7 +293,7 @@ def test_dropbox_rig_studio_folder_is_found_from_dropbox_info(tmp_path, monkeypa
 
 def _request_server(fake_vw, monkeypatch, tmp_path):
     monkeypatch.setenv("VWMCP_REQUESTS", str(tmp_path))
-    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p, *_: setattr(fake_vw.DOC, "path", str(p)) or setattr(fake_vw.DOC, "fname", p.name))
     return build_server(config.load())
 
 
@@ -319,7 +319,7 @@ def test_a_request_that_fails_says_why_in_the_status(fake_vw, tmp_path, monkeypa
     vwx = tmp_path / "Show.vwx"
     vwx.write_bytes(b"x")
     (tmp_path / "Show.j1.rigrequest.json").write_text("{}")
-    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p: (_ for _ in ()).throw(RuntimeError("Vectorworks isn't running")))
+    monkeypatch.setattr(readout, "open_in_vectorworks", lambda p, *_: (_ for _ in ()).throw(RuntimeError("Vectorworks isn't running")))
     monkeypatch.setenv("VWMCP_REQUESTS", str(tmp_path))
     srv = build_server(config.load())
     asyncio.run(srv.requests_once())
