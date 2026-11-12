@@ -134,6 +134,7 @@ def test_read_out_draws_what_is_inside_groups_and_symbols(server, fake_vw, tmp_p
     vs.MoveTo((0.0, 60.0)); vs.LineTo((20.0, 60.0)); vs.SetSelect(d.last)
     vs.Group()
     d.layers[0].visibility = -1
+    vs.Layer("Annotations")  # the active layer is another one
     d.path = str(tmp_path / "Set.vwx")
     r = call(server, "read_out")
     data = json.loads(Path(r["saved"]).read_text())
@@ -150,6 +151,23 @@ def test_read_out_draws_what_is_inside_groups_and_symbols(server, fake_vw, tmp_p
     lines = [o for o in objs if o["t"] == "line"]
     assert {tuple(map(tuple, o["pts"])) for o in lines} >= {((0, 50), (20, 50)), ((0, 60), (20, 60))}
     assert data["layers"][0]["visible"] is False
+
+
+def test_the_active_layer_counts_as_shown_whatever_its_own_setting(server, fake_vw, tmp_path):
+    """Vectorworks always draws the active layer: Weakest Link's Stage read "hidden" yet its venue
+    beams and center lines are the plan; a grayed layer is drawn too."""
+    vs = fake_vw
+    d = vs.DOC
+    stage = d.layers[0]
+    vs.Layer("Venue")
+    d.layers[-1].visibility = 2
+    stage.visibility = -1
+    d.active_layer = stage
+    d.path = str(tmp_path / "Set.vwx")
+    call(server, "read_out")
+    data = json.loads((tmp_path / "Set.rigread.json").read_text())
+    vis = {l["name"]: l["visible"] for l in data["layers"]}
+    assert vis[stage.name] is True and vis["Venue"] is True
 
 
 def test_a_very_detailed_symbol_comes_as_one_block(server, fake_vw, tmp_path):

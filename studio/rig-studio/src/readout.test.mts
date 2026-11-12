@@ -196,3 +196,28 @@ test("a read-out can be shown as a sheet's viewport: its layers and classes", ()
   assert.equal(set.shapes!.length, 1, "the sheet shows the logo and hides the camera with its parts");
   assert.equal(sheet.find((l) => l.name.endsWith("Venue 3D"))?.visible, true, "the sheet shows the venue layer");
 });
+
+test("lights and rig on layers Vectorworks hides start hidden, and a ring of truss isn't one box", () => {
+  const r: Readout = {
+    ...SAMPLE,
+    layers: [
+      { name: "Stage", type: "design", elevation: 0, visible: true },
+      { name: "Lighting", type: "design", elevation: 0, visible: false },
+      { name: "Rigging", type: "design", elevation: 0, visible: true },
+    ],
+    objects: [
+      ...SAMPLE.objects,
+      // Weakest Link's 80' circle of truss: a box its size would be a slab over the whole stage.
+      { t: "symbol", layer: "Rigging", cls: ".RIG TRUSS", bbox: [-510, -510, 510, 510], at: [0, 0, 192], rot: 0, symbol: "Circle 20x80ft" },
+      { t: "symbol", layer: "Rigging", cls: ".RIG TRUSS", bbox: [-300, -280, 300, 280], at: [0, 0, 303], rot: 0, symbol: "Box Truss 20.5 Ring" },
+    ],
+  };
+  const layers = readoutLayers(r, { name: "WL.rigread.json", from: "dropbox" }, "t");
+  const shown = layers.find((l) => l.name === "WL: lighting");
+  const hidden = layers.find((l) => l.name === "WL: lighting on hidden layers")!;
+  assert.equal(shown, undefined, "no lights shown: their layer is hidden in Vectorworks");
+  assert.ok(hidden && hidden.visible === false && hidden.fixtures!.length === 2, "they're kept in a row that starts hidden");
+  const rig = layers.find((l) => l.name === "WL: existing rig")!;
+  assert.ok(rig.visible && rig.rig!.length === 3, "the straight truss and hoist on the shown layer");
+  assert.ok(!rig.rig!.some((x) => /Circle|Ring/.test(x.name)), "no circle or ring of truss turned into a box");
+});

@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.10"
+BRIDGE_VERSION = "0.9.11"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1469,6 +1469,19 @@ def _ro_fill(h):
         return None
 
 
+def _layer_shown(lh) -> bool:
+    """Whether Vectorworks draws this layer: shown or grayed, and always the active layer, whatever its
+    own setting says (Weakest Link: the active Stage layer reads "hidden" but its venue beams, center
+    lines and roof trusses are what the plan shows)."""
+    try:
+        if vs.GetLVis(lh) in (0, 2):
+            return True
+        act = vs.ActLayer()
+        return not _nil(act) and _s(vs.GetLName(act)) == _s(vs.GetLName(lh))
+    except Exception:
+        return False
+
+
 def _ro_pen(h):
     """The object's line as Vectorworks draws it: {"pen": "#rrggbb"} unless black, {"lw": mils} when
     thicker than hairline, {"np": 1} when it has no line at all. Empty when it can't say."""
@@ -2062,9 +2075,9 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
             design.append(lh)
         lh = vs.NextLayer(lh)
     # Shown layers first, so a cut-off (max_objects) falls on hidden ones.
-    for lh in sorted(design, key=lambda h: vs.GetLVis(h) != 0):
+    for lh in sorted(design, key=lambda h: not _layer_shown(h)):
         name = _s(vs.GetLName(lh))
-        state["layer_shown"] = vs.GetLVis(lh) == 0
+        state["layer_shown"] = _layer_shown(lh)
         for h in _children(vs.FInLayer(lh)):
             if state["truncated"]:
                 break
@@ -2079,7 +2092,7 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
         if hasattr(vs, "GetLayerElevationN"):
             base, thick = vs.GetLayerElevationN(lh)
             entry["elevation"] = _r(base, k)
-        entry["visible"] = vs.GetLVis(lh) == 0  # 0 shown, -1 hidden, 2 grayed
+        entry["visible"] = _layer_shown(lh)
         layers.append(entry)
     return {
         "readout": 1,

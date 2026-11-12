@@ -43,6 +43,16 @@ MCP["Dropbox/fetch/id:mesh1"] = { id: "id:mesh1", text: JSON.stringify({ rigmesh
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.rigread.json", path: "ns:1//CFF-26.rigread.json", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.rigread.json", file_id: "id:ro", modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 900 } });
 MCP["Dropbox/list_folder"].entries.push({ name: "CFF-26.vwx", path: "ns:1//CFF-26.vwx", path_display: "/Pickle/Pickled/Plans/Accurate/CFF-26.vwx", file_id: "id:cff", modified_time: "2026-11-09T07:00:00Z", object_type: "file", file: { size: 79000000 } });
 MCP["Dropbox/fetch"] = { id: "id:ro", title: "CFF-26.rigread.json", text: process.env.RS_READOUT ? (await import("node:fs")).readFileSync(process.env.RS_READOUT, "utf8") : JSON.stringify(READOUT) };
+// A real read-out's part files, read from beside it (dev aid).
+if (process.env.RS_READOUT) {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  const ro = JSON.parse(fs.readFileSync(process.env.RS_READOUT, "utf8"));
+  for (const [i, name] of (ro.mesh_parts ?? []).entries()) {
+    MCP["Dropbox/list_folder"].entries.push({ name, path: `ns:1//${name}`, file_id: `id:part${i}`, modified_time: "2026-11-09T17:00:00Z", object_type: "file", file: { size: 1 } });
+    MCP[`Dropbox/fetch/id:part${i}`] = { id: `id:part${i}`, text: fs.readFileSync(path.join(path.dirname(process.env.RS_READOUT), name), "utf8") };
+  }
+}
 const SAMPLE = [
   {
     calls: [{ name: "edit_rig", input: { note: "Hoists at the four corners", ops: [{ op: "add_point", at: [0, 0, 310.25], capacity: 2000, label: "DSL" }, { op: "add_point", at: [1044, 0, 310.25], label: "DSR" }] } }],

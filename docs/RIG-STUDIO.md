@@ -193,6 +193,14 @@ The chat asks for **Opus 5.5** by name (`CHAT_MODEL` in `app.tsx`, owner's call 
 the most capable tier as the fallback; if a lighter model answers, the reply says so. A dropped
 connection (`upstream_error`: phone asleep, app in the background) puts the question back in the box.
 
+## What starts shown (Weakest Link, 2026-11-12)
+- A layer counts as shown when Vectorworks draws it: shown, grayed, or the active layer whatever its own
+  setting (bridge `_layer_shown`; the active Stage held the venue beams and center lines).
+- Lights and rig pieces on hidden layers or classes go in rows "… on hidden layers" that start off.
+- A curved truss (circle, arc, ring; or a piece over 20' about as deep as wide) isn't turned into one
+  straight box: it's drawn from its own parts (the 80' circle had become a slab over the stage).
+- Top/Plan's wireframe edges use each object's pen (venue beams blue, spreaders green, roof red).
+
 ## X and Y reference lines
 Plans are measured on site off two lines (center line plus a beam, plaster line, DS edge or stage
 wall). The chat's `set_reference` draws them as the project's one "Reference: …" layer
