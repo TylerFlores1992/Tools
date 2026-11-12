@@ -190,6 +190,12 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
   another app it fires at once and hands focus back. It refuses while a Vectorworks dialog is
   open, and in the first 30 seconds after launch, because scripting a just-started Vectorworks
   can crash it.
+- **Drawings open from a helper process.** Windows hands a file to a running Vectorworks over DDE,
+  a conversation on the calling thread; from the connector's worker thread it never finished and
+  Vectorworks stopped running every command (MCP Run Job included) until the connector quit. A
+  short-lived helper does the open, waits for the hand-over and exits. The bridge notes every run
+  in `~/.vwmcp/bridge.log`, so "never ran" and "ran and failed" can be told apart. Error boxes
+  ("Encountered an improper argument") are never learned as answers.
 - **Drawings open as Vectorworks files**: through Vectorworks' own registered file type (as a
   double-click would, so the running copy takes them), never Windows' ".vwx opens with" setting,
   which on 2026-11-11 handed the blank drawing to a Chromium window. (Handing the path to
