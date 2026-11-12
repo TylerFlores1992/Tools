@@ -150,8 +150,8 @@ def SetObjectVariableInt(h, index, value):
 
 
 def GetObjectVariableBoolean(h, index):
-    if index == 650:  # object is 3D
-        return getattr(h, "is3d", False)
+    if index == 650:  # object is 3D (a hybrid plug-in, with 2D and 3D parts, isn't)
+        return getattr(h, "is3d", False) and not getattr(h, "hybrid", False)
     raise ScriptErrors(f"boolean selector {index} not faked")
 
 
@@ -1190,6 +1190,8 @@ def ConvertTo3DPolys(original):
         return g
     if not getattr(original, "is3d", False) or not getattr(original, "pts", None):
         return None
+    if getattr(original, "noconvert", False):  # a solid that won't convert on its own (it does in its symbol)
+        return None
     z0 = original.zc - original.dz / 2
     z1 = original.zc + original.dz / 2
     ring = [(float(x), float(y)) for x, y in original.pts]
@@ -1252,6 +1254,57 @@ def GetLW(h):
     return getattr(h, "lw", 1)
 
 
+# Attributes "by class": the object says so, and the class holds the value (DOC.class_attrs).
+def _by_class(h, what):
+    return what in getattr(h, "by_class", set())
+
+
+def IsFPatByClass(h):
+    return _by_class(h, "fpat")
+
+
+def IsFillColorByClass(h):
+    return _by_class(h, "fill")
+
+
+def IsPenColorByClass(h):
+    return _by_class(h, "pen")
+
+
+def IsLWByClass(h):
+    return _by_class(h, "lw")
+
+
+def IsLSByClass(h):
+    return _by_class(h, "ls")
+
+
+def _cl(name, key, default):
+    return getattr(DOC, "class_attrs", {}).get(name, {}).get(key, default)
+
+
+def GetClFPat(className):
+    return _cl(className, "fpat", 1)
+
+
+def GetClFillBack(className):
+    r, g, b = _cl(className, "fill", (255, 255, 255))
+    return (r * 257, g * 257, b * 257)
+
+
+def GetClPenFore(className):
+    r, g, b = _cl(className, "pen", (0, 0, 0))
+    return (r * 257, g * 257, b * 257)
+
+
+def GetClLW(className):
+    return _cl(className, "lw", 1)
+
+
+def GetClLSN(className):
+    return _cl(className, "ls", 2)
+
+
 def GetCVis(className):
     return -1 if className in getattr(DOC, "hidden_classes", set()) else 0
 
@@ -1281,3 +1334,13 @@ def GetVPClassVisibility(viewportHandle, className):
 
 for _n in ("GetVPLayerVisibility", "GetVPClassVisibility"):
     globals()[_n] = _strict(_n, globals()[_n])
+
+
+# The 3D view: (x, y, z angles in degrees, offset). Top/Plan is all zero.
+def GetView():
+    return tuple(getattr(DOC, "view", (0.0, 0.0, 0.0))) + ((0.0, 0.0, 0.0),)
+
+
+def SetView(xAngle, yAngle, zAngle, xDistance, yDistance, zDistance):
+    DOC.view = (xAngle, yAngle, zAngle)
+    DOC.views_set = getattr(DOC, "views_set", []) + [(xAngle, yAngle, zAngle)]

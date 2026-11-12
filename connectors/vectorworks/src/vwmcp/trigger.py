@@ -727,6 +727,13 @@ class HotkeyTrigger(Trigger):
             remember_prompt(prompt_phrase(hit["title"], hit["text"]), button)
         return hit
 
+    def tidy(self) -> None:
+        """After a job: close the Tools menu the press left open (WM_CANCELMODE, no keys)."""
+        with self._lock:
+            target = self.find_window()
+            if target is not None:
+                getattr(self.win, "cancel_menus", lambda w: None)(target)
+
     def close_copy(self, name: str) -> bool:
         """Close the converted copy of a drawing the connector opened for a read-out, without saving
         (File > Close, then No to "save changes?" for that name only). Only when Vectorworks' title

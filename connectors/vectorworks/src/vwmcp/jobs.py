@@ -11,6 +11,7 @@ a half-written file.
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 import time
@@ -64,6 +65,10 @@ class JobQueue:
                 if result_path.exists():
                     data = json.loads(result_path.read_text(encoding="utf-8"))
                     result_path.unlink(missing_ok=True)
+                    # The press leaves Vectorworks' Tools menu hanging open; close it so the
+                    # designer's next click doesn't just close a menu (seen after every read-out).
+                    with contextlib.suppress(Exception):
+                        await asyncio.to_thread(getattr(self.trigger, "tidy", lambda: None))
                     if data.get("ok"):
                         return data.get("result")
                     msg = data.get("error", "unknown error")
