@@ -77,6 +77,14 @@ def split(readout: dict, stem: str, limit: int = LIMIT) -> tuple[bytes, list[byt
             meshes.append((len(meshes), o.pop("mesh")))
             o["mid"] = meshes[-1][0]
         objs.append(o)
+    # Faces shared by every copy of a symbol part go into the parts once, as "s<id>"; each object
+    # names them in "mid" and keeps its own matrix ("mx").
+    for sid, m in (readout.get("shared") or {}).items():
+        meshes.append(("s%s" % sid, m))
+    for o in objs:
+        if "sm" in o:
+            o["mid"] = "s%s" % o.pop("sm")
+    readout = {kk: v for kk, v in readout.items() if kk != "shared"}
 
     # What stays in the main file: plug-ins and symbols always, then the plainest shapes that fit
     # (the same order `fit` keeps them in); the rest spills into parts.

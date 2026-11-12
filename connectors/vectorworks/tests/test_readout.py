@@ -1,6 +1,7 @@
 """Reading a drawing out to JSON beside it, for working on it with Vectorworks closed."""
 
 import json
+import math
 from pathlib import Path
 
 import pytest
@@ -359,6 +360,25 @@ def _faces(mesh):
     return out
 
 
+def _has_faces(o):
+    return bool(o.get("mesh")) or o.get("sm") is not None
+
+
+def _placed(data, o):
+    """An object's faces in the drawing: its own, or the shared faces of its symbol part moved by
+    its matrix (each copy of a symbol part shares one set of faces, read once)."""
+    if o.get("mesh"):
+        return o["mesh"]
+    m, mx = data["shared"][o["sm"]], o["mx"]
+    v, q = m["v"], m["q"]
+    out = []
+    for i in range(0, len(v), 3):
+        x, y, z = v[i] * q, v[i + 1] * q, v[i + 2] * q
+        for r in range(3):
+            out.append(round((mx[3 * r] * x + mx[3 * r + 1] * y + mx[3 * r + 2] * z + mx[9 + r]) / q))
+    return {"q": q, "v": out, "f": m["f"]}
+
+
 def test_a_3d_object_comes_with_its_real_faces_placed_where_it_sits(server, fake_vw, tmp_path):
     vs = fake_vw
     d = vs.DOC
@@ -372,12 +392,12 @@ def test_a_3d_object_comes_with_its_real_faces_placed_where_it_sits(server, fake
     r = call(server, "read_out")
     data = json.loads(Path(r["saved"]).read_text())
     part = next(o for o in data["objects"] if o.get("in") == "Riser")
-    faces = _faces(part["mesh"])
+    faces = _faces(_placed(data, part))
     assert len(faces) == 6  # bottom, top and four sides
     corners = {p for f in faces for p in f}
     # turned 90 degrees and moved to (100, 0): (10, 4) at the top lands on (96, 10, 36)
     assert (96.0, 10.0, 36.0) in corners and (100.0, 0.0, 0.0) in corners
-    assert len(part["mesh"]["v"]) == 8 * 3  # shared corners stored once
+    assert len(_placed(data, part)["v"]) == 8 * 3  # shared corners stored once
     assert len(d.objects) == before and d.converted >= 1  # each converted copy was deleted again
     assert data["faces"] >= 6
 
@@ -447,7 +467,7 @@ def test_parts_inside_a_symbol_get_the_user_origin_added_back(server, fake_vw, t
     data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
     part = next(o for o in data["objects"] if o.get("in") == "Riser")
     assert [96, 10] in part["pts"] and [100, 0] in part["pts"], part["pts"]  # where it really sits
-    corners = {p for f in _faces(part["mesh"]) for p in f}
+    corners = {p for f in _faces(_placed(data, part)) for p in f}
     assert (96.0, 10.0, 36.0) in corners and (100.0, 0.0, 0.0) in corners  # the faces too
 
 
@@ -467,7 +487,7 @@ def test_a_read_out_never_destroys_the_drawings_3d_objects(server, fake_vw, tmp_
     d.path = str(tmp_path / "Set.vwx")
     for _ in range(2):  # and again: a second read-out still finds the 3D objects
         data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
-        assert sum(1 for o in data["objects"] if o.get("mesh")) == 2
+        assert sum(1 for o in data["objects"] if _has_faces(o)) == 2
     assert d.objects == before_doc and sym.members == before_sym  # nothing replaced, nothing left over
     assert flat in d.objects and box in sym.members
 
@@ -488,7 +508,7 @@ def test_a_hybrid_symbol_gives_its_plan_graphics_and_its_3d_part_each_tagged(ser
     objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
     parts = {o.get("view"): o for o in objs if o.get("in") == "Deck 4x8"}
     assert set(parts) == {"plan", "3d"}
-    assert "mesh" in parts["3d"] and "mesh" not in parts["plan"]
+    assert _has_faces(parts["3d"]) and not _has_faces(parts["plan"])
     assert all("view" not in o for o in objs if not o.get("in"))
 
 
@@ -631,8 +651,8 @@ def test_a_symbol_tipped_up_in_3d_stands_up(server, fake_vw, tmp_path):
     d.last.mat = [[1.0, 0, 0], [0, 0, -1.0], [0, 1.0, 0]]  # Rx(90): (x, y, z) -> (x, -z, y)
     d.path = str(tmp_path / "Set.vwx")
     data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
-    part = next(o for o in data["objects"] if o.get("in") == "Arm" and o.get("mesh"))
-    corners = {p for f in _faces(part["mesh"]) for p in f}
+    part = next(o for o in data["objects"] if o.get("in") == "Arm" and _has_faces(o))
+    corners = {p for f in _faces(_placed(data, part)) for p in f}
     assert (110.0, -36.0, 4.0) in corners and (100.0, 0.0, 0.0) in corners, sorted(corners)
 
 
@@ -662,8 +682,8 @@ def test_a_very_detailed_symbol_is_drawn_whole_without_its_little_parts(server, 
     d.path = str(tmp_path / "Set.vwx")
     data = json.loads(Path(call(server, "read_out", max_objects=4000)["saved"]).read_text())
     parts = [o for o in data["objects"] if o.get("in") == "Board"]
-    assert len(parts) == 1 and parts[0].get("mesh") and parts[0]["t"] != "block", parts
-    corners = {p for f in _faces(parts[0]["mesh"]) for p in f}
+    assert len(parts) == 1 and _has_faces(parts[0]) and parts[0]["t"] != "block", parts
+    corners = {p for f in _faces(_placed(data, parts[0])) for p in f}
     assert (300.0, 4.0, 120.0) in corners and (100.0, 0.0, 0.0) in corners
     assert data["skipped"]["little parts of very detailed symbols"] == 2600
 
@@ -759,3 +779,140 @@ def test_a_box_nobody_answers_ends_the_wait_and_says_what_it_asked(fake_vw, tmp_
     done = asyncio.run(asyncio.wait_for(srv.requests_once(), 30))
     assert "still asking" in done[0]["error"] and "Some things are missing." in done[0]["error"]
     assert json.loads((tmp_path / "Show.rigstatus.json").read_text())["state"] == "failed"
+
+
+def test_attributes_by_class_come_from_the_class(server, fake_vw, tmp_path):
+    """Weakest Link draws its venue colours and black stage floor from classes: the objects' own
+    values are stale, so the class's pen, weight, line style, fill and fill pattern are read."""
+    vs = fake_vw
+    d = vs.DOC
+    d.class_attrs = {"Deck-Wood Top": {"fill": (0, 0, 0), "fpat": 1, "pen": (0, 0, 255), "lw": 20}, "Hidden Edge": {"ls": 0}}
+    floor = d.add(vs._Obj(5, pts=[(0.0, 0.0), (100.0, 0.0), (100.0, 100.0), (0.0, 100.0)], closed=True))
+    floor.cls = "Deck-Wood Top"
+    floor.attrs["fpat"] = 0  # its own: no fill; by class: solid black
+    floor.by_class = {"fill", "fpat", "pen", "lw"}
+    edge = d.add(vs._Obj(2, pts=[(0.0, 200.0), (10.0, 200.0)], pen=(255, 0, 0)))
+    edge.cls = "Hidden Edge"
+    edge.by_class = {"ls"}
+    d.path = str(tmp_path / "Classes.vwx")
+    objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
+    f = next(o for o in objs if o["t"] == "polygon")
+    assert f.get("fill") == "#000000" and f.get("pen") == "#0000ff" and f.get("lw") == 20
+    assert next(o for o in objs if o["t"] == "line").get("np") == 1
+
+
+def test_a_hybrid_plug_in_like_curved_truss_comes_with_its_faces(server, fake_vw, tmp_path):
+    """Weakest Link's rings are Curved Truss plug-ins: not flagged 3D, but with a 3D part. Without
+    their faces Rig Studio had nothing to draw; lights stay markers."""
+    vs = fake_vw
+    d = vs.DOC
+    ring = d.add(vs._Obj(86, loc=(0.0, 0.0), w=120.0, h=20.0, parametric="Curved Truss", z=181.0,
+                         pts=[(0.0, 0.0), (120.0, 0.0), (120.0, 20.0), (0.0, 20.0)], is3d=True, zc=191.0, dz=20.5, hybrid=True, pen=(255, 0, 0)))
+    light = d.add(vs._Obj(86, loc=(50.0, 50.0), w=10.0, h=10.0, parametric="Lighting Device", z=181.0,
+                          pts=[(45.0, 45.0), (55.0, 45.0), (55.0, 55.0), (45.0, 55.0)], is3d=True, zc=170.0, dz=20.0, hybrid=True))
+    for o, name in ((ring, "Curved Truss"), (light, "Lighting Device")):
+        d.resources.setdefault(name, vs._Obj(47, name=name, fields=[]))
+        o.records[name] = {}
+    d.path = str(tmp_path / "Rings.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    by = {o.get("plugin"): o for o in data["objects"]}
+    ct = by["Curved Truss"]
+    assert (ct.get("mesh") or ct.get("mid") is not None) and ct.get("pts") and ct.get("z"), "faces, an outline and a height: Rig Studio draws it"
+    assert ct.get("pen") == "#ff0000", "in its own pen"
+    assert not by["Lighting Device"].get("mesh") and by["Lighting Device"].get("mid") is None
+    assert ring and light
+
+
+def test_every_copy_of_a_symbol_part_shares_one_set_of_faces(server, fake_vw, tmp_path):
+    """Weakest Link has 3,146 copies of one deck: each copy converted on its own used up the face
+    budget halfway (the rest came out as plain boxes) and took minutes. Now each part of a
+    definition is read once; every copy gets the same faces and its own matrix."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Deck 4x8", w=96.0, h=48.0, members=[])
+    sym.members.append(vs._Obj(5, pts=[(0.0, 0.0), (96.0, 0.0), (96.0, 48.0), (0.0, 48.0)], closed=True, is3d=True, zc=70.0, dz=6.0, parent_obj=sym, layer=None))
+    d.resources["Deck 4x8"] = sym
+    for i in range(5):
+        vs.Symbol("Deck 4x8", (100.0 * i, 0.0), 90.0 * (i % 2))
+    d.path = str(tmp_path / "Decks.vwx")
+    converted = getattr(d, "converted", 0)
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    parts = [o for o in data["objects"] if o.get("in") == "Deck 4x8"]
+    assert len(parts) == 5 and len({o["sm"] for o in parts}) == 1 and len(data["shared"]) == 1
+    assert d.converted - converted == 1, "the part was converted once, not once per copy"
+    second = {p for f in _faces(_placed(data, parts[1])) for p in f}
+    assert (100.0, 0.0, 67.0) in second and (52.0, 96.0, 73.0) in second, sorted(second)  # turned 90 at (100, 0)
+
+
+def test_shared_faces_go_into_the_part_files_once():
+    m = {"q": 0.25, "v": [0, 0, 0, 4, 0, 0, 0, 4, 0], "f": [3, 0, 1, 2]}
+    objs = [{"t": "type_84", "layer": "D", "cls": "N", "bbox": [0, 0, 1, 1], "in": "Deck", "sm": "0", "mx": [1, 0, 0, 0, 1, 0, 0, 0, 1, i * 10, 0, 0], "pts": [[0, 0]] * 400} for i in range(300)]
+    main, parts, trimmed = readout.split({"readout": 1, "units": "in", "layers": [], "objects": objs, "shared": {"0": m}}, "S", limit=20_000)
+    assert trimmed == 0 and parts
+    body = json.loads(main)
+    assert "shared" not in body
+    all_parts = [json.loads(p) for p in parts]
+    meshes = {k: v for p in all_parts for k, v in p.get("meshes", {}).items()}
+    assert list(meshes) == ["s0"] and meshes["s0"] == m, "one copy of the shared faces"
+    got = body["objects"] + [o for p in all_parts for o in p.get("objects", [])]
+    assert len(got) == 300 and all(o["mid"] == "s0" and "sm" not in o and o["mx"][9] == o["k"] * 10 for o in got)
+
+
+def test_hidden_layers_get_a_small_share_of_the_faces(server, fake_vw, tmp_path, monkeypatch):
+    import vwmcp_bridge as bridge
+
+    vs = fake_vw
+    d = vs.DOC
+    monkeypatch.setattr(bridge, "HIDDEN_FACE_BUDGET", 12)
+    for i in range(4):  # on the shown layer: every box gets its faces
+        d.add(vs._Obj(5, pts=[(i * 20.0, 0.0), (i * 20.0 + 10, 0.0), (i * 20.0 + 10, 10.0)], closed=True, is3d=True, zc=5.0, dz=10.0))
+    vs.Layer("Reference")
+    d.layers[-1].visibility = -1
+    for i in range(4):  # a hidden layer: faces until its share runs out, then plain blocks
+        d.add(vs._Obj(5, pts=[(i * 20.0, 50.0), (i * 20.0 + 10, 50.0), (i * 20.0 + 10, 60.0)], closed=True, is3d=True, zc=5.0, dz=10.0))
+    vs.Layer(d.layers[0].name)
+    d.path = str(tmp_path / "Ref.vwx")
+    objs = json.loads(Path(call(server, "read_out")["saved"]).read_text())["objects"]
+    mine = [o for o in objs if o["t"] == "polygon" and o.get("z")]
+    shown = [o for o in mine if o["layer"] != "Reference"]
+    hidden = [o for o in mine if o["layer"] == "Reference"]
+    assert all(_has_faces(o) for o in shown) and len(shown) == 4, shown
+    assert 0 < sum(_has_faces(o) for o in hidden) < 4
+
+
+def test_a_symbol_whose_solid_wont_convert_alone_comes_whole_and_shared(server, fake_vw, tmp_path):
+    """Weakest Link's decks, rails and stairs hold solids that won't convert on their own (638 of
+    them came out as plain boxes: wedges square, rails solid). Converting a copy of the whole
+    symbol does convert them: read once, shared by every copy, each with its own matrix."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Wedge", w=48.0, h=48.0, members=[])
+    frame = vs._Obj(5, pts=[(0.0, 0.0), (48.0, 0.0), (0.0, 48.0)], closed=True, is3d=True, zc=70.0, dz=4.0, parent_obj=sym, layer=None)
+    frame.noconvert = True
+    sym.members.append(frame)
+    d.resources["Wedge"] = sym
+    for i in range(3):
+        vs.Symbol("Wedge", (100.0 * i, 0.0), 90.0 * i)
+    d.path = str(tmp_path / "Wedges.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    whole = [o for o in data["objects"] if o.get("t") == "whole" and o.get("in") == "Wedge"]
+    assert len(whole) == 3 and len({o["sm"] for o in whole}) == 1, ([(o["t"], o.get("in"), o.get("symbol")) for o in data["objects"]][-8:], data.get("face_misses"))
+    assert not [o for o in data["objects"] if o.get("in") == "Wedge" and o.get("t") != "whole" and o.get("z")], "no plain boxes left"
+    second = {p for f in _faces(_placed(data, whole[1])) for p in f}
+    assert (100.0, 0.0, 68.0) in second and (100.0, 48.0, 72.0) in second, sorted(second)  # turned 90 at (100, 0)
+
+
+def test_a_turned_view_is_read_from_above_and_put_back(server, fake_vw, tmp_path):
+    vs = fake_vw
+    d = vs.DOC
+    d.view = (-54.7, 0.0, 45.0)  # Right Isometric
+    d.path = str(tmp_path / "Iso.vwx")
+    seen = []
+    real_bbox = vs.GetBBox
+    vs.GetBBox = lambda h: (seen.append(tuple(d.view)), real_bbox(h))[1]
+    try:
+        call(server, "read_out")
+    finally:
+        vs.GetBBox = real_bbox
+    assert seen and all(v == (0.0, 0.0, 0.0) for v in seen), "every outline read from straight above"
+    assert d.views_set[0] == (0.0, 0.0, 0.0) and d.views_set[-1] == (-54.7, 0.0, 45.0), "and the view put back exactly"

@@ -310,6 +310,7 @@ export class Viewer {
       }
       if (l.kind === "rig" && l.rig?.length) {
         for (const it of l.rig) {
+          if (it.drawn) continue;
           const a = new THREE.Vector3(it.at[0], it.at[2], -it.at[1]);
           if (it.kind === "truss" && it.b) {
             const b = new THREE.Vector3(it.b[0], it.b[2], -it.b[1]);
@@ -415,20 +416,33 @@ export class Viewer {
         const { q, v, f } = s.m;
         const zb = s.mz ?? 0;
         const pos = new Float32Array(v.length);
+        const t = s.mx;
         for (let i = 0; i < v.length; i += 3) {
-          pos[i] = v[i] * q;
-          pos[i + 1] = v[i + 2] * q + zb;
-          pos[i + 2] = -v[i + 1] * q;
+          let x = v[i] * q, y = v[i + 1] * q, z = v[i + 2] * q;
+          if (t) {
+            // Faces shared by every copy of a symbol part, moved to this copy.
+            const X = t[0] * x + t[1] * y + t[2] * z + t[9];
+            const Y = t[3] * x + t[4] * y + t[5] * z + t[10];
+            z = t[6] * x + t[7] * y + t[8] * z + t[11];
+            x = X;
+            y = Y;
+          }
+          pos[i] = x;
+          pos[i + 1] = z + zb;
+          pos[i + 2] = -y;
         }
+        // A mirrored copy turns its faces inside out: wind them back so they light the right way.
+        const flip = !!t && t[0] * (t[4] * t[8] - t[5] * t[7]) - t[1] * (t[3] * t[8] - t[5] * t[6]) + t[2] * (t[3] * t[7] - t[4] * t[6]) < 0;
         const idx: number[] = [];
         for (let i = 0; i < f.length; ) {
           const n = f[i];
+          const tri = (a: number, b: number, c: number) => (flip ? idx.push(a, c, b) : idx.push(a, b, c));
           if (n === 3 || (n === 4 && convexQuad(pos, f[i + 1], f[i + 2], f[i + 3], f[i + 4]))) {
-            for (let j = 2; j < n; j++) idx.push(f[i + 1], f[i + j], f[i + j + 1]);
+            for (let j = 2; j < n; j++) tri(f[i + 1], f[i + j], f[i + j + 1]);
           } else if (n > 3) {
             // A face with a notch (a stage outline, a cap of a curved extrude): fanning from one corner
             // would fill the notch, so triangulate it in its own plane.
-            for (const t of triangulateFace(pos, f.slice(i + 1, i + 1 + n))) idx.push(t[0], t[1], t[2]);
+            for (const c of triangulateFace(pos, f.slice(i + 1, i + 1 + n))) tri(c[0], c[1], c[2]);
           }
           i += n + 1;
         }

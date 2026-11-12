@@ -555,3 +555,13 @@ def test_error_boxes_are_never_answered_by_themselves(tmp_path, monkeypatch):
     assert not (tmp_path / "prompts.json").exists(), "an error box isn't learned"
     (tmp_path / "prompts.json").write_text('[{"phrase": "encountered an improper argument.", "buttons": ["OK"]}]')
     assert trig.learned_prompts() == [], "one learned before this rule is ignored"
+
+
+def test_the_menu_a_job_leaves_open_is_closed_after_it(tmp_path):
+    """Every read-out left Vectorworks' Tools menu hanging open; tidy closes it with a window message."""
+    closed = []
+    win = FakeWin()
+    win.cancel_menus = lambda w: closed.append(w)
+    t, _ = make(win)
+    t.tidy()
+    assert closed and closed[0] is not None

@@ -110,6 +110,21 @@
   "GetCVis": [
    "className"
   ],
+  "GetClFPat": [
+   "className"
+  ],
+  "GetClFillBack": [
+   "className"
+  ],
+  "GetClLSN": [
+   "className"
+  ],
+  "GetClLW": [
+   "className"
+  ],
+  "GetClPenFore": [
+   "className"
+  ],
   "GetClass": [
    "h"
   ],
@@ -245,10 +260,19 @@
    "h"
   ],
   "GetUnits": [],
+  "GetVPClassVisibility": [
+   "viewportHandle",
+   "className"
+  ],
+  "GetVPLayerVisibility": [
+   "viewportHandle",
+   "layerHandle"
+  ],
   "GetVersionEx": [],
   "GetVertNum": [
    "PolyHd"
   ],
+  "GetView": [],
   "GetWallCornerHeights": [
    "theWall"
   ],
@@ -302,8 +326,23 @@
    "listID",
    "index"
   ],
+  "IsFPatByClass": [
+   "h"
+  ],
+  "IsFillColorByClass": [
+   "h"
+  ],
+  "IsLSByClass": [
+   "h"
+  ],
+  "IsLWByClass": [
+   "h"
+  ],
   "IsLayerReferenced": [
    "layer"
+  ],
+  "IsPenColorByClass": [
+   "h"
   ],
   "IsPolyClosed": [
    "polyHandle"
@@ -445,6 +484,14 @@
   "SetSelect": [
    "h"
   ],
+  "SetView": [
+   "xAngle",
+   "yAngle",
+   "zAngle",
+   "xDistance",
+   "yDistance",
+   "zDistance"
+  ],
   "SetWallCornerHeights": [
    "theWall",
    "startHeightTop",
@@ -473,14 +520,6 @@
   "Wall": [
    "p1",
    "p2"
-  ],
-  "GetVPLayerVisibility": [
-   "viewportHandle",
-   "layerHandle"
-  ],
-  "GetVPClassVisibility": [
-   "viewportHandle",
-   "className"
   ]
  },
  "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09."

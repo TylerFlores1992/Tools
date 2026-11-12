@@ -200,6 +200,22 @@ connection (`upstream_error`: phone asleep, app in the background) puts the ques
 - A curved truss (circle, arc, ring; or a piece over 20' about as deep as wide) isn't turned into one
   straight box: it's drawn from its own parts (the 80' circle had become a slab over the stage).
 - Top/Plan's wireframe edges use each object's pen (venue beams blue, spreaders green, roof red).
+- A building drawn around everything (top over 20', footprint at least 85% of what's under 20' on the
+  shown layers: a venue's walls and roof) goes in "<doc>: building around everything", starting off.
+- Attributes "by class" (pen, weight, line style, fill, fill pattern) are read from the class, as
+  Vectorworks draws them (bridge `_by_class`).
+- Hybrid plug-ins with a 3D part whose name says truss, hoist or motor (Curved Truss) come with their
+  real faces, outline, height and pen; lights and lighting pipes stay markers (minutes and the budget).
+- **Shared faces**: a symbol part's faces are read once and shared by every copy (`shared` + `sm`/`mx`
+  on objects; in part files as mesh `"s<id>"`). Weakest Link's 3,146 decks had used up the face
+  budget halfway (the rest came out boxes) and took minutes; now 17 s. When a part won't convert on
+  its own (solids in a definition), a copy of the whole symbol is converted once and shared ("whole").
+  The read-out says why anything missed its faces (`face_misses`). Hidden layers get 60,000 faces.
+- Truss drawn by its own parts is still listed (Claude, loads) but not boxed again (`drawn`): boxes for
+  stood-up towers and spacers floated beside the real truss.
+- A read-out in a turned view (Right Isometric) reads from straight above and puts the view back
+  (Vectorworks gives outlines as the view shows them).
+- After each job the Tools menu the press left open is closed (`tidy`).
 
 ## X and Y reference lines
 Plans are measured on site off two lines (center line plus a beam, plaster line, DS edge or stage

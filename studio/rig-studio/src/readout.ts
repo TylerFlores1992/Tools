@@ -24,8 +24,15 @@ export type ReadoutObject = {
   in?: string;
   /** Its real 3D faces (connector 0.7+). */
   mesh?: Mesh;
-  /** Where its faces are when they came in a separate part file (mesh_parts). */
-  mid?: number;
+  /** Where its faces are when they came in a separate part file (mesh_parts); "s<id>" for faces
+   * shared by every copy of a symbol part. */
+  mid?: number | string;
+  /** Faces shared by every copy of a symbol part, in the main file's `shared` (connector 0.9.12+). */
+  sm?: string;
+  /** Matrix from the shared faces' own coordinates into the drawing: [3x3 by rows, then x, y, z]. */
+  mx?: number[];
+  /** Turned in 3D about x, y, z (degrees), when tipped (a symbol stood up). */
+  rot3d?: [number, number, number];
   /** A hybrid symbol's part: its 2D graphics ("plan") or its 3D part ("3d"). */
   view?: "plan" | "3d";
   /** Fill opacity 0-100, when under 100. */
@@ -57,6 +64,8 @@ export type Readout = {
   truncated?: boolean;
   /** Part files beside this one holding the 3D faces ("<drawing>.rigmesh1.json"…), when it was too big for one. */
   mesh_parts?: string[];
+  /** Faces shared by every copy of a symbol part, when the read-out fits in one file. */
+  shared?: Record<string, Mesh>;
   /** Classes switched off in the drawing (connector 0.9.3+). */
   hidden_classes?: string[];
   /** Each sheet's viewports: design layers (0 shown, -1 hidden, 2 greyed) and the classes they show
@@ -139,6 +148,10 @@ function keyFields(fields: Record<string, string> | undefined): Record<string, s
 }
 
 /** One straight truss: from its insertion along its rotation for its length, when it has one. */
+/** Taller than this and around the whole drawing: a building, not part of the set. */
+const BUILDING_TOP = 240;
+const BUILDING = "\u0000building";
+
 const CURVED = /circle|circular|\barc\b|curve|curved|round|ring/i;
 /** A large piece about as deep as it is wide: a ring of truss, not a straight run. */
 const squareRing = (o: ReadoutObject) => {
@@ -184,6 +197,18 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
   const shown = (layer: string) => (view && layer in view.layers ? view.layers[layer] !== -1 : layerVis.get(layer));
   const hiddenFixtures: Fixture[] = [];
   const hiddenRig: RigItem[] = [];
+  // A building drawn around everything (a venue's walls and roof): its own row, starting hidden, or
+  // in 3D nothing inside it can be seen (Weakest Link's 50' walls and roof hid the whole set).
+  const floor = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const o of r.objects) {
+    if (o.in || shown(o.layer) === false || (o.z && o.z[1] >= BUILDING_TOP)) continue;
+    floor[0] = Math.min(floor[0], o.bbox[0]); floor[1] = Math.min(floor[1], o.bbox[1]);
+    floor[2] = Math.max(floor[2], o.bbox[2]); floor[3] = Math.max(floor[3], o.bbox[3]);
+  }
+  const fw = floor[2] - floor[0], fd = floor[3] - floor[1];
+  const enclosing = (o: ReadoutObject) =>
+    !o.in && !!o.z && o.z[1] >= BUILDING_TOP && fw > 0 && fd > 0 &&
+    o.bbox[2] - o.bbox[0] >= 0.85 * fw && o.bbox[3] - o.bbox[1] >= 0.85 * fd;
   for (const o of ordered) {
     order = (layerRank.get(o.layer) ?? 0) * 1_000_000 + seq++;
     const name = `${o.plugin ?? ""} ${o.symbol ?? ""} ${o.name ?? ""} ${o.cls}`;
@@ -195,9 +220,12 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
       const f = o.fields ?? {};
       fixtures_.push({ x: o.at[0], y: o.at[1], z: o.at[2] || len(f, "Z Location", "Z") || 0, lb: weight(f), type: String(f["Inst Type"] ?? f["Instrument Type"] ?? f["Symbol Name"] ?? "Fixture").slice(0, 60), id: f["Channel"] ? `ch ${f["Channel"]}` : undefined });
     } else if ((o.plugin || o.symbol) && !o.in && TRUSS.test(name)) {
-      // A curved truss (a circle, an arc) isn't one straight piece: drawn from its own parts only, not
-      // as a box its size (Weakest Link's 80' circle came out a square slab over the stage).
-      if (!CURVED.test(name) && !squareRing(o)) rig_.push(trussItem(o));
+      // Listed for Claude and the loads, but only boxed when the drawing has nothing of its own to
+      // draw: a symbol's parts or real faces already show it as it is. Boxes for those floated
+      // beside the real truss (stood-up towers drawn flat, spacers as cubes) and an 80' circle
+      // became a square slab over the stage (Weakest Link).
+      const own = !!(o.symbol || o.mesh || o.mid !== undefined || o.sm !== undefined) || CURVED.test(name) || squareRing(o);
+      rig_.push({ ...trussItem(o), ...(own ? { drawn: true as const } : {}) });
     } else if ((o.plugin || o.symbol) && !o.in && RIGGING.test(name)) {
       rig_.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
     }
@@ -227,8 +255,10 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
       const list = shapes.get(o.layer) ?? [];
       // Real faces for things with height; a flat object (bottom = top) is drawn as a flat fill, so it
       // keeps its opacity and its place in the drawing's order.
-      const mesh = o.mesh && o.mesh.v.length >= 9 && h > 0 ? { m: o.mesh, ...(base ? { mz: base } : {}) } : {};
-      list.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...ink, ...(o.np ? { np: 1 as const } : {}), ...(o.hatch && o.closed ? { hatch: 1 as const } : {}), ...mesh });
+      const faces = o.mesh ?? (o.sm !== undefined ? r.shared?.[o.sm] : undefined);
+      const mesh = faces && faces.v.length >= 9 && h > 0 ? { m: faces, ...(o.mx?.length === 12 ? { mx: o.mx } : {}), ...(base ? { mz: base } : {}) } : {};
+      const into = enclosing(o) ? (shapes.get(BUILDING) ?? shapes.set(BUILDING, []).get(BUILDING)!) : list;
+      into.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...ink, ...(o.np ? { np: 1 as const } : {}), ...(o.hatch && o.closed ? { hatch: 1 as const } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }
@@ -256,8 +286,9 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
     }
     if (part.length) parts.push(part);
     // Shown as in the drawing: the layers visible there start visible here (older read-outs: by name).
-    const vis = view && layer in view.layers ? view.layers[layer] !== -1 : r.layers.find((l) => l.name === layer)?.visible;
-    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${layer}${parts.length > 1 ? ` (${i + 1})` : ""}`, group: `${doc}: ${layer}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
+    const vis = layer === BUILDING ? false : view && layer in view.layers ? view.layers[layer] !== -1 : r.layers.find((l) => l.name === layer)?.visible;
+    const title = layer === BUILDING ? "building around everything" : layer;
+    for (const [i, p] of parts.entries()) out.push({ name: `${doc}: ${title}${parts.length > 1 ? ` (${i + 1})` : ""}`, group: `${doc}: ${title}`, kind: "shapes", visible: vis ?? looksLikeStage.test(layer), at, shapes: p, source });
   }
   return out;
 }
