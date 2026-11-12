@@ -190,9 +190,11 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
   another app it fires at once and hands focus back. It refuses while a Vectorworks dialog is
   open, and in the first 30 seconds after launch, because scripting a just-started Vectorworks
   can crash it.
-- **Drawings open in Vectorworks itself**, by the running copy's program (else the newest under
-  Program Files), never through Windows' ".vwx opens with" setting: on 2026-11-11 that handed the
-  blank drawing to a Chromium window and the read-out waited for nothing. With several Vectorworks
+- **Drawings open as Vectorworks files**: through Vectorworks' own registered file type (as a
+  double-click would, so the running copy takes them), never Windows' ".vwx opens with" setting,
+  which on 2026-11-11 handed the blank drawing to a Chromium window. (Handing the path to
+  Vectorworks2026.exe doesn't work: a running copy opens an Untitled drawing and says "Encountered
+  an improper argument.") With several Vectorworks
   windows, the one with a drawing in its title is used.
 - **Boxes get answered, not waited on.** Known boxes (Font Mapping, missing textures or plug-ins,
   "locate", read-only) get the answer that changes nothing; answers you chose are kept in

@@ -449,29 +449,76 @@ class _Win32:
 
 
 
-def installed_vectorworks() -> str | None:
-    """The newest Vectorworks program under Program Files, or None."""
-    import glob
-    import os
-
-    roots = {os.environ.get("ProgramFiles", r"C:\Program Files"), r"C:\Program Files"}
-    found = [p for r in roots for p in glob.glob(os.path.join(r, "Vectorworks*", "Vectorworks*.exe"))]
-    return sorted(found)[-1] if found else None
+def vectorworks_progids() -> list[str]:
+    """Vectorworks' own registered file types for .vwx ("Vectorworks2026.Document" or the like),
+    newest first, whatever app Windows has picked as the .vwx default."""
+    try:
+        import winreg
+    except ImportError:
+        return []
+    names: set[str] = set()
+    for root, key in (
+        (winreg.HKEY_CLASSES_ROOT, r".vwx\OpenWithProgids"),
+        (winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.vwx\OpenWithProgids"),
+    ):
+        try:
+            with winreg.OpenKey(root, key) as k:
+                i = 0
+                while True:
+                    try:
+                        names.add(winreg.EnumValue(k, i)[0])
+                    except OSError:
+                        break
+                    i += 1
+        except OSError:
+            pass
+    try:
+        names.add(winreg.QueryValue(winreg.HKEY_CLASSES_ROOT, ".vwx"))
+    except OSError:
+        pass
+    return sorted((n for n in names if n and "vectorworks" in n.lower()), reverse=True)
 
 
 def open_with(path, exe: str | None = None) -> None:
-    """Open a drawing in Vectorworks: the running copy's program, else the installed one. Never just
-    "whatever opens .vwx": Windows can have that set to a browser."""
+    """Open a drawing in Vectorworks the way a double-click on it in Vectorworks' own file type
+    does (its open command and DDE hand it to the running copy), never through "whatever opens
+    .vwx": Windows can have that set to a browser (seen 2026-11-11). Giving the path to
+    Vectorworks2026.exe instead doesn't work: a running copy makes an Untitled drawing and says
+    "Encountered an improper argument." `exe` is kept for callers; it isn't used to open."""
     import os
-    import subprocess
 
-    exe = exe or installed_vectorworks()
-    if exe:
-        subprocess.Popen([exe, str(path)], close_fds=True)  # noqa: S603 - Vectorworks, a file the user asked for
-        return
+    for progid in vectorworks_progids():
+        if _shell_open_as(str(path), progid):
+            return
     if not hasattr(os, "startfile"):
         raise TriggerError("opening files needs Windows")
-    os.startfile(str(path))  # type: ignore[attr-defined]  # last resort: no Vectorworks found
+    os.startfile(str(path))  # type: ignore[attr-defined]  # no Vectorworks file type registered
+
+
+def _shell_open_as(path: str, progid: str) -> bool:
+    """ShellExecuteEx with the file type given (SEE_MASK_CLASSNAME): True if Windows took it."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+    except ImportError:
+        return False
+    if not hasattr(ctypes, "windll"):
+        return False
+
+    class SHELLEXECUTEINFOW(ctypes.Structure):
+        _fields_ = [
+            ("cbSize", wintypes.DWORD), ("fMask", wintypes.ULONG), ("hwnd", wintypes.HWND),
+            ("lpVerb", wintypes.LPCWSTR), ("lpFile", wintypes.LPCWSTR), ("lpParameters", wintypes.LPCWSTR),
+            ("lpDirectory", wintypes.LPCWSTR), ("nShow", ctypes.c_int), ("hInstApp", wintypes.HINSTANCE),
+            ("lpIDList", ctypes.c_void_p), ("lpClass", wintypes.LPCWSTR), ("hkeyClass", wintypes.HKEY),
+            ("dwHotKey", wintypes.DWORD), ("hIcon", wintypes.HANDLE), ("hProcess", wintypes.HANDLE),
+        ]
+
+    info = SHELLEXECUTEINFOW()
+    info.cbSize = ctypes.sizeof(info)
+    info.fMask = 0x00000001 | 0x00000400  # SEE_MASK_CLASSNAME | SEE_MASK_FLAG_NO_UI
+    info.lpVerb, info.lpFile, info.lpClass, info.nShow = "open", path, progid, 1
+    return bool(ctypes.windll.shell32.ShellExecuteExW(ctypes.byref(info)))
 
 class HotkeyTrigger(Trigger):
     _lock = threading.Lock()  # one focus dance at a time, across every request

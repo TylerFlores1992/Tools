@@ -506,21 +506,23 @@ def test_a_box_it_doesnt_know_is_said_and_can_be_answered(tmp_path, monkeypatch)
     assert tr.pick_prompt("Some things are missing.").buttons == ("Skip",)
 
 
-def test_files_open_in_vectorworks_itself_never_the_app_windows_has_for_vwx(monkeypatch, tmp_path):
+def test_files_open_as_vectorworks_files_never_with_the_app_windows_has_for_vwx(monkeypatch, tmp_path):
     import os
     import subprocess
 
     from vwmcp import trigger as trig
 
     ran = []
-    monkeypatch.setattr(subprocess, "Popen", lambda args, **kw: ran.append(args))
+    monkeypatch.setattr(subprocess, "Popen", lambda args, **kw: ran.append(["exe", *args]))
     monkeypatch.setattr(os, "startfile", lambda p: ran.append(["startfile", p]), raising=False)
+    monkeypatch.setattr(trig, "vectorworks_progids", lambda: ["Vectorworks2026.Document", "Vectorworks2025.Document"])
+    monkeypatch.setattr(trig, "_shell_open_as", lambda p, c: ran.append(["as", c, p]) or True)
     trig.open_with(tmp_path / "Show.vwx", r"C:\VW\Vectorworks2026.exe")
-    assert ran == [[r"C:\VW\Vectorworks2026.exe", str(tmp_path / "Show.vwx")]]
-    monkeypatch.setattr(trig, "installed_vectorworks", lambda: r"C:\Program Files\Vectorworks 2026\Vectorworks2026.exe")
-    trig.open_with(tmp_path / "Show.vwx")
-    assert ran[-1][0].endswith("Vectorworks2026.exe"), "with Vectorworks closed, the installed one opens it"
-    assert not any(r[0] == "startfile" for r in ran)
+    assert ran == [["as", "Vectorworks2026.Document", str(tmp_path / "Show.vwx")]], "Vectorworks' own file type, newest first"
+    monkeypatch.setattr(trig, "vectorworks_progids", lambda: [])
+    trig.open_with(tmp_path / "Show.vwx", r"C:\VW\Vectorworks2026.exe")
+    assert ran[-1][0] == "startfile", "no Vectorworks type registered: Windows' own choice, the only one left"
+    assert not any(r[0] == "exe" for r in ran), "never the path handed to the program (a running copy says 'improper argument')"
 
 
 def test_the_vectorworks_window_with_a_drawing_is_the_one_used():
