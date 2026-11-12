@@ -202,6 +202,10 @@ connection (`upstream_error`: phone asleep, app in the background) puts the ques
 - Top/Plan's wireframe edges use each object's pen (venue beams blue, spreaders green, roof red).
 - A building drawn around everything (top over 20', footprint at least 85% of what's under 20' on the
   shown layers: a venue's walls and roof) goes in "<doc>: building around everything", starting off.
+  Its own walls and door frames go with it: loose pieces on its layer that stand on the floor, are
+  7' or taller and sit within 3' of its outline (Weakest Link's 55' side wall, the corner doorways).
+  Truss legs stood up in a symbol (turned 90°) take their height and footprint from their turned box,
+  so a raised deck stands on its towers instead of floating (connector bridge, 2026-11-12).
 - Attributes "by class" (pen, weight, line style, fill, fill pattern) are read from the class, as
   Vectorworks draws them (bridge `_by_class`).
 - Hybrid plug-ins with a 3D part whose name says truss, hoist or motor (Curved Truss) come with their

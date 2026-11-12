@@ -2255,6 +2255,13 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                     del objects[before:]
                     objects.extend(keep)
                     zr = [min(p["z"][0] for p in gone), max(p["z"][1] for p in gone)] if gone else None
+                    if zr is None or zr[1] <= zr[0]:
+                        try:  # its parts were all flat as read: the copy's own 3D size
+                            dy, dx, dz = vs.Get3DInfo(h)
+                            _c, zc = vs.Get3DCntr(h)
+                            zr = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
+                        except Exception:
+                            pass
                     if zr and zr[1] > zr[0]:
                         add({"t": "whole", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True,
                              "z": zr, "sm": got[0], "mx": got[1], **({"view": "3d"} if has3d(defh) else {}), **({"hid": 1} if hid else {})})
@@ -2278,6 +2285,15 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
         o["closed"] = bool(closed)
         if z is not None:
             o["z"] = zrange(z[0], z[1], xf)
+            if abs(lin(xf)[2][2]) < 0.999 and z[1] > z[0]:
+                # Tipped (a truss leg stood up): its height and footprint come from its whole box
+                # turned, not its plan outline and its own height (those gave Weakest Link's truss
+                # towers no height at all, and the deck on them floated).
+                c3 = [place3((q[0], q[1], zz), xf) for q in pts for zz in (z[0], z[1])]
+                xs, ys, zs = [_r(c[0], k) for c in c3], [_r(c[1], k) for c in c3], [_r(c[2], k) for c in c3]
+                o["z"] = [min(zs), max(zs)]
+                o["pts"] = [[min(xs), min(ys)], [max(xs), min(ys)], [max(xs), max(ys)], [min(xs), max(ys)]]
+                o["closed"] = True
             if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
                 if in_sym:
                     # The same part of the same definition: its faces once, placed per copy.
