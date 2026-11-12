@@ -506,23 +506,37 @@ def test_a_box_it_doesnt_know_is_said_and_can_be_answered(tmp_path, monkeypatch)
     assert tr.pick_prompt("Some things are missing.").buttons == ("Skip",)
 
 
-def test_files_open_as_vectorworks_files_never_with_the_app_windows_has_for_vwx(monkeypatch, tmp_path):
-    import os
+def test_files_open_from_a_helper_process_as_vectorworks_files(monkeypatch, tmp_path):
+    """A running Vectorworks takes the file over DDE; done on the connector's own thread, the
+    conversation never ended and Vectorworks stopped running commands. So: a helper that exits."""
     import subprocess
+    import sys
 
     from vwmcp import trigger as trig
 
     ran = []
-    monkeypatch.setattr(subprocess, "Popen", lambda args, **kw: ran.append(["exe", *args]))
-    monkeypatch.setattr(os, "startfile", lambda p: ran.append(["startfile", p]), raising=False)
-    monkeypatch.setattr(trig, "vectorworks_progids", lambda: ["Vectorworks2026.Document", "Vectorworks2025.Document"])
-    monkeypatch.setattr(trig, "_shell_open_as", lambda p, c: ran.append(["as", c, p]) or True)
+    monkeypatch.setattr(trig, "vectorworks_progids", lambda: ["Vectorworks2026.Document"])
+    monkeypatch.setattr(subprocess, "run", lambda args, **kw: ran.append((args, kw)) or subprocess.CompletedProcess(args, 0, "", ""))
+    monkeypatch.setenv("__PYVENV_LAUNCHER__", "C:\\vwmcp\\.venv\\Scripts\\python.exe")
+    monkeypatch.setenv("VWMCP_HOME", "keep")
     trig.open_with(tmp_path / "Show.vwx", r"C:\VW\Vectorworks2026.exe")
-    assert ran == [["as", "Vectorworks2026.Document", str(tmp_path / "Show.vwx")]], "Vectorworks' own file type, newest first"
+    (args, kw), = ran
+    assert args[0] == sys.executable and args[3] == trig._OPEN_HELPER, "its own process, not this thread"
+    assert args[4:] == [str(tmp_path / "Show.vwx"), "Vectorworks2026.Document"], "Vectorworks' own file type"
+    assert "0x100" in trig._OPEN_HELPER, "it waits for the hand-over to finish before exiting"
+    assert "__PYVENV_LAUNCHER__" not in kw["env"] and kw["env"]["VWMCP_HOME"] == "keep"
+    assert not any("Vectorworks2026.exe" in a for a in args), "never the path handed to the program"
+
+
+def test_a_file_windows_wont_open_says_so(monkeypatch, tmp_path):
+    import subprocess
+
+    from vwmcp import trigger as trig
+
     monkeypatch.setattr(trig, "vectorworks_progids", lambda: [])
-    trig.open_with(tmp_path / "Show.vwx", r"C:\VW\Vectorworks2026.exe")
-    assert ran[-1][0] == "startfile", "no Vectorworks type registered: Windows' own choice, the only one left"
-    assert not any(r[0] == "exe" for r in ran), "never the path handed to the program (a running copy says 'improper argument')"
+    monkeypatch.setattr(subprocess, "run", lambda args, **kw: subprocess.CompletedProcess(args, 1, "", "no program took the file (error 1155)"))
+    with pytest.raises(TriggerError, match="couldn't open Show.vwx: no program took the file"):
+        trig.open_with(tmp_path / "Show.vwx")
 
 
 def test_the_vectorworks_window_with_a_drawing_is_the_one_used():
@@ -531,3 +545,13 @@ def test_the_vectorworks_window_with_a_drawing_is_the_one_used():
     win.title = lambda w: "Vectorworks Design Suite 2026" if w is palette else "Vectorworks Design Suite 2026 - [CFF.vwx]"
     t, _ = make(win)
     assert t.find_window() is main
+
+
+def test_error_boxes_are_never_answered_by_themselves(tmp_path, monkeypatch):
+    from vwmcp import trigger as trig
+
+    monkeypatch.setattr(trig, "LEARNED_FILE", tmp_path / "prompts.json")
+    trig.remember_prompt("Encountered an improper argument.", "OK")
+    assert not (tmp_path / "prompts.json").exists(), "an error box isn't learned"
+    (tmp_path / "prompts.json").write_text('[{"phrase": "encountered an improper argument.", "buttons": ["OK"]}]')
+    assert trig.learned_prompts() == [], "one learned before this rule is ignored"

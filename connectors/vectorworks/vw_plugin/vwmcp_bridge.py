@@ -27,13 +27,26 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.5"
+BRIDGE_VERSION = "0.9.10"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
 JOURNAL = HOME / "journal.jsonl"
 STOP = HOME / "stop"
 ALLOW_EXEC_FLAG = HOME / "allow_exec"  # create this file to permit run_python
+TRACE = HOME / "bridge.log"  # one line per run: proof Vectorworks ran the command, and any error
+
+
+def _trace(msg: str) -> None:
+    """Note a run in bridge.log (kept under 200 KB). Vectorworks shows a menu command's Python error
+    nowhere a remote helper can see, so this file is how anyone tells "never ran" from "ran and failed"."""
+    try:
+        if TRACE.exists() and TRACE.stat().st_size > 200_000:
+            TRACE.write_text("", encoding="utf-8")
+        with TRACE.open("a", encoding="utf-8") as f:
+            f.write("%s %s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), msg))
+    except OSError:
+        pass
 
 # GetTypeN numbers (Appendix D) and the names criteria strings use for them.
 TYPE_NAMES = {
@@ -2292,6 +2305,16 @@ def _cleanup_stale(max_age_s: float = 3600) -> None:
 
 def run_pending(max_jobs: int = 50) -> int:
     """Run queued jobs, oldest first. Returns how many ran."""
+    try:
+        n = _run_pending(max_jobs)
+        _trace("ran %d job(s) (bridge %s)" % (n, BRIDGE_VERSION))
+        return n
+    except BaseException:
+        _trace("run failed:\n" + traceback.format_exc())
+        raise
+
+
+def _run_pending(max_jobs: int) -> int:
     JOBS.mkdir(parents=True, exist_ok=True)
     RESULTS.mkdir(parents=True, exist_ok=True)
     pending = sorted(JOBS.glob("*.json"), key=lambda p: p.stat().st_mtime)[:max_jobs]

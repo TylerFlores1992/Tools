@@ -98,9 +98,17 @@ LEARNED_FILE = Path.home() / ".vwmcp" / "prompts.json"
 def learned_prompts() -> list[Prompt]:
     try:
         rows = json.loads(LEARNED_FILE.read_text(encoding="utf-8"))
-        return [Prompt(str(r["phrase"]), tuple(str(b) for b in r["buttons"])) for r in rows if r.get("phrase") and r.get("buttons")]
+        return [
+            Prompt(str(r["phrase"]), tuple(str(b) for b in r["buttons"]))
+            for r in rows
+            if r.get("phrase") and r.get("buttons") and not any(w in str(r["phrase"]) for w in NEVER_LEARN)
+        ]
     except (OSError, ValueError, TypeError, KeyError):
         return []
+
+
+# Error boxes are never learned: answering them by themselves would hide the error that made them.
+NEVER_LEARN = ("improper argument", "error", "exception", "failed", "could not be completed")
 
 
 def remember_prompt(phrase: str, button: str) -> None:
@@ -108,6 +116,8 @@ def remember_prompt(phrase: str, button: str) -> None:
     phrase = _plain(phrase)
     if len(phrase) < 8:
         return  # too short to tell boxes apart: better asked again than answered wrong
+    if any(w in phrase for w in NEVER_LEARN):
+        return
     rows = [r for r in (json.loads(LEARNED_FILE.read_text(encoding="utf-8")) if LEARNED_FILE.exists() else []) if r.get("phrase") != phrase]
     rows.append({"phrase": phrase, "buttons": [button]})
     LEARNED_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -480,45 +490,71 @@ def vectorworks_progids() -> list[str]:
 
 
 def open_with(path, exe: str | None = None) -> None:
-    """Open a drawing in Vectorworks the way a double-click on it in Vectorworks' own file type
-    does (its open command and DDE hand it to the running copy), never through "whatever opens
-    .vwx": Windows can have that set to a browser (seen 2026-11-11). Giving the path to
-    Vectorworks2026.exe instead doesn't work: a running copy makes an Untitled drawing and says
-    "Encountered an improper argument." `exe` is kept for callers; it isn't used to open."""
+    """Open a drawing in Vectorworks as a double-click on it would (Vectorworks' own file type, so
+    the running copy takes it), from a short-lived helper process.
+
+    Why a helper: Windows hands the file to a running Vectorworks over DDE, a conversation run on
+    the calling thread. Called from the connector's worker thread, which never pumps messages, the
+    conversation never finished and Vectorworks sat waiting on it: menus still opened but no
+    command ran, MCP Run Job included, until the connector quit (seen 2026-11-11, from 12:40 on).
+    The helper waits for DDE to finish and exits, which always ends the conversation.
+
+    Never "whatever opens .vwx" first (Windows can have that set to a browser), never the path
+    handed to Vectorworks2026.exe (a running copy makes an Untitled drawing and says "Encountered an
+    improper argument"), and never with this connector's Python settings in the environment.
+    `exe` is kept for callers; it isn't used to open."""
+    import subprocess
+    import sys
+
+    progids = vectorworks_progids()
+    try:
+        done = subprocess.run(  # noqa: S603 - this Python, a fixed script, a file the user asked for
+            [sys.executable, "-I", "-c", _OPEN_HELPER, str(path), *progids],
+            env=clean_env_for_vectorworks(),
+            timeout=120,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.TimeoutExpired as e:
+        raise TriggerError(f"Windows took over 2 minutes to hand {Path(str(path)).name} to Vectorworks.") from e
+    if done.returncode != 0:
+        raise TriggerError(f"Windows couldn't open {Path(str(path)).name}: {(done.stderr or done.stdout).strip()[-300:]}")
+
+
+# Run by open_with in its own process: ShellExecuteEx with Vectorworks' file type (else Windows'
+# own choice), waiting for the DDE hand-over (SEE_MASK_NOASYNC) before exiting.
+_OPEN_HELPER = r"""
+import ctypes, os, sys
+from ctypes import wintypes
+class SEI(ctypes.Structure):
+    _fields_ = [("cbSize", wintypes.DWORD), ("fMask", wintypes.ULONG), ("hwnd", wintypes.HWND),
+                ("lpVerb", wintypes.LPCWSTR), ("lpFile", wintypes.LPCWSTR), ("lpParameters", wintypes.LPCWSTR),
+                ("lpDirectory", wintypes.LPCWSTR), ("nShow", ctypes.c_int), ("hInstApp", wintypes.HINSTANCE),
+                ("lpIDList", ctypes.c_void_p), ("lpClass", wintypes.LPCWSTR), ("hkeyClass", wintypes.HKEY),
+                ("dwHotKey", wintypes.DWORD), ("hIcon", wintypes.HANDLE), ("hProcess", wintypes.HANDLE)]
+path, progids = sys.argv[1], sys.argv[2:]
+ctypes.windll.ole32.CoInitializeEx(None, 2)
+for cls in progids + [None]:
+    i = SEI(); i.cbSize = ctypes.sizeof(i); i.lpVerb = "open"; i.lpFile = path; i.nShow = 1
+    i.fMask = 0x100 | 0x400 | (0x1 if cls else 0)  # NOASYNC | FLAG_NO_UI | CLASSNAME
+    if cls:
+        i.lpClass = cls
+    if ctypes.windll.shell32.ShellExecuteExW(ctypes.byref(i)):
+        sys.exit(0)
+sys.exit("no program took the file (error %d)" % ctypes.GetLastError())
+"""
+
+
+# Set by this connector's own Python (its venv launcher sets __PYVENV_LAUNCHER__); a program it
+# starts would inherit them, and an embedded Python like Vectorworks' can load the wrong one.
+_PYTHON_ENV = ("__PYVENV_LAUNCHER__", "VIRTUAL_ENV", "CONDA_PREFIX", "CONDA_DEFAULT_ENV")
+
+
+def clean_env_for_vectorworks() -> dict:
+    """This process's environment without its Python settings, for a program it starts."""
     import os
 
-    for progid in vectorworks_progids():
-        if _shell_open_as(str(path), progid):
-            return
-    if not hasattr(os, "startfile"):
-        raise TriggerError("opening files needs Windows")
-    os.startfile(str(path))  # type: ignore[attr-defined]  # no Vectorworks file type registered
-
-
-def _shell_open_as(path: str, progid: str) -> bool:
-    """ShellExecuteEx with the file type given (SEE_MASK_CLASSNAME): True if Windows took it."""
-    try:
-        import ctypes
-        from ctypes import wintypes
-    except ImportError:
-        return False
-    if not hasattr(ctypes, "windll"):
-        return False
-
-    class SHELLEXECUTEINFOW(ctypes.Structure):
-        _fields_ = [
-            ("cbSize", wintypes.DWORD), ("fMask", wintypes.ULONG), ("hwnd", wintypes.HWND),
-            ("lpVerb", wintypes.LPCWSTR), ("lpFile", wintypes.LPCWSTR), ("lpParameters", wintypes.LPCWSTR),
-            ("lpDirectory", wintypes.LPCWSTR), ("nShow", ctypes.c_int), ("hInstApp", wintypes.HINSTANCE),
-            ("lpIDList", ctypes.c_void_p), ("lpClass", wintypes.LPCWSTR), ("hkeyClass", wintypes.HKEY),
-            ("dwHotKey", wintypes.DWORD), ("hIcon", wintypes.HANDLE), ("hProcess", wintypes.HANDLE),
-        ]
-
-    info = SHELLEXECUTEINFOW()
-    info.cbSize = ctypes.sizeof(info)
-    info.fMask = 0x00000001 | 0x00000400  # SEE_MASK_CLASSNAME | SEE_MASK_FLAG_NO_UI
-    info.lpVerb, info.lpFile, info.lpClass, info.nShow = "open", path, progid, 1
-    return bool(ctypes.windll.shell32.ShellExecuteExW(ctypes.byref(info)))
+    return {k: v for k, v in os.environ.items() if not (k.upper().startswith("PYTHON") or k.upper() in _PYTHON_ENV)}
 
 class HotkeyTrigger(Trigger):
     _lock = threading.Lock()  # one focus dance at a time, across every request
