@@ -218,6 +218,61 @@ test("lights and rig on layers Vectorworks hides start hidden, and a ring of tru
   assert.equal(shown, undefined, "no lights shown: their layer is hidden in Vectorworks");
   assert.ok(hidden && hidden.visible === false && hidden.fixtures!.length === 2, "they're kept in a row that starts hidden");
   const rig = layers.find((l) => l.name === "WL: existing rig")!;
-  assert.ok(rig.visible && rig.rig!.length === 3, "the straight truss and hoist on the shown layer");
-  assert.ok(!rig.rig!.some((x) => /Circle|Ring/.test(x.name)), "no circle or ring of truss turned into a box");
+  assert.ok(rig.visible && rig.rig!.length === 5, "the truss and hoist on the shown layer, listed");
+  assert.ok(rig.rig!.filter((x) => /Circle|Ring/.test(x.name)).every((x) => x.drawn), "a circle or ring of truss isn't boxed: its own parts draw it");
+});
+
+test("a building around the whole drawing gets its own row, starting hidden, so the set inside shows", () => {
+  const box = (x0: number, y0: number, x1: number, y1: number): [number, number][] => [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+  const r: Readout = {
+    readout: 1,
+    document: "WL.vwx",
+    units: "in",
+    layers: [{ name: "Stage", type: "design", elevation: 0, visible: true }, { name: "Decking", type: "design", elevation: 0, visible: true }],
+    classes: ["None"],
+    objects: [
+      // The venue: 50' walls and a roof plate around everything, and its floor markings.
+      { t: "type_84", layer: "Stage", cls: "None", bbox: [-1069, -855, 920, 968], pts: box(-1069, -855, 920, 968), closed: true, z: [0, 602] },
+      { t: "type_24", layer: "Stage", cls: "None", bbox: [-1051, -841, 904, 947], pts: box(-1051, -841, 904, 947), closed: true, z: [614, 618] },
+      { t: "polygon", layer: "Stage", cls: "None", bbox: [-1069, -855, 920, 968], pts: box(-1069, -855, 920, 968), closed: true, z: [0, 0] },
+      { t: "line", layer: "Stage", cls: "None", bbox: [-1000, 0, 900, 0], pts: [[-1000, 0], [900, 0]], z: [0, 0] },
+      // A deck and a tall scenic tower inside: not buildings.
+      { t: "type_24", layer: "Decking", cls: "None", bbox: [-100, -100, 100, 100], pts: box(-100, -100, 100, 100), closed: true, z: [0, 73] },
+      { t: "type_24", layer: "Decking", cls: "None", bbox: [300, 300, 340, 340], pts: box(300, 300, 340, 340), closed: true, z: [0, 400] },
+    ],
+  };
+  const layers = readoutLayers(r, { name: "WL.rigread.json", from: "dropbox" }, "t");
+  const building = layers.find((l) => l.name === "WL: building around everything")!;
+  assert.ok(building && building.visible === false && building.shapes!.length === 2, "walls and roof, starting hidden");
+  const stage = layers.find((l) => l.name === "WL: Stage")!;
+  assert.ok(stage.visible && stage.shapes!.length === 2, "the venue's floor lines stay with the Stage, shown");
+  assert.equal(layers.find((l) => l.name === "WL: Decking")!.shapes!.length, 2, "the deck and the tower stay put");
+});
+
+test("faces shared by every copy of a symbol part are drawn at each copy, from the main file or a part", async () => {
+  const { attachMeshes } = await import("./readout.ts");
+  const m = { q: 0.25, v: [0, 0, 0, 384, 0, 0, 384, 192, 0, 0, 192, 24], f: [4, 0, 1, 2, 3] };
+  const copy = (x: number) => ({ t: "type_84", layer: "Decking", cls: "None", bbox: [x, 0, x + 96, 48] as [number, number, number, number], in: "Deck 4x8", pts: [[x, 0], [x + 96, 0], [x + 96, 48], [x, 48]] as [number, number][], closed: true, z: [67, 73] as [number, number], sm: "0", mx: [1, 0, 0, 0, 1, 0, 0, 0, 1, x, 0, 67] });
+  const r: Readout = { readout: 1, document: "WL.vwx", units: "in", layers: [{ name: "Decking", type: "design", elevation: 0, visible: true }], classes: ["None"], objects: [copy(0), copy(200)], shared: { "0": m } };
+  const shapes = readoutLayers(r, { name: "WL.rigread.json", from: "dropbox" }, "t").find((l) => l.name === "WL: Decking")!.shapes!;
+  assert.ok(shapes.every((s) => s.m === m), "one set of faces for both copies");
+  assert.deepEqual(shapes.map((s) => s.mx![9]), [0, 200], "each copy keeps its own place");
+  // Split into part files: the faces come once as "s0".
+  const split: Readout = { ...r, shared: undefined, objects: r.objects.map(({ sm: _sm, ...o }) => ({ ...o, mid: "s0" })) };
+  assert.equal(attachMeshes(split, [{ meshes: { s0: m } }]), 2);
+  assert.ok(readoutLayers(split, { name: "WL.rigread.json", from: "dropbox" }, "t").find((l) => l.name === "WL: Decking")!.shapes!.every((s) => s.m === m && s.mx));
+});
+
+test("truss drawn by its own symbol parts isn't boxed again (stood-up towers, spacers, runs)", () => {
+  const r: Readout = {
+    readout: 1, document: "WL.vwx", units: "in", classes: ["None"],
+    layers: [{ name: "Decking", type: "design", elevation: 0, visible: true }],
+    objects: [
+      { t: "symbol", layer: "Decking", cls: "None", bbox: [0, 0, 20, 96], at: [0, 0, 0], rot: 0, symbol: `Truss 20.5" Box 8' (SLV)`, rot3d: [90, 0, 0] },
+      { t: "symbol", layer: "Decking", cls: "None", bbox: [100, 0, 120, 20], at: [100, 0, 0], rot: 0, symbol: `Truss 20.5" Box Spacer 4" (SLV)` },
+      { t: "symbol", layer: "Decking", cls: "None", bbox: [200, 0, 296, 20], at: [200, 10, 120], rot: 0, symbol: `Truss 20.5" Box 8' (SLV)` },
+    ],
+  };
+  const rig = readoutLayers(r, { name: "WL.rigread.json", from: "dropbox" }, "t").find((l) => l.kind === "rig")!;
+  assert.ok(rig.rig!.length === 3 && rig.rig!.every((x) => x.drawn), "listed for Claude, never boxed over their own parts");
 });

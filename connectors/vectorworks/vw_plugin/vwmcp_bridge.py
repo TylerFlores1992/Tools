@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.11"
+BRIDGE_VERSION = "0.9.12"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1459,14 +1459,47 @@ def _ro_z(h, t):
     return [float(zc) - float(dz) / 2, float(zc) + float(dz) / 2]
 
 
+def _by_class(h, test: str) -> str | None:
+    """The object's class when this attribute comes from it ("by class"), else None. Vectorworks
+    draws such an attribute from the class; the object's own stored value is stale (Weakest Link:
+    venue and deck colours, a black stage floor, all by class)."""
+    try:
+        if getattr(vs, test)(h):
+            return _s(vs.GetClass(h))
+    except Exception:
+        pass
+    return None
+
+
+def _rgb(c) -> str:
+    r, g, b = c
+    return "#%02x%02x%02x" % (int(r) // 257, int(g) // 257, int(b) // 257)
+
+
 def _ro_fill(h):
     try:
-        if vs.GetFPat(h) == 0:
+        cp = _by_class(h, "IsFPatByClass")
+        if (vs.GetClFPat(cp) if cp is not None else vs.GetFPat(h)) == 0:
             return None
-        r, g, b = vs.GetFillBack(h)
-        return "#%02x%02x%02x" % (int(r) // 257, int(g) // 257, int(b) // 257)
+        cc = _by_class(h, "IsFillColorByClass")
+        return _rgb(vs.GetClFillBack(cc) if cc is not None else vs.GetFillBack(h))
     except Exception:
         return None
+
+
+# Hybrid plug-ins whose 3D part is drawn from its real faces (truss, hoists). Others (lighting
+# pipes carrying hundreds of fixtures, lights themselves) would take minutes and the face budget.
+import re as _re
+HYBRID_3D = _re.compile(r"truss|hoist|motor", _re.I)
+
+
+def _has_3d(h) -> bool:
+    """Whether a plug-in has a 3D part (Get3DInfo gives it some height)."""
+    try:
+        dy, dx, dz = vs.Get3DInfo(h)
+        return float(dz) > 0.01
+    except Exception:
+        return False
 
 
 def _layer_shown(lh) -> bool:
@@ -1487,13 +1520,15 @@ def _ro_pen(h):
     thicker than hairline, {"np": 1} when it has no line at all. Empty when it can't say."""
     out = {}
     try:
-        if int(vs.GetLSN(h)) == 0:  # line style 0: no line
+        cs = _by_class(h, "IsLSByClass")
+        if int(vs.GetClLSN(cs) if cs is not None else vs.GetLSN(h)) == 0:  # line style 0: no line
             return {"np": 1}
-        r, g, b = vs.GetPenFore(h)
-        c = "#%02x%02x%02x" % (int(r) // 257, int(g) // 257, int(b) // 257)
+        cp = _by_class(h, "IsPenColorByClass")
+        c = _rgb(vs.GetClPenFore(cp) if cp is not None else vs.GetPenFore(h))
         if c != "#000000":
             out["pen"] = c
-        lw = int(vs.GetLW(h))
+        cw = _by_class(h, "IsLWByClass")
+        lw = int(vs.GetClLW(cw) if cw is not None else vs.GetLW(h))
         if lw > 7:
             out["lw"] = lw
     except Exception:
@@ -1549,6 +1584,27 @@ def _face_area(f):
     return (ax * ax + ay * ay + az * az) ** 0.5
 
 
+FACE_MISSES: dict = {}
+
+
+def _inv3(m):
+    """The inverse of a 3x3 matrix, or None when it has none."""
+    a, b, c = m[0]
+    d, e, f = m[1]
+    g, h, i = m[2]
+    det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
+    if abs(det) < 1e-12:
+        return None
+    return [[(e * i - f * h) / det, (c * h - b * i) / det, (b * f - c * e) / det],
+            [(f * g - d * i) / det, (a * i - c * g) / det, (c * d - a * f) / det],
+            [(d * h - e * g) / det, (b * g - a * h) / det, (a * e - b * d) / det]]
+
+
+def _face_miss(why: str) -> None:
+    """Why an object came without its faces (it's drawn as a plain block): said in the read-out."""
+    FACE_MISSES[why] = FACE_MISSES.get(why, 0) + 1
+
+
 def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
     """An object's real surfaces, in its own coordinates, as 3D polygons ([[x, y, z], ...] each).
     ConvertTo3DPolys REPLACES the object it's given (measured on Vectorworks 2026, 2026-11-10: a
@@ -1558,18 +1614,31 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
     try:
         dup = vs.HDuplicate(h, 0, 0)
     except Exception:
+        _face_miss("couldn't be copied")
         return None
     if _nil(dup):
+        _face_miss("couldn't be copied")
         return None
     try:
         g = vs.ConvertTo3DPolys(dup)
     except Exception:
         g = None
     if _nil(g):
+        # A solid inside a symbol definition (Weakest Link's decks, rails and stairs: 638 parts)
+        # won't convert where it is: its copy is moved onto a layer, keeping its own coordinates,
+        # and converted there.
+        try:
+            lay = vs.ActLayer()
+            if not _nil(lay) and vs.SetParent(dup, lay):
+                g = vs.ConvertTo3DPolys(dup)
+        except Exception:
+            g = None
+    if _nil(g):
         try:
             vs.DelObject(dup)  # not converted: the duplicate is still there
         except Exception:
             pass
+        _face_miss("type %d wouldn't convert" % vs.GetTypeN(h))
         return None
     faces, over = [], False
     try:
@@ -1583,6 +1652,7 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
             try:
                 n = int(vs.GetVertNum(c))
             except Exception:
+                _face_miss("converted to type %d, not polygons" % ct)
                 continue
             if n < 3:
                 continue
@@ -1599,7 +1669,10 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
     finally:
         vs.DelObject(g)
     if over:
+        _face_miss("over the face limit")
         return None
+    if not faces:
+        _face_miss("converted to nothing")
     if keep_largest and len(faces) > cap:
         # The biggest surfaces carry the shape; screws, rivets and tiny bevels go first.
         faces = sorted(faces, key=_face_area, reverse=True)[:cap]
@@ -1665,10 +1738,37 @@ SYMBOL_FACE_CAP = 30000  # a symbol too detailed to walk part by part still come
 SYMBOL_DEPTH = 10  # symbols inside symbols, drawn this deep (groups don't count: CFF-26's set deck held its
 # video-logo symbol inside nested groups, and counting the groups cut it off at 6, leaving a hole)
 FACE_BUDGET = 400000  # faces in one read-out; past it, 3D objects fall back to plain blocks
+HIDDEN_FACE_BUDGET = 60000  # faces for all hidden layers together (after the shown ones)
 
 
 @op
 def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
+    """See _read_out. Read from straight above: Vectorworks gives outlines as the view shows them
+    (left in Right Isometric, Weakest Link's truss outlines came out turned and squashed), so a
+    turned view is set to Top for the read and put back after."""
+    turned = None
+    try:
+        v = vs.GetView()
+        if any(abs(float(a)) > 1e-6 for a in v[:3]):
+            turned = v
+            vs.SetView(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    except Exception:
+        turned = None
+    try:
+        return _read_out(max_objects, max_points, detail_cap)
+    finally:
+        if turned is not None:
+            try:
+                ax, ay, az, off = turned
+                o3 = [float(c) for c in (list(off) if isinstance(off, (tuple, list)) else []) + [0.0, 0.0, 0.0]][:3]
+                # GetView's angles are degrees, as SetView takes them (measured 2026-11-12: converting
+                # them as radians left a "Custom View" instead of Right Isometric).
+                vs.SetView(float(ax), float(ay), float(az), o3[0], o3[1], o3[2])
+            except Exception:
+                pass
+
+
+def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
     """The whole drawing as data, in inches, for working on it away from Vectorworks: document,
     layers (with elevations and whether they're shown), classes, every plug-in object with all
     its fields (lighting devices, truss, hoists, decks...), every symbol, and the shapes it's drawn
@@ -1680,6 +1780,7 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
     u = _units()
     k = 1.0 / (u["units_per_inch"] or 1.0)
     objects, skipped = [], {}
+    shared: dict = {}  # faces read once per symbol part, placed per copy ("sm" + "mx" on objects)
     state = {"truncated": False}
     defs3d = {}
     parts = {}
@@ -1804,13 +1905,103 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
 
     state["faces"] = 0
     state["texts"] = 0
+    state.pop("shown_faces", None)
+    FACE_MISSES.clear()
     import time as _time
     t_start = _time.time()
+
+    shared_by_key: dict = {}
+    failed_syms: set = set()  # symbols with a 3D part that wouldn't convert on its own
+
+    def whole_shared(h, sym, xf, loc, mir):
+        """The whole symbol's faces, read once from one copy (converting the copy converts every
+        part, the solids that won't convert on their own included), in the symbol's own
+        coordinates, with this copy's matrix: (shared id, mx), or None."""
+        key = ("whole", sym)
+        sx, sy, sz = scale_of(h)
+        own = _mm3(orient(h, mir), ((sx, 0.0, 0.0), (0.0, sy, 0.0), (0.0, 0.0, sz)))
+        if key not in shared_by_key:
+            sid = None
+            faces = None if over_budget() else _ro_faces(h, SYMBOL_FACE_CAP, keep_largest=True)
+            inv = _inv3(own)
+            if faces and inv is not None:
+                state["faces"] += len(faces)
+                seen, v, f = {}, [], []
+                for face in faces:
+                    f.append(len(face))
+                    for x, y, z in face:
+                        dx, dy, dz = x - loc[0], y - loc[1], z - loc[2]
+                        lx = inv[0][0] * dx + inv[0][1] * dy + inv[0][2] * dz
+                        ly = inv[1][0] * dx + inv[1][1] * dy + inv[1][2] * dz
+                        lz = inv[2][0] * dx + inv[2][1] * dy + inv[2][2] * dz
+                        q = (int(round(_r(lx, k) * 4)), int(round(_r(ly, k) * 4)), int(round(_r(lz, k) * 4)))
+                        i = seen.get(q)
+                        if i is None:
+                            i = seen[q] = len(seen)
+                            v.extend(q)
+                        f.append(i)
+                sid = str(len(shared))
+                shared[sid] = {"q": 0.25, "v": v, "f": f}
+            shared_by_key[key] = sid
+        sid = shared_by_key[key]
+        if sid is None:
+            return None
+        m_ = _mm3(lin(xf), own)
+        T = place3(loc, xf)
+        mx = [round(m_[i][j], 6) for i in range(3) for j in range(3)] + [_r(T[0], k), _r(T[1], k), _r(T[2], k)]
+        return sid, mx
+
+    def mesh_shared(h, xf, key):
+        """A symbol part's real faces, read ONCE per part of a definition and reused by every copy
+        of the symbol: (shared id, matrix from the part's own coordinates into the drawing), or None.
+        Weakest Link has 3,146 copies of "Deck 4'x8'": converting each copy used up the face budget
+        halfway through the decking, and the rest came out as plain boxes (wedges square, rails
+        solid), and it took minutes."""
+        if key in shared_by_key:
+            sid = shared_by_key[key]
+        else:
+            if over_budget():
+                return None
+            # Read once for every copy, so a detailed part (a deck with its frame and legs, over
+            # FACE_CAP faces) can have its real faces: its biggest ones, up to SYMBOL_FACE_CAP.
+            faces = _ro_faces(h, SYMBOL_FACE_CAP, keep_largest=True)
+            sid = None
+            if not faces and key and key[0]:
+                failed_syms.add(key[0])
+            if faces:
+                state["faces"] += len(faces)
+                seen, v, f = {}, [], []
+                for face in faces:
+                    f.append(len(face))
+                    for x, y, z in face:
+                        q = (int(round(_r(x, k) * 4)), int(round(_r(y, k) * 4)), int(round(_r(z, k) * 4)))
+                        i = seen.get(q)
+                        if i is None:
+                            i = seen[q] = len(seen)
+                            v.extend(q)
+                        f.append(i)
+                sid = str(len(shared))
+                shared[sid] = {"q": 0.25, "v": v, "f": f}
+            shared_by_key[key] = sid
+        if sid is None:
+            return None
+        o_ = place3((0.0, 0.0, 0.0), xf)
+        cols = [place3(e, xf) for e in ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))]
+        lin_ = [[cols[j][i] - o_[i] for j in range(3)] for i in range(3)]  # row i: X, Y, Z
+        mx = [round(lin_[i][j], 6) for i in range(3) for j in range(3)] + [_r(o_[0], k), _r(o_[1], k), _r(o_[2], k)]
+        return sid, mx
+
+    def over_budget():
+        """Past the face budget; a hidden layer stops at HIDDEN_FACE_BUDGET (Weakest Link's hidden
+        reference set took 362,000 faces, 15 MB nobody looks at, after the shown layers)."""
+        if state["faces"] >= FACE_BUDGET:
+            return True
+        return not state.get("layer_shown", True) and state["faces"] >= state.setdefault("shown_faces", state["faces"]) + HIDDEN_FACE_BUDGET
 
     def mesh(h, xf, cap=FACE_CAP, keep_largest=False):
         """The object's real faces placed in the drawing, as {"q": step, "v": [x, y, z, ...] in
         quarter inches, "f": [n, i1..in, n, ...]} (shared corners stored once), or None."""
-        if state["faces"] >= FACE_BUDGET:
+        if over_budget():
             return None
         faces = _ro_faces(h, cap, keep_largest)
         if not faces:
@@ -1991,6 +2182,24 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                     m3 = mesh(h, xf)
                     if m3:
                         o["mesh"] = m3
+                elif HYBRID_3D.search(o["plugin"] or "") and _has_3d(h):
+                    # A hybrid plug-in with a 3D part (Curved Truss, a truss run, a hoist): its real
+                    # faces, or Rig Studio has nothing to draw (Weakest Link's truss rings were missing).
+                    # Lights stay markers: hundreds of detailed fixtures would use up the face budget.
+                    m3 = mesh(h, xf, SYMBOL_FACE_CAP if state.get("layer_shown", True) else SYMBOL_FACE_CAP // 4, keep_largest=True)
+                    if m3:
+                        dy, dx, dz = vs.Get3DInfo(h)
+                        _c, zc = vs.Get3DCntr(h)
+                        o["pts"] = corners
+                        o["closed"] = True
+                        o["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
+                        o["mesh"] = m3
+                if "mesh" in o:
+                    # Its faces' edges in its own pen (Weakest Link's truss rings are red, by class).
+                    o.update(_ro_pen(h))
+                    fill = _ro_fill(h)
+                    if fill:
+                        o["fill"] = fill
                 add(o)
                 return
             sym = _s(vs.GetSymName(h))
@@ -2033,7 +2242,22 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                         b.pop("simplified")
                 add(b)
                 return
+            before = len(objects)
             walk_symbol(h, o, defh, sym, layer, xf, depth, loc, mir, hid)
+            if sym in failed_syms:
+                # A 3D part of it wouldn't convert on its own (a solid in a definition): the copy's
+                # 3D parts give way to the whole symbol's faces, read once and shared by every copy.
+                got = whole_shared(h, sym, xf, loc, mir)
+                if got:
+                    solid = lambda p: p.get("z") and p["z"][1] > p["z"][0] and p.get("view") != "plan"
+                    gone = [p for p in objects[before:] if solid(p)]
+                    keep = [p for p in objects[before:] if not solid(p)]
+                    del objects[before:]
+                    objects.extend(keep)
+                    zr = [min(p["z"][0] for p in gone), max(p["z"][1] for p in gone)] if gone else None
+                    if zr and zr[1] > zr[0]:
+                        add({"t": "whole", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True,
+                             "z": zr, "sm": got[0], "mx": got[1], **({"view": "3d"} if has3d(defh) else {}), **({"hid": 1} if hid else {})})
             return
         z = _ro_z(h, t)
         if skip2d:
@@ -2055,9 +2279,16 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
         if z is not None:
             o["z"] = zrange(z[0], z[1], xf)
             if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
-                m3 = mesh(h, xf)
-                if m3:
-                    o["mesh"] = m3
+                if in_sym:
+                    # The same part of the same definition: its faces once, placed per copy.
+                    key = (in_sym, t, tuple(tuple(round(c, 3) for c in q) for q in pts), round(z[0], 3), round(z[1], 3))
+                    got = mesh_shared(h, xf, key)
+                    if got:
+                        o["sm"], o["mx"] = got
+                else:
+                    m3 = mesh(h, xf)
+                    if m3:
+                        o["mesh"] = m3
         o.update(_ro_pen(h))
         fill = _ro_fill(h) if (closed or z is not None) else None
         if fill:
@@ -2104,11 +2335,13 @@ def read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
         "layers": layers,
         "classes": _classes(),
         "objects": objects,
+        "shared": shared,
         "viewports": viewports,
         "hidden_classes": [c for c in _classes() if class_hidden(c)],
         "skipped": skipped,
         "truncated": truncated,
         "faces": state["faces"],
+        "face_misses": dict(FACE_MISSES),
         "seconds": round(_time.time() - t_start, 1),
     }
 
