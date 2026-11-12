@@ -396,6 +396,17 @@ export class Viewer {
     };
     const byFill = new Map<string, THREE.BufferGeometry[]>();
     const edges: THREE.BufferGeometry[] = [];
+    // A 3D object's edges in its own pen (Vectorworks' venue beams blue, spreaders green, roof trusses
+    // red), so Top/Plan's wireframe reads as the drawing does.
+    const edgeOf = (geo: THREE.BufferGeometry, s: Shape) => {
+      const eg = new THREE.EdgesGeometry(geo, 30);
+      const c = inkOf(s.pen);
+      const n = eg.getAttribute("position").count;
+      const col = new Float32Array(n * 3);
+      for (let i = 0; i < col.length; i += 3) col.set([c.r, c.g, c.b], i);
+      eg.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      edges.push(eg);
+    };
     let fillOrder = 0;
     const fills: { n: number; geo: THREE.BufferGeometry }[] = [];
     for (const s of shapes) {
@@ -425,7 +436,7 @@ export class Viewer {
           const geo = new THREE.BufferGeometry();
           geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
           geo.setIndex(idx);
-          edges.push(new THREE.EdgesGeometry(geo, 30));
+          edgeOf(geo, s);
           const flat = geo.toNonIndexed();
           flat.computeVertexNormals();
           const key = s.fill ?? "none";
@@ -459,7 +470,7 @@ export class Viewer {
         geo.translate(0, s.z ?? 0, 0);
         const key = s.fill ?? "none";
         (byFill.get(key) ?? byFill.set(key, []).get(key)!).push(geo.index ? geo.toNonIndexed() : geo);
-        edges.push(new THREE.EdgesGeometry(geo, 30));
+        edgeOf(geo, s);
         continue;
       }
       if (s.closed && s.fill && s.pts.length >= 3) {
@@ -530,8 +541,7 @@ export class Viewer {
     }
     const e = edges.length ? mergeGeometries(edges, false) : null;
     if (e) {
-      this.edgeMat ??= new THREE.LineBasicMaterial();
-      this.edgeMat.color.copy(this.ink());
+      this.edgeMat ??= new THREE.LineBasicMaterial({ vertexColors: true, toneMapped: false });
       g.add(new THREE.LineSegments(e, this.edgeMat));
     }
     return g;

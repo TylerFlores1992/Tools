@@ -139,6 +139,13 @@ function keyFields(fields: Record<string, string> | undefined): Record<string, s
 }
 
 /** One straight truss: from its insertion along its rotation for its length, when it has one. */
+const CURVED = /circle|circular|\barc\b|curve|curved|round|ring/i;
+/** A large piece about as deep as it is wide: a ring of truss, not a straight run. */
+const squareRing = (o: ReadoutObject) => {
+  const w = o.bbox[2] - o.bbox[0], d = o.bbox[3] - o.bbox[1];
+  return Math.min(w, d) > 240 && Math.min(w, d) / Math.max(w, d) > 0.6;
+};
+
 function trussItem(o: ReadoutObject): RigItem {
   const at = o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0];
   const L = len(o.fields, "Length", "Truss Length", "Overall Length", "Section Length");
@@ -172,16 +179,27 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
   const ordered = r.objects.some((o) => o.k !== undefined) ? [...r.objects].sort((a, b) => (a.k ?? 0) - (b.k ?? 0)) : r.objects;
   let seq = 0;
   let order = 0;
+  // Whether a layer shows in Vectorworks (as the sheet's viewport has it, or the design layer itself).
+  const layerVis = new Map(r.layers.map((l) => [l.name, l.visible]));
+  const shown = (layer: string) => (view && layer in view.layers ? view.layers[layer] !== -1 : layerVis.get(layer));
+  const hiddenFixtures: Fixture[] = [];
+  const hiddenRig: RigItem[] = [];
   for (const o of ordered) {
     order = (layerRank.get(o.layer) ?? 0) * 1_000_000 + seq++;
     const name = `${o.plugin ?? ""} ${o.symbol ?? ""} ${o.name ?? ""} ${o.cls}`;
+    // Lights and rig on layers or classes Vectorworks doesn't show go in rows that start hidden, as there.
+    const off = shown(o.layer) === false || (view && r.hidden_classes ? clsHidden(o.cls) : !!o.hid);
+    const fixtures_ = off ? hiddenFixtures : fixtures;
+    const rig_ = off ? hiddenRig : rig;
     if (o.plugin === FIXTURE && o.at) {
       const f = o.fields ?? {};
-      fixtures.push({ x: o.at[0], y: o.at[1], z: o.at[2] || len(f, "Z Location", "Z") || 0, lb: weight(f), type: String(f["Inst Type"] ?? f["Instrument Type"] ?? f["Symbol Name"] ?? "Fixture").slice(0, 60), id: f["Channel"] ? `ch ${f["Channel"]}` : undefined });
+      fixtures_.push({ x: o.at[0], y: o.at[1], z: o.at[2] || len(f, "Z Location", "Z") || 0, lb: weight(f), type: String(f["Inst Type"] ?? f["Instrument Type"] ?? f["Symbol Name"] ?? "Fixture").slice(0, 60), id: f["Channel"] ? `ch ${f["Channel"]}` : undefined });
     } else if ((o.plugin || o.symbol) && !o.in && TRUSS.test(name)) {
-      rig.push(trussItem(o));
+      // A curved truss (a circle, an arc) isn't one straight piece: drawn from its own parts only, not
+      // as a box its size (Weakest Link's 80' circle came out a square slab over the stage).
+      if (!CURVED.test(name) && !squareRing(o)) rig_.push(trussItem(o));
     } else if ((o.plugin || o.symbol) && !o.in && RIGGING.test(name)) {
-      rig.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
+      rig_.push({ kind: /hoist|motor|chain/i.test(name) ? "hoist" : "other", name: o.plugin || o.symbol || "Rigging", at: o.at ?? [(o.bbox[0] + o.bbox[2]) / 2, (o.bbox[1] + o.bbox[3]) / 2, 0], fields: keyFields(o.fields), layer: o.layer });
     }
     // Classes switched off in Vectorworks don't draw there, so they don't here either. As a sheet: the
     // viewport's classes, the object's own and the class of the symbol it's part of.
@@ -218,7 +236,9 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
   const doc = (source?.name ?? r.document).replace(/\.rigread\.json$/i, "").replace(/\.vwx$/i, "");
   const out: Omit<Layer, "id">[] = [];
   if (fixtures.length) out.push({ name: `${doc}: lighting`, kind: "fixtures", visible: true, onRig: true, at, fixtures, source });
+  if (hiddenFixtures.length) out.push({ name: `${doc}: lighting on hidden layers`, kind: "fixtures", visible: false, onRig: true, at, fixtures: hiddenFixtures, source });
   for (const [i, part] of chunk(rig, 600).entries()) out.push({ name: `${doc}: existing rig${i ? ` (${i + 1})` : ""}`, group: `${doc}: existing rig`, kind: "rig", visible: true, at, rig: part, source });
+  for (const [i, part] of chunk(hiddenRig, 600).entries()) out.push({ name: `${doc}: existing rig on hidden layers${i ? ` (${i + 1})` : ""}`, group: `${doc}: existing rig on hidden layers`, kind: "rig", visible: false, at, rig: part, source });
   const looksLikeStage = /stage|deck|venue|site|floor|ground|plan|audience|house|base/i;
   for (const [layer, list] of shapes) {
     let size = 0;
