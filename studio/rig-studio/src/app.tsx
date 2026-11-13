@@ -8,7 +8,7 @@ import { compileSketch, emptySketch, pointLines, sketchChecks, sketchLoads, type
 import { SERIES } from "../../../src/tools/rig/catalog.ts";
 import { systemPrompt, tools as aiTools, turns, type Ctx, unanswered } from "./ai.ts";
 import { loadCaps, mcpWords, payloadOf, SERVERS, type Caps } from "./cap.ts";
-import { ago, answerName, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
+import { ago, answerName, fromStatus, layerRows, isNoteFile, jobActive, jobWords, needsHandoff, READOUT_PICKUP_MS, RETRY_AFTER_MIN, retryAt, requestName, statusName, routeJob, saveWithRetry, sortJobs, sortProjects, fixturesFromCsv, fixturesFromVectorworks, ftIn, layerLoads, parseLength, slug, vid, type Job, type Layer, type Mesh, type Message, type Project, type Version, type Workers } from "./model.ts";
 import { readoutLayers, readoutSummary, readoutViews } from "./readout.ts";
 import { fetchReadout, geoKey, geometryOf, loadGeometry, readoutRows, remember, remembered, type Geometry } from "./geometry.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
@@ -213,6 +213,53 @@ function App() {
       })();
     }
   }, [jobs, caps, workers]);
+
+  // A PC job whose session started without the link to the PC (Claude's connectors down) is
+  // started again by itself, a few times (retryAt). When several views are open, the one whose
+  // claim stands starts it.
+  const view = useRef(Math.random().toString(36).slice(2, 10));
+  const [clock, setClock] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setClock(Date.now()), 20_000);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => {
+    const db = caps?.db;
+    const mcp = caps?.mcp;
+    if (!db || !mcp) return;
+    for (const j of jobs) {
+      const at = retryAt(j, clock);
+      if (at === null || at > clock || handing.current.has(`retry:${j.id}:${j.tries ?? 1}`)) continue;
+      handing.current.add(`retry:${j.id}:${j.tries ?? 1}`);
+      (async () => {
+        const ref = db.doc(`jobs/${j.id}`);
+        await ref.update({ claim: view.current });
+        await new Promise((r) => setTimeout(r, 1500));
+        const cur = (await ref.get()).data() as Job | undefined;
+        if (!cur || cur.claim !== view.current || cur.status !== "failed" || (cur.tries ?? 1) !== (j.tries ?? 1)) return;
+        const { trigger, wake } = routeJob(workers, "pc");
+        if (!trigger) return;
+        const tries = (j.tries ?? 1) + 1;
+        await ref.update({
+          status: wake ? "waking" : "queued",
+          tries,
+          cause: null,
+          claim: null,
+          reply: null,
+          awake: false,
+          handed: false,
+          progress: `Starting it again on your PC (try ${tries} of ${RETRY_AFTER_MIN.length + 1})…`,
+          updated: now(),
+        });
+        try {
+          const sid = sessionLink(payloadOf(await mcp.callTool(SERVERS.remote, "fire_trigger", { trigger_id: trigger, text: wake ? `wake the PC for job ${j.id}\n${j.text}` : j.text })));
+          if (sid && !wake) await ref.update({ session: sid });
+        } catch (e) {
+          await ref.update({ status: "failed", cause: "pc-link", reply: mcpWords(e, "Starting the session on your PC"), updated: now() });
+        }
+      })();
+    }
+  }, [jobs, caps, workers, clock]);
 
   if (!caps) return <div className="boot">Opening Rig Studio…</div>;
   const env: Env = { caps, workers, vw, remoteOk: null };
@@ -786,7 +833,8 @@ function ProjectView({ pid, env, jobs }: { pid: string; env: Env; jobs: Job[] })
         status: wake ? "waking" : "queued",
         at: now(),
         progress: wake ? "Checking whether your PC is on…" : "Waiting for the session to start",
-        ...(wake ? { text } : {}),
+        text, // kept so the job can be started again (a PC job whose session never reached the PC)
+        tries: 1,
         ...(file ? { file } : {}),
       };
       await ref.set(job);
