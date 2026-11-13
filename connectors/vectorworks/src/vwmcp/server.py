@@ -9,15 +9,17 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import os
 import sys
 import time
+from pathlib import Path
 from typing import Any, Literal, Union
 
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
 from . import __version__, config, readout, rig, symbols, update
-from .jobs import BridgeError, BridgeTimeout, JobQueue
+from .jobs import BUSY_DIR, BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
 from .svg import render_svg
@@ -991,9 +993,22 @@ def startup(settings: config.Settings, allow_update: bool = True) -> bool:
 
 def main() -> None:
     settings = config.load()
-    if startup(settings, allow_update="--no-update" not in sys.argv):
+    if "--no-symbols" in sys.argv:  # a supervised child: its parent already brought things up to date
+        STARTUP["symbols"] = symbols.load_cached(settings.home)
+        STARTUP["update"] = "checked by the supervisor at start (%s)" % __version__
+    elif startup(settings, allow_update="--no-update" not in sys.argv):
         sys.exit(update.relaunch())
+    if "--child" not in sys.argv and supervised():
+        # The real server runs in a child that is swapped for a fresh one when this package's code
+        # changes, so a deploy never needs the Claude app restarted (see supervisor.py).
+        from . import supervisor
+
+        sys.exit(supervisor.run([sys.executable, "-m", "vwmcp.server", "--child", "--no-update", "--no-symbols"], Path(__file__).parent, settings.home / BUSY_DIR))
     build_server(settings).run("stdio")
+
+
+def supervised() -> bool:
+    return os.environ.get("VWMCP_SUPERVISE", "1").strip().lower() not in ("0", "false", "no", "off")
 
 
 if __name__ == "__main__":

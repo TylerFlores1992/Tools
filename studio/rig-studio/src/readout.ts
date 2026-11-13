@@ -151,6 +151,11 @@ function keyFields(fields: Record<string, string> | undefined): Record<string, s
 /** Taller than this and around the whole drawing: a building, not part of the set. */
 const BUILDING_TOP = 240;
 const BUILDING = "\u0000building";
+/** A building's wall or door frame: stands on the floor (within this), at least this tall, and within
+ * this of the building's outline. */
+const WALL_FOOT = 12;
+const DOOR_HIGH = 84;
+const WALL_REACH = 36;
 
 const CURVED = /circle|circular|\barc\b|curve|curved|round|ring/i;
 /** A large piece about as deep as it is wide: a ring of truss, not a straight run. */
@@ -209,6 +214,31 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
   const enclosing = (o: ReadoutObject) =>
     !o.in && !!o.z && o.z[1] >= BUILDING_TOP && fw > 0 && fd > 0 &&
     o.bbox[2] - o.bbox[0] >= 0.85 * fw && o.bbox[3] - o.bbox[1] >= 0.85 * fd;
+  // The building's own walls and doorways go with it: loose pieces on its layer that stand on the
+  // floor, are door height or more, and sit along its outline (Weakest Link's 55' side wall and the
+  // door frames in its corners stayed behind and hid the set).
+  const shells = r.objects.filter(enclosing);
+  const venuePiece = (o: ReadoutObject) =>
+    !o.in && !!o.z && o.z[0] <= WALL_FOOT && o.z[1] - o.z[0] >= DOOR_HIGH &&
+    shells.some((b) => b.layer === o.layer && b !== o &&
+      (o.bbox[0] - b.bbox[0] <= WALL_REACH || b.bbox[2] - o.bbox[2] <= WALL_REACH ||
+       o.bbox[1] - b.bbox[1] <= WALL_REACH || b.bbox[3] - o.bbox[3] <= WALL_REACH));
+  // A symbol with no 2D graphics of its own shows its 3D part in Top/Plan too (Vectorworks draws it
+  // from above, as a wireframe): only a copy that has plan graphics hides its 3D part there. Weakest
+  // Link's 1,583 deck, leg and truss copies are 3D only, so Plan showed none of the set.
+  const planless = new Set<ReadoutObject>();
+  {
+    let copy: ReadoutObject[] = [];
+    let hasPlan = false;
+    const close = () => { if (!hasPlan) for (const c of copy) planless.add(c); };
+    for (const o of ordered) {
+      if (!o.in) { close(); copy = []; hasPlan = false; continue; }
+      copy.push(o);
+      if (o.view === "plan") hasPlan = true;
+    }
+    close();
+  }
+  const tag = (o: ReadoutObject) => (o.view && !(o.view === "3d" && planless.has(o)) ? { v: o.view } : {});
   for (const o of ordered) {
     order = (layerRank.get(o.layer) ?? 0) * 1_000_000 + seq++;
     const name = `${o.plugin ?? ""} ${o.symbol ?? ""} ${o.name ?? ""} ${o.cls}`;
@@ -242,7 +272,7 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
       const at: [number, number] = [o.at[0], o.at[1]];
       const pts: [number, number][] = o.t === "dimension" && o.pts?.length === 2 ? [at, o.pts[0], o.pts[1]] : [at];
       const list = shapes.get(o.layer) ?? [];
-      list.push({ pts, z: base, text, size: Math.max(1, o.size ?? 9), ...(o.rot ? { rot: o.rot } : {}), ...(o.t === "dimension" ? { dim: 1 as const } : {}), ...(o.view ? { v: o.view } : {}), ...ink });
+      list.push({ pts, z: base, text, size: Math.max(1, o.size ?? 9), ...(o.rot ? { rot: o.rot } : {}), ...(o.t === "dimension" ? { dim: 1 as const } : {}), ...tag(o), ...ink });
       shapes.set(o.layer, list);
       continue;
     }
@@ -257,8 +287,8 @@ export function readoutLayers(r: Readout, source: Layer["source"], at: string, v
       // keeps its opacity and its place in the drawing's order.
       const faces = o.mesh ?? (o.sm !== undefined ? r.shared?.[o.sm] : undefined);
       const mesh = faces && faces.v.length >= 9 && h > 0 ? { m: faces, ...(o.mx?.length === 12 ? { mx: o.mx } : {}), ...(base ? { mz: base } : {}) } : {};
-      const into = enclosing(o) ? (shapes.get(BUILDING) ?? shapes.set(BUILDING, []).get(BUILDING)!) : list;
-      into.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...(o.view ? { v: o.view } : {}), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...ink, ...(o.np ? { np: 1 as const } : {}), ...(o.hatch && o.closed ? { hatch: 1 as const } : {}), ...mesh });
+      const into = enclosing(o) || venuePiece(o) ? (shapes.get(BUILDING) ?? shapes.set(BUILDING, []).get(BUILDING)!) : list;
+      into.push({ pts: o.pts, z, closed: !!o.closed, ...(h > 0 ? { h } : {}), ...(o.fill && /^#[0-9a-f]{6}$/i.test(o.fill) ? { fill: o.fill } : {}), ...(o.name ? { label: o.name } : {}), ...tag(o), ...(o.closed && o.fill && !(o.z && o.z[1] > o.z[0]) ? { n: order } : {}), ...(o.fo !== undefined && o.fo < 100 ? { fo: o.fo } : {}), ...ink, ...(o.np ? { np: 1 as const } : {}), ...(o.hatch && o.closed ? { hatch: 1 as const } : {}), ...mesh });
       shapes.set(o.layer, list);
     }
   }

@@ -654,6 +654,29 @@ def test_a_symbol_tipped_up_in_3d_stands_up(server, fake_vw, tmp_path):
     part = next(o for o in data["objects"] if o.get("in") == "Arm" and _has_faces(o))
     corners = {p for f in _faces(_placed(data, part)) for p in f}
     assert (110.0, -36.0, 4.0) in corners and (100.0, 0.0, 0.0) in corners, sorted(corners)
+    assert part["z"] == [0.0, 4.0], "its height turned too, not its own 36\" squashed"
+    xs = sorted({p[0] for p in part["pts"]}); ys = sorted({p[1] for p in part["pts"]})
+    assert xs == [100.0, 110.0] and ys == [-36.0, 0.0], part["pts"]
+
+
+def test_a_truss_leg_stood_up_has_its_height_even_without_faces(server, fake_vw, tmp_path):
+    """Weakest Link's raised deck stands on truss legs: the truss symbols stood up (turned 90
+    about Y) whose solids won't convert; read with their own height turned flat, the legs had none
+    and the deck on them floated."""
+    vs = fake_vw
+    d = vs.DOC
+    sym = vs._Obj(16, name="Box 6", w=72.0, h=20.5, members=[])
+    leg = vs._Obj(5, pts=[(0.0, 0.0), (72.0, 0.0), (72.0, 20.5), (0.0, 20.5)], closed=True, is3d=True, zc=10.25, dz=20.5, parent_obj=sym, layer=None)
+    leg.noconvert = True
+    sym.members.append(leg)
+    d.resources["Box 6"] = sym
+    vs.Symbol("Box 6", (0.0, 0.0), 0.0)
+    d.last.mat = [[0.0, 0, 1.0], [0, 1.0, 0], [-1.0, 0, 0]]  # Ry(90): stood up along +Z... (x -> -z)
+    d.last.is3d, d.last.zc, d.last.dz = True, 36.0, 72.0
+    d.path = str(tmp_path / "Legs.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    parts = [o for o in data["objects"] if o.get("in") == "Box 6" and o.get("z")]
+    assert parts and max(o["z"][1] - o["z"][0] for o in parts) >= 70, [(o["t"], o["z"]) for o in parts]
 
 
 def test_a_read_out_lists_the_classes_switched_off(server, fake_vw, tmp_path):
@@ -821,6 +844,22 @@ def test_a_hybrid_plug_in_like_curved_truss_comes_with_its_faces(server, fake_vw
     assert ct.get("pen") == "#ff0000", "in its own pen"
     assert not by["Lighting Device"].get("mesh") and by["Lighting Device"].get("mid") is None
     assert ring and light
+
+
+def test_a_plug_in_drawn_in_its_parts_own_line_keeps_that_line(server, fake_vw, tmp_path):
+    """Weakest Link's 80' truss ring reads blue on the object, but Vectorworks draws it dark red
+    from its parts: its faces' line is the one shown."""
+    vs = fake_vw
+    d = vs.DOC
+    ring = d.add(vs._Obj(86, loc=(0.0, 0.0), w=120.0, h=20.0, parametric="Curved Truss", z=181.0,
+                         pts=[(0.0, 0.0), (120.0, 0.0), (120.0, 20.0), (0.0, 20.0)], is3d=True, zc=191.0, dz=20.5, hybrid=True, pen=(0, 0, 255)))
+    ring.face_pen = (128, 0, 0)
+    d.resources.setdefault("Curved Truss", vs._Obj(47, name="Curved Truss", fields=[]))
+    ring.records["Curved Truss"] = {}
+    d.path = str(tmp_path / "Ring.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    ct = next(o for o in data["objects"] if o.get("plugin") == "Curved Truss")
+    assert ct.get("pen") == "#800000", ct.get("pen")
 
 
 def test_every_copy_of_a_symbol_part_shares_one_set_of_faces(server, fake_vw, tmp_path):

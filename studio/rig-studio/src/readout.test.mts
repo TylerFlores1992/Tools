@@ -110,6 +110,26 @@ test("a hybrid symbol's plan graphics and 3D part keep their view", () => {
   assert.equal(shapes[0].fill, "#555555", "the plan's deck keeps its fill");
 });
 
+test("a symbol with no 2D graphics shows its 3D part in Plan too, as Vectorworks draws it from above", () => {
+  const sq = (x: number): [number, number][] => [[x, 0], [x + 96, 0], [x + 96, 48], [x, 48]];
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [{ name: "Set", type: "design", elevation: 0, visible: true }],
+    objects: [
+      // A hybrid deck: plan graphics and a 3D part.
+      { t: "symbol", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], symbol: "Hybrid deck" },
+      { t: "rectangle", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], pts: sq(0), closed: true, in: "Hybrid deck", view: "plan" },
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], pts: sq(0), closed: true, z: [0, 24], in: "Hybrid deck", view: "3d" },
+      // A 3D-only deck (Weakest Link's): its 3D part is all Plan has of it.
+      { t: "symbol", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], symbol: "Deck 4'x8'" },
+      { t: "type_84", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], pts: sq(200), closed: true, z: [0, 24], in: "Deck 4'x8'", view: "3d" },
+      { t: "type_84", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], pts: sq(200), closed: true, z: [0, 4], in: "Deck 4'x8'", view: "3d" },
+    ],
+  };
+  const shapes = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "t").find((l) => l.kind === "shapes")!.shapes!;
+  assert.deepEqual(shapes.map((s) => s.v ?? "both"), ["plan", "3d", "both", "both"]);
+});
+
 test("shapes spilled into part files come back", async () => {
   const { attachMeshes } = await import("./readout.ts");
   const r: Readout = {
@@ -236,6 +256,12 @@ test("a building around the whole drawing gets its own row, starting hidden, so 
       { t: "type_24", layer: "Stage", cls: "None", bbox: [-1051, -841, 904, 947], pts: box(-1051, -841, 904, 947), closed: true, z: [614, 618] },
       { t: "polygon", layer: "Stage", cls: "None", bbox: [-1069, -855, 920, 968], pts: box(-1069, -855, 920, 968), closed: true, z: [0, 0] },
       { t: "line", layer: "Stage", cls: "None", bbox: [-1000, 0, 900, 0], pts: [[-1000, 0], [900, 0]], z: [0, 0] },
+      // Its side wall and a door frame in a corner, along its outline: they go with it.
+      { t: "type_24", layer: "Stage", cls: "S-STRS", bbox: [-1055, -405, -996, 732], pts: box(-1055, -405, -996, 732), closed: true, z: [0, 658] },
+      { t: "type_84", layer: "Stage", cls: "None", bbox: [-1057, 854, -963, 956], pts: box(-1057, 854, -963, 956), closed: true, z: [0, 114] },
+      // A bollard by the wall (too short) and a tall scenic piece in the middle of the floor: they stay.
+      { t: "type_24", layer: "Stage", cls: "None", bbox: [-1064, -748, -1056, -740], pts: box(-1064, -748, -1056, -740), closed: true, z: [0, 48] },
+      { t: "type_24", layer: "Stage", cls: "None", bbox: [-20, -20, 20, 20], pts: box(-20, -20, 20, 20), closed: true, z: [0, 300] },
       // A deck and a tall scenic tower inside: not buildings.
       { t: "type_24", layer: "Decking", cls: "None", bbox: [-100, -100, 100, 100], pts: box(-100, -100, 100, 100), closed: true, z: [0, 73] },
       { t: "type_24", layer: "Decking", cls: "None", bbox: [300, 300, 340, 340], pts: box(300, 300, 340, 340), closed: true, z: [0, 400] },
@@ -243,9 +269,9 @@ test("a building around the whole drawing gets its own row, starting hidden, so 
   };
   const layers = readoutLayers(r, { name: "WL.rigread.json", from: "dropbox" }, "t");
   const building = layers.find((l) => l.name === "WL: building around everything")!;
-  assert.ok(building && building.visible === false && building.shapes!.length === 2, "walls and roof, starting hidden");
+  assert.ok(building && building.visible === false && building.shapes!.length === 4, "walls, roof, side wall and door frame, starting hidden");
   const stage = layers.find((l) => l.name === "WL: Stage")!;
-  assert.ok(stage.visible && stage.shapes!.length === 2, "the venue's floor lines stay with the Stage, shown");
+  assert.ok(stage.visible && stage.shapes!.length === 4, "the venue's floor lines, the bollard and the scenic piece stay with the Stage, shown");
   assert.equal(layers.find((l) => l.name === "WL: Decking")!.shapes!.length, 2, "the deck and the tower stay put");
 });
 

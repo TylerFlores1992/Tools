@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.12"
+BRIDGE_VERSION = "0.9.13"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1585,6 +1585,10 @@ def _face_area(f):
 
 
 FACE_MISSES: dict = {}
+# The line its converted faces carry, from the last _ro_faces call: a plug-in draws its parts in
+# their own attributes, which can differ from the object's (Weakest Link's 80' truss ring reads
+# blue on the object and Vectorworks draws it dark red from its parts).
+FACE_PEN: dict = {}
 
 
 def _inv3(m):
@@ -1641,6 +1645,8 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
         _face_miss("type %d wouldn't convert" % vs.GetTypeN(h))
         return None
     faces, over = [], False
+    pens: dict = {}
+    FACE_PEN.clear()
     try:
         stack = [g]
         while stack:
@@ -1656,6 +1662,9 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
                 continue
             if n < 3:
                 continue
+            if len(faces) < 200:
+                pk = json.dumps(_ro_pen(c), sort_keys=True)
+                pens[pk] = pens.get(pk, 0) + 1
             pts = []
             for i in range(n):  # GetPolyPt3D counts from 0 (measured on Vectorworks 2026)
                 q = _pt3(vs.GetPolyPt3D(c, i))
@@ -1668,6 +1677,8 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
                 break
     finally:
         vs.DelObject(g)
+    if pens:
+        FACE_PEN.update(json.loads(max(pens, key=pens.get)), _seen=1)
     if over:
         _face_miss("over the face limit")
         return None
@@ -2194,9 +2205,12 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                         o["closed"] = True
                         o["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
                         o["mesh"] = m3
+                        if FACE_PEN.get("_seen"):
+                            o["_fpen"] = {k: v for k, v in FACE_PEN.items() if k != "_seen"}
                 if "mesh" in o:
-                    # Its faces' edges in its own pen (Weakest Link's truss rings are red, by class).
-                    o.update(_ro_pen(h))
+                    # Its faces' edges in the pen its parts are drawn in (Weakest Link's 80' truss
+                    # ring is dark red there, blue on the object itself).
+                    o.update(o.pop("_fpen") if "_fpen" in o else _ro_pen(h))
                     fill = _ro_fill(h)
                     if fill:
                         o["fill"] = fill
@@ -2255,6 +2269,13 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                     del objects[before:]
                     objects.extend(keep)
                     zr = [min(p["z"][0] for p in gone), max(p["z"][1] for p in gone)] if gone else None
+                    if zr is None or zr[1] <= zr[0]:
+                        try:  # its parts were all flat as read: the copy's own 3D size
+                            dy, dx, dz = vs.Get3DInfo(h)
+                            _c, zc = vs.Get3DCntr(h)
+                            zr = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
+                        except Exception:
+                            pass
                     if zr and zr[1] > zr[0]:
                         add({"t": "whole", "layer": layer, "cls": cls, "bbox": o["bbox"], "in": sym, "pts": corners, "closed": True,
                              "z": zr, "sm": got[0], "mx": got[1], **({"view": "3d"} if has3d(defh) else {}), **({"hid": 1} if hid else {})})
@@ -2278,6 +2299,15 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
         o["closed"] = bool(closed)
         if z is not None:
             o["z"] = zrange(z[0], z[1], xf)
+            if abs(lin(xf)[2][2]) < 0.999 and z[1] > z[0]:
+                # Tipped (a truss leg stood up): its height and footprint come from its whole box
+                # turned, not its plan outline and its own height (those gave Weakest Link's truss
+                # towers no height at all, and the deck on them floated).
+                c3 = [place3((q[0], q[1], zz), xf) for q in pts for zz in (z[0], z[1])]
+                xs, ys, zs = [_r(c[0], k) for c in c3], [_r(c[1], k) for c in c3], [_r(c[2], k) for c in c3]
+                o["z"] = [min(zs), max(zs)]
+                o["pts"] = [[min(xs), min(ys)], [max(xs), min(ys)], [max(xs), max(ys)], [min(xs), max(ys)]]
+                o["closed"] = True
             if z[1] > z[0]:  # flat things (bottom = top) are drawn from their outline, not faces
                 if in_sym:
                     # The same part of the same definition: its faces once, placed per copy.
