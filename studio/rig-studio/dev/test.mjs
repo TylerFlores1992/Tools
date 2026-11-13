@@ -426,6 +426,23 @@ await m.waitForTimeout(800);
 await m.screenshot({ path: join(shots, "rig-studio-phone.png"), fullPage: true });
 const sw = await m.evaluate(() => document.documentElement.scrollWidth);
 ok(sw <= 390, `no sideways scroll on a phone (${sw}px)`);
+// Claude's connectors down: Dropbox never answers. The Files tab says so instead of "Reading…" forever.
+if (!process.env.RS_READOUT) {
+  console.log("Dropbox not answering");
+  const quiet = { ...MCP, "Dropbox/list_folder": { hang: true } };
+  writeFileSync(join(here, "harness-quiet.html"), html(`window.__MCP__=${JSON.stringify(quiet)};window.__RS_QUIET_MS__=1500;`));
+  const q = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+  await q.goto(`file://${join(here, "harness-quiet.html")}`);
+  await q.waitForSelector(".card");
+  await q.click(".card");
+  await q.waitForSelector(".viewer canvas");
+  await q.click("#tab-files");
+  ok(await q.getByText("Reading the folder…").isVisible(), "it reads the folder first");
+  await q.waitForTimeout(2200);
+  ok(await q.getByText(/Dropbox hasn't answered in 1.5 seconds/).isVisible(), "then says Dropbox isn't answering, and why that usually is");
+  ok(!(await q.getByText("Reading the folder…").isVisible()), "and stops saying it's reading");
+  await q.screenshot({ path: join(shots, "rig-studio-files-quiet.png") });
+}
 await browser.close();
 if (fails.length) {
   console.log(`\n${fails.length} failed`);

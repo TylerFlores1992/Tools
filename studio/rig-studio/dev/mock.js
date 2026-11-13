@@ -46,6 +46,7 @@
       const a = answers[`${server}/${tool}/${input?.id ?? ""}`] ?? answers[`${server}/${tool}`];
       if (!a) throw { code: "server_not_connected", message: "not here", server };
       if (a.error) throw a.error;
+      if (a.hang) return new Promise(() => {}); // a connector that never answers (Claude's connectors down)
       return { content: [{ type: "text", text: JSON.stringify(a) }], payload: a };
     },
     watchTool(server, tool, input, handler) {

@@ -13,6 +13,9 @@ import { readoutLayers, readoutSummary, readoutViews } from "./readout.ts";
 import { fetchReadout, geoKey, geometryOf, loadGeometry, readoutRows, remember, remembered, type Geometry } from "./geometry.ts";
 import { Viewer, type Label, type Show, type ViewName } from "./viewer.ts";
 
+/** How long the Files tab waits for Dropbox before saying it isn't answering. */
+const DROPBOX_QUIET_MS = (globalThis as { __RS_QUIET_MS__?: number }).__RS_QUIET_MS__ ?? 30000;
+
 /* ------------------------------------------------------------------ small pieces */
 
 const now = () => new Date().toISOString();
@@ -1967,6 +1970,15 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
   const [stamp, setStamp] = useState<number | null>(null);
   const [linkPath, setLinkPath] = useState("");
   const [tick, setTick] = useState(0);
+  const [silent, setSilent] = useState(false);
+
+  // A connector that never answers sends no error either: say so instead of "Reading…" forever.
+  useEffect(() => {
+    setSilent(false);
+    if (entries !== null || err) return;
+    const t = setTimeout(() => setSilent(true), DROPBOX_QUIET_MS);
+    return () => clearTimeout(t);
+  }, [entries, err, tick, project.dropbox?.path]);
 
   useEffect(() => {
     const mcp = env.caps.mcp;
@@ -2242,7 +2254,13 @@ function FilesPane({ env, project, layers, jobs, startSession, flash, goChat }: 
           </button>
         </Notice>
       )}
-      {entries === null && !err && <p className="muted">Reading the folder…</p>}
+      {entries === null && !err && !silent && <p className="muted">Reading the folder…</p>}
+      {entries === null && !err && silent && (
+        <p className="muted" role="status">
+          Dropbox hasn't answered in {DROPBOX_QUIET_MS / 1000} seconds. That's usually Claude's connectors being down for a while
+          (status.claude.com says when), not your files. Try Refresh in a few minutes.
+        </p>
+      )}
       {entries?.length === 0 && <p className="muted">The folder is empty. Drop the venue drawings, lighting plot and Vectorworks files in it.</p>}
       <ul className="files">
         {(entries ?? []).map((e) => {
