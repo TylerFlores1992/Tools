@@ -995,7 +995,7 @@ def main() -> None:
     settings = config.load()
     if "--no-symbols" in sys.argv:  # a supervised child: its parent already brought things up to date
         STARTUP["symbols"] = symbols.load_cached(settings.home)
-        STARTUP["update"] = "checked by the supervisor at start (%s)" % __version__
+        STARTUP["update"] = "checked by the supervisor at start (%s); this copy of the code loaded %s" % (__version__, time.strftime("%H:%M:%S"))
     elif startup(settings, allow_update="--no-update" not in sys.argv):
         sys.exit(update.relaunch())
     if "--child" not in sys.argv and supervised():
