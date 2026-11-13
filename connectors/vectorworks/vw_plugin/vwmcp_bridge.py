@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.12"
+BRIDGE_VERSION = "0.9.13"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -1585,6 +1585,10 @@ def _face_area(f):
 
 
 FACE_MISSES: dict = {}
+# The line its converted faces carry, from the last _ro_faces call: a plug-in draws its parts in
+# their own attributes, which can differ from the object's (Weakest Link's 80' truss ring reads
+# blue on the object and Vectorworks draws it dark red from its parts).
+FACE_PEN: dict = {}
 
 
 def _inv3(m):
@@ -1641,6 +1645,8 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
         _face_miss("type %d wouldn't convert" % vs.GetTypeN(h))
         return None
     faces, over = [], False
+    pens: dict = {}
+    FACE_PEN.clear()
     try:
         stack = [g]
         while stack:
@@ -1656,6 +1662,9 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
                 continue
             if n < 3:
                 continue
+            if len(faces) < 200:
+                pk = json.dumps(_ro_pen(c), sort_keys=True)
+                pens[pk] = pens.get(pk, 0) + 1
             pts = []
             for i in range(n):  # GetPolyPt3D counts from 0 (measured on Vectorworks 2026)
                 q = _pt3(vs.GetPolyPt3D(c, i))
@@ -1668,6 +1677,8 @@ def _ro_faces(h, cap=FACE_CAP, keep_largest=False):
                 break
     finally:
         vs.DelObject(g)
+    if pens:
+        FACE_PEN.update(json.loads(max(pens, key=pens.get)), _seen=1)
     if over:
         _face_miss("over the face limit")
         return None
@@ -2194,9 +2205,12 @@ def _read_out(max_objects=60000, max_points=200, detail_cap=DETAIL_CAP):
                         o["closed"] = True
                         o["z"] = zrange(float(zc) - float(dz) / 2, float(zc) + float(dz) / 2, xf)
                         o["mesh"] = m3
+                        if FACE_PEN.get("_seen"):
+                            o["_fpen"] = {k: v for k, v in FACE_PEN.items() if k != "_seen"}
                 if "mesh" in o:
-                    # Its faces' edges in its own pen (Weakest Link's truss rings are red, by class).
-                    o.update(_ro_pen(h))
+                    # Its faces' edges in the pen its parts are drawn in (Weakest Link's 80' truss
+                    # ring is dark red there, blue on the object itself).
+                    o.update(o.pop("_fpen") if "_fpen" in o else _ro_pen(h))
                     fill = _ro_fill(h)
                     if fill:
                         o["fill"] = fill

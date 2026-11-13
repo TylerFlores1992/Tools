@@ -846,6 +846,22 @@ def test_a_hybrid_plug_in_like_curved_truss_comes_with_its_faces(server, fake_vw
     assert ring and light
 
 
+def test_a_plug_in_drawn_in_its_parts_own_line_keeps_that_line(server, fake_vw, tmp_path):
+    """Weakest Link's 80' truss ring reads blue on the object, but Vectorworks draws it dark red
+    from its parts: its faces' line is the one shown."""
+    vs = fake_vw
+    d = vs.DOC
+    ring = d.add(vs._Obj(86, loc=(0.0, 0.0), w=120.0, h=20.0, parametric="Curved Truss", z=181.0,
+                         pts=[(0.0, 0.0), (120.0, 0.0), (120.0, 20.0), (0.0, 20.0)], is3d=True, zc=191.0, dz=20.5, hybrid=True, pen=(0, 0, 255)))
+    ring.face_pen = (128, 0, 0)
+    d.resources.setdefault("Curved Truss", vs._Obj(47, name="Curved Truss", fields=[]))
+    ring.records["Curved Truss"] = {}
+    d.path = str(tmp_path / "Ring.vwx")
+    data = json.loads(Path(call(server, "read_out")["saved"]).read_text())
+    ct = next(o for o in data["objects"] if o.get("plugin") == "Curved Truss")
+    assert ct.get("pen") == "#800000", ct.get("pen")
+
+
 def test_every_copy_of_a_symbol_part_shares_one_set_of_faces(server, fake_vw, tmp_path):
     """Weakest Link has 3,146 copies of one deck: each copy converted on its own used up the face
     budget halfway (the rest came out as plain boxes) and took minutes. Now each part of a

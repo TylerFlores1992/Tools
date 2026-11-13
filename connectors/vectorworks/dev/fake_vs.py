@@ -1200,6 +1200,8 @@ def ConvertTo3DPolys(original):
         (ax, ay), (bx, by) = ring[i], ring[(i + 1) % len(ring)]
         faces.append([(ax, ay, z0), (bx, by, z0), (bx, by, z1), (ax, ay, z1)])
     members = [_Obj(25, pts=[(x, y) for x, y, _ in f], pts3d=f, closed=True) for f in faces]
+    for m in members:  # the faces carry the parts' own line: the object's, unless its parts differ
+        m.pen = getattr(original, "face_pen", getattr(original, "pen", (0, 0, 0)))
     g = _Obj(11, members=members, layer=original.layer)
     for m in members:
         m.parent_obj = g

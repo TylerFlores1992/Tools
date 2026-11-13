@@ -206,6 +206,10 @@ connection (`upstream_error`: phone asleep, app in the background) puts the ques
   7' or taller and sit within 3' of its outline (Weakest Link's 55' side wall, the corner doorways).
   Truss legs stood up in a symbol (turned 90°) take their height and footprint from their turned box,
   so a raised deck stands on its towers instead of floating (connector bridge, 2026-11-12).
+- A symbol with no 2D graphics (Weakest Link's decks, legs and truss: 1,583 copies) shows its 3D
+  part in Plan too, as Vectorworks draws it from above; only a copy with plan graphics hides it there.
+- A plug-in's faces are edged in the line its parts are drawn in, not the object's own (the 80'
+  truss ring is dark red in Vectorworks; the object itself says blue).
 - Attributes "by class" (pen, weight, line style, fill, fill pattern) are read from the class, as
   Vectorworks draws them (bridge `_by_class`).
 - Hybrid plug-ins with a 3D part whose name says truss, hoist or motor (Curved Truss) come with their

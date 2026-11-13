@@ -110,6 +110,26 @@ test("a hybrid symbol's plan graphics and 3D part keep their view", () => {
   assert.equal(shapes[0].fill, "#555555", "the plan's deck keeps its fill");
 });
 
+test("a symbol with no 2D graphics shows its 3D part in Plan too, as Vectorworks draws it from above", () => {
+  const sq = (x: number): [number, number][] => [[x, 0], [x + 96, 0], [x + 96, 48], [x, 48]];
+  const r: Readout = {
+    readout: 1, document: "Set.vwx", units: "in", classes: [],
+    layers: [{ name: "Set", type: "design", elevation: 0, visible: true }],
+    objects: [
+      // A hybrid deck: plan graphics and a 3D part.
+      { t: "symbol", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], symbol: "Hybrid deck" },
+      { t: "rectangle", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], pts: sq(0), closed: true, in: "Hybrid deck", view: "plan" },
+      { t: "extrude", layer: "Set", cls: "None", bbox: [0, 0, 96, 48], pts: sq(0), closed: true, z: [0, 24], in: "Hybrid deck", view: "3d" },
+      // A 3D-only deck (Weakest Link's): its 3D part is all Plan has of it.
+      { t: "symbol", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], symbol: "Deck 4'x8'" },
+      { t: "type_84", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], pts: sq(200), closed: true, z: [0, 24], in: "Deck 4'x8'", view: "3d" },
+      { t: "type_84", layer: "Set", cls: "None", bbox: [200, 0, 296, 48], pts: sq(200), closed: true, z: [0, 4], in: "Deck 4'x8'", view: "3d" },
+    ],
+  };
+  const shapes = readoutLayers(r, { name: "Set.rigread.json", from: "dropbox" }, "t").find((l) => l.kind === "shapes")!.shapes!;
+  assert.deepEqual(shapes.map((s) => s.v ?? "both"), ["plan", "3d", "both", "both"]);
+});
+
 test("shapes spilled into part files come back", async () => {
   const { attachMeshes } = await import("./readout.ts");
   const r: Readout = {

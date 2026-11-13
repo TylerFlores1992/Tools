@@ -37,6 +37,10 @@ def write_json_atomic(path: Path, data: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
+# Under the connector's home: one file per job running (see supervisor.py).
+BUSY_DIR = "busy"
+
+
 class JobQueue:
     def __init__(self, settings: Settings, trigger: Trigger, poll_interval: float = 0.05):
         self.settings = settings
@@ -52,6 +56,19 @@ class JobQueue:
         job_path = self.settings.jobs_dir / f"{job_id}.json"
         result_path = self.settings.results_dir / f"{job_id}.json"
         created = time.time()
+        # Marked busy while it runs, so the supervisor never swaps the connector's code mid-job
+        # (a Rig Studio read-out runs in the background, not as one of Claude's requests).
+        busy = self.settings.home / BUSY_DIR / job_id
+        with contextlib.suppress(OSError):
+            busy.parent.mkdir(parents=True, exist_ok=True)
+            busy.write_text(op, encoding="utf-8")
+        try:
+            return await self._run(op, job_id, job_path, result_path, created, timeout, args)
+        finally:
+            with contextlib.suppress(OSError):
+                busy.unlink()
+
+    async def _run(self, op: str, job_id: str, job_path: Path, result_path: Path, created: float, timeout: float, args: dict) -> Any:
         # ttl: the bridge drops a job that waited longer than the server was willing to wait.
         write_json_atomic(job_path, {"id": job_id, "op": op, "args": args, "created": created, "ttl": timeout + 5})
 

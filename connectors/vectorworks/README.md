@@ -150,6 +150,13 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    shows the connector version, the bridge version and the symbol map in use.
    `VWMCP_AUTO_UPDATE=0` turns this off (then run `vwmcp-install-plugin` after each manual update:
    an old bridge answers "Unknown op …").
+   **No Claude restart for new code (0.9.13):** `vwmcp.exe` runs the real server as a child under
+   `src/vwmcp/supervisor.py`. When a `.py` file in `src/vwmcp/` changes it waits until nothing is
+   running (no request from Claude, no Vectorworks job: each job leaves a file in
+   `%USERPROFILE%\.vwmcp\busy` while it runs), starts a fresh child, repeats Claude's handshake to
+   it and tells Claude the tool list changed. A child that dies is started again; what it was
+   answering gets an error saying so. Only `supervisor.py` itself still needs the app restarted.
+   `VWMCP_SUPERVISE=0` runs the server directly, as before.
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
@@ -271,6 +278,7 @@ User Field 1–6. `get_lighting_devices` lists whatever your version actually ha
 | `VWMCP_RIG_URL` | `https://tylerflores.dev` | Where designs are fetched from |
 | `VWMCP_RIG_TIMEOUT` | `180` | Seconds a whole `build_rig` may take inside Vectorworks |
 | `VWMCP_AUTO_UPDATE` | `1` | Update the connector and its symbol map from the site at start |
+| `VWMCP_SUPERVISE` | `1` | Run the server under the supervisor, so new connector code loads without restarting Claude |
 
 ## Panel API safety
 
