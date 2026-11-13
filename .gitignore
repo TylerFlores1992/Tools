@@ -61,5 +61,5 @@ next-env.d.ts
 /connectors/**/*.egg-info/
 .claude/worktrees/
 studio/rig-studio/dist/
-studio/rig-studio/dev/harness.html
+studio/rig-studio/dev/harness*.html
 studio/rig-studio/dev/seed.json
