@@ -176,3 +176,36 @@ def test_only_the_package_files_are_watched(tmp_path):
     (tmp_path / "a.py").write_text("x")
     (tmp_path / "notes.txt").write_text("x")
     assert list(supervisor.snapshot(tmp_path)) == ["a.py"]
+
+
+def test_a_later_child_is_told_which_tools_claude_was_shown(sup):
+    """The Claude app doesn't list tools again when told they changed, so a later child is told
+    what Claude has (its ping names new tools that need the app restarted)."""
+    s, wire, send, pkg = sup
+    wire.wait_for(by_id(0))
+    send({"jsonrpc": "2.0", "id": 30, "method": "tools/list"})
+    wire.wait_for(by_id(30))
+    assert s.seen_tools == set(), "the stand-in child lists no tools"
+    s.seen_tools = {"ping", "read_out"}
+    seen = {}
+    real = supervisor.subprocess.Popen
+
+    def spy(cmd, **kw):
+        seen.update(kw.get("env") or {})
+        return real(cmd, **kw)
+
+    supervisor.subprocess.Popen = spy
+    try:
+        (pkg / "code.py").write_text("v2")
+        wire.wait_for(lambda m: m.get("method") == "notifications/tools/list_changed")
+    finally:
+        supervisor.subprocess.Popen = real
+    assert seen.get(supervisor.SEEN_TOOLS_ENV) == "ping,read_out"
+
+
+def test_the_tools_claude_was_shown_are_read_from_its_list(tmp_path):
+    out = []
+    s = supervisor.Supervisor(["x"], tmp_path, out.append)
+    s.pending[json.dumps(4)] = "tools/list"
+    s.from_child((json.dumps({"jsonrpc": "2.0", "id": 4, "result": {"tools": [{"name": "ping"}, {"name": "export_pdf"}]}}) + "\n").encode(), s.generation)
+    assert s.seen_tools == {"ping", "export_pdf"} and out, "recorded, and still passed on to Claude"

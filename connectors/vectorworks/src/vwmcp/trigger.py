@@ -19,6 +19,7 @@ If you're in another app (a browser, Claude) it fires straight away and hands fo
 
 from __future__ import annotations
 
+import contextlib
 import json
 import re
 import sys
@@ -28,6 +29,18 @@ from pathlib import Path
 from typing import NamedTuple
 
 from .config import Settings
+
+
+def _menu_log(what: str, state: dict | None = None) -> None:
+    """One line in ~/.vwmcp/menu.log: what a menu press saw (kept short; it's for diagnosis)."""
+    try:
+        log = Path.home() / ".vwmcp" / "menu.log"
+        if log.exists() and log.stat().st_size > 200_000:
+            log.write_text("", encoding="utf-8")
+        with log.open("a", encoding="utf-8") as f:
+            f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + what + ("  " + json.dumps(state, default=str) if state else "") + "\n")
+    except Exception:
+        pass
 
 
 # Vectorworks' program on Windows ("Vectorworks2026.exe" and the like). Not a browser, not Explorer.
@@ -319,6 +332,80 @@ class _Win32:
                             return p
         return None
 
+    def fill_export_dialogs(self, window, path: str) -> list[str]:
+        """While Vectorworks exports a PDF: press through its PDF settings box, type `path` into the
+        save box and save, and say Yes to replacing a file of that name. Nothing else is touched.
+        Returns what it did."""
+        done = []
+        for w in self._dialogs(window):
+            try:
+                if w.handle == window.handle:
+                    continue
+                words = self._words(w)
+                name_box = None
+                for e in w.descendants(control_type="Edit"):
+                    if "file name" in (e.element_info.name or "").lower():
+                        name_box = e
+                        break
+            except Exception:
+                continue
+            if "already exists" in words and ("replace" in words or "overwrite" in words):
+                # Before the file name: Windows' "Confirm Save As" box shows up to UI Automation
+                # inside the save box, so the save box's words carry its question (measured
+                # 2026-11-15: answering the save box first pressed Save again and again).
+                if self._press(w, ("Yes",)):
+                    done.append("replaced the old file")
+            elif name_box is not None:
+                if not self._set_text(name_box, path):
+                    _menu_log(f"save box: couldn't put the path in File name (it says {self._text_of(name_box)!r})")
+                    continue
+                if self._press(w, ("Save", "Export", "OK")):
+                    done.append("saved as " + path)
+            elif "pdf" in words:
+                # Vectorworks' Export PDF box: don't open the PDF in a viewer (it would hold the file
+                # open), then Export. Measured on VW 2026: title "Export PDF", buttons Export/Cancel.
+                self._untick(w, "open pdf in the default viewer")
+                if self._press(w, ("Export", "OK")):
+                    done.append("PDF settings")
+        return done
+
+    @staticmethod
+    def _text_of(e) -> str:
+        import ctypes
+
+        try:
+            h = e.handle
+            if h:
+                buf = ctypes.create_unicode_buffer(2048)
+                ctypes.windll.user32.SendMessageW(h, 0x000D, 2048, buf)  # type: ignore[attr-defined]  # WM_GETTEXT
+                return buf.value
+        except Exception:
+            pass
+        try:
+            return e.get_value() or ""
+        except Exception:
+            return ""
+
+    def _set_text(self, e, text: str) -> bool:
+        """Put `text` in an edit box as typing, and check it's there. Measured 2026-11-15 on VW
+        2026's save box ("Export as PDF Document", Windows' own file box): both UI Automation's
+        set-value and WM_SETTEXT showed the path in File name, but Save used the box's default name:
+        neither tells the box the text changed. Characters sent as WM_CHAR do, like typing (window
+        messages: the lock screen doesn't stop them)."""
+        import ctypes
+
+        u = ctypes.windll.user32  # type: ignore[attr-defined]
+        h = getattr(e, "handle", None)
+        if h:
+            u.SendMessageW(h, 0x00B1, 0, -1)  # EM_SETSEL: all of it, so the typing replaces it
+            u.SendMessageW(h, 0x0102, 0x08, 0)  # WM_CHAR backspace: clear it
+            for ch in text:
+                u.SendMessageW(h, 0x0102, ord(ch), 0)  # WM_CHAR
+        else:
+            with contextlib.suppress(Exception):
+                e.set_edit_text(text)
+        return self._text_of(e).strip().lower() == text.strip().lower()
+
     @staticmethod
     def _body(w) -> str:
         try:
@@ -371,6 +458,17 @@ class _Win32:
                     b.invoke()
                     return True
         return False
+
+    @staticmethod
+    def _untick(w, words: str) -> None:
+        try:
+            for c in w.descendants(control_type="CheckBox"):
+                if words in c.window_text().replace("&", "").lower():
+                    if c.get_toggle_state() == 1:
+                        c.toggle()
+                    return
+        except Exception:
+            pass
 
     @staticmethod
     def _tick(w, words: str) -> None:
@@ -433,12 +531,262 @@ class _Win32:
             # while Vectorworks finished it. The queue presses again only if the job sits unclaimed.
             pass
 
-    def cancel_menus(self, window) -> None:
-        """Close a menu left open (Vectorworks keeps Tools open after the job's menu press) with
-        WM_CANCELMODE: a window message, not a key, so it works on the lock screen too."""
+    def press_menu_path(self, window, path: list, open_wait: float = 4.0) -> None:
+        """Press a command several menus down, e.g. ["File", "Export", "Export PDF..."], through UI
+        Automation: each level is opened (Expand, else Invoke) and the last one invoked. The last
+        Invoke can wait for the command to finish (a modal box stays up until answered), so call
+        this off the thread that answers those boxes."""
+        import time as _t
+
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+
+        def find(name: str, top: bool):
+            want = name.strip().lower()
+            if top:
+                # the menu bar's items (cancel_menus made sure no menu is open: then they're listed
+                # as top-level MenuItems; UI Automation doesn't show Vectorworks' bar as a MenuBar)
+                for bar in vw.descendants(control_type="MenuBar"):
+                    for m in bar.children():
+                        if m.window_text().strip().lower() == want:
+                            return m
+            pools = [vw]
+            try:
+                pools += list(Desktop(backend="uia").windows(process=window.process_id()))
+            except Exception:
+                pass
+            for pool in pools:
+                try:
+                    for m in pool.descendants(control_type="MenuItem"):
+                        if m.window_text().split("\t")[0].strip().lower() == want:
+                            return m
+                except Exception:
+                    continue
+            return None
+
+        _menu_log("press " + " > ".join(path), self.menu_state(window))
+        if not self.cancel_menus(window):
+            raise TriggerError("A Vectorworks menu is open and couldn't be closed, so its other menus can't be pressed.")
+        last = len(path) - 1
+        for i, name in enumerate(path):
+            hit = None
+            deadline = _t.monotonic() + open_wait
+            while hit is None and _t.monotonic() < deadline:
+                hit = find(name, top=(i == 0))
+                if hit is None:
+                    _t.sleep(0.15)
+            where = ""
+            with contextlib.suppress(Exception):
+                where = f" at {hit.rectangle()} visible={hit.is_visible()}"
+            _menu_log(f"level {i} {name!r}: {'found' + where if hit is not None else 'NOT found'}", self.menu_state(window) if hit is None else None)
+            if hit is None:
+                self.cancel_menus(window)
+                raise TriggerError(f"Couldn't find '{name}' in Vectorworks' menus ({' > '.join(path)}).")
+            if i < last:
+                try:
+                    hit.expand()
+                except Exception:
+                    hit.invoke()
+                _t.sleep(0.3)
+            elif i > 0 and self._click_by_message(window, hit):
+                # Measured 2026-11-15: UI Automation's Invoke on an item in a submenu (File > Export
+                # > Export PDF...) shows it pressed but runs nothing; a click posted to the
+                # submenu's own window does (window messages: works on the lock screen too).
+                _menu_log(f"clicked {name!r} by window message")
+            else:
+                try:
+                    hit.invoke()
+                except Exception:
+                    pass  # Invoke gives up while the command's box is open; the press went through
+
+    def _click_by_message(self, window, item) -> bool:
+        """Post a mouse move, button down and button up to the menu popup window under `item`'s
+        middle, at that point. False when no Vectorworks popup is there."""
         import ctypes
 
-        ctypes.windll.user32.SendMessageW(window.handle, 0x001F, 0, 0)  # type: ignore[attr-defined]
+        u = ctypes.windll.user32  # type: ignore[attr-defined]
+        r = item.rectangle()
+        x, y = (r.left + r.right) // 2, (r.top + r.bottom) // 2
+
+        class P(ctypes.Structure):
+            _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
+
+        class R(ctypes.Structure):
+            _fields_ = [("l", ctypes.c_long), ("t", ctypes.c_long), ("r", ctypes.c_long), ("b", ctypes.c_long)]
+
+        pid = ctypes.c_ulong()
+        u.GetWindowThreadProcessId(window.handle, ctypes.byref(pid))
+        hits: list[int] = []
+        proto = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
+
+        def each(h, _):
+            p = ctypes.c_ulong()
+            u.GetWindowThreadProcessId(h, ctypes.byref(p))
+            if p.value == pid.value and u.IsWindowVisible(h) and u.GetClassLongW(h, -26) & 0x800:
+                rr = R()
+                u.GetWindowRect(h, ctypes.byref(rr))
+                if rr.l <= x < rr.r and rr.t <= y < rr.b:
+                    hits.append(h)
+            return True
+
+        u.EnumWindows(proto(each), 0)
+        if not hits:
+            return False
+        h = hits[0]  # EnumWindows goes top-most first: the submenu over its parent menu
+        # An MFC popup's items live in a child window (its CMFCPopupMenuBar): go down to the
+        # deepest visible child under the point; that's the window that takes the click.
+        for _ in range(6):
+            cp = P(x, y)
+            u.ScreenToClient(h, ctypes.byref(cp))
+            child = u.ChildWindowFromPointEx(h, cp, 0x0001)  # CWP_SKIPINVISIBLE
+            if not child or child == h:
+                break
+            h = child
+        cls = ctypes.create_unicode_buffer(128)
+        u.GetClassNameW(h, cls, 128)
+        _menu_log(f"click goes to {h:#x} {cls.value!r}")
+        pt = P(x, y)
+        u.ScreenToClient(h, ctypes.byref(pt))
+        lp = (pt.y & 0xFFFF) << 16 | (pt.x & 0xFFFF)
+        u.PostMessageW(h, 0x0200, 0, lp)  # WM_MOUSEMOVE: highlight it
+        time.sleep(0.15)
+        u.PostMessageW(h, 0x0201, 1, lp)  # WM_LBUTTONDOWN
+        u.PostMessageW(h, 0x0202, 0, lp)  # WM_LBUTTONUP
+        return True
+
+    def menu_state(self, window) -> dict:
+        """What Windows can see of Vectorworks' menus right now (for menu.log)."""
+        import ctypes
+
+        out: dict = {}
+        try:
+            u = ctypes.windll.user32  # type: ignore[attr-defined]
+            hm = u.GetMenu(window.handle)
+            out["hmenu"] = bool(hm)
+            if hm:
+                names = []
+                for k in range(u.GetMenuItemCount(hm)):
+                    buf = ctypes.create_unicode_buffer(128)
+                    u.GetMenuStringW(hm, k, buf, 128, 0x400)
+                    names.append(buf.value)
+                out["native_top"] = names
+        except Exception as e:
+            out["native_error"] = repr(e)
+        try:
+            from pywinauto import Desktop
+
+            vw = Desktop(backend="uia").window(handle=window.handle)
+            out["menubars"] = [[m.window_text() for m in bar.children()][:16] for bar in vw.descendants(control_type="MenuBar")]
+            items = [m.window_text().split("\t")[0] for m in vw.descendants(control_type="MenuItem")]
+            out["items"] = (len(items), items[:12])
+            out["windows"] = [(w.window_text(), w.class_name()) for w in Desktop(backend="uia").windows(process=window.process_id())][:8]
+        except Exception as e:
+            out["uia_error"] = repr(e)
+        return out
+
+    def _menu_bar_names(self, window) -> list[str]:
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+        names: list[str] = []
+        for bar in vw.descendants(control_type="MenuBar"):
+            names += [m.window_text().strip() for m in bar.children()]
+        return names
+
+    def _menus_closed(self, window, popups=None) -> bool:
+        """No menu open: the open menu's own window (an MFC popup, measured on VW 2026: class
+        "Afx:…:800:…" where the menu is drawn) is gone, and the top-level File item is listed again.
+        UI Automation never shows Vectorworks' menu bar as a MenuBar, only as top-level items."""
+        import ctypes
+
+        try:
+            u = ctypes.windll.user32  # type: ignore[attr-defined]
+            if popups and any(u.IsWindowVisible(h) for h in popups):
+                return False
+            from pywinauto import Desktop
+
+            vw = Desktop(backend="uia").window(handle=window.handle)
+            names = {m.window_text().split("\t")[0].strip() for m in vw.descendants(control_type="MenuItem")}
+            return "File" in names
+        except Exception:
+            return False
+
+    def cancel_menus(self, window, wait: float = 1.5) -> str:
+        """Close a menu left open (Vectorworks keeps Tools open after the job's menu press: its
+        menu bar then drops out of UI Automation and nothing else on the menus can be pressed).
+        Only window messages and UI Automation, no keys, so it works on the lock screen. Tries each
+        way until the menu bar is back; returns which one did it ("" when none did)."""
+        import ctypes
+        import time as _t
+
+        u = ctypes.windll.user32  # type: ignore[attr-defined]
+
+        def popups() -> list[int]:
+            """Vectorworks' open popup windows: an MFC menu's popup is one (class "Afx:…:800:…",
+            style CS_SAVEBITS; not a #32768 Windows menu)."""
+            found: list[int] = []
+            pid = ctypes.c_ulong()
+            u.GetWindowThreadProcessId(window.handle, ctypes.byref(pid))
+            want = pid.value
+            proto = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
+
+            def each(h, _):
+                p = ctypes.c_ulong()
+                u.GetWindowThreadProcessId(h, ctypes.byref(p))
+                # CS_SAVEBITS (0x800): menus and other short-lived popups; palettes don't have it
+                if p.value == want and h != window.handle and u.IsWindowVisible(h) and u.GetClassLongW(h, -26) & 0x800:
+                    found.append(h)
+                return True
+
+            u.EnumWindows(proto(each), 0)
+            return found
+
+        def describe(h) -> str:
+            cls = ctypes.create_unicode_buffer(128)
+            u.GetClassNameW(h, cls, 128)
+            title = ctypes.create_unicode_buffer(128)
+            u.GetWindowTextW(h, title, 128)
+
+            class R(ctypes.Structure):
+                _fields_ = [("l", ctypes.c_long), ("t", ctypes.c_long), ("r", ctypes.c_long), ("b", ctypes.c_long)]
+
+            r = R()
+            u.GetWindowRect(h, ctypes.byref(r))
+            return f"{h:#x} {cls.value!r} {title.value!r} {r.l},{r.t},{r.r},{r.b}"
+
+        def to_popups(*msgs):
+            hs = popups()
+            for h in hs:
+                for m, w in msgs:
+                    u.PostMessageW(h, m, w, 0)
+            return hs
+
+        open_now = popups()
+        if not open_now and self._menus_closed(window):
+            return "already closed"
+        with contextlib.suppress(Exception):
+            _menu_log("close menus: Vectorworks' other windows: " + "; ".join(describe(h) for h in open_now))
+        ways = [
+            ("cancel mode", lambda: u.SendMessageW(window.handle, 0x001F, 0, 0)),
+            ("cancel mode to the menu's window", lambda: to_popups((0x001F, 0))),
+            ("escape to the menu's window", lambda: to_popups((0x0100, 0x1B), (0x0101, 0x1B))),
+            ("escape to Vectorworks", lambda: (u.PostMessageW(window.handle, 0x0100, 0x1B, 0), u.PostMessageW(window.handle, 0x0101, 0x1B, 0))),
+        ]
+        for name, way in ways:
+            try:
+                way()
+            except Exception as e:
+                _menu_log(f"close menus: {name} failed: {e!r}")
+                continue
+            deadline = _t.monotonic() + wait
+            while _t.monotonic() < deadline:
+                if self._menus_closed(window, open_now):
+                    _menu_log(f"close menus: {name} worked")
+                    return name
+                _t.sleep(0.1)
+        _menu_log("close menus: nothing worked", self.menu_state(window))
+        return ""
 
     def title(self, window) -> str:
         return window.window_text() or ""
@@ -726,6 +1074,22 @@ class HotkeyTrigger(Trigger):
         if remember:
             remember_prompt(prompt_phrase(hit["title"], hit["text"]), button)
         return hit
+
+    def press_menu_path(self, path: list) -> None:
+        """Press a command several menus down (see _Win32.press_menu_path)."""
+        target = self.find_window()
+        if target is None:
+            raise self._not_found("")
+        if not self.win.enabled(target):
+            raise self._dialog_error(target)
+        getattr(self.win, "press_menu_path")(target, path)
+
+    def fill_export_dialogs(self, path: str) -> list[str]:
+        """Answer the boxes a PDF export opens (see _Win32.fill_export_dialogs)."""
+        target = self.find_window()
+        if target is None:
+            return []
+        return getattr(self.win, "fill_export_dialogs", lambda w, p: [])(target, path)
 
     def tidy(self) -> None:
         """After a job: close the Tools menu the press left open (WM_CANCELMODE, no keys)."""

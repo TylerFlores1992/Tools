@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 61 tools (63 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 70 tools (72 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -155,8 +155,10 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    running (no request from Claude, no Vectorworks job: each job leaves a file in
    `%USERPROFILE%\.vwmcp\busy` while it runs), starts a fresh child, repeats Claude's handshake to
    it and tells Claude the tool list changed. A child that dies is started again; what it was
-   answering gets an error saying so. Only `supervisor.py` itself still needs the app restarted.
-   `VWMCP_SUPERVISE=0` runs the server directly, as before.
+   answering gets an error saying so. Only `supervisor.py` itself still needs the app restarted,
+   and so do NEW tools: the Claude app keeps the tool list it got at start and doesn't list again
+   when told it changed (measured 2026-11-14). `ping` then names them
+   (`new_tools_need_claude_restart`). `VWMCP_SUPERVISE=0` runs the server directly, as before.
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
@@ -242,6 +244,7 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
 | Show setup | `survey_drawing`, `get_show_setup`, `find_reference_lines`, `set_datum`, `set_departments`, `set_limits`, `show_departments`, `where_is` |
 | Rigging | `get_rigging`, `rigging_report`, `save_rigging_revision`, `design_bridle`, `bridle_from_legs`, `truss_loads` |
 | Venue files | `import_dwg`, `check_scale`, `scale_objects` |
+| Sheets | `create_sheet_layer` (page size in inches), `create_viewport` (only the layers asked for, classes off, scale, crop, where on the sheet), `viewport_visibility` (show or hide layers and classes in a sheet's viewports), `sheet_viewports`, `layer_scale` (a notes layer at the drawing's scale), `annotate_viewport` (notes into the viewport's annotations, which always print; `offset` from `create_viewport` when it was placed with `at`), `annotation_text` (printed text size), `export_pdf` (presses File > Export > Export PDF... and answers its boxes itself, locked PC too; updates the sheet's viewports first; a slow one answers `running` before the PC link's 80 s limit, and calling again waits for it), `save_as` (a new version beside the original) |
 | 3D & rigs | `build_rig`, `place_truss`, `place_symbol_3d`, `set_z` |
 | Workflow | `batch` (many steps, one round trip, one undo), `undo_last`, `vs_lookup` |
 | Look | `screenshot` (Windows), `snapshot` (SVG) |

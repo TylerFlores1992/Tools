@@ -122,7 +122,18 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             folders = readout.watch_folders()
             out["watching"] = [str(f) for f in folders] if folders else "nothing (set VWMCP_WATCH to read out new files by itself)"
             out["requests"] = [str(f) for f in readout.request_folders()] or "no Dropbox 'Rig Studio' folder found (set VWMCP_REQUESTS)"
+            missing = await tools_claude_lacks()
+            if missing:
+                out["new_tools_need_claude_restart"] = missing
         return out
+
+    async def tools_claude_lacks() -> list:
+        """Tools this code has that the Claude app wasn't shown (it keeps the list from its start)."""
+        seen = os.environ.get("VWMCP_TOOLS_SEEN", "")
+        if not seen:
+            return []
+        have = {t.name for t in await mcp.list_tools()}
+        return sorted(have - set(seen.split(",")))
 
     @mcp.tool()
     async def update_connector(install: bool = True) -> dict:
@@ -153,6 +164,189 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
     async def create_layer(name: str, activate: bool = True) -> dict:
         """Create a design layer (or reuse it if it exists) and optionally make it active."""
         return await call("create_layer", name=name, activate=activate)
+
+    @mcp.tool()
+    async def create_sheet_layer(name: str, width: float | None = None, height: float | None = None, activate: bool = False) -> dict:
+        """Create a sheet layer (or reuse it), its page `width` x `height` in inches when given
+        (ARCH D 36 x 24, 11 x 17 tabloid). Sheet layer coordinates are page inches."""
+        return await call("create_sheet_layer", name=name, width=width, height=height, activate=activate)
+
+    @mcp.tool()
+    async def create_viewport(sheet: str, layers: list[str], scale: float = 48, hidden_classes: list[str] | None = None,
+                              crop: list[Point] | None = None, at: list[float] | None = None, name: str | None = None) -> dict:
+        """A viewport on sheet layer `sheet` showing only the design `layers` (every other one off)
+        with `hidden_classes` off, at `scale` (48 = 1/4" = 1'-0", 96 = 1/8"). `crop`
+        [[x1, y1], [x2, y2]] in drawing coordinates: the part of the drawing it shows. `at` [x, y]
+        in page inches: where its center goes on the sheet. Returns where it landed (on_sheet)."""
+        return await call("create_viewport", sheet=sheet, layers=layers, scale=scale, hidden_classes=hidden_classes, crop=crop, at=at, name=name)
+
+    exports: dict[str, asyncio.Task] = {}
+
+    def _pdf_written(path: str, before: float | None) -> int:
+        """The PDF's size once it's there, newer than `before`, and not still growing."""
+        if not os.path.exists(path) or (before is not None and os.path.getmtime(path) <= before):
+            return 0
+        a = os.path.getsize(path)
+        time.sleep(0.6)
+        b = os.path.getsize(path) if os.path.exists(path) else 0
+        return b if a == b and b > 0 else 0
+
+    async def _export(sheet: str, path: str, timeout: float) -> dict:
+        """The export itself: File > Export > Export PDF... pressed through the menus, and its boxes
+        answered. (Vectorworks' batch-PDF calls, AcquireExportPDFSettingsAndLocation and the rest,
+        return False at once from a script and open nothing: measured twice 2026-11-15.) A file
+        mark keeps new connector code from being swapped in halfway."""
+        from .trigger import _menu_log
+
+        before = os.path.getmtime(path) if os.path.exists(path) else None
+        answered: list[str] = []
+        mark = settings.home / BUSY_DIR / ("pdf-" + str(os.getpid()))
+        with contextlib.suppress(Exception):
+            mark.parent.mkdir(parents=True, exist_ok=True)
+            mark.write_text("export_pdf", encoding="utf-8")
+        deadline = time.monotonic() + float(timeout)
+
+        async def answer_until(done) -> int:
+            while time.monotonic() < deadline:
+                with contextlib.suppress(Exception):
+                    answered.extend(await asyncio.to_thread(trigger.fill_export_dialogs, path))
+                size = await asyncio.to_thread(_pdf_written, path, before)
+                if size:
+                    return size
+                if done():
+                    # the route finished: one last look for a box or the file, then give up on it
+                    for _ in range(3):
+                        await asyncio.sleep(0.8)
+                        with contextlib.suppress(Exception):
+                            answered.extend(await asyncio.to_thread(trigger.fill_export_dialogs, path))
+                        size = await asyncio.to_thread(_pdf_written, path, before)
+                        if size:
+                            return size
+                    return 0
+                await asyncio.sleep(0.8)
+            return 0
+
+        route, why = "", []
+        try:
+            # An export box left open (a run that gave up halfway) blocks every job: answer it
+            # first. If that writes the PDF, it was this sheet's export, and that's the result.
+            with contextlib.suppress(Exception):
+                answered.extend(await asyncio.to_thread(trigger.fill_export_dialogs, path))
+            if answered:
+                leftover_until = time.monotonic() + 45
+                while time.monotonic() < min(leftover_until, deadline):
+                    with contextlib.suppress(Exception):
+                        answered.extend(await asyncio.to_thread(trigger.fill_export_dialogs, path))
+                    size = await asyncio.to_thread(_pdf_written, path, before)
+                    if size:
+                        return {"pdf": path, "bytes": size, "sheet": sheet, "answered": answered, "note": "finished an export box that was already open"}
+                    await asyncio.sleep(0.8)
+            # Show the sheet first: Export PDF exports the active sheet layer.
+            shown = await call("show_sheet", sheet=sheet)
+            press_error: list[BaseException] = []
+
+            def press() -> None:
+                try:
+                    trigger.press_menu_path(["File", "Export", "Export PDF..."])
+                except BaseException as e:
+                    press_error.append(e)
+
+            pressed_at = time.monotonic()
+            presser = asyncio.create_task(asyncio.to_thread(press))
+            # The press returns before Vectorworks opens its box: give the box 30 s to show up;
+            # once one has been answered, wait for the file until the deadline.
+            size = await answer_until(lambda: presser.done() and not answered and (bool(press_error) or time.monotonic() - pressed_at > 30))
+            if press_error:
+                why.append(f"menu: {press_error[0]}")
+            with contextlib.suppress(Exception):
+                await asyncio.wait_for(presser, 30)
+            with contextlib.suppress(Exception):
+                if isinstance(shown, dict) and shown.get("previous"):
+                    await call("activate_layer", name=shown["previous"])
+            if size:
+                route = "menu"
+        finally:
+            with contextlib.suppress(Exception):
+                mark.unlink()
+            with contextlib.suppress(Exception):
+                _menu_log(f"export_pdf {path}: route={route or 'none'} answered={answered} why={why}")
+        if not route:
+            raise ToolError(f"No PDF appeared at {path} within {timeout:.0f}s ({'; '.join(why) or 'no box opened'}). Boxes answered: {answered or 'none'}.")
+        return {"pdf": path, "bytes": os.path.getsize(path), "sheet": sheet, "answered": answered}
+
+    @mcp.tool()
+    async def export_pdf(sheet: str, path: str, timeout: float = 240, wait: float = 70) -> dict:
+        """Export sheet layer `sheet` to a PDF at `path` (a full Windows path ending in .pdf, e.g.
+        beside the drawing), the whole page as one PDF page. It runs Vectorworks' own PDF export and
+        answers its boxes itself (no viewer opens; a file of that name is replaced). Returns the path
+        and its size once it's written. Works with the PC locked. The link to the PC gives up on a call after 80 s, so after
+        `wait` seconds a slow export answers {"running": true} and carries on: call export_pdf
+        again with the same path to wait for it (it doesn't start a second one)."""
+        if not path.lower().endswith(".pdf"):
+            raise ToolError("The PDF path should end in .pdf.")
+        if not hasattr(trigger, "fill_export_dialogs"):
+            raise ToolError("This connector can't answer Vectorworks' export boxes here (no Windows access).")
+        key = os.path.normcase(os.path.abspath(path))
+        task = exports.get(key)
+        if task is None or (task.done() and getattr(task, "_reported", False)):
+            task = asyncio.create_task(_export(sheet, path, timeout))
+            exports[key] = task
+        try:
+            out = await asyncio.wait_for(asyncio.shield(task), timeout=max(1.0, float(wait)))
+        except asyncio.TimeoutError:
+            return {"running": True, "pdf": path, "sheet": sheet,
+                    "next": "Vectorworks is still exporting: call export_pdf again with the same path to wait for it."}
+        except BaseException:
+            task._reported = True  # type: ignore[attr-defined]
+            raise
+        task._reported = True  # type: ignore[attr-defined]
+        return out
+
+    @mcp.tool()
+    async def viewport_visibility(sheet: str, show_layers: list[str] | None = None, hide_layers: list[str] | None = None,
+                                  show_classes: list[str] | None = None, hide_classes: list[str] | None = None) -> dict:
+        """Turn design layers and classes on or off in every viewport on sheet layer `sheet`, then
+        update them. A layer made after a viewport (a notes layer drawn on afterwards) stays hidden in
+        it until shown here. (Also runs as a batch step: {"op": "viewport_visibility", "args": {...}}.)"""
+        return await call("viewport_visibility", sheet=sheet, show_layers=show_layers, hide_layers=hide_layers,
+                          show_classes=show_classes, hide_classes=hide_classes)
+
+    @mcp.tool()
+    async def sheet_viewports(sheet: str) -> dict:
+        """Each viewport on sheet layer `sheet`: id, frame on the sheet, scale, crop (drawing
+        coordinates), the design layers it shows and the classes it hides."""
+        return await call("sheet_viewports", sheet=sheet)
+
+    @mcp.tool()
+    async def layer_scale(names: list[str] | None = None, scale: float | None = None, like: str | None = None) -> dict:
+        """Design layers' scales (all when `names` is empty), or set `names` to `scale` or to the
+        scale of layer `like`, keeping their text the size it was in the drawing. A notes layer
+        must have the drawing's scale or it won't line up with it in a viewport."""
+        return await call("layer_scale", names=names, scale=scale, like=like)
+
+    @mcp.tool()
+    async def annotate_viewport(sheet: str, layer: str, offset: list[float] | None = None, hide_layer: bool = True) -> dict:
+        """Copy everything on design layer `layer` (reference lines, dimensions, labels drawn in
+        drawing coordinates) into the annotations of the one viewport on sheet `sheet`, and turn
+        the layer off in it: annotations always print over the viewport (plain 2D objects on a
+        design layer didn't show in a viewport of 3D decks). `offset`: create_viewport's
+        annotation_offset when it was placed with `at`. Text keeps its look (points x the layer's
+        scale); annotation_text then sets the printed size."""
+        return await call("annotate_viewport", sheet=sheet, layer=layer, offset=offset, hide_layer=hide_layer)
+
+    @mcp.tool()
+    async def annotation_text(sheet: str, target_pt: float | None = None) -> dict:
+        """The printed sizes (points on paper) of the text in the viewport's annotations on sheet
+        `sheet`; with `target_pt`, scale them all so the most common prints at target_pt (6-8 for
+        dimensions on a 24 x 36 sheet)."""
+        return await call("annotation_text", sheet=sheet, target_pt=target_pt)
+
+    @mcp.tool()
+    async def save_as(path: str) -> dict:
+        """Save the open drawing as a new file at `path` (full Windows path ending in .vwx): a new
+        version beside the original, which stays as it was last saved. Vectorworks then has the new
+        file open."""
+        return await call("save_as", path=path)
 
     @mcp.tool()
     async def create_class(name: str, activate: bool = False) -> dict:

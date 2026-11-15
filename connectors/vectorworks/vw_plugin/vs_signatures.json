@@ -5,6 +5,10 @@
   "AddPoint": [
    "p"
   ],
+  "AddVPAnnotationObject": [
+   "viewportHandle",
+   "annotationHandle"
+  ],
   "AlrtDialog": [
    "message"
   ],
@@ -52,6 +56,9 @@
   ],
   "CreateText": [
    "theText"
+  ],
+  "CreateVP": [
+   "parentHandle"
   ],
   "DSelectAll": [],
   "DelObject": [
@@ -130,6 +137,9 @@
   ],
   "GetDimText": [
    "h"
+  ],
+  "GetDrawingSizeRectN": [
+   "hLayer"
   ],
   "GetFName": [],
   "GetFPat": [
@@ -263,6 +273,13 @@
   "GetVPClassVisibility": [
    "viewportHandle",
    "className"
+  ],
+  "GetVPCropObject": [
+   "viewportHandle"
+  ],
+  "GetVPGroup": [
+   "viewportHandle",
+   "groupType"
   ],
   "GetVPLayerVisibility": [
    "viewportHandle",
@@ -412,6 +429,9 @@
    "dialogID",
    "callback"
   ],
+  "SaveActiveDocument": [
+   "filePath"
+  ],
   "Set3DRot": [
    "h",
    "xAngle",
@@ -442,6 +462,10 @@
    "ItemID",
    "newtext"
   ],
+  "SetDrawingRect": [
+   "paperWidth",
+   "paperHeight"
+  ],
   "SetFPat": [
    "h",
    "fillPattern"
@@ -454,6 +478,10 @@
    "dialogID",
    "firstItemID"
   ],
+  "SetLScale": [
+   "h",
+   "scale"
+  ],
   "SetLW": [
    "h",
    "lw"
@@ -463,6 +491,11 @@
    "name"
   ],
   "SetObjectVariableInt": [
+   "h",
+   "index",
+   "value"
+  ],
+  "SetObjectVariableReal": [
    "h",
    "index",
    "value"
@@ -483,6 +516,26 @@
   ],
   "SetSelect": [
    "h"
+  ],
+  "SetTextSize": [
+   "objectHd",
+   "Start",
+   "Count",
+   "Size"
+  ],
+  "SetVPClassVisibility": [
+   "viewportHandle",
+   "clasName",
+   "visibilityType"
+  ],
+  "SetVPCropObject": [
+   "viewportHandle",
+   "cropHandle"
+  ],
+  "SetVPLayerVisibility": [
+   "viewportHandle",
+   "layerHandle",
+   "visibilityType"
   ],
   "SetView": [
    "xAngle",
@@ -517,10 +570,13 @@
   "TextSize": [
    "size"
   ],
+  "UpdateVP": [
+   "viewportHandle"
+  ],
   "Wall": [
    "p1",
    "p2"
   ]
  },
- "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09."
+ "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09. CreateVP, SetVPLayerVisibility, SetVPClassVisibility, SetVPCropObject, UpdateVP, SetDrawingRect, GetDrawingSizeRectN, SaveActiveDocument, SetObjectVariableReal, GetObjectVariableReal, SetLScale, GetLScale from the same vs.py, read 2026-11-14. SetTextSize, AddVPAnnotationObject, GetVPCropObject and GetVPGroup from Vectorworks 2026's own vs module (vs_lookup, 2026-11-15)."
 }

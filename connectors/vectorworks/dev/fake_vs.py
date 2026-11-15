@@ -130,7 +130,104 @@ def NextLayer(h):
 
 
 def GetObjectVariableReal(h, index):
+    if index == 1003:  # viewport scale
+        return float(h.vp_scale)
     return float({102: getattr(h, "sx", 1.0), 103: getattr(h, "sy", 1.0), 104: getattr(h, "sz", 1.0)}.get(index, 0.0))
+
+
+def SetObjectVariableReal(h, index, value):
+    if index != 1003 or h.type != 122:
+        raise ScriptErrors(f"real selector {index} not faked")
+    h.vp_scale = float(value)
+    _vp_frame(h)
+
+
+# ---- sheets: sheet layer page, viewports, PDF export, save as --------------------------------
+
+
+def SetDrawingRect(paperWidth, paperHeight):
+    DOC.active_layer.page = (float(paperWidth), float(paperHeight))
+
+
+def GetDrawingSizeRectN(hLayer):
+    w, h = getattr(hLayer, "page", (11.0, 8.5))
+    return (-w / 2, h / 2), (w / 2, -h / 2)
+
+
+def _vp_frame(vp):
+    """The viewport's rectangle on the sheet: what it shows (crop, or the drawing's extent) over
+    its scale, around its center on the sheet."""
+    (x0, y0), (x1, y1) = vp.view
+    w, h = (x1 - x0) / vp.vp_scale, (y1 - y0) / vp.vp_scale
+    cx, cy = vp.at
+    vp.members = [_Obj(3, pts=[(cx - w / 2, cy + h / 2), (cx + w / 2, cy + h / 2), (cx + w / 2, cy - h / 2), (cx - w / 2, cy - h / 2)])]
+
+
+def CreateVP(parentHandle):
+    if getattr(parentHandle, "layer_type", 1) != 2:
+        raise ScriptErrors("CreateVP needs a sheet layer here")
+    vp = _Obj(122, members=[], layer_vis={}, class_vis={}, vp_scale=1.0, view=((-480.0, -480.0), (480.0, 480.0)), at=(0.0, 0.0))
+    DOC.objects.append(vp)
+    vp.layer, vp.cls = parentHandle, DOC.active_class
+    _vp_frame(vp)
+    return vp
+
+
+def SetVPLayerVisibility(viewportHandle, layerHandle, visibilityType):
+    viewportHandle.layer_vis[layerHandle.name] = int(visibilityType)
+    return True
+
+
+def SetVPClassVisibility(viewportHandle, clasName, visibilityType):
+    viewportHandle.class_vis[clasName] = int(visibilityType)
+    return True
+
+
+def SetVPCropObject(viewportHandle, cropHandle):
+    """As measured on VW 2026: the cropped viewport's middle lands at the page's middle plus (the
+    crop's middle + the user origin) / scale, but its bounding box keeps reading the stale square
+    it had before until the viewport is moved."""
+    xs, ys = [p[0] for p in cropHandle.pts], [p[1] for p in cropHandle.pts]
+    viewportHandle.view = ((min(xs), min(ys)), (max(xs), max(ys)))
+    DOC.objects.remove(cropHandle)
+    (px1, py1), (px2, py2) = GetDrawingSizeRectN(viewportHandle.layer)
+    ox, oy = DOC.origin
+    s = viewportHandle.vp_scale
+    viewportHandle.at = ((px1 + px2) / 2 + ((min(xs) + max(xs)) / 2 + ox) / s, (py1 + py2) / 2 + ((min(ys) + max(ys)) / 2 + oy) / s)
+    return True
+
+
+def UpdateVP(viewportHandle):
+    viewportHandle.updated = True
+
+
+def GetVPCropObject(viewportHandle):
+    return None  # the fake keeps only the cropped view, not the crop object
+
+
+def GetVPGroup(viewportHandle, groupType):
+    """groupType 2: the annotations, as a group whose members are the annotation objects."""
+    if int(groupType) != 2 or not viewportHandle.__dict__.get("annotations"):
+        return None
+    g = _Obj(11, members=viewportHandle.annotations)
+    for m in g.members:
+        m.parent_obj = g
+    return g
+
+
+def AddVPAnnotationObject(viewportHandle, annotationHandle):
+    """Measured on VW 2026: the object moves into the viewport's annotations, its coordinates as
+    they were (in the viewport's annotation space)."""
+    if annotationHandle in DOC.objects:
+        DOC.objects.remove(annotationHandle)
+    viewportHandle.__dict__.setdefault("annotations", []).append(annotationHandle)
+    return True
+
+
+def SaveActiveDocument(filePath):
+    DOC.path = filePath
+    DOC.fname = filePath.replace("\\", "/").rsplit("/", 1)[-1]
+    return 0
 
 
 def GetObjectVariableInt(h, index):
@@ -454,6 +551,10 @@ def HPerim(h):
 
 def HMove(h, xOffset, yOffset):
     dx, dy = float(xOffset), float(yOffset)
+    if getattr(h, "type", None) == 122:  # a viewport moves on its sheet; what it shows stays
+        h.at = (h.at[0] + dx, h.at[1] + dy)
+        _vp_frame(h)
+        return
     if hasattr(h, "pts"):
         h.pts = [(x + dx, y + dy) for x, y in h.pts]
     if hasattr(h, "cx"):
@@ -491,6 +592,9 @@ def ResetObject(objectHandle):
 
 
 def DelObject(h):
+    if h in DOC.layers:  # deleting a layer
+        DOC.layers.remove(h)
+        return
     parent = getattr(h, "parent_obj", None)
     if parent is not None and hasattr(parent, "members") and h in parent.members:
         parent.members.remove(h)
@@ -749,6 +853,10 @@ def IsLayerReferenced(layer):
 
 def GetLScale(h):
     return h.scale
+
+
+def SetLScale(h, scale):
+    h.scale = float(scale)
 
 
 def GetOriginInDocUnits():
@@ -1313,6 +1421,10 @@ def GetCVis(className):
 
 def GetTextSize(TextHd, Position):
     return getattr(TextHd, "pt", 12.0)
+
+
+def SetTextSize(objectHd, Start, Count, Size):
+    objectHd.pt = float(Size)
 
 
 def GetTextOrientation(theText):
