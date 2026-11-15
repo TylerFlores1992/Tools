@@ -106,17 +106,25 @@ The link usually comes up at once; if a first search comes back empty, keep look
   36 x 24 or 11 x 17; its result gives the page's corners and middle in the sheet's own
   coordinates: draw the title block from those), create_viewport (only the design layers asked
   for, every other one off; hidden_classes; scale 48 = 1/4", 64 = 3/16", 96 = 1/8"; crop
-  [[x1, y1], [x2, y2]] in drawing coordinates; at [x, y] in page inches from the page's middle).
-  Draw dimensions, reference lines and labels on a new design layer (e.g. "<sheet> - Notes") in
-  drawing coordinates and include it in the viewport's layers; text sizes are in points at that
-  layer's scale. export_pdf(sheet, full path beside the drawing) runs Vectorworks' own Export PDF
-  and answers its boxes. save_as(full path) saves a new version beside the original (a drawing
-  from an older Vectorworks opens as an unsaved "<name>_v2026" copy: save_as is how it's kept).
-  Check the result: screenshot after zooming to the sheet, and read the PDF back
-  (device_stage_files, then pdftoppm) to look at it before you finish.
-  If one of these tools isn't in your tool list, the Claude app on the PC started before the
-  connector had it: fail with "The connector on your PC has new tools the Claude app hasn't
-  loaded yet: quit and reopen the Claude app on the PC, then press Try again."
+  [[x1, y1], [x2, y2]] in drawing coordinates; at [x, y] in page inches from the page's middle;
+  keep its annotation_offset). Draw reference lines, dimensions and labels on a new design layer
+  ("<sheet> - Notes") in drawing coordinates, set that layer to the drawing's scale first
+  (layer_scale names [notes layer], like a layer the viewport shows), then copy them into the
+  viewport with annotate_viewport(sheet, notes layer, offset = annotation_offset) and set their
+  printed size with annotation_text(sheet, target_pt 7). (Plain 2D objects on a design layer
+  didn't show in a viewport of CFF-26's 3D decks; annotations always print.) If layer_scale,
+  annotate_viewport, annotation_text, sheet_viewports or viewport_visibility isn't among your
+  tools, run it as a batch step: {"op": "<name>", "args": {...}} with the same arguments.
+  export_pdf(sheet, full path beside the drawing) runs Vectorworks' own Export PDF and answers
+  its boxes; if it answers {"running": true}, call it again with the same path until it returns
+  the PDF. save_as(full path) saves a new version beside the original (a drawing from an older
+  Vectorworks opens as an unsaved "<name>_v2026" copy: save_as is how it's kept).
+  Check the result before you finish: read the PDF back (device_stage_files, then pdftoppm to look
+  at it and pdftotext -bbox to see the text isn't tiny) and fix what's off.
+  If create_sheet_layer, create_viewport, export_pdf or save_as isn't in your tool list, the
+  Claude app on the PC started before the connector had it: fail with "The connector on your PC
+  has new tools the Claude app hasn't loaded yet: quit and reopen the Claude app on the PC, then
+  press Try again."
 - Building: only the project's approved version. `npx tsx scripts/rig-sketch.mts build` gives
   the build list; call build_rig with it, layer "Rig – <name> v<n>" (refused if that layer has
   objects: ask in the reply rather than replace=true unless the request said to replace). Report
