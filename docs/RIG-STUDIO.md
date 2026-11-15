@@ -105,7 +105,16 @@ What it does:
   session may not start another scheduled task; `routeJob`/`needsHandoff` in `model.ts`). A file
   job keeps `file` (the Dropbox id): its status shows under that file and its button waits while it
   runs. The waker runs on the CampHawk mini PC (`desktop-mdc5q6e`), setup in `connectors/pc-waker/`.
-  The PC worker scheduled task must have "Require this computer" on (it does: DESKTOP-M9OCUDL).
+  The PC worker must be created bound to the PC (create_trigger with requires_local_device): one
+  bound afterwards with the desktop app's "Require this computer" switch showed the PC but never
+  got the link (2026-11-14; details in `studio/rig-studio/workers.md`). Now trig_017TnGMG….
+- **A PC job whose session never reached the PC starts again by itself.** The worker sets
+  `cause: "pc-link"` when the link doesn't come up; the page (while open) starts it again after 2,
+  5, 10 and 20 minutes, five sessions in all, within 6 hours (`retryAt` in `model.ts`); the job
+  line says when. Any other stop waits for Try again.
+- **Printable sheets.** A PC job can make a sheet layer with a viewport, notes, a title block, a
+  PDF beside the drawing and a new version of the file (connector: `create_sheet_layer`,
+  `create_viewport`, `export_pdf`, `save_as`).
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC

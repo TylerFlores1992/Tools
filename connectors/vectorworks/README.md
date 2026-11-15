@@ -155,8 +155,10 @@ one call. The format both sides share is `docs/RIG.md` (build list v1).
    running (no request from Claude, no Vectorworks job: each job leaves a file in
    `%USERPROFILE%\.vwmcp\busy` while it runs), starts a fresh child, repeats Claude's handshake to
    it and tells Claude the tool list changed. A child that dies is started again; what it was
-   answering gets an error saying so. Only `supervisor.py` itself still needs the app restarted.
-   `VWMCP_SUPERVISE=0` runs the server directly, as before.
+   answering gets an error saying so. Only `supervisor.py` itself still needs the app restarted,
+   and so do NEW tools: the Claude app keeps the tool list it got at start and doesn't list again
+   when told it changed (measured 2026-11-14). `ping` then names them
+   (`new_tools_need_claude_restart`). `VWMCP_SUPERVISE=0` runs the server directly, as before.
 3. In Vectorworks, open the file that has the truss, pipe and clamp symbols, and say
    **"build design &lt;id&gt;"**. Claude calls `build_rig(design_id=…)`: everything goes on a
    layer named `Rig` (it refuses a layer that already has objects unless told `replace=true`),
