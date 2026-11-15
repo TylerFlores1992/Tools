@@ -130,7 +130,75 @@ def NextLayer(h):
 
 
 def GetObjectVariableReal(h, index):
+    if index == 1003:  # viewport scale
+        return float(h.vp_scale)
     return float({102: getattr(h, "sx", 1.0), 103: getattr(h, "sy", 1.0), 104: getattr(h, "sz", 1.0)}.get(index, 0.0))
+
+
+def SetObjectVariableReal(h, index, value):
+    if index != 1003 or h.type != 122:
+        raise ScriptErrors(f"real selector {index} not faked")
+    h.vp_scale = float(value)
+    _vp_frame(h)
+
+
+# ---- sheets: sheet layer page, viewports, PDF export, save as --------------------------------
+
+
+def SetDrawingRect(paperWidth, paperHeight):
+    DOC.active_layer.page = (float(paperWidth), float(paperHeight))
+
+
+def GetDrawingSizeRectN(hLayer):
+    w, h = getattr(hLayer, "page", (11.0, 8.5))
+    return (-w / 2, h / 2), (w / 2, -h / 2)
+
+
+def _vp_frame(vp):
+    """The viewport's rectangle on the sheet: what it shows (crop, or the drawing's extent) over
+    its scale, around its center on the sheet."""
+    (x0, y0), (x1, y1) = vp.view
+    w, h = (x1 - x0) / vp.vp_scale, (y1 - y0) / vp.vp_scale
+    cx, cy = vp.at
+    vp.members = [_Obj(3, pts=[(cx - w / 2, cy + h / 2), (cx + w / 2, cy + h / 2), (cx + w / 2, cy - h / 2), (cx - w / 2, cy - h / 2)])]
+
+
+def CreateVP(parentHandle):
+    if getattr(parentHandle, "layer_type", 1) != 2:
+        raise ScriptErrors("CreateVP needs a sheet layer here")
+    vp = _Obj(122, members=[], layer_vis={}, class_vis={}, vp_scale=1.0, view=((-480.0, -480.0), (480.0, 480.0)), at=(0.0, 0.0))
+    DOC.objects.append(vp)
+    vp.layer, vp.cls = parentHandle, DOC.active_class
+    _vp_frame(vp)
+    return vp
+
+
+def SetVPLayerVisibility(viewportHandle, layerHandle, visibilityType):
+    viewportHandle.layer_vis[layerHandle.name] = int(visibilityType)
+    return True
+
+
+def SetVPClassVisibility(viewportHandle, clasName, visibilityType):
+    viewportHandle.class_vis[clasName] = int(visibilityType)
+    return True
+
+
+def SetVPCropObject(viewportHandle, cropHandle):
+    xs, ys = [p[0] for p in cropHandle.pts], [p[1] for p in cropHandle.pts]
+    viewportHandle.view = ((min(xs), min(ys)), (max(xs), max(ys)))
+    DOC.objects.remove(cropHandle)
+    _vp_frame(viewportHandle)
+    return True
+
+
+def UpdateVP(viewportHandle):
+    viewportHandle.updated = True
+
+
+def SaveActiveDocument(filePath):
+    DOC.path = filePath
+    DOC.fname = filePath.replace("\\", "/").rsplit("/", 1)[-1]
+    return 0
 
 
 def GetObjectVariableInt(h, index):
@@ -454,6 +522,8 @@ def HPerim(h):
 
 def HMove(h, xOffset, yOffset):
     dx, dy = float(xOffset), float(yOffset)
+    if getattr(h, "type", None) == 122:  # a viewport moves on its sheet; what it shows stays
+        h.at = (h.at[0] + dx, h.at[1] + dy)
     if hasattr(h, "pts"):
         h.pts = [(x + dx, y + dy) for x, y in h.pts]
     if hasattr(h, "cx"):

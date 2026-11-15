@@ -155,6 +155,76 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         return await call("create_layer", name=name, activate=activate)
 
     @mcp.tool()
+    async def create_sheet_layer(name: str, width: float | None = None, height: float | None = None, activate: bool = False) -> dict:
+        """Create a sheet layer (or reuse it), its page `width` x `height` in inches when given
+        (ARCH D 36 x 24, 11 x 17 tabloid). Sheet layer coordinates are page inches."""
+        return await call("create_sheet_layer", name=name, width=width, height=height, activate=activate)
+
+    @mcp.tool()
+    async def create_viewport(sheet: str, layers: list[str], scale: float = 48, hidden_classes: list[str] | None = None,
+                              crop: list[Point] | None = None, at: list[float] | None = None, name: str | None = None) -> dict:
+        """A viewport on sheet layer `sheet` showing only the design `layers` (every other one off)
+        with `hidden_classes` off, at `scale` (48 = 1/4" = 1'-0", 96 = 1/8"). `crop`
+        [[x1, y1], [x2, y2]] in drawing coordinates: the part of the drawing it shows. `at` [x, y]
+        in page inches: where its center goes on the sheet. Returns where it landed (on_sheet)."""
+        return await call("create_viewport", sheet=sheet, layers=layers, scale=scale, hidden_classes=hidden_classes, crop=crop, at=at, name=name)
+
+    @mcp.tool()
+    async def export_pdf(sheet: str, path: str, timeout: float = 240) -> dict:
+        """Export sheet layer `sheet` to a PDF at `path` (a full Windows path ending in .pdf, e.g.
+        beside the drawing), the whole page as one PDF page. It runs Vectorworks' own File > Export >
+        Export PDF and answers its boxes itself (no viewer opens; a file of that name is replaced).
+        Returns the path and its size once it's written."""
+        if not path.lower().endswith(".pdf"):
+            raise ToolError("The PDF path should end in .pdf.")
+        shown = await call("show_sheet", sheet=sheet)
+        before = os.path.getmtime(path) if os.path.exists(path) else None
+        answered: list[str] = []
+        press_error: list[BaseException] = []
+
+        def press() -> None:
+            try:
+                trigger.press_menu_path(["File", "Export", "Export PDF..."])
+            except BaseException as e:  # reported below if no PDF appears
+                press_error.append(e)
+
+        if not hasattr(trigger, "press_menu_path"):
+            raise ToolError("This connector can't run Vectorworks' Export PDF here (no Windows menu access).")
+        presser = asyncio.create_task(asyncio.to_thread(press))
+        deadline = time.monotonic() + float(timeout)
+        size, steady = 0, 0
+        try:
+            while time.monotonic() < deadline:
+                with contextlib.suppress(Exception):
+                    answered.extend(await asyncio.to_thread(trigger.fill_export_dialogs, path))
+                if os.path.exists(path) and (before is None or os.path.getmtime(path) > before):
+                    now_size = os.path.getsize(path)
+                    steady = steady + 1 if now_size == size and now_size > 0 else 0
+                    size = now_size
+                    if steady >= 2:
+                        break
+                if press_error and not answered:
+                    break
+                await asyncio.sleep(0.8)
+        finally:
+            with contextlib.suppress(Exception):
+                await asyncio.wait_for(presser, 30)
+            with contextlib.suppress(Exception):
+                if isinstance(shown, dict) and shown.get("previous"):
+                    await call("activate_layer", name=shown["previous"])
+        if not size:
+            why = f" ({press_error[0]})" if press_error else ""
+            raise ToolError(f"No PDF appeared at {path} within {timeout:.0f}s{why}. Boxes answered: {answered or 'none'}.")
+        return {"pdf": path, "bytes": size, "sheet": sheet, "answered": answered}
+
+    @mcp.tool()
+    async def save_as(path: str) -> dict:
+        """Save the open drawing as a new file at `path` (full Windows path ending in .vwx): a new
+        version beside the original, which stays as it was last saved. Vectorworks then has the new
+        file open."""
+        return await call("save_as", path=path)
+
+    @mcp.tool()
     async def create_class(name: str, activate: bool = False) -> dict:
         """Create a class (or reuse it) and optionally make it active."""
         return await call("create_class", name=name, activate=activate)

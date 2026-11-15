@@ -319,6 +319,41 @@ class _Win32:
                             return p
         return None
 
+    def fill_export_dialogs(self, window, path: str) -> list[str]:
+        """While Vectorworks exports a PDF: press through its PDF settings box, type `path` into the
+        save box and save, and say Yes to replacing a file of that name. Nothing else is touched.
+        Returns what it did."""
+        done = []
+        for w in self._dialogs(window):
+            try:
+                if w.handle == window.handle:
+                    continue
+                words = self._words(w)
+                name_box = None
+                for e in w.descendants(control_type="Edit"):
+                    if "file name" in (e.element_info.name or "").lower():
+                        name_box = e
+                        break
+            except Exception:
+                continue
+            if name_box is not None:
+                try:
+                    name_box.set_edit_text(path)
+                except Exception:
+                    continue
+                if self._press(w, ("Save", "Export", "OK")):
+                    done.append("saved as " + path)
+            elif "already exists" in words and ("replace" in words or "overwrite" in words):
+                if self._press(w, ("Yes",)):
+                    done.append("replaced the old file")
+            elif "pdf" in words:
+                # Vectorworks' Export PDF box: don't open the PDF in a viewer (it would hold the file
+                # open), then Export. Measured on VW 2026: title "Export PDF", buttons Export/Cancel.
+                self._untick(w, "open pdf in the default viewer")
+                if self._press(w, ("Export", "OK")):
+                    done.append("PDF settings")
+        return done
+
     @staticmethod
     def _body(w) -> str:
         try:
@@ -371,6 +406,17 @@ class _Win32:
                     b.invoke()
                     return True
         return False
+
+    @staticmethod
+    def _untick(w, words: str) -> None:
+        try:
+            for c in w.descendants(control_type="CheckBox"):
+                if words in c.window_text().replace("&", "").lower():
+                    if c.get_toggle_state() == 1:
+                        c.toggle()
+                    return
+        except Exception:
+            pass
 
     @staticmethod
     def _tick(w, words: str) -> None:
@@ -432,6 +478,61 @@ class _Win32:
             # fallback, which found no window in the busy Vectorworks, so every big read-out "failed"
             # while Vectorworks finished it. The queue presses again only if the job sits unclaimed.
             pass
+
+    def press_menu_path(self, window, path: list, open_wait: float = 4.0) -> None:
+        """Press a command several menus down, e.g. ["File", "Export", "Export PDF..."], through UI
+        Automation: each level is opened (Expand, else Invoke) and the last one invoked. The last
+        Invoke can wait for the command to finish (a modal box stays up until answered), so call
+        this off the thread that answers those boxes."""
+        import time as _t
+
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+
+        def find(name: str, top: bool):
+            want = name.strip().lower()
+            if top:
+                for bar in vw.descendants(control_type="MenuBar"):
+                    for m in bar.children():
+                        if m.window_text().strip().lower() == want:
+                            return m
+            pools = [vw]
+            try:
+                pools += list(Desktop(backend="uia").windows(process=window.process_id()))
+            except Exception:
+                pass
+            for pool in pools:
+                try:
+                    for m in pool.descendants(control_type="MenuItem"):
+                        if m.window_text().split("\t")[0].strip().lower() == want:
+                            return m
+                except Exception:
+                    continue
+            return None
+
+        last = len(path) - 1
+        for i, name in enumerate(path):
+            hit = None
+            deadline = _t.monotonic() + open_wait
+            while hit is None and _t.monotonic() < deadline:
+                hit = find(name, top=(i == 0))
+                if hit is None:
+                    _t.sleep(0.15)
+            if hit is None:
+                self.cancel_menus(window)
+                raise TriggerError(f"Couldn't find '{name}' in Vectorworks' menus ({' > '.join(path)}).")
+            if i < last:
+                try:
+                    hit.expand()
+                except Exception:
+                    hit.invoke()
+                _t.sleep(0.3)
+            else:
+                try:
+                    hit.invoke()
+                except Exception:
+                    pass  # Invoke gives up while the command's box is open; the press went through
 
     def cancel_menus(self, window) -> None:
         """Close a menu left open (Vectorworks keeps Tools open after the job's menu press) with
@@ -726,6 +827,22 @@ class HotkeyTrigger(Trigger):
         if remember:
             remember_prompt(prompt_phrase(hit["title"], hit["text"]), button)
         return hit
+
+    def press_menu_path(self, path: list) -> None:
+        """Press a command several menus down (see _Win32.press_menu_path)."""
+        target = self.find_window()
+        if target is None:
+            raise self._not_found("")
+        if not self.win.enabled(target):
+            raise self._dialog_error(target)
+        getattr(self.win, "press_menu_path")(target, path)
+
+    def fill_export_dialogs(self, path: str) -> list[str]:
+        """Answer the boxes a PDF export opens (see _Win32.fill_export_dialogs)."""
+        target = self.find_window()
+        if target is None:
+            return []
+        return getattr(self.win, "fill_export_dialogs", lambda w, p: [])(target, path)
 
     def tidy(self) -> None:
         """After a job: close the Tools menu the press left open (WM_CANCELMODE, no keys)."""

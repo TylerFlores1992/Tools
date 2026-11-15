@@ -2505,6 +2505,142 @@ def find_reference_lines():
     return {"count": len(out), "candidates": out}
 
 
+# ---- sheets: a sheet layer, a viewport on it, a PDF of it, the drawing saved as a new file ----
+
+SHEET_LAYER = 2
+VP_SCALE = 1003  # ovViewportScale (Appendix G): the viewport's scale as a factor, 48 = 1/4" = 1'-0"
+
+
+def _layer_of(name, kind=None):
+    h = vs.GetLayerByName(name)
+    if _nil(h):
+        raise OpError("There's no layer named %r." % name)
+    if kind is not None and (vs.GetObjectVariableInt(h, 154) == SHEET_LAYER) != (kind == "sheet"):
+        raise OpError("%r is a %s layer, not a %s layer." % (name, "sheet" if kind == "design" else "design", kind))
+    return h
+
+
+def _rect(h) -> list:
+    (x1, y1), (x2, y2) = vs.GetBBox(h)
+    return [_xy((min(x1, x2), min(y1, y2))), _xy((max(x1, x2), max(y1, y2)))]
+
+
+@op
+def create_sheet_layer(name, width=None, height=None, activate=False):
+    """A sheet layer (or the existing one), its page `width` x `height` in inches when given."""
+    current = _active_layer()
+    h = vs.GetLayerByName(name)
+    existed = not _nil(h)
+    if existed:
+        _layer_of(name, "sheet")
+    else:
+        h = vs.CreateLayer(name, SHEET_LAYER)
+        if _nil(h):
+            raise OpError("Vectorworks didn't create sheet layer %r." % name)
+        _no_undo("creating a sheet layer")
+    if width is not None and height is not None:
+        w, hgt = float(width), float(height)
+        if w <= 0 or hgt <= 0:
+            raise OpError("A sheet needs a width and a height in inches.")
+        vs.Layer(name)
+        vs.SetDrawingRect(w, hgt)
+    vs.Layer(name if activate else current)
+    # The page's corners, in the coordinates every point on this sheet layer is given in (its
+    # middle isn't 0,0: on CFF-26 it was 573.26, -909.77). Draw a title block from these.
+    (x1, y1), (x2, y2) = vs.GetDrawingSizeRectN(h)
+    page = [_xy((min(x1, x2), min(y1, y2))), _xy((max(x1, x2), max(y1, y2)))]
+    return {"layer": name, "created": not existed, "active_layer": _active_layer(), "page": page,
+            "page_size": [round(page[1][0] - page[0][0], 4), round(page[1][1] - page[0][1], 4)],
+            "page_center": _xy(((page[0][0] + page[1][0]) / 2, (page[0][1] + page[1][1]) / 2))}
+
+
+@op
+def create_viewport(sheet, layers, scale=48, hidden_classes=None, crop=None, at=None, name=None):
+    """A viewport on sheet layer `sheet` showing only design `layers` (others off), `hidden_classes`
+    off, at `scale` (48 = 1/4" = 1'-0"). `crop`: [[x1, y1], [x2, y2]] in drawing coordinates, the
+    part of the drawing it shows. `at`: [x, y] on the sheet (page inches) for its center."""
+    sh = _layer_of(sheet, "sheet")
+    want = list(dict.fromkeys(layers or []))
+    if not want:
+        raise OpError("Name at least one design layer for the viewport to show.")
+    for lay in want:
+        _layer_of(lay, "design")
+    if float(scale) <= 0:
+        raise OpError("scale must be more than 0 (48 is 1/4\" = 1'-0\").")
+    vp = vs.CreateVP(sh)
+    if _nil(vp):
+        raise OpError("Vectorworks didn't create the viewport.")
+    try:
+        for lay in _layers():
+            if lay["type"] == "design":
+                vs.SetVPLayerVisibility(vp, vs.GetLayerByName(lay["name"]), 0 if lay["name"] in want else -1)
+        # A new viewport starts with every class off (measured on CFF-26, VW 2026: it showed
+        # nothing), so each class is set: on, unless asked off.
+        all_classes = _classes()
+        hidden = [c for c in (hidden_classes or []) if c in all_classes]
+        for c in all_classes:
+            vs.SetVPClassVisibility(vp, c, -1 if c in hidden else 0)
+        vs.SetObjectVariableReal(vp, VP_SCALE, float(scale))
+        if crop is not None:
+            # The crop is in drawing coordinates, so it's drawn on a design layer (drawn on the sheet
+            # it was taken as page inches, and the scale was ignored: measured on VW 2026).
+            (ax, ay), (bx, by) = _pt(crop[0], "crop corner"), _pt(crop[1], "crop corner")
+            here = _active_layer()
+            vs.Layer(want[0])
+            vs.Rect((min(ax, bx), max(ay, by)), (max(ax, bx), min(ay, by)))
+            c = vs.LNewObj()
+            vs.Layer(here)
+            if _nil(c) or not vs.SetVPCropObject(vp, c):
+                if not _nil(c):
+                    vs.DelObject(c)
+                raise OpError("Vectorworks didn't take the crop rectangle.")
+        vs.UpdateVP(vp)
+        if at is not None:
+            # `at` is measured from the middle of the sheet's page, in page inches.
+            (x1, y1), (x2, y2) = _rect(vp)
+            (px1, py1), (px2, py2) = vs.GetDrawingSizeRectN(sh)
+            tx, ty = (px1 + px2) / 2 + float(at[0]), (py1 + py2) / 2 + float(at[1])
+            vs.HMove(vp, tx - (x1 + x2) / 2, ty - (y1 + y2) / 2)
+        if name:
+            vs.SetName(vp, _s(name))
+    except Exception:
+        vs.DelObject(vp)
+        raise
+    _record("delete_objects", ids=[_describe(vp)["id"]])
+    return {"viewport": _describe(vp), "sheet": sheet, "layers": want, "hidden_classes": hidden, "missing_classes": [c for c in (hidden_classes or []) if c not in all_classes],
+            "scale": float(vs.GetObjectVariableReal(vp, VP_SCALE)), "on_sheet": _rect(vp)}
+
+
+@op
+def show_sheet(sheet):
+    """Make sheet layer `sheet` the active layer (File > Export PDF exports the active sheet) and
+    say which layer was active before, to go back to after."""
+    _layer_of(sheet, "sheet")
+    prev = _active_layer()
+    vs.Layer(sheet)
+    return {"sheet": sheet, "previous": prev}
+
+
+@op
+def activate_layer(name):
+    _layer_of(name)
+    vs.Layer(name)
+    return {"active_layer": _active_layer()}
+
+
+@op
+def save_as(path):
+    """Save the drawing as a new file at `path` (the original stays as it was saved)."""
+    if not str(path).lower().endswith(".vwx"):
+        raise OpError("The new file's path should end in .vwx.")
+    before = _s(vs.GetFPathName())
+    code = vs.SaveActiveDocument(_s(path))  # LONGINT: 0 when saved (no dialogs)
+    after = _s(vs.GetFPathName())
+    if code not in (0, None, True) and after.lower() != str(path).lower():
+        raise OpError("Vectorworks didn't save the drawing as %s (code %s)." % (path, code))
+    return {"saved": after, "was": before, "code": code}
+
+
 @op
 def import_dwg(path):
     """Import a DWG/DXF without the dialog (Vectorworks uses the last import settings) and report
