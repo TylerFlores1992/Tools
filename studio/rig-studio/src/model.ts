@@ -115,6 +115,13 @@ export type Job = {
   /** The Dropbox file id a file job is about (its status shows under that file). */
   file?: string;
   reply?: string;
+  /** Why it stopped, when Rig Studio can do something about it: "pc-link", the PC worker's
+   * session started without the link to the PC (Claude's connectors down), so it's started again. */
+  cause?: "pc-link" | null;
+  /** How many sessions have been started for it (1 when missing). */
+  tries?: number;
+  /** A page that is starting it again (one view does, when several are open). */
+  claim?: string | null;
   at: string;
   updated?: string;
   session?: string;
@@ -151,7 +158,20 @@ const HANDOFF_WINDOW_MS = 30 * 60_000;
 
 /** A waking job the page should now hand to the PC worker (awake, not yet handed, not stale). */
 export function needsHandoff(j: Job, now: number): boolean {
-  return j.status === "waking" && !!j.awake && !j.handed && !!j.text && now - Date.parse(j.at) < HANDOFF_WINDOW_MS;
+  return j.status === "waking" && !!j.awake && !j.handed && !!j.text && now - Date.parse(j.updated ?? j.at) < HANDOFF_WINDOW_MS;
+}
+
+/** A PC job whose session never got the link to the PC is started again by itself: after 2, 5, 10
+ * and 20 minutes (five sessions in all), within 6 hours of the job, while Rig Studio is open. */
+export const RETRY_AFTER_MIN = [2, 5, 10, 20];
+const RETRY_WITHIN_MS = 6 * 3600_000;
+
+/** When a stopped job is next started again by itself, or null if it isn't. */
+export function retryAt(j: Job, now: number): number | null {
+  const tries = j.tries ?? 1;
+  if (j.status !== "failed" || j.cause !== "pc-link" || j.where !== "pc" || !j.text) return null;
+  if (tries > RETRY_AFTER_MIN.length || now - Date.parse(j.at) > RETRY_WITHIN_MS) return null;
+  return Date.parse(j.updated ?? j.at) + RETRY_AFTER_MIN[tries - 1] * 60_000;
 }
 
 /** Is a job still going? (A file's button waits while one is.) */
@@ -160,6 +180,11 @@ export const jobActive = (j: Job) => j.status === "queued" || j.status === "waki
 /** The job's state in words, with a symbol that isn't colour: ◌ going, ✓ done, ✕ stopped. */
 export function jobWords(j: Job): string {
   if (j.status === "done") return `✓ Done. ${j.reply ?? ""}`.trim();
+  const again = retryAt(j, Date.now());
+  if (again !== null) {
+    const t = new Date(again).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    return `◌ The session couldn't reach your PC (Claude's connectors were down). Rig Studio starts it again by itself at ${t} (try ${(j.tries ?? 1) + 1} of ${RETRY_AFTER_MIN.length + 1}) while this page is open, or press Try again.`;
+  }
   if (j.status === "failed") return `✕ Stopped. ${j.reply ?? j.progress ?? ""}`.trim();
   if (j.status === "waking") return `◌ ${j.progress || "Checking whether your PC is on…"}`;
   if (j.status === "queued") return `◌ ${j.progress || "Starting the session…"}`;

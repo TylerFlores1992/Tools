@@ -39,7 +39,7 @@ test("fixtures from a CSV in feet, or inches when the header says so", () => {
   assert.match(fixturesFromCsv("a,b\n1,2").problem ?? "", /x and y/);
 });
 
-import { jobActive, jobWords, needsHandoff, routeJob, sortProjects } from "./model.ts";
+import { jobActive, jobWords, needsHandoff, retryAt, routeJob, sortProjects } from "./model.ts";
 
 test("the project list: pinned first in the order pinned, then most recently changed", () => {
   const p = (id: string, updatedAt: string, pinnedAt?: string | null) => ({ id, updatedAt, pinnedAt });
@@ -132,4 +132,21 @@ test("a busy database write is tried again; a full or bad one fails at once", as
   let k = 0;
   await assert.rejects(saveWithRetry(async () => { k++; throw Object.assign(new Error("blip"), { code: "unavailable" }); }, 3, noWait));
   assert.equal(k, 3, "gives up after its tries");
+});
+
+test("a PC job whose session never reached the PC is started again by itself, a few times", () => {
+  const at = "2026-11-13T17:00:00Z";
+  const t = Date.parse(at);
+  const j = { id: "j", pid: "p", project: "CFF", request: "deck layout", where: "pc", status: "failed", cause: "pc-link", text: "Rig Studio job j", at, updated: at } as const;
+  assert.equal(retryAt({ ...j }, t), t + 2 * 60_000, "first again after 2 minutes");
+  assert.equal(retryAt({ ...j, tries: 2, updated: "2026-11-13T17:03:00Z" }, t), Date.parse("2026-11-13T17:03:00Z") + 5 * 60_000, "then after 5");
+  assert.equal(retryAt({ ...j, tries: 4 }, t), t + 20 * 60_000);
+  assert.equal(retryAt({ ...j, tries: 5 }, t), null, "five sessions in all");
+  assert.equal(retryAt({ ...j }, t + 7 * 3600_000), null, "not hours later");
+  assert.equal(retryAt({ ...j, cause: null }, t), null, "only when the PC link was the reason");
+  assert.equal(retryAt({ ...j, where: "cloud" }, t), null);
+  assert.equal(retryAt({ ...j, text: undefined } as never, t), null, "needs the job's message to send again");
+  assert.equal(retryAt({ ...j, status: "done" }, t), null);
+  assert.match(jobWords({ ...j, at: new Date().toISOString(), updated: new Date().toISOString() }), /^◌ .*starts it again by itself.*try 2 of 5/);
+  assert.match(jobWords({ ...j, tries: 5, reply: "No link" }), /^✕ Stopped\. No link/);
 });

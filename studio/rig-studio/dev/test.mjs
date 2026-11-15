@@ -426,6 +426,28 @@ await m.waitForTimeout(800);
 await m.screenshot({ path: join(shots, "rig-studio-phone.png"), fullPage: true });
 const sw = await m.evaluate(() => document.documentElement.scrollWidth);
 ok(sw <= 390, `no sideways scroll on a phone (${sw}px)`);
+// A PC job whose session never got the link to the PC: started again by itself, once per try.
+if (!process.env.RS_READOUT) {
+  console.log("PC link retry");
+  const r = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+  const ago = new Date(Date.now() - 3 * 60_000).toISOString();
+  await r.goto(`file://${join(here, "harness.html")}`);
+  await r.waitForSelector(".card");
+  await r.evaluate((ago) => {
+    window.__setDoc("jobs/jpc", { pid: "p1", project: "CFF", request: "deck layout", where: "pc", status: "failed", cause: "pc-link", tries: 1, text: "Rig Studio job jpc\nwhere: pc", reply: "No link", at: ago, updated: ago });
+    window.__setDoc("jobs/jnot", { pid: "p1", project: "CFF", request: "other", where: "pc", status: "failed", text: "Rig Studio job jnot", reply: "Vectorworks said no", at: ago, updated: ago });
+  }, ago);
+  await r.waitForFunction(() => window.__DOCS__.get("jobs/jpc")?.status === "queued", null, { timeout: 30000 }).catch(() => {});
+  const jpc = await r.evaluate(() => window.__DOCS__.get("jobs/jpc"));
+  const fires = await r.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger"));
+  ok(jpc.status === "queued" && jpc.tries === 2 && !jpc.cause, "the job is started again, as try 2");
+  ok(fires.length === 1 && fires[0].input.trigger_id === "trig_pc" && fires[0].input.text === "Rig Studio job jpc\nwhere: pc", "once, on the PC worker, with the job's own message");
+  ok((await r.evaluate(() => window.__DOCS__.get("jobs/jnot").status)) === "failed", "a job stopped for another reason waits for Try again");
+  await r.evaluate((ago) => window.__setDoc("jobs/jpc", { ...window.__DOCS__.get("jobs/jpc"), status: "failed", cause: "pc-link", tries: 5, updated: ago }), ago);
+  await r.waitForTimeout(2500);
+  ok((await r.evaluate(() => window.__CALLS__.filter((c) => c.tool === "fire_trigger").length)) === 1, "and not after the fifth session");
+}
+
 // Claude's connectors down: Dropbox never answers. The Files tab says so instead of "Reading…" forever.
 if (!process.env.RS_READOUT) {
   console.log("Dropbox not answering");
