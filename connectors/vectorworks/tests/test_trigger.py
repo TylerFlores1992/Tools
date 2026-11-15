@@ -565,3 +565,41 @@ def test_the_menu_a_job_leaves_open_is_closed_after_it(tmp_path):
     t, _ = make(win)
     t.tidy()
     assert closed and closed[0] is not None
+
+
+def test_the_replace_question_inside_the_save_box_is_answered_yes_not_save(monkeypatch):
+    """Windows' "Confirm Save As" shows up to UI Automation inside the save box. Measured
+    2026-11-15: answering the save box first pressed Save again and again under the question."""
+    from vwmcp.trigger import _Win32
+
+    pressed = []
+
+    class El:
+        def __init__(self, text="", name="", kind=""):
+            self.text, self.kind, self.handle = text, kind, 0
+            self.element_info = type("I", (), {"name": name})()
+
+        def window_text(self):
+            return self.text
+
+        def invoke(self):
+            pressed.append(self.text)
+
+    class SaveBox:
+        handle = 2
+
+        def window_text(self):
+            return "Export as PDF Document"
+
+        def descendants(self, control_type=None):
+            return {
+                "Edit": [El("C:\\x\\a.pdf", name="File name:")],
+                "Button": [El("&Save"), El("Cancel"), El("&Yes"), El("&No")],
+                "Text": [El("a.pdf already exists."), El("Do you want to replace it?")],
+                "CheckBox": [],
+            }.get(control_type, [])
+
+    w = _Win32.__new__(_Win32)
+    monkeypatch.setattr(w, "_dialogs", lambda window: [SaveBox()])
+    done = w.fill_export_dialogs(type("W", (), {"handle": 1})(), "C:\\x\\a.pdf")
+    assert pressed == ["&Yes"] and done == ["replaced the old file"]

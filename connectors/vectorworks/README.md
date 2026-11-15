@@ -18,7 +18,7 @@ Vectorworks: "MCP Run Job" ▶ vwmcp_bridge.run_pending() ▶ runs each job with
 
 | Piece | State |
 |---|---|
-| MCP server, 65 tools (67 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
+| MCP server, 70 tools (72 with the optional ones), job queue (retry, timeout, stale-job drop) | Tested over real MCP stdio |
 | 3D placement + `build_rig` | Math unit-tested; end to end against the fake. **Not yet run in real Vectorworks** (see "Build a rig from the phone") |
 | Bridge inside Vectorworks | Every `vs` call checked against the official signatures; tested against a strict fake of Vectorworks. **Not yet run in a real copy of Vectorworks.** |
 | Windows hotkey trigger | Logic tested with Windows faked out; **not yet run on Windows** |
@@ -244,7 +244,7 @@ developer.vectorworks.net now redirects to) and from a macOS project tested on V
 | Show setup | `survey_drawing`, `get_show_setup`, `find_reference_lines`, `set_datum`, `set_departments`, `set_limits`, `show_departments`, `where_is` |
 | Rigging | `get_rigging`, `rigging_report`, `save_rigging_revision`, `design_bridle`, `bridle_from_legs`, `truss_loads` |
 | Venue files | `import_dwg`, `check_scale`, `scale_objects` |
-| Sheets | `create_sheet_layer` (page size in inches), `create_viewport` (only the layers asked for, classes off, scale, crop, where on the sheet), `export_pdf` (the connector answers Vectorworks' PDF and save boxes itself), `save_as` (a new version beside the original) |
+| Sheets | `create_sheet_layer` (page size in inches), `create_viewport` (only the layers asked for, classes off, scale, crop, where on the sheet), `viewport_visibility` (show or hide layers and classes in a sheet's viewports), `sheet_viewports`, `layer_scale` (a notes layer at the drawing's scale), `annotate_viewport` (notes into the viewport's annotations, which always print; `offset` from `create_viewport` when it was placed with `at`), `annotation_text` (printed text size), `export_pdf` (presses File > Export > Export PDF... and answers its boxes itself, locked PC too; updates the sheet's viewports first; a slow one answers `running` before the PC link's 80 s limit, and calling again waits for it), `save_as` (a new version beside the original) |
 | 3D & rigs | `build_rig`, `place_truss`, `place_symbol_3d`, `set_z` |
 | Workflow | `batch` (many steps, one round trip, one undo), `undo_last`, `vs_lookup` |
 | Look | `screenshot` (Windows), `snapshot` (SVG) |

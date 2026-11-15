@@ -5,6 +5,10 @@
   "AddPoint": [
    "p"
   ],
+  "AddVPAnnotationObject": [
+   "viewportHandle",
+   "annotationHandle"
+  ],
   "AlrtDialog": [
    "message"
   ],
@@ -270,6 +274,13 @@
    "viewportHandle",
    "className"
   ],
+  "GetVPCropObject": [
+   "viewportHandle"
+  ],
+  "GetVPGroup": [
+   "viewportHandle",
+   "groupType"
+  ],
   "GetVPLayerVisibility": [
    "viewportHandle",
    "layerHandle"
@@ -506,6 +517,12 @@
   "SetSelect": [
    "h"
   ],
+  "SetTextSize": [
+   "objectHd",
+   "Start",
+   "Count",
+   "Size"
+  ],
   "SetVPClassVisibility": [
    "viewportHandle",
    "clasName",
@@ -561,5 +578,5 @@
    "p2"
   ]
  },
- "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09. CreateVP, SetVPLayerVisibility, SetVPClassVisibility, SetVPCropObject, UpdateVP, SetDrawingRect, GetDrawingSizeRectN, SaveActiveDocument, SetObjectVariableReal, GetObjectVariableReal, SetLScale, GetLScale from the same vs.py, read 2026-11-14."
+ "source": "Official Vectorworks scripting reference, github.com/Vectorworks/developer-scripting: Python/pages/files/vs.py (DialogTimerEventMessageC from its Function Reference page). Names and parameter lists only, read 2026-10-23. SymbolToGroup, HUngroup, Move3DObj, Set3DRot, Flip3DObj and Get3DOrientation added from the same vs.py, read 2026-11-07. BuildResourceListN, GetActualNameFromResourceList and ImportResourceToCurrentFile from Vectorworks 2026's own vs module (definitions read through the connector's vs_lookup, 2026-11-07). GetSymRot from the same vs.py, read 2026-11-09. CreateVP, SetVPLayerVisibility, SetVPClassVisibility, SetVPCropObject, UpdateVP, SetDrawingRect, GetDrawingSizeRectN, SaveActiveDocument, SetObjectVariableReal, GetObjectVariableReal, SetLScale, GetLScale from the same vs.py, read 2026-11-14. SetTextSize, AddVPAnnotationObject, GetVPCropObject and GetVPGroup from Vectorworks 2026's own vs module (vs_lookup, 2026-11-15)."
 }

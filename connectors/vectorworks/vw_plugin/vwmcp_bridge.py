@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.14"
+BRIDGE_VERSION = "0.9.15"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -2567,6 +2567,7 @@ def create_viewport(sheet, layers, scale=48, hidden_classes=None, crop=None, at=
         _layer_of(lay, "design")
     if float(scale) <= 0:
         raise OpError("scale must be more than 0 (48 is 1/4\" = 1'-0\").")
+    moved = (0.0, 0.0)
     vp = vs.CreateVP(sh)
     if _nil(vp):
         raise OpError("Vectorworks didn't create the viewport.")
@@ -2595,30 +2596,260 @@ def create_viewport(sheet, layers, scale=48, hidden_classes=None, crop=None, at=
                     vs.DelObject(c)
                 raise OpError("Vectorworks didn't take the crop rectangle.")
         vs.UpdateVP(vp)
+        (px1, py1), (px2, py2) = vs.GetDrawingSizeRectN(sh)
+        pcx, pcy = (px1 + px2) / 2, (py1 + py2) / 2
+        frame = None
+        if crop is not None:
+            # Where a new cropped viewport sits on its sheet: its middle is the page's middle plus
+            # (the crop's middle + the user origin) / scale (measured 2026-11-15 on CFF-26, twice,
+            # exact). Its bounding box read back right after it's made is a stale square, and
+            # placing from that put the deck layout 1.5" off the page.
+            ox, oy = (float(c) for c in vs.GetOriginInDocUnits())
+            sc = float(scale)
+            frame = [[pcx + (min(ax, bx) + ox) / sc, pcy + (min(ay, by) + oy) / sc],
+                     [pcx + (max(ax, bx) + ox) / sc, pcy + (max(ay, by) + oy) / sc]]
         if at is not None:
             # `at` is measured from the middle of the sheet's page, in page inches.
-            (x1, y1), (x2, y2) = _rect(vp)
-            (px1, py1), (px2, py2) = vs.GetDrawingSizeRectN(sh)
-            tx, ty = (px1 + px2) / 2 + float(at[0]), (py1 + py2) / 2 + float(at[1])
-            vs.HMove(vp, tx - (x1 + x2) / 2, ty - (y1 + y2) / 2)
+            (x1, y1), (x2, y2) = frame if frame is not None else _rect(vp)
+            tx, ty = pcx + float(at[0]), pcy + float(at[1])
+            moved = (tx - (x1 + x2) / 2, ty - (y1 + y2) / 2)
+            vs.HMove(vp, moved[0], moved[1])
+        if frame is not None:
+            frame = [[frame[0][0] + moved[0], frame[0][1] + moved[1]], [frame[1][0] + moved[0], frame[1][1] + moved[1]]]
         if name:
             vs.SetName(vp, _s(name))
     except Exception:
         vs.DelObject(vp)
         raise
     _record("delete_objects", ids=[_describe(vp)["id"]])
+    sc = float(vs.GetObjectVariableReal(vp, VP_SCALE))
     return {"viewport": _describe(vp), "sheet": sheet, "layers": want, "hidden_classes": hidden, "missing_classes": [c for c in (hidden_classes or []) if c not in all_classes],
-            "scale": float(vs.GetObjectVariableReal(vp, VP_SCALE)), "on_sheet": _rect(vp)}
+            "scale": sc, "on_sheet": [_xy(frame[0]), _xy(frame[1])] if frame is not None else _rect(vp),
+            # Moving it shifted its annotation space by the move x scale (see annotate_viewport).
+            "annotation_offset": [round(moved[0] * sc, 6), round(moved[1] * sc, 6)]}
+
+
+@op
+def layer_scale(names=None, scale=None, like=None):
+    """Read design layers' scales (all of them when `names` is empty), or set `names` to `scale`
+    (48 = 1/4" = 1'-0") or to the scale of layer `like`. Vectorworks draws each layer at its own
+    scale, so a notes layer whose scale differs from the drawing's doesn't line up with it in a
+    viewport (measured 2026-11-15 on the CFF deck layout)."""
+    if scale is not None or like is not None:
+        if not names:
+            raise OpError("Name the layers to set.")
+        target = float(vs.GetLScale(_layer_of(like, "design"))) if like is not None else float(scale)
+        if target <= 0:
+            raise OpError("The scale must be more than 0.")
+        texts = 0
+        for n in names:
+            lh = _layer_of(n, "design")
+            old = float(vs.GetLScale(lh))
+            if old <= 0 or old == target:
+                continue
+            vs.SetLScale(lh, target)
+            # Text sizes are in points on paper, so its size in the drawing follows the layer's
+            # scale: shrink (or grow) each text by old/new so it stays the size it was drawn.
+            todo = list(_children(vs.FInLayer(lh)))
+            while todo:
+                h = todo.pop()
+                t = vs.GetTypeN(h)
+                if t == 11:  # group: its texts too
+                    todo.extend(_children(vs.FInGroup(h)))
+                elif t == 10:
+                    n_chars = len(_s(vs.GetText(h)))
+                    if n_chars:
+                        vs.SetTextSize(h, 0, n_chars, float(vs.GetTextSize(h, 0)) * old / target)
+                        vs.ResetObject(h)
+                        texts += 1
+    out = {}
+    for lay in _layers():
+        if lay["type"] == "design" and (not names or lay["name"] in names):
+            out[lay["name"]] = float(vs.GetLScale(vs.GetLayerByName(lay["name"])))
+    res = {"scales": out}
+    if scale is not None or like is not None:
+        res["texts_resized"] = texts
+    return res
+
+
+@op
+def sheet_viewports(sheet):
+    """Each viewport on sheet layer `sheet`: its id, frame on the sheet, scale, and crop (in drawing
+    coordinates) when it has one."""
+    sh = _layer_of(sheet, "sheet")
+    out = []
+    for h in _children(vs.FInLayer(sh)):
+        if vs.GetTypeN(h) != 122:
+            continue
+        c = vs.GetVPCropObject(h)
+        def vis(got):
+            return got[1] if isinstance(got, (list, tuple)) else got
+
+        layers = [l["name"] for l in _layers() if l["type"] == "design" and vis(vs.GetVPLayerVisibility(h, vs.GetLayerByName(l["name"]))) == 0]
+        hidden = [cl for cl in _classes() if vis(vs.GetVPClassVisibility(h, cl)) == -1]
+        out.append({"id": _uuid(h), "frame": _rect(h), "scale": float(vs.GetObjectVariableReal(h, VP_SCALE)),
+                    "crop": None if _nil(c) else _rect(c), "layers": layers, "hidden_classes": hidden})
+    return {"sheet": sheet, "viewports": out}
+
+
+@op
+def delete_empty_layer(name):
+    """Delete layer `name` only if nothing is on it (a scratch layer); never a layer with objects."""
+    lh = _layer_of(name)
+    if _children(vs.FInLayer(lh)):
+        raise OpError("Layer %r has objects on it; it stays." % name)
+    if name == _active_layer():
+        raise OpError("Layer %r is the active layer; switch first." % name)
+    vs.DelObject(lh)
+    return {"deleted_layer": name}
+
+
+@op
+def annotation_text(sheet, target_pt=None, group_type=2):
+    """The text in the annotations of the viewport on sheet layer `sheet`: how many and their
+    sizes, as points on paper (an annotation's own size / the viewport's scale: measured
+    2026-11-15). With `target_pt`, scale every one by the same factor so the most common size
+    prints at target_pt (the relative sizes stay)."""
+    sh = _layer_of(sheet, "sheet")
+    vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
+    if len(vps) != 1:
+        raise OpError("Sheet layer %r has %d viewports; this needs exactly one." % (sheet, len(vps)))
+    g = vs.GetVPGroup(vps[0], int(group_type))
+    if _nil(g):
+        raise OpError("The viewport has no annotations.")
+    texts, todo = [], list(_children(vs.FInGroup(g)))
+    while todo:
+        h = todo.pop()
+        k = vs.GetTypeN(h)
+        if k == 11:
+            todo.extend(_children(vs.FInGroup(h)))
+        elif k == 10 and _s(vs.GetText(h)):
+            texts.append(h)
+    sc = float(vs.GetObjectVariableReal(vps[0], VP_SCALE))
+    sizes = [round(float(vs.GetTextSize(h, 0)), 4) for h in texts]
+    out = {"texts": len(texts), "printed_pt": sorted({round(sz / sc, 2) for sz in sizes})[:20]}
+    if target_pt is not None and sizes:
+        common = max(set(sizes), key=sizes.count)
+        if common <= 0:
+            raise OpError("The text has no size to scale from.")
+        f = float(target_pt) * sc / common
+        for h, sz in zip(texts, sizes):
+            vs.SetTextSize(h, 0, len(_s(vs.GetText(h))), sz * f)
+            vs.ResetObject(h)
+        vs.UpdateVP(vps[0])
+        out.update(factor=f, printed_pt_now=sorted({round(sz * f / sc, 2) for sz in sizes})[:20])
+    return out
+
+
+@op
+def user_origin():
+    """Where the drawing's user origin is, from the internal origin (GetOriginInDocUnits)."""
+    ox, oy = vs.GetOriginInDocUnits()
+    return {"user_origin": [float(ox), float(oy)]}
+
+
+@op
+def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
+    """Copy every object on design layer `layer` (reference lines, dimensions, labels drawn in
+    drawing coordinates) into the annotations of the viewport on sheet layer `sheet`, then turn
+    the layer off in it. Annotations always draw over the viewport at its scale; plain 2D
+    objects on a design layer didn't show in a viewport of CFF-26's 3D decks (measured
+    2026-11-15). Text looks as it did on the layer: points x the layer's scale.
+    `offset`: [dx, dy] added to every copy. A viewport moved on its sheet after it was made
+    (create_viewport's `at`) takes new annotations that far off, times its scale (measured: moved
+    10" down at 1/8", its crop read 960" lower and a new annotation sat 10" high);
+    create_viewport returns the offset to pass here."""
+    sh = _layer_of(sheet, "sheet")
+    lh = _layer_of(layer, "design")
+    vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
+    if len(vps) != 1:
+        raise OpError("Sheet layer %r has %d viewports; annotate_viewport needs exactly one." % (sheet, len(vps)))
+    vp = vps[0]
+    # Annotation text is sized like text on a 1:1 layer and shrinks with the viewport (measured
+    # 2026-11-15: 140 pt in a 1/8" viewport printed as 140/96 pt), so text from a layer at scale
+    # S keeps its look when its points are multiplied by S.
+    ratio = float(vs.GetLScale(lh))
+    added = failed = 0
+    for h in list(_children(vs.FInLayer(lh))):
+        c = vs.HDuplicate(h, float(offset[0]) if offset else 0, float(offset[1]) if offset else 0)
+        if _nil(c):
+            failed += 1
+            continue
+        todo = [c]
+        while todo:
+            t = todo.pop()
+            k = vs.GetTypeN(t)
+            if k == 11:
+                todo.extend(_children(vs.FInGroup(t)))
+            elif k == 10:
+                n = len(_s(vs.GetText(t)))
+                if n:
+                    vs.SetTextSize(t, 0, n, float(vs.GetTextSize(t, 0)) * ratio)
+        if vs.AddVPAnnotationObject(vp, c):
+            added += 1
+        else:
+            vs.DelObject(c)
+            failed += 1
+    if hide_layer:
+        vs.SetVPLayerVisibility(vp, lh, -1)
+    vs.UpdateVP(vp)
+    vs.ResetObject(vp)
+    return {"sheet": sheet, "layer": layer, "annotations_added": added, "failed": failed,
+            "text_scale": ratio, "layer_hidden_in_viewport": bool(hide_layer)}
+
+
+@op
+def viewport_visibility(sheet, show_layers=None, hide_layers=None, show_classes=None, hide_classes=None):
+    """Turn design layers and classes on or off in every viewport on sheet layer `sheet`, then
+    update them. A layer made after a viewport stays hidden in it (measured 2026-11-15 on the CFF
+    deck layout: its notes layer never showed): this is how it's shown."""
+    sh = _layer_of(sheet, "sheet")
+    for lay in list(show_layers or []) + list(hide_layers or []):
+        _layer_of(lay, "design")
+    all_classes = _classes()
+    missing = [c for c in list(show_classes or []) + list(hide_classes or []) if c not in all_classes]
+    vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
+    if not vps:
+        raise OpError("Sheet layer %r has no viewport." % sheet)
+    took = {}
+    for vp in vps:
+        for lay in show_layers or []:
+            took[lay] = bool(vs.SetVPLayerVisibility(vp, vs.GetLayerByName(lay), 0))
+        for lay in hide_layers or []:
+            vs.SetVPLayerVisibility(vp, vs.GetLayerByName(lay), -1)
+        for c in show_classes or []:
+            if c in all_classes:
+                vs.SetVPClassVisibility(vp, c, 0)
+        for c in hide_classes or []:
+            if c in all_classes:
+                vs.SetVPClassVisibility(vp, c, -1)
+        vs.UpdateVP(vp)
+        vs.ResetObject(vp)
+    now = {}
+    for lay in show_layers or []:
+        got = vs.GetVPLayerVisibility(vps[0], vs.GetLayerByName(lay))
+        now[lay] = got[1] if isinstance(got, (list, tuple)) else got
+    return {"sheet": sheet, "viewports": len(vps), "shown_layers": list(show_layers or []),
+            "hidden_layers": list(hide_layers or []), "missing_classes": missing,
+            "set_ok": took, "visibility_now": now}
 
 
 @op
 def show_sheet(sheet):
     """Make sheet layer `sheet` the active layer (File > Export PDF exports the active sheet) and
     say which layer was active before, to go back to after."""
-    _layer_of(sheet, "sheet")
+    lh = _layer_of(sheet, "sheet")
     prev = _active_layer()
     vs.Layer(sheet)
-    return {"sheet": sheet, "previous": prev}
+    # A viewport shows what its layers held when it was last updated: notes drawn after it was
+    # made don't appear (measured 2026-11-15, the CFF deck layout). Update each one so the PDF
+    # shows the drawing as it is.
+    updated = 0
+    for h in _children(vs.FInLayer(lh)):
+        if vs.GetTypeN(h) == 122:
+            vs.UpdateVP(h)
+            updated += 1
+    return {"sheet": sheet, "previous": prev, "viewports_updated": updated}
 
 
 @op
