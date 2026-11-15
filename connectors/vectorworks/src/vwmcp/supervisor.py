@@ -8,6 +8,10 @@ Claude's opening handshake to it (keeping the child's answer to itself) and tell
 list may have changed. A child that dies is started again the same way; requests it was answering
 get an error that says so. Claude never sees the connection drop.
 
+Changed tools load this way; NEW tools don't: the Claude app keeps the tool list it was given at
+start. The next child is told which tools Claude has, and ping names any it doesn't have yet, so
+a session can say "restart the Claude app" instead of failing to find them.
+
 Only the standard library, and nothing here changes often: this file itself is the one piece that
 still needs the app restarted (or an update) to change. Set VWMCP_SUPERVISE=0 to run the server
 directly, as before.
@@ -33,6 +37,8 @@ SETTLE = 1.5
 RESPAWN_GAP = 5.0
 # How long a fresh child may take to answer the replayed handshake.
 REINIT_WAIT = 60.0
+# The tools Claude was shown, handed to each later child (the server's ping compares).
+SEEN_TOOLS_ENV = "VWMCP_TOOLS_SEEN"
 
 
 def _log(msg: str) -> None:
@@ -70,6 +76,7 @@ class Supervisor:
         self.reinit_done = threading.Event()
         self.last_start = 0.0
         self.last_error = ""
+        self.seen_tools: set = set()
 
     # ---- both directions -------------------------------------------------------------------
 
@@ -124,7 +131,14 @@ class Supervisor:
                     self.reinit_done.set()
                     return
                 key = json.dumps(msg["id"])
-                if self.pending.pop(key, None) == "initialize" and isinstance(msg.get("result"), dict):
+                method = self.pending.pop(key, None)
+                if method == "tools/list" and isinstance(msg.get("result"), dict):
+                    # What Claude was shown: a later child with tools beyond these says so in
+                    # ping, since the Claude app doesn't list tools again when told they changed
+                    # (measured 2026-11-14: new tools stayed missing until the app restarted).
+                    names = {t.get("name") for t in msg["result"].get("tools", []) if isinstance(t, dict)}
+                    self.seen_tools |= {n for n in names if n}
+                if method == "initialize" and isinstance(msg.get("result"), dict):
                     caps = msg["result"].setdefault("capabilities", {})
                     tools = caps.get("tools") if isinstance(caps.get("tools"), dict) else {}
                     tools["listChanged"] = True
@@ -145,7 +159,11 @@ class Supervisor:
         self.last_start = time.monotonic()
         kw = {"creationflags": 0x08000000} if os.name == "nt" else {}  # CREATE_NO_WINDOW
         try:
-            child = subprocess.Popen(self.cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=self.env, **kw)
+            env = dict(self.env if self.env is not None else os.environ)
+            with self.lock:
+                if self.seen_tools:
+                    env[SEEN_TOOLS_ENV] = ",".join(sorted(self.seen_tools))
+            child = subprocess.Popen(self.cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=env, **kw)
         except OSError as e:
             self.last_error = str(e)
             _log("couldn't start the connector: %s" % e)

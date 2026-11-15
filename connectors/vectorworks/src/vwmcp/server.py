@@ -122,7 +122,18 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             folders = readout.watch_folders()
             out["watching"] = [str(f) for f in folders] if folders else "nothing (set VWMCP_WATCH to read out new files by itself)"
             out["requests"] = [str(f) for f in readout.request_folders()] or "no Dropbox 'Rig Studio' folder found (set VWMCP_REQUESTS)"
+            missing = await tools_claude_lacks()
+            if missing:
+                out["new_tools_need_claude_restart"] = missing
         return out
+
+    async def tools_claude_lacks() -> list:
+        """Tools this code has that the Claude app wasn't shown (it keeps the list from its start)."""
+        seen = os.environ.get("VWMCP_TOOLS_SEEN", "")
+        if not seen:
+            return []
+        have = {t.name for t in await mcp.list_tools()}
+        return sorted(have - set(seen.split(",")))
 
     @mcp.tool()
     async def update_connector(install: bool = True) -> dict:

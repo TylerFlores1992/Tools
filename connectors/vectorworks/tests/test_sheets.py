@@ -130,3 +130,12 @@ def test_an_export_that_never_writes_a_pdf_says_why(fake_vw, monkeypatch, tmp_pa
     err = call_error(server, "export_pdf", sheet="Deck Layout", path=str(tmp_path / "a.pdf"), timeout=3)
     assert "No PDF appeared" in err and "Export PDF..." in err
     assert fake_vw.DOC.active_layer.name == "FOH DECK"
+
+
+def test_ping_names_tools_the_claude_app_hasnt_loaded(fake_vw, monkeypatch):
+    monkeypatch.setenv("VWMCP_TOOLS_SEEN", "ping,read_out,create_layer")
+    server = build_server(config.load())
+    missing = call(server, "ping")["new_tools_need_claude_restart"]
+    assert "export_pdf" in missing and "create_sheet_layer" in missing and "ping" not in missing
+    monkeypatch.delenv("VWMCP_TOOLS_SEEN")
+    assert "new_tools_need_claude_restart" not in call(build_server(config.load()), "ping")
