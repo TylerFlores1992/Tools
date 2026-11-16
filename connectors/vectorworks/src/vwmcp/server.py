@@ -18,7 +18,7 @@ from typing import Any, Literal, Union
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from . import __version__, config, readout, rig, symbols, update
+from . import __version__, config, opened, readout, rig, symbols, update
 from .jobs import BUSY_DIR, BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
@@ -350,7 +350,9 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """Save the open drawing as a new file at `path` (full Windows path ending in .vwx): a new
         version beside the original, which stays as it was last saved. Vectorworks then has the new
         file open."""
-        return await call("save_as", path=path)
+        out = await call("save_as", path=path)
+        opened.remember(str((out or {}).get("saved") or path))  # closed before the next file opens
+        return out
 
     @mcp.tool()
     async def create_class(name: str, activate: bool = False) -> dict:
@@ -663,16 +665,22 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             return await outer_call(op, _watch=watch, **args)
 
         vwx = Path(path).expanduser() if path else None
-        opened = False
+        did_open = False
+        made_room: list = []
         if vwx is not None:
             if not vwx.exists():
                 raise ToolError("No file at %s." % vwx)
             info = await call("get_document_info")
             if not readout.same_document(info.get("document", ""), vwx):
+                # Vectorworks refuses new files at its open document limit (a worker hit it,
+                # 2026-11-15): close what earlier jobs opened first (never the designer's own).
+                if hasattr(trigger, "make_room"):
+                    with contextlib.suppress(Exception):
+                        made_room = await asyncio.to_thread(trigger.make_room, vwx.name)
                 try:
                     exe = await asyncio.to_thread(lambda: getattr(trigger, "vectorworks_exe", lambda: None)())
                     await asyncio.to_thread(readout.open_in_vectorworks, vwx, exe)
-                    opened = True
+                    did_open = True
                 except Exception as e:
                     raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e
                 waited = asked = 0.0
@@ -690,6 +698,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                     except Exception:
                         continue
                     if readout.same_document(info.get("document", ""), vwx):
+                        shown = str(info.get("document") or vwx.name)
+                        opened.remember(shown, copy=readout.is_converted_copy(shown, vwx))
                         break
                 else:
                     raise ToolError("Vectorworks didn't show %s within 3 minutes. Open it by hand, then call read_out again without a path." % vwx.name)
@@ -719,15 +729,13 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             n += 1
         put(dest, body)
         out = {"saved": str(dest), "bytes": len(body) + sum(len(b) for b in parts), "mesh_parts": len(parts), "shapes_left_out": trimmed, **readout.summary(data)}
-        open_name = str(data.get("document") or "")
-        if opened and readout.is_converted_copy(open_name, vwx) and hasattr(trigger, "close_copy"):
-            # Opening an older file made an unsaved converted copy. Left open, it blocks the next job
-            # with a "name and save for backup?" box after 30 minutes. Close it without saving.
-            try:
-                out["closed_copy"] = await asyncio.to_thread(trigger.close_copy, open_name)
-            except Exception as e:
-                out["closed_copy"] = False
-                out["close_note"] = "Couldn't close the converted copy %s: %s" % (open_name, e)
+        if made_room:
+            out["closed_first"] = made_room  # earlier jobs' drawings, closed to make room
+        if did_open:
+            # The drawing stays open: a job that read it out to work on it goes on with it. (Closing
+            # a converted copy here put the next steps on whatever drawing was behind it.) It's on
+            # the connector's list, so it's closed before the next file opens.
+            out["left_open"] = str(data.get("document") or vwx.name)
         return out
 
     @mcp.tool()

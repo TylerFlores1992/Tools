@@ -226,10 +226,13 @@ def test_a_converted_copy_is_told_apart_from_the_file():
     assert not readout.is_converted_copy("Claude connector.vwx", p)
 
 
-def test_after_reading_a_converted_file_its_copy_is_closed(fake_vw, tmp_path, monkeypatch):
+def test_a_converted_copy_stays_open_for_the_job_and_is_listed_as_a_copy(fake_vw, tmp_path, monkeypatch):
+    """A worker opens a file with read_out and goes on drawing in it. Closing the converted copy
+    right after reading put its next steps on whatever drawing was behind (found 2026-11-16)."""
+    from vwmcp import opened
     from vwmcp import server as server_mod
 
-    closed = []
+    closed, rooms = [], []
 
     class Trig:
         def fire(self, job_created=None):
@@ -238,6 +241,10 @@ def test_after_reading_a_converted_file_its_copy_is_closed(fake_vw, tmp_path, mo
         def close_copy(self, name):
             closed.append(name)
             return True
+
+        def make_room(self, keep=None):
+            rooms.append(keep)
+            return [{"drawing": "Old job.vwx", "result": "closed"}]
 
     vwx = tmp_path / "CFF_v2025.vwx"
     vwx.write_bytes(b"x")
@@ -253,7 +260,31 @@ def test_after_reading_a_converted_file_its_copy_is_closed(fake_vw, tmp_path, mo
     srv = build_server(config.load())
     r = call(srv, "read_out", path=str(vwx))
     assert r["saved"] == str(tmp_path / "CFF_v2025.rigread.json")
-    assert closed == ["CFF_v2025_v2026.vwx"] and r["closed_copy"] is True
+    assert closed == [], "the copy the job works in is not closed"
+    assert rooms == ["CFF_v2025.vwx"], "room is made before opening, keeping the file asked for"
+    assert r["left_open"] == "CFF_v2025_v2026.vwx" and r["closed_first"][0]["result"] == "closed"
+    assert opened.rows() == [{"name": "CFF_v2025_v2026.vwx", "copy": True}]
+
+
+def test_only_drawings_on_the_list_are_closed_and_only_copies_are_thrown_away():
+    from vwmcp import opened
+
+    opened.remember("CFF_v2025_v2026.vwx", copy=True)
+    opened.remember(r"C:\Rig Studio\_worker-test\CFF-worker-test4_DeckLayout.vwx")
+    tabs = ["CFF-26_041426_v2025.vwx", "Weakest Link AirPro Rigging.vwx", "cff_v2025_v2026.vwx", "CFF-worker-test4_DeckLayout.vwx"]
+    assert opened.to_close(tabs) == [("cff_v2025_v2026.vwx", True), ("CFF-worker-test4_DeckLayout.vwx", False)]
+    assert opened.to_close(tabs, keep="CFF-worker-test4_DeckLayout.vwx") == [("cff_v2025_v2026.vwx", True)]
+    opened.forget("CFF_V2025_V2026.vwx")
+    assert opened.to_close(tabs) == [("CFF-worker-test4_DeckLayout.vwx", False)]
+
+
+def test_save_as_puts_the_new_file_on_the_list(fake_vw, tmp_path):
+    from vwmcp import opened
+
+    srv = build_server(config.load())
+    target = str(tmp_path / "Show_DeckLayout.vwx")
+    call(srv, "save_as", path=target)
+    assert [r["name"] for r in opened.rows()] == ["Show_DeckLayout.vwx"]
 
 
 def test_a_file_already_open_is_never_closed(fake_vw, tmp_path, monkeypatch):

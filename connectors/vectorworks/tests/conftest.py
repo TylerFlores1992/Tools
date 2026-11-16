@@ -31,6 +31,10 @@ def clean_home():
     for f in ("journal.jsonl", "allow_exec", "stop"):
         (_HOME / f).unlink(missing_ok=True)
     shutil.rmtree(_HOME / "shows", ignore_errors=True)
+    from vwmcp import opened  # the connector's list of drawings it opened: never the real one
+
+    opened.FILE = _HOME / "opened.json"
+    opened.FILE.unlink(missing_ok=True)
     yield
 
 
