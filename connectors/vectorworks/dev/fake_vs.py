@@ -967,6 +967,13 @@ def SymbolToGroup(h, convertAction):
     DOC.last = None
 
 
+def HMoveForward(h, toFront):
+    """To the front of its layer's stacking order: last in DOC.objects among its layer's."""
+    if toFront and h in DOC.objects:
+        DOC.objects.remove(h)
+        DOC.objects.append(h)
+
+
 def HUngroup(h):
     if h.type == 63:
         # As measured on VW 2026: a dimension breaks into its line and its figure as text; the

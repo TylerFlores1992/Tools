@@ -1119,6 +1119,11 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """A picture of the Vectorworks window as it is now, to check what you drew."""
         if not isinstance(trigger, HotkeyTrigger):
             raise ToolError("Screenshots need the Windows hotkey setup (VWMCP_TRIGGER=hotkey). Use snapshot instead.")
+        # Close a menu a job left open first: a worker's check showed only the Tools menu over a
+        # blank sheet (2026-11-15).
+        with contextlib.suppress(Exception):
+            await asyncio.to_thread(trigger.tidy)
+            await asyncio.sleep(0.3)
         try:
             png = trigger.capture_png()
         except TriggerError as e:

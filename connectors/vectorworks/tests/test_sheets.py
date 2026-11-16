@@ -364,3 +364,18 @@ def test_dimension_figures_print_at_the_text_size(fake_vw):
     assert sorted(round(o.pt, 3) for o in vp.annotations if o.type == 10) == [672.0, 672.0], [o.pt for o in vp.annotations if o.type == 10]
     assert r["printed_text"]["dimension_figures"] == 1
     assert [o for o in fake_vw.DOC.objects if o.type == 63] == dims_before, "the notes layer keeps its real dimension"
+
+
+def test_the_viewport_is_in_front_of_a_filled_border_drawn_after_it(fake_vw, monkeypatch, tmp_path):
+    """A worker test, 2026-11-15: a page border drawn after the viewport, with the drawing's solid
+    fill, covered the whole plan in the PDF. Export brings the viewports to the front first."""
+    trig = _ExportingTrigger(fake_vw)
+    server = _with_trigger(monkeypatch, trig)
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_sheet_layer", name="Deck Layout", width=36, height=24)
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"])
+    call(server, "draw_rectangle", corner1=[-17, -11], corner2=[17, 11], layer="Deck Layout")
+    on_sheet = lambda: [o.type for o in fake_vw.DOC.objects if o.layer and o.layer.name == "Deck Layout"]
+    assert on_sheet()[-1] != 122, "the border is on top"
+    call(server, "export_pdf", sheet="Deck Layout", path=str(tmp_path / "f.pdf"))
+    assert on_sheet()[-1] == 122, "the viewport is in front when it prints"

@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.18"
+BRIDGE_VERSION = "0.9.19"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -2914,12 +2914,15 @@ def show_sheet(sheet):
     # A viewport shows what its layers held when it was last updated: notes drawn after it was
     # made don't appear (measured 2026-11-15, the CFF deck layout). Update each one so the PDF
     # shows the drawing as it is.
+    # And each goes to the front: a page border or title block drawn after it with the drawing's
+    # solid fill covered the whole plan (a worker test, 2026-11-15: the PDF and its check both
+    # showed the viewport blank).
     updated = 0
-    for h in _children(vs.FInLayer(lh)):
-        if vs.GetTypeN(h) == 122:
-            vs.UpdateVP(h)
-            updated += 1
-    return {"sheet": sheet, "previous": prev, "viewports_updated": updated}
+    for h in [h for h in _children(vs.FInLayer(lh)) if vs.GetTypeN(h) == 122]:
+        vs.HMoveForward(h, True)
+        vs.UpdateVP(h)
+        updated += 1
+    return {"sheet": sheet, "previous": prev, "viewports_updated": updated, "viewports_to_front": updated}
 
 
 @op
