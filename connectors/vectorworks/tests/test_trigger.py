@@ -748,3 +748,20 @@ def test_making_room_never_throws_away_unsaved_work_in_a_job_file():
     t, _ = make_menu(win)
     assert [d["result"] for d in t.make_room()] == ["kept: unsaved changes"]
     assert "Job4_DeckLayout.vwx" in win.tabs and opened.rows() != []
+
+
+class PathDocsWin(DocsWin):
+    """press_menu_path is the route that works on the owner's PC; single-level press_menu does nothing."""
+
+    def press_menu(self, w, menu, item):
+        self.log.append(f"menu {menu} > {item} (did nothing)")
+
+    def press_menu_path(self, w, path):
+        DocsWin.press_menu(self, w, *path)
+
+
+def test_file_close_goes_through_the_menu_path_route():
+    win = PathDocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx")
+    t, _ = make_menu(win)
+    assert t.close_drawing("Job4_DeckLayout.vwx") == "closed"
+    assert "menu File > Close" in win.log and win.tabs == ["Mine.vwx"]

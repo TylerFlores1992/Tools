@@ -1234,7 +1234,17 @@ class HotkeyTrigger(Trigger):
                     self._sleep(0.2)
                 if stem not in title():
                     return "couldn't bring it to the front (%s)" % (how or "no tab")
-            self.win.press_menu(target, "File", "Close")
+            if hasattr(self.win, "press_menu_path"):
+                # The route measured working on the owner's PC (Export PDF); the single-level press
+                # did nothing for File > Close there (2026-11-16: four drawings "still open"). Its
+                # last Invoke can wait on the "save changes?" box, so it runs beside the answering.
+                press = threading.Thread(target=self._press_quietly, args=(target, ["File", "Close"]), daemon=True)
+                press.start()
+                # Finding File and Close took 8 s on the owner's PC (2026-11-16); the wait for the
+                # box only counts from the click (it was over at the click, so a save box sat there).
+                press.join(30.0)
+            else:
+                self.win.press_menu(target, "File", "Close")
             buttons = DISCARD_BUTTONS if discard else ("Cancel",)
             answered = False
             deadline = self._clock() + wait
@@ -1248,6 +1258,12 @@ class HotkeyTrigger(Trigger):
                     return "closed"
                 self._sleep(0.3)
             return "still open"
+
+    def _press_quietly(self, target, path: list) -> None:
+        try:
+            self.win.press_menu_path(target, path)
+        except Exception as e:
+            _menu_log("press %s failed: %r" % (" > ".join(path), e))
 
     def make_room(self, keep: str | None = None) -> list[dict]:
         """Before opening a file: close the drawings the connector opened or saved itself in
