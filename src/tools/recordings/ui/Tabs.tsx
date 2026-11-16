@@ -9,7 +9,7 @@ export type TabDef<K extends string> = { key: K; label: string; count: number };
  * instant: no page load, no fade, no jump to the top (owner, 2026-10-31). The address bar follows
  * (`?tab=`) so a reload or a shared link opens the same tab. Arrow keys move between tabs.
  */
-export function Tabs<K extends string>({ tabs, initial, fallback, panels }: { tabs: TabDef<K>[]; initial: K; fallback?: K; panels: Record<K, ReactNode> }) {
+export function Tabs<K extends string>({ tabs, initial, fallback, panels, label = "Recordings" }: { tabs: TabDef<K>[]; initial: K; fallback?: K; panels: Record<K, ReactNode>; label?: string }) {
   const [chosen, setTab] = useState<K>(initial);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   // A tab can go away while open (Trash, once emptied): show the fallback instead.
@@ -27,7 +27,7 @@ export function Tabs<K extends string>({ tabs, initial, fallback, panels }: { ta
 
   return (
     <>
-      <div role="tablist" aria-label="Recordings" className="mt-10 inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1">
+      <div role="tablist" aria-label={label} className="mt-10 inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1">
         {tabs.map((t, i) => {
           const on = t.key === tab;
           return (

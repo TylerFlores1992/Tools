@@ -27,6 +27,9 @@ The recorder lives on the home server (the Xtreamfilter project: `scripts/record
   pages, no file downloads, nothing else on the server.
 - **This site** calls it from the server (`src/lib/recordings/dvr.ts`). The key never reaches the
   browser, and every action re-checks the Private session (`requirePrivate`).
+- **Top Movies shares this entrance** (2026-11-15): the listener also passes `/api/movies/…` on
+  to the movie-picks service at home. Shutting the entrance or changing the key affects both
+  (`docs/MOVIES.md`).
 
 **Vercel environment variables** (Production):
 - `DVR_URL` = `https://home-server.tailef3c66.ts.net/dvr`

@@ -145,6 +145,7 @@ export type SeriesInput = {
 export type ActionResult = {
   ok: boolean;
   message: string;
-  undo?: { kind: "undelete" | "unskip"; value: string };
+  /** `restore`: Top Movies' "Put back" (value = the IMDb id). */
+  undo?: { kind: "undelete" | "unskip" | "restore"; value: string };
   at: number;
 };
