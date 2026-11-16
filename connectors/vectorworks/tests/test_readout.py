@@ -1016,3 +1016,52 @@ def test_a_file_that_opens_as_itself_is_never_listed_as_saved(fake_vw, tmp_path,
     monkeypatch.setattr(server_mod.asyncio, "sleep", lambda s: real_sleep(0))
     call(build_server(config.load()), "read_out", path=str(vwx))
     assert opened.rows() == [{"name": "RealShow.vwx", "kind": "opened"}]
+
+
+def test_a_read_out_cut_off_by_the_pc_link_still_notes_the_drawing_and_writes_the_file(fake_vw, tmp_path, monkeypatch):
+    """The PC link drops a call after 80 s; a big file takes longer to open. The cut must end the
+    wait, not the work (2026-11-16: the drawing a worker opened was never noted, so never closed)."""
+    import asyncio
+
+    from vwmcp import opened
+    from vwmcp import server as server_mod
+
+    class Trig:
+        def fire(self, job_created=None):
+            pass
+
+        def make_room(self, keep=None):
+            return []
+
+    vwx = tmp_path / "Big_v2025.vwx"
+    vwx.write_bytes(b"x")
+
+    def opens_as_copy(p, *_):
+        fake_vw.DOC.path = ""
+        fake_vw.DOC.fname = p.stem + "_v2026.vwx"
+
+    monkeypatch.setattr(readout, "open_in_vectorworks", opens_as_copy)
+    monkeypatch.setattr(server_mod, "make_trigger", lambda s: Trig())
+    srv = build_server(config.load())
+    real_sleep = asyncio.sleep
+
+    async def go():
+        server_mod.asyncio.sleep = lambda s: real_sleep(0.05)  # the 3 s polls, quicker
+        try:
+            req = asyncio.create_task(srv.call_tool("read_out", {"path": str(vwx)}))
+            await real_sleep(0.02)  # the open has been asked for; the drawing isn't checked yet
+            req.cancel()  # the link drops the call
+            with contextlib.suppress(asyncio.CancelledError):
+                await req
+            for _ in range(200):  # the work goes on by itself
+                if (tmp_path / "Big_v2025.rigread.json").exists():
+                    break
+                await real_sleep(0.05)
+        finally:
+            server_mod.asyncio.sleep = real_sleep
+
+    import contextlib
+
+    asyncio.run(go())
+    assert opened.rows() == [{"name": "Big_v2025_v2026.vwx", "kind": "copy"}]
+    assert (tmp_path / "Big_v2025.rigread.json").exists()

@@ -746,7 +746,13 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         With `path` the file is opened in Vectorworks first (a full Windows path); without it,
         the open document is read. Under 5 MB: the plainest shapes are left out first, and it
         says how many."""
-        return await _read_out_one(path, max_objects)
+        # The PC link cuts a call after 80 s, and that cancelled this coroutine too: a big file
+        # went on opening in Vectorworks, but nothing noted it (so it was never closed to make
+        # room) and no read-out was written (measured 2026-11-16). Run it as its own task: the cut
+        # ends the wait, not the work.
+        task = asyncio.create_task(_read_out_one(path, max_objects))
+        task.add_done_callback(lambda t: t.cancelled() or t.exception())  # an error nobody waits for
+        return await asyncio.shield(task)
 
     @mcp.tool()
     async def read_out_folder(folder: str, only_new: bool = True, limit: int = 10) -> dict:
