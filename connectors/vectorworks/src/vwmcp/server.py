@@ -351,7 +351,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         version beside the original, which stays as it was last saved. Vectorworks then has the new
         file open."""
         out = await call("save_as", path=path)
-        opened.remember(str((out or {}).get("saved") or path))  # closed before the next file opens
+        opened.remember(str((out or {}).get("saved") or path), kind="saved")  # closed before the next file opens
         return out
 
     @mcp.tool()
@@ -699,7 +699,7 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                         continue
                     if readout.same_document(info.get("document", ""), vwx):
                         shown = str(info.get("document") or vwx.name)
-                        opened.remember(shown, copy=readout.is_converted_copy(shown, vwx))
+                        opened.remember(shown, kind="copy" if readout.is_converted_copy(shown, vwx) else "opened")
                         break
                 else:
                     raise ToolError("Vectorworks didn't show %s within 3 minutes. Open it by hand, then call read_out again without a path." % vwx.name)

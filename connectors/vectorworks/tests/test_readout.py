@@ -263,19 +263,21 @@ def test_a_converted_copy_stays_open_for_the_job_and_is_listed_as_a_copy(fake_vw
     assert closed == [], "the copy the job works in is not closed"
     assert rooms == ["CFF_v2025.vwx"], "room is made before opening, keeping the file asked for"
     assert r["left_open"] == "CFF_v2025_v2026.vwx" and r["closed_first"][0]["result"] == "closed"
-    assert opened.rows() == [{"name": "CFF_v2025_v2026.vwx", "copy": True}]
+    assert opened.rows() == [{"name": "CFF_v2025_v2026.vwx", "kind": "copy"}]
 
 
-def test_only_drawings_on_the_list_are_closed_and_only_copies_are_thrown_away():
+def test_only_drawings_on_the_list_are_closed_each_with_its_kind():
     from vwmcp import opened
 
-    opened.remember("CFF_v2025_v2026.vwx", copy=True)
-    opened.remember(r"C:\Rig Studio\_worker-test\CFF-worker-test4_DeckLayout.vwx")
+    opened.remember("CFF_v2025_v2026.vwx", kind="copy")
+    opened.remember(r"C:\Rig Studio\_worker-test\CFF-worker-test4_DeckLayout.vwx", kind="saved")
     tabs = ["CFF-26_041426_v2025.vwx", "Weakest Link AirPro Rigging.vwx", "cff_v2025_v2026.vwx", "CFF-worker-test4_DeckLayout.vwx"]
-    assert opened.to_close(tabs) == [("cff_v2025_v2026.vwx", True), ("CFF-worker-test4_DeckLayout.vwx", False)]
-    assert opened.to_close(tabs, keep="CFF-worker-test4_DeckLayout.vwx") == [("cff_v2025_v2026.vwx", True)]
+    assert opened.to_close(tabs) == [("cff_v2025_v2026.vwx", "copy"), ("CFF-worker-test4_DeckLayout.vwx", "saved")]
+    assert opened.to_close(tabs, keep="CFF-worker-test4_DeckLayout.vwx") == [("cff_v2025_v2026.vwx", "copy")]
     opened.forget("CFF_V2025_V2026.vwx")
-    assert opened.to_close(tabs) == [("CFF-worker-test4_DeckLayout.vwx", False)]
+    assert opened.to_close(tabs) == [("CFF-worker-test4_DeckLayout.vwx", "saved")]
+    opened.FILE.write_text('[{"name": "Old.vwx", "copy": true}, {"name": "Mine.vwx", "copy": false}]')
+    assert opened.rows() == [{"name": "Old.vwx", "kind": "copy"}, {"name": "Mine.vwx", "kind": "opened"}], "older rows read safely"
 
 
 def test_save_as_puts_the_new_file_on_the_list(fake_vw, tmp_path):
@@ -284,7 +286,7 @@ def test_save_as_puts_the_new_file_on_the_list(fake_vw, tmp_path):
     srv = build_server(config.load())
     target = str(tmp_path / "Show_DeckLayout.vwx")
     call(srv, "save_as", path=target)
-    assert [r["name"] for r in opened.rows()] == ["Show_DeckLayout.vwx"]
+    assert opened.rows() == [{"name": "Show_DeckLayout.vwx", "kind": "saved"}]
 
 
 def test_a_file_already_open_is_never_closed(fake_vw, tmp_path, monkeypatch):
@@ -986,3 +988,31 @@ def test_a_turned_view_is_read_from_above_and_put_back(server, fake_vw, tmp_path
         vs.GetBBox = real_bbox
     assert seen and all(v == (0.0, 0.0, 0.0) for v in seen), "every outline read from straight above"
     assert d.views_set[0] == (0.0, 0.0, 0.0) and d.views_set[-1] == (-54.7, 0.0, 45.0), "and the view put back exactly"
+
+
+def test_a_file_that_opens_as_itself_is_never_listed_as_saved(fake_vw, tmp_path, monkeypatch):
+    """A current-version file opens as itself: it may be the designer's own, so closing it later
+    must never answer Save."""
+    from vwmcp import opened
+    from vwmcp import server as server_mod
+
+    class Trig:
+        def fire(self, job_created=None):
+            pass
+
+        def make_room(self, keep=None):
+            return []
+
+    vwx = tmp_path / "RealShow.vwx"
+    vwx.write_bytes(b"x")
+
+    def opens_as_itself(p, *_):
+        fake_vw.DOC.path = str(p)
+        fake_vw.DOC.fname = p.name
+
+    monkeypatch.setattr(readout, "open_in_vectorworks", opens_as_itself)
+    monkeypatch.setattr(server_mod, "make_trigger", lambda s: Trig())
+    real_sleep = server_mod.asyncio.sleep
+    monkeypatch.setattr(server_mod.asyncio, "sleep", lambda s: real_sleep(0))
+    call(build_server(config.load()), "read_out", path=str(vwx))
+    assert opened.rows() == [{"name": "RealShow.vwx", "kind": "opened"}]

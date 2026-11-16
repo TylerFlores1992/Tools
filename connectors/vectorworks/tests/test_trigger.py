@@ -716,7 +716,7 @@ def test_a_drawing_with_unsaved_changes_gets_cancel_and_stays_open():
 def test_a_converted_copy_is_thrown_away_when_asked():
     win = DocsWin(["Mine.vwx", "Show_v2026.vwx"], front="Show_v2026.vwx", unsaved={"Show_v2026.vwx"})
     t, _ = make_menu(win)
-    assert t.close_drawing("Show_v2026.vwx", discard=True) == "closed"
+    assert t.close_drawing("Show_v2026.vwx", kind="copy") == "closed"
     assert "answer No for Show_v2026.vwx" in win.log
 
 
@@ -732,7 +732,7 @@ def test_making_room_closes_only_the_connectors_own_drawings():
     from vwmcp import opened
 
     opened.remember("Job4_DeckLayout.vwx")
-    opened.remember("Show_v2026.vwx", copy=True)
+    opened.remember("Show_v2026.vwx", kind="copy")
     win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx", "Show_v2026.vwx"], front="Mine.vwx", unsaved={"Show_v2026.vwx"})
     t, _ = make_menu(win)
     done = t.make_room(keep="Job5.vwx")
@@ -743,7 +743,7 @@ def test_making_room_closes_only_the_connectors_own_drawings():
 def test_making_room_never_throws_away_unsaved_work_in_a_job_file():
     from vwmcp import opened
 
-    opened.remember("Job4_DeckLayout.vwx")  # saved by a job, then changed and not saved again
+    opened.remember("Job4_DeckLayout.vwx")  # opened as it is (could be the designer's own), then changed
     win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx", unsaved={"Job4_DeckLayout.vwx"})
     t, _ = make_menu(win)
     assert [d["result"] for d in t.make_room()] == ["kept: unsaved changes"]
@@ -765,3 +765,15 @@ def test_file_close_goes_through_the_menu_path_route():
     t, _ = make_menu(win)
     assert t.close_drawing("Job4_DeckLayout.vwx") == "closed"
     assert "menu File > Close" in win.log and win.tabs == ["Mine.vwx"]
+
+
+def test_a_file_a_job_saved_is_saved_again_and_closed():
+    """Measured 2026-11-16: every earlier job's DeckLayout file asked "save changes?" (the job went on
+    after save_as), so Cancel kept them all open and the next file still couldn't open."""
+    from vwmcp import opened
+
+    opened.remember("Job4_DeckLayout.vwx", kind="saved")
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx", unsaved={"Job4_DeckLayout.vwx", "Mine.vwx"})
+    t, _ = make_menu(win)
+    assert [d["result"] for d in t.make_room()] == ["saved and closed"]
+    assert "answer Yes for Job4_DeckLayout.vwx" in win.log and win.tabs == ["Mine.vwx"]

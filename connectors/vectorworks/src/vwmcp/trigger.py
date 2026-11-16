@@ -1212,10 +1212,12 @@ class HotkeyTrigger(Trigger):
         target = self.find_window()
         return getattr(self.win, "doc_tabs", lambda w: [])(target) if target is not None else []
 
-    def close_drawing(self, name: str, discard: bool = False, wait: float = 8.0) -> str:
-        """Close one open drawing by its tab name (File > Close). A "save changes?" box gets Cancel,
-        so anything unsaved stays; with `discard` (only for a converted copy the connector made) it
-        gets No. Returns "closed", "kept: unsaved changes", "not open" or what stopped it."""
+    def close_drawing(self, name: str, kind: str = "opened", wait: float = 8.0) -> str:
+        """Close one open drawing by its tab name (File > Close). A "save changes?" box gets the
+        answer for its kind (opened.ANSWERS): Cancel for "opened", so anything unsaved stays; No for
+        a converted "copy"; Yes for a file a job "saved". Returns "closed", "saved and closed",
+        "kept: unsaved changes", "not open" or what stopped it."""
+        from . import opened
         stem = re.sub(r"\.vwx$", "", name, flags=re.I).strip().lower()
         with self._lock:
             target = self.find_window()
@@ -1245,17 +1247,17 @@ class HotkeyTrigger(Trigger):
                 press.join(30.0)
             else:
                 self.win.press_menu(target, "File", "Close")
-            buttons = DISCARD_BUTTONS if discard else ("Cancel",)
+            buttons = opened.ANSWERS.get(kind, ("Cancel",))
             answered = False
             deadline = self._clock() + wait
             while self._clock() < deadline:
                 if not answered and getattr(self.win, "answer_save_prompt", lambda *a, **k: False)(target, name, buttons):
                     answered = True
-                    if not discard:
+                    if kind not in ("copy", "saved"):
                         return "kept: unsaved changes"
                 now = [t.lower() for t in getattr(self.win, "doc_tabs", lambda w: [])(self.find_window() or target)]
                 if name.strip().lower() not in now:
-                    return "closed"
+                    return "saved and closed" if answered and kind == "saved" else "closed"
                 self._sleep(0.3)
             return "still open"
 
@@ -1271,12 +1273,12 @@ class HotkeyTrigger(Trigger):
         from . import opened
 
         done = []
-        for name, copy in opened.to_close(self.open_drawings(), keep):
+        for name, kind in opened.to_close(self.open_drawings(), keep):
             try:
-                what = self.close_drawing(name, discard=copy)
+                what = self.close_drawing(name, kind=kind)
             except Exception as e:
                 what = "failed: %s" % e
-            if what in ("closed", "not open"):
+            if what in ("closed", "saved and closed", "not open"):
                 opened.forget(name)
             done.append({"drawing": name, "result": what})
             _menu_log("make room: %s -> %s" % (name, what))
