@@ -313,6 +313,10 @@
    "xOffset",
    "yOffset"
   ],
+  "HMoveForward": [
+   "h",
+   "toFront"
+  ],
   "HPerim": [
    "h"
   ],

@@ -304,9 +304,78 @@ def test_annotation_text_prints_at_the_size_asked(fake_vw):
     texts = [o for o in fake_vw.DOC.objects if o.type == 10]
     texts[0].pt, texts[1].pt = 10.0, 5.0
     _layer(fake_vw, "Notes").scale = 2.0
-    call(server, "batch", steps=[{"op": "annotate_viewport", "args": {"sheet": "Deck Layout", "layer": "Notes"}}])
+    call(server, "batch", steps=[{"op": "annotate_viewport", "args": {"sheet": "Deck Layout", "layer": "Notes", "text_pt": None}}])
     vp = next(o for o in fake_vw.DOC.objects if o.type == 122)
     assert sorted(t.pt for t in vp.annotations) == [10.0, 20.0], "x the layer's scale: looks as it did on the layer"
     r = call(server, "batch", steps=[{"op": "annotation_text", "args": {"sheet": "Deck Layout", "target_pt": 6}}])["results"][0]
     assert r["printed_pt"] == [round(10 / 96, 2), round(20 / 96, 2)]
     assert r["printed_pt_now"] == [6.0, 12.0] and sorted(t.pt for t in vp.annotations) == [576.0, 1152.0]
+
+
+def test_notes_print_even_when_the_viewport_hides_their_class(fake_vw):
+    """Measured 2026-11-15: annotations follow the viewport's class visibility; a worker's own
+    dimensions on class "Dimension" vanished because it hid that class for the drawing's old ones."""
+    server = build_server(config.load())
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_layer", name="Notes", activate=False)
+    call(server, "create_class", name="Dimension")
+    call(server, "create_sheet_layer", name="Deck Layout")
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"], hidden_classes=["Dimension"])
+    call(server, "draw_line", start=[0, 0], end=[100, 0], layer="Notes", cls="Dimension")
+    r = call(server, "batch", steps=[{"op": "annotate_viewport", "args": {"sheet": "Deck Layout", "layer": "Notes"}}])["results"][0]
+    vp = next(o for o in fake_vw.DOC.objects if o.type == 122)
+    (line,) = vp.annotations
+    assert r["class"] == "Sheet Notes" and line.cls == "Sheet Notes"
+    assert vp.class_vis["Sheet Notes"] == 0 and vp.class_vis["Dimension"] == -1, "the drawing's Dimension class stays hidden"
+
+
+def test_annotated_text_prints_at_7_pt_without_another_step(fake_vw):
+    """Measured 2026-11-15: a worker copied its notes in and never ran annotation_text, and the
+    labels printed at 1,344 pt. annotate_viewport now sets the printed size itself."""
+    server = build_server(config.load())
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_layer", name="Notes", activate=False)
+    call(server, "create_sheet_layer", name="Deck Layout", width=36, height=24)
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"], scale=96, crop=[[-480, -480], [480, 480]])
+    for i, pt in enumerate((7.0, 7.0, 14.0)):
+        call(server, "add_text", position=[0, i * 20], text="label %d" % i, layer="Notes")
+        [o for o in fake_vw.DOC.objects if o.type == 10][-1].pt = pt
+    _layer(fake_vw, "Notes").scale = 192.0
+    r = call(server, "annotate_viewport", sheet="Deck Layout", layer="Notes")
+    assert r["printed_text"]["printed_pt_now"] == [7.0, 14.0], "the most common prints at 7 pt, the rest in proportion"
+
+
+def test_dimension_figures_print_at_the_text_size(fake_vw):
+    """Measured 2026-11-15: a worker's dimensions in the annotations printed with microscopic
+    figures whose size can't be read or set on the dimension; the copies are broken into a line and
+    plain text, and the figure prints at the same size as the labels."""
+    server = build_server(config.load())
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_layer", name="Notes", activate=False)
+    call(server, "create_sheet_layer", name="Deck Layout", width=36, height=24)
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"], scale=96, crop=[[-480, -480], [480, 480]])
+    call(server, "add_text", position=[0, 50], text="FOH DECK", layer="Notes")
+    call(server, "add_dimension", start=[0, 0], end=[384, 0], offset=24, layer="Notes")
+    dims_before = [o for o in fake_vw.DOC.objects if o.type == 63]
+    r = call(server, "annotate_viewport", sheet="Deck Layout", layer="Notes")
+    vp = next(o for o in fake_vw.DOC.objects if o.type == 122)
+    kinds = sorted(o.type for o in vp.annotations)
+    assert kinds == [2, 10, 10], "label + the dimension as a line and its figure"
+    assert sorted(round(o.pt, 3) for o in vp.annotations if o.type == 10) == [672.0, 672.0], [o.pt for o in vp.annotations if o.type == 10]
+    assert r["printed_text"]["dimension_figures"] == 1
+    assert [o for o in fake_vw.DOC.objects if o.type == 63] == dims_before, "the notes layer keeps its real dimension"
+
+
+def test_the_viewport_is_in_front_of_a_filled_border_drawn_after_it(fake_vw, monkeypatch, tmp_path):
+    """A worker test, 2026-11-15: a page border drawn after the viewport, with the drawing's solid
+    fill, covered the whole plan in the PDF. Export brings the viewports to the front first."""
+    trig = _ExportingTrigger(fake_vw)
+    server = _with_trigger(monkeypatch, trig)
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_sheet_layer", name="Deck Layout", width=36, height=24)
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"])
+    call(server, "draw_rectangle", corner1=[-17, -11], corner2=[17, 11], layer="Deck Layout")
+    on_sheet = lambda: [o.type for o in fake_vw.DOC.objects if o.layer and o.layer.name == "Deck Layout"]
+    assert on_sheet()[-1] != 122, "the border is on top"
+    call(server, "export_pdf", sheet="Deck Layout", path=str(tmp_path / "f.pdf"))
+    assert on_sheet()[-1] == 122, "the viewport is in front when it prints"

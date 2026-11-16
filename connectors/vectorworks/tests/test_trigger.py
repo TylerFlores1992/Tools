@@ -603,3 +603,177 @@ def test_the_replace_question_inside_the_save_box_is_answered_yes_not_save(monke
     monkeypatch.setattr(w, "_dialogs", lambda window: [SaveBox()])
     done = w.fill_export_dialogs(type("W", (), {"handle": 1})(), "C:\\x\\a.pdf")
     assert pressed == ["&Yes"] and done == ["replaced the old file"]
+
+
+def test_menus_count_as_closed_when_the_bar_is_listed_even_with_a_tooltip_up(monkeypatch):
+    """Measured 2026-11-15: a tooltip (a CS_SAVEBITS popup like a menu) made the close check say
+    "nothing worked" with every menu closed, which would stop Export PDF's menu press."""
+    import sys
+    import types
+
+    from vwmcp.trigger import _Win32
+
+    listed = {"items": []}
+
+    class Rect:
+        def __init__(self, r):
+            self.left, self.top, self.right, self.bottom = r
+
+    class Item:
+        def __init__(self, t):
+            self.t, self.r = t
+
+        def window_text(self):
+            return self.t
+
+        def rectangle(self):
+            return Rect(self.r)
+
+    class Win:
+        def descendants(self, control_type=None):
+            return [Item(t) for t in listed["items"]]
+
+    class Desktop:
+        def __init__(self, backend=None):
+            pass
+
+        def window(self, handle=None):
+            return Win()
+
+    monkeypatch.setitem(sys.modules, "pywinauto", types.SimpleNamespace(Desktop=Desktop))
+    w = _Win32.__new__(_Win32)
+    window = type("W", (), {"handle": 1})()
+    # Rectangles as UI Automation listed them on the owner's PC (menu.log, 2026-11-15 19:44).
+    bar = [("File", (2, 24, 35, 50)), ("Edit", (35, 24, 70, 50)), ("Text", (382, 24, 419, 50)), ("Help", (525, 24, 565, 50)), ("System", (0, 0, 22, 22))]
+    palettes = [("Action", (364, 795, 410, 821)), ("All Resources", (681, 795, 773, 821)), ("", (781, 795, 794, 821))]
+    tools_menu = [("Organization...\tCtrl+Shift+O", (340, 51, 601, 77)), ("Purge...", (340, 335, 601, 361)), ("MCP Run Job", (340, 799, 601, 825))]
+    listed["items"] = bar + [("Tools", (339, 24, 382, 50))] + palettes
+    assert w._menus_closed(window, popups=[123]) is True, "closed: the Resource Manager's menus lower down don't count, nor a stray popup"
+    listed["items"] = tools_menu
+    assert w._menus_closed(window) is False, "the Tools menu's own items listed, no bar: a menu is open"
+    listed["items"] = tools_menu + bar + palettes
+    assert w._menus_closed(window) is False, "File listed AND the Tools menu hanging under the bar: still open"
+    listed["items"] = bar + palettes + [("Export PDF...", (0, 51, 0, 51))]
+    assert w._menus_closed(window) is True, "an item with no size (a closed submenu's) doesn't count"
+
+
+class DocsWin(MenuWin):
+    """Vectorworks with several drawings in tabs; the one in front is in the title."""
+
+    def __init__(self, tabs, front, unsaved=(), **kw):
+        super().__init__(titles=[f"Vectorworks Design Suite 2026 - [{front}]"], **kw)
+        self.tabs, self.front, self.unsaved, self.prompt = list(tabs), front, set(unsaved), None
+
+    def title(self, w):
+        return f"Vectorworks Design Suite 2026 - [{self.front}]"
+
+    def doc_tabs(self, w):
+        return list(self.tabs)
+
+    def accept_prompts(self, w):
+        return []
+
+    def show_doc(self, w, name):
+        self.log.append(f"show {name}")
+        self.front = name
+        return "select"
+
+    def press_menu(self, w, menu, item):
+        super().press_menu(w, menu, item)
+        if (menu, item) == ("File", "Close"):
+            if self.front in self.unsaved:
+                self.prompt = self.front
+            else:
+                self.tabs.remove(self.front)
+                self.front = self.tabs[0] if self.tabs else ""
+
+    def answer_save_prompt(self, w, name, buttons, wait=0.0):
+        if self.prompt != name:
+            return False
+        self.log.append(f"answer {buttons[0]} for {name}")
+        if buttons[0] != "Cancel":
+            self.tabs.remove(name)
+            self.front = self.tabs[0] if self.tabs else ""
+        self.prompt = None
+        return True
+
+
+def test_a_saved_drawing_is_brought_forward_and_closed():
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx")
+    t, _ = make_menu(win)
+    assert t.close_drawing("Job4_DeckLayout.vwx") == "closed"
+    assert win.log == ["show Job4_DeckLayout.vwx", "menu File > Close"]
+    assert win.tabs == ["Mine.vwx"]
+
+
+def test_a_drawing_with_unsaved_changes_gets_cancel_and_stays_open():
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Job4_DeckLayout.vwx", unsaved={"Job4_DeckLayout.vwx"})
+    t, _ = make_menu(win)
+    assert t.close_drawing("Job4_DeckLayout.vwx") == "kept: unsaved changes"
+    assert "answer Cancel for Job4_DeckLayout.vwx" in win.log and "Job4_DeckLayout.vwx" in win.tabs
+
+
+def test_a_converted_copy_is_thrown_away_when_asked():
+    win = DocsWin(["Mine.vwx", "Show_v2026.vwx"], front="Show_v2026.vwx", unsaved={"Show_v2026.vwx"})
+    t, _ = make_menu(win)
+    assert t.close_drawing("Show_v2026.vwx", kind="copy") == "closed"
+    assert "answer No for Show_v2026.vwx" in win.log
+
+
+def test_a_drawing_that_wont_come_forward_is_not_closed():
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx")
+    win.show_doc = lambda w, n: ""  # the tab didn't answer
+    t, _ = make_menu(win)
+    assert t.close_drawing("Job4_DeckLayout.vwx").startswith("couldn't bring it to the front")
+    assert "menu File > Close" not in win.log, "never File > Close on whatever else is in front"
+
+
+def test_making_room_closes_only_the_connectors_own_drawings():
+    from vwmcp import opened
+
+    opened.remember("Job4_DeckLayout.vwx")
+    opened.remember("Show_v2026.vwx", kind="copy")
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx", "Show_v2026.vwx"], front="Mine.vwx", unsaved={"Show_v2026.vwx"})
+    t, _ = make_menu(win)
+    done = t.make_room(keep="Job5.vwx")
+    assert [d["result"] for d in done] == ["closed", "closed"]
+    assert win.tabs == ["Mine.vwx"] and opened.rows() == []
+
+
+def test_making_room_never_throws_away_unsaved_work_in_a_job_file():
+    from vwmcp import opened
+
+    opened.remember("Job4_DeckLayout.vwx")  # opened as it is (could be the designer's own), then changed
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx", unsaved={"Job4_DeckLayout.vwx"})
+    t, _ = make_menu(win)
+    assert [d["result"] for d in t.make_room()] == ["kept: unsaved changes"]
+    assert "Job4_DeckLayout.vwx" in win.tabs and opened.rows() != []
+
+
+class PathDocsWin(DocsWin):
+    """press_menu_path is the route that works on the owner's PC; single-level press_menu does nothing."""
+
+    def press_menu(self, w, menu, item):
+        self.log.append(f"menu {menu} > {item} (did nothing)")
+
+    def press_menu_path(self, w, path):
+        DocsWin.press_menu(self, w, *path)
+
+
+def test_file_close_goes_through_the_menu_path_route():
+    win = PathDocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx")
+    t, _ = make_menu(win)
+    assert t.close_drawing("Job4_DeckLayout.vwx") == "closed"
+    assert "menu File > Close" in win.log and win.tabs == ["Mine.vwx"]
+
+
+def test_a_file_a_job_saved_is_saved_again_and_closed():
+    """Measured 2026-11-16: every earlier job's DeckLayout file asked "save changes?" (the job went on
+    after save_as), so Cancel kept them all open and the next file still couldn't open."""
+    from vwmcp import opened
+
+    opened.remember("Job4_DeckLayout.vwx", kind="saved")
+    win = DocsWin(["Mine.vwx", "Job4_DeckLayout.vwx"], front="Mine.vwx", unsaved={"Job4_DeckLayout.vwx", "Mine.vwx"})
+    t, _ = make_menu(win)
+    assert [d["result"] for d in t.make_room()] == ["saved and closed"]
+    assert "answer Yes for Job4_DeckLayout.vwx" in win.log and win.tabs == ["Mine.vwx"]

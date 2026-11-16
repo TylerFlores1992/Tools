@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.15"
+BRIDGE_VERSION = "0.9.20"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -2704,19 +2704,10 @@ def delete_empty_layer(name):
     return {"deleted_layer": name}
 
 
-@op
-def annotation_text(sheet, target_pt=None, group_type=2):
-    """The text in the annotations of the viewport on sheet layer `sheet`: how many and their
-    sizes, as points on paper (an annotation's own size / the viewport's scale: measured
-    2026-11-15). With `target_pt`, scale every one by the same factor so the most common size
-    prints at target_pt (the relative sizes stay)."""
-    sh = _layer_of(sheet, "sheet")
-    vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
-    if len(vps) != 1:
-        raise OpError("Sheet layer %r has %d viewports; this needs exactly one." % (sheet, len(vps)))
-    g = vs.GetVPGroup(vps[0], int(group_type))
+def _annotation_texts(vp, group_type=2):
+    g = vs.GetVPGroup(vp, int(group_type))
     if _nil(g):
-        raise OpError("The viewport has no annotations.")
+        return []
     texts, todo = [], list(_children(vs.FInGroup(g)))
     while todo:
         h = todo.pop()
@@ -2725,7 +2716,19 @@ def annotation_text(sheet, target_pt=None, group_type=2):
             todo.extend(_children(vs.FInGroup(h)))
         elif k == 10 and _s(vs.GetText(h)):
             texts.append(h)
-    sc = float(vs.GetObjectVariableReal(vps[0], VP_SCALE))
+    return texts
+
+
+def _text_len(h):
+    return len(_s(vs.GetText(h))) if vs.GetTypeN(h) == 10 else 0
+
+
+def _print_annotation_text(vp, target_pt=None):
+    """Sizes of the viewport's annotation text as printed (points on paper: an annotation's own
+    size / the viewport's scale, measured 2026-11-15); with target_pt, scale them all so the most
+    common prints at target_pt (relative sizes stay)."""
+    sc = float(vs.GetObjectVariableReal(vp, VP_SCALE))
+    texts = _annotation_texts(vp)
     sizes = [round(float(vs.GetTextSize(h, 0)), 4) for h in texts]
     out = {"texts": len(texts), "printed_pt": sorted({round(sz / sc, 2) for sz in sizes})[:20]}
     if target_pt is not None and sizes:
@@ -2734,11 +2737,24 @@ def annotation_text(sheet, target_pt=None, group_type=2):
             raise OpError("The text has no size to scale from.")
         f = float(target_pt) * sc / common
         for h, sz in zip(texts, sizes):
-            vs.SetTextSize(h, 0, len(_s(vs.GetText(h))), sz * f)
+            vs.SetTextSize(h, 0, _text_len(h), sz * f)
             vs.ResetObject(h)
-        vs.UpdateVP(vps[0])
+        vs.UpdateVP(vp)
         out.update(factor=f, printed_pt_now=sorted({round(sz * f / sc, 2) for sz in sizes})[:20])
     return out
+
+
+@op
+def annotation_text(sheet, target_pt=None):
+    """The text in the annotations of the viewport on sheet layer `sheet`: how many and their
+    printed sizes; with `target_pt`, scale every one so the most common size prints at target_pt."""
+    sh = _layer_of(sheet, "sheet")
+    vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
+    if len(vps) != 1:
+        raise OpError("Sheet layer %r has %d viewports; this needs exactly one." % (sheet, len(vps)))
+    if not _annotation_texts(vps[0]):
+        raise OpError("The viewport has no annotation text.")
+    return _print_annotation_text(vps[0], target_pt)
 
 
 @op
@@ -2749,7 +2765,22 @@ def user_origin():
 
 
 @op
-def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
+def explode_dimensions(layer):
+    """Break every dimension object on design layer `layer` into its plain parts (lines, arrows,
+    its figure as text), like Vectorworks' Ungroup. Returns what each one became."""
+    lh = _layer_of(layer, "design")
+    out = []
+    for h in [h for h in _children(vs.FInLayer(lh)) if vs.GetTypeN(h) == 63]:
+        before = set(_uuid(x) for x in _children(vs.FInLayer(lh)))
+        figure = _s(vs.GetDimText(h))
+        vs.HUngroup(h)
+        made = [x for x in _children(vs.FInLayer(lh)) if _uuid(x) not in before]
+        out.append({"figure": figure, "became": [vs.GetTypeN(x) for x in made]})
+    return {"layer": layer, "dimensions": len(out), "parts": out[:20]}
+
+
+@op
+def annotate_viewport(sheet, layer, hide_layer=True, offset=None, cls="Sheet Notes", text_pt=7):
     """Copy every object on design layer `layer` (reference lines, dimensions, labels drawn in
     drawing coordinates) into the annotations of the viewport on sheet layer `sheet`, then turn
     the layer off in it. Annotations always draw over the viewport at its scale; plain 2D
@@ -2758,7 +2789,14 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
     `offset`: [dx, dy] added to every copy. A viewport moved on its sheet after it was made
     (create_viewport's `at`) takes new annotations that far off, times its scale (measured: moved
     10" down at 1/8", its crop read 960" lower and a new annotation sat 10" high);
-    create_viewport returns the offset to pass here."""
+    create_viewport returns the offset to pass here.
+    Annotations follow the viewport's class visibility (measured 2026-11-15: a worker hid class
+    "Dimension" to keep the drawing's old dimensions off the sheet, and its new dimensions, on that
+    class, vanished too), so the copies go on class `cls`, made if missing and shown in the
+    viewport. cls=None keeps each object's own class.
+    `text_pt`: then every annotation text is scaled so the most common prints at that size (a
+    worker that copied 7 pt text in and never ran annotation_text printed it at 1,344 pt:
+    measured 2026-11-15). None leaves the sizes as copied."""
     sh = _layer_of(sheet, "sheet")
     lh = _layer_of(layer, "design")
     vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
@@ -2769,33 +2807,65 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
     # 2026-11-15: 140 pt in a 1/8" viewport printed as 140/96 pt), so text from a layer at scale
     # S keeps its look when its points are multiplied by S.
     ratio = float(vs.GetLScale(lh))
+    if cls:
+        _ensure_class(cls)
+        vs.SetVPClassVisibility(vp, cls, 0)
     added = failed = 0
+    figures = []  # the dimensions' figures, once they're plain text
     for h in list(_children(vs.FInLayer(lh))):
         c = vs.HDuplicate(h, float(offset[0]) if offset else 0, float(offset[1]) if offset else 0)
         if _nil(c):
             failed += 1
             continue
-        todo = [c]
-        while todo:
-            t = todo.pop()
-            k = vs.GetTypeN(t)
-            if k == 11:
-                todo.extend(_children(vs.FInGroup(t)))
-            elif k == 10:
-                n = len(_s(vs.GetText(t)))
-                if n:
-                    vs.SetTextSize(t, 0, n, float(vs.GetTextSize(t, 0)) * ratio)
-        if vs.AddVPAnnotationObject(vp, c):
-            added += 1
-        else:
-            vs.DelObject(c)
-            failed += 1
+        copies = [c]
+        if vs.GetTypeN(c) == 63:
+            # A dimension's figure in an annotation printed microscopic and its size can't be read
+            # or set (GetTextSize says 0: measured 2026-11-15), so the copy is broken into its
+            # line and its figure as plain text, which can be sized.
+            before = set(_uuid(x) for x in _children(vs.FInLayer(lh)))
+            vs.HUngroup(c)
+            copies = [x for x in _children(vs.FInLayer(lh)) if _uuid(x) not in before]
+            figures += [x for x in copies if vs.GetTypeN(x) == 10]
+        for c in copies:
+            todo = [c]
+            while todo:
+                t = todo.pop()
+                k = vs.GetTypeN(t)
+                if k == 11:
+                    todo.extend(_children(vs.FInGroup(t)))
+                elif k == 10:
+                    n = len(_s(vs.GetText(t)))
+                    if n:
+                        vs.SetTextSize(t, 0, n, float(vs.GetTextSize(t, 0)) * ratio)
+            if cls:
+                vs.SetClass(c, cls)
+            if vs.AddVPAnnotationObject(vp, c):
+                added += 1
+            else:
+                vs.DelObject(c)
+                failed += 1
     if hide_layer:
         vs.SetVPLayerVisibility(vp, lh, -1)
+    if figures:
+        # A dimension's figure takes the size of the labels (the most common other text), so it
+        # prints like them; with no other text, the target size.
+        fig_ids = set(_uuid(t) for t in figures)
+        others = [round(float(vs.GetTextSize(t, 0)), 4) for t in _annotation_texts(vp) if _uuid(t) not in fig_ids]
+        sc = float(vs.GetObjectVariableReal(vp, VP_SCALE))
+        size = max(set(others), key=others.count) if others else float(text_pt or 7) * sc
+        for t in figures:
+            n = len(_s(vs.GetText(t)))
+            if n:
+                vs.SetTextSize(t, 0, n, size)
+                vs.ResetObject(t)
+    printed = _print_annotation_text(vp, text_pt) if text_pt is not None else None
+    if printed is not None and figures:
+        printed["dimension_figures"] = len(figures)
     vs.UpdateVP(vp)
     vs.ResetObject(vp)
     return {"sheet": sheet, "layer": layer, "annotations_added": added, "failed": failed,
-            "text_scale": ratio, "layer_hidden_in_viewport": bool(hide_layer)}
+            "text_scale": ratio, "layer_hidden_in_viewport": bool(hide_layer), "class": cls,
+            "printed_text": printed}
 
 
 @op
@@ -2844,12 +2914,15 @@ def show_sheet(sheet):
     # A viewport shows what its layers held when it was last updated: notes drawn after it was
     # made don't appear (measured 2026-11-15, the CFF deck layout). Update each one so the PDF
     # shows the drawing as it is.
+    # And each goes to the front: a page border or title block drawn after it with the drawing's
+    # solid fill covered the whole plan (a worker test, 2026-11-15: the PDF and its check both
+    # showed the viewport blank).
     updated = 0
-    for h in _children(vs.FInLayer(lh)):
-        if vs.GetTypeN(h) == 122:
-            vs.UpdateVP(h)
-            updated += 1
-    return {"sheet": sheet, "previous": prev, "viewports_updated": updated}
+    for h in [h for h in _children(vs.FInLayer(lh)) if vs.GetTypeN(h) == 122]:
+        vs.HMoveForward(h, True)
+        vs.UpdateVP(h)
+        updated += 1
+    return {"sheet": sheet, "previous": prev, "viewports_updated": updated, "viewports_to_front": updated}
 
 
 @op

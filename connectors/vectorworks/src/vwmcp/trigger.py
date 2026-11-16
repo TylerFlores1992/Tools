@@ -43,6 +43,26 @@ def _menu_log(what: str, state: dict | None = None) -> None:
         pass
 
 
+def menus_closed_from(items: list[tuple[str, tuple[int, int, int, int]]]) -> bool:
+    """No Vectorworks menu is open, from UI Automation's menu items and their rectangles
+    (left, top, right, bottom). UIA never shows the menu bar as a MenuBar, only as items in one
+    row (File, Edit, ...). Measured on VW 2026, 2026-11-15: with Tools open UIA lists File too
+    (so "File listed" isn't enough), drops "Tools" itself, and lists the menu's items in a
+    column whose first item starts right under the bar (bar bottom 50, "Organization..." top
+    51). With every menu closed it still lists palette menus further down (the Resource
+    Manager's "Action" and "All Resources" at top 795), so "anything below the bar" isn't it
+    either. So: closed when File is listed and no item starts within a few pixels under the bar,
+    where a dropped menu's first item always sits."""
+    file = next((r for n, r in items if n == "File"), None)
+    if file is None:
+        return False
+    bar_bottom = file[3]
+    for _, (left, top, right, bottom) in items:
+        if right > left and bottom > top and bar_bottom <= top <= bar_bottom + 8:
+            return False
+    return True
+
+
 # Vectorworks' program on Windows ("Vectorworks2026.exe" and the like). Not a browser, not Explorer.
 DEFAULT_PROCESS_RE = r"(?i)^vectorworks[^\\/]*\.exe$"
 
@@ -426,7 +446,68 @@ class _Win32:
             _t.sleep(0.3)
         return False
 
-    # -- UI Automation plumbing for the two above --
+    def answer_save_prompt(self, window, name: str, buttons, wait: float = 0.0) -> bool:
+        """A "save changes to <name>?" box for exactly this document: press the first of
+        `buttons` it has. Any other box is left alone. True when it answered."""
+        import time as _t
+
+        deadline = _t.monotonic() + wait
+        while True:
+            for w in self._dialogs(window):
+                if is_save_prompt_for(self._words(w), name) and self._press(w, buttons):
+                    return True
+            if _t.monotonic() >= deadline:
+                return False
+            _t.sleep(0.3)
+
+    def _doc_tab_items(self, window) -> list:
+        """The document tabs over the drawing (UI Automation TabItems named "<file>.vwx";
+        measured on VW 2026: palettes' tabs are TabItems too, named Classes, Shape...)."""
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+        return [t for t in vw.descendants(control_type="TabItem") if t.window_text().strip().lower().endswith(".vwx")]
+
+    def doc_tabs(self, window) -> list[str]:
+        try:
+            return [t.window_text().strip() for t in self._doc_tab_items(window)]
+        except Exception:
+            return []
+
+    def show_doc(self, window, name: str) -> str:
+        """Bring the drawing `name` to the front by its tab, without keys or the mouse.
+        Returns how ("select", "invoke", "click") or "" when it couldn't."""
+        want = name.strip().lower()
+        try:
+            tab = next((t for t in self._doc_tab_items(window) if t.window_text().strip().lower() == want), None)
+        except Exception:
+            tab = None
+        if tab is None:
+            return ""
+        for how in ("select", "invoke"):
+            try:
+                getattr(tab, how)()
+                return how
+            except Exception:
+                continue
+        try:  # a posted click at the tab's middle, to the tab strip's own window
+            import ctypes
+            import ctypes.wintypes
+
+            u = ctypes.windll.user32  # type: ignore[attr-defined]
+            r = tab.rectangle()
+            x, y = (r.left + r.right) // 2, (r.top + r.bottom) // 2
+            strip = u.WindowFromPoint(ctypes.wintypes.POINT(x, y))
+            pt = ctypes.wintypes.POINT(x, y)
+            u.ScreenToClient(strip, ctypes.byref(pt))
+            lp = (pt.y << 16) | (pt.x & 0xFFFF)
+            u.PostMessageW(strip, 0x0201, 1, lp)
+            u.PostMessageW(strip, 0x0202, 0, lp)
+            return "click"
+        except Exception:
+            return ""
+
+    # -- UI Automation plumbing for the ones above --
     def _dialogs(self, window) -> list:
         from pywinauto import Desktop
 
@@ -694,23 +775,31 @@ class _Win32:
             names += [m.window_text().strip() for m in bar.children()]
         return names
 
+    def _menu_items(self, window) -> list[tuple[str, tuple[int, int, int, int]]]:
+        """Every menu item UI Automation lists for Vectorworks, with its rectangle on screen."""
+        from pywinauto import Desktop
+
+        vw = Desktop(backend="uia").window(handle=window.handle)
+        out = []
+        for m in vw.descendants(control_type="MenuItem"):
+            r = m.rectangle()
+            out.append((m.window_text().split("\t")[0].strip(), (r.left, r.top, r.right, r.bottom)))
+        return out
+
     def _menus_closed(self, window, popups=None) -> bool:
-        """No menu open: the open menu's own window (an MFC popup, measured on VW 2026: class
-        "Afx:…:800:…" where the menu is drawn) is gone, and the top-level File item is listed again.
-        UI Automation never shows Vectorworks' menu bar as a MenuBar, only as top-level items."""
-        import ctypes
-
+        """No menu open (see menus_closed_from). Other popups don't count: a tooltip (CS_SAVEBITS
+        like a menu, measured 2026-11-15) stays up for a while and isn't a menu. `popups` is
+        accepted for older callers and ignored."""
         try:
-            u = ctypes.windll.user32  # type: ignore[attr-defined]
-            if popups and any(u.IsWindowVisible(h) for h in popups):
-                return False
-            from pywinauto import Desktop
-
-            vw = Desktop(backend="uia").window(handle=window.handle)
-            names = {m.window_text().split("\t")[0].strip() for m in vw.descendants(control_type="MenuItem")}
-            return "File" in names
+            items = self._menu_items(window)
         except Exception:
             return False
+        closed = menus_closed_from(items)
+        if closed != getattr(self, "_last_menus_closed", None):  # log a change, not every poll
+            self._last_menus_closed = closed
+            with contextlib.suppress(Exception):
+                _menu_log("menus %s: %s" % ("closed" if closed else "open", json.dumps(items)[:4000]))
+        return closed
 
     def cancel_menus(self, window, wait: float = 1.5) -> str:
         """Close a menu left open (Vectorworks keeps Tools open after the job's menu press: its
@@ -762,9 +851,9 @@ class _Win32:
                     u.PostMessageW(h, m, w, 0)
             return hs
 
-        open_now = popups()
-        if not open_now and self._menus_closed(window):
+        if self._menus_closed(window):
             return "already closed"
+        open_now = popups()
         with contextlib.suppress(Exception):
             _menu_log("close menus: Vectorworks' other windows: " + "; ".join(describe(h) for h in open_now))
         ways = [
@@ -781,7 +870,7 @@ class _Win32:
                 continue
             deadline = _t.monotonic() + wait
             while _t.monotonic() < deadline:
-                if self._menus_closed(window, open_now):
+                if self._menus_closed(window):
                     _menu_log(f"close menus: {name} worked")
                     return name
                 _t.sleep(0.1)
@@ -1118,6 +1207,82 @@ class HotkeyTrigger(Trigger):
             self._sleep(1.0)
             after = self.find_window()
             return after is None or stem not in getattr(self.win, "title", lambda w: "")(after).lower()
+
+    def open_drawings(self) -> list[str]:
+        target = self.find_window()
+        return getattr(self.win, "doc_tabs", lambda w: [])(target) if target is not None else []
+
+    def close_drawing(self, name: str, kind: str = "opened", wait: float = 8.0) -> str:
+        """Close one open drawing by its tab name (File > Close). A "save changes?" box gets the
+        answer for its kind (opened.ANSWERS): Cancel for "opened", so anything unsaved stays; No for
+        a converted "copy"; Yes for a file a job "saved". Returns "closed", "saved and closed",
+        "kept: unsaved changes", "not open" or what stopped it."""
+        from . import opened
+        stem = re.sub(r"\.vwx$", "", name, flags=re.I).strip().lower()
+        with self._lock:
+            target = self.find_window()
+            if target is None:
+                return "Vectorworks isn't running"
+            tabs = [t.lower() for t in getattr(self.win, "doc_tabs", lambda w: [])(target)]
+            if name.strip().lower() not in tabs:
+                return "not open"
+            self.win.accept_prompts(target)
+            getattr(self.win, "cancel_menus", lambda w: None)(target)
+            title = lambda: getattr(self.win, "title", lambda w: "")(self.find_window() or target).lower()  # noqa: E731
+            if stem not in title():
+                how = getattr(self.win, "show_doc", lambda w, n: "")(target, name)
+                deadline = self._clock() + 3.0
+                while stem not in title() and self._clock() < deadline:
+                    self._sleep(0.2)
+                if stem not in title():
+                    return "couldn't bring it to the front (%s)" % (how or "no tab")
+            if hasattr(self.win, "press_menu_path"):
+                # The route measured working on the owner's PC (Export PDF); the single-level press
+                # did nothing for File > Close there (2026-11-16: four drawings "still open"). Its
+                # last Invoke can wait on the "save changes?" box, so it runs beside the answering.
+                press = threading.Thread(target=self._press_quietly, args=(target, ["File", "Close"]), daemon=True)
+                press.start()
+                # Finding File and Close took 8 s on the owner's PC (2026-11-16); the wait for the
+                # box only counts from the click (it was over at the click, so a save box sat there).
+                press.join(30.0)
+            else:
+                self.win.press_menu(target, "File", "Close")
+            buttons = opened.ANSWERS.get(kind, ("Cancel",))
+            answered = False
+            deadline = self._clock() + wait
+            while self._clock() < deadline:
+                if not answered and getattr(self.win, "answer_save_prompt", lambda *a, **k: False)(target, name, buttons):
+                    answered = True
+                    if kind not in ("copy", "saved"):
+                        return "kept: unsaved changes"
+                now = [t.lower() for t in getattr(self.win, "doc_tabs", lambda w: [])(self.find_window() or target)]
+                if name.strip().lower() not in now:
+                    return "saved and closed" if answered and kind == "saved" else "closed"
+                self._sleep(0.3)
+            return "still open"
+
+    def _press_quietly(self, target, path: list) -> None:
+        try:
+            self.win.press_menu_path(target, path)
+        except Exception as e:
+            _menu_log("press %s failed: %r" % (" > ".join(path), e))
+
+    def make_room(self, keep: str | None = None) -> list[dict]:
+        """Before opening a file: close the drawings the connector opened or saved itself in
+        earlier jobs (never the designer's own; see opened.py). Returns what happened to each."""
+        from . import opened
+
+        done = []
+        for name, kind in opened.to_close(self.open_drawings(), keep):
+            try:
+                what = self.close_drawing(name, kind=kind)
+            except Exception as e:
+                what = "failed: %s" % e
+            if what in ("closed", "saved and closed", "not open"):
+                opened.forget(name)
+            done.append({"drawing": name, "result": what})
+            _menu_log("make room: %s -> %s" % (name, what))
+        return done
 
     def capture_png(self) -> bytes:
         target = self.find_window()

@@ -75,8 +75,8 @@ file with save_as."
 THIS SESSION RUNS WITH TYLER'S WINDOWS PC LINKED (the scheduled task requires that computer: never
 tell Tyler to change that setting). Its Vectorworks connector's tools are named
 mcp__remote-devices__vectorworks__<tool> (older links: mcp__vectorworks__<tool>) and are DEFERRED: load
-them with ToolSearch before calling. The PC's files are reached with mcp__remote-devices__device_*
-tools (get_device_info lists the connected folders, among them C:\Users\iamty\Dropbox\Rig Studio).
+them with ToolSearch before calling. This session has no folders on the PC connected (measured
+2026-11-15): Vectorworks reads and writes the files for you (read_out, save_as, export_pdf).
 The link usually comes up at once; if a first search comes back empty, keep looking as below:
 - Run ToolSearch with "vectorworks read_out", "vectorworks ping" and "remote-devices". If no tool with
   "vectorworks" in its name comes back, wait 20 seconds (Bash: python3 -c "import time; time.sleep(20)")
@@ -95,8 +95,8 @@ The link usually comes up at once; if a first search comes back empty, keep look
 - If ping fails, fail with ping's own error text (it says what's wrong: lock screen, no drawing,
   a dialog open, Vectorworks not running). A box Vectorworks is waiting on that only saves or
   changes nothing (a backup reminder: No) may be answered with answer_prompt.
-- Project files are in C:\Users\iamty\Dropbox\Rig Studio\<project folder>\ (list it with
-  device_list_dir). A Vectorworks job works on the document open in Vectorworks: check
+- Project files are in C:\Users\iamty\Dropbox\Rig Studio\<project folder>\ (the request or the
+  project names the file). A Vectorworks job works on the document open in Vectorworks: check
   get_document_info, and open the file with read_out(path) first if a different one is open (it
   keeps running on the PC after its call times out: wait, then check get_document_info again).
 - Reading a drawing out: call read_out with the file's full Windows path. It writes
@@ -110,17 +110,22 @@ The link usually comes up at once; if a first search comes back empty, keep look
   keep its annotation_offset). Draw reference lines, dimensions and labels on a new design layer
   ("<sheet> - Notes") in drawing coordinates, set that layer to the drawing's scale first
   (layer_scale names [notes layer], like a layer the viewport shows), then copy them into the
-  viewport with annotate_viewport(sheet, notes layer, offset = annotation_offset) and set their
-  printed size with annotation_text(sheet, target_pt 7). (Plain 2D objects on a design layer
-  didn't show in a viewport of CFF-26's 3D decks; annotations always print.) If layer_scale,
+  viewport with annotate_viewport(sheet, notes layer, offset = annotation_offset): it puts them on
+  class "Sheet Notes" (shown even when you hide the drawing's own classes) and sizes the text to
+  print at 7 pt (annotation_text changes that). (Plain 2D objects on a design layer didn't show
+  in a viewport of CFF-26's 3D decks; annotations always print.) If layer_scale,
   annotate_viewport, annotation_text, sheet_viewports or viewport_visibility isn't among your
   tools, run it as a batch step: {"op": "<name>", "args": {...}} with the same arguments.
   export_pdf(sheet, full path beside the drawing) runs Vectorworks' own Export PDF and answers
   its boxes; if it answers {"running": true}, call it again with the same path until it returns
   the PDF. save_as(full path) saves a new version beside the original (a drawing from an older
   Vectorworks opens as an unsaved "<name>_v2026" copy: save_as is how it's kept).
-  Check the result before you finish: read the PDF back (device_stage_files, then pdftoppm to look
-  at it and pdftotext -bbox to see the text isn't tiny) and fix what's off.
+  Check the sheet before you finish, by looking at it: show_sheet isn't a tool, so batch
+  [{"op": "show_sheet", "args": {"sheet": "<sheet>"}}], then zoom_to (no ids) and screenshot: that
+  is what prints. Look for every label, figure and line being there and readable, nothing
+  enormous, nothing off the page. annotation_text(sheet) gives the printed sizes. Reading text
+  alone is not a check (a test sheet whose labels printed 18" tall passed that way). This session
+  has no folder access: don't ask for it. Fix what's off and export again.
   If create_sheet_layer, create_viewport, export_pdf or save_as isn't in your tool list, the
   Claude app on the PC started before the connector had it: fail with "The connector on your PC
   has new tools the Claude app hasn't loaded yet: quit and reopen the Claude app on the PC, then

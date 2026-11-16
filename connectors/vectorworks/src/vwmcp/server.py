@@ -18,7 +18,7 @@ from typing import Any, Literal, Union
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from . import __version__, config, readout, rig, symbols, update
+from . import __version__, config, opened, readout, rig, symbols, update
 from .jobs import BUSY_DIR, BridgeError, BridgeTimeout, JobQueue
 from .rigging import apex_from_legs, leg_parts, solve_bridle, truss_reactions
 from .service import Show
@@ -325,14 +325,18 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         return await call("layer_scale", names=names, scale=scale, like=like)
 
     @mcp.tool()
-    async def annotate_viewport(sheet: str, layer: str, offset: list[float] | None = None, hide_layer: bool = True) -> dict:
+    async def annotate_viewport(sheet: str, layer: str, offset: list[float] | None = None, hide_layer: bool = True,
+                                cls: str | None = "Sheet Notes", text_pt: float | None = 7) -> dict:
         """Copy everything on design layer `layer` (reference lines, dimensions, labels drawn in
         drawing coordinates) into the annotations of the one viewport on sheet `sheet`, and turn
         the layer off in it: annotations always print over the viewport (plain 2D objects on a
         design layer didn't show in a viewport of 3D decks). `offset`: create_viewport's
         annotation_offset when it was placed with `at`. Text keeps its look (points x the layer's
-        scale); annotation_text then sets the printed size."""
-        return await call("annotate_viewport", sheet=sheet, layer=layer, offset=offset, hide_layer=hide_layer)
+        scale), then all annotation text is sized so the most common prints at `text_pt` (7 pt;
+        annotation_text changes it later). The copies go on class `cls` (shown in
+        the viewport), so classes hidden in it, such as the drawing's own "Dimension", don't hide
+        them."""
+        return await call("annotate_viewport", sheet=sheet, layer=layer, offset=offset, hide_layer=hide_layer, cls=cls, text_pt=text_pt)
 
     @mcp.tool()
     async def annotation_text(sheet: str, target_pt: float | None = None) -> dict:
@@ -346,7 +350,9 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """Save the open drawing as a new file at `path` (full Windows path ending in .vwx): a new
         version beside the original, which stays as it was last saved. Vectorworks then has the new
         file open."""
-        return await call("save_as", path=path)
+        out = await call("save_as", path=path)
+        opened.remember(str((out or {}).get("saved") or path), kind="saved")  # closed before the next file opens
+        return out
 
     @mcp.tool()
     async def create_class(name: str, activate: bool = False) -> dict:
@@ -659,16 +665,22 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             return await outer_call(op, _watch=watch, **args)
 
         vwx = Path(path).expanduser() if path else None
-        opened = False
+        did_open = False
+        made_room: list = []
         if vwx is not None:
             if not vwx.exists():
                 raise ToolError("No file at %s." % vwx)
             info = await call("get_document_info")
             if not readout.same_document(info.get("document", ""), vwx):
+                # Vectorworks refuses new files at its open document limit (a worker hit it,
+                # 2026-11-15): close what earlier jobs opened first (never the designer's own).
+                if hasattr(trigger, "make_room"):
+                    with contextlib.suppress(Exception):
+                        made_room = await asyncio.to_thread(trigger.make_room, vwx.name)
                 try:
                     exe = await asyncio.to_thread(lambda: getattr(trigger, "vectorworks_exe", lambda: None)())
                     await asyncio.to_thread(readout.open_in_vectorworks, vwx, exe)
-                    opened = True
+                    did_open = True
                 except Exception as e:
                     raise ToolError("Couldn't open %s in Vectorworks: %s. Open it by hand, then call read_out again without a path." % (vwx.name, e)) from e
                 waited = asked = 0.0
@@ -686,6 +698,8 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
                     except Exception:
                         continue
                     if readout.same_document(info.get("document", ""), vwx):
+                        shown = str(info.get("document") or vwx.name)
+                        opened.remember(shown, kind="copy" if readout.is_converted_copy(shown, vwx) else "opened")
                         break
                 else:
                     raise ToolError("Vectorworks didn't show %s within 3 minutes. Open it by hand, then call read_out again without a path." % vwx.name)
@@ -715,15 +729,13 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
             n += 1
         put(dest, body)
         out = {"saved": str(dest), "bytes": len(body) + sum(len(b) for b in parts), "mesh_parts": len(parts), "shapes_left_out": trimmed, **readout.summary(data)}
-        open_name = str(data.get("document") or "")
-        if opened and readout.is_converted_copy(open_name, vwx) and hasattr(trigger, "close_copy"):
-            # Opening an older file made an unsaved converted copy. Left open, it blocks the next job
-            # with a "name and save for backup?" box after 30 minutes. Close it without saving.
-            try:
-                out["closed_copy"] = await asyncio.to_thread(trigger.close_copy, open_name)
-            except Exception as e:
-                out["closed_copy"] = False
-                out["close_note"] = "Couldn't close the converted copy %s: %s" % (open_name, e)
+        if made_room:
+            out["closed_first"] = made_room  # earlier jobs' drawings, closed to make room
+        if did_open:
+            # The drawing stays open: a job that read it out to work on it goes on with it. (Closing
+            # a converted copy here put the next steps on whatever drawing was behind it.) It's on
+            # the connector's list, so it's closed before the next file opens.
+            out["left_open"] = str(data.get("document") or vwx.name)
         return out
 
     @mcp.tool()
@@ -734,7 +746,13 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         With `path` the file is opened in Vectorworks first (a full Windows path); without it,
         the open document is read. Under 5 MB: the plainest shapes are left out first, and it
         says how many."""
-        return await _read_out_one(path, max_objects)
+        # The PC link cuts a call after 80 s, and that cancelled this coroutine too: a big file
+        # went on opening in Vectorworks, but nothing noted it (so it was never closed to make
+        # room) and no read-out was written (measured 2026-11-16). Run it as its own task: the cut
+        # ends the wait, not the work.
+        task = asyncio.create_task(_read_out_one(path, max_objects))
+        task.add_done_callback(lambda t: t.cancelled() or t.exception())  # an error nobody waits for
+        return await asyncio.shield(task)
 
     @mcp.tool()
     async def read_out_folder(folder: str, only_new: bool = True, limit: int = 10) -> dict:
@@ -1115,6 +1133,11 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
         """A picture of the Vectorworks window as it is now, to check what you drew."""
         if not isinstance(trigger, HotkeyTrigger):
             raise ToolError("Screenshots need the Windows hotkey setup (VWMCP_TRIGGER=hotkey). Use snapshot instead.")
+        # Close a menu a job left open first: a worker's check showed only the Tools menu over a
+        # blank sheet (2026-11-15).
+        with contextlib.suppress(Exception):
+            await asyncio.to_thread(trigger.tidy)
+            await asyncio.sleep(0.3)
         try:
             png = trigger.capture_png()
         except TriggerError as e:
