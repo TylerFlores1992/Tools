@@ -326,16 +326,17 @@ def build_server(settings: config.Settings | None = None) -> MCPServer:
 
     @mcp.tool()
     async def annotate_viewport(sheet: str, layer: str, offset: list[float] | None = None, hide_layer: bool = True,
-                                cls: str | None = "Sheet Notes") -> dict:
+                                cls: str | None = "Sheet Notes", text_pt: float | None = 7) -> dict:
         """Copy everything on design layer `layer` (reference lines, dimensions, labels drawn in
         drawing coordinates) into the annotations of the one viewport on sheet `sheet`, and turn
         the layer off in it: annotations always print over the viewport (plain 2D objects on a
         design layer didn't show in a viewport of 3D decks). `offset`: create_viewport's
         annotation_offset when it was placed with `at`. Text keeps its look (points x the layer's
-        scale); annotation_text then sets the printed size. The copies go on class `cls` (shown in
+        scale), then all annotation text is sized so the most common prints at `text_pt` (7 pt;
+        annotation_text changes it later). The copies go on class `cls` (shown in
         the viewport), so classes hidden in it, such as the drawing's own "Dimension", don't hide
         them."""
-        return await call("annotate_viewport", sheet=sheet, layer=layer, offset=offset, hide_layer=hide_layer, cls=cls)
+        return await call("annotate_viewport", sheet=sheet, layer=layer, offset=offset, hide_layer=hide_layer, cls=cls, text_pt=text_pt)
 
     @mcp.tool()
     async def annotation_text(sheet: str, target_pt: float | None = None) -> dict:
