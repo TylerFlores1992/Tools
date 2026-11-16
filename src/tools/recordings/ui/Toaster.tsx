@@ -16,7 +16,9 @@ import { ToastContext } from "./toast-context";
  */
 type Show = (r: ActionResult) => void;
 
-export function Toaster({ children, undelete, unskip }: { children: ReactNode; undelete: Action; unskip: Action }) {
+export function Toaster({ children, undelete, unskip, restore }: { children: ReactNode; undelete?: Action; unskip?: Action; restore?: Action }) {
+  // Each Undo kind: the action it runs and the form field it sends (Top Movies passes only `restore`).
+  const undoes = { undelete: [undelete, "id"], unskip: [unskip, "key"], restore: [restore, "key"] } as const;
   const [toast, setToast] = useState<ActionResult | null>(null);
   const [shown, setShown] = useState(false);
   const [undoing, setUndoing] = useState(false);
@@ -54,9 +56,9 @@ export function Toaster({ children, undelete, unskip }: { children: ReactNode; u
             )}
           >
             <State kind={toast.ok ? "ok" : "wrong"} className="min-w-0 flex-1">{toast.message}</State>
-            {toast.undo && (shown || undoing) && (
-              <form action={(fd) => runUndo(toast.undo?.kind === "undelete" ? undelete : unskip, fd)}>
-                <input type="hidden" name={toast.undo.kind === "undelete" ? "id" : "key"} value={toast.undo.value} />
+            {toast.undo && undoes[toast.undo.kind][0] && (shown || undoing) && (
+              <form action={(fd) => runUndo(undoes[toast.undo!.kind][0]!, fd)}>
+                <input type="hidden" name={undoes[toast.undo.kind][1]} value={toast.undo.value} />
                 <SubmitButton variant="quiet" pending="Undoing…" className="min-h-11 px-4 text-small">Undo</SubmitButton>
               </form>
             )}

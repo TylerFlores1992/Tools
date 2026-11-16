@@ -32,6 +32,13 @@ export const PRIVATE_PROJECTS: readonly PrivateProject[] = [
     href: "/private/recordings",
   },
   {
+    slug: "movies",
+    name: "Top Movies",
+    summary: "Well-rated movies new to the TV server that you haven't watched yet, with the settings for what makes the list.",
+    stage: "IMDb ratings, hides what you've watched",
+    href: "/private/movies",
+  },
+  {
     slug: "money",
     name: "Money",
     summary: "Household spending, income and recurring payments, synced daily from the banks.",
