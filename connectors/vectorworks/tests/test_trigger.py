@@ -603,3 +603,40 @@ def test_the_replace_question_inside_the_save_box_is_answered_yes_not_save(monke
     monkeypatch.setattr(w, "_dialogs", lambda window: [SaveBox()])
     done = w.fill_export_dialogs(type("W", (), {"handle": 1})(), "C:\\x\\a.pdf")
     assert pressed == ["&Yes"] and done == ["replaced the old file"]
+
+
+def test_menus_count_as_closed_when_the_bar_is_listed_even_with_a_tooltip_up(monkeypatch):
+    """Measured 2026-11-15: a tooltip (a CS_SAVEBITS popup like a menu) made the close check say
+    "nothing worked" with every menu closed, which would stop Export PDF's menu press."""
+    import sys
+    import types
+
+    from vwmcp.trigger import _Win32
+
+    listed = {"items": []}
+
+    class Item:
+        def __init__(self, t):
+            self.t = t
+
+        def window_text(self):
+            return self.t
+
+    class Win:
+        def descendants(self, control_type=None):
+            return [Item(t) for t in listed["items"]]
+
+    class Desktop:
+        def __init__(self, backend=None):
+            pass
+
+        def window(self, handle=None):
+            return Win()
+
+    monkeypatch.setitem(sys.modules, "pywinauto", types.SimpleNamespace(Desktop=Desktop))
+    w = _Win32.__new__(_Win32)
+    window = type("W", (), {"handle": 1})()
+    listed["items"] = ["File", "Edit", "Tools", "Help"]
+    assert w._menus_closed(window, popups=[123]) is True, "a stray popup doesn't make a menu open"
+    listed["items"] = ["Organization...\tCtrl+Shift+O", "Purge...", "MCP Run Job"]
+    assert w._menus_closed(window) is False, "the Tools menu's own items listed: a menu is open"

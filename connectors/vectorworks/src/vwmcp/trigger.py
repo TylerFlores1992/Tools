@@ -695,15 +695,12 @@ class _Win32:
         return names
 
     def _menus_closed(self, window, popups=None) -> bool:
-        """No menu open: the open menu's own window (an MFC popup, measured on VW 2026: class
-        "Afx:…:800:…" where the menu is drawn) is gone, and the top-level File item is listed again.
-        UI Automation never shows Vectorworks' menu bar as a MenuBar, only as top-level items."""
-        import ctypes
-
+        """No menu open: the menu bar's own items (File...) are listed. UI Automation never shows
+        Vectorworks' menu bar as a MenuBar, only as top-level items, and while a menu is open it
+        lists that menu's items instead (measured on VW 2026: Tools open listed 45 items, no File).
+        Other popups don't count: a tooltip (CS_SAVEBITS too, measured 2026-11-15) stays up for
+        a while and isn't a menu. `popups` is accepted for older callers and ignored."""
         try:
-            u = ctypes.windll.user32  # type: ignore[attr-defined]
-            if popups and any(u.IsWindowVisible(h) for h in popups):
-                return False
             from pywinauto import Desktop
 
             vw = Desktop(backend="uia").window(handle=window.handle)
@@ -762,9 +759,9 @@ class _Win32:
                     u.PostMessageW(h, m, w, 0)
             return hs
 
-        open_now = popups()
-        if not open_now and self._menus_closed(window):
+        if self._menus_closed(window):
             return "already closed"
+        open_now = popups()
         with contextlib.suppress(Exception):
             _menu_log("close menus: Vectorworks' other windows: " + "; ".join(describe(h) for h in open_now))
         ways = [
@@ -781,7 +778,7 @@ class _Win32:
                 continue
             deadline = _t.monotonic() + wait
             while _t.monotonic() < deadline:
-                if self._menus_closed(window, open_now):
+                if self._menus_closed(window):
                     _menu_log(f"close menus: {name} worked")
                     return name
                 _t.sleep(0.1)

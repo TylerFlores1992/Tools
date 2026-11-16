@@ -27,7 +27,7 @@ from pathlib import Path
 
 import vs  # provided by Vectorworks (or by dev/fake_vs.py in tests)
 
-BRIDGE_VERSION = "0.9.15"
+BRIDGE_VERSION = "0.9.16"
 HOME = Path(os.environ.get("VWMCP_HOME", str(Path.home() / ".vwmcp")))
 JOBS = HOME / "jobs"
 RESULTS = HOME / "results"
@@ -2749,7 +2749,7 @@ def user_origin():
 
 
 @op
-def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
+def annotate_viewport(sheet, layer, hide_layer=True, offset=None, cls="Sheet Notes"):
     """Copy every object on design layer `layer` (reference lines, dimensions, labels drawn in
     drawing coordinates) into the annotations of the viewport on sheet layer `sheet`, then turn
     the layer off in it. Annotations always draw over the viewport at its scale; plain 2D
@@ -2758,7 +2758,11 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
     `offset`: [dx, dy] added to every copy. A viewport moved on its sheet after it was made
     (create_viewport's `at`) takes new annotations that far off, times its scale (measured: moved
     10" down at 1/8", its crop read 960" lower and a new annotation sat 10" high);
-    create_viewport returns the offset to pass here."""
+    create_viewport returns the offset to pass here.
+    Annotations follow the viewport's class visibility (measured 2026-11-15: a worker hid class
+    "Dimension" to keep the drawing's old dimensions off the sheet, and its new dimensions, on that
+    class, vanished too), so the copies go on class `cls`, made if missing and shown in the
+    viewport. cls=None keeps each object's own class."""
     sh = _layer_of(sheet, "sheet")
     lh = _layer_of(layer, "design")
     vps = [h for h in _children(vs.FInLayer(sh)) if vs.GetTypeN(h) == 122]
@@ -2769,6 +2773,9 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
     # 2026-11-15: 140 pt in a 1/8" viewport printed as 140/96 pt), so text from a layer at scale
     # S keeps its look when its points are multiplied by S.
     ratio = float(vs.GetLScale(lh))
+    if cls:
+        _ensure_class(cls)
+        vs.SetVPClassVisibility(vp, cls, 0)
     added = failed = 0
     for h in list(_children(vs.FInLayer(lh))):
         c = vs.HDuplicate(h, float(offset[0]) if offset else 0, float(offset[1]) if offset else 0)
@@ -2785,6 +2792,8 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
                 n = len(_s(vs.GetText(t)))
                 if n:
                     vs.SetTextSize(t, 0, n, float(vs.GetTextSize(t, 0)) * ratio)
+        if cls:
+            vs.SetClass(c, cls)
         if vs.AddVPAnnotationObject(vp, c):
             added += 1
         else:
@@ -2795,7 +2804,7 @@ def annotate_viewport(sheet, layer, hide_layer=True, offset=None):
     vs.UpdateVP(vp)
     vs.ResetObject(vp)
     return {"sheet": sheet, "layer": layer, "annotations_added": added, "failed": failed,
-            "text_scale": ratio, "layer_hidden_in_viewport": bool(hide_layer)}
+            "text_scale": ratio, "layer_hidden_in_viewport": bool(hide_layer), "class": cls}
 
 
 @op

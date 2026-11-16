@@ -310,3 +310,20 @@ def test_annotation_text_prints_at_the_size_asked(fake_vw):
     r = call(server, "batch", steps=[{"op": "annotation_text", "args": {"sheet": "Deck Layout", "target_pt": 6}}])["results"][0]
     assert r["printed_pt"] == [round(10 / 96, 2), round(20 / 96, 2)]
     assert r["printed_pt_now"] == [6.0, 12.0] and sorted(t.pt for t in vp.annotations) == [576.0, 1152.0]
+
+
+def test_notes_print_even_when_the_viewport_hides_their_class(fake_vw):
+    """Measured 2026-11-15: annotations follow the viewport's class visibility; a worker's own
+    dimensions on class "Dimension" vanished because it hid that class for the drawing's old ones."""
+    server = build_server(config.load())
+    call(server, "create_layer", name="FOH DECK")
+    call(server, "create_layer", name="Notes", activate=False)
+    call(server, "create_class", name="Dimension")
+    call(server, "create_sheet_layer", name="Deck Layout")
+    call(server, "create_viewport", sheet="Deck Layout", layers=["FOH DECK"], hidden_classes=["Dimension"])
+    call(server, "draw_line", start=[0, 0], end=[100, 0], layer="Notes", cls="Dimension")
+    r = call(server, "batch", steps=[{"op": "annotate_viewport", "args": {"sheet": "Deck Layout", "layer": "Notes"}}])["results"][0]
+    vp = next(o for o in fake_vw.DOC.objects if o.type == 122)
+    (line,) = vp.annotations
+    assert r["class"] == "Sheet Notes" and line.cls == "Sheet Notes"
+    assert vp.class_vis["Sheet Notes"] == 0 and vp.class_vis["Dimension"] == -1, "the drawing's Dimension class stays hidden"
