@@ -137,6 +137,15 @@ What it does:
   like an open menu (both CS_SAVEBITS), so "menus closed" means the menu bar ("File") is listed;
   `screenshot` closes stray menus before it captures. Worker sessions have no PC folders: they
   check a sheet by `show_sheet` + `zoom_to` + `screenshot`, never by asking for folder access.
+  0.9.20 (measured on the owner's PC, 2026-11-16): with Tools open, UI Automation lists File too,
+  so "menus closed" means no menu item starts just under the bar (palette menus lower down don't
+  count). Vectorworks refuses new files at its open document limit (seven drawings open), so the
+  connector keeps `~/.vwmcp/opened.json`, the drawings it opened or saved, and closes those before
+  opening another: tab to the front, File > Close through `press_menu_path`, and "save changes?"
+  answered by kind (a file a job saved: Yes; its own converted copy: No; a file it only opened:
+  Cancel). The designer's own drawings are never on the list. `read_out` runs as its own task, so
+  the 80 s link cut no longer stops a big file's open from being noted or its read-out written.
+  First full worker run with no fixes by hand: test 5 (job wtest1794804288).
 - **Layers.** PDF (rendered with pdf.js), PNG and JPG drawings sit under the rig to scale; CSV
   fixture lists and Vectorworks lighting devices become fixtures whose weight can count on the rig.
 - **Approve, then build.** Only the approved version is built. In the Claude desktop app on the PC
