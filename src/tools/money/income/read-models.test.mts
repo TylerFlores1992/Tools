@@ -10,10 +10,14 @@ test("the Money key wins, Mail's key is the fallback, none means the gateway", (
   assert.deepEqual(readRoute({ MONEY_STUB_MODEL: "openai/x" }).models, ["openai/x"]);
 });
 
-test("with a key: Gemini models, Flash-Lite first, the override first and never twice", () => {
+test("with a key: Gemini models, both Flash-Lites before full Flash, the override first and never twice", () => {
   const r = readRoute({ MAIL_GEMINI_API_KEY: "x" });
   assert.equal(r.via, "gemini");
-  assert.deepEqual(r.models, ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-flash-lite-latest"]);
+  assert.deepEqual(r.models, ["gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-3.8-flash"]);
+  // 2026-11-17: a busy first Lite must hand over to the other Lite, not to slow full Flash.
+  const lites = r.models.filter((m) => m.includes("lite"));
+  const firstFull = r.models.findIndex((m) => !m.includes("lite"));
+  assert.ok(lites.length >= 2 && r.models.slice(0, lites.length).every((m) => m.includes("lite")) && firstFull === lites.length);
   assert.deepEqual(readRoute({ MAIL_GEMINI_API_KEY: "x", MONEY_GEMINI_MODEL: "gemini-3.8-flash" }).models, ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-flash-lite-latest"]);
   for (const m of r.models) assert.ok(!m.includes("/"), `${m} must be a bare Gemini id, not a gateway string`);
 });
