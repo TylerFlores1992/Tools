@@ -16,6 +16,10 @@
 - **Also found:** today's three earlier stubs were read and wait in "Waiting for you to check"; the
   15:22 one duplicates the 15:45 one (Nov 4 pay date) and misread the period start year (2025).
 - **Next:** if a failure recurs, the bracketed words say which cause it was.
+- **Work-day ticks (same day):** a stub now ticks only the calendar days named for its show,
+  employer or payroll when any are (owner: "can it not read the date range and the name of the
+  show"), a period over 31 days ticks only its last week, and a start read a year early takes the
+  end's year with a note. The waiting Happy's Place stub (15:45) was re-ticked to the one day.
 
 ## At a glance
 
