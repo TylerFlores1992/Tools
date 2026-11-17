@@ -36,13 +36,49 @@ export function eventDays(e: Pick<WorkEvent, "startDay" | "endDay">): string[] {
 
 export const dayKey = (eventId: string, day: string) => `${eventId}|${day}`;
 
-/** Calendar days inside a stub's pay period that no other stub has claimed. */
-export function defaultLinks(stub: Pick<Stub, "id" | "periodStart" | "periodEnd" | "payDate">, events: readonly WorkEvent[], others: readonly Stub[]): string[] {
-  const from = stub.periodStart ?? (stub.periodEnd ? addDays(stub.periodEnd, -6) : null);
+/** A pay period longer than this is a misread (payrolls here run one or two weeks). */
+export const MAX_PERIOD_DAYS = 31;
+
+/** Words that say nothing about which job it was. */
+const FILLER = new Set(["the", "and", "of", "llc", "inc", "co", "corp", "ltd", "season", "s", "production", "productions", "service", "services", "studio", "studios"]);
+
+/** A name's meaningful words, lower case, apostrophes dropped ("HAPPY'S PLACE" -> happys, place). */
+export function nameWords(s: string | null | undefined): string[] {
+  return (s ?? "").toLowerCase().replace(/['’]/g, "").split(/[^a-z0-9]+/).filter((w) => w && !FILLER.has(w));
+}
+
+/**
+ * A calendar event belongs to this stub's job when every meaningful word of its title appears in
+ * the stub's show, employer or payroll name: "Happys Place" goes with "HAPPY'S PLACE SEASON 3",
+ * "Universal" with "Universal City Studios LLC", and "TAC" with neither.
+ */
+export function titleMatches(title: string, stub: Partial<Pick<Stub, "showName" | "employer" | "payrollCompany">>): boolean {
+  const words = nameWords(title);
+  if (!words.length) return false;
+  const pool = new Set([stub.showName, stub.employer, stub.payrollCompany].flatMap(nameWords));
+  return words.every((w) => pool.has(w));
+}
+
+/**
+ * Calendar days a new stub pays for, ticked for the owner to check: the days inside its pay period
+ * that no other saved stub has claimed. When some of those days are named for this stub's show,
+ * employer or payroll (see `titleMatches`), only those are ticked, so another job worked the same
+ * week isn't. A period longer than a month is a misread, so only its last week is used.
+ */
+export function defaultLinks(
+  stub: Pick<Stub, "id" | "periodStart" | "periodEnd" | "payDate"> & Partial<Pick<Stub, "showName" | "employer" | "payrollCompany">>,
+  events: readonly WorkEvent[],
+  others: readonly Stub[],
+): string[] {
   const to = stub.periodEnd ?? stub.payDate;
+  let from = stub.periodStart ?? (stub.periodEnd ? addDays(stub.periodEnd, -6) : null);
   if (!from || !to) return [];
+  const span = dayDiff(to, from);
+  if (span < 0 || span > MAX_PERIOD_DAYS) from = addDays(to, -6);
   const taken = new Set(others.filter((o) => o.id !== stub.id && o.status === "saved").flatMap((o) => o.workDays));
-  return events.flatMap((e) => eventDays(e).filter((d) => d >= from && d <= to).map((d) => dayKey(e.eventId, d))).filter((k) => !taken.has(k));
+  const open = (e: WorkEvent) => eventDays(e).filter((d) => d >= from && d <= to).map((d) => dayKey(e.eventId, d)).filter((k) => !taken.has(k));
+  const named = events.filter((e) => titleMatches(e.title, stub)).flatMap(open);
+  return named.length ? named : events.flatMap(open);
 }
 
 export function workDays(events: readonly WorkEvent[], stubs: readonly Stub[], config: IncomeConfig, today: string): WorkDay[] {

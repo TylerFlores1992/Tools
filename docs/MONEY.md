@@ -212,7 +212,13 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   Morning Mail's Gmail script: an unverified OAuth app's token dies every 7 days.
   Day status (`workdays.ts`): scheduled / waiting (late after `payLagDays`) / stub in / paid /
   marked (already Tomato, from before this). A stub claims days via its "work days" ticks, which
-  default to the calendar days in its pay period.
+  default to the calendar days in its pay period (`defaultLinks`). **Since 2026-11-17:** when some
+  of those days' event titles name the stub's job (every meaningful word of the title appears in
+  its show, employer or payroll name, `titleMatches`: "Happys Place" goes with HAPPY'S PLACE SEASON 3),
+  only those are ticked, so another job worked the same week isn't; with no match, the whole
+  period, as before. A period longer than 31 days ticks only its last week, and a read whose start is
+  a year early takes its end's year with a note (`fixPeriodStart`; the Happy's Place stub had read
+  2025-10-25 to 2026-10-31 and ticked 154 days).
 - **Expected pay** for waiting days: the owner's hourly rate (per employer/show/title, or usual)
   × usual hours a day, with California daily overtime (1.5× after 8, 2× after 12).
 - **Health-plan hours** (`health.ts`): straight + OT hours from saved stubs per period; plan rules

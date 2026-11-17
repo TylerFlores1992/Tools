@@ -13,10 +13,10 @@ import { countedStubs, replacedBy } from "./reissue.ts";
 import { estimateFromSimilar, remainingFromYtd, splitByNet } from "./estimate.ts";
 import { benefitsByProgram, DI, PFL, taxableBenefits, unfiledEdd } from "./benefits.ts";
 import { matchDepositsAndEstimates } from "./match.ts";
-import { fromRead, noSsn, type ReadResult } from "./read.ts";
+import { fixPeriodStart, fromRead, noSsn, type ReadResult } from "./read.ts";
 import { DEFAULT_CONFIG, emptyTaxes, emptyYtd, withDefaults, type IncomeConfig, type Stub, type WorkEvent } from "./types.ts";
 import { federalTax, w2Check, withholdingEstimate } from "./withholding.ts";
-import { defaultLinks, recolorIds, workDays } from "./workdays.ts";
+import { defaultLinks, recolorIds, titleMatches, workDays } from "./workdays.ts";
 
 let n = 0;
 const stub = (p: Partial<Stub> = {}): Stub => ({
@@ -176,6 +176,52 @@ test("default links: calendar days inside the pay period that no other stub has"
   assert.deepEqual(defaultLinks(mine, events, [other]), ["e1|2026-09-14", "e1|2026-09-15"]);
   // Only a week-ending date: the 7 days up to it.
   assert.deepEqual(defaultLinks({ ...mine, periodStart: null }, events, []), ["e1|2026-09-14", "e1|2026-09-15", "e1|2026-09-16"]);
+});
+
+test("default links: only the days named for this stub's show, when any are (owner, 2026-11-17)", () => {
+  // The real week: TAC on the 27th, 29th and 30th, Happys Place on the 28th, one Happy's Place stub.
+  const events = [ev("t1", "2026-10-27", "2026-10-27"), ev("hp", "2026-10-28", "2026-10-28", "6", "Happys Place"), ev("t2", "2026-10-29", "2026-10-30")];
+  const happy = stub({ status: "review", showName: "HAPPY'S PLACE SEASON 3 (USS)", employer: "UNIVERSAL SET SERVICES, LLC", payrollCompany: "Universal", periodStart: "2026-10-25", periodEnd: "2026-10-31" });
+  assert.deepEqual(defaultLinks(happy, events, []), ["hp|2026-10-28"]);
+  // No event named for it: every day in the period, as before.
+  const unnamed = { ...happy, showName: null, employer: "NBCUniversal", payrollCompany: null };
+  assert.deepEqual(defaultLinks(unnamed, events, []), ["t1|2026-10-27", "hp|2026-10-28", "t2|2026-10-29", "t2|2026-10-30"]);
+  // The named day already belongs to a saved stub: fall back to the rest rather than tick nothing.
+  const claimed = stub({ workDays: ["hp|2026-10-28"] });
+  assert.deepEqual(defaultLinks(happy, events, [claimed]), ["t1|2026-10-27", "t2|2026-10-29", "t2|2026-10-30"]);
+});
+
+test("default links: a period read as a year long only ticks its last week", () => {
+  const events = [ev("old", "2026-03-02", "2026-03-06"), ev("wk", "2026-10-27", "2026-10-28")];
+  const misread = stub({ status: "review", showName: "TAC", periodStart: "2025-10-25", periodEnd: "2026-10-31" });
+  assert.deepEqual(defaultLinks(misread, events, []), ["wk|2026-10-27", "wk|2026-10-28"]);
+});
+
+test("a calendar title matches the stub's show, employer or payroll, by its meaningful words", () => {
+  const s = { showName: "HAPPY'S PLACE SEASON 3 (USS)", employer: "Universal City Studios LLC", payrollCompany: null };
+  assert.equal(titleMatches("Happys Place", s), true);
+  assert.equal(titleMatches("happy\u2019s place", s), true);
+  assert.equal(titleMatches("Universal", s), true);
+  assert.equal(titleMatches("TAC", s), false);
+  assert.equal(titleMatches("Happys Place rehearsal", s), false);
+  assert.equal(titleMatches("LLC", s), false); // filler alone names nothing
+});
+
+test("reading: a pay period start a year early is put in its end's year, with a note", () => {
+  assert.deepEqual(fixPeriodStart("2026-10-25", "2026-10-31"), { start: "2026-10-25", warning: null });
+  assert.deepEqual(fixPeriodStart("2025-12-28", "2026-01-03"), { start: "2025-12-28", warning: null });
+  const fixed = fixPeriodStart("2025-10-25", "2026-10-31");
+  assert.equal(fixed.start, "2026-10-25");
+  assert.match(fixed.warning ?? "", /read as 2025-10-25; changed to 2026-10-25/);
+  // Start read in the wrong year across New Year: the year before the end's fits.
+  assert.equal(fixPeriodStart("2026-12-28", "2026-01-03").start, "2025-12-28");
+  // Nothing sensible: left as read, flagged.
+  const odd = fixPeriodStart("2026-01-10", "2026-06-30");
+  assert.equal(odd.start, "2026-01-10");
+  assert.match(odd.warning ?? "", /171 days/);
+  const r = fromRead(read({ periodStart: "2025-10-25", periodEnd: "2026-10-31" }));
+  assert.equal(r.periodStart, "2026-10-25");
+  assert.match(r.warnings[0], /changed to 2026-10-25/);
 });
 
 test("the calendar script sends work-coloured events and recolours what the server names", () => {
