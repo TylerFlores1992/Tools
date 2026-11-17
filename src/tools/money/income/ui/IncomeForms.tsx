@@ -117,7 +117,7 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
   const retryable = rows.filter((r) => r.state === "error").length;
   const waiting = rows.some((r) => r.state === "waiting");
   return (
-    <div className="grid gap-5">
+    <div className="grid min-w-0 gap-5">
       <fieldset className="grid gap-2" disabled={running}>
         <legend className="text-small text-ink-2">What is it?</legend>
         <div className="flex flex-wrap gap-3">
@@ -150,7 +150,7 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
           <ul className="divide-y divide-line rounded-card border border-line bg-surface">
             {rows.map((r, i) => (
               <li key={i} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2.5">
-                <span className="min-w-0 truncate text-small text-ink">{r.name}{r.text ? <span className="text-muted"> · {r.text}</span> : null}</span>
+                <span className="min-w-0 flex-1 break-words text-small text-ink">{r.name}{r.text ? <span className="text-muted"> · {r.text}</span> : null}</span>
                 {r.id ? (
                   <Link href={`/private/money/income/stubs/${r.id}`} className="shrink-0 text-small text-ink underline underline-offset-4">{ROW_WORD[r.state]}</Link>
                 ) : (

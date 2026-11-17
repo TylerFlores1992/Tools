@@ -163,6 +163,12 @@ his work days in Google Calendar (Tangerine = worked, Tomato = paid). Income tie
   sent one at a time from the page (each read is its own request, inside the 60 s limit), each
   landing in "Waiting for you to check". A file byte-for-byte already stored is skipped
   (`findStubByFile`, md5 in SQL). One stub per file: a PDF holding several stubs is read as one.
+  **A send that fails before the site answers is tried twice more** (2 s, then 5 s;
+  `src/tools/money/income/upload-send.ts`; safe because the server skips a stored file and re-reads
+  an unfinished one). The screen is kept on during a batch (Wake Lock), each photo's decoded image
+  is freed after shrinking, a photo still over 4 MB is refused before sending, and a failure says
+  offline / connection dropped / turned away, with the browser's own words in brackets (2026-11-17:
+  three phone photos all failed with the old generic "didn't go through" and never reached the server).
 - **Reissued weeks** (`reissue.ts`): payroll re-runs a week (Project Goose's union reissue, Aug 2026)
   with a stub that recomputes gross and taxes and takes back the first check's take-home ("NET
   PRIOR"). The first stub is "replaced": its take-home still counts as paid and matches its own
