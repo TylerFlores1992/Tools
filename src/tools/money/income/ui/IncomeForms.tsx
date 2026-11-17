@@ -7,6 +7,7 @@ import { SubmitButton } from "@/components/SubmitButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { newCalendarScript, uploadOne, type OneResult, type ScriptState } from "@/app/private/money/income/actions";
+import { sendFailureMessage, sendWithRetry, tooBigMessage } from "../upload-send";
 
 /**
  * Photo or PDF of a stub or W-2. Big photos are shrunk in the browser first (long side 2200 px,
@@ -17,10 +18,11 @@ const MAX_SIDE = 2200;
 
 async function shrink(file: File): Promise<File> {
   if (!file.type.startsWith("image/") || (file.size < 1_200_000 && file.type === "image/jpeg")) return file;
+  let bitmap: ImageBitmap | null = null;
+  const canvas = document.createElement("canvas");
   try {
-    const bitmap = await createImageBitmap(file);
+    bitmap = await createImageBitmap(file);
     const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement("canvas");
     canvas.width = Math.round(bitmap.width * scale);
     canvas.height = Math.round(bitmap.height * scale);
     canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
@@ -28,6 +30,21 @@ async function shrink(file: File): Promise<File> {
     return blob ? new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file;
   } catch {
     return file;
+  } finally {
+    // A full-size phone photo decodes to ~50-200 MB. Let it go now, not whenever the browser gets
+    // round to it, or a batch of several runs a phone out of memory and the next shrink fails.
+    bitmap?.close();
+    canvas.width = canvas.height = 0;
+  }
+}
+
+/** Keeps the phone's screen on while a batch is read, so it doesn't sleep and cut a send off. */
+async function keepAwake(): Promise<() => void> {
+  try {
+    const lock = await (navigator as Navigator & { wakeLock?: { request(t: "screen"): Promise<{ release(): Promise<void> }> } }).wakeLock?.request("screen");
+    return () => void lock?.release().catch(() => {});
+  } catch {
+    return () => {};
   }
 }
 
@@ -58,29 +75,41 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
     const queue = rows.map((r) => (r.state === "error" ? { ...r, state: "waiting" as const, text: undefined } : r));
     setRows(queue);
     setRunning(true);
+    const release = await keepAwake();
     for (let i = 0; i < files.current.length; i++) {
       if (stop.current) break;
       if (queue[i] && queue[i].state !== "waiting") continue;
       set(i, { state: "reading" });
       try {
         const f = await shrink(files.current[i]);
+        const tooBig = tooBigMessage(f.size);
+        if (tooBig) {
+          set(i, { state: "error", text: tooBig });
+          continue;
+        }
         const form = new FormData();
         form.set("kind", kind);
         form.set("file", f);
-        const res: OneResult = await uploadOne(form);
+        let tries = 0;
+        const res: OneResult = await sendWithRetry(() => {
+          if (tries++ > 0) set(i, { text: "Trying again…" });
+          return uploadOne(form);
+        });
         // One file: open its page, whether it was just read or was already on file.
         if ((res.ok || res.error === "Already added.") && res.id && files.current.length === 1) {
+          release();
           router.push(`/private/money/income/stubs/${res.id}`);
           return;
         }
         if (res.ok) set(i, { state: res.status === "failed" ? "failed" : "done", text: res.label, id: res.id });
-        else if (res.error === "Already added.") set(i, { state: "skipped", id: res.id });
+        else if (res.error === "Already added.") set(i, { state: "skipped", id: res.id, text: undefined });
         else set(i, { state: "error", text: res.error });
-      } catch {
-        set(i, { state: "error", text: "The upload didn’t go through. Try this one again on its own." });
+      } catch (e) {
+        set(i, { state: "error", text: sendFailureMessage(e, navigator.onLine) });
         continue;
       }
     }
+    release();
     setRunning(false);
   }
 
@@ -88,7 +117,7 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
   const retryable = rows.filter((r) => r.state === "error").length;
   const waiting = rows.some((r) => r.state === "waiting");
   return (
-    <div className="grid gap-5">
+    <div className="grid min-w-0 gap-5">
       <fieldset className="grid gap-2" disabled={running}>
         <legend className="text-small text-ink-2">What is it?</legend>
         <div className="flex flex-wrap gap-3">
@@ -114,14 +143,14 @@ export function BulkUploadForm({ kind: initialKind = "stub" }: { kind?: "stub" |
           }}
         />
       </label>
-      <p className="text-small text-muted">One stub per file. Lay a photo flat, fill the frame, avoid glare. Each file goes to an AI model to be read, one at a time (about 5 to 30 seconds each), so keep this page open until the list is done. You check every number before anything is saved; a file you already added is skipped.</p>
+      <p className="text-small text-muted">One stub per file. Lay a photo flat, fill the frame, avoid glare. Each file goes to an AI model to be read, one at a time (about 5 to 30 seconds each), so keep this page open until the list is done; the screen stays on while it reads. You check every number before anything is saved; a file you already added is skipped.</p>
       {rows.length > 0 && (
         <>
           <p aria-live="polite" className="text-small text-ink-2">{running ? `Reading ${Math.min(done + 1, rows.length)} of ${rows.length}…` : done ? `${done} of ${rows.length} done.` : `${rows.length} ${rows.length === 1 ? "file" : "files"} ready.`}</p>
           <ul className="divide-y divide-line rounded-card border border-line bg-surface">
             {rows.map((r, i) => (
               <li key={i} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2.5">
-                <span className="min-w-0 truncate text-small text-ink">{r.name}{r.text ? <span className="text-muted"> · {r.text}</span> : null}</span>
+                <span className="min-w-0 flex-1 break-words text-small text-ink">{r.name}{r.text ? <span className="text-muted"> · {r.text}</span> : null}</span>
                 {r.id ? (
                   <Link href={`/private/money/income/stubs/${r.id}`} className="shrink-0 text-small text-ink underline underline-offset-4">{ROW_WORD[r.state]}</Link>
                 ) : (
