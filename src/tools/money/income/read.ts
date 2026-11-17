@@ -86,13 +86,15 @@ export function fromRead(r: ReadResult): Partial<Stub> & { kind: "stub" | "w2"; 
     for (const k of Object.keys(w2) as Array<keyof W2>) w2[k] = k === "taxYear" ? (r.w2.taxYear ?? null) : pos(r.w2[k]);
   }
   const hours = earnings.reduce((n, e) => n + (countsAsHours(e.kind) && e.hours ? e.hours : 0), 0);
+  const period = fixPeriodStart(day(r.periodStart), day(r.periodEnd));
+  if (period.warning) warnings.unshift(period.warning);
   return {
     kind: r.documentType === "w2" ? "w2" : "stub",
     employer: noSsn(r.employer),
     payrollCompany: noSsn(r.payrollCompany),
     showName: noSsn(r.showName),
     payDate: day(r.payDate),
-    periodStart: day(r.periodStart),
+    periodStart: period.start,
     periodEnd: day(r.periodEnd),
     checkNumber: r.checkNumber ? r.checkNumber.replace(/[^\w-]/g, "").slice(0, 20) || null : null,
     gross: pos(r.grossPay),
@@ -106,6 +108,28 @@ export function fromRead(r: ReadResult): Partial<Stub> & { kind: "stub" | "w2"; 
     taxYear: w2?.taxYear ?? (day(r.payDate) ? Number(r.payDate!.slice(0, 4)) : null),
     warnings,
   };
+}
+
+const days = (a: string, b: string) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000);
+
+/**
+ * A pay period runs a week or two. A start more than a month before the end is almost always the
+ * year misread (2026-11-17: "10/25/2025 - 10/31/2026" on a one-week stub), so the start takes the
+ * end's year when that gives a sensible period, with a note to check it. Otherwise it is left as
+ * read, with a note.
+ */
+export function fixPeriodStart(start: string | null, end: string | null): { start: string | null; warning: string | null } {
+  if (!start || !end) return { start, warning: null };
+  const span = days(start, end);
+  if (span >= 0 && span <= 31) return { start, warning: null };
+  for (const year of [Number(end.slice(0, 4)), Number(end.slice(0, 4)) - 1]) {
+    const candidate = `${year}${start.slice(4)}`;
+    const s = days(candidate, end);
+    if (!Number.isNaN(s) && s >= 0 && s <= 31) {
+      return { start: candidate, warning: `Pay period start read as ${start}; changed to ${candidate} to match its end. Check it.` };
+    }
+  }
+  return { start, warning: `Pay period reads as ${start} to ${end}, which is ${span} days. Check both dates.` };
 }
 
 /** Hours that are time worked (meal penalties, kit rental and vacation/holiday pay are money, not hours). */
